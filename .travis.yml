@@ -1,12 +1,16 @@
-if: tag IS present
+matrix:
+  include:
+    - os: linux
+      sudo: required
+    - os: osx
 
-os:
-  - osx
-  - linux
+language: node_js
+node_js: "8"
 
 before_install:
   - ./install_deps.sh
-  - git clone https://github.com/Microsoft/vscode.git
+  - . get_repo.sh
+  - . check_tags.sh
 
 script:
   - ./build.sh
@@ -17,9 +21,8 @@ before_deploy:
 deploy:
   provider: releases
   skip_cleanup: true
-  api_key:
-    secure: DKYMvOsXNwFDFoqiNDIt8g/5w/BcCHg7ieY6lAJU0Hu2V7san/gqJGG2asKPNBQpCoiWzdIjyCqlZFhWiZpKmEN560bALAcO0fPQXnRum/mACYPDcO/OZrK2F/muJyy1r5l9SseL9SmkAGdBilXO2kfvquH9wQD7/Zb1djLMclUctb84POtl2Nr1u6y0OxftOTANcIh9qbRO2Tdk3kvH8khvHv3dRo8RU6zoq1xxY5sLpeFDXPThGeBVfU2KV6b/hfLUrvIlX20zVRuDmgBMp73xD+K+9yZeXwaoiB2HxGlDmtYhBEhWG47a3IOgvXPfLjAiRSNfHSfESCHcQZ5piQhRfEIGlpMPaSXF3AORNxy3OnSUE7WyIuKWXFpOlgxho7uARl1lrrln8ySVvuqLdYG5VSK+2BdZnwSjr1Lem2WqVaYKMBDHuqCEHZzpWFvG/ehhzfFWcEmQRXyVksShnAz517OcZmMKYreICCnf7qCrpe5QNN1M/Tz60L2XgsnwGGT1o5fj68Ho1gtXl1+AHC0QVULO2LszrFMh1hRUOckgNQ6THDUrZGbX3t36GmtUfPHaE1Fn9yKH28HX86A7KlwqvEKUmkMKnNcZfdA5alQfS75a2S4sxYSEpR1hTFO+w7cZTTu+SJHCWu+gP5dpr2q0oNJfKngkVUMt7V8tbn0=
+  api_key: $GITHUB_TOKEN
   file_glob: true
   file: ./*.zip
   on:
-    tag: true
+    condition: "$SHOULD_BUILD = yes"
