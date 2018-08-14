@@ -1,3 +1,5 @@
+if: tag IS blank
+
 matrix:
   include:
     - os: linux
@@ -9,8 +11,8 @@ node_js: "8"
 
 before_install:
   - ./install_deps.sh
-  - ./get_repo.sh
-  - ./check_tags.sh
+  - . get_repo.sh
+  - . check_tags.sh
 
 script:
   - ./build.sh
