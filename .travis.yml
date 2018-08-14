@@ -9,8 +9,8 @@ node_js: "8"
 
 before_install:
   - ./install_deps.sh
-  - . get_repo.sh
-  - . check_tags.sh
+  - ./get_repo.sh
+  - ./check_tags.sh
 
 script:
   - ./build.sh
@@ -25,4 +25,5 @@ deploy:
   file_glob: true
   file: ./*.zip
   on:
-    condition: "$SHOULD_BUILD = yes"
+    all_branches: true
+    condition: $SHOULD_BUILD = yes
