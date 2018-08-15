@@ -25,7 +25,11 @@ deploy:
   skip_cleanup: true
   api_key: $GITHUB_TOKEN
   file_glob: true
-  file: ./*.zip
+  file:
+    - ./*.zip
+    - ./*.tar.gz
+    - vscode/.build/linux/deb/amd64/deb/*.deb
+    - vscode/.build/linux/rpm/x86_64/*.rpm
   on:
     all_branches: true
     condition: $SHOULD_BUILD = yes

@@ -12,6 +12,8 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     npx gulp vscode-darwin-min
   else
     npx gulp vscode-linux-x64-min
+    npx gulp vscode-linux-x64-build-deb
+    npx gulp vscode-linux-x64-build-rpm
   fi
 
   cd ..
