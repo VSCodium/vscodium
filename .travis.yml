@@ -21,6 +21,8 @@ before_deploy:
 deploy:
   provider: releases
   skip_cleanup: true
+  overwrite: true
+  name: $LATEST_MS_TAG
   api_key: $GITHUB_TOKEN
   file_glob: true
   file:
