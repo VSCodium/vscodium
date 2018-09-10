@@ -4,7 +4,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   cd vscode
   yarn
   mv product.json product.json.bak
-  cat product.json.bak | jq 'setpath(["extensionsGallery"]; {"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index", "itemUrl": "https://marketplace.visualstudio.com/items"})' > product.json
+  cat product.json.bak | jq 'setpath(["extensionsGallery"]; {"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index", "itemUrl": "https://marketplace.visualstudio.com/items"}) | setpath(["nameShort"]; "VSCodium") | setpath(["nameLong"]; "VSCodium") | setpath(["applicationName"]; "vscodium") | setpath(["win32MutexName"]; "vscodium") | setpath(["win32DirName"]; "VSCodium") | setpath(["win32NameVersion"]; "VSCodium") | setpath(["win32RegValueName"]; "VSCodium") | setpath(["win32AppUserModelId"]; "Microsoft.VSCodium") | setpath(["win32ShellNameShort"]; "V&SCodium") | setpath(["urlProtocol"]; "vscodium")' > product.json
   cat product.json
   export NODE_ENV=production
 
