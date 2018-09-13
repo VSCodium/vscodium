@@ -1,7 +1,16 @@
 # VSCodium
 ### Free/Libre Open Source Software Binaries of VSCode
 
-:tada: :tada: [Download latest release here](https://github.com/VSCodium/vscodium/releases)  :tada: :tada:
+## Download/Install
+:tada: :tada: [Download latest release here](https://github.com/VSCodium/vscodium/releases) :tada: :tada:
+
+#### Install with Brew
+If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
+```bash
+brew cask install vscodium
+```
+
+__Note: if you see "App can’t be opened because it is from an unidentified developer" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on a Mac.__
 
 ## Why
 This repository contains a build file to generate FLOSS release binaries of Microsoft's VSCode.
