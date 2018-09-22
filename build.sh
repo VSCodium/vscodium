@@ -11,6 +11,11 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     npx gulp vscode-darwin-min
   else
+    # microsoft adds their apt repo to sources
+    # unless the app name is code-oss
+    # as we are renaming the application to vscodium
+    # we need to edit a line in the post install template
+    sed -i "s/code-oss/vscodium/" resources/linux/debian/postinst.template
     npx gulp vscode-linux-x64-min
     npx gulp vscode-linux-x64-build-deb
     npx gulp vscode-linux-x64-build-rpm
