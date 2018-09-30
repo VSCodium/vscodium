@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [[ "$SHOULD_BUILD" == "yes" ]]; then
+  cp -rp src/* vscode/
   cd vscode
   yarn
   mv product.json product.json.bak
