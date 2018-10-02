@@ -10,6 +10,7 @@
 - [Download/Install](#download-install)
   - [Install with Brew](#install-with-brew)
 - [Why Does This Exist](#why)
+- [Getting all the Telemetry Out](#disable-telemetry)
 - [Supported OS](#supported-os)
 - [Extensions + Marketplace](#extensions-marketplace)
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
@@ -46,6 +47,22 @@ Microsoft's build process does download additional files. This was brought up in
 - From [Electron releases](https://github.com/electron/electron/releases) (using [gulp-atom-electron](https://github.com/joaomoreno/gulp-atom-electron))
   - electron
   - ffmpeg
+
+## <a id="disable-telemetry"></a>Getting all the Telemetry Out
+Even though we do not pass the telemetry build flags (and go out of our way to cripple the baked-in telemetry), Microsoft will still track usage by default. After installing VSCodium, you must manually disable telemetry in your settings file to stop it from sending tracking data to Microsoft. 
+
+The instructions [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting) and [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-crash-reporting) help with disabling telemetry. 
+
+It is also highly recommended that you review all the settings that "use online services" by following [these instructions](https://code.visualstudio.com/docs/supporting/faq#_managing-online-services). The `@tag:usesOnlineServices` filter on the settings page will show that by default:
+- Extensions auto check for updates and auto install updates
+- Searches within the app are sent to an online service for "natural language processing"
+- Updates to the app are fetched in the background
+
+These can all be disabled.
+
+__Please note that some extensions send telemetry data to Microsoft as well. We have no control over this and can only recommend removing the extension.__
+
+_(For example the C# extension `ms-vscode.csharp` sends tracking data to Microsoft.)_
 
 ## <a id="supported-os"></a>Supported OS
 - [x] OSX x64 (zipped app file)
