@@ -9,7 +9,7 @@ echo "VSCodium assets: ${VSCODIUM_ASSETS}"
 if [ "$GITHUB_TOKEN" != "" ]; then
   if [ "$VSCODIUM_ASSETS" != "null" ]; then
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      HAVE_MAC=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["zip"])')
+      HAVE_MAC=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["darwin"])')
       if [[ "$HAVE_MAC" != "true" ]]; then
         echo "Building on Mac because we have no ZIP"
         export SHOULD_BUILD="yes"
