@@ -1,0 +1,168 @@
+diff -Naur extensions/git/node_modules/applicationinsights/out/Library/Config.js extensions/git/node_modules/applicationinsights/out/Library/Config.js
+--- extensions/git/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:25:36.000000000 -0400
++++ extensions/git/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:28:21.000000000 -0400
+@@ -3,7 +3,7 @@
+ var Config = (function () {
+     function Config(instrumentationKey) {
+         var _this = this;
+-        this.endpointBase = "https://dc.services.visualstudio.com";
++        this.endpointBase = "https://0.0.0.0";
+         this.instrumentationKey = instrumentationKey || Config._getInstrumentationKey();
+         this.endpointUrl = this.endpointBase + "/v2/track";
+         this.maxBatchSize = 250;
+diff -Naur extensions/git/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js extensions/git/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js
+--- extensions/git/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:25:37.000000000 -0400
++++ extensions/git/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:29:09.000000000 -0400
+@@ -70,7 +70,7 @@
+         this.appInsightsClient.commonProperties = this.getCommonProperties();
+         //check if it's an Asimov key to change the endpoint
+         if (key && key.indexOf('AIF-') === 0) {
+-            this.appInsightsClient.config.endpointUrl = "https://vortex.data.microsoft.com/collect/v1";
++            this.appInsightsClient.config.endpointUrl = "https://0.0.0.0/collect/v1";
+         }
+     };
+     // __GDPR__COMMON__ "common.os" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+diff -Naur extensions/html-language-features/node_modules/applicationinsights/out/Library/Config.js extensions/html-language-features/node_modules/applicationinsights/out/Library/Config.js
+--- extensions/html-language-features/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:25:37.000000000 -0400
++++ extensions/html-language-features/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:28:21.000000000 -0400
+@@ -3,7 +3,7 @@
+ var Config = (function () {
+     function Config(instrumentationKey) {
+         var _this = this;
+-        this.endpointBase = "https://dc.services.visualstudio.com";
++        this.endpointBase = "https://0.0.0.0";
+         this.instrumentationKey = instrumentationKey || Config._getInstrumentationKey();
+         this.endpointUrl = this.endpointBase + "/v2/track";
+         this.maxBatchSize = 250;
+diff -Naur extensions/html-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js extensions/html-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js
+--- extensions/html-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:25:37.000000000 -0400
++++ extensions/html-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:29:09.000000000 -0400
+@@ -70,7 +70,7 @@
+         this.appInsightsClient.commonProperties = this.getCommonProperties();
+         //check if it's an Asimov key to change the endpoint
+         if (key && key.indexOf('AIF-') === 0) {
+-            this.appInsightsClient.config.endpointUrl = "https://vortex.data.microsoft.com/collect/v1";
++            this.appInsightsClient.config.endpointUrl = "https://0.0.0.0/collect/v1";
+         }
+     };
+     // __GDPR__COMMON__ "common.os" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+diff -Naur extensions/json-language-features/node_modules/applicationinsights/out/Library/Config.js extensions/json-language-features/node_modules/applicationinsights/out/Library/Config.js
+--- extensions/json-language-features/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:25:39.000000000 -0400
++++ extensions/json-language-features/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:28:21.000000000 -0400
+@@ -3,7 +3,7 @@
+ var Config = (function () {
+     function Config(instrumentationKey) {
+         var _this = this;
+-        this.endpointBase = "https://dc.services.visualstudio.com";
++        this.endpointBase = "https://0.0.0.0";
+         this.instrumentationKey = instrumentationKey || Config._getInstrumentationKey();
+         this.endpointUrl = this.endpointBase + "/v2/track";
+         this.maxBatchSize = 250;
+diff -Naur extensions/json-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js extensions/json-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js
+--- extensions/json-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:25:40.000000000 -0400
++++ extensions/json-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:29:09.000000000 -0400
+@@ -70,7 +70,7 @@
+         this.appInsightsClient.commonProperties = this.getCommonProperties();
+         //check if it's an Asimov key to change the endpoint
+         if (key && key.indexOf('AIF-') === 0) {
+-            this.appInsightsClient.config.endpointUrl = "https://vortex.data.microsoft.com/collect/v1";
++            this.appInsightsClient.config.endpointUrl = "https://0.0.0.0/collect/v1";
+         }
+     };
+     // __GDPR__COMMON__ "common.os" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+diff -Naur extensions/markdown-language-features/node_modules/applicationinsights/out/Library/Config.js extensions/markdown-language-features/node_modules/applicationinsights/out/Library/Config.js
+--- extensions/markdown-language-features/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:25:41.000000000 -0400
++++ extensions/markdown-language-features/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:28:21.000000000 -0400
+@@ -3,7 +3,7 @@
+ var Config = (function () {
+     function Config(instrumentationKey) {
+         var _this = this;
+-        this.endpointBase = "https://dc.services.visualstudio.com";
++        this.endpointBase = "https://0.0.0.0";
+         this.instrumentationKey = instrumentationKey || Config._getInstrumentationKey();
+         this.endpointUrl = this.endpointBase + "/v2/track";
+         this.maxBatchSize = 250;
+diff -Naur extensions/markdown-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js extensions/markdown-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js
+--- extensions/markdown-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:26:00.000000000 -0400
++++ extensions/markdown-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:29:09.000000000 -0400
+@@ -70,7 +70,7 @@
+         this.appInsightsClient.commonProperties = this.getCommonProperties();
+         //check if it's an Asimov key to change the endpoint
+         if (key && key.indexOf('AIF-') === 0) {
+-            this.appInsightsClient.config.endpointUrl = "https://vortex.data.microsoft.com/collect/v1";
++            this.appInsightsClient.config.endpointUrl = "https://0.0.0.0/collect/v1";
+         }
+     };
+     // __GDPR__COMMON__ "common.os" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+diff -Naur extensions/search-rg/node_modules/applicationinsights/out/Library/Config.js extensions/search-rg/node_modules/applicationinsights/out/Library/Config.js
+--- extensions/search-rg/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:26:02.000000000 -0400
++++ extensions/search-rg/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:28:21.000000000 -0400
+@@ -3,7 +3,7 @@
+ var Config = (function () {
+     function Config(instrumentationKey) {
+         var _this = this;
+-        this.endpointBase = "https://dc.services.visualstudio.com";
++        this.endpointBase = "https://0.0.0.0";
+         this.instrumentationKey = instrumentationKey || Config._getInstrumentationKey();
+         this.endpointUrl = this.endpointBase + "/v2/track";
+         this.maxBatchSize = 250;
+diff -Naur extensions/search-rg/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js extensions/search-rg/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js
+--- extensions/search-rg/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:26:04.000000000 -0400
++++ extensions/search-rg/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:29:09.000000000 -0400
+@@ -70,7 +70,7 @@
+         this.appInsightsClient.commonProperties = this.getCommonProperties();
+         //check if it's an Asimov key to change the endpoint
+         if (key && key.indexOf('AIF-') === 0) {
+-            this.appInsightsClient.config.endpointUrl = "https://vortex.data.microsoft.com/collect/v1";
++            this.appInsightsClient.config.endpointUrl = "https://0.0.0.0/collect/v1";
+         }
+     };
+     // __GDPR__COMMON__ "common.os" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+diff -Naur extensions/typescript-language-features/node_modules/applicationinsights/out/Library/Config.js extensions/typescript-language-features/node_modules/applicationinsights/out/Library/Config.js
+--- extensions/typescript-language-features/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:26:05.000000000 -0400
++++ extensions/typescript-language-features/node_modules/applicationinsights/out/Library/Config.js	2018-10-03 17:28:21.000000000 -0400
+@@ -3,7 +3,7 @@
+ var Config = (function () {
+     function Config(instrumentationKey) {
+         var _this = this;
+-        this.endpointBase = "https://dc.services.visualstudio.com";
++        this.endpointBase = "https://0.0.0.0";
+         this.instrumentationKey = instrumentationKey || Config._getInstrumentationKey();
+         this.endpointUrl = this.endpointBase + "/v2/track";
+         this.maxBatchSize = 250;
+diff -Naur extensions/typescript-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js extensions/typescript-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js
+--- extensions/typescript-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:26:07.000000000 -0400
++++ extensions/typescript-language-features/node_modules/vscode-extension-telemetry/lib/telemetryReporter.js	2018-10-03 17:29:09.000000000 -0400
+@@ -70,7 +70,7 @@
+         this.appInsightsClient.commonProperties = this.getCommonProperties();
+         //check if it's an Asimov key to change the endpoint
+         if (key && key.indexOf('AIF-') === 0) {
+-            this.appInsightsClient.config.endpointUrl = "https://vortex.data.microsoft.com/collect/v1";
++            this.appInsightsClient.config.endpointUrl = "https://0.0.0.0/collect/v1";
+         }
+     };
+     // __GDPR__COMMON__ "common.os" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+diff -Naur node_modules/applicationinsights/Library/Config.js node_modules/applicationinsights/Library/Config.js
+--- node_modules/applicationinsights/Library/Config.js	2018-10-03 17:26:28.000000000 -0400
++++ node_modules/applicationinsights/Library/Config.js	2018-10-03 17:28:21.000000000 -0400
+@@ -5,7 +5,7 @@
+     function Config(instrumentationKey) {
+         this.instrumentationKey = instrumentationKey || Config._getInstrumentationKey();
+         this.instrumentationKeyHash = Config._getStringHashBase64(this.instrumentationKey);
+-        this.endpointUrl = "https://dc.services.visualstudio.com/v2/track";
++        this.endpointUrl = "https://0.0.0.0/v2/track";
+         this.sessionRenewalMs = 30 * 60 * 1000;
+         this.sessionExpirationMs = 24 * 60 * 60 * 1000;
+         this.maxBatchSize = 250;
+diff -Naur src/vs/platform/telemetry/node/appInsightsAppender.ts src/vs/platform/telemetry/node/appInsightsAppender.ts
+--- src/vs/platform/telemetry/node/appInsightsAppender.ts	2018-10-03 17:26:56.000000000 -0400
++++ src/vs/platform/telemetry/node/appInsightsAppender.ts	2018-10-03 17:29:09.000000000 -0400
+@@ -34,7 +34,7 @@
+ 	client.channel.setOfflineMode(true);
+ 	client.context.tags[client.context.keys.deviceMachineName] = ''; //prevent App Insights from reporting machine name
+ 	if (aiKey.indexOf('AIF-') === 0) {
+-		client.config.endpointUrl = 'https://vortex.data.microsoft.com/collect/v1';
++		client.config.endpointUrl = 'https://0.0.0.0/collect/v1';
+ 	}
+ 	return client;
+ }
