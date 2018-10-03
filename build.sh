@@ -8,7 +8,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   cat product.json
   # remove dc.services.visualstudio.com and
   # vortex.data.microsoft.com tracking
-  patch -p 0 -u -i ../telemetry.patch
+  patch -Nup0 -i ../telemetry.patch
 
   export NODE_ENV=production
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
