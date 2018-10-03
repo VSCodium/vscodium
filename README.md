@@ -50,10 +50,11 @@ Microsoft's build process does download additional files. This was brought up in
 ## <a id="supported-os"></a>Supported OS
 - [x] OSX x64 (zipped app file)
 - [x] Linux x64 (`.deb`, `.rpm`, and `.tar.gz` files) 
+- [x] Linux x86 (`.deb`, `.rpm`, and `.tar.gz` files)
 - [ ] Windows x64
   - The plan is to build the Windows executable with [AppVeyor](https://appveyor.com). PRs are welcome :blue_heart:
   
-32-bit x86 and ARM architectures are not currently supported. If you know of a way to do this with Travis or any other free CI/CD platform please put in an issue or a PR.
+The ARM architecture is not currently supported. If you know of a way to do this with Travis or any other free CI/CD platform please put in an issue or a PR.
 
 ## <a id="extensions-marketplace"></a>Extensions + Marketplace
 Until something more open comes around, we use the Microsoft Marketplace/Extensions in the `product.json` file. Those links are licensed under MIT as per [the comments on this issue.](https://github.com/Microsoft/vscode/issues/31168#issuecomment-317319063)
