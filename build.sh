@@ -16,9 +16,11 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     # as we are renaming the application to vscodium
     # we need to edit a line in the post install template
     sed -i "s/code-oss/vscodium/" resources/linux/debian/postinst.template
-    npx gulp vscode-linux-x64-min
-    npx gulp vscode-linux-x64-build-deb
-    npx gulp vscode-linux-x64-build-rpm
+    for ARCH in {x64,ia32}; do
+      npx gulp vscode-linux-${ARCH}-min
+      npx gulp vscode-linux-${ARCH}-build-deb
+      npx gulp vscode-linux-${ARCH}-build-rpm
+    done
   fi
 
   cd ..
