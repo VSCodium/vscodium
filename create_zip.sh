@@ -4,7 +4,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     cd VSCode-darwin
     zip -r ../VSCode-darwin-${LATEST_MS_TAG}.zip ./*
-  else if [[ "$BUILDARCH" == "32" ]]; then
+  elif [[ "$BUILDARCH" == "32" ]]; then
     cd VSCode-linux-ia32
     tar czf ../VSCode-linux-ia32-${LATEST_MS_TAG}.tar.gz .
   else

@@ -14,7 +14,7 @@ if [ "$GITHUB_TOKEN" != "" ]; then
         echo "Building on Mac because we have no ZIP"
         export SHOULD_BUILD="yes"
       fi
-    else if [[ $BUILDARCH == "32" ]]; then
+    elif [[ $BUILDARCH == "32" ]]; then
       HAVE_32_RPM=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["i386.rpm"])')
       HAVE_32_DEB=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["i386.deb"])')
       HAVE_32_TAR=$(echo $VSCODIUM_ASSETS | jq --arg suffix "ia32-$LATEST_MS_TAG.tar.gz" 'map(.name) | contains([$suffix])')
