@@ -2,6 +2,9 @@ matrix:
   include:
     - os: linux
       sudo: required
+    - os: linux
+      sudo: required
+      env: BUILDARCH=32
     - os: osx
 
 language: node_js
@@ -28,6 +31,8 @@ deploy:
   file:
     - ./*.zip
     - ./*.tar.gz
+    - vscode/.build/linux/deb/i386/deb/*.deb
+    - vscode/.build/linux/rpm/i386/*.rpm
     - vscode/.build/linux/deb/amd64/deb/*.deb
     - vscode/.build/linux/rpm/x86_64/*.rpm
   on:
