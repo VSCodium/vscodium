@@ -13,6 +13,8 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   cat product.json
   ../undo_telemetry.sh
 
+  export NODE_ENV=production
+
   if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
     # microsoft adds their apt repo to sources
     # unless the app name is code-oss
