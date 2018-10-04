@@ -7,7 +7,7 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
 else
   sudo apt-get update
   sudo apt-get install libx11-dev libxkbfile-dev libsecret-1-dev fakeroot rpm
-  if [[ "$BUILDARCH" == "32" ]]; then
+  if [[ "$BUILDARCH" == "ia32" ]]; then
     sudo dpkg --add-architecture i386
     sudo apt-get update
     sudo apt-get install libc6-dev-i386 gcc-multilib g++-multilib

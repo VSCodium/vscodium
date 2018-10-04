@@ -3,7 +3,7 @@
 if [[ "$SHOULD_BUILD" == "yes" ]]; then
   cd vscode
 
-  if [[ "$BUILDARCH" == "32" ]]; then
+  if [[ "$BUILDARCH" == "ia32" ]]; then
     export npm_config_arch=ia32
   fi
 
@@ -23,10 +23,11 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     npm run gulp vscode-darwin-min
-  elif [[ "$BUILDARCH" == "32" ]]; then
+  elif [[ "$BUILDARCH" == "ia32" ]]; then
     npm run gulp vscode-linux-ia32-min
     npm run gulp vscode-linux-ia32-build-deb
     npm run gulp vscode-linux-ia32-build-rpm
+    unset npm_config_arch
   else
     npm run gulp vscode-linux-x64-min
     npm run gulp vscode-linux-x64-build-deb
