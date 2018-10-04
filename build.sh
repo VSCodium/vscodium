@@ -22,15 +22,15 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   fi
 
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    npx gulp vscode-darwin-min
+    npm run gulp vscode-darwin-min
   elif [[ "$BUILDARCH" == "32" ]]; then
-    npx gulp vscode-linux-ia32-min
-    npx gulp vscode-linux-ia32-build-deb
-    npx gulp vscode-linux-ia32-build-rpm
+    npm run gulp vscode-linux-ia32-min
+    npm run gulp vscode-linux-ia32-build-deb
+    npm run gulp vscode-linux-ia32-build-rpm
   else
-    npx gulp vscode-linux-x64-min
-    npx gulp vscode-linux-x64-build-deb
-    npx gulp vscode-linux-x64-build-rpm
+    npm run gulp vscode-linux-x64-min
+    npm run gulp vscode-linux-x64-build-deb
+    npm run gulp vscode-linux-x64-build-rpm
   fi
 
   cd ..
