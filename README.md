@@ -3,7 +3,6 @@
 ### Free/Libre Open Source Software Binaries of VSCode
 [![build status](https://travis-ci.com/VSCodium/vscodium.svg?branch=master)](https://travis-ci.com/VSCodium/vscodium) 
 [![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
-![download count](https://img.shields.io/github/downloads/vscodium/vscodium/total.svg)
 [![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
 
 ## Table of Contents
