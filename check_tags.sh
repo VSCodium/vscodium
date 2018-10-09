@@ -33,6 +33,25 @@ if [ "$GITHUB_TOKEN" != "" ]; then
       if [[ "$SHOULD_BUILD" != "yes" ]]; then
         echo "Already have all the Linux ia32 builds"
       fi
+    elif [[ $BUILDARCH == "arm64" ]] then
+      HAVE_ARM64_RPM=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["arm64.rpm"])')
+      HAVE_ARM64_DEB=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["arm64.deb"])')
+      HAVE_ARM64_TAR=$(echo $VSCODIUM_ASSETS | jq --arg suffix "arm64-$LATEST_MS_TAG.tar.gz" 'map(.name) | contains([$suffix])')
+      if [[ "$HAVE_ARM64_RPM" != "true" ]]; then
+        echo "Building on Linux arm64 because we have no RPM"
+        export SHOULD_BUILD="yes"
+      fi
+      if [[ "$HAVE_ARM64_DEB" != "true" ]]; then
+        echo "Building on Linux arm64 because we have no DEB"
+        export SHOULD_BUILD="yes"
+      fi
+      if [[ "$HAVE_ARM64_TAR" != "true" ]]; then
+        echo "Building on Linux arm64 because we have no TAR"
+        export SHOULD_BUILD="yes"
+      fi
+      if [[ "$SHOULD_BUILD" != "yes" ]]; then
+        echo "Already have all the Linux arm64 builds"
+      fi
     else
       HAVE_64_RPM=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["x86_64.rpm"])')
       HAVE_64_DEB=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["amd64.deb"])')
