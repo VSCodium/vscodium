@@ -5,6 +5,9 @@ matrix:
     - os: linux
       sudo: required
       env: BUILDARCH=ia32
+    - os: linux
+      sudo: required
+      env: BUILDARCH=arm64
     - os: osx
 
 language: node_js
@@ -35,6 +38,7 @@ deploy:
     - vscode/.build/linux/rpm/i386/*.rpm
     - vscode/.build/linux/deb/amd64/deb/*.deb
     - vscode/.build/linux/rpm/x86_64/*.rpm
+    - vscode/.build/linux/deb/arm64/deb/*.deb
   on:
     all_branches: true
     condition: $SHOULD_BUILD = yes

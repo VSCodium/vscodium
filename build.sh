@@ -30,6 +30,10 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     npm run gulp vscode-linux-ia32-build-deb
     npm run gulp vscode-linux-ia32-build-rpm
     unset npm_config_arch
+  elif [[ "$BUILDARCH" == "arm64" ]]; then
+    npm run gulp vscode-linux-arm64-min
+    npm run gulp vscode-linux-arm64-build-deb
+    # npm run gulp vscode-linux-arm64-build-rpm
   else
     npm run gulp vscode-linux-x64-min
     npm run gulp vscode-linux-x64-build-deb
