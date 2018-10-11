@@ -3,13 +3,13 @@
 ### Free/Libre Open Source Software Binaries of VSCode
 [![build status](https://travis-ci.com/VSCodium/vscodium.svg?branch=master)](https://travis-ci.com/VSCodium/vscodium) 
 [![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
-![download count](https://img.shields.io/github/downloads/vscodium/vscodium/total.svg)
 [![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
 
 ## Table of Contents
 - [Download/Install](#download-install)
   - [Install with Brew](#install-with-brew)
 - [Why Does This Exist](#why)
+- [Getting all the Telemetry Out](#disable-telemetry)
 - [Supported OS](#supported-os)
 - [Extensions + Marketplace](#extensions-marketplace)
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
@@ -47,13 +47,30 @@ Microsoft's build process does download additional files. This was brought up in
   - electron
   - ffmpeg
 
+## <a id="disable-telemetry"></a>Getting all the Telemetry Out
+Even though we do not pass the telemetry build flags (and go out of our way to cripple the baked-in telemetry), Microsoft will still track usage by default. After installing VSCodium, you must manually disable telemetry in your settings file to stop it from sending tracking data to Microsoft. 
+
+The instructions [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting) and [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-crash-reporting) help with disabling telemetry. 
+
+It is also highly recommended that you review all the settings that "use online services" by following [these instructions](https://code.visualstudio.com/docs/supporting/faq#_managing-online-services). The `@tag:usesOnlineServices` filter on the settings page will show that by default:
+- Extensions auto check for updates and auto install updates
+- Searches within the app are sent to an online service for "natural language processing"
+- Updates to the app are fetched in the background
+
+These can all be disabled.
+
+__Please note that some extensions send telemetry data to Microsoft as well. We have no control over this and can only recommend removing the extension.__
+
+_(For example the C# extension `ms-vscode.csharp` sends tracking data to Microsoft.)_
+
 ## <a id="supported-os"></a>Supported OS
 - [x] OSX x64 (zipped app file)
-- [x] Linux x64 (`.deb`, `.rpm`, and `.tar.gz` files) 
-- [ ] Windows x64
+- [x] Linux x64 (`.deb`, `.rpm`, and `.tar.gz` files)
+- [x] Linux x86 (`.deb`, `.rpm`, and `.tar.gz` files)
+- [ ] Windows
   - The plan is to build the Windows executable with [AppVeyor](https://appveyor.com). PRs are welcome :blue_heart:
   
-x32 and arm architectures are not currently supported. If you know of a way to do this with Travis or any other free CI/CD platform please put in an issue or a PR.
+The ARM architecture is not currently supported. If you know of a way to do this with Travis or any other free CI/CD platform please put in an issue or a PR.
 
 ## <a id="extensions-marketplace"></a>Extensions + Marketplace
 Until something more open comes around, we use the Microsoft Marketplace/Extensions in the `product.json` file. Those links are licensed under MIT as per [the comments on this issue.](https://github.com/Microsoft/vscode/issues/31168#issuecomment-317319063)
