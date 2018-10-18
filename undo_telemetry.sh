@@ -3,11 +3,11 @@
 TELEMETRY_URLS="(dc\.services\.visualstudio\.com)|(vortex\.data\.microsoft\.com)"
 REPLACEMENT="s/$TELEMETRY_URLS/0\.0\.0\.0/g"
 
-TELEMETRY_CRASH_REPORTER="\{\"telemetry.enableCrashReporter\":{type:\"boolean\",description:n.localize\(1,null\),default:\!0"
+TELEMETRY_CRASH_REPORTER="{\"telemetry.enableCrashReporter\":{type:\"boolean\",description:n.localize\(1,null\),default:\!0"
 TELEMETRY_ENABLE="{\"telemetry.enableTelemetry\":{type:\"boolean\",description:n.localize\(1,null\),default:\!0"
 
-TELEMETRY_CRASH_REPORTER_REPLACEMENT="s/$TELEMETRY_CRASH_REPORTER/\{\"telemetry.enableCrashReporter\":{type:\"boolean\",description:n.localize\(1,null\),default:0/g"
-TELEMETRY_ENABLE_REPLACEMENT="s/$TELEMETRY_ENABLE/\{\"telemetry.enableTelemetry\":{type:\"boolean\",description:n.localize\(1,null\),default:0/g"
+TELEMETRY_CRASH_REPORTER_REPLACEMENT="s/$TELEMETRY_CRASH_REPORTER/{\"telemetry.enableCrashReporter\":{type:\"boolean\",description:n.localize\(1,null\),default:0/g"
+TELEMETRY_ENABLE_REPLACEMENT="s/$TELEMETRY_ENABLE/{\"telemetry.enableTelemetry\":{type:\"boolean\",description:n.localize\(1,null\),default:0/g"
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   grep -rl --exclude-dir=.git -E $TELEMETRY_URLS . | xargs sed -i '' -E $REPLACEMENT
