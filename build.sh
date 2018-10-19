@@ -41,7 +41,6 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     npm run gulp vscode-linux-x64-build-rpm
   fi
 
-  ../update_settings.sh
-
   cd ..
+  ./update_settings.sh
 fi
