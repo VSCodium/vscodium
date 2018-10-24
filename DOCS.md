@@ -5,6 +5,7 @@
 - [Extensions + Marketplace](#extensions-marketplace)
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
+- [How do I open VSCodium from the terminal?](#terminal-support)
 
 ## <a id="disable-telemetry"></a>Getting all the Telemetry Out
 Even though we do not pass the telemetry build flags (and go out of our way to cripple the baked-in telemetry), Microsoft will still track usage by default.
@@ -51,3 +52,18 @@ This is a common question for Visual Studio Code and the procedure is slightly d
 ```bash
 $ defaults write com.visualstudio.code.oss ApplePressAndHoldEnabled -bool false
 ```
+
+## <a id="terminal-support"></a>How do I open VSCodium from the terminal?
+- Go to the command palette (View | Command Palette...)
+- Choose `Shell command: Install 'vscodium' command in PATH`.
+
+![](https://user-images.githubusercontent.com/2707340/45751224-bd21a500-bbdf-11e8-8fb7-b645b97aae49.png)
+
+This allows you to open files or directories in VSCodium directly from your terminal:
+
+```bash
+~/in-my-project $ vscodium . # open this directory
+~/in-my-project $ vscodium file.txt # open this file
+```
+
+Feel free to alias this command to something easier to type in your shell profile (e.g. `alias code=vscodium`).
