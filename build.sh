@@ -8,6 +8,10 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     export npm_config_arch=ia32
   fi
 
+  if [[ "$BUILDARCH" == "arm64" ]]; then
+    export npm_config_arch=arm64
+  fi
+
   ../update_settings.sh
 
   yarn
