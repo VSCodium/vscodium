@@ -19,7 +19,7 @@ else
   elif [[ $BUILDARCH == "arm64" ]]; then
     sudo dpkg --add-architecture arm64
     sudo apt-get update
-    sudo apt-get install libc6-dev:arm64 gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+    sudo apt-get install libc6-dev-arm64-cross gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
     sudo apt-get install libx11-dev:arm64 libxkbfile-dev:arm64
     export CC=/usr/bin/aarch64-linux-gnu-gcc
     export CXX=/usr/bin/aarch64-linux-gnu-g++
