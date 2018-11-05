@@ -6,10 +6,12 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 
   if [[ "$BUILDARCH" == "ia32" ]]; then
     export npm_config_arch=ia32
+    export npm_config_target_arch=ia32
   fi
 
   if [[ "$BUILDARCH" == "arm64" ]]; then
     export npm_config_arch=arm64
+    export npm_config_target_arch=arm64
   fi
 
   ../update_settings.sh

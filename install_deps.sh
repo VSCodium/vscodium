@@ -17,6 +17,7 @@ else
     export CC_host=/usr/bin/gcc
     export CXX_host=/usr/bin/g++
   elif [[ $BUILDARCH == "arm64" ]]; then
+    echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty main" | sudo tee -a /etc/apt/sources.list.d/arm64.list >/dev/null
     sudo dpkg --add-architecture arm64
     sudo apt-get update
     sudo apt-get install libc6-dev-arm64-cross gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
