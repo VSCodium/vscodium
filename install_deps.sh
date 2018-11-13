@@ -2,14 +2,8 @@
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   brew update
-  brew install yarn --without-node
   brew install jq zip
 else
-  # handle yarn install (https://yarnpkg.com/en/docs/install#alternatives-stable)
-  curl -o- -L https://yarnpkg.com/install.sh | bash
-  export PATH="$HOME/.yarn/bin:$PATH"
-
-  # get other deps
   sudo apt-get install libx11-dev libxkbfile-dev libsecret-1-dev fakeroot rpm jq
   if [[ "$BUILDARCH" == "ia32" ]]; then
     sudo dpkg --add-architecture i386
