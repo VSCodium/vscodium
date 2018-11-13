@@ -4,6 +4,7 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   brew update
   brew install jq zip
 else
+  sudo apt-get update
   sudo apt-get install libx11-dev libxkbfile-dev libsecret-1-dev fakeroot rpm jq
   if [[ "$BUILDARCH" == "ia32" ]]; then
     sudo dpkg --add-architecture i386
