@@ -5,13 +5,9 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   brew install yarn --without-node
   brew install jq zip
 else
-  # handle yarn install
-  sudo apt-get update
-  sudo apt-get install apt-transport-https -y --force-yes
-  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  sudo apt-get update
-  sudo apt-get install --no-install-recommends yarn
+  # handle yarn install (https://yarnpkg.com/en/docs/install#alternatives-stable)
+  curl -o- -L https://yarnpkg.com/install.sh | bash
+  export PATH="$HOME/.yarn/bin:$PATH"
 
   # get other deps
   sudo apt-get install libx11-dev libxkbfile-dev libsecret-1-dev fakeroot rpm jq
