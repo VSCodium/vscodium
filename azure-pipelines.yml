@@ -40,13 +40,13 @@ steps:
     bash ./build.sh
   displayName: 'go build it!'
 - bash: |
-    mv vscode\.build\win32-x64\system-setup\VSCodeSetup.exe VSCodiumSetup-x64-${LATEST_MS_TAG}.exe
+    mv vscode\\.build\\win32-x64\\system-setup\\VSCodeSetup.exe VSCodiumSetup-x64-${LATEST_MS_TAG}.exe
   displayName: 'move the system setup'
 - bash: |
-    mv vscode\.build\win32-x64\user-setup\VSCodeSetup.exe VSCodiumUserSetup-x64-${LATEST_MS_TAG}.exe
+    mv vscode\\.build\\win32-x64\\user-setup\\VSCodeSetup.exe VSCodiumUserSetup-x64-${LATEST_MS_TAG}.exe
   displayName: 'move the user setup'
 - bash: |
-    mv vscode\.build\win32-x64\archive\VSCode-win32-x64.zip VSCodium-win32-x64-${LATEST_MS_TAG}.zip
+    mv vscode\\.build\\win32-x64\\archive\\VSCode-win32-x64.zip VSCodium-win32-x64-${LATEST_MS_TAG}.zip
   displayName: 'move the zip folder'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts: system-setup'
