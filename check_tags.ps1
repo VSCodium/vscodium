@@ -11,23 +11,18 @@ if (!$env:GITHUB_TOKEN) {
 }
 if (!$VSCODIUM_ASSETS) {
   echo "Release assets do not exist at all, continuing build"
-  $env:SHOULD_BUILD = 'yes'
+  $SHOULD_BUILD = 'yes'
 }
 
-$WindowsAssets = ($VSCODIUM_ASSETS | ConvertFrom-Json) | Where-Object { $_.name.Contains('win32-x64') }
-$SYSTEM_SETUP = $WindowsAssets | Where-Object { $_.name.Contains('system-setup.exe') }
-$USER_SETUP = $WindowsAssets | Where-Object { $_.name.Contains('user-setup.exe') }
-$WINDOWS_ZIP = $WindowsAssets | Where-Object { $_.name.Contains('.zip') }
+$WindowsAssets = ($VSCODIUM_ASSETS | ConvertFrom-Json) | Where-Object { $_.name.Contains('exe') }
+$SYSTEM_SETUP = $WindowsAssets | Where-Object { $_.name.Contains('Setup') }
+$USER_SETUP = $WindowsAssets | Where-Object { $_.name.Contains('User') }
 if (!$SYSTEM_SETUP) {
   echo "Building on Windows because we have no system-setup.exe";
   $SHOULD_BUILD = 'yes'
 }
 elseif (!$USER_SETUP) {
   echo "Building on Windows because we have no user-setup.exe";
-  $SHOULD_BUILD = 'yes'
-}
-elseif (!$WINDOWS_ZIP) {
-  echo "Building on Windows because we have no ZIP";
   $SHOULD_BUILD = 'yes'
 }
 else {
