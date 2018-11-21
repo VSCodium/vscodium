@@ -1,0 +1,41 @@
+# Node.js with Grunt
+# Build a Node.js project using the Grunt task runner.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+steps:
+- script: |
+    choco install jq 
+  displayName: 'install jq from choco'
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+  displayName: 'Install Yarn'
+- task: UsePythonVersion@0
+  displayName: 'Use Python 2.x'
+  inputs:
+    versionSpec: 2.x
+- task: ShellScript@2
+  displayName: 'get VSCode sources'
+  inputs: 
+    scriptPath: get_repo.sh
+    #args: '' # Optional
+    #disableAutoCwd: false # Optional
+    #cwd: '' # Optional
+    #failOnStandardError: false
+- powershell: |
+    $LATEST_MS_TAG="$(git -C vscode describe --tags)"
+    Write-Host "##vso[task.setvariable variable=LATEST_MS_TAG]$LATEST_MS_TAG"
+  displayName: 'set env LATEST_MS_TAG'
+- task: PowerShell@2
+  inputs:
+    filePath: 'check_tags.ps1'
+  env:
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
+- script: |
+    git -C vscode status
+  displayName: 'vscode status'
+- powershell: |
+    bash ./build.sh
+  displayName: 'go build it!'
