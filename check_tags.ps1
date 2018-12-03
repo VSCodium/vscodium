@@ -1,4 +1,3 @@
-echo "token: $env:MAPPED_GITHUB_TOKEN"
 echo "tag: $env:LATEST_MS_TAG"
 $GITHUB_RESPONSE = curl.exe -s -H "Authorization: token $env:MAPPED_GITHUB_TOKEN" "https://api.github.com/repos/vscodium/vscodium/releases/tags/$env:LATEST_MS_TAG"
 echo "Github response: ${GITHUB_RESPONSE}"
@@ -6,7 +5,7 @@ $VSCODIUM_ASSETS= $GITHUB_RESPONSE | jq '.assets'
 echo "VSCodium assets: ${VSCODIUM_ASSETS}"
 
 # if we just don't have the github token, get out fast
-if (!$env:MAPPED_GITHUB_TOKEN) {
+if (!$env:MAPPED_GITHUB_TOKEN.length -lte 15) {
   return
 }
 
