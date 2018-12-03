@@ -8,6 +8,7 @@ echo "VSCodium assets: ${VSCODIUM_ASSETS}"
 if (!$env:GITHUB_TOKEN) {
   return
 }
+echo $env:GITHUB_TOKEN
 if (!$VSCODIUM_ASSETS) {
   echo "Release assets do not exist at all, continuing build"
   $SHOULD_BUILD = 'yes'
