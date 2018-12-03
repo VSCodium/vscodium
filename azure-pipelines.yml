@@ -1,8 +1,3 @@
-# Node.js with Grunt
-# Build a Node.js project using the Grunt task runner.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 pool:
   vmImage: 'vs2017-win2016'
 
@@ -20,10 +15,6 @@ steps:
   displayName: 'get VSCode sources'
   inputs: 
     scriptPath: get_repo.sh
-    #args: '' # Optional
-    #disableAutoCwd: false # Optional
-    #cwd: '' # Optional
-    #failOnStandardError: false
 - powershell: |
     $LATEST_MS_TAG="$(git -C vscode describe --tags)"
     Write-Host "##vso[task.setvariable variable=LATEST_MS_TAG]$LATEST_MS_TAG"
@@ -32,7 +23,7 @@ steps:
   inputs:
     filePath: 'check_tags.ps1'
   env:
-    GITHUB_TOKEN: $(GITHUB_TOKEN)
+    MAPPED_GITHUB_TOKEN: $(GITHUB_TOKEN)
 - script: |
     git -C vscode status
   displayName: 'vscode status'
@@ -40,26 +31,29 @@ steps:
     bash ./build.sh
   displayName: 'go build it!'
 - bash: |
-    mv vscode\\.build\\win32-x64\\system-setup\\VSCodeSetup.exe VSCodiumSetup-x64-${LATEST_MS_TAG}.exe
+    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-x64\\system-setup\\VSCodeSetup.exe VSCodiumSetup-x64-${LATEST_MS_TAG}.exe; fi
   displayName: 'move the system setup'
 - bash: |
-    mv vscode\\.build\\win32-x64\\user-setup\\VSCodeSetup.exe VSCodiumUserSetup-x64-${LATEST_MS_TAG}.exe
+    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-x64\\user-setup\\VSCodeSetup.exe VSCodiumUserSetup-x64-${LATEST_MS_TAG}.exe; fi
   displayName: 'move the user setup'
 - bash: |
-    mv vscode\\.build\\win32-x64\\archive\\VSCode-win32-x64.zip VSCodium-win32-x64-${LATEST_MS_TAG}.zip
+    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-x64\\archive\\VSCode-win32-x64.zip VSCodium-win32-x64-${LATEST_MS_TAG}.zip; fi
   displayName: 'move the zip folder'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts: system-setup'
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
   inputs:
     PathtoPublish: 'VSCodiumSetup-x64-$(LATEST_MS_TAG).exe'
     ArtifactName: 'system_setup'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts: user-setup'
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
   inputs:
     PathtoPublish: 'VSCodiumUserSetup-x64-$(LATEST_MS_TAG).exe'
     ArtifactName: 'user_setup'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts: archive'
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
   inputs:
     PathtoPublish: 'VSCodium-win32-x64-$(LATEST_MS_TAG).zip'
     ArtifactName: 'archive'
