@@ -50,19 +50,19 @@ steps:
   displayName: 'move the zip folder'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts: system-setup'
-  condition: and(succeeded(), ne(dependencies.A.outputs['printvar.SHOULD_BUILD'], 'yes'))
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
   inputs:
     PathtoPublish: 'VSCodiumSetup-x64-$(LATEST_MS_TAG).exe'
     ArtifactName: 'system_setup'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts: user-setup'
-  condition: and(succeeded(), ne(dependencies.A.outputs['printvar.SHOULD_BUILD'], 'yes'))
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
   inputs:
     PathtoPublish: 'VSCodiumUserSetup-x64-$(LATEST_MS_TAG).exe'
     ArtifactName: 'user_setup'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts: archive'
-  condition: and(succeeded(), ne(dependencies.A.outputs['printvar.SHOULD_BUILD'], 'yes'))
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
   inputs:
     PathtoPublish: 'VSCodium-win32-x64-$(LATEST_MS_TAG).zip'
     ArtifactName: 'archive'
