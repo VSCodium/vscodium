@@ -58,8 +58,7 @@ For more information on getting all the telemetry disabled and tips for migratin
 - [x] OSX x64 (zipped app file)
 - [x] Linux x64 (`.deb`, `.rpm`, and `.tar.gz` files)
 - [x] Linux x86 (`.deb`, `.rpm`, and `.tar.gz` files)
-- [ ] Windows
-  - The plan is to build the Windows executable with [AppVeyor](https://appveyor.com). PRs are welcome :blue_heart:
+- [X] Windows
   
 The ARM architecture is not currently supported but is actively being worked on.
 
