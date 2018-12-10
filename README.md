@@ -1,7 +1,7 @@
-<br/>
 <div id="vscodium-logo" align="center">
     <br />
     <img src="./src/resources/linux/code.png" alt="VSCodium Logo" width="200"/>
+    <h1>VSCodium</h1>
     <h3>Free/Libre Open Source Software Binaries of VSCode</h3>
 </div>
 
