@@ -1,12 +1,19 @@
-# VSCodium
+<div id="vscodium-logo" align="center">
+    <br />
+    <img src="./src/resources/linux/code.png" alt="VSCodium Logo" width="200"/>
+    <h1>VSCodium</h1>
+    <h3>Free/Libre Open Source Software Binaries of VSCode</h3>
+</div>
 
-### Free/Libre Open Source Software Binaries of VSCode
-[![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
+<div id="badges" align="center">
+
+  [![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
 [![windows_build_status](https://dev.azure.com/vscodium/VSCodium/_apis/build/status/VSCodium.vscodium?branchName=master)](https://dev.azure.com/vscodium/VSCodium/_build?definitionId=1)
 [![build status](https://travis-ci.com/VSCodium/vscodium.svg?branch=master)](https://travis-ci.com/VSCodium/vscodium) 
 [![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
 [![Gitter](https://img.shields.io/gitter/room/vscodium/vscodium.svg)](https://gitter.im/VSCodium/Lobby)
 
+</div>
 
 ## Table of Contents
 - [Download/Install](#download-install)
