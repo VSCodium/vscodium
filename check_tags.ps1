@@ -5,7 +5,7 @@ $VSCODIUM_ASSETS= $GITHUB_RESPONSE | jq '.assets'
 echo "VSCodium assets: ${VSCODIUM_ASSETS}"
 
 # if we just don't have the github token, get out fast
-if (!$env:MAPPED_GITHUB_TOKEN -like "*GITHUB_TOKEN*") {
+if (!$env:MAPPED_GITHUB_TOKEN -or $env:MAPPED_GITHUB_TOKEN -like "*GITHUB_TOKEN*") {
   echo "This build does not have the GH token"
   echo $env:MAPPED_GITHUB_TOKEN
   return
