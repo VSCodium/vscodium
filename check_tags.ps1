@@ -6,6 +6,8 @@ echo "VSCodium assets: ${VSCODIUM_ASSETS}"
 
 # if we just don't have the github token, get out fast
 if (!$env:MAPPED_GITHUB_TOKEN.length -le 15) {
+  echo "This build does not have the GH token"
+  echo $env:MAPPED_GITHUB_TOKEN
   return
 }
 
