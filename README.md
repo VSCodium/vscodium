@@ -18,6 +18,7 @@
 ## Table of Contents
 - [Download/Install](#download-install)
   - [Install with Brew](#install-with-brew)
+  - [Install with Chocolatey](#install-with-choco)
   - [Install with Package Manager](#install-with-package-manager)
 - [Why Does This Exist](#why)
 - [More Info](#more-info)
@@ -33,6 +34,12 @@ brew cask install vscodium
 ```
 
 _Note: if you see "App can’t be opened because it is from an unidentified developer" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on a Mac._
+
+#### <a id="install-with-choco"></a>Install with Chocolatey (Windows)
+If you use Windows and have [Chocolatey](https://chocolatey.org) installed (thanks to [@Thilas](https://github.com/Thilas)):
+```bash
+choco install vscodium
+```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (Linux)
 You can always install using the downloads (deb, rpm, tar) on the [releases page](https://github.com/VSCodium/vscodium/releases), but you can also install using your favorite package manager and get automatic updates. [@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo). Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker. 
