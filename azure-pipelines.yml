@@ -2,6 +2,9 @@ pool:
   vmImage: 'vs2017-win2016'
 
 steps:
+- task: NodeTool@0 
+  inputs:
+    versionSpec: '8.x'
 - script: |
     choco install jq 
   displayName: 'install jq from choco'
