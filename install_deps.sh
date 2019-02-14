@@ -5,11 +5,11 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   brew install jq zip
 else
   if [[ "$BUILDARCH" == "ia32" ]]; then
-    sudo apt-get install -y build-essential gcc g++
     sudo dpkg --add-architecture i386
     sudo apt-get update
     sudo apt-get install -y fakeroot rpm jq
-    sudo apt-get install -y libx11-dev:i386 libxkbfile-dev:i386 libsecret-1-dev:i386 libc6-dev-i386 gcc-multilib g++-multilib
+    sudo apt-get install -y gcc-multilib g++-multilib
+    sudo apt-get install -y libx11-dev:i386 libxkbfile-dev:i386 libsecret-1-dev:i386 libc6-dev-i386
     export CFLAGS=-m32
     export CXXFLAGS=-m32
     export PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
