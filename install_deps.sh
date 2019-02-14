@@ -11,6 +11,9 @@ else
     sudo apt-get update
     sudo apt-get install -y gcc-multilib g++-multilib
     sudo apt-get install -y \
+      gir1.2-glib-2.0:i386 \
+      libglib2.0-dev:i386 \
+      gir1.2-secret-1:i386 \
       libx11-dev:i386 \
       libxkbfile-dev:i386 \
       libsecret-1-dev:i386
