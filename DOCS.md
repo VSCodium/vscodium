@@ -28,6 +28,8 @@ _(For example the C# extension `ms-vscode.csharp` sends tracking data to Microso
 ## <a id="extensions-marketplace"></a>Extensions + Marketplace
 Until something more open comes around, we use the Microsoft Marketplace/Extensions in the `product.json` file. Those links are licensed under MIT as per [the comments on this issue.](https://github.com/Microsoft/vscode/issues/31168#issuecomment-317319063)
 
+If you use the [code-settings-sync](https://github.com/shanalikhan/code-settings-sync) extension, you may have [an issue](https://github.com/VSCodium/vscodium/issues/72) installing extensions (via the plugin). Refer to [this workaround](https://github.com/shanalikhan/code-settings-sync/issues/668#issuecomment-462065341) to get it working properly.
+
 ## <a id="migrating"></a>Migrating from Visual Studio Code to VSCodium
 VSCodium (and a freshly cloned copy of vscode built from source) stores its extension files in `~/.vscode-oss`. So if you currently have Visual Studio Code installed, your extensions won't automatically populate. You can reinstall your extensions from the Marketplace in VSCodium, or copy the `extensions` from `~/.vscode/extensions` to `~/.vscode-oss/extensions`.
 
