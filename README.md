@@ -1,15 +1,24 @@
-# VSCodium
+<div id="vscodium-logo" align="center">
+    <br />
+    <img src="./src/resources/linux/code.png" alt="VSCodium Logo" width="200"/>
+    <h1>VSCodium</h1>
+    <h3>Free/Libre Open Source Software Binaries of VSCode</h3>
+</div>
 
-### Free/Libre Open Source Software Binaries of VSCode
+<div id="badges" align="center">
+
+  [![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
+[![windows_build_status](https://dev.azure.com/vscodium/VSCodium/_apis/build/status/VSCodium.vscodium?branchName=master)](https://dev.azure.com/vscodium/VSCodium/_build?definitionId=1)
 [![build status](https://travis-ci.com/VSCodium/vscodium.svg?branch=master)](https://travis-ci.com/VSCodium/vscodium) 
-[![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
 [![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
 [![Gitter](https://img.shields.io/gitter/room/vscodium/vscodium.svg)](https://gitter.im/VSCodium/Lobby)
 
+</div>
 
 ## Table of Contents
 - [Download/Install](#download-install)
   - [Install with Brew](#install-with-brew)
+  - [Install with Chocolatey](#install-with-choco)
   - [Install with Package Manager](#install-with-package-manager)
 - [Why Does This Exist](#why)
 - [More Info](#more-info)
@@ -25,6 +34,12 @@ brew cask install vscodium
 ```
 
 _Note: if you see "App can’t be opened because it is from an unidentified developer" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on a Mac._
+
+#### <a id="install-with-choco"></a>Install with Chocolatey (Windows)
+If you use Windows and have [Chocolatey](https://chocolatey.org) installed (thanks to [@Thilas](https://github.com/Thilas)):
+```bash
+choco install vscodium
+```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (Linux)
 You can always install using the downloads (deb, rpm, tar) on the [releases page](https://github.com/VSCodium/vscodium/releases), but you can also install using your favorite package manager and get automatic updates. [@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo). Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker. 
@@ -58,8 +73,7 @@ For more information on getting all the telemetry disabled and tips for migratin
 - [x] OSX x64 (zipped app file)
 - [x] Linux x64 (`.deb`, `.rpm`, and `.tar.gz` files)
 - [x] Linux x86 (`.deb`, `.rpm`, and `.tar.gz` files)
-- [ ] Windows
-  - The plan is to build the Windows executable with [AppVeyor](https://appveyor.com). PRs are welcome :blue_heart:
+- [X] Windows
   
 The ARM architecture is not currently supported but is actively being worked on.
 
