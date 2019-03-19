@@ -42,8 +42,8 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     npm run gulp vscode-linux-arm64-build-deb
     # npm run gulp vscode-linux-arm64-build-rpm
   elif [[ "$CI_WINDOWS" == "True" ]]; then
+    cp LICENSE.txt LICENSE.rtf # windows build expects rtf license
     npm run gulp vscode-win32-x64-min
-    npm run gulp vscode-win32-x64-copy-inno-updater
     npm run gulp vscode-win32-x64-inno-updater
     npm run gulp vscode-win32-x64-system-setup
     npm run gulp vscode-win32-x64-user-setup
