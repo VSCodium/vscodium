@@ -14,7 +14,7 @@ if (!$env:MAPPED_GITHUB_TOKEN -or $env:MAPPED_GITHUB_TOKEN -like "*GITHUB_TOKEN*
   return
 }
 
-if ($VSCODIUM_ASSETS -eq "null" || !$VSCODIUM_ASSETS || $VSCODIUM_ASSETS -eq $null) {
+if ($VSCODIUM_ASSETS -eq "null" -or !$VSCODIUM_ASSETS) {
   echo "Release assets do not exist at all, continuing build"
   $SHOULD_BUILD = 'yes'
 } else {
