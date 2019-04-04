@@ -48,6 +48,12 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     npm run gulp vscode-win32-x64-system-setup
     npm run gulp vscode-win32-x64-user-setup
     npm run gulp vscode-win32-x64-archive
+    # 32-bit windows builds
+    npm run gulp vscode-win32-ia32-min
+    npm run gulp vscode-win32-ia32-inno-updater
+    npm run gulp vscode-win32-ia32-system-setup
+    npm run gulp vscode-win32-ia32-user-setup
+    npm run gulp vscode-win32-ia32-archive
   else
     npm run gulp vscode-linux-x64-min
     npm run gulp vscode-linux-x64-build-deb
