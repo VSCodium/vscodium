@@ -4,7 +4,7 @@ $USER_REPO = $REPO_URI."LocalPath"
 echo $USER_REPO
 $GITHUB_RESPONSE = curl.exe -s -H "Authorization: token $env:MAPPED_GITHUB_TOKEN" "https://api.github.com/repos/$USER_REPO/releases/tags/$env:LATEST_MS_TAG"
 echo "Github response: ${GITHUB_RESPONSE}"
-$VSCODIUM_ASSETS= $GITHUB_RESPONSE | jq '.assets'
+$VSCODIUM_ASSETS = $GITHUB_RESPONSE | jq '.assets'
 echo "VSCodium assets: ${VSCODIUM_ASSETS}"
 
 # if we just don't have the github token, get out fast
@@ -14,7 +14,7 @@ if (!$env:MAPPED_GITHUB_TOKEN -or $env:MAPPED_GITHUB_TOKEN -like "*GITHUB_TOKEN*
   return
 }
 
-if (!$VSCODIUM_ASSETS) {
+if ($VSCODIUM_ASSETS -eq "null" || !$VSCODIUM_ASSETS || $VSCODIUM_ASSETS -eq $null) {
   echo "Release assets do not exist at all, continuing build"
   $SHOULD_BUILD = 'yes'
 } else {
