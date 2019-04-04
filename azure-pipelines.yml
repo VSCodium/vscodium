@@ -60,3 +60,21 @@ steps:
   inputs:
     PathtoPublish: 'VSCodium-win32-x64-$(LATEST_MS_TAG).zip'
     ArtifactName: 'archive'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts: 32-bit system-setup'
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
+  inputs:
+    PathtoPublish: 'VSCodiumSetup-ia32-$(LATEST_MS_TAG).exe'
+    ArtifactName: 'system_setup'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts: 32-bit user-setup'
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
+  inputs:
+    PathtoPublish: 'VSCodiumUserSetup-ia32-$(LATEST_MS_TAG).exe'
+    ArtifactName: 'user_setup'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts: 32-bit archive'
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
+  inputs:
+    PathtoPublish: 'VSCodium-win32-ia32-$(LATEST_MS_TAG).zip'
+    ArtifactName: 'archive'
