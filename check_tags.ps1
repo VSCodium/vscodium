@@ -1,6 +1,8 @@
 echo "tag: $env:LATEST_MS_TAG"
 $REPO_URI = [uri]$env:BUILD_REPOSITORY_URI
-$USER_REPO = $REPO_URI.LocalPath
+$REPO_URI
+$USER_REPO = $REPO_URI."LocalPath"
+echo $USER_REPO
 $GITHUB_RESPONSE = curl.exe -s -H "Authorization: token $env:MAPPED_GITHUB_TOKEN" "https://api.github.com/repos/$USER_REPO/releases/tags/$env:LATEST_MS_TAG"
 echo "Github response: ${GITHUB_RESPONSE}"
 $VSCODIUM_ASSETS= $GITHUB_RESPONSE | jq '.assets'
