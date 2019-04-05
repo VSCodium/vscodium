@@ -3,15 +3,8 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   cp -rp src/* vscode/
   cd vscode
 
-  if [[ "$BUILDARCH" == "ia32" ]]; then
-    export npm_config_arch=ia32
-    export npm_config_target_arch=ia32
-  fi
-
-  if [[ "$BUILDARCH" == "arm64" ]]; then
-    export npm_config_arch=arm64
-    export npm_config_target_arch=arm64
-  fi
+  export npm_config_arch="$BUILDARCH"
+  export npm_config_target_arch="$BUILDARCH"
   ../update_settings.sh
 
   yarn
@@ -28,30 +21,21 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     # as we are renaming the application to vscodium
     # we need to edit a line in the post install template
     sed -i "s/code-oss/vscodium/" resources/linux/debian/postinst.template
-    fi
+  fi
 
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    npm run gulp vscode-darwin-min
-  elif [[ "$BUILDARCH" == "ia32" ]]; then
-      npm run gulp vscode-linux-ia32-min
-      npm run gulp vscode-linux-ia32-build-deb
-      npm run gulp vscode-linux-ia32-build-rpm
-      unset npm_config_arch
-  elif [[ "$BUILDARCH" == "arm64" ]]; then
-    npm run gulp vscode-linux-arm64-min
-    npm run gulp vscode-linux-arm64-build-deb
-    # npm run gulp vscode-linux-arm64-build-rpm
+    npm run gulp -- "vscode-darwin-min"
   elif [[ "$CI_WINDOWS" == "True" ]]; then
     cp LICENSE.txt LICENSE.rtf # windows build expects rtf license
-    npm run gulp vscode-win32-x64-min
-    npm run gulp vscode-win32-x64-inno-updater
-    npm run gulp vscode-win32-x64-system-setup
-    npm run gulp vscode-win32-x64-user-setup
-    npm run gulp vscode-win32-x64-archive
-  else
-    npm run gulp vscode-linux-x64-min
-    npm run gulp vscode-linux-x64-build-deb
-    npm run gulp vscode-linux-x64-build-rpm
+    npm run gulp -- "vscode-win32-${BUILDARCH}-min"
+    npm run gulp -- "vscode-win32-${BUILDARCH}-inno-updater"
+    npm run gulp -- "vscode-win32-${BUILDARCH}-system-setup"
+    npm run gulp -- "vscode-win32-${BUILDARCH}-user-setup"
+    npm run gulp -- "vscode-win32-${BUILDARCH}-archive"
+  else # linux
+    npm run gulp -- "vscode-linux-${BUILDARCH}-min"
+    npm run gulp -- "vscode-linux-${BUILDARCH}-build-deb"
+    npm run gulp -- "vscode-linux-${BUILDARCH}-build-rpm"
   fi  
 
   cd ..

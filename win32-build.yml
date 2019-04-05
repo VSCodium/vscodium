@@ -1,0 +1,59 @@
+steps:
+- task: NodeTool@0 
+  inputs:
+    versionSpec: '8.x'
+- script: |
+    choco install jq 
+  displayName: 'install jq from choco'
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+  displayName: 'Install Yarn'
+- task: UsePythonVersion@0
+  displayName: 'Use Python 2.x'
+  inputs:
+    versionSpec: 2.x
+- task: ShellScript@2
+  displayName: 'get VSCode sources'
+  inputs: 
+    scriptPath: get_repo.sh
+- powershell: |
+    $LATEST_MS_TAG="$(git -C vscode describe --tags)"
+    Write-Host "##vso[task.setvariable variable=LATEST_MS_TAG]$LATEST_MS_TAG"
+  displayName: 'set env LATEST_MS_TAG'
+- task: PowerShell@2
+  inputs:
+    filePath: 'check_tags.ps1'
+  env:
+    MAPPED_GITHUB_TOKEN: $(GITHUB_TOKEN)
+- script: |
+    git -C vscode status
+  displayName: 'vscode status'
+- powershell: |
+    bash ./build.sh
+  displayName: 'go build it!'
+- bash: |
+    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\system-setup\\VSCodeSetup.exe VSCodiumSetup-$(BUILDARCH)-${LATEST_MS_TAG}.exe; fi
+  displayName: 'move the system setup'
+- bash: |
+    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\user-setup\\VSCodeSetup.exe VSCodiumUserSetup-$(BUILDARCH)-${LATEST_MS_TAG}.exe; fi
+  displayName: 'move the user setup'
+- bash: |
+    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\archive\\VSCode-win32-$(BUILDARCH).zip VSCodium-win32-$(BUILDARCH)-${LATEST_MS_TAG}.zip; fi
+  displayName: 'move the zip folder'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts: system-setup'
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
+  inputs:
+    PathtoPublish: 'VSCodiumSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe'
+    ArtifactName: 'system_setup'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts: user-setup'
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
+  inputs:
+    PathtoPublish: 'VSCodiumUserSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe'
+    ArtifactName: 'user_setup'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts: archive'
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
+  inputs:
+    PathtoPublish: 'VSCodium-win32-$(BUILDARCH)-$(LATEST_MS_TAG).zip'
+    ArtifactName: 'archive'
