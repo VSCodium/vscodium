@@ -48,7 +48,13 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     npm run gulp vscode-win32-x64-system-setup
     npm run gulp vscode-win32-x64-user-setup
     npm run gulp vscode-win32-x64-archive
+
     # 32-bit windows builds
+    export npm_config_arch=ia32
+    export npm_config_target_arch=ia32
+    yarn --force # force rebuild of native packages
+    ../undo_telemetry.sh # re undo telemetry for any deps that have it
+
     npm run gulp vscode-win32-ia32-min
     npm run gulp vscode-win32-ia32-inno-updater
     npm run gulp vscode-win32-ia32-system-setup
