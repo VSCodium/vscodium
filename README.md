@@ -28,6 +28,8 @@
 ## <a id="download-install"></a>Download/Install
 :tada: :tada: [Download latest release here](https://github.com/VSCodium/vscodium/releases) :tada: :tada:
 
+[More info / helpful tips are here.](https://github.com/VSCodium/vscodium/blob/master/DOCS.md)
+
 #### <a id="install-with-brew"></a>Install with Brew (Mac)
 If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
 ```bash
@@ -73,13 +75,16 @@ Microsoft's build process does download additional files. This was brought up in
 ## <a id="more-info"></a>More Info
 For more information on getting all the telemetry disabled and tips for migrating from Visual Studio Code to VSCodium, have a look at this [Docs](https://github.com/VSCodium/vscodium/blob/master/DOCS.md) page.
 
+Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
+
 ## <a id="supported-os"></a>Supported OS
 - [x] OSX x64 (zipped app file)
 - [x] Linux x64 (`.deb`, `.rpm`, and `.tar.gz` files)
 - [x] Linux x86 (`.deb`, `.rpm`, and `.tar.gz` files)
-- [X] Windows
+- [x] Windows x86
+- [x] Windows x64
   
-The ARM architecture is not currently supported but is actively being worked on.
+The ARM architecture is not currently supported but is being worked on.
 
 ## <a id="license"></a>License
 MIT
