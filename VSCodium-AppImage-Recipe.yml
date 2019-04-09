@@ -1,0 +1,35 @@
+# Based on
+# https://github.com/AppImage/pkg2appimage/blob/master/recipes/VSCode.yml
+#
+# On a Debian/Ubuntu system:
+# wget -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
+# bash -ex pkg2appimage VSCodium
+
+app: VSCodium
+
+ingredients:
+  packages:
+    - code
+    - libgconf2-4
+  dist: trusty
+  sources: 
+    - deb http://archive.ubuntu.com/ubuntu/ trusty main universe
+  script:
+    # Instead of the next two lines, use for Travis CI pipeline builds instead:
+    - cp ../.build/linux/deb/amd64/deb/*.deb .
+    - ls vscodium_*.deb | cut -d _ -f 2 > VERSION
+
+script:
+  - sed -i -e 's|/usr/share/vscodium/||g' usr/share/applications/vscodium.desktop
+  - sed -i -e 's|com.visualstudio.code.oss|vscodium|g' usr/share/applications/vscodium.desktop
+  - cp usr/share/applications/vscodium.desktop .
+  - cp usr/share/pixmaps/com.visualstudio.code.oss.png vscodium.png
+  - convert vscodium.png -resize 512x512 usr/share/icons/hicolor/512x512/apps/vscodium.png
+  - convert vscodium.png -resize 256x256 usr/share/icons/hicolor/256x256/apps/vscodium.png
+  - convert vscodium.png -resize 128x128 usr/share/icons/hicolor/128x128/apps/vscodium.png
+  - convert vscodium.png -resize 64x64 usr/share/icons/hicolor/64x64/apps/vscodium.png
+  - convert vscodium.png -resize 48x48 usr/share/icons/hicolor/48x48/apps/vscodium.png
+  - convert vscodium.png -resize 32x32 usr/share/icons/hicolor/32x32/apps/vscodium.png
+  - convert vscodium.png -resize 24x24 usr/share/icons/hicolor/24x24/apps/vscodium.png
+  - convert vscodium.png -resize 22x22 usr/share/icons/hicolor/22x22/apps/vscodium.png
+  - ( cd usr/bin/ ; ln -s ../share/vscodium/vscodium  . )
