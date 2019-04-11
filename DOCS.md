@@ -6,6 +6,7 @@
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
+- [Gentoo overlay/ebuild](#gentoo-overlay)
 
 ## <a id="disable-telemetry"></a>Getting all the Telemetry Out
 Even though we do not pass the telemetry build flags (and go out of our way to cripple the baked-in telemetry), Microsoft will still track usage by default.
@@ -74,3 +75,7 @@ This allows you to open files or directories in VSCodium directly from your term
 ```
 
 Feel free to alias this command to something easier to type in your shell profile (e.g. `alias code=vscodium`).
+
+## <a id="gentoo-overlay"></a>Gentoo ebuild/overlay
+
+There is a external Gentoo overlay with a working ebuild to install vscodium. The overlay can be found [here](https://github.com/wolviecb/overlay)
