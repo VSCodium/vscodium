@@ -22,6 +22,7 @@ ingredients:
 script:
   - sed -i -e 's|/usr/share/vscodium/||g' usr/share/applications/vscodium.desktop
   - sed -i -e 's|com.visualstudio.code.oss|vscodium|g' usr/share/applications/vscodium.desktop
+  - for i in $(seq 1 4) ; do sed -i '$d' usr/share/applications/vscodium.desktop ; done ; # Remove last 4 lines
   - cp usr/share/applications/vscodium.desktop .
   - cp usr/share/pixmaps/com.visualstudio.code.oss.png vscodium.png
   - convert vscodium.png -resize 512x512 usr/share/icons/hicolor/512x512/apps/vscodium.png
