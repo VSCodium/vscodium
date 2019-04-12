@@ -21,6 +21,7 @@
   - [Install with Chocolatey](#install-with-choco)
   - [Install with Scoop](#install-with-scoop)
   - [Install with Package Manager](#install-with-package-manager)
+  - [Install with Yay](#install-with-yay)
   - [Flatpak Option](#flatpak)
 - [Why Does This Exist](#why)
 - [More Info](#more-info)
@@ -54,6 +55,12 @@ scoop install vscodium
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (Linux)
 You can always install using the downloads (deb, rpm, tar) on the [releases page](https://github.com/VSCodium/vscodium/releases), but you can also install using your favorite package manager and get automatic updates. [@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo). Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker. 
+
+#### <a id="install-with-yay"></a>Install with Yay (Arch Linux)
+If you use Arch Linux and have [yay](https://github.com/Jguer/yay) installed:
+```bash
+yay -Sy vscodium
+```
 
 #### <a id="flatpak"></a>Flatpak Option (Linux)
 VSCodium is not available as a Flatpak app, but [@amtlib-dot-dll](https://github.com/amtlib-dot-dll) has done significant work to package up the open source build of Visual Studio Code without telemetry, very similarly to VSCodium. That package is available [here](https://flathub.org/apps/details/com.visualstudio.code.oss) and the build repo is [here](https://github.com/flathub/com.visualstudio.code.oss).
