@@ -27,6 +27,7 @@ script:
 
 before_deploy:
   - ./create_zip.sh
+  - ./sum.sh
 
 deploy:
   provider: releases
@@ -36,6 +37,7 @@ deploy:
   api_key: $GITHUB_TOKEN
   file_glob: true
   file:
+    - ./*.sha256
     - ./*.zip
     - ./*.tar.gz
     - vscode/.build/linux/deb/i386/deb/*.deb
