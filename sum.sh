@@ -18,9 +18,9 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
       rpm_arch=i386
     fi
     sum_file VSCodium-linux*.tar.gz
-    sum_file vscode/.build/linux/deb/$(deb_arch)/deb/*.deb
-    sum_file vscode/.build/linux/rpm/$(rpm_arch)/*.rpm
-    cp vscode/.build/linux/deb/$(deb_arch)/deb/*.sha256 .
-    cp vscode/.build/linux/rpm/$(rpm_arch)/*.sha256 .
+    sum_file vscode/.build/linux/deb/${deb_arch}/deb/*.deb
+    sum_file vscode/.build/linux/rpm/${rpm_arch}/*.rpm
+    cp vscode/.build/linux/deb/${deb_arch}/deb/*.sha256 .
+    cp vscode/.build/linux/rpm/${rpm_arch}/*.sha256 .
   fi
 fi
