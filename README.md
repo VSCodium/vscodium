@@ -19,6 +19,7 @@
 - [Download/Install](#download-install)
   - [Install with Brew](#install-with-brew)
   - [Install with Chocolatey](#install-with-choco)
+  - [Install with Scoop](#install-with-scoop)
   - [Install with Package Manager](#install-with-package-manager)
   - [Flatpak Option](#flatpak)
 - [Why Does This Exist](#why)
@@ -42,6 +43,13 @@ _Note: if you see "App can’t be opened because it is from an unidentified deve
 If you use Windows and have [Chocolatey](https://chocolatey.org) installed (thanks to [@Thilas](https://github.com/Thilas)):
 ```bash
 choco install vscodium
+```
+
+#### <a id="install-with-scoop"></a>Install with Scoop (Windows)
+If you use Windows and have [Scoop](https://scoop.sh) installed:
+```bash
+scoop bucket add extras
+scoop install vscodium
 ```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (Linux)
