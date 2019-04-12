@@ -40,9 +40,10 @@ steps:
     if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\archive\\VSCode-win32-$(BUILDARCH).zip VSCodium-win32-$(BUILDARCH)-${LATEST_MS_TAG}.zip; fi
   displayName: 'move the zip folder'
 - powershell: |
-    Get-FileHash VSCodiumSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe -Algorithm SHA256 | Format-List > VSCodiumSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe.sha256
-    Get-FileHash VSCodiumUserSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe -Algorithm SHA256 | Format-List > VSCodiumUserSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe.sha256
-    Get-FileHash VSCodium-win32-$(BUILDARCH)-$(LATEST_MS_TAG).zip -Algorithm SHA256 | Format-List > VSCodium-win32-$(BUILDARCH)-$(LATEST_MS_TAG).zip.sha256
+    Get-FileHash VSCodiumSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe -Algorithm SHA256 | Format-List > VSCodiumSetup-$(BUILDARCH)-$(LATEST_MS_TAG).sha256
+    Get-FileHash VSCodiumUserSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe -Algorithm SHA256 | Format-List > VSCodiumUserSetup-$(BUILDARCH)-$(LATEST_MS_TAG).sha256
+    Get-FileHash VSCodium-win32-$(BUILDARCH)-$(LATEST_MS_TAG).zip -Algorithm SHA256 | Format-List > VSCodium-win32-$(BUILDARCH)-$(LATEST_MS_TAG).sha256
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
   displayName: 'compute sums'
 - task: CopyFiles@2
   inputs:
