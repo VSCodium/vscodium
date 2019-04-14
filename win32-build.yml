@@ -39,21 +39,25 @@ steps:
 - bash: |
     if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\archive\\VSCode-win32-$(BUILDARCH).zip VSCodium-win32-$(BUILDARCH)-${LATEST_MS_TAG}.zip; fi
   displayName: 'move the zip folder'
+- powershell: |
+    Get-FileHash VSCodiumSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe -Algorithm SHA256 | Format-List > VSCodiumSetup-$(BUILDARCH)-$(LATEST_MS_TAG).sha256
+    Get-FileHash VSCodiumUserSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe -Algorithm SHA256 | Format-List > VSCodiumUserSetup-$(BUILDARCH)-$(LATEST_MS_TAG).sha256
+    Get-FileHash VSCodium-win32-$(BUILDARCH)-$(LATEST_MS_TAG).zip -Algorithm SHA256 | Format-List > VSCodium-win32-$(BUILDARCH)-$(LATEST_MS_TAG).sha256
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
+  displayName: 'compute sums'
+- task: CopyFiles@2
+  inputs:
+    contents: |
+      VSCodium*.zip
+      VSCodiumUserSetup*.exe
+      VSCodiumSetup*.exe
+      *.sha256
+    targetFolder: $(Build.ArtifactStagingDirectory)
+  condition: eq(variables['SHOULD_BUILD'], 'yes')
+  displayName: 'copy artifacts to staging directory'
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish artifacts: system-setup'
+  displayName: 'Publish artifacts'
   condition: eq(variables['SHOULD_BUILD'], 'yes')
   inputs:
-    PathtoPublish: 'VSCodiumSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe'
-    ArtifactName: 'system_setup'
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish artifacts: user-setup'
-  condition: eq(variables['SHOULD_BUILD'], 'yes')
-  inputs:
-    PathtoPublish: 'VSCodiumUserSetup-$(BUILDARCH)-$(LATEST_MS_TAG).exe'
-    ArtifactName: 'user_setup'
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish artifacts: archive'
-  condition: eq(variables['SHOULD_BUILD'], 'yes')
-  inputs:
-    PathtoPublish: 'VSCodium-win32-$(BUILDARCH)-$(LATEST_MS_TAG).zip'
-    ArtifactName: 'archive'
+    PathtoPublish: $(Build.ArtifactStagingDirectory)
+    ArtifactName: 'everything'
