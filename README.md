@@ -101,5 +101,8 @@ Please note that some Visual Studio Code extensions have licenses that restrict 
   
 The ARM architecture is not currently supported but is being worked on.
 
+## <a id="donate"></a>Donate
+If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N`.
+
 ## <a id="license"></a>License
 MIT
