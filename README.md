@@ -15,6 +15,8 @@
 
 </div>
 
+**This is not a fork. This is a repository of scripts to automatically build Microsoft's `vscode` repository with a community-driven default configuration.**
+
 ## Table of Contents
 - [Download/Install](#download-install)
   - [Install with Brew](#install-with-brew)
@@ -66,7 +68,7 @@ yay -Sy vscodium
 VSCodium is not available as a Flatpak app, but [@amtlib-dot-dll](https://github.com/amtlib-dot-dll) has done significant work to package up the open source build of Visual Studio Code without telemetry, very similarly to VSCodium. That package is available [here](https://flathub.org/apps/details/com.visualstudio.code.oss) and the build repo is [here](https://github.com/flathub/com.visualstudio.code.oss).
 
 ## <a id="why"></a>Why Does This Exist
-This repository contains a build file to generate FLOSS release binaries of Microsoft's VSCode.
+This repository contains build files to generate free release binaries of Microsoft's VSCode. When we speak of "free software", we're talking about freedom, not price.
 
 Microsoft's downloads of Visual Studio Code are licensed under [this not-FLOSS license](https://code.visualstudio.com/license) and contain telemetry/tracking. According to [this comment](https://github.com/Microsoft/vscode/issues/60#issuecomment-161792005) from a Visual Studio Code maintainer: 
 
@@ -96,8 +98,8 @@ Please note that some Visual Studio Code extensions have licenses that restrict 
 - [x] OSX x64 (zipped app file)
 - [x] Linux x64 (`.deb`, `.rpm`, and `.tar.gz` files)
 - [x] Linux x86 (`.deb`, `.rpm`, and `.tar.gz` files)
-- [x] Windows x86
 - [x] Windows x64
+- [x] Windows x86
   
 The ARM architecture is not currently supported but is being worked on.
 
