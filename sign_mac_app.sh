@@ -4,7 +4,7 @@
 # for the helpful instructions
 if [[ "$SHOULD_BUILD" == "yes" ]]; then
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    if [ -d "VSCode-darin" ]; then # just in case the build failed
+    if [ -d "VSCode-darwin" ]; then # just in case the build failed
       cd VSCode-darwin
       export CERTIFICATE_P12=VSCodium.p12
       echo $CERTIFICATE_OSX_P12 | base64 --decode > $CERTIFICATE_P12
