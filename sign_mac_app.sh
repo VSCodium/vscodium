@@ -12,7 +12,10 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     security default-keychain -s $KEYCHAIN
     security unlock-keychain -p mysecretpassword $KEYCHAIN
     security import $CERTIFICATE_P12 -k $KEYCHAIN -P $CERTIFICATE_OSX_PASSWORD -T /usr/bin/codesign
-
+    
+    # https://docs.travis-ci.com/user/common-build-problems/
+    security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword $KEYCHAIN
+    
     codesign --deep --force --verbose --sign "$CERTIFICATE_OSX_ID" VSCodium.app
   fi
 fi
