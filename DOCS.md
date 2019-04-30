@@ -5,6 +5,7 @@
 - [Getting all the Telemetry Out](#disable-telemetry)
 - [Extensions + Marketplace](#extensions-marketplace)
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
+- [How do I run VSCodium in portable mode?](#portable)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
 - [Gentoo overlay/ebuild](#gentoo-overlay)
@@ -62,6 +63,11 @@ To copy your settings manually:
 - In Visual Studio Code, go to Settings (Command+, if on a Mac)
 - Click the three dots `...` and choose 'Open settings.json'
 - Copy the contents of settings.json into the same place in VSCodium
+
+## <a id="portable"></a>How do I run VSCodium in portable mode?
+You can follow the [Portable Mode instructions](https://code.visualstudio.com/docs/editor/portable) from the Visual Studio Code website. For Windows and Linux the instructions can be followed as written. For Mac OS, portable mode is enabled by the existence of a specially named folder. For Visual Studio Code that folder name is `code-portable-data`. For VSCodium, that folder name is `vscodium-portable-data`. 
+
+So to enable portable mode for VSCodium on Mac OS, follow the instructions outlined in the link above, but create a folder named `vscodium-portable-data` instead of `code-portable-data`.
 
 ## <a id="press-and-hold"></a>How do I press and hold a key and have it repeat in VSCodium (Mac)?
 
