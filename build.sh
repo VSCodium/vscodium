@@ -9,7 +9,25 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 
   yarn
   mv product.json product.json.bak
-  cat product.json.bak | jq 'setpath(["extensionsGallery"]; {"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index", "itemUrl": "https://marketplace.visualstudio.com/items"}) | setpath(["nameShort"]; "VSCodium") | setpath(["nameLong"]; "VSCodium") | setpath(["applicationName"]; "vscodium") | setpath(["win32MutexName"]; "vscodium") | setpath(["win32DirName"]; "VSCodium") | setpath(["win32NameVersion"]; "VSCodium") | setpath(["win32RegValueName"]; "VSCodium") | setpath(["win32AppUserModelId"]; "Microsoft.VSCodium") | setpath(["win32ShellNameShort"]; "V&SCodium") | setpath (["win32x64UserAppId"]; "{{2E1F05D1-C245-4562-81EE-28188DB6FD17}") | setpath(["urlProtocol"]; "vscodium") | setpath(["extensionAllowedProposedApi"]; getpath(["extensionAllowedProposedApi"]) + ["ms-vsliveshare.vsliveshare"])' > product.json
+
+  # set fields in product.json
+  quality='setpath(["quality"]; "stable")'
+  extensionsGallery='setpath(["extensionsGallery"]; {"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index", "itemUrl": "https://marketplace.visualstudio.com/items"})'
+  nameShort='setpath(["nameShort"]; "VSCodium")'
+  nameLong='setpath(["nameLong"]; "VSCodium")'
+  applicationName='setpath(["applicationName"]; "vscodium")'
+  win32MutexName='setpath(["win32MutexName"]; "vscodium")'
+  win32DirName='setpath(["win32DirName"]; "VSCodium")'
+  win32NameVersion='setpath(["win32NameVersion"]; "VSCodium")'
+  win32RegValueName='setpath(["win32RegValueName"]; "VSCodium")'
+  win32AppUserModelId='setpath(["win32AppUserModelId"]; "Microsoft.VSCodium")'
+  win32ShellNameShort='setpath(["win32ShellNameShort"]; "V&SCodium")'
+  win32x64UserAppId='setpath (["win32x64UserAppId"]; "{{2E1F05D1-C245-4562-81EE-28188DB6FD17}")'
+  urlProtocol='setpath(["urlProtocol"]; "vscodium")'
+  extensionAllowedProposedApi='setpath(["extensionAllowedProposedApi"]; getpath(["extensionAllowedProposedApi"]) + ["ms-vsliveshare.vsliveshare"])'
+
+  product_json_changes="${quality} | ${extensionsGallery} | ${nameShort} | ${nameLong} | ${applicationName} | ${win32MutexName} | ${win32DirName} | ${win32NameVersion} | ${win32RegValueName} | ${win32AppUserModelId} | ${win32ShellNameShort} | ${win32x64UserAppId} | ${urlProtocol} | ${extensionAllowedProposedApi}"
+  cat product.json.bak | jq "${product_json_changes}" > product.json
   cat product.json
   ../undo_telemetry.sh
 
