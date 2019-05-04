@@ -25,6 +25,7 @@
   - [Install with Package Manager](#install-with-package-manager)
   - [Install on Arch Linux](#install-on-arch-linux)
   - [Flatpak Option](#flatpak)
+  - [AppImage Option](#appimage)
 - [Why Does This Exist](#why)
 - [More Info](#more-info)
 - [Supported OS](#supported-os)
@@ -63,6 +64,9 @@ VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Re
 
 #### <a id="flatpak"></a>Flatpak Option (Linux)
 VSCodium is not available as a Flatpak app, but [@amtlib-dot-dll](https://github.com/amtlib-dot-dll) has done significant work to package up the open source build of Visual Studio Code without telemetry, very similarly to VSCodium. That package is available [here](https://flathub.org/apps/details/com.visualstudio.code.oss) and the build repo is [here](https://github.com/flathub/com.visualstudio.code.oss).
+
+#### <a id="appimage"></a>AppImage Option (Linux)
+VSCodium is now offering AppImage package. AppImage is a convenient, single file program to run it on any Linux distribution without installing or dependencies. Download it, make it executable, and run it.
 
 ## <a id="why"></a>Why Does This Exist
 This repository contains build files to generate free release binaries of Microsoft's VSCode. When we speak of "free software", we're talking about freedom, not price.
