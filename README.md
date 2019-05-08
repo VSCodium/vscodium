@@ -93,7 +93,7 @@ Please note that some Visual Studio Code extensions have licenses that restrict 
 
 ## <a id="supported-os"></a>Supported OS
 - [x] OSX x64 (zipped app file)
-- [x] Linux x64 (`.deb`, `.rpm`, and `.tar.gz` files)
+- [x] Linux x64 (`.deb`, `.rpm`, `AppImage`, and `.tar.gz` files)
 - [x] Linux x86 (`.deb`, `.rpm`, and `.tar.gz` files)
 - [x] Windows x64
 - [x] Windows x86
