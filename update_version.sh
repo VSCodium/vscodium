@@ -42,7 +42,7 @@ else # linux
   # as examples
   ASSET_PATH=.
   ASSET_NAME=VSCodium-linux-${BUILDARCH}-${LATEST_MS_TAG}.tar.gz
-  VERSION_PATH="linux-${BUILDARCH}"
+  VERSION_PATH="linux/${BUILDARCH}"
 fi
 
 # generate parts
