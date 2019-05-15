@@ -55,8 +55,8 @@ timestamp=$(node -e 'console.log(Date.now())')
 sha256hash=$(cat ${ASSET_PATH}/${ASSET_NAME}.sha256 | awk '{ print $ 1 }')
 
 # check that nothing is blank (blank indicates something awry with build)
-for key in url name version productVersion sha1hash timestamp sha256hash do
-  if [[ "$key" == "" ]]; then
+for key in url name version productVersion sha1hash timestamp sha256hash; do
+  if [[ "${!key}" == "" ]]; then
     echo "Missing data for version update; exiting..."
     exit 1
   fi
