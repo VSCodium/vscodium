@@ -41,8 +41,8 @@ else # linux
   # and https://update.code.visualstudio.com/api/update/linux-ia32/stable/VERSION
   # as examples
   ASSET_PATH=.
-  ASSET_NAME=VSCodium-linux-${BUILD_ARCH}-${LATEST_MS_TAG}.tar.gz
-  VERSION_PATH="linux-${BUILD_ARCH}"
+  ASSET_NAME=VSCodium-linux-${BUILDARCH}-${LATEST_MS_TAG}.tar.gz
+  VERSION_PATH="linux-${BUILDARCH}"
 fi
 
 # generate parts
@@ -59,6 +59,7 @@ for key in url name version productVersion sha1hash timestamp sha256hash do
   if [[ "$key" == "" ]]; then
     echo "Missing data for version update; exiting..."
     exit 1
+  fi
 done
 
 # generate json
