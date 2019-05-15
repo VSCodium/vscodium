@@ -30,6 +30,7 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   # zip, sha1, and sha256 files are all at top level dir
   ASSET_PATH=.
   ASSET_NAME=VSCodium-darwin-${LATEST_MS_TAG}.zip
+  VERSION_PATH="darwin"
 fi
 
 # generate parts
@@ -54,3 +55,19 @@ JSON=$(jq \
   <<<'{}')
 
 echo $JSON
+
+# clone down the current versions repo
+# create/update the latest.json file in the correct location
+# commit and push (thank you https://www.vinaygopinath.me/blog/tech/commit-to-master-branch-on-github-using-travis-ci/)
+git clone https://github.com/VSCodium/versions.git
+cd versions
+git config user.email "travis@travis-ci.org"
+git config user.name "Travis CI"
+mkdir -p $VERSION_PATH
+echo $JSON > $VERSION_PATH/latest.json
+git add $VERSION_PATH
+dateAndMonth=`date "+%b %Y"`
+git commit -m "Travis update: $dateAndMonth (Build $TRAVIS_BUILD_NUMBER)"
+git remote rm origin
+git remote add origin https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/VSCodium/versions.git > /dev/null 2>&1
+git push origin master --quiet
