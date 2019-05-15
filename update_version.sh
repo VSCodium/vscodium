@@ -31,6 +31,18 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   ASSET_PATH=.
   ASSET_NAME=VSCodium-darwin-${LATEST_MS_TAG}.zip
   VERSION_PATH="darwin"
+elif [[ "$CI_WINDOWS" == "True" ]]; then
+  # TODO: make this logic work for Windows builds too
+  # or re-implement it in PowerShell and call that from the Windows build
+  exit
+else # linux
+  # update service links to tar.gz file
+  # see https://update.code.visualstudio.com/api/update/linux-x64/stable/VERSION
+  # and https://update.code.visualstudio.com/api/update/linux-ia32/stable/VERSION
+  # as examples
+  ASSET_PATH=.
+  ASSET_NAME=VSCodium-linux-${BUILD_ARCH}-${LATEST_MS_TAG}.tar.gz
+  VERSION_PATH="linux-${BUILD_ARCH}"
 fi
 
 # generate parts
@@ -38,9 +50,16 @@ url=${URL_BASE}/${ASSET_NAME}
 name=$LATEST_MS_TAG
 version=$LATEST_MS_COMMIT
 productVersion=$LATEST_MS_TAG
-hash=$(cat ${ASSET_PATH}/${ASSET_NAME}.sha1 | awk '{ print $ 1 }')
+sha1hash=$(cat ${ASSET_PATH}/${ASSET_NAME}.sha1 | awk '{ print $ 1 }')
 timestamp=$(node -e 'console.log(Date.now())')
 sha256hash=$(cat ${ASSET_PATH}/${ASSET_NAME}.sha256 | awk '{ print $ 1 }')
+
+# check that nothing is blank (blank indicates something awry with build)
+for key in url name version productVersion sha1hash timestamp sha256hash do
+  if [[ "$key" == "" ]]; then
+    echo "Missing data for version update; exiting..."
+    exit 1
+done
 
 # generate json
 JSON=$(jq \
@@ -48,7 +67,7 @@ JSON=$(jq \
   --arg name            "${name}" \
   --arg version         "${version}" \
   --arg productVersion  "${productVersion}" \
-  --arg hash            "${hash}" \
+  --arg hash            "${sha1hash}" \
   --arg timestamp       "${timestamp}" \
   --arg sha256hash      "${sha256hash}" \
   '. | .url=$url | .name=$name | .version=$version | .productVersion=$productVersion | .hash=$hash | .timestamp=$timestamp | .sha256hash=$sha256hash' \
@@ -66,7 +85,7 @@ git config user.name "Travis CI"
 mkdir -p $VERSION_PATH
 echo $JSON > $VERSION_PATH/latest.json
 git add $VERSION_PATH
-dateAndMonth=`date "+%b %Y"`
+dateAndMonth=`date "+%D %T"`
 git commit -m "Travis update: $dateAndMonth (Build $TRAVIS_BUILD_NUMBER)"
 git remote rm origin
 git remote add origin https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/VSCodium/versions.git > /dev/null 2>&1
