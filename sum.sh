@@ -3,6 +3,7 @@
 sum_file () {
   if [[ -f "$1" ]]; then
     shasum -a 256 $1 > $1.sha256
+    shasum $1 > $1.sha1
   fi
 }
 

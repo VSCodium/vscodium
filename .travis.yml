@@ -51,3 +51,6 @@ deploy:
   on:
     all_branches: true
     condition: $SHOULD_BUILD = yes
+
+after_deploy:
+  - ./update_version.sh
