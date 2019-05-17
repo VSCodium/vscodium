@@ -29,6 +29,7 @@ script:
 before_deploy:
   - ./sign_mac_app.sh
   - ./create_zip.sh
+  - ./create_dmg.sh
   - ./sum.sh
 
 deploy:
@@ -42,6 +43,7 @@ deploy:
     - ./*.sha256
     - ./*.zip
     - ./*.tar.gz
+    - ./*.dmg
     - vscode/.build/linux/deb/i386/deb/*.deb
     - vscode/.build/linux/rpm/i386/*.rpm
     - vscode/.build/linux/deb/amd64/deb/*.deb
