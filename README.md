@@ -92,8 +92,7 @@ For more information on getting all the telemetry disabled and tips for migratin
 Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
 
 ## <a id="supported-os"></a>Supported OS
-- [x] OSX x64 (zipped app file)
-- [x] OSX x64 (DMG installer)
+- [x] OSX x64 (zip, dmg)
 - [x] Linux x64 (`.deb`, `.rpm`, `AppImage`, and `.tar.gz` files)
 - [x] Linux x86 (`.deb`, `.rpm`, and `.tar.gz` files)
 - [x] Windows x64
