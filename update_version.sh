@@ -30,6 +30,8 @@ URL_BASE=https://github.com/VSCodium/vscodium/releases/download/${LATEST_MS_TAG}
 if [[ "$CI_WINDOWS" == "True" ]]; then
   # BUILD_REPOSITORY_URI = e.g. https://github.com/VSCodium/vscodium
   VERSIONS_REPO=$(echo ${BUILD_REPOSITORY_URI} | awk -F"/" '{ print $4 }')/versions
+
+  git config --global core.autocrlf true
 else
   # TRAVIS_REPO_SLUG = e.g. VSCodium/vscodium
   VERSIONS_REPO=$(echo ${TRAVIS_REPO_SLUG} | awk -F"/" '{ print $1 }')/versions

@@ -9,11 +9,11 @@ fi
 sum_file () {
   if [[ -f "$1" ]]; then
     if [[ "$CI_WINDOWS" == "True" ]]; then
-      checksum -a sha256 $1 > $1.sha256
-      checksum -a sha1 $1 > $1.sha1
+      checksum -a sha256 "$1" > "$1".sha256
+      checksum -a sha1 "$1" > "$1".sha1
     else
-      shasum -a 256 $1 > $1.sha256
-      shasum $1 > $1.sha1
+      shasum -a 256 "$1" > "$1".sha256
+      shasum "$1" > "$1".sha1
     fi
   fi
 }
