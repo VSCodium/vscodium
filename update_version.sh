@@ -116,7 +116,7 @@ elif [[ "$CI_WINDOWS" == "True" ]]; then
   else
     VERSION_PATH="win32/user"
   fi
-  JSON="$(generateJson ${ASSET_NAME} ${ASSET_PATH})"
+  JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 
   # windows archive
@@ -127,7 +127,7 @@ elif [[ "$CI_WINDOWS" == "True" ]]; then
   else
     VERSION_PATH="win32/archive"
   fi
-  JSON="$(generateJson ${ASSET_NAME} ${ASSET_PATH})"
+  JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 else # linux
   # update service links to tar.gz file
