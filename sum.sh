@@ -21,6 +21,7 @@ sum_file () {
 if [[ "$SHOULD_BUILD" == "yes" ]]; then
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     sum_file VSCodium-darwin-*.zip
+    sum_file VSCodium*.dmg
   elif [[ "$CI_WINDOWS" == "True" ]]; then
     sum_file VSCodiumSetup-*.exe
     sum_file VSCodiumUserSetup-*.exe
