@@ -110,23 +110,13 @@ elif [[ "$CI_WINDOWS" == "True" ]]; then
 
   # user installer
   ASSET_NAME=VSCodiumUserSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
-
-  if [[ "$BUILDARCH" == "x64" ]]; then
-    VERSION_PATH="win32/${BUILDARCH}/user"
-  else
-    VERSION_PATH="win32/user"
-  fi
+  VERSION_PATH="win32/${BUILDARCH}/user"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 
   # windows archive
   ASSET_NAME=VSCodium-win32-${BUILDARCH}-${LATEST_MS_TAG}.zip
-
-  if [[ "$BUILDARCH" == "x64" ]]; then
-    VERSION_PATH="win32/${BUILDARCH}/archive"
-  else
-    VERSION_PATH="win32/archive"
-  fi
+  VERSION_PATH="win32/${BUILDARCH}/archive"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 else # linux
