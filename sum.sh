@@ -30,6 +30,10 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     if [[ "$BUILDARCH" == "x64" ]]; then
       deb_arch=amd64
       rpm_arch=x86_64
+
+      # app image is x64 only
+      sum_file vscode/out/*.AppImage
+      cp vscode/out/*.{sha256,sha1} .
     elif [[ "$BUILDARCH" == "ia32" ]]; then
       deb_arch=i386
       rpm_arch=i386
