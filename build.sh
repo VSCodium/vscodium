@@ -21,6 +21,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   extensionsGallery='setpath(["extensionsGallery"]; {"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index", "itemUrl": "https://marketplace.visualstudio.com/items"})'
   nameShort='setpath(["nameShort"]; "VSCodium")'
   nameLong='setpath(["nameLong"]; "VSCodium")'
+  linuxIconName='setpath(["linuxIconName"]; "vscodium")'
   applicationName='setpath(["applicationName"]; "vscodium")'
   win32MutexName='setpath(["win32MutexName"]; "vscodium")'
   win32DirName='setpath(["win32DirName"]; "VSCodium")'
@@ -32,7 +33,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   urlProtocol='setpath(["urlProtocol"]; "vscodium")'
   extensionAllowedProposedApi='setpath(["extensionAllowedProposedApi"]; getpath(["extensionAllowedProposedApi"]) + ["ms-vsliveshare.vsliveshare"])'
 
-  product_json_changes="${extensionAllowedBadgeProviders} | ${updateUrl} | ${releaseNotesUrl} | ${keyboardShortcutsUrlMac} | ${keyboardShortcutsUrlLinux} | ${keyboardShortcutsUrlWin} | ${quality} | ${extensionsGallery} | ${nameShort} | ${nameLong} | ${applicationName} | ${win32MutexName} | ${win32DirName} | ${win32NameVersion} | ${win32RegValueName} | ${win32AppUserModelId} | ${win32ShellNameShort} | ${win32x64UserAppId} | ${urlProtocol} | ${extensionAllowedProposedApi}"
+  product_json_changes="${extensionAllowedBadgeProviders} | ${updateUrl} | ${releaseNotesUrl} | ${keyboardShortcutsUrlMac} | ${keyboardShortcutsUrlLinux} | ${keyboardShortcutsUrlWin} | ${quality} | ${extensionsGallery} | ${nameShort} | ${nameLong} | ${linuxIconName} | ${applicationName} | ${win32MutexName} | ${win32DirName} | ${win32NameVersion} | ${win32RegValueName} | ${win32AppUserModelId} | ${win32ShellNameShort} | ${win32x64UserAppId} | ${urlProtocol} | ${extensionAllowedProposedApi}"
   cat product.json.bak | jq "${product_json_changes}" > product.json
   cat product.json
   ../undo_telemetry.sh
