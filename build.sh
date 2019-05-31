@@ -21,7 +21,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   extensionsGallery='setpath(["extensionsGallery"]; {"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index", "itemUrl": "https://marketplace.visualstudio.com/items"})'
   nameShort='setpath(["nameShort"]; "VSCodium")'
   nameLong='setpath(["nameLong"]; "VSCodium")'
-  applicationName='setpath(["applicationName"]; "vscodium")'
+  applicationName='setpath(["applicationName"]; "codium")'
   win32MutexName='setpath(["win32MutexName"]; "vscodium")'
   win32DirName='setpath(["win32DirName"]; "VSCodium")'
   win32NameVersion='setpath(["win32NameVersion"]; "VSCodium")'
