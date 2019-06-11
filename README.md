@@ -40,7 +40,7 @@ If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
 brew cask install vscodium
 ```
 
-_Note: if you see "App can’t be opened because it is from an unidentified developer" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on a Mac._
+_Note for Mac OS X Mojave users: if you see "App can't be opened because Apple cannot check it for malicious software" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on Mojave._
 
 #### <a id="install-with-choco"></a>Install with Chocolatey (Windows)
 If you use Windows and have [Chocolatey](https://chocolatey.org) installed (thanks to [@Thilas](https://github.com/Thilas)):

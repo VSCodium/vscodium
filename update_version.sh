@@ -136,6 +136,9 @@ git pull origin master # in case another build just pushed
 git add .
 dateAndMonth=`date "+%D %T"`
 git commit -m "Travis update: $dateAndMonth (Build $TRAVIS_BUILD_NUMBER)"
-git push origin master --quiet
+if ! git push origin master --quiet; then
+  git pull origin master
+  git push origin master --quiet
+fi
 
 cd ..
