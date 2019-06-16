@@ -20,6 +20,7 @@ steps:
     $LATEST_MS_TAG="$(git -C vscode describe --tags)"
     Write-Host "##vso[task.setvariable variable=LATEST_MS_TAG]$LATEST_MS_TAG"
     Write-Host "##vso[task.setvariable variable=LATEST_MS_COMMIT]$LATEST_MS_COMMIT"
+    Write-Host "##vso[task.setvariable variable=BUILD_SOURCEVERSION]$LATEST_MS_COMMIT"
   displayName: 'set env LATEST_MS_TAG, LATEST_MS_COMMIT'
 - task: PowerShell@2
   inputs:
