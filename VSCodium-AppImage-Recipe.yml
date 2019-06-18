@@ -17,19 +17,19 @@ ingredients:
   script:
     - pwd
     - cp ../.build/linux/deb/amd64/deb/*.deb .
-    - ls vscodium_*.deb | cut -d _ -f 2 > VERSION
+    - ls codium_*.deb | cut -d _ -f 2 > VERSION
 
 script:
-  - sed -i -e 's|/usr/share/vscodium/||g' usr/share/applications/vscodium.desktop
-  - sed -i -e 's|com.visualstudio.code.oss|vscodium|g' usr/share/applications/vscodium.desktop
-  - cp usr/share/applications/vscodium.desktop .
-  - cp usr/share/pixmaps/com.visualstudio.code.oss.png vscodium.png
-  - convert vscodium.png -resize 512x512 usr/share/icons/hicolor/512x512/apps/vscodium.png
-  - convert vscodium.png -resize 256x256 usr/share/icons/hicolor/256x256/apps/vscodium.png
-  - convert vscodium.png -resize 128x128 usr/share/icons/hicolor/128x128/apps/vscodium.png
-  - convert vscodium.png -resize 64x64 usr/share/icons/hicolor/64x64/apps/vscodium.png
-  - convert vscodium.png -resize 48x48 usr/share/icons/hicolor/48x48/apps/vscodium.png
-  - convert vscodium.png -resize 32x32 usr/share/icons/hicolor/32x32/apps/vscodium.png
-  - convert vscodium.png -resize 24x24 usr/share/icons/hicolor/24x24/apps/vscodium.png
-  - convert vscodium.png -resize 22x22 usr/share/icons/hicolor/22x22/apps/vscodium.png
-  - ( cd usr/bin/ ; ln -s ../share/vscodium/codium  . )
+  - sed -i -e 's|/usr/share/codium/||g' usr/share/applications/codium.desktop
+  - sed -i -e 's|com.visualstudio.code.oss|codium|g' usr/share/applications/codium.desktop
+  - cp usr/share/applications/codium.desktop .
+  - cp usr/share/pixmaps/com.visualstudio.code.oss.png codium.png
+  - convert codium.png -resize 512x512 usr/share/icons/hicolor/512x512/apps/codium.png
+  - convert codium.png -resize 256x256 usr/share/icons/hicolor/256x256/apps/codium.png
+  - convert codium.png -resize 128x128 usr/share/icons/hicolor/128x128/apps/codium.png
+  - convert codium.png -resize 64x64 usr/share/icons/hicolor/64x64/apps/codium.png
+  - convert codium.png -resize 48x48 usr/share/icons/hicolor/48x48/apps/codium.png
+  - convert codium.png -resize 32x32 usr/share/icons/hicolor/32x32/apps/codium.png
+  - convert codium.png -resize 24x24 usr/share/icons/hicolor/24x24/apps/codium.png
+  - convert codium.png -resize 22x22 usr/share/icons/hicolor/22x22/apps/codium.png
+  - ( cd usr/bin/ ; ln -s ../share/codium/codium  . )
