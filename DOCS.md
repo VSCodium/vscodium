@@ -87,8 +87,8 @@ $ defaults write com.visualstudio.code.oss ApplePressAndHoldEnabled -bool false
 This allows you to open files or directories in VSCodium directly from your terminal:
 
 ```bash
-~/in-my-project $ vscodium . # open this directory
-~/in-my-project $ vscodium file.txt # open this file
+~/in-my-project $ codium . # open this directory
+~/in-my-project $ codium file.txt # open this file
 ```
 
 Feel free to alias this command to something easier to type in your shell profile (e.g. `alias code=vscodium`).
