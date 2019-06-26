@@ -80,9 +80,9 @@ $ defaults write com.visualstudio.code.oss ApplePressAndHoldEnabled -bool false
 ## <a id="terminal-support"></a>How do I open VSCodium from the terminal?
 
 - Go to the command palette (View | Command Palette...)
-- Choose `Shell command: Install 'vscodium' command in PATH`.
+- Choose `Shell command: Install 'codium' command in PATH`.
 
-![](https://user-images.githubusercontent.com/2707340/45751224-bd21a500-bbdf-11e8-8fb7-b645b97aae49.png)
+![](https://user-images.githubusercontent.com/2707340/60140295-18338a00-9766-11e9-8fda-b525b6f15c13.png)
 
 This allows you to open files or directories in VSCodium directly from your terminal:
 
@@ -91,7 +91,7 @@ This allows you to open files or directories in VSCodium directly from your term
 ~/in-my-project $ codium file.txt # open this file
 ```
 
-Feel free to alias this command to something easier to type in your shell profile (e.g. `alias code=vscodium`).
+Feel free to alias this command to something easier to type in your shell profile (e.g. `alias code=codium`).
 
 ## <a id="gentoo-overlay"></a>Gentoo ebuild/overlay
 
