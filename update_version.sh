@@ -122,7 +122,6 @@ elif [[ "$CI_WINDOWS" == "True" ]]; then
 else # linux
   # update service links to tar.gz file
   # see https://update.code.visualstudio.com/api/update/linux-x64/stable/VERSION
-  # and https://update.code.visualstudio.com/api/update/linux-ia32/stable/VERSION
   # as examples
   ASSET_NAME=VSCodium-linux-${BUILDARCH}-${LATEST_MS_TAG}.tar.gz
   VERSION_PATH="linux/${BUILDARCH}"
