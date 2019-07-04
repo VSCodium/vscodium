@@ -27,21 +27,13 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     sum_file VSCodiumUserSetup-*.exe
     sum_file VSCodium-win32-*.zip
   else # linux
-    if [[ "$BUILDARCH" == "x64" ]]; then
-      deb_arch=amd64
-      rpm_arch=x86_64
-
-      # app image is x64 only
-      sum_file vscode/out/*.AppImage
-      cp vscode/out/*.{sha256,sha1} .
-    elif [[ "$BUILDARCH" == "ia32" ]]; then
-      deb_arch=i386
-      rpm_arch=i386
-    fi
+    sum_file vscode/out/*.AppImage
     sum_file VSCodium-linux*.tar.gz
-    sum_file vscode/.build/linux/deb/${deb_arch}/deb/*.deb
-    sum_file vscode/.build/linux/rpm/${rpm_arch}/*.rpm
-    cp vscode/.build/linux/deb/${deb_arch}/deb/*.{sha256,sha1} .
-    cp vscode/.build/linux/rpm/${rpm_arch}/*.{sha256,sha1} .
+    sum_file vscode/.build/linux/deb/amd64/deb/*.deb
+    sum_file vscode/.build/linux/rpm/x86_64/*.rpm
+
+    cp vscode/out/*.{sha256,sha1} .
+    cp vscode/.build/linux/deb/amd64/deb/*.{sha256,sha1} .
+    cp vscode/.build/linux/rpm/x86_64/*.{sha256,sha1} .
   fi
 fi
