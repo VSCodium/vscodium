@@ -92,8 +92,8 @@ updateLatestVersion() {
 # thank you https://www.vinaygopinath.me/blog/tech/commit-to-master-branch-on-github-using-travis-ci/
 git clone https://github.com/${VERSIONS_REPO}.git
 cd versions
-git config user.email "travis@travis-ci.org"
-git config user.name "Travis CI"
+git config user.email "vscodium-ci@not-real.com"
+git config user.name "VSCodium CI"
 git remote rm origin
 git remote add origin https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${VERSIONS_REPO}.git > /dev/null 2>&1
 cd ..
@@ -105,8 +105,11 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 elif [[ "$CI_WINDOWS" == "True" ]]; then
-  # windows update service supports user and archive types
-  # so we will run the commands twice
+  # system installer
+  ASSET_NAME=VSCodiumSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
+  VERSION_PATH="win32/${BUILDARCH}/system"
+  JSON="$(generateJson ${ASSET_NAME})"
+  updateLatestVersion "$VERSION_PATH" "$JSON"
 
   # user installer
   ASSET_NAME=VSCodiumUserSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
