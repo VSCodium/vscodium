@@ -55,7 +55,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     npm install --global create-dmg
-    npm run gulp -- "vscode-darwin-min"
+    travis_wait npm run gulp -- "vscode-darwin-min"
   elif [[ "$CI_WINDOWS" == "True" ]]; then
     cp LICENSE.txt LICENSE.rtf # windows build expects rtf license
     npm run gulp -- "vscode-win32-${BUILDARCH}-min"
