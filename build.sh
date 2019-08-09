@@ -1,4 +1,19 @@
 #!/bin/bash
+
+function keep_alive() {
+  while true; do
+    date
+    sleep 60
+  done
+}
+
+function build() {
+  keep_alive &
+  KA_PID=$!
+  npm run gulp -- $1
+  kill $KA_PID
+}
+
 if [[ "$SHOULD_BUILD" == "yes" ]]; then
   cp -rp src/* vscode/
   cd vscode
@@ -55,18 +70,18 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     npm install --global create-dmg
-    travis_wait npm run gulp -- "vscode-darwin-min"
+    build "vscode-darwin-min"
   elif [[ "$CI_WINDOWS" == "True" ]]; then
     cp LICENSE.txt LICENSE.rtf # windows build expects rtf license
-    npm run gulp -- "vscode-win32-${BUILDARCH}-min"
-    npm run gulp -- "vscode-win32-${BUILDARCH}-inno-updater"
-    npm run gulp -- "vscode-win32-${BUILDARCH}-system-setup"
-    npm run gulp -- "vscode-win32-${BUILDARCH}-user-setup"
-    npm run gulp -- "vscode-win32-${BUILDARCH}-archive"
+    build "vscode-win32-${BUILDARCH}-min"
+    build "vscode-win32-${BUILDARCH}-inno-updater"
+    build "vscode-win32-${BUILDARCH}-system-setup"
+    build "vscode-win32-${BUILDARCH}-user-setup"
+    build "vscode-win32-${BUILDARCH}-archive"
   else # linux
-    npm run gulp -- "vscode-linux-${BUILDARCH}-min"
-    npm run gulp -- "vscode-linux-${BUILDARCH}-build-deb"
-    npm run gulp -- "vscode-linux-${BUILDARCH}-build-rpm"
+    build "vscode-linux-${BUILDARCH}-min"
+    build "vscode-linux-${BUILDARCH}-build-deb"
+    build "vscode-linux-${BUILDARCH}-build-rpm"
     . ../create_appimage.sh
   fi
 
