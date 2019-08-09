@@ -1,5 +1,12 @@
 #!/bin/bash
 
+function keep_alive() {
+  while true; do
+    date
+    sleep 60
+  done
+}
+
 if [[ "$SHOULD_BUILD" == "yes" ]]; then
   cp -rp src/* vscode/
   cd vscode
@@ -57,7 +64,13 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 
   yarn gulp compile-build
   yarn gulp compile-extensions-build
+
+  # this task is very slow on mac, so using a keep alive to keep travis alive
+  keep_alive &
+  KA_PID=$!
   yarn gulp minify-vscode
+  kill $KA_PID
+
   yarn gulp minify-vscode-reh
   yarn gulp minify-vscode-reh-web
 
@@ -81,7 +94,6 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     yarn gulp vscode-reh-linux-x64-min-ci
     yarn gulp vscode-reh-web-linux-x64-min-ci
 
-    yarn gulp "vscode-linux-${BUILDARCH}-min"
     yarn gulp "vscode-linux-${BUILDARCH}-build-deb"
     yarn gulp "vscode-linux-${BUILDARCH}-build-rpm"
     . ../create_appimage.sh
