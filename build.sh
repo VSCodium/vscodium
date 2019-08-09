@@ -1,19 +1,5 @@
 #!/bin/bash
 
-function keep_alive() {
-  while true; do
-    date
-    sleep 60
-  done
-}
-
-function build() {
-  keep_alive &
-  KA_PID=$!
-  npm run gulp -- $1
-  kill $KA_PID
-}
-
 if [[ "$SHOULD_BUILD" == "yes" ]]; then
   cp -rp src/* vscode/
   cd vscode
@@ -23,6 +9,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   ../update_settings.sh
 
   yarn
+  yarn postinstall
   mv product.json product.json.bak
 
   # set fields in product.json
@@ -68,20 +55,35 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template
   fi
 
+  yarn gulp compile-build
+  yarn gulp compile-extensions-build
+  yarn gulp minify-vscode
+  yarn gulp minify-vscode-reh
+  yarn gulp minify-vscode-reh-web
+
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     npm install --global create-dmg
-    build "vscode-darwin-min"
+    yarn gulp vscode-darwin-min-ci
+    yarn gulp vscode-reh-darwin-min-ci
+    yarn gulp vscode-reh-web-darwin-min-ci
   elif [[ "$CI_WINDOWS" == "True" ]]; then
     cp LICENSE.txt LICENSE.rtf # windows build expects rtf license
-    build "vscode-win32-${BUILDARCH}-min"
-    build "vscode-win32-${BUILDARCH}-inno-updater"
-    build "vscode-win32-${BUILDARCH}-system-setup"
-    build "vscode-win32-${BUILDARCH}-user-setup"
-    build "vscode-win32-${BUILDARCH}-archive"
+    yarn gulp "vscode-win32-${BUILDARCH}-min-ci"
+    yarn gulp "vscode-reh-win32-${BUILDARCH}-min-ci"
+    yarn gulp "vscode-reh-web-win32-${BUILDARCH}-min-ci"
+    yarn gulp "vscode-win32-${BUILDARCH}-code-helper"
+    yarn gulp "vscode-win32-${BUILDARCH}-inno-updater"
+    yarn gulp "vscode-win32-${BUILDARCH}-archive"
+    yarn gulp "vscode-win32-${BUILDARCH}-system-setup"
+    yarn gulp "vscode-win32-${BUILDARCH}-user-setup"
   else # linux
-    build "vscode-linux-${BUILDARCH}-min"
-    build "vscode-linux-${BUILDARCH}-build-deb"
-    build "vscode-linux-${BUILDARCH}-build-rpm"
+    yarn gulp vscode-linux-x64-min-ci
+    yarn gulp vscode-reh-linux-x64-min-ci
+    yarn gulp vscode-reh-web-linux-x64-min-ci
+
+    yarn gulp "vscode-linux-${BUILDARCH}-min"
+    yarn gulp "vscode-linux-${BUILDARCH}-build-deb"
+    yarn gulp "vscode-linux-${BUILDARCH}-build-rpm"
     . ../create_appimage.sh
   fi
 
