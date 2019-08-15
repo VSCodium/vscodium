@@ -42,6 +42,19 @@ The debugger provided with Microsoft's [C# extension](https://github.com/OmniSha
 
 A workaround exists to get debugging working in C# projects, by using Samsung's opensource [netcoredbg](https://github.com/Samsung/netcoredbg) package. See [this comment](https://github.com/VSCodium/vscodium/issues/82#issue-409806641) for instructions on how to set that up.
 
+### Proprietary Extensions
+
+Like the debuggers mentioned above, some extensions you may find in the marketplace (like the [Remote Development Extensions](https://code.visualstudio.com/docs/remote/remote-overview)) only function the offical Visual Studio Code build. You can work around this by adding the extension's internal ID (found on the extension's page) to the `extensionAllowedProposedApi` property of the product.json in your VSCodium installation. For example:
+
+```json
+  "extensionAllowedProposedApi": [
+    // ...
+    "ms-vscode-remote.vscode-remote-extensionpack",
+    "ms-vscode-remote.remote-wsl",
+    // ...
+  ],
+```
+
 ## <a id="migrating"></a>Migrating from Visual Studio Code to VSCodium
 
 VSCodium (and a freshly cloned copy of vscode built from source) stores its extension files in `~/.vscode-oss`. So if you currently have Visual Studio Code installed, your extensions won't automatically populate. You can reinstall your extensions from the Marketplace in VSCodium, or copy the `extensions` from `~/.vscode/extensions` to `~/.vscode-oss/extensions`.
