@@ -8,6 +8,10 @@ function keep_alive() {
 }
 
 if [[ "$SHOULD_BUILD" == "yes" ]]; then
+  export BUILD_SOURCEVERSION=$LATEST_MS_COMMIT
+  echo "LATEST_MS_COMMIT: ${LATEST_MS_COMMIT}"
+  echo "BUILD_SOURCEVERSION: ${BUILD_SOURCEVERSION}"
+
   cp -rp src/* vscode/
   cd vscode
 
