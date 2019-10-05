@@ -46,7 +46,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   win32NameVersion='setpath(["win32NameVersion"]; "VSCodium")'
   win32RegValueName='setpath(["win32RegValueName"]; "VSCodium")'
   win32AppUserModelId='setpath(["win32AppUserModelId"]; "Microsoft.VSCodium")'
-  win32ShellNameShort='setpath(["win32ShellNameShort"]; "V&SCodium")'
+  win32ShellNameShort='setpath(["win32ShellNameShort"]; "VSCodium")'
   win32x64UserAppId='setpath (["win32x64UserAppId"]; "{{2E1F05D1-C245-4562-81EE-28188DB6FD17}")'
   urlProtocol='setpath(["urlProtocol"]; "vscodium")'
   extensionAllowedProposedApi='setpath(["extensionAllowedProposedApi"]; getpath(["extensionAllowedProposedApi"]) + ["ms-vsliveshare.vsliveshare"])'
