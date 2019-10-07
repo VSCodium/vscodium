@@ -73,7 +73,7 @@ Microsoft's downloads of Visual Studio Code are licensed under [this not-FLOSS l
 > 
 > When you clone and build from the vscode repo, none of these endpoints are configured in the default product.json. Therefore, you generate a "clean" build, without the Microsoft customizations, which is by default licensed under the MIT license
 
-This repo exists so that you don't have to download+build from source. The build scripts in this repo clone Microsoft's vscode repo, run the build commands, and upload the resulting binaries to [GitHub releases](https://github.com/VSCodium/vscodium/releases). __These binaries are licensed under the MIT license. Telemetry is disabled.__
+This repo exists so that you don't have to download+build from the source. The build scripts in this repo clone Microsoft's vscode repo, run the build commands, and upload the resulting binaries to [GitHub releases](https://github.com/VSCodium/vscodium/releases). __These binaries are licensed under the MIT license. Telemetry is disabled.__
 
 If you want to build from source yourself, head over to [Microsoft's vscode repo](https://github.com/Microsoft/vscode) and follow their [instructions](https://github.com/Microsoft/vscode/wiki/How-to-Contribute#build-and-run). This repo exists to make it easier to get the latest version of MIT-licensed VSCode.
 
@@ -97,7 +97,7 @@ Please note that some Visual Studio Code extensions have licenses that restrict 
 ### How are the VSCodium binaries built?
 If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the [`.travis.yml` file](https://github.com/VSCodium/vscodium/blob/master/.travis.yml) (for Linux and OS X builds) and the [`win32-build.yml` file](https://github.com/VSCodium/vscodium/blob/master/win32-build.yml) (for Windows builds). These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
 
-The builds are run every day, but exit early if there isn't a new release from Microsoft. To examine the build logs, go [here for Linux / OS X](https://travis-ci.com/VSCodium/vscodium) and [here for Windows](https://dev.azure.com/vscodium/VSCodium/_build?definitionId=1)
+The builds are run every day but exit early if there isn't a new release from Microsoft. To examine the build logs, go [here for Linux / OS X](https://travis-ci.com/VSCodium/vscodium) and [here for Windows](https://dev.azure.com/vscodium/VSCodium/_build?definitionId=1)
 
 ## <a id="supported-os"></a>Supported OS
 - [x] OS X (`zip`, `dmg`)
@@ -113,3 +113,4 @@ If you would like to support the development of VSCodium, feel free to send BTC 
 
 ## <a id="license"></a>License
 MIT
+
