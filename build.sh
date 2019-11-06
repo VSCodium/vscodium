@@ -13,7 +13,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   echo "BUILD_SOURCEVERSION: ${BUILD_SOURCEVERSION}"
 
   cp -rp src/* vscode/
-  cd vscode
+  cd vscode || exit
 
   export npm_config_arch="$BUILDARCH"
   export npm_config_target_arch="$BUILDARCH"
