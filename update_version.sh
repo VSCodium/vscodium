@@ -100,25 +100,25 @@ cd ..
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   # zip, sha1, and sha256 files are all at top level dir
-  ASSET_NAME=VSCodium-darwin-${LATEST_MS_TAG}.zip
+  ASSET_NAME=Codium-darwin-${LATEST_MS_TAG}.zip
   VERSION_PATH="darwin"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 elif [[ "$CI_WINDOWS" == "True" ]]; then
   # system installer
-  ASSET_NAME=VSCodiumSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
+  ASSET_NAME=CodiumSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
   VERSION_PATH="win32/${BUILDARCH}/system"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 
   # user installer
-  ASSET_NAME=VSCodiumUserSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
+  ASSET_NAME=CodiumUserSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
   VERSION_PATH="win32/${BUILDARCH}/user"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 
   # windows archive
-  ASSET_NAME=VSCodium-win32-${BUILDARCH}-${LATEST_MS_TAG}.zip
+  ASSET_NAME=Codium-win32-${BUILDARCH}-${LATEST_MS_TAG}.zip
   VERSION_PATH="win32/${BUILDARCH}/archive"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
@@ -126,7 +126,7 @@ else # linux
   # update service links to tar.gz file
   # see https://update.code.visualstudio.com/api/update/linux-x64/stable/VERSION
   # as examples
-  ASSET_NAME=VSCodium-linux-${BUILDARCH}-${LATEST_MS_TAG}.tar.gz
+  ASSET_NAME=Codium-linux-${BUILDARCH}-${LATEST_MS_TAG}.tar.gz
   VERSION_PATH="linux/${BUILDARCH}"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"

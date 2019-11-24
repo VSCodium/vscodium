@@ -17,7 +17,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
       # https://docs.travis-ci.com/user/common-build-problems/
       security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword $KEYCHAIN
       
-      codesign --deep --force --verbose --sign "$CERTIFICATE_OSX_ID" VSCodium.app
+      codesign --deep --force --verbose --sign "$CERTIFICATE_OSX_ID" Codium.app
     fi
   fi
 fi
