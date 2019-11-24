@@ -102,7 +102,7 @@ The builds are run every day, but exit early if there isn't a new release from M
 ## <a id="supported-os"></a>Supported OS
 - [x] OS X (`zip`, `dmg`)
 - [x] Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
-- [x] Linux x86 (`deb`, `rpm`, `tar.gz`)
+- [x] Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
 - [x] Windows x64
 - [x] Windows x86
   
