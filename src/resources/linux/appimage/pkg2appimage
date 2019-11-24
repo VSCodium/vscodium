@@ -139,20 +139,13 @@ if [ -d "./$APP.AppDir/" ] ; then
   rm -rf ./$APP.AppDir/
 fi
 
-# Source the bundled functions.sh if it exists
-# in "${HERE}/functions.sh"
-# or source a user-provided functions.sh if the environment
-# variable FUNCTIONS_SH was set and the file exists
-if [ -e "${HERE}/functions.sh" ] ; then
-  . ./functions.sh
-elif [ -z "$FUNCTIONS_SH" ] ; then
-  if [ ! -e functions.sh ] ; then
-    echo "THERE IS NO functions.sh FILE IN THE REPO. PLEASE OPEN AN ISSUE TO REQUEST IT BACK"
-  fi
+# Check if functions.sh exist in the same directory
+# If exists, execute functions.sh
+
+if [ ! -e "functions.sh" ] ; then
+  echo "functions.sh IS NOT FOUND, PLEASE CONTACT CODIUM APPIMAGE MAINTAINER!!!"
 else
-  if [ -e "$FUNCTIONS_SH" ] ; then
-    . "$FUNCTIONS_SH"
-  fi
+  bash -e functions.sh
 fi
 
 # If there is an ARCH environment variable, then use that
