@@ -139,14 +139,21 @@ if [ -d "./$APP.AppDir/" ] ; then
   rm -rf ./$APP.AppDir/
 fi
 
-# Check if functions.sh exist in the same directory
-# If exists, execute functions.sh
-pwd
-echo "{$HERE}"
-if [ ! -e "${HERE}/functions.sh" ] ; then
-  echo "functions.sh IS NOT FOUND, PLEASE CONTACT CODIUM APPIMAGE MAINTAINER!!!"
+# Source the bundled functions.sh if it exists
+# in "${HERE}/usr/share/pkg2appimage/functions.sh"
+# or source a user-provided functions.sh if the environment
+# variable FUNCTIONS_SH was set and the file exists
+if [ -e "${HERE}/usr/share/pkg2appimage/functions.sh" ] ; then
+  . "${HERE}/usr/share/pkg2appimage/functions.sh"
+elif [ -z "$FUNCTIONS_SH" ] ; then
+  if [ ! -e "${HERE}/functions.sh" ] ; then
+    echo "functions.sh IS NOT FOUND, PLEASE CONTACT CODIUM APPIMAGE MAINTAINER!!!"
+  fi
+  . bash -e ${HERE}/functions.sh
 else
-  bash -e ${HERE}/functions.sh
+  if [ -e "$FUNCTIONS_SH" ] ; then
+    . "$FUNCTIONS_SH"
+  fi
 fi
 
 # If there is an ARCH environment variable, then use that
