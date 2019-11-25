@@ -85,7 +85,7 @@ patch_usr()
 # Download AppRun and make it executable
 get_apprun()
 {
-  cp ../AppRun .
+  cp ${HERE}/AppRun .
   chmod a+x AppRun
 }
 
