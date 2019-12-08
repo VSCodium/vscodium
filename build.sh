@@ -19,6 +19,9 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   export npm_config_target_arch="$BUILDARCH"
   ../update_settings.sh
 
+  # apply patches
+  patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
+
   yarn
   yarn postinstall
   mv product.json product.json.bak
