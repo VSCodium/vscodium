@@ -103,11 +103,10 @@ The builds are run every day, but exit early if there isn't a new release from M
 - [x] OS X (`zip`, `dmg`)
 - [x] Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
 - [x] Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
+- [x] Linux arm64 (`deb`, `tar.gz`)
 - [x] Windows x64
 - [x] Windows x86
   
-The ARM architecture is not currently supported but is being worked on.
-
 ## <a id="donate"></a>Donate
 If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N`.
 
