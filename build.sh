@@ -2,8 +2,8 @@
 
 function keep_alive() {
   while true; do
-    date
-    sleep 60
+    echo .
+    read -t 60 < /proc/self/fd/1 > /dev/null 2>&1
   done
 }
 
@@ -66,14 +66,14 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template
   fi
 
-  yarn gulp compile-build
-  yarn gulp compile-extensions-build
-
   # this task is very slow on mac, so using a keep alive to keep travis alive
   keep_alive &
   KA_PID=$!
+
+  yarn gulp compile-build
+  yarn gulp compile-extensions-build
+
   yarn gulp minify-vscode
-  kill $KA_PID
 
   yarn gulp minify-vscode-reh
   yarn gulp minify-vscode-reh-web
@@ -94,14 +94,18 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     yarn gulp "vscode-win32-${BUILDARCH}-system-setup"
     yarn gulp "vscode-win32-${BUILDARCH}-user-setup"
   else # linux
-    yarn gulp vscode-linux-x64-min-ci
-    yarn gulp vscode-reh-linux-x64-min-ci
-    yarn gulp vscode-reh-web-linux-x64-min-ci
+    yarn gulp vscode-linux-${BUILDARCH}-min-ci
+    yarn gulp vscode-reh-linux-${BUILDARCH}-min-ci
+    yarn gulp vscode-reh-web-linux-${BUILDARCH}-min-ci
 
     yarn gulp "vscode-linux-${BUILDARCH}-build-deb"
-    yarn gulp "vscode-linux-${BUILDARCH}-build-rpm"
+    if [[ "$BUILDARCH" != "arm64" ]]; then
+      yarn gulp "vscode-linux-${BUILDARCH}-build-rpm"
+    fi
     . ../create_appimage.sh
   fi
+
+  kill $KA_PID
 
   cd ..
 fi
