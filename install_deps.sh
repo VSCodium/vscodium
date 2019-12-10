@@ -6,22 +6,35 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
 else
   sudo apt-get update
   sudo apt-get install -y fakeroot jq
-  if [[ $BUILDARCH == "arm64" ]]; then
+  triplet=
+  case $BUILDARCH in
+  arm)
+    arch=armhf
+    triplet=arm-linux-gnueabihf
+    ;;
+
+  arm64)
+    arch=arm64
+    triplet=aarch64-linux-gnu
+    ;;
+  esac
+
+  if [[ -n "$triplet" ]]; then
     sed 's/^deb /deb [arch=amd64] '/g -i /etc/apt/sources.list
-    echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ trusty main" | sudo tee -a /etc/apt/sources.list.d/arm64.list >/dev/null
-    sudo dpkg --add-architecture arm64
+    echo "deb [arch=$arch] http://ports.ubuntu.com/ubuntu-ports/ trusty main" | sudo tee -a /etc/apt/sources.list.d/$arch.list >/dev/null
+    sudo dpkg --add-architecture $arch
     sudo apt-get update
-    sudo apt-get install libc6-dev-arm64-cross gcc-aarch64-linux-gnu g++-aarch64-linux-gnu `apt-cache search x11proto | grep ^x11proto | cut -f 1 -d ' '` xz-utils pkg-config
+    sudo apt-get install libc6-dev-$arch-cross gcc-$triplet g++-$triplet `apt-cache search x11proto | grep ^x11proto | cut -f 1 -d ' '` xz-utils pkg-config
     mkdir -p dl
     cd dl
-    apt-get download libx11-dev:arm64 libx11-6:arm64 libxkbfile-dev:arm64 libxkbfile1:arm64 libxau-dev:arm64 libxdmcp-dev:arm64 libxcb1-dev:arm64 libsecret-1-dev:arm64 libsecret-1-0:arm64 libpthread-stubs0-dev:arm64 libglib2.0-dev:arm64 libglib2.0-0:arm64 libffi-dev:arm64 libffi6:arm64 zlib1g:arm64 libpcre3-dev:arm64 libpcre3:arm64
+    apt-get download libx11-dev:$arch libx11-6:$arch libxkbfile-dev:$arch libxkbfile1:$arch libxau-dev:$arch libxdmcp-dev:$arch libxcb1-dev:$arch libsecret-1-dev:$arch libsecret-1-0:$arch libpthread-stubs0-dev:$arch libglib2.0-dev:$arch libglib2.0-0:$arch libffi-dev:$arch libffi6:$arch zlib1g:$arch libpcre3-dev:$arch libpcre3:$arch
     for i in *.deb; do ar x $i; sudo tar -C / -xf data.tar.*; rm -f data.tar.*; done
     cd ..
-    export CC=/usr/bin/aarch64-linux-gnu-gcc
-    export CXX=/usr/bin/aarch64-linux-gnu-g++
+    export CC=/usr/bin/$triplet-gcc
+    export CXX=/usr/bin/$triplet-g++
     export CC_host=/usr/bin/gcc
     export CXX_host=/usr/bin/g++
-    export PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
+    export PKG_CONFIG_LIBDIR=/usr/lib/$triplet/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
   else
     sudo apt-get install libx11-dev libxkbfile-dev libsecret-1-dev rpm
   fi
