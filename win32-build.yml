@@ -34,13 +34,13 @@ steps:
     bash ./build.sh
   displayName: 'go build it!'
 - bash: |
-    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\system-setup\\VSCodeSetup.exe VSCodiumSetup-$(BUILDARCH)-${LATEST_MS_TAG}.exe; fi
+    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\system-setup\\VSCodeSetup.exe CodiumSetup-$(BUILDARCH)-${LATEST_MS_TAG}.exe; fi
   displayName: 'move the system setup'
 - bash: |
-    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\user-setup\\VSCodeSetup.exe VSCodiumUserSetup-$(BUILDARCH)-${LATEST_MS_TAG}.exe; fi
+    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\user-setup\\VSCodeSetup.exe CodiumUserSetup-$(BUILDARCH)-${LATEST_MS_TAG}.exe; fi
   displayName: 'move the user setup'
 - bash: |
-    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\archive\\VSCode-win32-$(BUILDARCH).zip VSCodium-win32-$(BUILDARCH)-${LATEST_MS_TAG}.zip; fi
+    if [[ "$SHOULD_BUILD" == "yes" ]]; then mv vscode\\.build\\win32-$(BUILDARCH)\\archive\\VSCode-win32-$(BUILDARCH).zip Codium-win32-$(BUILDARCH)-${LATEST_MS_TAG}.zip; fi
   displayName: 'move the zip folder'
 - powershell: |
     bash ./sum.sh
@@ -49,9 +49,9 @@ steps:
 - task: CopyFiles@2
   inputs:
     contents: |
-      VSCodium*.zip
-      VSCodiumUserSetup*.exe
-      VSCodiumSetup*.exe
+      Codium*.zip
+      CodiumUserSetup*.exe
+      CodiumSetup*.exe
       *.sha256
     targetFolder: $(Build.ArtifactStagingDirectory)
   condition: eq(variables['SHOULD_BUILD'], 'yes')
