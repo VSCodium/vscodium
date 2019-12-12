@@ -12,6 +12,7 @@
 [![build status](https://travis-ci.com/VSCodium/vscodium.svg?branch=master)](https://travis-ci.com/VSCodium/vscodium) 
 [![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
 [![Gitter](https://img.shields.io/gitter/room/vscodium/vscodium.svg)](https://gitter.im/VSCodium/Lobby)
+[![apt repository](https://img.shields.io/badge/apt-repository-brightgreen?logo=debian)](https://packagecloud.io/dimkr/vscodium)
 
 </div>
 
@@ -56,7 +57,7 @@ scoop install vscodium
 ```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (Linux)
-You can always install using the downloads (deb, rpm, tar) on the [releases page](https://github.com/VSCodium/vscodium/releases), but you can also install using your favorite package manager and get automatic updates. [@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo). Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker. 
+You can always install using the downloads (deb, rpm, tar) on the [releases page](https://github.com/VSCodium/vscodium/releases), but you can also install from [the APT repository](https://packagecloud.io/dimkr/vscodium) using your favorite package manager and get automatic updates. [@paulcarroty](https://github.com/paulcarroty) has set up a repository too, with instructions [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo). Any issues installing VSCodium from this repository should be directed to the repository's issue tracker.
 
 #### <a id="install-on-arch-linux"></a>Install on Arch Linux
 VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository) as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/), maintained by [@plague-doctor](https://github.com/plague-doctor).
