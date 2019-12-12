@@ -24,25 +24,36 @@ before_deploy:
   - ./create_zip.sh
   - ./create_dmg.sh
   - ./sum.sh
+  - ./clean_repo.sh
 
 deploy:
-  provider: releases
-  skip_cleanup: true
-  overwrite: true
-  name: $LATEST_MS_TAG
-  api_key: $GITHUB_TOKEN
-  file_glob: true
-  file:
-    - ./*.sha256
-    - ./*.zip
-    - ./*.tar.gz
-    - ./*.dmg
-    - ./*.deb
-    - ./*.rpm
-    - ./*.AppImage
-  on:
-    all_branches: true
-    condition: $SHOULD_BUILD = yes
+  - provider: releases
+    skip_cleanup: true
+    overwrite: true
+    name: $LATEST_MS_TAG
+    api_key: $GITHUB_TOKEN
+    file_glob: true
+    file:
+      - ./*.sha256
+      - ./*.zip
+      - ./*.tar.gz
+      - ./*.dmg
+      - ./*.deb
+      - ./*.rpm
+      - ./*.AppImage
+    on:
+      all_branches: true
+      condition: $SHOULD_BUILD = yes
+  - provider: packagecloud
+    skip_cleanup: true
+    package_glob: "*.deb"
+    repository: vscodium
+    username: dimkr
+    token: ${PACKAGECLOUD_TOKEN}
+    dist: ubuntu/trusty
+    on:
+      all_branches: true
+      condition: $SHOULD_BUILD = yes
 
 after_deploy:
   - ./update_version.sh
