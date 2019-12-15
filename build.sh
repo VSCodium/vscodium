@@ -102,7 +102,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     yarn gulp vscode-reh-web-linux-${BUILDARCH}-min-ci
 
     yarn gulp "vscode-linux-${BUILDARCH}-build-deb"
-    if [[ "$BUILDARCH" != "arm64" ]]; then
+    if [[ "$BUILDARCH" == "x64" ]]; then
       yarn gulp "vscode-linux-${BUILDARCH}-build-rpm"
     fi
     . ../create_appimage.sh
