@@ -1,9 +1,16 @@
 #!/bin/bash
 
-function keep_alive() {
+function keep_alive_small() {
   while true; do
     echo .
     read -t 60 < /proc/self/fd/1 > /dev/null 2>&1
+  done
+}
+
+function keep_alive() {
+  while true; do
+    date
+    sleep 60
   done
 }
 
@@ -69,8 +76,13 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template
   fi
 
-  # this task is very slow on mac, so using a keep alive to keep travis alive
-  keep_alive &
+  # these tasks are very slow, so using a keep alive to keep travis alive
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    keep_alive_small &
+  else
+    keep_alive &
+  fi
+
   KA_PID=$!
 
   yarn gulp compile-build
