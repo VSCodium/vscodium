@@ -36,7 +36,7 @@ if [ "$GITHUB_TOKEN" != "" ]; then
       fi
     elif [[ $BUILDARCH == "arm" ]]; then
       HAVE_ARM_DEB=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["armhf.deb"])')
-      HAVE_ARM_TAR=$(echo $VSCODIUM_ASSETS | jq --arg suffix "armhf-$LATEST_MS_TAG.tar.gz" 'map(.name) | contains([$suffix])')
+      HAVE_ARM_TAR=$(echo $VSCODIUM_ASSETS | jq --arg suffix "arm-$LATEST_MS_TAG.tar.gz" 'map(.name) | contains([$suffix])')
       if [[ "$HAVE_ARM_DEB" != "true" ]]; then
         echo "Building on Linux arm because we have no DEB"
         export SHOULD_BUILD="yes"
