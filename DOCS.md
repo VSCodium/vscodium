@@ -65,9 +65,9 @@ To copy your settings manually:
 - Copy the contents of settings.json into the same place in VSCodium
 
 ## <a id="portable"></a>How do I run VSCodium in portable mode?
-You can follow the [Portable Mode instructions](https://code.visualstudio.com/docs/editor/portable) from the Visual Studio Code website. For Windows and Linux the instructions can be followed as written. For Mac OS, portable mode is enabled by the existence of a specially named folder. For Visual Studio Code that folder name is `code-portable-data`. For VSCodium, that folder name is `codium-portable-data`. 
-
-So to enable portable mode for VSCodium on Mac OS, follow the instructions outlined in the link above, but create a folder named `codium-portable-data` instead of `code-portable-data`.
+You can follow the [Portable Mode instructions](https://code.visualstudio.com/docs/editor/portable) from the Visual Studio Code website. 
+- **Windows** / **Linux** : the instructions can be followed as written.
+- **macOS** : portable mode is enabled by the existence of a specially named folder. For Visual Studio Code that folder name is `code-portable-data`. For VSCodium, that folder name is `codium-portable-data`. So to enable portable mode for VSCodium on Mac OS, follow the instructions outlined in the [link above](https://code.visualstudio.com/docs/editor/portable), but create a folder named `codium-portable-data` instead of `code-portable-data`.
 
 ## <a id="press-and-hold"></a>How do I press and hold a key and have it repeat in VSCodium (Mac)?
 
