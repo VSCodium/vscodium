@@ -29,7 +29,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   # apply patches
   patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
 
-  yarn
+  yarn --frozen-lockfile
   yarn postinstall
   mv product.json product.json.bak
 
