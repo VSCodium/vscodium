@@ -37,6 +37,7 @@
 #### <a id="install-with-brew"></a>Install with Brew (Mac)
 If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
 ```bash
+brew analytics off
 brew cask install vscodium
 ```
 
