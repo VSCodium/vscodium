@@ -12,6 +12,8 @@
 [![build status](https://travis-ci.com/VSCodium/vscodium.svg?branch=master)](https://travis-ci.com/VSCodium/vscodium) 
 [![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
 [![Gitter](https://img.shields.io/gitter/room/vscodium/vscodium.svg)](https://gitter.im/VSCodium/Lobby)
+[![codium](https://snapcraft.io//codium/badge.svg)](https://snapcraft.io/codium)
+[![codium](https://snapcraft.io//codium/trending.svg?name=0)](https://snapcraft.io/codium)
 
 </div>
 
@@ -22,6 +24,7 @@
   - [Install with Brew](#install-with-brew)
   - [Install with Chocolatey](#install-with-choco)
   - [Install with Scoop](#install-with-scoop)
+  - [Install with snap](#install-with-snap)
   - [Install with Package Manager](#install-with-package-manager)
   - [Install on Arch Linux](#install-on-arch-linux)
   - [Flatpak Option](#flatpak)
@@ -53,6 +56,13 @@ If you use Windows and have [Scoop](https://scoop.sh) installed:
 ```bash
 scoop bucket add extras
 scoop install vscodium
+```
+
+#### <a id="install-with-snap"></a>Install with snap (Linux)
+VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium), published by the [Snapcrafters](https://github.com/snapcrafters/codium) community.
+If your Linux distribution has support for [snaps](https://snapcraft.io/docs/installing-snapd):
+```bash
+snap install codium
 ```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (Linux)
