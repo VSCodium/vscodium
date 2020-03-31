@@ -20,8 +20,7 @@ ingredients:
     - ls codium_*.deb | cut -d _ -f 2 > VERSION
 
 script:
-  - sed -i -e 's|/usr/share/codium/||g' usr/share/applications/codium.desktop
-  - sed -i -e 's|com.visualstudio.code.oss|vscodium|g' usr/share/applications/codium.desktop
+  - sed -i -e 's|/usr/share/pixmaps/||g' usr/share/applications/codium.desktop
   - cp usr/share/applications/codium.desktop .
   - cp usr/share/pixmaps/vscodium.png vscodium.png
   - convert vscodium.png -resize 512x512 usr/share/icons/hicolor/512x512/apps/vscodium.png
@@ -30,6 +29,4 @@ script:
   - convert vscodium.png -resize 64x64 usr/share/icons/hicolor/64x64/apps/vscodium.png
   - convert vscodium.png -resize 48x48 usr/share/icons/hicolor/48x48/apps/vscodium.png
   - convert vscodium.png -resize 32x32 usr/share/icons/hicolor/32x32/apps/vscodium.png
-  - convert vscodium.png -resize 24x24 usr/share/icons/hicolor/24x24/apps/vscodium.png
-  - convert vscodium.png -resize 22x22 usr/share/icons/hicolor/22x22/apps/vscodium.png
   - ( cd usr/bin/ ; ln -s ../share/codium/codium  . )
