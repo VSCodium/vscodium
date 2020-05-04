@@ -34,8 +34,6 @@ _(For example the C# extension `ms-vscode.csharp` sends tracking data to Microso
 
 Until something more open comes around, we use the Microsoft Marketplace/Extensions in the `product.json` file. Those links are licensed under MIT as per [the comments on this issue.](https://github.com/Microsoft/vscode/issues/31168#issuecomment-317319063)
 
-If you use the [code-settings-sync](https://github.com/shanalikhan/code-settings-sync) extension, you may have [an issue](https://github.com/VSCodium/vscodium/issues/72) installing extensions (via the plugin). Refer to [this workaround](https://github.com/shanalikhan/code-settings-sync/issues/668#issuecomment-462065341) to get it working properly.
-
 ### Proprietary Debugging Tools
 
 The debugger provided with Microsoft's [C# extension](https://github.com/OmniSharp/omnisharp-vscode) as well as the (Windows) debugger provided with their [C++ extension](https://github.com/Microsoft/vscode-cpptools) are very restrictively licensed to only work with the offical Visual Studio Code build. See [this comment in the C# extension repo](https://github.com/OmniSharp/omnisharp-vscode/issues/2491#issuecomment-418811364) and [this comment in the C++ extension repo](https://github.com/Microsoft/vscode-cpptools/issues/21#issuecomment-248349017).
