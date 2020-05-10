@@ -72,7 +72,7 @@ You can always install using the downloads (deb, rpm, tar) on the [releases page
 VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository) as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/), maintained by [@plague-doctor](https://github.com/plague-doctor).
 
 #### <a id="flatpak"></a>Flatpak Option (Linux)
-VSCodium is available as a Flatpak app, thanks to Peter Squicciarini who has packaged VSCodium. That package is available [here](https://flathub.org/apps/details/com.vscodium.codium) and the build repo is [here](https://github.com/flathub/com.vscodium.codium). if your distrobution has support for [flatpak](https://flathub.org), and you have enabled the [flathub repo](https://flatpak.org/setup/):
+VSCodium is available as a Flatpak app, thanks to Peter Squicciarini who has packaged VSCodium. That package is unofficially available [here](https://flathub.org/apps/details/com.vscodium.codium) and the build repo is [here](https://github.com/flathub/com.vscodium.codium). if your distrobution has support for [flatpak](https://flathub.org), and you have enabled the [flathub repo](https://flatpak.org/setup/):
 ```bash
 flatpak install flathub com.vscodium.codium
 
