@@ -106,7 +106,9 @@ Microsoft's build process (which we are running to build the binaries) does down
 ### Documentation
 For more information on getting all the telemetry disabled and tips for migrating from Visual Studio Code to VSCodium, have a look at this [Docs](https://github.com/VSCodium/vscodium/blob/master/DOCS.md) page.
 
-### Extension Licensing
+### Extensions and the Marketplace
+According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace-ToU), _you may only install and use Marketplace Offerings with Visual Studio Products and Services._ For this reason, VSCodium uses [open-vsx.org](https://open-vsx.org/), an open source registry for VS Code extensions. See the [Extensions + Marketplace](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#extensions-marketplace) section on the Docs page for more details.
+
 Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
 
 ### How are the VSCodium binaries built?
