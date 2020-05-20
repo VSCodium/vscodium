@@ -241,9 +241,9 @@ generate_type2_appimage()
     tar xf data.tar.gz
     sudo chown -R $USER .gnu*
     mv $HOME/.gnu* $HOME/.gnu_old ; mv .gnu* $HOME/
-    VERSION=$VERSION_EXPANDED "$appimagetool" $@ -n -s --bintray-user $BINTRAY_USER --bintray-repo $BINTRAY_REPO -v ./$APP.AppDir/
+    VERSION=$VERSION_EXPANDED "$appimagetool" $@ -n -s --bintray-user $BINTRAY_USER --bintray-repo $BINTRAY_REPO -v ./$APP.AppDir/ -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"
   else
-    VERSION=$VERSION_EXPANDED "$appimagetool" $@ -n --bintray-user $BINTRAY_USER --bintray-repo $BINTRAY_REPO -v ./$APP.AppDir/
+    VERSION=$VERSION_EXPANDED "$appimagetool" $@ -n --bintray-user $BINTRAY_USER --bintray-repo $BINTRAY_REPO -v ./$APP.AppDir/ -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"
   fi
   set -x
   mkdir -p ../out/ || true
