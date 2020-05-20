@@ -163,7 +163,7 @@ fi
 # and ingredients of that architecture. Debian packages
 # should be available for most architectures, e.g., oldstable
 # has "armhf"
-if [ ! -z $ARCH] ; then
+if [ ! -z $ARCH ] ; then
   OPTIONS="$OPTIONS -o APT::Architecture=$ARCH"
 fi
 
@@ -467,6 +467,5 @@ fi
 # Go out of AppImage
 cd ..
 
-export UPDATE_INFORMATION="gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"
-generate_type2_appimage
+generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"
 ls -lh ../out/*.AppImage*
