@@ -55,6 +55,8 @@ Like the debuggers mentioned above, some extensions you may find in the marketpl
   ],
 ```
 
+In some cases, the above change won't help because the extension is hard-coded to only work with the official Visual Studio Code product.
+
 ## <a id="migrating"></a>Migrating from Visual Studio Code to VSCodium
 
 VSCodium (and a freshly cloned copy of vscode built from source) stores its extension files in `~/.vscode-oss`. So if you currently have Visual Studio Code installed, your extensions won't automatically populate. You can reinstall your extensions from the Marketplace in VSCodium, or copy the `extensions` from `~/.vscode/extensions` to `~/.vscode-oss/extensions`.
