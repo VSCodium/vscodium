@@ -72,7 +72,12 @@ You can always install using the downloads (deb, rpm, tar) on the [releases page
 VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository) as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/), maintained by [@plague-doctor](https://github.com/plague-doctor).
 
 #### <a id="flatpak"></a>Flatpak Option (Linux)
-VSCodium is not available as a Flatpak app, but [@amtlib-dot-dll](https://github.com/amtlib-dot-dll) has done significant work to package up the open source build of Visual Studio Code without telemetry, very similarly to VSCodium. That package is available [here](https://flathub.org/apps/details/com.visualstudio.code.oss) and the build repo is [here](https://github.com/flathub/com.visualstudio.code.oss).
+VSCodium is (unofficially) available as a Flatpak app [here](https://flathub.org/apps/details/com.vscodium.codium) and the build repo is [here](https://github.com/flathub/com.vscodium.codium). If your distribution has support for [flatpak](https://flathub.org), and you have enabled the [flathub repo](https://flatpak.org/setup/):
+```bash
+flatpak install flathub com.vscodium.codium
+
+flatpak run com.vscodium.codium
+```
 
 ## <a id="why"></a>Why Does This Exist
 This repository contains build files to generate free release binaries of Microsoft's VSCode. When we speak of "free software", we're talking about freedom, not price.
