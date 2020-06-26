@@ -46,4 +46,4 @@ update_setting () {
 }
 
 update_setting "$TELEMETRY_ENABLE" src/vs/platform/telemetry/common/telemetryService.ts
-update_setting "$TELEMETRY_CRASH_REPORTER" src/vs/workbench/electron-browser/desktop.contribution.ts
+update_setting "$TELEMETRY_CRASH_REPORTER" src/vs/workbench/electron-sandbox/desktop.contribution.ts
