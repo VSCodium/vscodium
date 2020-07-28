@@ -128,5 +128,9 @@ The builds are run every day, but exit early if there isn't a new release from M
 ## <a id="donate"></a>Donate
 If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N`.
 
+Special thanks to:
+- @estatra for the latest logo
+- @jaredreich for the previous logo
+
 ## <a id="license"></a>License
 MIT
