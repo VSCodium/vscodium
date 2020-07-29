@@ -22,6 +22,7 @@
 ## Table of Contents
 - [Download/Install](#download-install)
   - [Install with Brew](#install-with-brew)
+  - [Install with Windows Package Manager (WinGet)](#install-with-winget)
   - [Install with Chocolatey](#install-with-choco)
   - [Install with Scoop](#install-with-scoop)
   - [Install with snap](#install-with-snap)
@@ -44,6 +45,12 @@ brew cask install vscodium
 ```
 
 _Note for Mac OS X Mojave users: if you see "App can't be opened because Apple cannot check it for malicious software" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on Mojave._
+
+#### <a id="install-with-winget"></a>Install with Windows Package Manager (WinGet)
+If you use Windows and have [Windows Package Manager](https://github.com/microsoft/winget-cli) installed:
+```bash
+winget install vscodium
+```
 
 #### <a id="install-with-choco"></a>Install with Chocolatey (Windows)
 If you use Windows and have [Chocolatey](https://chocolatey.org) installed (thanks to [@Thilas](https://github.com/Thilas)):
