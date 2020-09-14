@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 export npm_config_arch="$BUILDARCH"
 export npm_config_target_arch="$BUILDARCH"
 
@@ -11,7 +13,7 @@ cd vscode || exit
 # apply patches
 patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
 
-yarn --frozen-lockfile
+CHILD_CONCURRENCY=1 yarn --frozen-lockfile
 yarn postinstall
 
 if [[ "$BUILDARCH" == *"arm"* ]]; then

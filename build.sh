@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function keep_alive_small() {
   while true; do
     echo .
@@ -26,8 +28,6 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 
   cd vscode || exit
 
-  export NODE_ENV=production
-
   # these tasks are very slow, so using a keep alive to keep travis alive
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     keep_alive_small &
@@ -37,24 +37,20 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 
   KA_PID=$!
 
+  yarn gulp hygiene
+  yarn monaco-compile-check
+  yarn valid-layers-check
+
   yarn gulp compile-build
   yarn gulp compile-extensions-build
-
   yarn gulp minify-vscode
-
-  yarn gulp minify-vscode-reh
-  yarn gulp minify-vscode-reh-web
 
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     npm install --global create-dmg
     yarn gulp vscode-darwin-min-ci
-    yarn gulp vscode-reh-darwin-min-ci
-    yarn gulp vscode-reh-web-darwin-min-ci
   elif [[ "$CI_WINDOWS" == "True" ]]; then
     cp LICENSE.txt LICENSE.rtf # windows build expects rtf license
     yarn gulp "vscode-win32-${BUILDARCH}-min-ci"
-    yarn gulp "vscode-reh-win32-${BUILDARCH}-min-ci"
-    yarn gulp "vscode-reh-web-win32-${BUILDARCH}-min-ci"
     yarn gulp "vscode-win32-${BUILDARCH}-code-helper"
     yarn gulp "vscode-win32-${BUILDARCH}-inno-updater"
     yarn gulp "vscode-win32-${BUILDARCH}-archive"
@@ -62,8 +58,6 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     yarn gulp "vscode-win32-${BUILDARCH}-user-setup"
   else # linux
     yarn gulp vscode-linux-${BUILDARCH}-min-ci
-    yarn gulp vscode-reh-linux-${BUILDARCH}-min-ci
-    yarn gulp vscode-reh-web-linux-${BUILDARCH}-min-ci
 
     yarn gulp "vscode-linux-${BUILDARCH}-build-deb"
     if [[ "$BUILDARCH" == "x64" ]]; then
