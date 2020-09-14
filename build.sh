@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 function keep_alive_small() {
   while true; do
@@ -37,7 +37,6 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 
   KA_PID=$!
 
-  yarn gulp hygiene
   yarn monaco-compile-check
   yarn valid-layers-check
 
