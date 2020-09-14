@@ -2,13 +2,6 @@
 
 set -ex
 
-function keep_alive_small() {
-  while true; do
-    echo .
-    read -t 60 < /proc/self/fd/1 > /dev/null 2>&1
-  done
-}
-
 function keep_alive() {
   while true; do
     date
@@ -29,11 +22,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   cd vscode || exit
 
   # these tasks are very slow, so using a keep alive to keep travis alive
-  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-    keep_alive_small &
-  else
-    keep_alive &
-  fi
+  keep_alive &
 
   KA_PID=$!
 
