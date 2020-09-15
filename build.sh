@@ -18,13 +18,14 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
 #  export npm_config_target_arch="$BUILDARCH"
 
 #  ./prepare_vscode.sh
+  cd vscode || exit
+
   yarn --version
   node --version
 
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile
   yarn postinstall
 
-  cd vscode || exit
 
   # these tasks are very slow, so using a keep alive to keep travis alive
   keep_alive &
