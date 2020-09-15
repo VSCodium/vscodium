@@ -1,17 +1,17 @@
 matrix:
   include:
-    - os: linux
-      sudo: required
-      env: BUILDARCH=x64
-      dist: trusty
-    - os: linux
-      sudo: required
-      env: BUILDARCH=arm64
-      dist: trusty
-    - os: linux
-      sudo: required
-      env: BUILDARCH=arm
-      dist: trusty
+    #     - os: linux
+    #       sudo: required
+    #       env: BUILDARCH=x64
+    #       dist: trusty
+    #     - os: linux
+    #       sudo: required
+    #       env: BUILDARCH=arm64
+    #       dist: trusty
+    #     - os: linux
+    #       sudo: required
+    #       env: BUILDARCH=arm
+    #       dist: trusty
     - os: osx
       addons:
         homebrew:
@@ -58,5 +58,5 @@ deploy:
     all_branches: true
     condition: $SHOULD_BUILD = yes
 
-after_deploy:
-  - ./update_version.sh
+    # after_deploy:
+    #   - ./update_version.sh
