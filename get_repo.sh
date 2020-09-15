@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -ex
-
 if [ -d vscode ]; then
   cd vscode 
   git fetch --all

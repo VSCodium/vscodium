@@ -1,5 +1,5 @@
-matrix:
-  include:
+#jobs:
+#  include:
     #     - os: linux
     #       sudo: required
     #       env: BUILDARCH=x64
@@ -12,12 +12,12 @@ matrix:
     #       sudo: required
     #       env: BUILDARCH=arm
     #       dist: trusty
-    - os: osx
-      addons:
-        homebrew:
-          packages:
-            - jq
-            - zip
+os: osx
+addons:
+  homebrew:
+    packages:
+      - jq
+      - zip
 
 language: node_js
 node_js: "12.14.1"
@@ -43,7 +43,7 @@ deploy:
   skip_cleanup: true
   overwrite: true
   name: $LATEST_MS_TAG
-  api_key: $GITHUB_TOKEN
+  token: $GITHUB_TOKEN
   file_glob: true
   file:
     - ./*.sha256
