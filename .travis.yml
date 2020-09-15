@@ -1,25 +1,25 @@
-#jobs:
-#  include:
-    #     - os: linux
-    #       sudo: required
-    #       env: BUILDARCH=x64
-    #       dist: trusty
-    #     - os: linux
-    #       sudo: required
-    #       env: BUILDARCH=arm64
-    #       dist: trusty
-    #     - os: linux
-    #       sudo: required
-    #       env: BUILDARCH=arm
-    #       dist: trusty
-os: osx
-addons:
-  homebrew:
-    packages:
-      - create-dmg
-      - jq
-      - zip
-    update: true
+jobs:
+  include:
+    - os: linux
+      sudo: required
+      env: BUILDARCH=x64
+      dist: trusty
+    - os: linux
+      sudo: required
+      env: BUILDARCH=arm64
+      dist: trusty
+    - os: linux
+      sudo: required
+      env: BUILDARCH=arm
+      dist: trusty
+    - os: osx
+      osx_image: xcode12
+      addons:
+        homebrew:
+          packages:
+            - jq
+            - zip
+          update: true
 
 language: node_js
 node_js: "12.14.1"

@@ -5,7 +5,7 @@ set -e
 export npm_config_arch="$BUILDARCH"
 export npm_config_target_arch="$BUILDARCH"
 
-# cp -rp src/* vscode/
+cp -rp src/* vscode/
 cd vscode || exit
 
 # ../update_settings.sh
@@ -23,7 +23,7 @@ if [[ "$BUILDARCH" == *"arm"* ]]; then
   npx electron-rebuild -f -w vscode-sqlite3
 fi
 
-# mv product.json product.json.bak
+mv product.json product.json.bak
 
 # set fields in product.json
 tipsAndTricksUrl='setpath(["tipsAndTricksUrl"]; "https://go.microsoft.com/fwlink/?linkid=852118")'
@@ -56,7 +56,7 @@ extensionAllowedProposedApi='setpath(["extensionAllowedProposedApi"]; getpath(["
 serverDataFolderName='setpath(["serverDataFolderName"]; ".vscode-server-oss")'
 
 product_json_changes="${tipsAndTricksUrl} | ${twitterUrl} | ${requestFeatureUrl} | ${documentationUrl} | ${introductoryVideosUrl} | ${extensionAllowedBadgeProviders} | ${updateUrl} | ${releaseNotesUrl} | ${keyboardShortcutsUrlMac} | ${keyboardShortcutsUrlLinux} | ${keyboardShortcutsUrlWin} | ${quality} | ${extensionsGallery} | ${linkProtectionTrustedDomains} | ${nameShort} | ${nameLong} | ${linuxIconName} | ${applicationName} | ${win32MutexName} | ${win32DirName} | ${win32NameVersion} | ${win32RegValueName} | ${win32AppUserModelId} | ${win32ShellNameShort} | ${win32x64UserAppId} | ${urlProtocol} | ${extensionAllowedProposedApi} | ${serverDataFolderName}"
-# cat product.json.bak | jq "${product_json_changes}" > product.json
+cat product.json.bak | jq "${product_json_changes}" > product.json
 cat product.json
 
 # ../undo_telemetry.sh

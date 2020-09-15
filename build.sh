@@ -14,18 +14,12 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   echo "LATEST_MS_COMMIT: ${LATEST_MS_COMMIT}"
   echo "BUILD_SOURCEVERSION: ${BUILD_SOURCEVERSION}"
 
-#  export npm_config_arch="$BUILDARCH"
-#  export npm_config_target_arch="$BUILDARCH"
+  export npm_config_arch="$BUILDARCH"
+  export npm_config_target_arch="$BUILDARCH"
 
-#  ./prepare_vscode.sh
+  ./prepare_vscode.sh
+
   cd vscode || exit
-
-  yarn --version
-  node --version
-
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
-  yarn postinstall
-
 
   # these tasks are very slow, so using a keep alive to keep travis alive
   keep_alive &
