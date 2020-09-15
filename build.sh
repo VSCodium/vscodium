@@ -34,7 +34,6 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   yarn gulp minify-vscode
 
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    npm install --global create-dmg
     yarn gulp vscode-darwin-min-ci
   elif [[ "$CI_WINDOWS" == "True" ]]; then
     cp LICENSE.txt LICENSE.rtf # windows build expects rtf license

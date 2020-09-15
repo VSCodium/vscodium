@@ -1,9 +1,6 @@
 #!/bin/bash
 
-if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-  brew update
-  brew install jq zip
-else
+if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
   sudo apt-get update
   sudo apt-get install -y fakeroot jq
   triplet=
