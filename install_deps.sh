@@ -1,7 +1,9 @@
 #!/bin/bash
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-  brew install jq zip
+  curl -Lo $HOME/bin/jq --create-dirs https://github.com/stedolan/jq/releases/download/jq-1.6/jq-osx-amd64
+  chmod +x $HOME/bin/jq
+  export PATH="$HOME/bin:$PATH"
 else
   sudo apt-get update
   sudo apt-get install -y fakeroot jq
