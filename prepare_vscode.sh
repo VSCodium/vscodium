@@ -13,8 +13,13 @@ cd vscode || exit
 # apply patches
 # patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
 
-CHILD_CONCURRENCY=1 yarn --frozen-lockfile
-yarn postinstall
+if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional
+  npm_config_argv='{"original":["--ignore-optional"]}' yarn postinstall
+else
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
+  yarn postinstall
+fi
 
 if [[ "$BUILDARCH" == *"arm"* ]]; then
   sed -i -z 's/,\n[^\n]*arm[^\n]*//' node_modules/vscode-sqlite3/binding.gyp
