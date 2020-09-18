@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   REPOSITORY=$GITHUB_REPOSITORY
