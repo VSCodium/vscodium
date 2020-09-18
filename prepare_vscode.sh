@@ -7,13 +7,13 @@ if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
   export npm_config_target_arch="$BUILDARCH"
 fi
 
-# cp -rp src/* vscode/
+cp -rp src/* vscode/
 cd vscode || exit
 
-# ../update_settings.sh
+../update_settings.sh
 
 # apply patches
-# patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
+patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional
@@ -66,7 +66,7 @@ product_json_changes="${tipsAndTricksUrl} | ${twitterUrl} | ${requestFeatureUrl}
 cat product.json.bak | jq "${product_json_changes}" > product.json
 cat product.json
 
-# ../undo_telemetry.sh
+../undo_telemetry.sh
 
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   # microsoft adds their apt repo to sources
