@@ -75,3 +75,5 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   # we need to edit a line in the post install template
   sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template
 fi
+
+cd ..
