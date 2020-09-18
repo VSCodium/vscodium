@@ -18,7 +18,6 @@ jobs:
         with:
           node-version: 12.14.1
           
-          
       - name: Clone VSCode repo
         run: |
           . get_repo.sh
@@ -39,6 +38,9 @@ jobs:
 
       - name: Zip release
         run: ./create_zip.sh
+
+      - name: DMG the release
+        run: ./create_dmg.sh
       
       - name: Release
         uses: softprops/action-gh-release@v1

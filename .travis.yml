@@ -9,13 +9,12 @@ jobs:
     - os: linux
       env: BUILDARCH=arm
       dist: trusty
-    - os: osx
-      osx_image: xcode12
 
 language: node_js
 node_js: "12.14.1"
 
 install:
+  - node getpwd.js
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
   - . install_deps.sh
@@ -51,5 +50,5 @@ deploy:
     all_branches: true
     condition: $SHOULD_BUILD = yes
 
-    # after_deploy:
-    #   - ./update_version.sh
+    #after_deploy:
+    #- ./update_version.sh
