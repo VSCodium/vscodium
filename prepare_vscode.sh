@@ -2,8 +2,10 @@
 
 set -e
 
-export npm_config_arch="$BUILDARCH"
-export npm_config_target_arch="$BUILDARCH"
+if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
+  export npm_config_arch="$BUILDARCH"
+  export npm_config_target_arch="$BUILDARCH"
+fi
 
 # cp -rp src/* vscode/
 cd vscode || exit

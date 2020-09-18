@@ -16,17 +16,19 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   echo "LATEST_MS_COMMIT: ${LATEST_MS_COMMIT}"
   echo "BUILD_SOURCEVERSION: ${BUILD_SOURCEVERSION}"
 
-  export npm_config_arch="$BUILDARCH"
-  export npm_config_target_arch="$BUILDARCH"
+  if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
+    export npm_config_arch="$BUILDARCH"
+    export npm_config_target_arch="$BUILDARCH"
+  fi
 
-  ./prepare_vscode.sh
+  . prepare_vscode.sh
 
   cd vscode || exit
 
   # these tasks are very slow, so using a keep alive to keep travis alive
-  keep_alive &
+  # keep_alive &
 
-  KA_PID=$!
+  # KA_PID=$!
 
   yarn monaco-compile-check
   yarn valid-layers-check
@@ -55,7 +57,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     . ../create_appimage.sh
   fi
 
-  kill $KA_PID
+  # kill $KA_PID
 
   cd ..
 fi
