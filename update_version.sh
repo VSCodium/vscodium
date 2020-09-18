@@ -34,7 +34,7 @@ if [[ "$CI_WINDOWS" == "True" ]]; then
   git config --global core.autocrlf true
 else
   # TRAVIS_REPO_SLUG = e.g. VSCodium/vscodium
-  VERSIONS_REPO=$(echo ${TRAVIS_REPO_SLUG} | awk -F"/" '{ print $1 }')/versions
+  VERSIONS_REPO=$(echo ${TRAVIS_REPO_SLUG:-${GITHUB_REPOSITORY}} | awk -F"/" '{ print $1 }')/versions
 fi
 
 # generateJson <assetName>

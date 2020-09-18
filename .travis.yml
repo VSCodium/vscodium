@@ -14,7 +14,6 @@ language: node_js
 node_js: "12.14.1"
 
 install:
-  - node getpwd.js
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
   - . install_deps.sh
@@ -25,9 +24,6 @@ script:
   - ./build.sh
 
 before_deploy:
-  - ./sign_mac_app.sh
-  - ./create_zip.sh
-  - ./create_dmg.sh
   - ./sum.sh
 
 deploy:
@@ -41,7 +37,6 @@ deploy:
     - ./*.sha256
     - ./*.zip
     - ./*.tar.gz
-    - ./*.dmg
     - ./*.deb
     - ./*.rpm
     - ./*.AppImage
@@ -50,5 +45,5 @@ deploy:
     all_branches: true
     condition: $SHOULD_BUILD = yes
 
-    #after_deploy:
-    #- ./update_version.sh
+after_deploy:
+  - ./update_version.sh

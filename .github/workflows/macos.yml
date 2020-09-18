@@ -36,11 +36,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./build.sh
 
+      - name: Sign binary
+        run: ./sign_mac_app.sh
+        env:
+          CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
+          CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
+          CERTIFICATE_OSX_ID: ${{ secrets.CERTIFICATE_OSX_ID }}
+
       - name: Zip release
         run: ./create_zip.sh
 
       - name: DMG the release
         run: ./create_dmg.sh
+
+      - name: Generate shasums
+        run: ./sum.sh
       
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -53,4 +63,11 @@ jobs:
             ./*.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update versions repo
+        if: env.SHOULD_BUILD == 'yes'
+        run: ./update_version.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
 
