@@ -33,6 +33,8 @@ jobs:
           echo "::set-env name=SHOULD_BUILD::$SHOULD_BUILD"
           
       - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./build.sh
 
       - name: Zip release
