@@ -26,6 +26,8 @@ jobs:
           echo "::set-env name=LATEST_MS_COMMIT::$LATEST_MS_COMMIT"
 
       - name: Check existing VSCodium tags/releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           . check_tags.sh
           echo "::set-env name=SHOULD_BUILD::$SHOULD_BUILD"
