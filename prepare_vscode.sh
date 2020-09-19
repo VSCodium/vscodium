@@ -1,7 +1,11 @@
 #!/bin/bash
 
-export npm_config_arch="$BUILDARCH"
-export npm_config_target_arch="$BUILDARCH"
+set -e
+
+if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
+  export npm_config_arch="$BUILDARCH"
+  export npm_config_target_arch="$BUILDARCH"
+fi
 
 cp -rp src/* vscode/
 cd vscode || exit
@@ -11,8 +15,13 @@ cd vscode || exit
 # apply patches
 patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
 
-yarn --frozen-lockfile
-yarn postinstall
+if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional
+  npm_config_argv='{"original":["--ignore-optional"]}' yarn postinstall
+else
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
+  yarn postinstall
+fi
 
 if [[ "$BUILDARCH" == *"arm"* ]]; then
   sed -i -z 's/,\n[^\n]*arm[^\n]*//' node_modules/vscode-sqlite3/binding.gyp
@@ -66,3 +75,5 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   # we need to edit a line in the post install template
   sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template
 fi
+
+cd ..

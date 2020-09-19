@@ -1,12 +1,7 @@
 steps:
 - task: NodeTool@0 
   inputs:
-    versionSpec: "12.13.0"
-- script: |
-    choco install jq 
-  displayName: 'install jq from choco'
-- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
-  displayName: 'Install Yarn'
+    versionSpec: "12.14.1"
 - task: UsePythonVersion@0
   displayName: 'Use Python 2.x'
   inputs:
@@ -27,9 +22,6 @@ steps:
     filePath: 'check_tags.ps1'
   env:
     MAPPED_GITHUB_TOKEN: $(GITHUB_TOKEN)
-- script: |
-    git -C vscode status
-  displayName: 'vscode status'
 - powershell: |
     bash ./build.sh
   displayName: 'go build it!'

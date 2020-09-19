@@ -1,23 +1,19 @@
-matrix:
+jobs:
   include:
     - os: linux
-      sudo: required
       env: BUILDARCH=x64
       dist: trusty
     - os: linux
-      sudo: required
       env: BUILDARCH=arm64
       dist: trusty
     - os: linux
-      sudo: required
       env: BUILDARCH=arm
       dist: trusty
-#   - os: osx
 
 language: node_js
-node_js: "12"
+node_js: "12.14.1"
 
-before_install:
+install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
   - . install_deps.sh
@@ -28,9 +24,7 @@ script:
   - ./build.sh
 
 before_deploy:
-  - ./sign_mac_app.sh
   - ./create_zip.sh
-  - ./create_dmg.sh
   - ./sum.sh
 
 deploy:
@@ -38,13 +32,12 @@ deploy:
   skip_cleanup: true
   overwrite: true
   name: $LATEST_MS_TAG
-  api_key: $GITHUB_TOKEN
+  token: $GITHUB_TOKEN
   file_glob: true
   file:
     - ./*.sha256
     - ./*.zip
     - ./*.tar.gz
-    - ./*.dmg
     - ./*.deb
     - ./*.rpm
     - ./*.AppImage
