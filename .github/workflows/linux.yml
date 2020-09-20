@@ -8,10 +8,15 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.probably_fails }}
     strategy:
       fail-fast: false
       matrix:
         arch: [x64, arm64, arm]
+        include:
+          - arch: arm
+            probably_fails: true
+
     env:
       OS_NAME: 'linux'
       BUILDARCH: ${{ matrix.arch }}
