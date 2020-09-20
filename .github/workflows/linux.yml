@@ -1,4 +1,4 @@
-name: CI
+name: linux_build
 
 on:
   push:
@@ -9,6 +9,7 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         arch: [x64, arm64, arm]
     env:
@@ -51,7 +52,7 @@ jobs:
           esac
 
           if [[ -n "$triplet" ]]; then
-            sed 's/^deb /deb [arch=amd64] '/g -i /etc/apt/sources.list
+            sudo sed 's/^deb /deb [arch=amd64] '/g -i /etc/apt/sources.list
             echo "deb [arch=$arch] http://ports.ubuntu.com/ubuntu-ports/ trusty main" | sudo tee -a /etc/apt/sources.list.d/$arch.list >/dev/null
             sudo dpkg --add-architecture $arch
             sudo apt-get update
