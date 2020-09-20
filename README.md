@@ -9,7 +9,6 @@
 
   [![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
 [![windows_build_status](https://dev.azure.com/vscodium/VSCodium/_apis/build/status/VSCodium.vscodium?branchName=master)](https://dev.azure.com/vscodium/VSCodium/_build?definitionId=1)
-[![build status](https://travis-ci.com/VSCodium/vscodium.svg?branch=master)](https://travis-ci.com/VSCodium/vscodium) 
 [![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
 [![Gitter](https://img.shields.io/gitter/room/vscodium/vscodium.svg)](https://gitter.im/VSCodium/Lobby)
 [![codium](https://snapcraft.io//codium/badge.svg)](https://snapcraft.io/codium)
@@ -119,9 +118,9 @@ According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace
 Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
 
 ### How are the VSCodium binaries built?
-If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the [`.travis.yml` file](https://github.com/VSCodium/vscodium/blob/master/.travis.yml) (for Linux and OS X builds) and the [`win32-build.yml` file](https://github.com/VSCodium/vscodium/blob/master/win32-build.yml) (for Windows builds). These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
+If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflow` (for Linux and OS X builds) and the `win32-build.yml` file (for Windows builds). These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
 
-The builds are run every day, but exit early if there isn't a new release from Microsoft. To examine the build logs, go [here for Linux / OS X](https://travis-ci.com/VSCodium/vscodium) and [here for Windows](https://dev.azure.com/vscodium/VSCodium/_build?definitionId=1)
+The builds are run every day, but exit early if there isn't a new release from Microsoft. 
 
 ## <a id="supported-os"></a>Supported OS
 - [x] OS X (`zip`, `dmg`)

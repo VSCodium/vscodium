@@ -9,7 +9,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   echo "LATEST_MS_COMMIT: ${LATEST_MS_COMMIT}"
   echo "BUILD_SOURCEVERSION: ${BUILD_SOURCEVERSION}"
 
-  if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
+  if [[ "$OS_NAME" != "osx" ]]; then
     export npm_config_arch="$BUILDARCH"
     export npm_config_target_arch="$BUILDARCH"
   fi
@@ -25,7 +25,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   yarn gulp compile-extensions-build
   yarn gulp minify-vscode
 
-  if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  if [[ "$OS_NAME" == "osx" ]]; then
     yarn gulp vscode-darwin-min-ci
   elif [[ "$CI_WINDOWS" == "True" ]]; then
     cp LICENSE.txt LICENSE.rtf # windows build expects rtf license

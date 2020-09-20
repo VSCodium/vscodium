@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then
+if [[ "$OS_NAME" != "osx" ]]; then
   export npm_config_arch="$BUILDARCH"
   export npm_config_target_arch="$BUILDARCH"
 fi
@@ -15,7 +15,7 @@ cd vscode || exit
 # apply patches
 patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
 
-if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+if [[ "$OS_NAME" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional
   npm_config_argv='{"original":["--ignore-optional"]}' yarn postinstall
 else
@@ -68,7 +68,7 @@ cat product.json
 
 ../undo_telemetry.sh
 
-if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+if [[ "$OS_NAME" == "linux" ]]; then
   # microsoft adds their apt repo to sources
   # unless the app name is code-oss
   # as we are renaming the application to vscodium

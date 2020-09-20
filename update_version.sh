@@ -33,8 +33,7 @@ if [[ "$CI_WINDOWS" == "True" ]]; then
 
   git config --global core.autocrlf true
 else
-  # TRAVIS_REPO_SLUG = e.g. VSCodium/vscodium
-  VERSIONS_REPO=$(echo ${TRAVIS_REPO_SLUG:-${GITHUB_REPOSITORY}} | awk -F"/" '{ print $1 }')/versions
+  VERSIONS_REPO="${GITHUB_USERNAME}/versions"
 fi
 
 # generateJson <assetName>
@@ -98,7 +97,7 @@ git remote rm origin
 git remote add origin https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${VERSIONS_REPO}.git > /dev/null 2>&1
 cd ..
 
-if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+if [[ "$OS_NAME" == "osx" ]]; then
   # zip, sha1, and sha256 files are all at top level dir
   ASSET_NAME=VSCodium-darwin-${LATEST_MS_TAG}.zip
   VERSION_PATH="darwin"
@@ -137,7 +136,7 @@ cd versions
 git pull origin master # in case another build just pushed
 git add .
 dateAndMonth=`date "+%D %T"`
-git commit -m "Travis update: $dateAndMonth (Build $TRAVIS_BUILD_NUMBER)"
+git commit -m "CI update: $dateAndMonth (Build $GITHUB_RUN_NUMBER)"
 if ! git push origin master --quiet; then
   git pull origin master
   git push origin master --quiet
