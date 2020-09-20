@@ -1,6 +1,8 @@
 name: linux_build
 
 on:
+  schedule:
+    - cron: '0 0 * * *'
   push:
   pull_request:
     branches: [ master ]
@@ -78,9 +80,6 @@ jobs:
             export CC_host=/usr/bin/gcc
             export CXX_host=/usr/bin/g++
             export PKG_CONFIG_LIBDIR=/usr/lib/$triplet/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
-          else
-            sudo apt-get update
-            sudo apt-get install libx11-dev
           fi
         if: env.SHOULD_BUILD == 'yes'
           
