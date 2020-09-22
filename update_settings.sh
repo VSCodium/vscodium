@@ -5,7 +5,7 @@ TELEMETRY_CRASH_REPORTER="'telemetry.enableCrashReporter':"
 
 replace () {
   echo $1
-  if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  if [[ "$OS_NAME" == "osx" ]]; then
     sed -i '' -E "$1" $2
   else
     sed -i -E "$1" $2
