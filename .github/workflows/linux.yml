@@ -10,7 +10,12 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
-    container: ${{ matrix.image }}
+    container: 
+      image: ${{ matrix.image }}
+      env:
+        OS_NAME: 'linux'
+        VSCODE_ARCH: ${{ matrix.vscode_arch }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -26,10 +31,6 @@ jobs:
           npm_arch: armv7l
           image: vscodium/vscodium-linux-build-agent:buster-armhf
 
-    env:
-      OS_NAME: 'linux'
-      VSCODE_ARCH: ${{ matrix.vscode_arch }}
-
     steps:
       - uses: actions/checkout@v2
 
@@ -37,6 +38,11 @@ jobs:
         uses: actions/setup-node@v1.4.3
         with:
           node-version: 12.14.1
+
+      - name: Debug
+        run: |
+          ls -al
+          ls /__w
 
       - name: Clone VSCode repo
         run: |
