@@ -69,3 +69,4 @@ if [ "$GITHUB_TOKEN" != "" ]; then
   fi
 fi
 
+echo "SHOULD_BUILD=$SHOULD_BUILD" >> $GITHUB_ENV
