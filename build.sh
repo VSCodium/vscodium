@@ -9,7 +9,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   echo "LATEST_MS_COMMIT: ${LATEST_MS_COMMIT}"
   echo "BUILD_SOURCEVERSION: ${BUILD_SOURCEVERSION}"
 
-  if [[ "$OS_NAME" != "osx" ]]; then
+  if [[ "$CI_WINDOWS" == "True" ]]; then
     export npm_config_arch="$BUILDARCH"
     export npm_config_target_arch="$BUILDARCH"
   fi
@@ -36,12 +36,10 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     yarn gulp "vscode-win32-${BUILDARCH}-system-setup"
     yarn gulp "vscode-win32-${BUILDARCH}-user-setup"
   else # linux
-    yarn gulp vscode-linux-${BUILDARCH}-min-ci
+    yarn gulp vscode-linux-${VSCODE_ARCH}-min-ci
 
-    yarn gulp "vscode-linux-${BUILDARCH}-build-deb"
-    if [[ "$BUILDARCH" == "x64" ]]; then
-      yarn gulp "vscode-linux-${BUILDARCH}-build-rpm"
-    fi
+    yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
+    yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
     . ../create_appimage.sh
   fi
 

@@ -125,8 +125,8 @@ else # linux
   # update service links to tar.gz file
   # see https://update.code.visualstudio.com/api/update/linux-x64/stable/VERSION
   # as examples
-  ASSET_NAME=VSCodium-linux-${BUILDARCH}-${LATEST_MS_TAG}.tar.gz
-  VERSION_PATH="linux/${BUILDARCH}"
+  ASSET_NAME=VSCodium-linux-${VSCODE_ARCH}-${LATEST_MS_TAG}.tar.gz
+  VERSION_PATH="linux/${VSCODE_ARCH}"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 fi

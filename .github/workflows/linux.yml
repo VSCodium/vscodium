@@ -10,19 +10,17 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.probably_fails }}
+    container: ${{ matrix.image }}
     strategy:
       fail-fast: false
       matrix:
-        arch: [x64, arm64]
-        probably_fails: [false]
-        include:
-          - arch: arm
-            probably_fails: true
+        vscode_arch: [x64, arm64, armhf]
+        npm_arch: [x64, arm64, armv7l]
+        image: ['vscodehub.azurecr.io/vscode-linux-build-agent:x64', 'vscodehub.azurecr.io/vscode-linux-build-agent:buster-arm64', 'vscodehub.azurecr.io/vscode-linux-build-agent:buster-armhf']
 
     env:
       OS_NAME: 'linux'
-      BUILDARCH: ${{ matrix.arch }}
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
     steps:
       - uses: actions/checkout@v2
 
@@ -44,57 +42,17 @@ jobs:
           . check_tags.sh
           echo "::set-env name=SHOULD_BUILD::$SHOULD_BUILD"
 
-      - name: Install build deps
-        run: |
-          triplet=
-          case $BUILDARCH in
-            arm)
-              arch=armhf
-              triplet=arm-linux-gnueabihf
-              ;;
-
-            arm64)
-              arch=arm64
-              triplet=aarch64-linux-gnu
-              ;;
-          esac
-
-          if [[ -n "$triplet" ]]; then
-            sudo sed 's/^deb /deb [arch=amd64] '/g -i /etc/apt/sources.list
-            echo "deb [arch=$arch] http://ports.ubuntu.com/ubuntu-ports/ trusty main" | sudo tee -a /etc/apt/sources.list.d/$arch.list >/dev/null
-            sudo dpkg --add-architecture $arch
-            sudo apt-get update
-            sudo apt-get install libc6-dev-$arch-cross gcc-$triplet g++-$triplet `apt-cache search x11proto | grep ^x11proto | cut -f 1 -d ' '` xz-utils pkg-config
-            mkdir -p dl
-            pushd dl
-            apt-get download libx11-dev:$arch libx11-6:$arch libxkbfile-dev:$arch libxkbfile1:$arch libxau-dev:$arch libxdmcp-dev:$arch libxcb1-dev:$arch libsecret-1-dev:$arch libsecret-1-0:$arch libpthread-stubs0-dev:$arch libglib2.0-dev:$arch libglib2.0-0:$arch libffi-dev:$arch libffi6:$arch zlib1g:$arch libpcre3-dev:$arch libpcre3:$arch
-            for i in *.deb; do ar x $i; sudo tar -C / -xf data.tar.*; rm -f data.tar.*; done
-            popd
-            echo "::set-env name=CC::/usr/bin/$triplet-gcc"
-            echo "::set-env name=CXX::/usr/bin/$triplet-g++"
-            echo "::set-env name=CC_host::/usr/bin/gcc"
-            echo "::set-env name=CXX_host::/usr/bin/g++"
-            echo "::set-env name=PKG_CONFIG_LIBDIR::/usr/lib/$triplet/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig"
-            export CC=/usr/bin/$triplet-gcc
-            export CXX=/usr/bin/$triplet-g++
-            export CC_host=/usr/bin/gcc
-            export CXX_host=/usr/bin/g++
-            export PKG_CONFIG_LIBDIR=/usr/lib/$triplet/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
-          fi
-        if: env.SHOULD_BUILD == 'yes'
-          
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          npm_config_arch: ${{ matrix.arch }}
-          npm_config_target_arch: ${{ matrix.arch }}
+          npm_config_arch: ${{ matrix.npm_arch }}
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Zip release
         run: |
-          cd VSCode-linux-${BUILDARCH}
-          tar czf ../VSCodium-linux-${BUILDARCH}-${LATEST_MS_TAG}.tar.gz .
+          cd VSCode-linux-${VSCODE_ARCH}
+          tar czf ../VSCodium-linux-${VSCODE_ARCH}-${LATEST_MS_TAG}.tar.gz .
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Generate shasums
