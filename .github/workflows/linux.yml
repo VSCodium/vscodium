@@ -15,12 +15,21 @@ jobs:
       fail-fast: false
       matrix:
         vscode_arch: [x64, arm64, armhf]
-        npm_arch: [x64, arm64, armv7l]
-        image: ['vscodehub.azurecr.io/vscode-linux-build-agent:x64', 'vscodehub.azurecr.io/vscode-linux-build-agent:buster-arm64', 'vscodehub.azurecr.io/vscode-linux-build-agent:buster-armhf']
+        include:
+        - vscode_arch: x64
+          npm_arch: x64
+          image: vscodehub.azurecr.io/vscode-linux-build-agent:x64
+        - vscode_arch: arm64
+          npm_arch: arm64
+          image: vscodehub.azurecr.io/vscode-linux-build-agent:buster-arm64
+        - vscode_arch: armhf
+          npm_arch: armv7l
+          image: vscodehub.azurecr.io/vscode-linux-build-agent:buster-armhf
 
     env:
       OS_NAME: 'linux'
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
+
     steps:
       - uses: actions/checkout@v2
 
