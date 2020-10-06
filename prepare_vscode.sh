@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ "$OS_NAME" != "osx" ]]; then
+if [[ "$CI_WINDOWS" == "True" ]]; then
   export npm_config_arch="$BUILDARCH"
   export npm_config_target_arch="$BUILDARCH"
 fi
@@ -21,13 +21,6 @@ if [[ "$OS_NAME" == "osx" ]]; then
 else
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile
   yarn postinstall
-fi
-
-if [[ "$BUILDARCH" == *"arm"* ]]; then
-  sed -i -z 's/,\n[^\n]*arm[^\n]*//' node_modules/vscode-sqlite3/binding.gyp
-  sed -i "s/Release\/sqlite'/Release\/sqlite.node'/" node_modules/vscode-sqlite3/lib/sqlite3.js
-  yarn add -D electron-rebuild
-  npx electron-rebuild -f -w vscode-sqlite3
 fi
 
 mv product.json product.json.bak

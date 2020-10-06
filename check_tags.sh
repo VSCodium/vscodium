@@ -15,7 +15,7 @@ if [ "$GITHUB_TOKEN" != "" ]; then
         echo "Building on Mac because we have no ZIP"
         export SHOULD_BUILD="yes"
       fi
-    elif [[ $BUILDARCH == "arm64" ]]; then
+    elif [[ $VSCODE_ARCH == "arm64" ]]; then
       HAVE_ARM64_DEB=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["arm64.deb"])')
       HAVE_ARM64_TAR=$(echo $VSCODIUM_ASSETS | jq --arg suffix "arm64-$LATEST_MS_TAG.tar.gz" 'map(.name) | contains([$suffix])')
       if [[ "$HAVE_ARM64_DEB" != "true" ]]; then
@@ -29,7 +29,7 @@ if [ "$GITHUB_TOKEN" != "" ]; then
       if [[ "$SHOULD_BUILD" != "yes" ]]; then
         echo "Already have all the Linux arm64 builds"
       fi
-    elif [[ $BUILDARCH == "arm" ]]; then
+    elif [[ $VSCODE_ARCH == "arm" ]]; then
       HAVE_ARM_DEB=$(echo $VSCODIUM_ASSETS | jq 'map(.name) | contains(["armhf.deb"])')
       HAVE_ARM_TAR=$(echo $VSCODIUM_ASSETS | jq --arg suffix "arm-$LATEST_MS_TAG.tar.gz" 'map(.name) | contains([$suffix])')
       if [[ "$HAVE_ARM_DEB" != "true" ]]; then
@@ -69,3 +69,4 @@ if [ "$GITHUB_TOKEN" != "" ]; then
   fi
 fi
 
+echo "SHOULD_BUILD=$SHOULD_BUILD" >> $GITHUB_ENV
