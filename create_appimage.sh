@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ "$BUILDARCH" == "x64" ]]; then
+if [[ "$VSCODE_ARCH" == "x64" ]]; then
   # install a dep needed for this process
   sudo apt-get install desktop-file-utils
 
