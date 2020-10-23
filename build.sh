@@ -37,9 +37,11 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     yarn gulp "vscode-win32-${BUILDARCH}-user-setup"
   else # linux
     yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
-    yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
-    yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
-    . ../create_appimage.sh
+    if [[ "$SKIP_LINUX_PACKAGES" != "True" ]]; then
+      yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
+      yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
+      . ../create_appimage.sh
+    fi
   fi
 
   cd ..
