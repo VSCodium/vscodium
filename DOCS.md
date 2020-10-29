@@ -28,9 +28,11 @@ These can all be disabled.
 
 __Please note that some extensions send telemetry data to Microsoft as well. We have no control over this and can only recommend removing the extension.__ _(For example, the C# extension `ms-vscode.csharp` sends tracking data to Microsoft.)_
 
-### VSCodium Update API
+### Microsoft online service replacements
 
-When searching the `@tag:usesOnlineServices` filter, note that while the "Update: Mode" setting description still says "The updates are fetched from a Microsoft online service", VSCodium's [build script sets](https://github.com/VSCodium/vscodium/blob/master/prepare_vscode.sh#L36) the `updateUrl` field in `product.json` to that of VSCodium's own small [update server](https://github.com/VSCodium/update-api), so enabling that setting won't actually result in any calls to Microsoft servers.
+When searching the `@tag:usesOnlineServices` filter, note that while the "Update: Mode" setting description still says "The updates are fetched from a Microsoft online service", VSCodium's build script [sets the `updateUrl` field](https://github.com/VSCodium/vscodium/blob/master/prepare_vscode.sh#L36) in `product.json` to that of VSCodium's own small [update server](https://github.com/VSCodium/update-api), so enabling that setting won't actually result in any calls to Microsoft servers.
+
+Likewise, while the descriptions for "Extensions: Auto Check Updates" and "Extensions: Auto Update" include the same phrase, VSCodium [replaces](https://github.com/VSCodium/vscodium/blob/master/prepare_vscode.sh#L42) the Visual Studio Marketplace with Open VSX, so these settings won't call Microsoft, either.
 
 ## <a id="extensions-marketplace"></a>Extensions + Marketplace
 
