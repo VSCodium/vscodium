@@ -14,6 +14,7 @@ cd vscode || exit
 
 # apply patches
 patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
+patch -u resources/linux/rpm/code.spec.template -i ../patches/no-replace-product-json.patch
 
 if [[ "$OS_NAME" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional
