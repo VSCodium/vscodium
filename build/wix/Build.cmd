@@ -31,15 +31,16 @@ FOR %%G IN (x64,x86) DO (
   SET CULTURE=en-us
   SET LANGIDS=1033
   SET PLATFORM=%%G
-  SET SETUP_RESOURCES_DIR=.\Resources
+  SET SETUP_RELEASE_DIR=.\releasedir
+  SET SETUP_RESOURCES_DIR=.\resources
   SET REPRO_DIR=.\SourceDir\!PRODUCT_VERSION!\!PLATFORM!
   SET OUTPUT_BASE_FILENAME=VSCodiumSetup-!PLATFORM!-!PRODUCT_VERSION!
   
   "!WIX!bin\heat.exe" dir "!REPRO_DIR!" -out Files-!OUTPUT_BASE_FILENAME!.wxs -t vscodium.xsl -gg -sfrag -scom -sreg -srd -ke -cg "AppFiles" -var var.ProductMajorVersion -var var.ProductMinorVersion -var var.ProductMaintenanceVersion -var var.ReproDir -dr APPLICATIONFOLDER -platform !PLATFORM!
   "!WIX!bin\candle.exe" -arch !PLATFORM! vscodium.wxs Files-!OUTPUT_BASE_FILENAME!.wxs -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -dProductMajorVersion="!PRODUCT_MAJOR_VERSION!" -dProductMinorVersion="!PRODUCT_MINOR_VERSION!" -dProductMaintenanceVersion="!PRODUCT_MAINTENANCE_VERSION!" -dProductId="!PRODUCT_ID!" -dReproDir="!REPRO_DIR!" -dSetupResourcesDir="!SETUP_RESOURCES_DIR!" -dCulture="!CULTURE!"
   REM Only english license exists. Disable MUI features.
-  REM "!WIX!bin\light.exe" vscodium.wixobj Files-!OUTPUT_BASE_FILENAME!.wixobj -ext WixUIExtension -ext WixUtilExtension -spdb -out "ReleaseDir\!OUTPUT_BASE_FILENAME!.msi" -loc "Lang\!PRODUCT_SKU!.!CULTURE!.wxl" -dWixUILicenseRtf="!SETUP_RESOURCES_DIR!\licenses\license.!CULTURE!.rtf" -cultures:!CULTURE! -sice:ICE60 -sice:ICE69
-  "!WIX!bin\light.exe" vscodium.wixobj Files-!OUTPUT_BASE_FILENAME!.wixobj -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -spdb -cc "%TEMP%\vscodium-cab-cache\!PLATFORM!" -out "ReleaseDir\!OUTPUT_BASE_FILENAME!.msi" -loc "Lang\!PRODUCT_SKU!.!CULTURE!.wxl" -dWixUILicenseRtf="!SETUP_RESOURCES_DIR!\LICENSE.rtf" -cultures:!CULTURE! -sice:ICE60 -sice:ICE69
+  REM "!WIX!bin\light.exe" vscodium.wixobj Files-!OUTPUT_BASE_FILENAME!.wixobj -ext WixUIExtension -ext WixUtilExtension -spdb -out "!SETUP_RELEASE_DIR!\!OUTPUT_BASE_FILENAME!.msi" -loc "i18n\!PRODUCT_SKU!.!CULTURE!.wxl" -dWixUILicenseRtf="!SETUP_RESOURCES_DIR!\licenses\license.!CULTURE!.rtf" -cultures:!CULTURE! -sice:ICE60 -sice:ICE69
+  "!WIX!bin\light.exe" vscodium.wixobj Files-!OUTPUT_BASE_FILENAME!.wixobj -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -spdb -cc "%TEMP%\vscodium-cab-cache\!PLATFORM!" -out "!SETUP_RELEASE_DIR!\!OUTPUT_BASE_FILENAME!.msi" -loc "i18n\!PRODUCT_SKU!.!CULTURE!.wxl" -dWixUILicenseRtf="!SETUP_RESOURCES_DIR!\LICENSE.rtf" -cultures:!CULTURE! -sice:ICE60 -sice:ICE69
 
   REM Generate setup translations
   CALL BuildSetupTranslationTransform.cmd de-de 1031
@@ -54,10 +55,10 @@ FOR %%G IN (x64,x86) DO (
   CALL BuildSetupTranslationTransform.cmd zh-tw 1028
 
   REM Add all supported languages to MSI Package attribute
-  CSCRIPT "%ProgramFiles(x86)%\Windows Kits\%WIN_SDK_MAJOR_VERSION%\bin\%WIN_SDK_FULL_VERSION%\x64\WiLangId.vbs" ReleaseDir\!OUTPUT_BASE_FILENAME!.msi Package !LANGIDS!
+  CSCRIPT "%ProgramFiles(x86)%\Windows Kits\%WIN_SDK_MAJOR_VERSION%\bin\%WIN_SDK_FULL_VERSION%\x64\WiLangId.vbs" "!SETUP_RELEASE_DIR!\!OUTPUT_BASE_FILENAME!.msi" Package !LANGIDS!
 
   REM SIGN the MSI with digital signature
-  REM signtool sign /sha1 CertificateHash "ReleaseDir\!OUTPUT_BASE_FILENAME!.msi"
+  REM signtool sign /sha1 CertificateHash "!SETUP_RELEASE_DIR!\!OUTPUT_BASE_FILENAME!.msi"
 
   REM Remove files we do not need any longer.
   RD "%TEMP%\vscodium-cab-cache" /s /q
@@ -78,6 +79,7 @@ SET PRODUCT_MAINTENANCE_VERSION=
 SET PRODUCT_ID=
 SET PRODUCT_VERSION=
 SET PLATFORM=
+SET SETUP_RELEASE_DIR=
 SET SETUP_RESOURCES_DIR=
 SET REPRO_DIR=
 SET OUTPUT_BASE_FILENAME=
