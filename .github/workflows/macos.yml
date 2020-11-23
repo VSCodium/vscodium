@@ -16,22 +16,19 @@ jobs:
       - uses: actions/checkout@v2
         
       - name: Setup Node.js environment
-        uses: actions/setup-node@v1.4.3
+        uses: actions/setup-node@v1
         with:
           node-version: 12.14.1
           
       - name: Clone VSCode repo
         run: |
           . get_repo.sh
-          echo "::set-env name=LATEST_MS_TAG::$LATEST_MS_TAG"
-          echo "::set-env name=LATEST_MS_COMMIT::$LATEST_MS_COMMIT"
 
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           . check_tags.sh
-          echo "::set-env name=SHOULD_BUILD::$SHOULD_BUILD"
           
       - name: Build
         env:
