@@ -26,7 +26,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   yarn gulp minify-vscode
 
   if [[ "$OS_NAME" == "osx" ]]; then
-    yarn gulp vscode-darwin-min-ci
+    yarn gulp vscode-darwin-x64-min-ci
   elif [[ "$CI_WINDOWS" == "True" ]]; then
     cp LICENSE.txt LICENSE.rtf # windows build expects rtf license
     yarn gulp "vscode-win32-${BUILDARCH}-min-ci"
