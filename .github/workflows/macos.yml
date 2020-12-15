@@ -12,6 +12,7 @@ jobs:
     runs-on: macOS-latest
     env:
       OS_NAME: "osx"
+      VSCODE_ARCH: "x64"
     steps:
       - uses: actions/checkout@v2
         
@@ -43,8 +44,8 @@ jobs:
           CERTIFICATE_OSX_ID: ${{ secrets.CERTIFICATE_OSX_ID }}
         if: env.SHOULD_BUILD == 'yes'
         run: |
-          if [ -d "VSCode-darwin" ]; then # just in case the build failed
-            cd VSCode-darwin
+          if [ -d "VSCode-darwin-${VSCODE_ARCH}" ]; then # just in case the build failed
+            cd "VSCode-darwin-${VSCODE_ARCH}"
             export CERTIFICATE_P12=VSCodium.p12
             echo $CERTIFICATE_OSX_P12 | base64 --decode > $CERTIFICATE_P12
             export KEYCHAIN=build.keychain
@@ -58,15 +59,15 @@ jobs:
 
       - name: Zip release
         run: |
-          cd VSCode-darwin
-          zip -r -X -y ../VSCodium-darwin-${LATEST_MS_TAG}.zip ./*.app
+          cd "VSCode-darwin-${VSCODE_ARCH}"
+          zip -r -X -y ../VSCodium-darwin-${VSCODE_ARCH}-${LATEST_MS_TAG}.zip ./*.app
         if: env.SHOULD_BUILD == 'yes'
 
       - name: DMG the release
         run: |
-          pushd VSCode-darwin
+          pushd "VSCode-darwin-${VSCODE_ARCH}"
           npx create-dmg VSCodium.app ..
-          mv "../VSCodium ${LATEST_MS_TAG}.dmg" "../VSCodium.${LATEST_MS_TAG}.dmg"
+          mv "../VSCodium ${LATEST_MS_TAG}.dmg" "../VSCodium.${VSCODE_ARCH}.${LATEST_MS_TAG}.dmg"
           popd
         if: env.SHOULD_BUILD == 'yes'
 
