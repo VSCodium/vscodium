@@ -10,7 +10,7 @@ VSCODIUM_ASSETS=$(echo $GITHUB_RESPONSE | jq '.assets')
 if [ "$GITHUB_TOKEN" != "" ]; then
   if [ "$VSCODIUM_ASSETS" != "null" ]; then
     if [[ "$OS_NAME" == "osx" ]]; then
-      HAVE_MAC=$(echo $VSCODIUM_ASSETS | jq --arg suffix "darwin-$LATEST_MS_TAG.zip" 'map(.name) | contains([$suffix])')
+      HAVE_MAC=$(echo $VSCODIUM_ASSETS | jq --arg suffix "darwin-$VSCODE_ARCH-$LATEST_MS_TAG.zip" 'map(.name) | contains([$suffix])')
       if [[ "$HAVE_MAC" != "true" ]]; then
         echo "Building on Mac because we have no ZIP"
         export SHOULD_BUILD="yes"
