@@ -40,7 +40,7 @@
 #### <a id="install-with-brew"></a>Install with Brew (Mac)
 If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
 ```bash
-brew cask install vscodium
+brew install --cask vscodium
 ```
 
 _Note for Mac OS X Mojave users: if you see "App can't be opened because Apple cannot check it for malicious software" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on Mojave._
