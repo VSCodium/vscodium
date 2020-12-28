@@ -69,6 +69,29 @@ if [[ "$OS_NAME" == "linux" ]]; then
   # as we are renaming the application to vscodium
   # we need to edit a line in the post install template
   sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template
+  
+  # fix the packages metadata
+  # code.appdata.xml
+  sed -i 's|Visual Studio Code|VSCodium|g' src/resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' src/resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://vscodium.com/img/vscodium.png|' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/code.appdata.xml
+  
+  # control.template
+  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|VSCodium Team https://github.com/VSCodium/vscodium/graphs/contributors|'  resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/debian/control.template
+  sed -i 's|Visual Studio Code|VSCodium|g' resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' resources/linux/debian/control.template
+  
+  # code.spec.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' resources/linux/rpm/code.spec.template
+  sed -i 's|Microsoft Corporation|VSCodium Team|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|VSCodium Team https://github.com/VSCodium/vscodium/graphs/contributors|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code|VSCodium|' resources/linux/rpm/code.spec.template
+  
+  # snapcraft.yaml
+  sed -i 's|Visual Studio Code|VSCodium|'  resources/linux/rpm/code.spec.template
 fi
 
 cd ..
