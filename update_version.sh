@@ -99,8 +99,8 @@ cd ..
 
 if [[ "$OS_NAME" == "osx" ]]; then
   # zip, sha1, and sha256 files are all at top level dir
-  ASSET_NAME=VSCodium-darwin-${LATEST_MS_TAG}.zip
-  VERSION_PATH="darwin"
+  ASSET_NAME=VSCodium-darwin-${VSCODE_ARCH}-${LATEST_MS_TAG}.zip
+  VERSION_PATH="darwin/${VSCODE_ARCH}"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 elif [[ "$CI_WINDOWS" == "True" ]]; then
