@@ -27,14 +27,8 @@ fi
 URL_BASE=https://github.com/VSCodium/vscodium/releases/download/${LATEST_MS_TAG}
 
 # to make testing on forks easier
-if [[ "$CI_WINDOWS" == "True" ]]; then
-  # BUILD_REPOSITORY_URI = e.g. https://github.com/VSCodium/vscodium
-  VERSIONS_REPO=$(echo ${BUILD_REPOSITORY_URI} | awk -F"/" '{ print $4 }')/versions
-
-  git config --global core.autocrlf true
-else
-  VERSIONS_REPO="${GITHUB_USERNAME}/versions"
-fi
+VERSIONS_REPO="${GITHUB_USERNAME}/versions"
+echo "Versions repo:" $VERSIONS_REPO
 
 # generateJson <assetName>
 # e.g. generateJson VSCodium-darwin-1.33.0.zip
@@ -103,22 +97,22 @@ if [[ "$OS_NAME" == "osx" ]]; then
   VERSION_PATH="darwin/${VSCODE_ARCH}"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
-elif [[ "$CI_WINDOWS" == "True" ]]; then
+elif [[ "$OS_NAME" == "windows" ]]; then
   # system installer
-  ASSET_NAME=VSCodiumSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
-  VERSION_PATH="win32/${BUILDARCH}/system"
+  ASSET_NAME=VSCodiumSetup-${VSCODE_ARCH}-${LATEST_MS_TAG}.exe
+  VERSION_PATH="win32/${VSCODE_ARCH}/system"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 
   # user installer
-  ASSET_NAME=VSCodiumUserSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
-  VERSION_PATH="win32/${BUILDARCH}/user"
+  ASSET_NAME=VSCodiumUserSetup-${VSCODE_ARCH}-${LATEST_MS_TAG}.exe
+  VERSION_PATH="win32/${VSCODE_ARCH}/user"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 
   # windows archive
-  ASSET_NAME=VSCodium-win32-${BUILDARCH}-${LATEST_MS_TAG}.zip
-  VERSION_PATH="win32/${BUILDARCH}/archive"
+  ASSET_NAME=VSCodium-win32-${VSCODE_ARCH}-${LATEST_MS_TAG}.zip
+  VERSION_PATH="win32/${VSCODE_ARCH}/archive"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 else # linux
