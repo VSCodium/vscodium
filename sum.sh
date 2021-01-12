@@ -1,9 +1,11 @@
 #!/bin/bash
 
+npm install -g checksum
+
 sum_file () {
   if [[ -f "$1" ]]; then
-      shasum -a 256 "$1" > "$1".sha256
-      shasum "$1" > "$1".sha1
+    checksum -a sha256 "$1" > "$1".sha256
+    checksum "$1" > "$1".sha1
   fi
 }
 
