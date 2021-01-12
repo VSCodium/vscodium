@@ -49,6 +49,7 @@ jobs:
           npm_config_arch: ${{ matrix.vscode_arch }}
           npm_config_target_arch: ${{ matrix.vscode_arch }}
         run: ./build.sh
+        shell: bash
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Move/rename build artifacts
