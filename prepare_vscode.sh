@@ -2,11 +2,6 @@
 
 set -e
 
-if [[ "$CI_WINDOWS" == "True" ]]; then
-  export npm_config_arch="$BUILDARCH"
-  export npm_config_target_arch="$BUILDARCH"
-fi
-
 cp -rp src/* vscode/
 cd vscode || exit
 
@@ -72,8 +67,8 @@ if [[ "$OS_NAME" == "linux" ]]; then
   
   # fix the packages metadata
   # code.appdata.xml
-  sed -i 's|Visual Studio Code|VSCodium|g' src/resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' src/resources/linux/code.appdata.xml
+  sed -i 's|Visual Studio Code|VSCodium|g' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' resources/linux/code.appdata.xml
   sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://vscodium.com/img/vscodium.png|' resources/linux/code.appdata.xml
   sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/code.appdata.xml
   
