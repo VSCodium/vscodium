@@ -17,7 +17,7 @@ if [ "$GITHUB_TOKEN" != "" ]; then
       fi
     elif [[ "$OS_NAME" == "windows" ]]; then
       if [[ $VSCODE_ARCH == "arm64" ]]; then
-        HAVE_ARM64_SYS=$(echo $VSCODIUM_ASSETS | jq --arg suffix "$VSCODE_ARCH-$LATEST_MS_TAG.exe" 'map(.name) | contains([$suffix])')
+        HAVE_ARM64_SYS=$(echo $VSCODIUM_ASSETS | jq --arg suffix "VSCodiumSetup-$VSCODE_ARCH-$LATEST_MS_TAG.exe" 'map(.name) | contains([$suffix])')
         HAVE_ARM64_USR=$(echo $VSCODIUM_ASSETS | jq --arg suffix "UserSetup-$VSCODE_ARCH-$LATEST_MS_TAG.exe" 'map(.name) | contains([$suffix])')
         HAVE_ARM64_ZIP=$(echo $VSCODIUM_ASSETS | jq --arg suffix "win32-$VSCODE_ARCH-$LATEST_MS_TAG.zip" 'map(.name) | contains([$suffix])')
         if [[ "$HAVE_ARM64_SYS" != "true" ]]; then
@@ -36,7 +36,7 @@ if [ "$GITHUB_TOKEN" != "" ]; then
           echo "Already have all the Windows arm64 builds"
         fi
       elif [[ $VSCODE_ARCH == "ia32" ]]; then
-        HAVE_IA32_SYS=$(echo $VSCODIUM_ASSETS | jq --arg suffix "$VSCODE_ARCH-$LATEST_MS_TAG.exe" 'map(.name) | contains([$suffix])')
+        HAVE_IA32_SYS=$(echo $VSCODIUM_ASSETS | jq --arg suffix "VSCodiumSetup-$VSCODE_ARCH-$LATEST_MS_TAG.exe" 'map(.name) | contains([$suffix])')
         HAVE_IA32_USR=$(echo $VSCODIUM_ASSETS | jq --arg suffix "UserSetup-$VSCODE_ARCH-$LATEST_MS_TAG.exe" 'map(.name) | contains([$suffix])')
         HAVE_IA32_ZIP=$(echo $VSCODIUM_ASSETS | jq --arg suffix "win32-$VSCODE_ARCH-$LATEST_MS_TAG.zip" 'map(.name) | contains([$suffix])')
         if [[ "$HAVE_IA32_SYS" != "true" ]]; then
@@ -55,7 +55,7 @@ if [ "$GITHUB_TOKEN" != "" ]; then
           echo "Already have all the Windows ia32 builds"
         fi
       else # Windows x64
-        HAVE_X64_SYS=$(echo $VSCODIUM_ASSETS | jq --arg suffix "$VSCODE_ARCH-$LATEST_MS_TAG.exe" 'map(.name) | contains([$suffix])')
+        HAVE_X64_SYS=$(echo $VSCODIUM_ASSETS | jq --arg suffix "VSCodiumSetup-$VSCODE_ARCH-$LATEST_MS_TAG.exe" 'map(.name) | contains([$suffix])')
         HAVE_X64_USR=$(echo $VSCODIUM_ASSETS | jq --arg suffix "UserSetup-$VSCODE_ARCH-$LATEST_MS_TAG.exe" 'map(.name) | contains([$suffix])')
         HAVE_X64_ZIP=$(echo $VSCODIUM_ASSETS | jq --arg suffix "win32-$VSCODE_ARCH-$LATEST_MS_TAG.zip" 'map(.name) | contains([$suffix])')
         if [[ "$HAVE_X64_SYS" != "true" ]]; then
