@@ -123,7 +123,7 @@ If you would like to see the commands we run to build `vscode` into VSCodium bin
 The builds are run every day, but exit early if there isn't a new release from Microsoft. 
 
 ## <a id="supported-os"></a>Supported OS
-- [x] OS X (`zip`, `dmg`)
+- [x] macOS (`zip`, `dmg`)
 - [x] Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
 - [x] Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
 - [x] Linux arm64 (`deb`, `tar.gz`)
