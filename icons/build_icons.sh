@@ -13,15 +13,12 @@ check_programs() {
 
 check_programs "icns2png" "composite" "convert" "png2icns" "icotool"
 
-pwd
-
 for file in vscode/resources/darwin/*
 do
 	if [ -f "$file" ]; then
 		name=$(basename $file '.icns')
 
 		if [[ $name != 'code' ]] && [ ! -f "src/resources/darwin/$name.icns" ]; then
-			echo "src/resources/darwin/$name.icns"
 			icns2png -x -s 512x512 $file -o .
 
 			composite -blend 100% -geometry +323+365 icons/corner_512.png "${name}_512x512x32.png" "$name.png"
