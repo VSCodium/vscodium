@@ -22,7 +22,7 @@ do
 			icns2png -x -s 512x512 $file -o .
 
 			composite -blend 100% -geometry +323+365 icons/corner_512.png "${name}_512x512x32.png" "$name.png"
-			composite -geometry +338+365 icons/code_138.png "$name.png" "$name.png"
+			composite icons/code_darwin.png "$name.png" "$name.png"
 
 			convert "$name.png" -resize 256x256 "${name}_256.png"
 
