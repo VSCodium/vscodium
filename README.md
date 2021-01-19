@@ -43,7 +43,7 @@ If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
 brew install --cask vscodium
 ```
 
-_Note for Mac OS X Mojave users: if you see "App can't be opened because Apple cannot check it for malicious software" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on Mojave._
+_Note for Mac macOS Mojave users: if you see "App can't be opened because Apple cannot check it for malicious software" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on Mojave._
 
 #### <a id="install-with-winget"></a>Install with Windows Package Manager (WinGet)
 If you use Windows and have [Windows Package Manager](https://github.com/microsoft/winget-cli) installed:
@@ -118,7 +118,7 @@ According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace
 Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
 
 ### How are the VSCodium binaries built?
-If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflow` (for Linux and OS X builds) and the `win32-build.yml` file (for Windows builds). These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
+If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflow` (for Linux and macOS builds) and the `win32-build.yml` file (for Windows builds). These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
 
 The builds are run every day, but exit early if there isn't a new release from Microsoft. 
 
