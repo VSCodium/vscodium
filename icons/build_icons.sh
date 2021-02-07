@@ -49,3 +49,7 @@ do
 		fi
 	fi
 done
+
+if [ ! -f "src/resources/win32/code.ico" ]; then
+	convert "src/resources/linux/code.png" -define icon:auto-resize=256,128,96,64,48,32,24,20,16 "src/resources/win32/code.ico"
+fi
