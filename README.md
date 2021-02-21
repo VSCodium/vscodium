@@ -19,18 +19,24 @@
 **This is not a fork. This is a repository of scripts to automatically build Microsoft's `vscode` repository into freely-licensed binaries with a community-driven default configuration.**
 
 ## Table of Contents
-- [Download/Install](#download-install)
-  - [Install with Brew](#install-with-brew)
-  - [Install with Windows Package Manager (WinGet)](#install-with-winget)
-  - [Install with Chocolatey](#install-with-choco)
-  - [Install with Scoop](#install-with-scoop)
-  - [Install with snap](#install-with-snap)
-  - [Install with Package Manager](#install-with-package-manager)
-  - [Install on Arch Linux](#install-on-arch-linux)
-  - [Flatpak Option](#flatpak)
-- [Why Does This Exist](#why)
-- [More Info](#more-info)
-- [Supported OS](#supported-os)
+- [Table of Contents](#table-of-contents)
+- [<a id="download-install"></a>Download/Install](#downloadinstall)
+    - [<a id="install-with-brew"></a>Install with Brew (Mac)](#install-with-brew-mac)
+    - [<a id="install-with-winget"></a>Install with Windows Package Manager (WinGet)](#install-with-windows-package-manager-winget)
+    - [<a id="install-with-choco"></a>Install with Chocolatey (Windows)](#install-with-chocolatey-windows)
+    - [<a id="install-with-scoop"></a>Install with Scoop (Windows)](#install-with-scoop-windows)
+    - [<a id="install-with-snap"></a>Install with snap (Linux)](#install-with-snap-linux)
+    - [<a id="install-with-package-manager"></a>Install with Package Manager (Linux)](#install-with-package-manager-linux)
+    - [<a id="install-on-arch-linux"></a>Install on Arch Linux](#install-on-arch-linux)
+    - [<a id="flatpak"></a>Flatpak Option (Linux)](#flatpak-option-linux)
+- [<a id="why"></a>Why Does This Exist](#why-does-this-exist)
+- [<a id="more-info"></a>More Info](#more-info)
+  - [Documentation](#documentation)
+  - [Extensions and the Marketplace](#extensions-and-the-marketplace)
+  - [How are the VSCodium binaries built?](#how-are-the-vscodium-binaries-built)
+- [<a id="supported-os"></a>Supported OS](#supported-os)
+- [<a id="donate"></a>Donate](#donate)
+- [<a id="license"></a>License](#license)
 
 ## <a id="download-install"></a>Download/Install
 :tada: :tada: [Download latest release here](https://github.com/VSCodium/vscodium/releases) :tada: :tada:
@@ -139,4 +145,4 @@ Special thanks to:
 - @jaredreich for the previous logo
 
 ## <a id="license"></a>License
-MIT
+[MIT License](https://github.com/VSCodium/vscodium/blob/master/LICENSE).
