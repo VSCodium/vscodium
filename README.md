@@ -145,4 +145,4 @@ Special thanks to:
 - @jaredreich for the previous logo
 
 ## <a id="license"></a>License
-[MIT License](https://github.com/VSCodium/vscodium/blob/master/LICENSE).
+[MIT](https://github.com/VSCodium/vscodium/blob/master/LICENSE).
