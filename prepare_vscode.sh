@@ -16,7 +16,6 @@ if [[ "$OS_NAME" == "osx" ]]; then
   npm_config_argv='{"original":["--ignore-optional"]}' yarn postinstall
 else
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile
-  yarn postinstall
 fi
 
 mv product.json product.json.bak
