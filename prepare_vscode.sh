@@ -9,7 +9,7 @@ cd vscode || exit
 
 # apply patches
 patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
-patch -u resources/linux/rpm/code.spec.template -i ../patches/no-replace-product-json.patch
+patch -u resources/linux/rpm/code.spec.template -i ../patches/fix-rpm-spec.patch
 git apply ../patches/binary-name.patch
 
 if [[ "$OS_NAME" == "osx" ]]; then
@@ -17,7 +17,6 @@ if [[ "$OS_NAME" == "osx" ]]; then
   npm_config_argv='{"original":["--ignore-optional"]}' yarn postinstall
 else
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile
-  yarn postinstall
 fi
 
 mv product.json product.json.bak

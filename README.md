@@ -2,7 +2,7 @@
     <br />
     <img src="./src/resources/linux/code.png" alt="VSCodium Logo" width="200"/>
     <h1>VSCodium</h1>
-    <h3>Free/Libre Open Source Software Binaries of VSCode</h3>
+    <h3>Free/Libre Open Source Software Binaries of VS Code</h3>
 </div>
 
 <div id="badges" align="center">
@@ -30,7 +30,7 @@
   - [Flatpak Option](#flatpak)
 - [Why Does This Exist](#why)
 - [More Info](#more-info)
-- [Supported OS](#supported-os)
+- [Supported Platforms](#supported-platforms)
 
 ## <a id="download-install"></a>Download/Install
 :tada: :tada: [Download latest release here](https://github.com/VSCodium/vscodium/releases) :tada: :tada:
@@ -64,20 +64,20 @@ scoop bucket add extras
 scoop install vscodium
 ```
 
-#### <a id="install-with-snap"></a>Install with snap (Linux)
+#### <a id="install-with-snap"></a>Install with snap (GNU/Linux)
 VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium), published by the [Snapcrafters](https://github.com/snapcrafters/codium) community.
-If your Linux distribution has support for [snaps](https://snapcraft.io/docs/installing-snapd):
+If your GNU/Linux distribution has support for [snaps](https://snapcraft.io/docs/installing-snapd):
 ```bash
 snap install codium
 ```
 
-#### <a id="install-with-package-manager"></a>Install with Package Manager (Linux)
+#### <a id="install-with-package-manager"></a>Install with Package Manager (GNU/Linux)
 You can always install using the downloads (deb, rpm, tar) on the [releases page](https://github.com/VSCodium/vscodium/releases), but you can also install using your favorite package manager and get automatic updates. [@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo). Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker. 
 
 #### <a id="install-on-arch-linux"></a>Install on Arch Linux
 VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository) as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/), maintained by [@binex-dsk](https://github.com/binex-dsk). An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/), maintained by [@cedricroijakkers](https://github.com/cedricroijakkers), is also available should you wish to compile from source yourself.
 
-#### <a id="flatpak"></a>Flatpak Option (Linux)
+#### <a id="flatpak"></a>Flatpak Option (GNU/Linux)
 VSCodium is (unofficially) available as a Flatpak app [here](https://flathub.org/apps/details/com.vscodium.codium) and the build repo is [here](https://github.com/flathub/com.vscodium.codium). If your distribution has support for [flatpak](https://flathub.org), and you have enabled the [flathub repo](https://flatpak.org/setup/):
 ```bash
 flatpak install flathub com.vscodium.codium
@@ -86,7 +86,7 @@ flatpak run com.vscodium.codium
 ```
 
 ## <a id="why"></a>Why Does This Exist
-This repository contains build files to generate free release binaries of Microsoft's VSCode. When we speak of "free software", we're talking about freedom, not price.
+This repository contains build files to generate free release binaries of Microsoft's VS Code. When we speak of "free software", we're talking about freedom, not price.
 
 Microsoft's releases of Visual Studio Code are licensed under [this not-FLOSS license](https://code.visualstudio.com/license) and contain telemetry/tracking. According to [this comment](https://github.com/Microsoft/vscode/issues/60#issuecomment-161792005) from a Visual Studio Code maintainer: 
 
@@ -96,7 +96,7 @@ Microsoft's releases of Visual Studio Code are licensed under [this not-FLOSS li
 
 This repo exists so that you don't have to download+build from source. The build scripts in this repo clone Microsoft's vscode repo, run the build commands, and upload the resulting binaries to [GitHub releases](https://github.com/VSCodium/vscodium/releases). __These binaries are licensed under the MIT license. Telemetry is disabled.__
 
-If you want to build from source yourself, head over to [Microsoft's vscode repo](https://github.com/Microsoft/vscode) and follow their [instructions](https://github.com/Microsoft/vscode/wiki/How-to-Contribute#build-and-run). This repo exists to make it easier to get the latest version of MIT-licensed VSCode.
+If you want to build from source yourself, head over to [Microsoft's vscode repo](https://github.com/Microsoft/vscode) and follow their [instructions](https://github.com/Microsoft/vscode/wiki/How-to-Contribute#build-and-run). This repo exists to make it easier to get the latest version of MIT-licensed VS Code.
 
 Microsoft's build process (which we are running to build the binaries) does download additional files. This was brought up in [Microsoft/vscode#49159](https://github.com/Microsoft/vscode/issues/49159) and [Microsoft/vscode#45978](https://github.com/Microsoft/vscode/issues/45978). These are the packages downloaded during build:
 
@@ -118,18 +118,21 @@ According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace
 Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
 
 ### How are the VSCodium binaries built?
-If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflow` (for Linux and macOS builds) and the `win32-build.yml` file (for Windows builds). These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
+If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflow` (for GNU/Linux and macOS builds) and the `win32-build.yml` file (for Windows builds). These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
 
 The builds are run every day, but exit early if there isn't a new release from Microsoft. 
 
-## <a id="supported-os"></a>Supported OS
-- [x] macOS (`zip`, `dmg`)
-- [x] Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
-- [x] Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
-- [x] Linux arm64 (`deb`, `tar.gz`)
-- [x] Linux armhf (`deb`, `tar.gz`)
-- [x] Windows x64
-- [x] Windows x86
+## <a id="supported-platforms"></a>Supported Platforms
+The minimal version is limitted by the core component Electron, you may want to check its [supported platform list](https://www.electronjs.org/docs/tutorial/support#supported-platforms).
+- [x] macOS (`zip`, `dmg`) OS X 10.10 or newer x64
+- [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64 via x64 emulation, see [status issue](https://github.com/VSCodium/vscodium/issues/597)
+- [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
+- [x] GNU/Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
+- [x] GNU/Linux arm64 (`deb`, `tar.gz`)
+- [x] GNU/Linux armhf (`deb`, `tar.gz`)
+- [x] Windows 7 or newer x64
+- [x] Windows 7 or newer x86
+- [x] Windows 10 arm64
   
 ## <a id="donate"></a>Donate
 If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N`.
@@ -139,4 +142,4 @@ Special thanks to:
 - @jaredreich for the previous logo
 
 ## <a id="license"></a>License
-MIT
+[MIT](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
