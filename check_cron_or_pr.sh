@@ -3,11 +3,13 @@
 set -e
 
 if [[ $github.event.number ]]; then
-	# it's a PR
+	echo "It's a PR"
 	
 	export SHOULD_BUILD="yes"
 	export SHOULD_DEPLOY="no"
 else
+	echo "It's a cron"
+	
 	export SHOULD_DEPLOY="yes"
 fi
 
