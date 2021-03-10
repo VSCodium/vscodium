@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: 12.14.1
           
+      - name: Check PR or cron
+        run: |
+          . check_cron_or_pr.sh
+
       - name: Clone VSCode repo
         run: |
           . get_repo.sh
@@ -30,6 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           . check_tags.sh
+        if: env.SHOULD_DEPLOY == 'yes'
           
       - name: Build
         env:
@@ -42,7 +47,7 @@ jobs:
           CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
           CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
           CERTIFICATE_OSX_ID: ${{ secrets.CERTIFICATE_OSX_ID }}
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         run: |
           if [ -d "VSCode-darwin-${VSCODE_ARCH}" ]; then # just in case the build failed
             cd "VSCode-darwin-${VSCODE_ARCH}"
@@ -61,7 +66,7 @@ jobs:
         run: |
           cd "VSCode-darwin-${VSCODE_ARCH}"
           zip -r -X -y ../VSCodium-darwin-${VSCODE_ARCH}-${LATEST_MS_TAG}.zip ./*.app
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: DMG the release
         run: |
@@ -69,15 +74,15 @@ jobs:
           npx create-dmg VSCodium.app ..
           mv "../VSCodium ${LATEST_MS_TAG}.dmg" "../VSCodium.${VSCODE_ARCH}.${LATEST_MS_TAG}.dmg"
           popd
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Generate shasums
         run: ./sum.sh
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
       
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         with:
           tag_name: ${{ env.LATEST_MS_TAG }}
           files: |
@@ -88,7 +93,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update versions repo
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         run: ./update_version.sh
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}

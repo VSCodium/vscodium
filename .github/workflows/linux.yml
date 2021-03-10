@@ -42,6 +42,10 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn
 
+      - name: Check PR or cron
+        run: |
+          . check_cron_or_pr.sh
+
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
@@ -49,6 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
+        if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Build
         env:
@@ -61,15 +66,15 @@ jobs:
         run: |
           cd VSCode-linux-${VSCODE_ARCH}
           tar czf ../VSCodium-linux-${VSCODE_ARCH}-${LATEST_MS_TAG}.tar.gz .
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Generate shasums
         run: ./sum.sh
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
       
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         with:
           tag_name: ${{ env.LATEST_MS_TAG }}
           files: |
@@ -84,7 +89,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update versions repo
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         run: ./update_version.sh
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}

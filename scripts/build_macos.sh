@@ -1,7 +1,5 @@
 #!/bin/bash
 
-nvm use 12
-
 rm -rf VSCode*
 rm -rf vscode
 
