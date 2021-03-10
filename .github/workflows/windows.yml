@@ -52,10 +52,12 @@ jobs:
       - name: Compute cache key
         id: yarnCacheKey
         run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Get yarn cache directory path
         id: yarnCacheDirPath
         run: echo "::set-output name=dir::$(yarn cache dir)"
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Cache yarn directory
         uses: actions/cache@v2
