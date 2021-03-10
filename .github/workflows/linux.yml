@@ -68,8 +68,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.yarnCacheDirPath.outputs.dir }}
-          key: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
-          restore-keys: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-
+          key: linux-${{ matrix.npm_arch }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
+          restore-keys: linux-${{ matrix.npm_arch }}-yarnCacheDir-
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
