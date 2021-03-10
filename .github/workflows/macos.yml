@@ -35,7 +35,23 @@ jobs:
         run: |
           . check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
-          
+
+      - name: Compute cache key
+        id: yarnCacheKey
+        run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
+
+      - name: Get yarn cache directory path
+        id: yarnCacheDirPath
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache yarn directory
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
+          key: ${{ runner.os }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
+          restore-keys: ${{ runner.os }}-yarnCacheDir-
+        if: env.SHOULD_BUILD == 'yes'
+
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
