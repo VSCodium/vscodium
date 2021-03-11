@@ -24,15 +24,12 @@ diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src
 index 50c4460..bf73260 100644
 --- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
 +++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-@@ -430,7 +430,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
- 
+@@ -431,4 +431,4 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  		// macOS
- 		if (this.environmentService.isBuilt) {
--			return join(this.environmentService.appRoot, 'bin', 'code');
-+			return join(this.environmentService.appRoot, 'bin', `${product.applicationName}`);
+ 		if (this.environmentMainService.isBuilt) {
+-			return join(this.environmentMainService.appRoot, 'bin', 'code');
++			return join(this.environmentMainService.appRoot, 'bin', `${product.applicationName}`);
  		}
- 
- 		return join(this.environmentService.appRoot, 'scripts', 'code-cli.sh');
 diff --git a/src/vs/workbench/contrib/cli/node/cli.contribution.ts b/src/vs/workbench/contrib/cli/node/cli.contribution.ts
 index 30972a4..0a9435c 100644
 --- a/src/vs/workbench/contrib/cli/node/cli.contribution.ts
