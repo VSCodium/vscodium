@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ $github.event.number ]]; then
+if [[ $github.event_name == "pull_request" ]]; then
 	echo "It's a PR"
 	
 	export SHOULD_BUILD="yes"
