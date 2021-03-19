@@ -41,15 +41,38 @@ The `product.json` file is set up to use [open-vsx.org](https://open-vsx.org/) a
 * Ask the extension maintainers to publish to [open-vsx.org](https://open-vsx.org/) in addition to the VS Code Marketplace. The publishing process is documented in the [Open VSX Wiki](https://github.com/eclipse/openvsx/wiki/Publishing-Extensions).
 * Create a pull request to [this repository](https://github.com/open-vsx/publish-extensions) to have the [@open-vsx](https://github.com/open-vsx) service account publish the extensions for you.
 * Download and [install the vsix files](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
-* Modify the `extensionsGallery` section of the `product.json` file in your VSCodium installation to use the VS Code Marketplace as shown below. However, note that [it is not clear whether this is legal](https://github.com/microsoft/vscode/issues/31168).
-  ```json
-  "extensionsGallery": {
-      "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
-      "itemUrl": "https://marketplace.visualstudio.com/items"
-  }
-  ```
 
 See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on the motivation behind Open VSX.
+
+### How to use the VS Code Marketplace
+
+You can switch and use the VS Code marketplace by using the following solutions. However, note that [it is not clear whether this is legal](https://github.com/microsoft/vscode/issues/31168).
+
+With the following environment variables:
+- `VSCODE_GALLERY_SERVICE_URL='https://marketplace.visualstudio.com/_apis/public/gallery'`
+- `VSCODE_GALLERY_CACHE_URL='https://vscode.blob.core.windows.net/gallery/index'`
+- `VSCODE_GALLERY_ITEM_URL='https://marketplace.visualstudio.com/items'`
+- `VSCODE_GALLERY_CONTROL_URL=''`
+- `VSCODE_GALLERY_RECOMMENDATIONS_URL=''`
+
+Or by creating a custom `product.json` at the following location:
+- Windows: `%USER%\AppData\Roaming\VSCodium`
+- macOS: `~/Library/Application Support/VSCodium`
+- Linux: `~/.config/VSCodium`
+
+with the content:
+
+```json
+{
+  "extensionsGallery": {
+    "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
+    "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
+    "itemUrl": "https://marketplace.visualstudio.com/items",
+    "controlUrl": "",
+    "recommendationsUrl": ""
+  }
+}
+```
 
 ### Proprietary Debugging Tools
 
