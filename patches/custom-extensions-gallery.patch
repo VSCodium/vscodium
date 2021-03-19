@@ -1,0 +1,28 @@
+diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
+index 2bea85740c..d0e9da036c 100644
+--- a/src/vs/platform/product/common/product.ts
++++ b/src/vs/platform/product/common/product.ts
+@@ -57,6 +57,23 @@ else {
+ 		});
+ 	}
+ 
++	// Set user-defined extension gallery
++	if (
++		env['VSCODIUM_EXTENSIONS_GALLERY_SERVICE_URL']
++		|| env['VSCODIUM_EXTENSIONS_GALLERY_ITEM_URL']
++		|| env['VSCODIUM_EXTENSIONS_GALLERY_CONTROL_URL']
++		|| env['VSCODIUM_EXTENSIONS_GALLERY_RECOMMENDATIONS_URL']
++	) {
++		Object.assign(product, {
++			extensionsGallery: {
++				serviceUrl: env['VSCODIUM_EXTENSIONS_GALLERY_SERVICE_URL'],
++				itemUrl: env['VSCODIUM_EXTENSIONS_GALLERY_ITEM_URL'],
++				controlUrl: env['VSCODIUM_EXTENSIONS_GALLERY_CONTROL_URL'],
++				recommendationsUrl: env['VSCODIUM_EXTENSIONS_GALLERY_RECOMMENDATIONS_URL']
++			}
++		})
++	}
++
+ 	Object.assign(product, {
+ 		version: pkg.version
+ 	});
