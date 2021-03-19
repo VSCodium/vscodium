@@ -8,9 +8,9 @@ cd vscode || exit
 ../update_settings.sh
 
 # apply patches
-patch -u src/vs/platform/product/common/product.ts -i ../patches/custom-extensions-gallery.patch
 patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
 patch -u resources/linux/rpm/code.spec.template -i ../patches/fix-rpm-spec.patch
+git apply --ignore-whitespace ../patches/custom-gallery.patch
 
 if [[ "$OS_NAME" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional
