@@ -3,7 +3,11 @@
 ## Table of Contents
 
 - [Getting all the Telemetry Out](#disable-telemetry)
+  - [Replacements to Microsoft Online Services](#replacement-online-services)
 - [Extensions + Marketplace](#extensions-marketplace)
+  - [How to use the VS Code Marketplace](#howto-vscode-marketplace)
+  - [Proprietary Debugging Tools](#proprietary-debugging-tools)
+  - [Proprietary Extensions](#proprietary-extensions)
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
 - [How do I run VSCodium in portable mode?](#portable)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
@@ -28,7 +32,7 @@ These can all be disabled.
 
 __Please note that some extensions send telemetry data to Microsoft as well. We have no control over this and can only recommend removing the extension.__ _(For example, the C# extension `ms-vscode.csharp` sends tracking data to Microsoft.)_
 
-### Replacements to Microsoft Online Services
+### <a id="replacement-online-services"></a>Replacements to Microsoft Online Services
 
 When searching the `@tag:usesOnlineServices` filter, note that while the "Update: Mode" setting description still says "The updates are fetched from a Microsoft online service", VSCodium's build script [sets the `updateUrl` field](https://github.com/VSCodium/vscodium/blob/master/prepare_vscode.sh#L36) in `product.json` to that of VSCodium's own small [update server](https://github.com/VSCodium/update-api), so enabling that setting won't actually result in any calls to Microsoft servers.
 
@@ -41,23 +45,46 @@ The `product.json` file is set up to use [open-vsx.org](https://open-vsx.org/) a
 * Ask the extension maintainers to publish to [open-vsx.org](https://open-vsx.org/) in addition to the VS Code Marketplace. The publishing process is documented in the [Open VSX Wiki](https://github.com/eclipse/openvsx/wiki/Publishing-Extensions).
 * Create a pull request to [this repository](https://github.com/open-vsx/publish-extensions) to have the [@open-vsx](https://github.com/open-vsx) service account publish the extensions for you.
 * Download and [install the vsix files](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
-* Modify the `extensionsGallery` section of the `product.json` file in your VSCodium installation to use the VS Code Marketplace as shown below. However, note that [it is not clear whether this is legal](https://github.com/microsoft/vscode/issues/31168).
-  ```json
-  "extensionsGallery": {
-      "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
-      "itemUrl": "https://marketplace.visualstudio.com/items"
-  }
-  ```
 
 See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on the motivation behind Open VSX.
 
-### Proprietary Debugging Tools
+### <a id="howto-vscode-marketplace"></a>How to use the VS Code Marketplace
+
+You can switch and use the VS Code marketplace by using the following solutions. However, note that [it is not clear whether this is legal](https://github.com/microsoft/vscode/issues/31168).
+
+With the following environment variables:
+- `VSCODE_GALLERY_SERVICE_URL='https://marketplace.visualstudio.com/_apis/public/gallery'`
+- `VSCODE_GALLERY_CACHE_URL='https://vscode.blob.core.windows.net/gallery/index'`
+- `VSCODE_GALLERY_ITEM_URL='https://marketplace.visualstudio.com/items'`
+- `VSCODE_GALLERY_CONTROL_URL=''`
+- `VSCODE_GALLERY_RECOMMENDATIONS_URL=''`
+
+Or by creating a custom `product.json` at the following location:
+- Windows: `%USER%\AppData\Roaming\VSCodium`
+- macOS: `~/Library/Application Support/VSCodium`
+- Linux: `~/.config/VSCodium`
+
+with the content:
+
+```json
+{
+  "extensionsGallery": {
+    "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
+    "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
+    "itemUrl": "https://marketplace.visualstudio.com/items",
+    "controlUrl": "",
+    "recommendationsUrl": ""
+  }
+}
+```
+
+### <a id="proprietary-debugging-tools"></a>Proprietary Debugging Tools
 
 The debugger provided with Microsoft's [C# extension](https://github.com/OmniSharp/omnisharp-vscode) as well as the (Windows) debugger provided with their [C++ extension](https://github.com/Microsoft/vscode-cpptools) are very restrictively licensed to only work with the offical Visual Studio Code build. See [this comment in the C# extension repo](https://github.com/OmniSharp/omnisharp-vscode/issues/2491#issuecomment-418811364) and [this comment in the C++ extension repo](https://github.com/Microsoft/vscode-cpptools/issues/21#issuecomment-248349017).
 
 A workaround exists to get debugging working in C# projects, by using Samsung's opensource [netcoredbg](https://github.com/Samsung/netcoredbg) package. See [this comment](https://github.com/VSCodium/vscodium/issues/82#issue-409806641) for instructions on how to set that up.
 
-### Proprietary Extensions
+### <a id="proprietary-extensions"></a>Proprietary Extensions
 
 Like the debuggers mentioned above, some extensions you may find in the marketplace (like the [Remote Development Extensions](https://code.visualstudio.com/docs/remote/remote-overview)) only function with the offical Visual Studio Code build. You can work around this by adding the extension's internal ID (found on the extension's page) to the `extensionAllowedProposedApi` property of the product.json in your VSCodium installation. For example:
 

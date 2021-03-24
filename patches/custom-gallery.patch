@@ -1,0 +1,74 @@
+diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
+index 2730ee7..4d46c23 100644
+--- a/src/vs/platform/product/common/product.ts
++++ b/src/vs/platform/product/common/product.ts
+@@ -8,6 +8,7 @@ import { isWeb } from 'vs/base/common/platform';
+ import { env } from 'vs/base/common/process';
+ import { FileAccess } from 'vs/base/common/network';
+ import { dirname, joinPath } from 'vs/base/common/resources';
++import { getDefaultUserDataPath } from 'vs/base/node/userDataPath';
+ 
+ let product: IProductConfiguration;
+ 
+@@ -47,6 +48,29 @@ else {
+ 	product = require.__$__nodeRequire(joinPath(rootPath, 'product.json').fsPath);
+ 	const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string; };
+ 
++	// Merge user-customized product.json
++	try {
++		const merge = (...objects: any[]) =>
++			objects.reduce((result, current) => {
++				Object.keys(current).forEach((key) => {
++					if (Array.isArray(result[key]) && Array.isArray(current[key])) {
++						result[key] = current[key];
++					} else if (typeof result[key] === 'object' && typeof current[key] === 'object') {
++						result[key] = merge(result[key], current[key]);
++					} else {
++						result[key] = current[key];
++					}
++				});
++
++				return result;
++			}, {}) as any;
++
++		const userProduct = require.__$__nodeRequire(joinPath(FileAccess.asFileUri(getDefaultUserDataPath(), require), 'product.json').fsPath);
++
++		product = merge(product, userProduct)
++	} catch (ex) {
++	}
++
+ 	// Running out of sources
+ 	if (env['VSCODE_DEV']) {
+ 		Object.assign(product, {
+@@ -56,6 +80,19 @@ else {
+ 		});
+ 	}
+ 
++	// Set user-defined extension gallery
++	const { serviceUrl, cacheUrl, itemUrl, controlUrl, recommendationsUrl } = product.extensionsGallery || {}
++
++	Object.assign(product, {
++		extensionsGallery: {
++			serviceUrl: env['VSCODE_GALLERY_SERVICE_URL'] || serviceUrl,
++			cacheUrl: env['VSCODE_GALLERY_CACHE_URL'] || cacheUrl,
++			itemUrl: env['VSCODE_GALLERY_ITEM_URL'] || itemUrl,
++			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
++			recommendationsUrl: env['VSCODE_GALLERY_RECOMMENDATIONS_URL'] || recommendationsUrl
++		}
++	})
++
+ 	Object.assign(product, {
+ 		version: pkg.version
+ 	});
+diff --git a/src/vs/platform/product/common/productService.ts b/src/vs/platform/product/common/productService.ts
+index 07263ca..0328f58 100644
+--- a/src/vs/platform/product/common/productService.ts
++++ b/src/vs/platform/product/common/productService.ts
+@@ -67,6 +67,7 @@ export interface IProductConfiguration {
+ 
+ 	readonly extensionsGallery?: {
+ 		readonly serviceUrl: string;
++		readonly cacheUrl?: string;
+ 		readonly itemUrl: string;
+ 		readonly controlUrl: string;
+ 		readonly recommendationsUrl: string;
