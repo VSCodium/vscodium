@@ -1,9 +1,8 @@
-# powershell -ExecutionPolicy ByPass -File build_windows.ps1
+# powershell -ExecutionPolicy ByPass -File .\build\build_windows.ps1
 
 $env:Path += ";C:\Program Files\Git\bin"
 
 Remove-Item -Recurse -Force VSCode*
-Remove-Item -Recurse -Force vscode
 
 bash ./get_repo.sh
 

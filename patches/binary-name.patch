@@ -1,0 +1,45 @@
+diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
+index 6d3a369..57009d4 100644
+--- a/build/gulpfile.vscode.js
++++ b/build/gulpfile.vscode.js
+@@ -276,7 +276,7 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 			all = es.merge(all, gulp.src('resources/linux/code.png', { base: '.' }));
+ 		} else if (platform === 'darwin') {
+ 			const shortcut = gulp.src('resources/darwin/bin/code.sh')
+-				.pipe(rename('bin/code'));
++				.pipe(rename('bin/' + product.applicationName));
+ 
+ 			all = es.merge(all, shortcut);
+ 		}
+@@ -483,7 +483,7 @@ const generateVSCodeConfigurationTask = task.define('generate-vscode-configurati
+ 		const arch = process.env['VSCODE_ARCH'];
+ 		const appRoot = path.join(buildDir, `VSCode-darwin-${arch}`);
+ 		const appName = process.env.VSCODE_QUALITY === 'insider' ? 'Visual\\ Studio\\ Code\\ -\\ Insiders.app' : 'Visual\\ Studio\\ Code.app';
+-		const appPath = path.join(appRoot, appName, 'Contents', 'Resources', 'app', 'bin', 'code');
++		const appPath = path.join(appRoot, appName, 'Contents', 'Resources', 'app', 'bin', product.applicationName);
+ 		const codeProc = cp.exec(
+ 			`${appPath} --export-default-configuration='${allConfigDetailsPath}' --wait --user-data-dir='${userDataDir}' --extensions-dir='${extensionsDir}'`,
+ 			(err, stdout, stderr) => {
+diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src/vs/platform/native/electron-main/nativeHostMainService.ts
+index 50c4460..bf73260 100644
+--- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
++++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
+@@ -431,4 +431,4 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+ 		// macOS
+ 		if (this.environmentMainService.isBuilt) {
+-			return join(this.environmentMainService.appRoot, 'bin', 'code');
++			return join(this.environmentMainService.appRoot, 'bin', `${product.applicationName}`);
+ 		}
+diff --git a/src/vs/workbench/contrib/cli/node/cli.contribution.ts b/src/vs/workbench/contrib/cli/node/cli.contribution.ts
+index 30972a4..0a9435c 100644
+--- a/src/vs/workbench/contrib/cli/node/cli.contribution.ts
++++ b/src/vs/workbench/contrib/cli/node/cli.contribution.ts
+@@ -29,7 +29,7 @@ let _source: string | null = null;
+ function getSource(): string {
+ 	if (!_source) {
+ 		const root = FileAccess.asFileUri('', require).fsPath;
+-		_source = path.resolve(root, '..', 'bin', 'code');
++		_source = path.resolve(root, '..', 'bin', product.applicationName);
+ 	}
+ 	return _source;
+ }
