@@ -28,7 +28,7 @@ index 50c4460..bf73260 100644
  		// macOS
  		if (this.environmentMainService.isBuilt) {
 -			return join(this.environmentMainService.appRoot, 'bin', 'code');
-+			return join(this.environmentMainService.appRoot, 'bin', `${product.applicationName}`);
++			return join(this.environmentMainService.appRoot, 'bin', `${this.productService.applicationName}`);
  		}
 diff --git a/src/vs/workbench/contrib/cli/node/cli.contribution.ts b/src/vs/workbench/contrib/cli/node/cli.contribution.ts
 index 30972a4..0a9435c 100644

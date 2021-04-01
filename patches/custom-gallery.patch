@@ -1,16 +1,16 @@
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 2730ee7..4d46c23 100644
+index 251ed36..8065c6f 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -8,6 +8,7 @@ import { isWeb } from 'vs/base/common/platform';
  import { env } from 'vs/base/common/process';
- import { FileAccess } from 'vs/base/common/network';
  import { dirname, joinPath } from 'vs/base/common/resources';
-+import { getDefaultUserDataPath } from 'vs/base/node/userDataPath';
+ import { IProductConfiguration } from 'vs/platform/product/common/productService';
++import { getUserDataPath } from 'vs/platform/environment/node/userDataPath';
  
  let product: IProductConfiguration;
  
-@@ -47,6 +48,29 @@ else {
+@@ -49,6 +50,29 @@ else {
  	product = require.__$__nodeRequire(joinPath(rootPath, 'product.json').fsPath);
  	const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string; };
  
@@ -31,7 +31,7 @@ index 2730ee7..4d46c23 100644
 +				return result;
 +			}, {}) as any;
 +
-+		const userProduct = require.__$__nodeRequire(joinPath(FileAccess.asFileUri(getDefaultUserDataPath(), require), 'product.json').fsPath);
++		const userProduct = require.__$__nodeRequire(joinPath(FileAccess.asFileUri(getUserDataPath({} as any), require), 'product.json').fsPath);
 +
 +		product = merge(product, userProduct)
 +	} catch (ex) {
@@ -40,7 +40,7 @@ index 2730ee7..4d46c23 100644
  	// Running out of sources
  	if (env['VSCODE_DEV']) {
  		Object.assign(product, {
-@@ -56,6 +80,19 @@ else {
+@@ -58,6 +82,19 @@ else {
  		});
  	}
  
@@ -61,7 +61,7 @@ index 2730ee7..4d46c23 100644
  		version: pkg.version
  	});
 diff --git a/src/vs/platform/product/common/productService.ts b/src/vs/platform/product/common/productService.ts
-index 07263ca..0328f58 100644
+index 34acc14..d3a2764 100644
 --- a/src/vs/platform/product/common/productService.ts
 +++ b/src/vs/platform/product/common/productService.ts
 @@ -67,6 +67,7 @@ export interface IProductConfiguration {
