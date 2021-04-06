@@ -50,7 +50,7 @@ win32AppUserModelId='setpath(["win32AppUserModelId"]; "Microsoft.VSCodium")'
 win32ShellNameShort='setpath(["win32ShellNameShort"]; "VSCodium")'
 win32x64UserAppId='setpath (["win32x64UserAppId"]; "{{2E1F05D1-C245-4562-81EE-28188DB6FD17}")'
 urlProtocol='setpath(["urlProtocol"]; "vscodium")'
-extensionAllowedProposedApi='setpath(["extensionAllowedProposedApi"]; getpath(["extensionAllowedProposedApi"]) + ["ms-vsliveshare.vsliveshare", "ms-vscode-remote.remote-ssh", "ms-vscode.cpptools", "ms-azuretools.vscode-docker", "visualstudioexptteam.vscodeintellicode", "ms-python.python"])'
+extensionAllowedProposedApi='setpath(["extensionAllowedProposedApi"]; getpath(["extensionAllowedProposedApi"]) + ["ms-vsliveshare.vsliveshare", "ms-vscode-remote.remote-ssh", "ms-vscode.cpptools", "ms-azuretools.vscode-docker", "visualstudioexptteam.vscodeintellicode", "ms-python.python", "ms-toolsai.jupyter"])'
 serverDataFolderName='setpath(["serverDataFolderName"]; ".vscode-server-oss")'
 
 product_json_changes="${checksumFailMoreInfoUrl} | ${tipsAndTricksUrl} | ${twitterUrl} | ${requestFeatureUrl} | ${documentationUrl} | ${introductoryVideosUrl} | ${extensionAllowedBadgeProviders} | ${updateUrl} | ${releaseNotesUrl} | ${keyboardShortcutsUrlMac} | ${keyboardShortcutsUrlLinux} | ${keyboardShortcutsUrlWin} | ${quality} | ${extensionsGallery} | ${linkProtectionTrustedDomains} | ${nameShort} | ${nameLong} | ${linuxIconName} | ${applicationName} | ${win32MutexName} | ${win32DirName} | ${win32NameVersion} | ${win32RegValueName} | ${win32AppUserModelId} | ${win32ShellNameShort} | ${win32x64UserAppId} | ${urlProtocol} | ${extensionAllowedProposedApi} | ${serverDataFolderName}"
