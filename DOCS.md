@@ -60,9 +60,11 @@ With the following environment variables:
 - `VSCODE_GALLERY_RECOMMENDATIONS_URL=''`
 
 Or by creating a custom `product.json` at the following location:
-- Windows: `%USER%\AppData\Roaming\VSCodium`
+- Windows: `%APPDATA%\VSCodium`
 - macOS: `~/Library/Application Support/VSCodium`
-- Linux: `~/.config/VSCodium`
+- Linux:
+  - `$XDG_CONFIG_HOME//VSCodium`, if `$XDG_CONFIG_HOME` is set
+  -  otherwise `~/.config/VSCodium`
 
 with the content:
 
