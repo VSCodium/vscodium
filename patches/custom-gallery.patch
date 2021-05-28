@@ -1,8 +1,26 @@
+diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
+index 129b8de..fadb99a 100644
+--- a/src/vs/base/common/product.ts
++++ b/src/vs/base/common/product.ts
+@@ -62,6 +62,7 @@ export interface IProductConfiguration {
+ 
+ 	readonly extensionsGallery?: {
+ 		readonly serviceUrl: string;
++		readonly cacheUrl?: string;
+ 		readonly itemUrl: string;
+ 		readonly controlUrl: string;
+ 		readonly recommendationsUrl: string;
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index d79c8a3..7a25774 100644
+index d79c8a3..8b4153f 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -9,6 +9,7 @@ import { env } from 'vs/base/common/process';
+@@ -4,11 +4,12 @@
+  *--------------------------------------------------------------------------------------------*/
+ 
+ import { FileAccess } from 'vs/base/common/network';
+-import { isWeb, globals } from 'vs/base/common/platform';
++import { isWeb, isWindows, globals } from 'vs/base/common/platform';
+ import { env } from 'vs/base/common/process';
  import { dirname, joinPath } from 'vs/base/common/resources';
  import { IProductConfiguration } from 'vs/base/common/product';
  import { ISandboxConfiguration } from 'vs/base/parts/sandbox/common/sandboxTypes';
@@ -10,7 +28,7 @@ index d79c8a3..7a25774 100644
  
  let product: IProductConfiguration;
  
-@@ -31,6 +32,29 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+@@ -31,6 +32,32 @@ else if (typeof require?.__$__nodeRequire === 'function') {
  	product = require.__$__nodeRequire(joinPath(rootPath, 'product.json').fsPath);
  	const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string; };
  
@@ -31,16 +49,19 @@ index d79c8a3..7a25774 100644
 +				return result;
 +			}, {}) as any;
 +
-+		const userProduct = require.__$__nodeRequire(joinPath(FileAccess.asFileUri(getUserDataPath({} as any), require), 'product.json').fsPath);
++		const userDataPath = getUserDataPath({} as any);
++		const userProductPath = isWindows ? `file:///${userDataPath}/product.json` : `file://${userDataPath}/product.json`;
 +
-+		product = merge(product, userProduct)
++		const userProduct = require.__$__nodeRequire(FileAccess.asFileUri(userProductPath, require).fsPath);
++
++		product = merge(product, userProduct);
 +	} catch (ex) {
 +	}
 +
  	// Running out of sources
  	if (env['VSCODE_DEV']) {
  		Object.assign(product, {
-@@ -40,6 +64,19 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+@@ -40,6 +67,19 @@ else if (typeof require?.__$__nodeRequire === 'function') {
  		});
  	}
  
@@ -60,16 +81,3 @@ index d79c8a3..7a25774 100644
  	Object.assign(product, {
  		version: pkg.version
  	});
-
-diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 129b8de..fadb99a 100644
---- a/src/vs/base/common/product.ts
-+++ b/src/vs/base/common/product.ts
-@@ -62,6 +62,7 @@ export interface IProductConfiguration {
- 
- 	readonly extensionsGallery?: {
- 		readonly serviceUrl: string;
-+		readonly cacheUrl?: string;
- 		readonly itemUrl: string;
- 		readonly controlUrl: string;
- 		readonly recommendationsUrl: string;
