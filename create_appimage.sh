@@ -9,11 +9,11 @@ if [[ "$VSCODE_ARCH" == "x64" ]]; then
   wget -c https://github.com/$(wget -q https://github.com/AppImage/pkg2appimage/releases -O - | grep "pkg2appimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
   chmod +x ./pkg2appimage-*.AppImage
 
-  ./pkg2appimage-*.AppImage --appimage-extract
-  sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"/' squashfs-root/AppRun
-  sed -i 's|./AppImageAssistant ./$APP.AppDir/|./AppImageAssistant --appimage-extract\n  bash -ex ./squashfs-root/AppRun ./$APP.AppDir/|' squashfs-root/usr/share/pkg2appimage/functions.sh
+  ./pkg2appimage-*.AppImage --appimage-extract && mv ./squashfs-root ./pkg2appimage.AppDir
+  
+  sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"/' pkg2appimage.AppDir/AppRun
 
-  bash -ex squashfs-root/AppRun VSCodium-AppImage-Recipe.yml
+  bash -ex pkg2appimage.AppDir/AppRun VSCodium-AppImage-Recipe.yml
 fi
 
 cd vscode
