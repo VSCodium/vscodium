@@ -10,7 +10,8 @@ if [[ "$VSCODE_ARCH" == "x64" ]]; then
   chmod +x ./pkg2appimage-*.AppImage
 
   ./pkg2appimage-*.AppImage --appimage-extract
-  sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"/g' squashfs-root/AppRun
+  sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"/' squashfs-root/AppRun
+  sed -i 's|./AppImageAssistant ./$APP.AppDir/|./AppImageAssistant --appimage-extract-and-run ./$APP.AppDir/|' squashfs-root/usr/share/pkg2appimage/functions.sh
 
   bash -ex squashfs-root/AppRun VSCodium-AppImage-Recipe.yml
 fi
