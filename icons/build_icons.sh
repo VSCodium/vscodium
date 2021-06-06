@@ -53,3 +53,61 @@ done
 if [ ! -f "src/resources/win32/code.ico" ]; then
 	convert "src/resources/linux/code.png" -define icon:auto-resize=256,128,96,64,48,32,24,20,16 "src/resources/win32/code.ico"
 fi
+
+if [ ! -f "src/resources/win32/inno-big-100.bmp" ]; then
+	convert -size 164x314 xc:white "src/resources/win32/inno-big-100.bmp"
+	composite -size 126x -gravity center icons/codium_only.svg "src/resources/win32/inno-big-100.bmp" "src/resources/win32/inno-big-100.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-big-125.bmp" ]; then
+	convert -size 192x386 xc:white "src/resources/win32/inno-big-125.bmp"
+	composite -size 147x -gravity center icons/codium_only.svg "src/resources/win32/inno-big-125.bmp" "src/resources/win32/inno-big-125.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-big-150.bmp" ]; then
+	convert -size 246x459 xc:white "src/resources/win32/inno-big-150.bmp"
+	composite -size 190x -gravity center icons/codium_only.svg "src/resources/win32/inno-big-150.bmp" "src/resources/win32/inno-big-150.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-big-175.bmp" ]; then
+	convert -size 273x556 xc:white "src/resources/win32/inno-big-175.bmp"
+	composite -size 211x -gravity center icons/codium_only.svg "src/resources/win32/inno-big-175.bmp" "src/resources/win32/inno-big-175.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-big-200.bmp" ]; then
+	convert -size 328x604 xc:white "src/resources/win32/inno-big-200.bmp"
+	composite -size 255x -gravity center icons/codium_only.svg "src/resources/win32/inno-big-200.bmp" "src/resources/win32/inno-big-200.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-big-225.bmp" ]; then
+	convert -size 355x700 xc:white "src/resources/win32/inno-big-225.bmp"
+	composite -size 273x -gravity center icons/codium_only.svg "src/resources/win32/inno-big-225.bmp" "src/resources/win32/inno-big-225.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-big-250.bmp" ]; then
+	convert -size 410x797 xc:white "src/resources/win32/inno-big-250.bmp"
+	composite -size 317x -gravity center icons/codium_only.svg "src/resources/win32/inno-big-250.bmp" "src/resources/win32/inno-big-250.bmp"
+fi
+
+if [ ! -f "src/resources/win32/inno-small-100.bmp" ]; then
+	convert -size 55x55 xc:white "src/resources/win32/inno-small-100.bmp"
+	composite -size 44x -gravity center icons/codium_only.svg "src/resources/win32/inno-small-100.bmp" "src/resources/win32/inno-small-100.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-small-125.bmp" ]; then
+	convert -size 64x68 xc:white "src/resources/win32/inno-small-125.bmp"
+	composite -size 52x -gravity center icons/codium_only.svg "src/resources/win32/inno-small-125.bmp" "src/resources/win32/inno-small-125.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-small-150.bmp" ]; then
+	convert -size 83x80 xc:white "src/resources/win32/inno-small-150.bmp"
+	composite -size 63x -gravity center icons/codium_only.svg "src/resources/win32/inno-small-150.bmp" "src/resources/win32/inno-small-150.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-small-175.bmp" ]; then
+	convert -size 92x97 xc:white "src/resources/win32/inno-small-175.bmp"
+	composite -size 76x -gravity center icons/codium_only.svg "src/resources/win32/inno-small-175.bmp" "src/resources/win32/inno-small-175.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-small-200.bmp" ]; then
+	convert -size 110x106 xc:white "src/resources/win32/inno-small-200.bmp"
+	composite -size 86x -gravity center icons/codium_only.svg "src/resources/win32/inno-small-200.bmp" "src/resources/win32/inno-small-200.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-small-225.bmp" ]; then
+	convert -size 119x123 xc:white "src/resources/win32/inno-small-225.bmp"
+	composite -size 103x -gravity center icons/codium_only.svg "src/resources/win32/inno-small-225.bmp" "src/resources/win32/inno-small-225.bmp"
+fi
+if [ ! -f "src/resources/win32/inno-small-250.bmp" ]; then
+	convert -size 138x140 xc:white "src/resources/win32/inno-small-250.bmp"
+	composite -size 116x -gravity center icons/codium_only.svg "src/resources/win32/inno-small-250.bmp" "src/resources/win32/inno-small-250.bmp"
+fi
