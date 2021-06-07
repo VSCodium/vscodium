@@ -12,7 +12,6 @@
 - [How do I run VSCodium in portable mode?](#portable)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
-- [Gentoo overlay/ebuild](#gentoo-overlay)
 
 ## <a id="disable-telemetry"></a>Getting all the Telemetry Out
 
@@ -149,7 +148,3 @@ This allows you to open files or directories in VSCodium directly from your term
 ```
 
 Feel free to alias this command to something easier to type in your shell profile (e.g. `alias code=codium`).
-
-## <a id="gentoo-overlay"></a>Gentoo ebuild/overlay
-
-There is an external Gentoo overlay with a working ebuild to install VSCodium, provided by [@wolviecb](https://github.com/wolviecb/). The overlay can be found [here](https://github.com/wolviecb/overlay).
