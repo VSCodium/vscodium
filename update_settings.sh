@@ -3,12 +3,16 @@ DEFAULT_FALSE="'default': false"
 TELEMETRY_ENABLE="'telemetry.enableTelemetry':"
 TELEMETRY_CRASH_REPORTER="'telemetry.enableCrashReporter':"
 
+is_gnu_sed () {
+  sed --version >/dev/null 2>&1
+}
+
 replace () {
   echo $1
-  if [[ "$OS_NAME" == "osx" ]]; then
-    sed -i '' -E "$1" $2
-  else
+  if is_gnu_sed; then
     sed -i -E "$1" $2
+  else
+    sed -i '' -E "$1" $2
   fi
 }
 
