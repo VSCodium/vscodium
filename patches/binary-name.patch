@@ -21,25 +21,25 @@ index 6d3a369..57009d4 100644
  			`${appPath} --export-default-configuration='${allConfigDetailsPath}' --wait --user-data-dir='${userDataDir}' --extensions-dir='${extensionsDir}'`,
  			(err, stdout, stderr) => {
 diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-index 50c4460..bf73260 100644
+index 692db1d..cd173bc 100644
 --- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
 +++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-@@ -431,4 +431,4 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -341,7 +341,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+ 	}
+ 
+ 	private async getShellCommandLink(): Promise<{ readonly source: string, readonly target: string }> {
+-		const target = resolve(this.environmentMainService.appRoot, 'bin', 'code');
++		const target = resolve(this.environmentMainService.appRoot, 'bin', this.productService.applicationName);
+ 		const source = `/usr/local/bin/${this.productService.applicationName}`;
+ 
+ 		// Ensure source exists
+@@ -551,7 +551,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+ 
  		// macOS
  		if (this.environmentMainService.isBuilt) {
 -			return join(this.environmentMainService.appRoot, 'bin', 'code');
 +			return join(this.environmentMainService.appRoot, 'bin', `${this.productService.applicationName}`);
  		}
-diff --git a/src/vs/workbench/contrib/cli/node/cli.contribution.ts b/src/vs/workbench/contrib/cli/node/cli.contribution.ts
-index 30972a4..0a9435c 100644
---- a/src/vs/workbench/contrib/cli/node/cli.contribution.ts
-+++ b/src/vs/workbench/contrib/cli/node/cli.contribution.ts
-@@ -29,7 +29,7 @@ let _source: string | null = null;
- function getSource(): string {
- 	if (!_source) {
- 		const root = FileAccess.asFileUri('', require).fsPath;
--		_source = path.resolve(root, '..', 'bin', 'code');
-+		_source = path.resolve(root, '..', 'bin', product.applicationName);
- 	}
- 	return _source;
- }
+ 
+ 		return join(this.environmentMainService.appRoot, 'scripts', 'code-cli.sh');
+
