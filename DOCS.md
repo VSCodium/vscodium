@@ -13,6 +13,7 @@
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
   - [From Linux .tar.gz](#from-linux-targz)
+- [How to build VSCodium](https://github.com/VSCodium/vscodium/blob/master/docs/build.md)
 
 ## <a id="disable-telemetry"></a>Getting all the Telemetry Out
 
