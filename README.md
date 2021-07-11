@@ -68,7 +68,7 @@ scoop install vscodium
 VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium), published by the [Snapcrafters](https://github.com/snapcrafters/codium) community.
 If your GNU/Linux distribution has support for [snaps](https://snapcraft.io/docs/installing-snapd):
 ```bash
-snap install codium
+snap install codium --classic
 ```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (GNU/Linux)
