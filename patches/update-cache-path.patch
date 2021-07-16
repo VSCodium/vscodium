@@ -7,7 +7,7 @@ index 93424ca..133657e 100644
  	@memoize
  	get cachePath(): Promise<string> {
 -		const result = path.join(tmpdir(), `vscode-update-${this.productService.target}-${process.arch}`);
-+		const result = path.join(tmpdir(), `${this.productService.nameShort.toLowerCase()}-update-${this.productService.target}-${process.arch}`);
++		const result = path.join(tmpdir(), `${this.productService.applicationName}-update-${this.productService.target}-${process.arch}`);
  		return pfs.Promises.mkdir(result, { recursive: true }).then(() => result);
  	}
  
