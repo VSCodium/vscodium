@@ -22,6 +22,8 @@
 - libsecret-1-dev
 - fakeroot
 - rpm
+- rpmbuild
+- dpkg
 
 ### <a id="dependencies-macos"></a>MacOS
 
