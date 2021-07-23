@@ -22,7 +22,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     cp vscode/.build/linux/deb/*/deb/*.deb .
     cp vscode/.build/linux/rpm/*/*.rpm .
 
-    sum_file *.AppImage
+    sum_file VSCodium-*.AppImage
     sum_file VSCodium-linux*.tar.gz
     sum_file *.deb
     sum_file *.rpm
