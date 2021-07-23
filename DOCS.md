@@ -12,7 +12,8 @@
 - [How do I run VSCodium in portable mode?](#portable)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
-- [Gentoo overlay/ebuild](#gentoo-overlay)
+  - [From Linux .tar.gz](#from-linux-targz)
+- [How to build VSCodium](https://github.com/VSCodium/vscodium/blob/master/docs/build.md)
 
 ## <a id="disable-telemetry"></a>Getting all the Telemetry Out
 
@@ -63,7 +64,7 @@ Or by creating a custom `product.json` at the following location:
 - Windows: `%APPDATA%\VSCodium`
 - macOS: `~/Library/Application Support/VSCodium`
 - Linux:
-  - `$XDG_CONFIG_HOME//VSCodium`, if `$XDG_CONFIG_HOME` is set
+  - `$XDG_CONFIG_HOME/VSCodium`, if `$XDG_CONFIG_HOME` is set
   -  otherwise `~/.config/VSCodium`
 
 with the content:
@@ -138,6 +139,7 @@ $ defaults write com.visualstudio.code.oss ApplePressAndHoldEnabled -bool false
 
 ## <a id="terminal-support"></a>How do I open VSCodium from the terminal?
 
+For MacOS and Windows:
 - Go to the command palette (View | Command Palette...)
 - Choose `Shell command: Install 'codium' command in PATH`.
 
@@ -152,6 +154,8 @@ This allows you to open files or directories in VSCodium directly from your term
 
 Feel free to alias this command to something easier to type in your shell profile (e.g. `alias code=codium`).
 
-## <a id="gentoo-overlay"></a>Gentoo ebuild/overlay
+On Linux, when installed with a package manager, `codium` has been installed in your `PATH`.
 
-There is an external Gentoo overlay with a working ebuild to install VSCodium, provided by [@wolviecb](https://github.com/wolviecb/). The overlay can be found [here](https://github.com/wolviecb/overlay).
+### <a id="from-linux-targz"></a>From Linux .tar.gz
+
+When the archive `VSCodium-linux-<arch>-<version>.tar.gz` is extracted, the main entry point for VSCodium is `./bin/codium`.

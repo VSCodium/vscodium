@@ -68,7 +68,7 @@ scoop install vscodium
 VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium), published by the [Snapcrafters](https://github.com/snapcrafters/codium) community.
 If your GNU/Linux distribution has support for [snaps](https://snapcraft.io/docs/installing-snapd):
 ```bash
-snap install codium
+snap install codium --classic
 ```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (GNU/Linux)
@@ -101,8 +101,8 @@ If you want to build from source yourself, head over to [Microsoft's vscode repo
 Microsoft's build process (which we are running to build the binaries) does download additional files. This was brought up in [Microsoft/vscode#49159](https://github.com/Microsoft/vscode/issues/49159) and [Microsoft/vscode#45978](https://github.com/Microsoft/vscode/issues/45978). These are the packages downloaded during build:
 
 - Extensions from the Microsoft Marketplace:
-  - ms-vscode.node-debug2
-  - ms-vscode.node-debug
+  - [ms-vscode.node-debug2](https://marketplace.visualstudio.com/items?itemName=ms-vscode.node-debug2)
+  - [ms-vscode.node-debug](https://marketplace.visualstudio.com/items?itemName=ms-vscode.node-debug)
 - From [Electron releases](https://github.com/electron/electron/releases) (using [gulp-atom-electron](https://github.com/joaomoreno/gulp-atom-electron))
   - electron
   - ffmpeg
@@ -118,7 +118,7 @@ According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace
 Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
 
 ### How are the VSCodium binaries built?
-If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflow` (for GNU/Linux and macOS builds) and the `win32-build.yml` file (for Windows builds). These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
+If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflow` for Windows, GNU/Linux and macOS. These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
 
 The builds are run every day, but exit early if there isn't a new release from Microsoft. 
 
