@@ -33,10 +33,6 @@ jobs:
           image: vscodium/vscodium-linux-build-agent:stretch-armhf
 
     steps:
-      - name: Install desktop-file-utils
-        run: sudo apt-get install desktop-file-utils
-        if: matrix.vscode_arch == 'x64'
-  
       - uses: actions/checkout@v2
 
       - name: Setup Node.js environment
