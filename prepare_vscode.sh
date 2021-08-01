@@ -8,11 +8,14 @@ cd vscode || exit
 ../update_settings.sh
 
 # apply patches
-patch -u src/vs/platform/update/electron-main/updateService.win32.ts -i ../patches/update-cache-path.patch
-patch -u resources/linux/rpm/code.spec.template -i ../patches/fix-rpm-spec.patch
-patch -u extensions/github-authentication/src/githubServer.ts -i ../patches/use-github-pat.patch
-git apply --ignore-whitespace ../patches/binary-name.patch
-git apply --ignore-whitespace ../patches/custom-gallery.patch
+for file in ../patches/*.patch; do
+  if [ -f "$file" ]; then
+    echo applying patch: $file;
+    if ! git apply --ignore-whitespace $file; then
+      echo failed to apply patch $file 1>&2
+    fi
+  fi
+done
 for file in ../patches/user/*.patch; do
   if [ -f "$file" ]; then
     echo applying user patch: $file;
