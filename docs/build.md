@@ -14,6 +14,7 @@
 - node 14
 - yarn
 - jq
+- git
 
 ### <a id="dependencies-linux"></a>Linux
 
@@ -30,7 +31,6 @@
 ### <a id="dependencies-windows"></a>Windows
 
 - powershell
-- git
 - sed
 
 ## <a id="build-scripts"></a>Build Scripts
@@ -38,7 +38,7 @@
 Each platform has its build helper script in the directory `build`.
 
 - Linux: `./build/build_linux.sh`
-- MacOS: `./build/build_macos_.sh`
+- MacOS: `./build/build_macos.sh`
 - Windows: `powershell -ExecutionPolicy ByPass -File .\build\build_windows.ps1`
 
 ## <a id="build-docker"></a>Build in Docker

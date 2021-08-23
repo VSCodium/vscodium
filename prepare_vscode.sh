@@ -8,6 +8,8 @@ cd vscode || exit
 ../update_settings.sh
 
 # apply patches
+{ set +x; } 2>/dev/null
+
 for file in ../patches/*.patch; do
   if [ -f "$file" ]; then
     echo applying patch: $file;
@@ -27,6 +29,8 @@ for file in ../patches/user/*.patch; do
     fi
   fi
 done
+
+set -x
 
 if [[ "$OS_NAME" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional
