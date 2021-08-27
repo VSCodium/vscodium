@@ -84,14 +84,14 @@ jobs:
       - name: Zip release
         run: |
           cd "VSCode-darwin-${VSCODE_ARCH}"
-          zip -r -X -y ../VSCodium-darwin-${VSCODE_ARCH}-${LATEST_MS_TAG}.zip ./*.app
+          zip -r -X -y ../VSCodium-darwin-${VSCODE_ARCH}-${MS_TAG}.zip ./*.app
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: DMG the release
         run: |
           pushd "VSCode-darwin-${VSCODE_ARCH}"
           npx create-dmg VSCodium.app ..
-          mv "../VSCodium ${LATEST_MS_TAG}.dmg" "../VSCodium.${VSCODE_ARCH}.${LATEST_MS_TAG}.dmg"
+          mv "../VSCodium ${MS_TAG}.dmg" "../VSCodium.${VSCODE_ARCH}.${MS_TAG}.dmg"
           popd
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
@@ -103,7 +103,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         with:
-          tag_name: ${{ env.LATEST_MS_TAG }}
+          tag_name: ${{ env.MS_TAG }}
           files: |
             ./*.zip
             ./*.dmg

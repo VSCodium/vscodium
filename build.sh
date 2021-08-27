@@ -5,7 +5,7 @@ set -ex
 if [[ "$SHOULD_BUILD" == "yes" ]]; then
   npm config set scripts-prepend-node-path true
 
-  echo "LATEST_MS_COMMIT: ${LATEST_MS_COMMIT}"
+  echo "MS_COMMIT: ${MS_COMMIT}"
 
   . prepare_vscode.sh
 
