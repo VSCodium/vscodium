@@ -16,11 +16,18 @@ elif [[ -z "${MS_TAG}" ]]; then
     export MS_COMMIT=$(echo $UPDATE_INFO | jq -r '.version')
     export MS_TAG=$(echo $UPDATE_INFO | jq -r '.name')
 else
-    tag_line=$( git ls-remote --tags --sort=-version:refname | grep "refs\/tags\/${MS_TAG}" | head -1 )
-
-    [[ "${tag_line}" =~ ^([[:alnum:]]+)[[:space:]]+refs\/tags\/([0-9]+\.[0-9]+\.[0-9]+)$ ]]
-
-    export MS_COMMIT="${BASH_REMATCH[1]}"
+    reference=$( git ls-remote --tags | grep -x ".*refs\/tags\/${MS_TAG}" | head -1 )
+    
+    if [[ -z "${reference}" ]]; then
+        echo "The following tag can't be found: ${MS_TAG}"
+        exit 1
+    elif [[ "${reference}" =~ ^([[:alnum:]]+)[[:space:]]+refs\/tags\/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+        export MS_COMMIT="${BASH_REMATCH[1]}"
+        export MS_TAG="${BASH_REMATCH[2]}"
+    else
+        echo "The following reference can't be parsed: ${reference}"
+        exit 1
+    fi
 fi
 
 echo "Got the MS tag: ${MS_TAG} version: ${MS_COMMIT}"
