@@ -32,9 +32,6 @@ cd ..
 
 # for GH actions
 if [[ $GITHUB_ENV ]]; then
-	if [[ -z "${MS_TAG}" ]]; then
-		echo "MS_TAG=$MS_TAG" >> $GITHUB_ENV
-	fi
-	
+	echo "MS_TAG=$MS_TAG" >> $GITHUB_ENV
 	echo "MS_COMMIT=$MS_COMMIT" >> $GITHUB_ENV
 fi
