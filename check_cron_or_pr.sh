@@ -7,6 +7,11 @@ if [[ $GITHUB_EVENT_NAME == "pull_request" ]]; then
 	
 	export SHOULD_BUILD="yes"
 	export SHOULD_DEPLOY="no"
+elif [[ $GITHUB_EVENT_NAME == "push" ]]; then
+	echo "It's a Push"
+	
+	export SHOULD_BUILD="yes"
+	export SHOULD_DEPLOY="no"
 else
 	echo "It's a cron"
 	

@@ -8,10 +8,13 @@ cd vscode || exit
 ../update_settings.sh
 
 # apply patches
+{ set +x; } 2>/dev/null
+
 for file in ../patches/*.patch; do
   if [ -f "$file" ]; then
     echo applying patch: $file;
-    if ! git apply --ignore-whitespace $file; then
+    git apply --ignore-whitespace "$file"
+    if [ $? -ne 0 ]; then
       echo failed to apply patch $file 1>&2
     fi
   fi
@@ -19,11 +22,14 @@ done
 for file in ../patches/user/*.patch; do
   if [ -f "$file" ]; then
     echo applying user patch: $file;
-    if ! git apply --ignore-whitespace $file; then
+    git apply --ignore-whitespace "$file"
+    if [ $? -ne 0 ]; then
       echo failed to apply patch $file 1>&2
     fi
   fi
 done
+
+set -x
 
 if [[ "$OS_NAME" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional

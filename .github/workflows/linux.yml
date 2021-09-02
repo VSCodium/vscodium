@@ -83,7 +83,7 @@ jobs:
       - name: Zip release
         run: |
           cd VSCode-linux-${VSCODE_ARCH}
-          tar czf ../VSCodium-linux-${VSCODE_ARCH}-${LATEST_MS_TAG}.tar.gz .
+          tar czf ../VSCodium-linux-${VSCODE_ARCH}-${MS_TAG}.tar.gz .
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Generate shasums
@@ -94,7 +94,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         with:
-          tag_name: ${{ env.LATEST_MS_TAG }}
+          tag_name: ${{ env.MS_TAG }}
           files: |
             ./*.sha256
             ./*.zip
