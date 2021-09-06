@@ -1,0 +1,48 @@
+diff --git a/src/vs/code/electron-sandbox/issue/issueReporterMain.ts b/src/vs/code/electron-sandbox/issue/issueReporterMain.ts
+index fcd4485..8d97e5a 100644
+--- a/src/vs/code/electron-sandbox/issue/issueReporterMain.ts
++++ b/src/vs/code/electron-sandbox/issue/issueReporterMain.ts
+@@ -682,7 +682,7 @@ export class IssueReporter extends Disposable {
+ 
+ 		sourceSelect.innerText = '';
+ 		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
+-		sourceSelect.append(this.makeOption('vscode', localize('vscode', "Visual Studio Code"), false));
++		sourceSelect.append(this.makeOption('vscode', localize('vscode', "VSCodium"), false));
+ 		sourceSelect.append(this.makeOption('extension', localize('extension', "An extension"), false));
+ 		if (this.configuration.product.reportMarketplaceIssueUrl) {
+ 			sourceSelect.append(this.makeOption('marketplace', localize('marketplace', "Extensions marketplace"), false));
+diff --git a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
+index 0c5855b..654f9a4 100644
+--- a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
++++ b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
+@@ -144,7 +144,7 @@ class ReportExtensionSlowAction extends Action {
+ - Extension Name: \`${this.extension.name}\`
+ - Extension Version: \`${this.extension.version}\`
+ - OS Version: \`${osVersion}\`
+-- VS Code version: \`${this._productService.version}\`\n\n${message}`);
++- VSCodium version: \`${this._productService.version}\`\n\n${message}`);
+ 
+ 		const url = `${this.repoInfo.base}/${this.repoInfo.owner}/${this.repoInfo.repo}/issues/new/?body=${body}&title=${title}`;
+ 		this._openerService.open(URI.parse(url));
+diff --git a/src/vs/workbench/contrib/extensions/electron-sandbox/reportExtensionIssueAction.ts b/src/vs/workbench/contrib/extensions/electron-sandbox/reportExtensionIssueAction.ts
+index f1755db..e77be21 100644
+--- a/src/vs/workbench/contrib/extensions/electron-sandbox/reportExtensionIssueAction.ts
++++ b/src/vs/workbench/contrib/extensions/electron-sandbox/reportExtensionIssueAction.ts
+@@ -14,7 +14,7 @@ import { ExtensionType, IExtensionDescription } from 'vs/platform/extensions/com
+ import { IOpenerService } from 'vs/platform/opener/common/opener';
+ import { URI } from 'vs/base/common/uri';
+ 
+-const builtinExtensionIssueUrl = 'https://github.com/microsoft/vscode';
++const builtinExtensionIssueUrl = 'https://github.com/VSCodium/vscodium';
+ 
+ export class ReportExtensionIssueAction extends Action {
+ 
+@@ -76,7 +76,7 @@ export class ReportExtensionIssueAction extends Action {
+ - Extension Name: \`${extension.description.name}\`
+ - Extension Version: \`${extension.description.version}\`
+ - OS Version: \`${osVersion}\`
+-- VS Code version: \`${this.productService.version}\`\n\n${message}`
++- VSCodium version: \`${this.productService.version}\`\n\n${message}`
+ 		);
+ 
+ 		return `${baseUrl}${queryStringPrefix}body=${body}&title=${encodeURIComponent(title)}`;
