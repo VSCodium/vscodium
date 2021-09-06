@@ -19,6 +19,7 @@ for file in ../patches/*.patch; do
     fi
   fi
 done
+
 for file in ../patches/user/*.patch; do
   if [ -f "$file" ]; then
     echo applying user patch: $file;

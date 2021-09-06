@@ -1,28 +1,28 @@
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 129b8de..fadb99a 100644
+index 78d6060..dfa9de2 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
-@@ -68,6 +68,7 @@ export interface IProductConfiguration {
+@@ -69,6 +69,7 @@ export interface IProductConfiguration {
  
-        readonly extensionsGallery?: {
-        readonly serviceUrl: string;
-+       readonly cacheUrl?: string;
-        readonly itemUrl: string;
-        readonly resourceUrlTemplate: string;
-        readonly controlUrl: string;
+ 	readonly extensionsGallery?: {
+ 		readonly serviceUrl: string;
++		readonly cacheUrl?: string;
+ 		readonly itemUrl: string;
+ 		readonly resourceUrlTemplate: string;
+ 		readonly controlUrl: string;
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index d79c8a3..8b4153f 100644
+index 09dfc64..fec0cfa 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -4,11 +4,12 @@
   *--------------------------------------------------------------------------------------------*/
  
  import { FileAccess } from 'vs/base/common/network';
--import { isWeb, globals } from 'vs/base/common/platform';
-+import { isWeb, isWindows, globals } from 'vs/base/common/platform';
+-import { globals } from 'vs/base/common/platform';
++import { globals, isWindows } from 'vs/base/common/platform';
  import { env } from 'vs/base/common/process';
- import { dirname, joinPath } from 'vs/base/common/resources';
  import { IProductConfiguration } from 'vs/base/common/product';
+ import { dirname, joinPath } from 'vs/base/common/resources';
  import { ISandboxConfiguration } from 'vs/base/parts/sandbox/common/sandboxTypes';
 +import { getUserDataPath } from 'vs/platform/environment/node/userDataPath';
  
