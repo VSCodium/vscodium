@@ -9,6 +9,7 @@
   - [Proprietary Debugging Tools](#proprietary-debugging-tools)
   - [Proprietary Extensions](#proprietary-extensions)
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
+- [Sign in with GitHub](#signin-github)
 - [How do I run VSCodium in portable mode?](#portable)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
@@ -121,6 +122,16 @@ To copy your settings manually:
 - In Visual Studio Code, go to Settings (Command+, if on a Mac)
 - Click the three dots `...` and choose 'Open settings.json'
 - Copy the contents of settings.json into the same place in VSCodium
+
+## <a id="signin-github"></a>Sign in with GitHub
+
+In VSCodium, `Sign in with GitHub` is using a Personal Access Token.<br />
+Follow the documentation https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token to create your token.<br />
+Select the scopes dependending of the extension which need access to GitHub. (GitLens requires the `repo` scope.)
+
+### Linux
+
+If you are getting the error `Writing login information to the keychain failed with error 'The name org.freedesktop.secrets was not provided by any .service files'.`, you need to install the package `gnome-keyring`.
 
 ## <a id="portable"></a>How do I run VSCodium in portable mode?
 You can follow the [Portable Mode instructions](https://code.visualstudio.com/docs/editor/portable) from the Visual Studio Code website. 
