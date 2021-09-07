@@ -16,25 +16,19 @@ fi
 #  }
 
 # `url` is URL_BASE + filename of asset e.g.
-#    darwin: https://github.com/VSCodium/vscodium/releases/download/${LATEST_MS_TAG}/VSCodium-darwin-${LATEST_MS_TAG}.zip
-# `name` is $LATEST_MS_TAG
-# `version` is $LATEST_MS_COMMIT
-# `productVersion` is $LATEST_MS_TAG
+#    darwin: https://github.com/VSCodium/vscodium/releases/download/${MS_TAG}/VSCodium-darwin-${MS_TAG}.zip
+# `name` is $MS_TAG
+# `version` is $MS_COMMIT
+# `productVersion` is $MS_TAG
 # `hash` in <filename>.sha1
 # `timestamp` is $(node -e 'console.log(Date.now())')
 # `sha256hash` in <filename>.sha256
 
-URL_BASE=https://github.com/VSCodium/vscodium/releases/download/${LATEST_MS_TAG}
+URL_BASE=https://github.com/VSCodium/vscodium/releases/download/${MS_TAG}
 
 # to make testing on forks easier
-if [[ "$CI_WINDOWS" == "True" ]]; then
-  # BUILD_REPOSITORY_URI = e.g. https://github.com/VSCodium/vscodium
-  VERSIONS_REPO=$(echo ${BUILD_REPOSITORY_URI} | awk -F"/" '{ print $4 }')/versions
-
-  git config --global core.autocrlf true
-else
-  VERSIONS_REPO="${GITHUB_USERNAME}/versions"
-fi
+VERSIONS_REPO="${GITHUB_USERNAME}/versions"
+echo "Versions repo:" $VERSIONS_REPO
 
 # generateJson <assetName>
 # e.g. generateJson VSCodium-darwin-1.33.0.zip
@@ -43,9 +37,9 @@ generateJson() {
 
   # generate parts
   local url=${URL_BASE}/${assetName}
-  local name=$LATEST_MS_TAG
-  local version=$LATEST_MS_COMMIT
-  local productVersion=$LATEST_MS_TAG
+  local name=$MS_TAG
+  local version=$MS_COMMIT
+  local productVersion=$MS_TAG
   local timestamp=$(node -e 'console.log(Date.now())')
 
   local sha1hash=$(cat ${assetName}.sha1 | awk '{ print $1 }')
@@ -99,33 +93,33 @@ cd ..
 
 if [[ "$OS_NAME" == "osx" ]]; then
   # zip, sha1, and sha256 files are all at top level dir
-  ASSET_NAME=VSCodium-darwin-${LATEST_MS_TAG}.zip
-  VERSION_PATH="darwin"
+  ASSET_NAME=VSCodium-darwin-${VSCODE_ARCH}-${MS_TAG}.zip
+  VERSION_PATH="darwin/${VSCODE_ARCH}"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
-elif [[ "$CI_WINDOWS" == "True" ]]; then
+elif [[ "$OS_NAME" == "windows" ]]; then
   # system installer
-  ASSET_NAME=VSCodiumSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
-  VERSION_PATH="win32/${BUILDARCH}/system"
+  ASSET_NAME=VSCodiumSetup-${VSCODE_ARCH}-${MS_TAG}.exe
+  VERSION_PATH="win32/${VSCODE_ARCH}/system"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 
   # user installer
-  ASSET_NAME=VSCodiumUserSetup-${BUILDARCH}-${LATEST_MS_TAG}.exe
-  VERSION_PATH="win32/${BUILDARCH}/user"
+  ASSET_NAME=VSCodiumUserSetup-${VSCODE_ARCH}-${MS_TAG}.exe
+  VERSION_PATH="win32/${VSCODE_ARCH}/user"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 
   # windows archive
-  ASSET_NAME=VSCodium-win32-${BUILDARCH}-${LATEST_MS_TAG}.zip
-  VERSION_PATH="win32/${BUILDARCH}/archive"
+  ASSET_NAME=VSCodium-win32-${VSCODE_ARCH}-${MS_TAG}.zip
+  VERSION_PATH="win32/${VSCODE_ARCH}/archive"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
 else # linux
   # update service links to tar.gz file
   # see https://update.code.visualstudio.com/api/update/linux-x64/stable/VERSION
   # as examples
-  ASSET_NAME=VSCodium-linux-${VSCODE_ARCH}-${LATEST_MS_TAG}.tar.gz
+  ASSET_NAME=VSCodium-linux-${VSCODE_ARCH}-${MS_TAG}.tar.gz
   VERSION_PATH="linux/${VSCODE_ARCH}"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"

@@ -1,6 +1,7 @@
 name: linux_build
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
   push:
@@ -23,24 +24,27 @@ jobs:
         include:
         - vscode_arch: x64
           npm_arch: x64
-          image: vscodium/vscodium-linux-build-agent:x64
+          image: vscodium/vscodium-linux-build-agent:bionic-x64
         - vscode_arch: arm64
           npm_arch: arm64
-          image: vscodium/vscodium-linux-build-agent:buster-arm64
+          image: vscodium/vscodium-linux-build-agent:stretch-arm64
         - vscode_arch: armhf
           npm_arch: armv7l
-          image: vscodium/vscodium-linux-build-agent:buster-armhf
+          image: vscodium/vscodium-linux-build-agent:stretch-armhf
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v1.4.3
+        uses: actions/setup-node@v1
         with:
-          node-version: 12.14.1
+          node-version: 14
 
       - name: Install Yarn
         run: npm install -g yarn
+
+      - name: Check PR or cron
+        run: ./check_cron_or_pr.sh
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
@@ -49,6 +53,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - name: Compute cache key
+        id: yarnCacheKey
+        run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Get yarn cache directory path
+        id: yarnCacheDirPath
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Cache yarn directory
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
+          key: linux-${{ matrix.npm_arch }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
+          restore-keys: linux-${{ matrix.npm_arch }}-yarnCacheDir-
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:
@@ -60,31 +83,31 @@ jobs:
       - name: Zip release
         run: |
           cd VSCode-linux-${VSCODE_ARCH}
-          tar czf ../VSCodium-linux-${VSCODE_ARCH}-${LATEST_MS_TAG}.tar.gz .
-        if: env.SHOULD_BUILD == 'yes'
+          tar czf ../VSCodium-linux-${VSCODE_ARCH}-${MS_TAG}.tar.gz .
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Generate shasums
         run: ./sum.sh
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
       
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         with:
-          tag_name: ${{ env.LATEST_MS_TAG }}
+          tag_name: ${{ env.MS_TAG }}
           files: |
             ./*.sha256
             ./*.zip
             ./*.tar.gz
             ./*.deb
             ./*.rpm
-            ./*.AppImage
-            ./*.AppImage.zsync
+            ./VSCodium-*.AppImage
+            ./VSCodium-*.AppImage.zsync
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update versions repo
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         run: ./update_version.sh
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}

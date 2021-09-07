@@ -1,11 +1,13 @@
---- vscode/src/vs/platform/update/electron-main/updateService.win32.ts	2019-12-08 15:09:44.000000000 -0800
-+++ src/src/vs/platform/update/electron-main/updateService.win32.ts	2019-12-08 15:12:56.000000000 -0800
-@@ -55,7 +55,7 @@
+diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
+index 93424ca..133657e 100644
+--- a/src/vs/platform/update/electron-main/updateService.win32.ts
++++ b/src/vs/platform/update/electron-main/updateService.win32.ts
+@@ -53,7 +53,7 @@ export class Win32UpdateService extends AbstractUpdateService {
  
  	@memoize
  	get cachePath(): Promise<string> {
--		const result = path.join(tmpdir(), `vscode-update-${product.target}-${process.arch}`);
-+		const result = path.join(tmpdir(), `vscodium-update-${product.target}-${process.arch}`);
- 		return pfs.mkdirp(result, undefined).then(() => result);
+-		const result = path.join(tmpdir(), `vscode-update-${this.productService.target}-${process.arch}`);
++		const result = path.join(tmpdir(), `${this.productService.applicationName}-update-${this.productService.target}-${process.arch}`);
+ 		return pfs.Promises.mkdir(result, { recursive: true }).then(() => result);
  	}
  
