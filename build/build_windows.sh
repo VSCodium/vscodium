@@ -4,6 +4,7 @@
 
 rm -rf VSCode*
 rm -rf vscode
+rm -rf build/windows/msi/releasedir
 
 . get_repo.sh
 
