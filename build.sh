@@ -22,18 +22,22 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
   if [[ "$OS_NAME" == "osx" ]]; then
     yarn gulp "vscode-darwin-${VSCODE_ARCH}-min-ci"
   elif [[ "$OS_NAME" == "windows" ]]; then
-    cp LICENSE.txt LICENSE.rtf # windows build expects rtf license
+    . ../build/windows/rtf/make.sh
+    
     yarn gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
     yarn gulp "vscode-win32-${VSCODE_ARCH}-code-helper"
     yarn gulp "vscode-win32-${VSCODE_ARCH}-inno-updater"
     yarn gulp "vscode-win32-${VSCODE_ARCH}-archive"
     yarn gulp "vscode-win32-${VSCODE_ARCH}-system-setup"
     yarn gulp "vscode-win32-${VSCODE_ARCH}-user-setup"
+    
+    . ../build/windows/msi/build.sh
   else # linux
     yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
     if [[ "$SKIP_LINUX_PACKAGES" != "True" ]]; then
       yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
       yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
+      
       . ../create_appimage.sh
     fi
   fi

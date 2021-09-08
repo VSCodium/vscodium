@@ -82,6 +82,7 @@ jobs:
           mv vscode\\.build\\win32-${VSCODE_ARCH}\\system-setup\\VSCodeSetup.exe VSCodiumSetup-${VSCODE_ARCH}-${MS_TAG}.exe
           mv vscode\\.build\\win32-${VSCODE_ARCH}\\user-setup\\VSCodeSetup.exe VSCodiumUserSetup-${VSCODE_ARCH}-${MS_TAG}.exe
           mv vscode\\.build\\win32-${VSCODE_ARCH}\\archive\\VSCode-win32-${VSCODE_ARCH}.zip VSCodium-win32-${VSCODE_ARCH}-${MS_TAG}.zip
+          mv build\\windows\\msi\\releasedir\\VSCodium-${VSCODE_ARCH}-${MS_TAG}.msi .
         shell: bash
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
@@ -100,6 +101,7 @@ jobs:
             ./VSCodium*.zip
             ./VSCodiumUserSetup*.exe
             ./VSCodiumSetup*.exe
+            ./VSCodium*.msi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

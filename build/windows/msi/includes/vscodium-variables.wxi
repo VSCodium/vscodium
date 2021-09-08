@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Include>
   <!-- Setup UI strings. -->
-  <?if $(env.Platform)=x86?>
+  <?if $(loc.Platform)=x86?>
     <?define ProgramFilesFolder="ProgramFilesFolder" ?>
     <?define Win64="no" ?>
     <?define Arch="(x86)" ?>
@@ -11,15 +11,15 @@
     <?define Arch="(x64)" ?>
   <?endif?>
 
-  <?define ProductVersion="$(var.ProductMajorVersion).$(var.ProductMinorVersion).$(var.ProductMaintenanceVersion)" ?>
+  <!-- <?define ProductVersion="$(var.ProductVersion)" ?> -->
   <?define ProductName="!(loc.ProductName)" ?>
-  <?define ProductNameWithVersion="!(loc.ProductName) $(var.ProductMajorVersion).$(var.ProductMinorVersion).$(var.ProductMaintenanceVersion) $(var.Arch)" ?>
+  <?define ProductNameWithVersion="!(loc.ProductName) $(var.ProductVersion) $(var.Arch)" ?>
   <?define ProductLanguage="!(loc.ProductLanguage)" ?>
-  <?define AppCodeName="VSCodium" ?>
-  <?define AppName="VSCodium" ?>
-  <?define AppFolderName="VSCodium" ?>
-  <?define ProductManufacturerShort="VSCodium" ?>
-  <?define ProductManufacturerLong="VSCodium" ?>
+  <?define AppCodeName="$(var.AppName)" ?>
+  <!-- <?define AppName="$(var.AppName)" ?> -->
+  <?define AppFolderName="$(var.AppName)" ?>
+  <?define ProductManufacturerShort="$(var.AppName)" ?>
+  <?define ProductManufacturerLong="$(var.AppName)" ?>
 
   <!-- Static settings, DO NOT TOUCH or upgrades will break! -->
   <?define ProductUpgradeCode="{965370CD-253C-4720-82FC-2E6B02A53808}" ?>

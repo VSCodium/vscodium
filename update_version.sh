@@ -115,6 +115,12 @@ elif [[ "$OS_NAME" == "windows" ]]; then
   VERSION_PATH="win32/${VSCODE_ARCH}/archive"
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
+  
+  # msi
+  ASSET_NAME=VSCodium-${VSCODE_ARCH}-${MS_TAG}.msi
+  VERSION_PATH="win32/${VSCODE_ARCH}/msi"
+  JSON="$(generateJson ${ASSET_NAME})"
+  updateLatestVersion "$VERSION_PATH" "$JSON"
 else # linux
   # update service links to tar.gz file
   # see https://update.code.visualstudio.com/api/update/linux-x64/stable/VERSION

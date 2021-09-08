@@ -11,8 +11,7 @@
     <Property Id="ALLUSERS" Value="1" />
     <Property Id="ARPPRODUCTICON" Value="code.ico" />
     <SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
-    <!-- <Icon Id="code.ico" SourceFile="$(var.ReproDir)\resources\win32\code.ico" /> -->
-    <Icon Id="code.ico" SourceFile="$(var.SetupResourcesDir)\code.ico" />
+    <Icon Id="code.ico" SourceFile="$(var.IconDir)\code.ico" />
 
     <!-- Microsoft .NET Framework 4.5.2 is required for VSCodium. If you are using Windows 7, please make sure .NET Framework 4.5.2 is installed. -->
     <PropertyRef Id='WIX_IS_NETFRAMEWORK_452_OR_LATER_INSTALLED' />
@@ -1488,7 +1487,8 @@
     </Feature>
 
     <!-- Path to license file will be overridden via light.exe in other languages than "en-us". -->
-    <!-- <WixVariable Id="WixUILicenseRtf" Value="$(var.SetupResourcesDir)\licenses\license.$(var.Culture).rtf" /> -->
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.LicenseDir)\LICENSE.rtf" />
+    <!-- <WixVariable Id="WixUILicenseRtf" Value="$(var.SetupResourcesDir)\LICENSE.rtf" /> -->
     <WixVariable Id="WixUIBannerBmp" Value="$(var.SetupResourcesDir)\wix-banner.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="$(var.SetupResourcesDir)\wix-dialog.bmp" />
 
