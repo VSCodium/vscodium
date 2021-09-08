@@ -3,6 +3,8 @@
 set -e
 
 cp -rp src/* vscode/
+cp -f LICENSE vscode/LICENSE.txt
+
 cd vscode || exit
 
 ../update_settings.sh

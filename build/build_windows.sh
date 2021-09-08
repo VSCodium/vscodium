@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# to run with WSL: wsl ./build/build_windows.sh
+# to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build_windows.sh
 
 rm -rf VSCode*
 rm -rf vscode
+rm -rf build/windows/msi/releasedir
 
-./get_repo.sh
+. get_repo.sh
 
-SHOULD_BUILD=yes CI_BUILD=no OS_NAME=windows VSCODE_ARCH=x64 ./build.sh
+SHOULD_BUILD=yes CI_BUILD=no OS_NAME=windows VSCODE_ARCH=x64 . build.sh

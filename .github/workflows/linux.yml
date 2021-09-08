@@ -85,6 +85,13 @@ jobs:
           cd VSCode-linux-${VSCODE_ARCH}
           tar czf ../VSCodium-linux-${VSCODE_ARCH}-${MS_TAG}.tar.gz .
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        
+      - name: Move/rename build artifacts
+        run: |
+          cp out/*.AppImage* .
+          cp vscode/.build/linux/deb/*/deb/*.deb .
+          cp vscode/.build/linux/rpm/*/*.rpm .
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Generate shasums
         run: ./sum.sh
