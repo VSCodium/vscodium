@@ -116,11 +116,19 @@ elif [[ "$OS_NAME" == "windows" ]]; then
   JSON="$(generateJson ${ASSET_NAME})"
   updateLatestVersion "$VERSION_PATH" "$JSON"
   
-  # msi
-  ASSET_NAME=VSCodium-${VSCODE_ARCH}-${MS_TAG}.msi
-  VERSION_PATH="win32/${VSCODE_ARCH}/msi"
-  JSON="$(generateJson ${ASSET_NAME})"
-  updateLatestVersion "$VERSION_PATH" "$JSON"
+  if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
+    # msi
+    ASSET_NAME=VSCodium-${VSCODE_ARCH}-${MS_TAG}.msi
+    VERSION_PATH="win32/${VSCODE_ARCH}/msi"
+    JSON="$(generateJson ${ASSET_NAME})"
+    updateLatestVersion "$VERSION_PATH" "$JSON"
+    
+    # updates-disabled msi
+    ASSET_NAME=VSCodium-${VSCODE_ARCH}-updates-disabled-${MS_TAG}.msi
+    VERSION_PATH="win32/${VSCODE_ARCH}/msi-updates-disabled"
+    JSON="$(generateJson ${ASSET_NAME})"
+    updateLatestVersion "$VERSION_PATH" "$JSON"
+  fi
 else # linux
   # update service links to tar.gz file
   # see https://update.code.visualstudio.com/api/update/linux-x64/stable/VERSION

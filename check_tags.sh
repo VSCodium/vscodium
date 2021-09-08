@@ -56,6 +56,10 @@ if [ "$GITHUB_TOKEN" != "" ]; then
           echo "Building on Windows ia32 because we have no msi"
           export SHOULD_BUILD="yes"
         fi
+        if [[ -z $( contains "VSCodium-$VSCODE_ARCH-updates-disabled-$MS_TAG.msi" ) ]]; then
+          echo "Building on Windows ia32 because we have no updates-disabled msi"
+          export SHOULD_BUILD="yes"
+        fi
         if [[ "$SHOULD_BUILD" != "yes" ]]; then
           echo "Already have all the Windows ia32 builds"
         fi
@@ -75,6 +79,10 @@ if [ "$GITHUB_TOKEN" != "" ]; then
         fi
         if [[ -z $( contains "VSCodium-$VSCODE_ARCH-$MS_TAG.msi" ) ]]; then
           echo "Building on Windows x64 because we have no msi"
+          export SHOULD_BUILD="yes"
+        fi
+        if [[ -z $( contains "VSCodium-$VSCODE_ARCH-updates-disabled-$MS_TAG.msi" ) ]]; then
+          echo "Building on Windows x64 because we have no updates-disabled msi"
           export SHOULD_BUILD="yes"
         fi
         if [[ "$SHOULD_BUILD" != "yes" ]]; then

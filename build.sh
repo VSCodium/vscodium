@@ -31,7 +31,10 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     yarn gulp "vscode-win32-${VSCODE_ARCH}-system-setup"
     yarn gulp "vscode-win32-${VSCODE_ARCH}-user-setup"
     
-    . ../build/windows/msi/build.sh
+    if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
+      . ../build/windows/msi/build.sh
+      . ../build/windows/msi/build-updates-disabled.sh
+    fi
   else # linux
     yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
     if [[ "$SKIP_LINUX_PACKAGES" != "True" ]]; then

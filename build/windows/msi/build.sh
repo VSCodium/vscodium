@@ -22,8 +22,13 @@ SETUP_RESOURCES_DIR=".\\resources"
 BINARY_DIR="..\\..\\..\\VSCode-win32-${VSCODE_ARCH}"
 ICON_DIR="..\\..\\..\\src\\resources\\win32"
 LICENSE_DIR="..\\..\\..\\vscode"
-OUTPUT_BASE_FILENAME="${PRODUCT_NAME}-${VSCODE_ARCH}-${MS_TAG}"
 PROGRAM_FILES_86=$( env | sed -n 's/^ProgramFiles(x86)=//p' )
+
+if [[ -z "$1" ]]; then
+	OUTPUT_BASE_FILENAME="${PRODUCT_NAME}-${VSCODE_ARCH}-${MS_TAG}"
+else
+	OUTPUT_BASE_FILENAME="${PRODUCT_NAME}-${VSCODE_ARCH}-$1-${MS_TAG}"
+fi
 
 if [[ "${VSCODE_ARCH}" == "ia32" ]]; then
    PLATFORM="x86"
