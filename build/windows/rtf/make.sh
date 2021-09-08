@@ -6,7 +6,7 @@ CALLER_DIR=$( pwd )
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
-powershell.exe -command "Expand-Archive -Force -Path '.\TXT2RTF.zip' -DestinationPath '.'"
+7z x TXT2RTF.zip
 
 LICENSE=$( powershell.exe -Command "[System.IO.Path]::GetFullPath( '../../../vscode/LICENSE.txt' )" )
 

@@ -32,6 +32,8 @@
 
 - powershell
 - sed
+- 7z
+- [WiX Toolset](http://wixtoolset.org/releases/)
 
 ## <a id="build-scripts"></a>Build Scripts
 
