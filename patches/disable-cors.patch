@@ -1,5 +1,5 @@
 diff --git a/src/bootstrap-window.js b/src/bootstrap-window.js
-index 0cc92ec..43042d5 100644
+index 0cc92ec..8ba8fb0 100644
 --- a/src/bootstrap-window.js
 +++ b/src/bootstrap-window.js
 @@ -24,6 +24,7 @@
@@ -10,33 +10,19 @@ index 0cc92ec..43042d5 100644
  
  	/**
  	 * @typedef {import('./vs/base/parts/sandbox/common/sandboxTypes').ISandboxConfiguration} ISandboxConfiguration
-@@ -99,6 +100,11 @@
- 
- 		window.document.documentElement.setAttribute('lang', locale);
- 
-+		// Do not advertise AMD to avoid confusing UMD modules loaded with nodejs
-+		if (!useCustomProtocol) {
-+			window['define'] = undefined;
-+		}
-+
- 		// Replace the patched electron fs with the original node fs for all AMD code (TODO@sandbox non-sandboxed only)
- 		if (!safeProcess.sandboxed) {
- 			require.define('fs', [], function () { return require.__$__nodeRequire('original-fs'); });
-@@ -107,9 +113,11 @@
+@@ -107,9 +108,9 @@
  		window['MonacoEnvironment'] = {};
  
  		const loaderConfig = {
 -			baseUrl: `${bootstrapLib.fileUriFromPath(configuration.appRoot, { isWindows: safeProcess.platform === 'win32', scheme: 'vscode-file', fallbackAuthority: 'vscode-app' })}/out`,
-+			baseUrl: useCustomProtocol ?
-+				`${bootstrapLib.fileUriFromPath(configuration.appRoot, { isWindows: safeProcess.platform === 'win32', scheme: 'vscode-file', fallbackAuthority: 'vscode-app' })}/out` :
-+				`${bootstrapLib.fileUriFromPath(configuration.appRoot, { isWindows: safeProcess.platform === 'win32' })}/out`,
++			baseUrl: `${bootstrapLib.fileUriFromPath(configuration.appRoot, { isWindows: safeProcess.platform === 'win32' })}/out`,
  			'vs/nls': nlsConfig,
 -			preferScriptTags: true
 +			preferScriptTags: useCustomProtocol
  		};
  
  		// use a trusted types policy when loading via script tags
-@@ -143,6 +151,14 @@
+@@ -143,6 +144,14 @@
  			loaderConfig.amdModulesPattern = /^vs\//;
  		}
  
