@@ -41,7 +41,7 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
       yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
       yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
       
-      . ../create_appimage.sh
+      . ../build/linux/appimage/build.sh
     fi
   fi
 

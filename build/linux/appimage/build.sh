@@ -1,6 +1,10 @@
 #!/bin/bash
 
-cd ..
+set -ex
+
+CALLER_DIR=$( pwd )
+
+cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 if [[ "$VSCODE_ARCH" == "x64" ]]; then
   wget -c https://github.com/$(wget -q https://github.com/AppImage/pkg2appimage/releases -O - | grep "pkg2appimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
@@ -14,7 +18,10 @@ if [[ "$VSCODE_ARCH" == "x64" ]]; then
   # remove check so build in docker can succeed
   sed -i 's/grep docker/# grep docker/' pkg2appimage.AppDir/usr/share/pkg2appimage/functions.sh
 
-  bash -ex pkg2appimage.AppDir/AppRun VSCodium-AppImage-Recipe.yml
+  bash -ex pkg2appimage.AppDir/AppRun recipe.yml
+  
+  rm -f pkg2appimage-*.AppImage
+  rm -rf pkg2appimage.AppDir
 fi
 
-cd vscode
+cd "${CALLER_DIR}"
