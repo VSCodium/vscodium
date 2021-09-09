@@ -88,9 +88,9 @@ jobs:
         
       - name: Move/rename build artifacts
         run: |
-          cp out/*.AppImage* .
-          cp vscode/.build/linux/deb/*/deb/*.deb .
-          cp vscode/.build/linux/rpm/*/*.rpm .
+          cp -f out/*.AppImage* .
+          cp -f vscode/.build/linux/deb/*/deb/*.deb .
+          cp -f vscode/.build/linux/rpm/*/*.rpm .
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Generate shasums
