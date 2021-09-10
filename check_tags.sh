@@ -96,7 +96,7 @@ if [ "$GITHUB_TOKEN" != "" ]; then
           echo "Building on Linux arm64 because we have no DEB"
           export SHOULD_BUILD="yes"
         fi
-        if [[ -z $( contains "arm64-$MS_TAG.tar.g" ) ]]; then
+        if [[ -z $( contains "arm64-$MS_TAG.tar.gz" ) ]]; then
           echo "Building on Linux arm64 because we have no TAR"
           export SHOULD_BUILD="yes"
         fi
