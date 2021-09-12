@@ -17,7 +17,8 @@ if [[ "$SHOULD_BUILD" == "yes" ]]; then
     sum_file VSCodiumSetup-*.exe
     sum_file VSCodiumUserSetup-*.exe
     sum_file VSCodium-win32-*.zip
-    sum_file VSCodium-*.msi
+    sum_file "VSCodium-${VSCODE_ARCH}-${MS_TAG}.msi"
+    sum_file "VSCodium-${VSCODE_ARCH}-updates-disabled-${MS_TAG}.msi"
   else # linux
     sum_file VSCodium-*.AppImage
     sum_file VSCodium-linux*.tar.gz
