@@ -87,6 +87,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Move/rename build artifacts
+        shell: bash
         run: |
           cp vscode/.build/linux/deb/*/deb/*.deb .
           cp vscode/.build/linux/rpm/*/*.rpm .
