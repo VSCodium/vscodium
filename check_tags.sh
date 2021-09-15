@@ -130,6 +130,10 @@ if [ "$GITHUB_TOKEN" != "" ]; then
           echo "Building on Linux x64 because we have no TAR"
           export SHOULD_BUILD="yes"
         fi
+        if [[ -z $( contains "x86_64.AppImage" ) ]]; then
+          echo "Building on Linux x64 because we have no AppImage"
+          export SHOULD_BUILD="yes"
+        fi
         if [[ "$SHOULD_BUILD" != "yes" ]]; then
           echo "Already have all the Linux x64 builds"
         fi
