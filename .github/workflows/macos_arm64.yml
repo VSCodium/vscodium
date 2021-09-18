@@ -1,4 +1,4 @@
-name: macos_build
+name: macos_arm64_build
 
 on:
   workflow_dispatch:
@@ -10,10 +10,10 @@ on:
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: macOS-11
     env:
       OS_NAME: "osx"
-      VSCODE_ARCH: "x64"
+      VSCODE_ARCH: "arm64"
     steps:
       - uses: actions/checkout@v2
         
