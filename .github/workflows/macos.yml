@@ -1,4 +1,4 @@
-name: macos_arm64_build
+name: macos_build
 
 on:
   workflow_dispatch:
@@ -13,12 +13,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        vscode_arch: [x64, arm64]
+        os: [macOS-10.15, macOS-11]
         include:
-        - vscode_arch: x64
-          os: macOS-10.15
-        - vscode_arch: arm64
-          os: macOS-11
+        - os: macOS-10.15
+          vscode_arch: x64
+        - os: macOS-11
+          vscode_arch: arm64
 
     env:
       OS_NAME: "osx"
