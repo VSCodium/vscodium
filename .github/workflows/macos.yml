@@ -10,10 +10,21 @@ on:
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - vscode_arch: x64
+            os: macOS-10.15
+          - vscode_arch: arm64
+            os: macOS-11
+
     env:
       OS_NAME: "osx"
-      VSCODE_ARCH: "x64"
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
+
     steps:
       - uses: actions/checkout@v2
         
