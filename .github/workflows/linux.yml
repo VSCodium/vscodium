@@ -11,7 +11,7 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: ${{ matrix.image }}
       env:
         OS_NAME: 'linux'
@@ -42,11 +42,11 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn
 
-      - name: Check PR or cron
-        run: ./check_cron_or_pr.sh
-
       - name: Clone VSCode repo
         run: ./get_repo.sh
+
+      - name: Check PR or cron
+        run: ./check_cron_or_pr.sh
 
       - name: Check existing VSCodium tags/releases
         env:
@@ -79,42 +79,15 @@ jobs:
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Zip release
-        run: |
-          cd VSCode-linux-${VSCODE_ARCH}
-          tar czf ../VSCodium-linux-${VSCODE_ARCH}-${MS_TAG}.tar.gz .
+      - name: Prepare artifacts
+        run: ./prepare_artifacts.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
-      - name: Move/rename build artifacts
-        shell: bash
-        run: |
-          cp vscode/.build/linux/deb/*/deb/*.deb .
-          cp vscode/.build/linux/rpm/*/*.rpm .
-
-          if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-            cp build/linux/appimage/out/*.AppImage* .
-          fi
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-
-      - name: Generate shasums
-        run: ./sum.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-      
       - name: Release
-        uses: softprops/action-gh-release@v1
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-        with:
-          tag_name: ${{ env.MS_TAG }}
-          files: |
-            ./*.sha256
-            ./*.zip
-            ./*.tar.gz
-            ./*.deb
-            ./*.rpm
-            ./VSCodium-*.AppImage
-            ./VSCodium-*.AppImage.zsync
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./release.sh
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
