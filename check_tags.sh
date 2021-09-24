@@ -20,22 +20,22 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
   # macos
   if [[ "${OS_NAME}" == "osx" ]]; then
     if [[ -z $( contains "darwin-${VSCODE_ARCH}-${MS_TAG}.zip" ) ]]; then
-      echo "Building on Mac because we have no ZIP"
+      echo "Building on MacOS because we have no ZIP"
       export SHOULD_BUILD="yes"
     else
       export SHOULD_BUILD_ZIP="no"
     fi
 
     if [[ -z $( contains ".${VSCODE_ARCH}.${MS_TAG}.dmg" ) ]]; then
-      echo "Building on Mac because we have no DMG"
+      echo "Building on MacOS because we have no DMG"
       export SHOULD_BUILD="yes"
     else
       export SHOULD_BUILD_DMG="no"
     fi
 
     if [[ "${SHOULD_BUILD}" != "yes" ]]; then
-        echo "Already have all the MacOS builds"
-      fi
+      echo "Already have all the MacOS builds"
+    fi
   elif [[ "${OS_NAME}" == "windows" ]]; then
 
     # windows-arm64

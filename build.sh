@@ -28,24 +28,24 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     yarn gulp "vscode-win32-${VSCODE_ARCH}-code-helper"
     yarn gulp "vscode-win32-${VSCODE_ARCH}-inno-updater"
 
-    if [["${SHOULD_BUILD_ZIP}" != "no" ]]; then
+    if [[ "${SHOULD_BUILD_ZIP}" != "no" ]]; then
       yarn gulp "vscode-win32-${VSCODE_ARCH}-archive"
     fi
 
-    if [["${SHOULD_BUILD_EXE_SYS}" != "no" ]]; then
+    if [[ "${SHOULD_BUILD_EXE_SYS}" != "no" ]]; then
       yarn gulp "vscode-win32-${VSCODE_ARCH}-system-setup"
     fi
 
-    if [["${SHOULD_BUILD_EXE_USR}" != "no" ]]; then
+    if [[ "${SHOULD_BUILD_EXE_USR}" != "no" ]]; then
       yarn gulp "vscode-win32-${VSCODE_ARCH}-user-setup"
     fi
 
     if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
-      if [["${SHOULD_BUILD_MSI}" != "no" ]]; then
+      if [[ "${SHOULD_BUILD_MSI}" != "no" ]]; then
         . ../build/windows/msi/build.sh
       fi
 
-      if [["${SHOULD_BUILD_MSI_NOUP}" != "no" ]]; then
+      if [[ "${SHOULD_BUILD_MSI_NOUP}" != "no" ]]; then
         . ../build/windows/msi/build-updates-disabled.sh
       fi
     fi
@@ -53,15 +53,15 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
     if [[ "${SKIP_LINUX_PACKAGES}" != "True" ]]; then
-      if [["${SHOULD_BUILD_DEB}" != "no" ]]; then
+      if [[ "${SHOULD_BUILD_DEB}" != "no" ]]; then
         yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
       fi
 
-      if [["${SHOULD_BUILD_RPM}" != "no" ]]; then
+      if [[ "${SHOULD_BUILD_RPM}" != "no" ]]; then
         yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
       fi
 
-      if [["${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
+      if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
         . ../build/linux/appimage/build.sh
       fi
     fi
