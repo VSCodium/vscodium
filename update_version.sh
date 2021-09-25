@@ -37,25 +37,23 @@ URL_BASE="https://github.com/VSCodium/vscodium/releases/download/${MS_TAG}"
 VERSIONS_REPO="${GITHUB_USERNAME}/versions"
 echo "Versions repo: ${VERSIONS_REPO}"
 
-# generateJson <assetName>
-# e.g. generateJson VSCodium-darwin-1.33.0.zip
 generateJson() {
-  local assetName="$1"
+  JSON_DATA="{}"
 
   # generate parts
-  local url="${URL_BASE}/${assetName}"
+  local url="${URL_BASE}/${ASSET_NAME}"
   local name="${MS_TAG}"
   local version="${MS_COMMIT}"
   local productVersion="${MS_TAG}"
   local timestamp=$(node -e 'console.log(Date.now())')
 
-  if [[ ! -f "artifacts/${assetName}" ]]; then
-    echo "Downloading artifact '${assetName}'"
-    gh release download "${MS_TAG}" --dir "artifacts" --pattern "${assetName}*"
+  if [[ ! -f "artifacts/${ASSET_NAME}" ]]; then
+    echo "Downloading artifact '${ASSET_NAME}'"
+    gh release download "${MS_TAG}" --dir "artifacts" --pattern "${ASSET_NAME}*"
   fi
 
-  local sha1hash=$(cat "artifacts/${assetName}.sha1" | awk '{ print $1 }')
-  local sha256hash=$(cat "artifacts/${assetName}.sha256" | awk '{ print $1 }')
+  local sha1hash=$(cat "artifacts/${ASSET_NAME}.sha1" | awk '{ print $1 }')
+  local sha256hash=$(cat "artifacts/${ASSET_NAME}.sha256" | awk '{ print $1 }')
 
   # check that nothing is blank (blank indicates something awry with build)
   for key in url name version productVersion sha1hash timestamp sha256hash; do
@@ -66,7 +64,7 @@ generateJson() {
   done
 
   # generate json
-  local json=$(jq \
+  JSON_DATA=$(jq \
     --arg url             "${url}" \
     --arg name            "${name}" \
     --arg version         "${version}" \
@@ -76,20 +74,18 @@ generateJson() {
     --arg sha256hash      "${sha256hash}" \
     '. | .url=$url | .name=$name | .version=$version | .productVersion=$productVersion | .hash=$hash | .timestamp=$timestamp | .sha256hash=$sha256hash' \
     <<<'{}')
-
-  echo "${json}"
 }
 
 updateLatestVersion() {
-  echo "Generating $1/latest.json"
-  local versionPath="$1"
-  local json=$( generateJson "$2" )
+  echo "Generating ${VERSION_PATH}/latest.json"
+
+  generateJson
 
   cd versions
 
   # create/update the latest.json file in the correct location
-  mkdir -p $versionPath
-  echo $json > $versionPath/latest.json
+  mkdir -p "${VERSION_PATH}"
+  echo "${JSON_DATA}" > "${VERSION_PATH}/latest.json"
 
   cd ..
 }
@@ -107,33 +103,33 @@ cd ..
 if [[ "${OS_NAME}" == "osx" ]]; then
   ASSET_NAME=VSCodium-darwin-${VSCODE_ARCH}-${MS_TAG}.zip
   VERSION_PATH="darwin/${VSCODE_ARCH}"
-  updateLatestVersion "${VERSION_PATH}" "${ASSET_NAME}"
+  updateLatestVersion
 elif [[ "${OS_NAME}" == "windows" ]]; then
   # system installer
   ASSET_NAME=VSCodiumSetup-${VSCODE_ARCH}-${MS_TAG}.exe
   VERSION_PATH="win32/${VSCODE_ARCH}/system"
-  updateLatestVersion "${VERSION_PATH}" "${ASSET_NAME}"
+  updateLatestVersion
 
   # user installer
   ASSET_NAME=VSCodiumUserSetup-${VSCODE_ARCH}-${MS_TAG}.exe
   VERSION_PATH="win32/${VSCODE_ARCH}/user"
-  updateLatestVersion "${VERSION_PATH}" "${ASSET_NAME}"
+  updateLatestVersion
 
   # windows archive
   ASSET_NAME=VSCodium-win32-${VSCODE_ARCH}-${MS_TAG}.zip
   VERSION_PATH="win32/${VSCODE_ARCH}/archive"
-  updateLatestVersion "${VERSION_PATH}" "${ASSET_NAME}"
+  updateLatestVersion
 
   if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
     # msi
     ASSET_NAME=VSCodium-${VSCODE_ARCH}-${MS_TAG}.msi
     VERSION_PATH="win32/${VSCODE_ARCH}/msi"
-    updateLatestVersion "${VERSION_PATH}" "${ASSET_NAME}"
+    updateLatestVersion
 
     # updates-disabled msi
     ASSET_NAME=VSCodium-${VSCODE_ARCH}-updates-disabled-${MS_TAG}.msi
     VERSION_PATH="win32/${VSCODE_ARCH}/msi-updates-disabled"
-    updateLatestVersion "${VERSION_PATH}" "${ASSET_NAME}"
+    updateLatestVersion
   fi
 else # linux
   # update service links to tar.gz file
@@ -141,7 +137,7 @@ else # linux
   # as examples
   ASSET_NAME=VSCodium-linux-${VSCODE_ARCH}-${MS_TAG}.tar.gz
   VERSION_PATH="linux/${VSCODE_ARCH}"
-  updateLatestVersion "${VERSION_PATH}" "${ASSET_NAME}"
+  updateLatestVersion
 fi
 
 cd versions
