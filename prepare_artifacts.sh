@@ -58,4 +58,9 @@ else
   fi
 fi
 
-sum_file artifacts/*
+for FILE in ./artifacts/*
+do
+  if [[ -f "${FILE}" ]]
+    sum_file "${FILE}"
+  fi
+done
