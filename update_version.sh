@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [[ "${SHOULD_BUILD}" != "yes" ]]; then
   echo "Will not update version JSON because we did not build"
   exit
@@ -48,6 +50,7 @@ generateJson() {
   local timestamp=$(node -e 'console.log(Date.now())')
 
   if [[ ! -f "artifacts/${assetName}" ]]; then
+    echo "Downloading artifact `${assetName}`"
     gh release download "${MS_TAG}" --dir "artifacts" --pattern "${assetName}*"
   fi
 
@@ -56,8 +59,8 @@ generateJson() {
 
   # check that nothing is blank (blank indicates something awry with build)
   for key in url name version productVersion sha1hash timestamp sha256hash; do
-    if [[ "${!key}" == "" ]]; then
-      echo "Missing data for version update; exiting..."
+    if [[ -z "${key}" ]]; then
+      echo "Variable `${key}` is empty; exiting..."
       exit 1
     fi
   done
@@ -78,6 +81,7 @@ generateJson() {
 }
 
 updateLatestVersion() {
+  echo "Generating $1/latest.json"
   cd versions
 
   local versionPath="$1"
