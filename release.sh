@@ -14,10 +14,14 @@ if [[ $( gh release view "${MS_TAG}" 2>&1 ) =~ "release not found" ]]; then
   gh release create "${MS_TAG}"
 fi
 
-for FILE in ./artifacts/*
+cd artifacts
+
+for FILE in *
 do
   if [[ -f "${FILE}" ]] && [[ "${FILE}" != *.sha1 ]] && [[ "${FILE}" != *.sha256 ]]; then
     echo "Uploading '${FILE}'"
     gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
   fi
 done
+
+cd ..

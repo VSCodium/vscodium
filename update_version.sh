@@ -82,10 +82,10 @@ generateJson() {
 
 updateLatestVersion() {
   echo "Generating $1/latest.json"
-  cd versions
-
   local versionPath="$1"
   local json=$( generateJson "$2" )
+
+  cd versions
 
   # create/update the latest.json file in the correct location
   mkdir -p $versionPath
