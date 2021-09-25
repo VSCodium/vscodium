@@ -70,7 +70,7 @@ fi
 
 for FILE in ./artifacts/*
 do
-  if [[ -f "${FILE}" ]]
+  if [[ -f "${FILE}" ]]; then
     sum_file "${FILE}"
   fi
 done
