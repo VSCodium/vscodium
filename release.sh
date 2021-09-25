@@ -9,9 +9,7 @@ fi
 
 echo "${GH_CLI_TOKEN}" | gh auth login --with-token
 
-RELEASE_DATA=$( gh release view "${MS_TAG}" )
-
-if [[ "${RELEASE_DATA}" == "release not found" ]]; then
+if [[ $( gh release view "${MS_TAG}" 2>&1 ) =~ "release not found" ]]; then
   gh release create "${MS_TAG}"
 fi
 
