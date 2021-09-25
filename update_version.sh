@@ -50,7 +50,7 @@ generateJson() {
   local timestamp=$(node -e 'console.log(Date.now())')
 
   if [[ ! -f "artifacts/${assetName}" ]]; then
-    echo "Downloading artifact `${assetName}`"
+    echo "Downloading artifact '${assetName}'"
     gh release download "${MS_TAG}" --dir "artifacts" --pattern "${assetName}*"
   fi
 
@@ -60,7 +60,7 @@ generateJson() {
   # check that nothing is blank (blank indicates something awry with build)
   for key in url name version productVersion sha1hash timestamp sha256hash; do
     if [[ -z "${key}" ]]; then
-      echo "Variable `${key}` is empty; exiting..."
+      echo "Variable '${key}' is empty; exiting..."
       exit 1
     fi
   done
