@@ -2,9 +2,12 @@
 
 set -e
 
-if [[ ! -z "${GITHUB_TOKEN}" ]]; then
-  echo "${GITHUB_TOKEN}" | gh auth login --with-token
+if [[ -z "${GH_CLI_TOKEN}" ]]; then
+  echo "Will not release because no GH_CLI_TOKEN defined"
+  exit
 fi
+
+echo "${GH_CLI_TOKEN}" | gh auth login --with-token
 
 RELEASE_DATA=$( gh release view "${MS_TAG}" )
 
