@@ -53,7 +53,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
     if [[ "${SKIP_LINUX_PACKAGES}" != "True" ]]; then
-      if [[ "${SHOULD_BUILD_DEB}" != "no" ]]; then
+      if [[ "${SHOULD_BUILD_DEB}" != "no" || "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
         yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
       fi
 

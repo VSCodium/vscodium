@@ -74,7 +74,7 @@ else
     mv vscode/.build/linux/rpm/*/*.rpm artifacts/
   fi
 
-  if [[ "${VSCODE_ARCH}" == "x64" ]] && [["${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
+  if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
     echo "Moving AppImage"
     mv build/linux/appimage/out/*.AppImage* artifacts/
   fi

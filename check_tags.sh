@@ -172,6 +172,8 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
         export SHOULD_BUILD_TAR="no"
       fi
 
+      export SHOULD_BUILD_APPIMAGE="no"
+
       if [[ "${SHOULD_BUILD}" != "yes" ]]; then
         echo "Already have all the Linux arm64 builds"
       fi
@@ -198,6 +200,8 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
       else
         export SHOULD_BUILD_TAR="no"
       fi
+
+      export SHOULD_BUILD_APPIMAGE="no"
 
       if [[ "${SHOULD_BUILD}" != "yes" ]]; then
         echo "Already have all the Linux arm builds"
