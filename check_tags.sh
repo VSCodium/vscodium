@@ -187,7 +187,7 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
         export SHOULD_BUILD_DEB="no"
       fi
 
-      if [[ -z $( contains "armhf.rpm" ) ]]; then
+      if [[ -z $( contains "armv7hl.rpm" ) ]]; then
         echo "Building on Linux arm because we have no RPM"
         export SHOULD_BUILD="yes"
       else
