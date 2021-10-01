@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       fail-fast: false
       matrix:
@@ -27,25 +27,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v1
         with:
           node-version: 14
-          
-      - name: Check PR or cron
-        run: |
-          . check_cron_or_pr.sh
 
       - name: Clone VSCode repo
-        run: |
-          . get_repo.sh
+        run: . get_repo.sh
+
+      - name: Check PR or cron
+        run: . check_cron_or_pr.sh
 
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          . check_tags.sh
+        run: . check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Compute cache key
@@ -92,35 +89,15 @@ jobs:
             codesign --deep --force --verbose --sign "$CERTIFICATE_OSX_ID" VSCodium.app
           fi
 
-      - name: Zip release
-        run: |
-          cd "VSCode-darwin-${VSCODE_ARCH}"
-          zip -r -X -y ../VSCodium-darwin-${VSCODE_ARCH}-${MS_TAG}.zip ./*.app
+      - name: Prepare artifacts
+        run: ./prepare_artifacts.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
-      - name: DMG the release
-        run: |
-          pushd "VSCode-darwin-${VSCODE_ARCH}"
-          npx create-dmg VSCodium.app ..
-          mv "../VSCodium ${MS_TAG}.dmg" "../VSCodium.${VSCODE_ARCH}.${MS_TAG}.dmg"
-          popd
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-
-      - name: Generate shasums
-        run: ./sum.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-      
       - name: Release
-        uses: softprops/action-gh-release@v1
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-        with:
-          tag_name: ${{ env.MS_TAG }}
-          files: |
-            ./*.zip
-            ./*.dmg
-            ./*.sha256
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_CLI_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./release.sh
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
