@@ -1,5 +1,5 @@
 diff --git a/extensions/github-authentication/src/githubServer.ts b/extensions/github-authentication/src/githubServer.ts
-index 3d36081..5bac245 100644
+index 8424f5b..5bac245 100644
 --- a/extensions/github-authentication/src/githubServer.ts
 +++ b/extensions/github-authentication/src/githubServer.ts
 @@ -6,8 +6,6 @@
@@ -212,11 +212,14 @@ index 3d36081..5bac245 100644
  	private async manuallyProvideUri() {
  		const uri = await vscode.window.showInputBox({
  			prompt: 'Uri',
-@@ -290,41 +159,7 @@ export class GitHubServer implements IGitHubServer {
+@@ -290,44 +159,7 @@ export class GitHubServer implements IGitHubServer {
  		return getUserInfo(token, this.getServerUri('/user'), this._logger);
  	}
  
 -	public async sendAdditionalTelemetryInfo(token: string): Promise<void> {
+-		if (!vscode.env.isTelemetryEnabled) {
+-			return;
+-		}
 -		const nocors = await this.isNoCorsEnvironment();
 -
 -		if (nocors) {
