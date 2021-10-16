@@ -1,15 +1,20 @@
 #!/bin/bash
 
-set -ex
+cd "$( dirname "${BASH_SOURCE[0]}" )"/../../../vscode
 
-CALLER_DIR=$( pwd )
+input=LICENSE.txt
+target=LICENSE.rtf
 
-cd "$( dirname "${BASH_SOURCE[0]}" )"
+cat - >$target <<_EOF
+{\rtf1\ansi\deff0{\fonttbl{\f0\fnil\fcharset0 Consolas;}}
+\viewkind4\uc1\pard\lang1033\f0\fs22
 
-7z x -y TXT2RTF.zip
+_EOF
 
-LICENSE=$( powershell.exe -Command "[System.IO.Path]::GetFullPath( '../../../vscode/LICENSE.txt' )" )
+sed -zE -e 's/([A-Za-z,])\r?\n([A-Za-z])/\1 \2/g' -e 's/\r?\n\r?\n/\\par\n\n/g' -e 's/(\\par\n)/\\line\1/g' -e 's/\s*(Copyright)/\\line\n\1/g' -e 's/(\\par)\\line/\1\n/g' $input >> $target
 
-"./TXT to RTF Converter.exe" "${LICENSE}"
 
-cd "${CALLER_DIR}"
+cat - >>$target <<_EOF
+\par
+}
+_EOF
