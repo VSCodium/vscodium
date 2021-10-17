@@ -23,13 +23,7 @@ jobs:
         vscode_arch: [x64, ia32, arm64]
 
     steps:
-      - name: Checkout github repo (+ download lfs dependencies)
-        uses: actions/checkout@v2
-        with:
-          lfs: true
-
-      - name: Checkout LFS objects
-        run: git lfs checkout
+      - uses: actions/checkout@v2
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v1
