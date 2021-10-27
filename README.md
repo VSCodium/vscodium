@@ -28,6 +28,7 @@
   - [Install with Package Manager](#install-with-package-manager)
   - [Install on Arch Linux](#install-on-arch-linux)
   - [Flatpak Option](#flatpak)
+- [Build](#build)
 - [Why Does This Exist](#why)
 - [More Info](#more-info)
 - [Supported Platforms](#supported-platforms)
@@ -84,6 +85,9 @@ flatpak install flathub com.vscodium.codium
 
 flatpak run com.vscodium.codium
 ```
+
+## <a id="build"></a>Build
+Build instructions can be found [here](https://github.com/VSCodium/vscodium/blob/master/docs/build.md)
 
 ## <a id="why"></a>Why Does This Exist
 This repository contains build files to generate free release binaries of Microsoft's VS Code. When we speak of "free software", we're talking about freedom, not price.
