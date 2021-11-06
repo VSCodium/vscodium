@@ -16,6 +16,8 @@ fi
 
 cd artifacts
 
+set +e
+
 for FILE in *
 do
   if [[ -f "${FILE}" ]] && [[ "${FILE}" != *.sha1 ]] && [[ "${FILE}" != *.sha256 ]]; then
@@ -25,6 +27,7 @@ do
     if [[ $? != 0 ]]; then
       while true
       do
+        echo "RE-Uploading '${FILE}'"
         gh release upload --clobber "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
         if [[ $? == 0 ]]; then
