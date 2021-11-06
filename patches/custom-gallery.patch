@@ -1,8 +1,8 @@
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 78d6060..dfa9de2 100644
+index 657b9c9..9b9b12e 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
-@@ -69,6 +69,7 @@ export interface IProductConfiguration {
+@@ -70,6 +70,7 @@ export interface IProductConfiguration {
  
  	readonly extensionsGallery?: {
  		readonly serviceUrl: string;
@@ -11,7 +11,7 @@ index 78d6060..dfa9de2 100644
  		readonly resourceUrlTemplate: string;
  		readonly controlUrl: string;
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 09dfc64..fec0cfa 100644
+index 5e38d35..12bb161 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -4,11 +4,12 @@
@@ -26,9 +26,9 @@ index 09dfc64..fec0cfa 100644
  import { ISandboxConfiguration } from 'vs/base/parts/sandbox/common/sandboxTypes';
 +import { getUserDataPath } from 'vs/platform/environment/node/userDataPath';
  
- let product: IProductConfiguration;
- 
-@@ -31,6 +32,32 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+ /**
+  * @deprecated You MUST use `IProductService` if possible.
+@@ -34,6 +35,32 @@ else if (typeof require?.__$__nodeRequire === 'function') {
  	product = require.__$__nodeRequire(joinPath(rootPath, 'product.json').fsPath);
  	const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string; };
  
@@ -61,7 +61,7 @@ index 09dfc64..fec0cfa 100644
  	// Running out of sources
  	if (env['VSCODE_DEV']) {
  		Object.assign(product, {
-@@ -40,6 +67,19 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+@@ -43,6 +70,19 @@ else if (typeof require?.__$__nodeRequire === 'function') {
  		});
  	}
  

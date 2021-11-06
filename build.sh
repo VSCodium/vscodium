@@ -25,7 +25,6 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     . ../build/windows/rtf/make.sh
 
     yarn gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
-    yarn gulp "vscode-win32-${VSCODE_ARCH}-code-helper"
     yarn gulp "vscode-win32-${VSCODE_ARCH}-inno-updater"
 
     if [[ "${SHOULD_BUILD_ZIP}" != "no" ]]; then

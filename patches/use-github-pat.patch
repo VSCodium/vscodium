@@ -1,5 +1,5 @@
 diff --git a/extensions/github-authentication/src/githubServer.ts b/extensions/github-authentication/src/githubServer.ts
-index 8424f5b..5bac245 100644
+index fe0fbfd..656d8bb 100644
 --- a/extensions/github-authentication/src/githubServer.ts
 +++ b/extensions/github-authentication/src/githubServer.ts
 @@ -6,8 +6,6 @@
@@ -47,7 +47,7 @@ index 8424f5b..5bac245 100644
  	private _statusBarCommandId = `${this.type}.provide-manually`;
  	private _disposable: vscode.Disposable;
  	private _uriHandler = new UriEventHandler(this._logger);
-@@ -115,150 +99,35 @@ export class GitHubServer implements IGitHubServer {
+@@ -115,137 +99,35 @@ export class GitHubServer implements IGitHubServer {
  		this._disposable.dispose();
  	}
  
@@ -58,15 +58,13 @@ index 8424f5b..5bac245 100644
 -	// TODO@joaomoreno TODO@TylerLeonhardt
 -	private async isNoCorsEnvironment(): Promise<boolean> {
 -		const uri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.github-authentication/dummy`));
--		return (uri.scheme === 'https' && /^(vscode|github)\./.test(uri.authority)) || (uri.scheme === 'http' && /^localhost/.test(uri.authority));
+-		return (uri.scheme === 'https' && /^((insiders\.)?vscode|github)\./.test(uri.authority)) || (uri.scheme === 'http' && /^localhost/.test(uri.authority));
 -	}
 -
  	public async login(scopes: string): Promise<string> {
  		this._logger.info(`Logging in for the following scopes: ${scopes}`);
  
--		// TODO@joaomoreno TODO@TylerLeonhardt
--		const nocors = await this.isNoCorsEnvironment();
--		const callbackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.github-authentication/did-authenticate${nocors ? '?nocors=true' : ''}`));
+-		const callbackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.github-authentication/did-authenticate`));
 -
 -		if (this.isTestEnvironment(callbackUri)) {
 -			const token = await vscode.window.showInputBox({ prompt: 'GitHub Personal Access Token', ignoreFocusOut: true });
@@ -86,7 +84,7 @@ index 8424f5b..5bac245 100644
 -					return tokenScopes.includes(splitScopes);
 -				});
 -			})) {
--				throw new Error(`The provided token is does not match the requested scopes: ${scopes}`);
+-				throw new Error(`The provided token does not match the requested scopes: ${scopes}`);
 +		const tokenScopes = await getScopes(token, this.getServerUri('/'), this._logger); // Example: ['repo', 'user']
 +		const scopesList = scopes.split(' '); // Example: 'read:user repo user:email'
 +		if (!scopesList.every(scope => {
@@ -104,7 +102,7 @@ index 8424f5b..5bac245 100644
 -		const existingStates = this._pendingStates.get(scopes) || [];
 -		this._pendingStates.set(scopes, [...existingStates, state]);
 -
--		const uri = vscode.Uri.parse(`https://${AUTH_RELAY_SERVER}/authorize/?callbackUri=${encodeURIComponent(callbackUri.toString())}&scope=${scopes}&state=${state}&responseType=code&authServer=https://github.com${nocors ? '&nocors=true' : ''}`);
+-		const uri = vscode.Uri.parse(`https://${AUTH_RELAY_SERVER}/authorize/?callbackUri=${encodeURIComponent(callbackUri.toString())}&scope=${scopes}&state=${state}&responseType=code&authServer=https://github.com`);
 -		await vscode.env.openExternal(uri);
 -
 -		// Register a single listener for the URI callback, in case the user starts the login process multiple times
@@ -117,7 +115,7 @@ index 8424f5b..5bac245 100644
 +				return tokenScopes.includes(splitScopes);
 +			});
 +		})) {
-+			throw new Error(`The provided token is does not match the requested scopes: ${scopes}`);
++			throw new Error(`The provided token does not match the requested scopes: ${scopes}`);
  		}
  
 -		return Promise.race([
@@ -158,34 +156,23 @@ index 8424f5b..5bac245 100644
 -			const url = `https://${AUTH_RELAY_SERVER}/token?code=${code}&state=${query.state}`;
 -			this._logger.info('Exchanging code for token...');
 -
--			// TODO@joao: remove
--			if (query.nocors) {
--				try {
--					const json: any = await vscode.commands.executeCommand('_workbench.fetchJSON', url, 'POST');
+-			try {
+-				const result = await fetch(url, {
+-					method: 'POST',
+-					headers: {
+-						Accept: 'application/json'
+-					}
+-				});
+-
+-				if (result.ok) {
+-					const json = await result.json();
 -					this._logger.info('Token exchange success!');
 -					resolve(json.access_token);
--				} catch (err) {
--					reject(err);
+-				} else {
+-					reject(result.statusText);
 -				}
--			} else {
--				try {
--					const result = await fetch(url, {
--						method: 'POST',
--						headers: {
--							Accept: 'application/json'
--						}
--					});
--
--					if (result.ok) {
--						const json = await result.json();
--						this._logger.info('Token exchange success!');
--						resolve(json.access_token);
--					} else {
--						reject(result.statusText);
--					}
--				} catch (ex) {
--					reject(ex);
--				}
+-			} catch (ex) {
+-				reject(ex);
 -			}
 -		};
 -
@@ -212,7 +199,7 @@ index 8424f5b..5bac245 100644
  	private async manuallyProvideUri() {
  		const uri = await vscode.window.showInputBox({
  			prompt: 'Uri',
-@@ -290,44 +159,7 @@ export class GitHubServer implements IGitHubServer {
+@@ -277,44 +159,7 @@ export class GitHubServer implements IGitHubServer {
  		return getUserInfo(token, this.getServerUri('/user'), this._logger);
  	}
  
