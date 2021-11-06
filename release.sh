@@ -21,6 +21,19 @@ do
   if [[ -f "${FILE}" ]] && [[ "${FILE}" != *.sha1 ]] && [[ "${FILE}" != *.sha256 ]]; then
     echo "Uploading '${FILE}'"
     gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+
+    if [[ $? != 0 ]]; then
+      while true
+      do
+        gh release upload --clobber "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+
+        if [[ $? == 0 ]]; then
+          break
+        fi
+
+        sleep 30
+      done
+    fi
   fi
 done
 
