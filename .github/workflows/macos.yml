@@ -96,7 +96,18 @@ jobs:
       - name: Release
         env:
           GH_CLI_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./release.sh
+        run: |
+          while true
+          do
+            if ./release.sh
+            then
+              echo "Exit code $?, SUCCESS!"
+              break
+            else
+              echo "Exit code $?, retrying..."
+            fi
+            sleep 5
+          done
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
