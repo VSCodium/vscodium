@@ -25,17 +25,22 @@ do
     gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
     if [[ $? != 0 ]]; then
-      while true
+      for (( i=0; i<10; i++ ))
       do
+        sleep $(( 15 * (i + 1)))
+
         echo "RE-Uploading '${FILE}'"
-        gh release upload --clobber "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+        gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256" --clobber
 
         if [[ $? == 0 ]]; then
           break
         fi
-
-        sleep 30
       done
+
+      if [[ $? != 0 ]]; then
+        echo "'${FILE}' hasn't been uploaded!"
+        exit 1
+      fi
     fi
   fi
 done
