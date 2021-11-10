@@ -24,7 +24,10 @@ do
     echo "Uploading '${FILE}' at $( date "+%T" )"
     gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
-    if ! (( $? )); then
+    EXIT_STATUS=$?
+    echo "exit: $EXIT_STATUS"
+
+    if ! (( $EXIT_STATUS )); then
       for (( i=0; i<10; i++ ))
       do
         github-release delete --owner VSCodium --repo vscodium --tag "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
