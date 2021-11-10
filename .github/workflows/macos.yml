@@ -95,7 +95,7 @@ jobs:
 
       - name: Release
         env:
-          GH_CLI_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./release.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
