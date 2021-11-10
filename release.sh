@@ -22,9 +22,9 @@ for FILE in *
 do
   if [[ -f "${FILE}" ]] && [[ "${FILE}" != *.sha1 ]] && [[ "${FILE}" != *.sha256 ]]; then
     echo "Uploading '${FILE}' at $( date "+%T" )"
-    EXIT_STATUS=$( gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256" )
+    gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
-    if ! (( $EXIT_STATUS )); then
+    if ! (( $? )); then
       for (( i=0; i<10; i++ ))
       do
         github-release delete --owner VSCodium --repo vscodium --tag "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
@@ -32,7 +32,9 @@ do
         sleep $(( 15 * (i + 1)))
 
         echo "RE-Uploading '${FILE}' at $( date "+%T" )"
-        EXIT_STATUS=$( gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256" )
+        gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+
+        EXIT_STATUS=$?
         echo "exit: $EXIT_STATUS"
 
         if ! (( $EXIT_STATUS )); then
