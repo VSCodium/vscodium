@@ -7,6 +7,8 @@ if [[ -z "${GH_CLI_TOKEN}" ]]; then
   exit
 fi
 
+gh --version
+
 echo "${GH_CLI_TOKEN}" | gh auth login --with-token
 
 if [[ $( gh release view "${MS_TAG}" 2>&1 ) =~ "release not found" ]]; then
@@ -21,23 +23,25 @@ set +e
 for FILE in *
 do
   if [[ -f "${FILE}" ]] && [[ "${FILE}" != *.sha1 ]] && [[ "${FILE}" != *.sha256 ]]; then
-    echo "Uploading '${FILE}'"
+    echo "Uploading '${FILE}' at $( date )"
     gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
-    if [[ $? != 0 ]]; then
+    if ! (( $? )); then
       for (( i=0; i<10; i++ ))
       do
         sleep $(( 15 * (i + 1)))
 
-        echo "RE-Uploading '${FILE}'"
+        echo "RE-Uploading '${FILE}' at $( date )"
         gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256" --clobber
+        echo "exit: $?"
 
-        if [[ $? == 0 ]]; then
+        if ! (( $? )); then
           break
         fi
       done
+      echo "exit: $?"
 
-      if [[ $? != 0 ]]; then
+      if (( $? )); then
         echo "'${FILE}' hasn't been uploaded!"
         exit 1
       fi
