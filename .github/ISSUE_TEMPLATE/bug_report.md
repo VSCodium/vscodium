@@ -30,7 +30,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
- - OS: [e.g. Mac OS, Ubuntu 16.04, etc]
+ - OS: [e.g. Mac OS, Ubuntu 20.04, etc]
  - Architecture [e.g. x64, ia32, arm64]
  - Version [e.g. 1.33.0]
 
