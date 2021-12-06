@@ -7,6 +7,7 @@
 - [Extensions + Marketplace](#extensions-marketplace)
   - [How to use the VS Code Marketplace](#howto-vscode-marketplace)
   - [Proprietary Debugging Tools](#proprietary-debugging-tools)
+  - [How to use the PyLance language server](#howto-pylance-language-server)
   - [Proprietary Extensions](#proprietary-extensions)
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
 - [Sign in with GitHub](#signin-github)
@@ -85,6 +86,37 @@ with the content:
 The debugger provided with Microsoft's [C# extension](https://github.com/OmniSharp/omnisharp-vscode) as well as the (Windows) debugger provided with their [C++ extension](https://github.com/Microsoft/vscode-cpptools) are very restrictively licensed to only work with the offical Visual Studio Code build. See [this comment in the C# extension repo](https://github.com/OmniSharp/omnisharp-vscode/issues/2491#issuecomment-418811364) and [this comment in the C++ extension repo](https://github.com/Microsoft/vscode-cpptools/issues/21#issuecomment-248349017).
 
 A workaround exists to get debugging working in C# projects, by using Samsung's opensource [netcoredbg](https://github.com/Samsung/netcoredbg) package. See [this comment](https://github.com/VSCodium/vscodium/issues/82#issue-409806641) for instructions on how to set that up.
+
+### <a id="howto-pylance-language-server"></a>How to use the PyLance language server 
+
+PyLance is Microsofts new [Python language server](https://devblogs.microsoft.com/python/announcing-pylance-fast-feature-rich-language-support-for-python-in-visual-studio-code/) which is one of the backend options for IntelliSense. This only works in the official VS Code builds. But there are two workarounds: 
+
+**Option 1: Use the Jedi language server**  
+Not much of a workaround, but one option is to not use PyLance and instead use the previous default: Jedi. This is done by adding the following line to `settings.json`. 
+```json
+"python.languageServer": "Pylance",
+``` 
+or through the UI under "Python: Language Server"
+
+**Option 2: Make PyLance think you are running the official builds**  
+If you want to use PyLance server, it is very easy to convince PyLance that it is running in an official build. As presented in [Issue 892](https://github.com/VSCodium/vscodium/issues/892#issuecomment-957850440), you simply need to modify a single entry in `product.json`.
+
+`The file can be found here:  
+* **Linux**: `/usr/share/codium/resources/app/product.json`
+* **MacOS**: `/Applications/VSCodium.app/Contents/Resources/app/product.json`
+* **Windows**: `C:/Program Files (x86)/VSCodium/resources/app/product.json`
+
+Modify the followning line:  
+```json
+"nameLong": "VSCodium",
+``` 
+to
+```json
+"nameLong": "Visual Studio Code",
+```
+
+Then restart Codium and PyLance should be working.
+
 
 ### <a id="proprietary-extensions"></a>Proprietary Extensions
 
