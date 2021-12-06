@@ -94,7 +94,7 @@ PyLance is Microsofts new [Python language server](https://devblogs.microsoft.co
 **Option 1: Use the Jedi language server**  
 Not much of a workaround, but one option is to not use PyLance and instead use the previous default: Jedi. This is done by adding the following line to `settings.json`. 
 ```json
-"python.languageServer": "Pylance",
+"python.languageServer": "Jedi",
 ``` 
 or through the UI under "Python: Language Server"
 
