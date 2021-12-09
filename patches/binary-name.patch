@@ -1,8 +1,8 @@
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 6d3a369..57009d4 100644
+index df089a6..7aeb54b 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -276,7 +276,7 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -286,7 +286,7 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  			all = es.merge(all, gulp.src('resources/linux/code.png', { base: '.' }));
  		} else if (platform === 'darwin') {
  			const shortcut = gulp.src('resources/darwin/bin/code.sh')
@@ -11,20 +11,11 @@ index 6d3a369..57009d4 100644
  
  			all = es.merge(all, shortcut);
  		}
-@@ -483,7 +483,7 @@ const generateVSCodeConfigurationTask = task.define('generate-vscode-configurati
- 		const arch = process.env['VSCODE_ARCH'];
- 		const appRoot = path.join(buildDir, `VSCode-darwin-${arch}`);
- 		const appName = process.env.VSCODE_QUALITY === 'insider' ? 'Visual\\ Studio\\ Code\\ -\\ Insiders.app' : 'Visual\\ Studio\\ Code.app';
--		const appPath = path.join(appRoot, appName, 'Contents', 'Resources', 'app', 'bin', 'code');
-+		const appPath = path.join(appRoot, appName, 'Contents', 'Resources', 'app', 'bin', product.applicationName);
- 		const codeProc = cp.exec(
- 			`${appPath} --export-default-configuration='${allConfigDetailsPath}' --wait --user-data-dir='${userDataDir}' --extensions-dir='${extensionsDir}'`,
- 			(err, stdout, stderr) => {
 diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-index 692db1d..cd173bc 100644
+index bd4dc01..02cbbc2 100644
 --- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
 +++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-@@ -341,7 +341,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -355,7 +355,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  	}
  
  	private async getShellCommandLink(): Promise<{ readonly source: string, readonly target: string }> {
@@ -33,7 +24,7 @@ index 692db1d..cd173bc 100644
  		const source = `/usr/local/bin/${this.productService.applicationName}`;
  
  		// Ensure source exists
-@@ -551,7 +551,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -565,7 +565,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  
  		// macOS
  		if (this.environmentMainService.isBuilt) {
@@ -42,4 +33,3 @@ index 692db1d..cd173bc 100644
  		}
  
  		return join(this.environmentMainService.appRoot, 'scripts', 'code-cli.sh');
-
