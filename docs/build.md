@@ -18,6 +18,9 @@
 
 ### <a id="dependencies-linux"></a>Linux
 
+- GCC
+- make
+- pkg-config
 - libx11-dev
 - libxkbfile-dev
 - libsecret-1-dev
@@ -25,9 +28,9 @@
 - rpm
 - rpmbuild
 - dpkg
-- python (can't be just python3, can't be user alias)
+- python3
 - libsecret-1-dev
-- imagemagick
+- imagemagick (for AppImage)
 
 ### <a id="dependencies-macos"></a>MacOS
 
@@ -37,6 +40,8 @@
 - sed
 - 7z
 - [WiX Toolset](http://wixtoolset.org/releases/)
+- python2
+- 'Tools for Native Modules' from official Node.js installer
 
 ## <a id="build-scripts"></a>Build Scripts
 
