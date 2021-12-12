@@ -25,6 +25,9 @@
 - rpm
 - rpmbuild
 - dpkg
+- python (can't be just python3, can't be user alias)
+- libsecret-1-dev
+- imagemagick
 
 ### <a id="dependencies-macos"></a>MacOS
 
