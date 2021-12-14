@@ -102,9 +102,9 @@ or through the UI under "Python: Language Server"
 If you want to use PyLance server, it is very easy to convince PyLance that it is running in an official build. As presented in [Issue 892](https://github.com/VSCodium/vscodium/issues/892#issuecomment-957850440), you simply need to modify a single entry in `product.json`.
 
 `The file can be found here:  
-* **Linux**: `/usr/share/codium/resources/app/product.json`
-* **MacOS**: `/Applications/VSCodium.app/Contents/Resources/app/product.json`
-* **Windows**: `C:/Program Files (x86)/VSCodium/resources/app/product.json`
+* **Linux**: `/home/<user>/.config/VSCodium/product.json`
+* **MacOS**: `/Users/<user>/Library/Application Support/VSCodium/product.json`
+* **Windows**: `%APPDATA%\VSCodium\product.json`
 
 Modify the followning line:  
 ```json
