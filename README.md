@@ -7,7 +7,7 @@
 
 <div id="badges" align="center">
 
-  [![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
+[![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
 [![windows_build_status](https://dev.azure.com/vscodium/VSCodium/_apis/build/status/VSCodium.vscodium?branchName=master)](https://dev.azure.com/vscodium/VSCodium/_build?definitionId=1)
 [![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
 [![Gitter](https://img.shields.io/gitter/room/vscodium/vscodium.svg)](https://gitter.im/VSCodium/Lobby)
@@ -65,14 +65,14 @@ scoop install vscodium
 ```
 
 #### <a id="install-with-snap"></a>Install with snap (GNU/Linux)
-VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium), published by the [Snapcrafters](https://github.com/snapcrafters/codium) community.
+VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium), thanks to the help of the [Snapcrafters](https://github.com/snapcrafters/codium) community.
 If your GNU/Linux distribution has support for [snaps](https://snapcraft.io/docs/installing-snapd):
 ```bash
 snap install codium --classic
 ```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (GNU/Linux)
-You can always install using the downloads (deb, rpm, tar) on the [releases page](https://github.com/VSCodium/vscodium/releases), but you can also install using your favorite package manager and get automatic updates. [@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo). Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker. 
+You can always install using the downloads (deb, rpm, tar) on the [releases page](https://github.com/VSCodium/vscodium/releases), but you can also install using your favorite package manager and get automatic updates. [@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo). Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker.
 
 #### <a id="install-on-arch-linux"></a>Install on Arch Linux
 VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository) as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/), maintained by [@binex-dsk](https://github.com/binex-dsk). An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/), maintained by [@cedricroijakkers](https://github.com/cedricroijakkers), is also available should you wish to compile from source yourself.
@@ -88,10 +88,10 @@ flatpak run com.vscodium.codium
 ## <a id="why"></a>Why Does This Exist
 This repository contains build files to generate free release binaries of Microsoft's VS Code. When we speak of "free software", we're talking about freedom, not price.
 
-Microsoft's releases of Visual Studio Code are licensed under [this not-FLOSS license](https://code.visualstudio.com/license) and contain telemetry/tracking. According to [this comment](https://github.com/Microsoft/vscode/issues/60#issuecomment-161792005) from a Visual Studio Code maintainer: 
+Microsoft's releases of Visual Studio Code are licensed under [this not-FLOSS license](https://code.visualstudio.com/license) and contain telemetry/tracking. According to [this comment](https://github.com/Microsoft/vscode/issues/60#issuecomment-161792005) from a Visual Studio Code maintainer:
 
 > When we [Microsoft] build Visual Studio Code, we do exactly this. We clone the vscode repository, we lay down a customized product.json that has Microsoft specific functionality (telemetry, gallery, logo, etc.), and then produce a build that we release under our license.
-> 
+>
 > When you clone and build from the vscode repo, none of these endpoints are configured in the default product.json. Therefore, you generate a "clean" build, without the Microsoft customizations, which is by default licensed under the MIT license
 
 This repo exists so that you don't have to download+build from source. The build scripts in this repo clone Microsoft's vscode repo, run the build commands, and upload the resulting binaries to [GitHub releases](https://github.com/VSCodium/vscodium/releases). __These binaries are licensed under the MIT license. Telemetry is disabled.__
@@ -120,7 +120,7 @@ Please note that some Visual Studio Code extensions have licenses that restrict 
 ### How are the VSCodium binaries built?
 If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflows` for Windows, GNU/Linux and macOS. These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
 
-The builds are run every day, but exit early if there isn't a new release from Microsoft. 
+The builds are run every day, but exit early if there isn't a new release from Microsoft.
 
 ## <a id="supported-platforms"></a>Supported Platforms
 The minimal version is limitted by the core component Electron, you may want to check its [supported platform list](https://www.electronjs.org/docs/tutorial/support#supported-platforms).
@@ -133,7 +133,7 @@ The minimal version is limitted by the core component Electron, you may want to 
 - [x] Windows 7 or newer x64
 - [x] Windows 7 or newer x86
 - [x] Windows 10 arm64
-  
+
 ## <a id="donate"></a>Donate
 If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N`.
 
