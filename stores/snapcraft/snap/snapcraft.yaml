@@ -1,0 +1,90 @@
+name: codium
+adopt-info: codium
+summary: Code editing. Redefined.
+description: |
+  Binary releases of Code without branding/telemetry/licensing
+
+base: core18
+grade: stable
+confinement: classic
+compression: lzo
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+
+parts:
+  codium:
+    plugin: nil
+    override-build: |
+      set -eu
+      ARCHITECTURE=$(dpkg --print-architecture)
+      # Get GitHub releases
+      wget --quiet https://api.github.com/repos/VSCodium/vscodium/releases -O latest.json
+      VERSION=$(jq -r 'sort_by(.tag_name)|last.tag_name' latest.json)
+      DEB_URL=$(jq -r 'map(select(.tag_name == "'"$VERSION"'"))|first.assets[].browser_download_url|select(endswith("'"_$ARCHITECTURE.deb"'"))' latest.json)
+      DEB=$(basename "${DEB_URL}")
+      # Downloading .deb"
+      wget "${DEB_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${DEB}"
+      # Unpacking .deb"
+      dpkg -x "${SNAPCRAFT_PART_INSTALL}/${DEB}" ${SNAPCRAFT_PART_INSTALL}
+      rm -f latest.json
+      rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}"
+      # Correct path to icon.
+      sed -i 's|Icon=codium|Icon=${SNAP}/usr/share/pixmaps/codium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
+      sed -i 's|Exec=/usr/share/codium/codium|Exec=codium|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
+      sed -i 's|Icon=codium|Icon=/usr/share/pixmaps/codium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-url-handler.desktop
+      # Set version
+      echo $VERSION > $SNAPCRAFT_STAGE/version
+      snapcraftctl set-version "$VERSION"
+    build-packages:
+      - dpkg
+      - jq
+      - sed
+      - wget
+    stage-packages:
+      - ibus-gtk3
+      - fcitx-frontend-gtk3
+      - gvfs-libs
+      - libasound2
+      - libgconf-2-4
+      - libglib2.0-bin
+      - libgnome-keyring0
+      - libgbm1
+      - libgtk-3-0
+      - libxkbfile1
+      - libnotify4
+      - libnspr4
+      - libnss3
+      - libpcre3
+      - libpulse0
+      - libsecret-1-0
+      - libxshmfence1
+      - libxss1
+      - libxtst6
+      - zlib1g
+    prime:
+      - -usr/share/doc
+      - -usr/share/fonts
+      - -usr/share/icons
+      - -usr/share/lintian
+      - -usr/share/man
+
+  electron-launch:
+    after:
+      - codium
+    plugin: dump
+    source: snap/local
+
+apps:
+  codium:
+    command: electron-launch $SNAP/usr/share/codium/bin/codium --no-sandbox
+    common-id: codium.desktop
+    environment:
+      DISABLE_WAYLAND: 1
+      GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
+
+  url-handler:
+    command: electron-launch $SNAP/usr/share/codium/bin/codium --open-url --no-sandbox
+    environment:
+      DISABLE_WAYLAND: 1
+      GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas

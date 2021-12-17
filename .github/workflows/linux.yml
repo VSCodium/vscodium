@@ -9,7 +9,7 @@ on:
     branches: [ master ]
 
 jobs:
-  linux:
+  release:
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
@@ -93,9 +93,30 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         run: ./update_version.sh
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
+  snap:
+    needs: release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check deploy
+        run: ./stores/snapcraft/check_deploy.sh
+
+      - name: Build snap
+        uses: snapcore/action-build@v1
+        with:
+          path: stores/snapcraft
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - name: Publish snap
+        run: ./stores/snapcraft/deploy.sh
+        env:
+          SNAP_STORE_LOGIN: ${{ secrets.SNAP_STORE_LOGIN }}
+        if: env.SHOULD_DEPLOY == 'yes'
