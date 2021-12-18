@@ -109,10 +109,14 @@ jobs:
       - name: Check deploy
         run: ./stores/snapcraft/check_deploy.sh
 
-      - name: Build snap
-        uses: snapcore/action-build@v1
+      - name: Install Snapcraft with LXD
+        uses: samuelmeuli/action-snapcraft@v1
         with:
-          path: stores/snapcraft
+          use_lxd: true
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - name: Build snap
+        run: ./stores/snapcraft/build.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Publish snap
