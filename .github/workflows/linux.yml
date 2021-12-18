@@ -10,7 +10,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     container:
       image: ${{ matrix.image }}
       env:
@@ -106,8 +106,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Check deploy
-        run: ./stores/snapcraft/check_deploy.sh
+      - name: Check version
+        run: ./stores/snapcraft/check_version.sh
 
       - name: Install Snapcraft with LXD
         uses: samuelmeuli/action-snapcraft@v1
@@ -119,8 +119,8 @@ jobs:
         run: ./stores/snapcraft/build.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
-      - name: Publish snap
-        run: ./stores/snapcraft/deploy.sh
+      - name: Release snap
+        run: ./stores/snapcraft/release.sh
         env:
           SNAP_STORE_LOGIN: ${{ secrets.SNAP_STORE_LOGIN }}
         if: env.SHOULD_DEPLOY == 'yes'
