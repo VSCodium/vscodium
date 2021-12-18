@@ -134,6 +134,7 @@ jobs:
         with:
           snap: ${{ steps.build.outputs.snap }}
           isClassic: 'true'
+        if: env.SHOULD_DEPLOY == 'yes'
 
       - uses: snapcore/action-publish@v1
         with:
