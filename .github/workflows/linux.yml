@@ -130,6 +130,11 @@ jobs:
         id: build
         if: env.SHOULD_DEPLOY == 'yes'
 
+      - uses: diddlesnaps/snapcraft-review-action@v1
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          isClassic: 'true'
+
       - uses: snapcore/action-publish@v1
         with:
           store_login: ${{ secrets.SNAP_STORE_LOGIN }}

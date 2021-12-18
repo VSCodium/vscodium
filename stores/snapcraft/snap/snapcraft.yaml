@@ -52,6 +52,7 @@ parts:
       - libpcre3
       - libpulse0
       - libsecret-1-0
+      - libxshmfence1
       - libxss1
       - libxtst6
       - zlib1g
@@ -77,13 +78,14 @@ parts:
 apps:
   codium:
     command: electron-launch $SNAP/usr/share/codium/bin/codium --no-sandbox
-    common-id: codium.desktop
+    desktop: usr/share/applications/codium.desktop
     environment:
       DISABLE_WAYLAND: 1
       GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
 
   url-handler:
     command: electron-launch $SNAP/usr/share/codium/bin/codium --open-url --no-sandbox
+    desktop: usr/share/applications/codium-url-handler.desktop
     environment:
       DISABLE_WAYLAND: 1
       GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
