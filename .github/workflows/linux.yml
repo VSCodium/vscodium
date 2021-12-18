@@ -10,7 +10,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
       env:
@@ -101,7 +101,7 @@ jobs:
 
   snap:
     needs: release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - uses: actions/checkout@v2
