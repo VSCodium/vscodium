@@ -13,15 +13,19 @@ elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
 else
 	echo "It's a cron"
 
-  sudo curl -sS --unix-socket /run/snapd.socket http://localhost/v2/find\?q\=codium > snap_latest.json
-  SNAP_VERSION=$(jq -r '.result|map(select(.id == "lIZWXTqmo6LFSts5Cgk2VPlNwtysZAeH"))|last.version' snap_latest.json)
+  echo "$SNAP_STORE_LOGIN" | snapcraft login --with -
+
+  ARCHITECTURE=$(dpkg --print-architecture)
+  echo "Architecture: ${ARCHITECTURE}"
+
+  SNAP_VERSION=$(snapcraft list-revisions codium | grep -F stable* | grep ${ARCHITECTURE} | tr -s ' ' | cut -d ' ' -f 4)
   echo "Snap version: ${SNAP_VERSION}"
 
   wget --quiet https://api.github.com/repos/VSCodium/vscodium/releases -O gh_latest.json
   GH_VERSION=$(jq -r 'sort_by(.tag_name)|last.tag_name' gh_latest.json)
   echo "GH version: ${GH_VERSION}"
 
-  rm -f snap_latest.json gh_latest.json
+  rm -f gh_latest.json
 
   if [[ "${SNAP_VERSION}" == "${GH_VERSION}" ]]; then
     export SHOULD_DEPLOY="no"

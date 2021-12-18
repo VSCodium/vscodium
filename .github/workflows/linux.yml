@@ -113,6 +113,8 @@ jobs:
 
       - name: Check version
         run: ./stores/snapcraft/check_version.sh
+        env:
+          SNAP_STORE_LOGIN: ${{ secrets.SNAP_STORE_LOGIN }}
 
       - uses: docker/setup-qemu-action@v1
         if: env.SHOULD_DEPLOY == 'yes'
