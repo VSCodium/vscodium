@@ -29,47 +29,44 @@ parts:
       dpkg -x "${SNAPCRAFT_PART_INSTALL}/${DEB}" ${SNAPCRAFT_PART_INSTALL}
       rm -f latest.json
       rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}"
-      # Correct path to icon.
-      sed -i 's|Icon=codium|Icon=${SNAP}/usr/share/pixmaps/codium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
-      sed -i 's|Exec=/usr/share/codium/codium|Exec=codium|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
-      sed -i 's|Icon=codium|Icon=/usr/share/pixmaps/codium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-url-handler.desktop
-      # Fix ACL
-      chmod 755 ${SNAPCRAFT_PART_INSTALL}/usr/share/codium/chrome-sandbox
       # Set version
-      echo $VERSION > $SNAPCRAFT_STAGE/version
       snapcraftctl set-version "$VERSION"
+      # Correct path to icon.
+      sed -i 's|Icon=vscodium|Icon=${SNAP}/usr/share/pixmaps/vscodium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
+      sed -i 's|Exec=/usr/share/codium/codium|Exec=codium|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
+      sed -i 's|Icon=vscodium|Icon=/usr/share/pixmaps/vscodium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-url-handler.desktop
     build-packages:
-      - dpkg
-      - jq
-      - sed
       - wget
+      - jq
     stage-packages:
-      - ibus-gtk3
       - fcitx-frontend-gtk3
       - gvfs-libs
       - libasound2
       - libgconf-2-4
       - libglib2.0-bin
       - libgnome-keyring0
-      - libgbm1
       - libgtk-3-0
-      - libxkbfile1
       - libnotify4
       - libnspr4
       - libnss3
       - libpcre3
       - libpulse0
       - libsecret-1-0
-      - libxshmfence1
       - libxss1
       - libxtst6
       - zlib1g
+      - libx11-xcb1
+      - libxkbfile1
+      - libdrm2
+      - libgbm1
+      - libxcb-dri3-0
     prime:
       - -usr/share/doc
       - -usr/share/fonts
       - -usr/share/icons
       - -usr/share/lintian
       - -usr/share/man
+      - -usr/share/codium/chrome-sandbox
 
   electron-launch:
     after:
