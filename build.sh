@@ -3,7 +3,7 @@
 set -ex
 
 if [[ "${SHOULD_BUILD}" == "yes" ]]; then
-  DIFFS=$( git diff --name-only HEAD..origin/master )
+  DIFFS=$( git diff --name-only HEAD..remotes/origin/master )
 
   has_diffs() {
     if [[ "${GITHUB_EVENT_NAME}" == "pull_request" || "${GITHUB_EVENT_NAME}" == "push" ]]; then
