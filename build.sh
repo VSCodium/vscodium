@@ -3,6 +3,16 @@
 set -ex
 
 if [[ "${SHOULD_BUILD}" == "yes" ]]; then
+  DIFFS=$( git diff --name-only HEAD..origin/master )
+
+  has_diffs() {
+    if [[ "${GITHUB_EVENT_NAME}" == "pull_request" || "${GITHUB_EVENT_NAME}" == "push" ]]; then
+      echo "${DIFFS}" | grep "$1"
+    else
+      echo "$1"
+    fi
+  }
+
   npm config set scripts-prepend-node-path true
 
   echo "MS_COMMIT: ${MS_COMMIT}"
@@ -40,11 +50,11 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     fi
 
     if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
-      if [[ "${SHOULD_BUILD_MSI}" != "no" ]]; then
+      if [[ "${SHOULD_BUILD_MSI}" != "no" ]] && [[ -n $( has_diffs "build/windows/msi" ) ]]; then
         . ../build/windows/msi/build.sh
       fi
 
-      if [[ "${SHOULD_BUILD_MSI_NOUP}" != "no" ]]; then
+      if [[ "${SHOULD_BUILD_MSI_NOUP}" != "no" ]] && [[ -n $( has_diffs "build/windows/msi" ) ]]; then
         . ../build/windows/msi/build-updates-disabled.sh
       fi
     fi
@@ -60,7 +70,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
         yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
       fi
 
-      if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
+      if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" ]] && [[ -n $( has_diffs "build/linux/appimage" ) ]]; then
         . ../build/linux/appimage/build.sh
       fi
     fi
