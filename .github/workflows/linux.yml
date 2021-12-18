@@ -128,8 +128,9 @@ jobs:
         id: build
         if: env.SHOULD_DEPLOY == 'yes'
 
-      - name: Release snap
-        run: ./stores/snapcraft/release.sh
-        env:
-          SNAP_STORE_LOGIN: ${{ secrets.SNAP_STORE_LOGIN }}
+      - uses: snapcore/action-publish@v1
+        with:
+          store_login: ${{ secrets.SNAP_STORE_LOGIN }}
+          snap: ${{ steps.build.outputs.snap }}
+          release: stable
         if: env.SHOULD_DEPLOY == 'yes'

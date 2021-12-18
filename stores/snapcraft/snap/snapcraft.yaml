@@ -33,6 +33,8 @@ parts:
       sed -i 's|Icon=codium|Icon=${SNAP}/usr/share/pixmaps/codium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
       sed -i 's|Exec=/usr/share/codium/codium|Exec=codium|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
       sed -i 's|Icon=codium|Icon=/usr/share/pixmaps/codium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-url-handler.desktop
+      # Fix ACL
+      chmod 755 ${SNAPCRAFT_PART_INSTALL}/usr/share/codium/chrome-sandbox
       # Set version
       echo $VERSION > $SNAPCRAFT_STAGE/version
       snapcraftctl set-version "$VERSION"
