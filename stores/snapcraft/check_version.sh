@@ -13,6 +13,8 @@ elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
 else
 	echo "It's a cron"
 
+  sudo snap install --channel stable --classic snapcraft
+
   echo "$SNAP_STORE_LOGIN" | snapcraft login --with -
 
   ARCHITECTURE=$(dpkg --print-architecture)
