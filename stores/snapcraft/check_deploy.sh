@@ -21,6 +21,8 @@ else
   GH_VERSION=$(jq -r 'sort_by(.tag_name)|last.tag_name' gh_latest.json)
   echo "GH version: ${GH_VERSION}"
 
+  rm -f snap_latest.json gh_latest.json
+
   if [[ "${SNAP_VERSION}" == "${GH_VERSION}" ]]; then
     export SHOULD_DEPLOY="no"
   else
