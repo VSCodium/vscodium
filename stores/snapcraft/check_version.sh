@@ -17,7 +17,6 @@ else
 
   echo "$SNAP_STORE_LOGIN" | snapcraft login --with -
 
-  ARCHITECTURE=$(dpkg --print-architecture)
   echo "Architecture: ${ARCHITECTURE}"
 
   SNAP_VERSION=$(snapcraft list-revisions codium | grep -F stable* | grep ${ARCHITECTURE} | tr -s ' ' | cut -d ' ' -f 4)
