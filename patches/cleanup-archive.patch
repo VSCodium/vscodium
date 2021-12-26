@@ -1,0 +1,13 @@
+diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
+index 1a73ae9..1b87189 100644
+--- a/build/gulpfile.vscode.win32.js
++++ b/build/gulpfile.vscode.win32.js
+@@ -126,7 +126,7 @@ defineWin32SetupTasks('arm64', 'user');
+ 
+ function archiveWin32Setup(arch) {
+ 	return cb => {
+-		const args = ['a', '-tzip', zipPath(arch), '-x!CodeSignSummary*.md', '.', '-r'];
++		const args = ['a', '-tzip', zipPath(arch), '-x!CodeSignSummary*.md', '-x!tools', '.', '-r'];
+ 
+ 		cp.spawn(_7z, args, { stdio: 'inherit', cwd: buildPath(arch) })
+ 			.on('error', cb)
