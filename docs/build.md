@@ -4,7 +4,6 @@
 
 - [Dependencies](#dependencies)
   - [Linux](#dependencies-linux)
-  - [MacOS](#dependencies-macos)
   - [Windows](#dependencies-windows)
 - [Build Scripts](#build-scripts)
 - [Build in Docker](#build-docker)
@@ -31,8 +30,6 @@
 - python3
 - libsecret-1-dev
 - imagemagick (for AppImage)
-
-### <a id="dependencies-macos"></a>MacOS
 
 ### <a id="dependencies-windows"></a>Windows
 
