@@ -30,11 +30,12 @@ script:
   - /usr/bin/convert vscodium.png -resize 48x48 usr/share/icons/hicolor/48x48/apps/vscodium.png
   - /usr/bin/convert vscodium.png -resize 32x32 usr/share/icons/hicolor/32x32/apps/vscodium.png
   - ( cd usr/bin/ ; ln -s ../share/codium/codium  . )
+  - rm -rf usr/lib/x86_64-linux-gnu
   - cat > AppRun <<\EOF
   - #!/bin/sh
   - HERE="$(dirname "$(readlink -f "${0}")")"
   - export PATH="${HERE}"/usr/bin/:"${HERE}"/usr/sbin/:"${HERE}"/usr/games/:"${HERE}"/bin/:"${HERE}"/sbin/:"${PATH}"
-  - export LD_LIBRARY_PATH="${HERE}"/usr/lib/:"${HERE}"/usr/lib/i386-linux-gnu/:"${HERE}"/usr/lib/x86_64-linux-gnu/:"${HERE}"/usr/lib32/:"${HERE}"/usr/lib64/:"${HERE}"/lib/:"${HERE}"/lib/i386-linux-gnu/:"${HERE}"/lib/x86_64-linux-gnu/:"${HERE}"/lib32/:"${HERE}"/lib64/:"${LD_LIBRARY_PATH}"
+  - export LD_LIBRARY_PATH="${HERE}"/usr/lib/:"${HERE}"/usr/lib32/:"${HERE}"/usr/lib64/:"${HERE}"/lib/:"${HERE}"/lib/i386-linux-gnu/:"${HERE}"/lib/x86_64-linux-gnu/:"${HERE}"/lib32/:"${HERE}"/lib64/:"${LD_LIBRARY_PATH}"
   - export XDG_DATA_DIRS="${HERE}"/usr/share/:"${XDG_DATA_DIRS}"
   - export PERLLIB="${HERE}"/usr/share/perl5/:"${HERE}"/usr/lib/perl5/:"${PERLLIB}"
   - export GSETTINGS_SCHEMA_DIR="${HERE}"/usr/share/glib-2.0/schemas/:"${GSETTINGS_SCHEMA_DIR}"
