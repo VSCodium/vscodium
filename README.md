@@ -127,7 +127,7 @@ If you would like to see the commands we run to build `vscode` into VSCodium bin
 The builds are run every day, but exit early if there isn't a new release from Microsoft.
 
 ## <a id="supported-platforms"></a>Supported Platforms
-The minimal version is limitted by the core component Electron, you may want to check its [supported platform list](https://www.electronjs.org/docs/tutorial/support#supported-platforms).
+The minimal version is limited by the core component Electron, you may want to check its [supported platform list](https://www.electronjs.org/docs/tutorial/support#supported-platforms).
 - [x] macOS (`zip`, `dmg`) OS X 10.10 or newer x64
 - [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64 via x64 emulation, see [status issue](https://github.com/VSCodium/vscodium/issues/597)
 - [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
