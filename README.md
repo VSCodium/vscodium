@@ -113,8 +113,6 @@ Microsoft's build process (which we are running to build the binaries) does down
   - electron
   - ffmpeg
 
-The downloading of the four built-in extensions can be turned off by clearing the `builtInExtensions` array in the `product.json` file.
-
 ## <a id="more-info"></a>More Info
 
 ### Documentation
