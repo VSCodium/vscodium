@@ -141,8 +141,8 @@ You can follow the [Portable Mode instructions](https://code.visualstudio.com/do
 
 ## <a id="file-manager"></a>How do I fix the default file manager (Linux)?
 
-In some case, VSCodium can used as the default file manager to open directories.<br />
-This is due to that no default application was defined as the default file manager and so the system is using the latest capable application.
+In some case, VSCodium becomes the file manager used to open directories (instead of apps like Dolphin or Nautilus).<br />
+It's due to that no application was defined as the default file manager and so the system is using the latest capable application.
 
 To set the default app, create the file `~/.config/mimeapps.list` with the content like:
 ```
@@ -150,7 +150,11 @@ To set the default app, create the file `~/.config/mimeapps.list` with the conte
 inode/directory=org.gnome.Nautilus.desktop;
 ```
 
-You can find your regular file manager with the command `cat /usr/share/applications/mimeinfo.cache | grep inode/directory` (which output `inode/directory=codium.desktop;org.gnome.Nautilus.desktop;`)
+You can find your regular file manager with the command:
+```
+> grep directory /usr/share/applications/mimeinfo.cache
+inode/directory=codium.desktop;org.gnome.Nautilus.desktop;
+```
 
 ## <a id="press-and-hold"></a>How do I press and hold a key and have it repeat in VSCodium (Mac)?
 
