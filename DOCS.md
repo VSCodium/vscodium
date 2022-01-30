@@ -11,6 +11,7 @@
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
 - [Sign in with GitHub](#signin-github)
 - [How do I run VSCodium in portable mode?](#portable)
+- [How do I fix the default file manager?](#file-manager)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
   - [From Linux .tar.gz](#from-linux-targz)
@@ -134,9 +135,26 @@ Select the scopes dependending of the extension which need access to GitHub. (Gi
 If you are getting the error `Writing login information to the keychain failed with error 'The name org.freedesktop.secrets was not provided by any .service files'.`, you need to install the package `gnome-keyring`.
 
 ## <a id="portable"></a>How do I run VSCodium in portable mode?
-You can follow the [Portable Mode instructions](https://code.visualstudio.com/docs/editor/portable) from the Visual Studio Code website. 
+You can follow the [Portable Mode instructions](https://code.visualstudio.com/docs/editor/portable) from the Visual Studio Code website.
 - **Windows** / **Linux** : the instructions can be followed as written.
 - **macOS** : portable mode is enabled by the existence of a specially named folder. For Visual Studio Code that folder name is `code-portable-data`. For VSCodium, that folder name is `codium-portable-data`. So to enable portable mode for VSCodium on Mac OS, follow the instructions outlined in the [link above](https://code.visualstudio.com/docs/editor/portable), but create a folder named `codium-portable-data` instead of `code-portable-data`.
+
+## <a id="file-manager"></a>How do I fix the default file manager (Linux)?
+
+In some case, VSCodium becomes the file manager used to open directories (instead of apps like Dolphin or Nautilus).<br />
+It's due to that no application was defined as the default file manager and so the system is using the latest capable application.
+
+To set the default app, create the file `~/.config/mimeapps.list` with the content like:
+```
+[Default Applications]
+inode/directory=org.gnome.Nautilus.desktop;
+```
+
+You can find your regular file manager with the command:
+```
+> grep directory /usr/share/applications/mimeinfo.cache
+inode/directory=codium.desktop;org.gnome.Nautilus.desktop;
+```
 
 ## <a id="press-and-hold"></a>How do I press and hold a key and have it repeat in VSCodium (Mac)?
 
