@@ -19,7 +19,7 @@ if [[ "$VSCODE_ARCH" == "x64" ]]; then
   sed -i 's/grep docker/# grep docker/' pkg2appimage.AppDir/usr/share/pkg2appimage/functions.sh
 
   bash -ex pkg2appimage.AppDir/AppRun recipe.yml
-  
+
   rm -f pkg2appimage-*.AppImage
   rm -rf pkg2appimage.AppDir
   rm -rf VSCodium
