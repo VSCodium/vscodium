@@ -106,6 +106,8 @@ If you want to use PyLance server, it is very easy to convince PyLance that it i
 * **MacOS**: `/Users/<user>/Library/Application Support/VSCodium/product.json`
 * **Windows**: `%APPDATA%\VSCodium\product.json`
 
+If it does not exist, create the file in the appropriate location.
+
 Modify the followning line:  
 ```json
 "nameLong": "VSCodium",
