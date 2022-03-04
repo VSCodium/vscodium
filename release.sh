@@ -27,10 +27,14 @@ do
     EXIT_STATUS=$?
     echo "exit: $EXIT_STATUS"
 
+    OWNER="${GITHUB_REPOSITORY_OWNER:-"VSCodium"}"
+    REPO_NAME=${GITHUB_REPOSITORY:(${#OWNER}+1)}
+    REPOSITORY="${REPO_NAME:-"vscodium"}"
+    
     if (( $EXIT_STATUS )); then
       for (( i=0; i<10; i++ ))
       do
-        github-release delete --owner "${GITHUB_REPOSITORY_OWNER}" --repo vscodium --tag "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+        github-release delete --owner "${OWNER}" --repo "${REPOSITORY}" --tag "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
         sleep $(( 15 * (i + 1)))
 
@@ -49,7 +53,7 @@ do
       if (( $EXIT_STATUS )); then
         echo "'${FILE}' hasn't been uploaded!"
 
-        github-release delete --owner "${GITHUB_REPOSITORY_OWNER}" --repo vscodium --tag "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+        github-release delete --owner "${OWNER}" --repo "${REPOSITORY}" --tag "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
         exit 1
       fi
