@@ -1,5 +1,5 @@
 diff --git a/extensions/github-authentication/src/githubServer.ts b/extensions/github-authentication/src/githubServer.ts
-index 3002e937c81..9674d8d2089 100644
+index 92313d0..a69da37 100644
 --- a/extensions/github-authentication/src/githubServer.ts
 +++ b/extensions/github-authentication/src/githubServer.ts
 @@ -3,41 +3,13 @@
@@ -66,7 +66,7 @@ index 3002e937c81..9674d8d2089 100644
 -	private _onDidManuallyProvideToken = new vscode.EventEmitter<string | undefined>();
 -
 -	private _pendingStates = new Map<string, string[]>();
--	private _codeExchangePromises = new Map<string, { promise: Promise<string>, cancel: vscode.EventEmitter<void> }>();
+-	private _codeExchangePromises = new Map<string, { promise: Promise<string>; cancel: vscode.EventEmitter<void> }>();
 -	private _statusBarCommandId = `${this.type}.provide-manually`;
 -	private _disposable: vscode.Disposable;
 -	private _uriHandler = new UriEventHandler(this._logger);
@@ -344,7 +344,7 @@ index 3002e937c81..9674d8d2089 100644
 -		this._uriHandler.handleUri(vscode.Uri.parse(uri.trim()));
 -	}
 -
- 	public getUserInfo(token: string): Promise<{ id: string, accountName: string }> {
+ 	public getUserInfo(token: string): Promise<{ id: string; accountName: string }> {
  		return getUserInfo(token, this.getServerUri('/user'), this._logger);
  	}
  
@@ -368,7 +368,7 @@ index 3002e937c81..9674d8d2089 100644
 -			});
 -
 -			if (result.ok) {
--				const json: { student: boolean, faculty: boolean } = await result.json();
+-				const json: { student: boolean; faculty: boolean } = await result.json();
 -
 -				/* __GDPR__
 -					"session" : {
