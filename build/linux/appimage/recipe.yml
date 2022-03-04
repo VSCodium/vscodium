@@ -31,6 +31,7 @@ script:
   - /usr/bin/convert vscodium.png -resize 32x32 usr/share/icons/hicolor/32x32/apps/vscodium.png
   - ( cd usr/bin/ ; ln -s ../share/codium/codium  . )
   - rm -rf usr/lib/x86_64-linux-gnu
+  - rm -f lib/x86_64-linux-gnu/libglib*
   - cat > AppRun <<\EOF
   - #!/bin/sh
   - HERE="$(dirname "$(readlink -f "${0}")")"
