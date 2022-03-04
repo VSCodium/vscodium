@@ -32,6 +32,10 @@ else
     export SHOULD_DEPLOY="no"
   else
 	  export SHOULD_DEPLOY="yes"
+
+    snap version
+    snap info codium
+    snap connections codium
   fi
 fi
 
