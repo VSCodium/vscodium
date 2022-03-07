@@ -35,7 +35,6 @@ else
 
     snap version
     snap info codium
-    snap connections codium
   fi
 fi
 
