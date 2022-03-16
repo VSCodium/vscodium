@@ -8,11 +8,14 @@
 <div id="badges" align="center">
 
 [![current release](https://img.shields.io/github/release/vscodium/vscodium.svg)](https://github.com/vscodium/vscodium/releases)
-[![windows_build_status](https://dev.azure.com/vscodium/VSCodium/_apis/build/status/VSCodium.vscodium?branchName=master)](https://dev.azure.com/vscodium/VSCodium/_build?definitionId=1)
 [![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
 [![Gitter](https://img.shields.io/gitter/room/vscodium/vscodium.svg)](https://gitter.im/VSCodium/Lobby)
 [![codium](https://snapcraft.io//codium/badge.svg)](https://snapcraft.io/codium)
 [![codium](https://snapcraft.io//codium/trending.svg?name=0)](https://snapcraft.io/codium)
+
+[![build status (linux)](https://img.shields.io/github/workflow/status/VSCodium/vscodium/linux_build/master?label=build%28linux%29)](https://github.com/VSCodium/vscodium/actions/workflows/linux.yml?query=branch%3Amaster)
+[![build status (macos)](https://img.shields.io/github/workflow/status/VSCodium/vscodium/macos_build/master?label=build%28macos%29)](https://github.com/VSCodium/vscodium/actions/workflows/macos.yml?query=branch%3Amaster)
+[![build status (windows)](https://img.shields.io/github/workflow/status/VSCodium/vscodium/windows_build/master?label=build%28windows%29)](https://github.com/VSCodium/vscodium/actions/workflows/windows.yml?query=branch%3Amaster)
 
 </div>
 
