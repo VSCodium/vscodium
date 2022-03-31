@@ -118,21 +118,27 @@ jobs:
           ARCHITECTURE: ${{ matrix.platform }}
           SNAP_STORE_LOGIN: ${{ secrets.SNAP_STORE_LOGIN }}
 
-      - uses: docker/setup-qemu-action@v1
-        if: env.SHOULD_DEPLOY == 'yes'
+      # - uses: docker/setup-qemu-action@v1
+      #   if: env.SHOULD_DEPLOY == 'yes'
 
-      - uses: diddlesnaps/snapcraft-multiarch-action@v1
+      # - uses: diddlesnaps/snapcraft-multiarch-action@v1
+      #   with:
+      #     path: stores/snapcraft
+      #     architecture: ${{ matrix.platform }}
+      #   id: build
+      #   if: env.SHOULD_DEPLOY == 'yes'
+
+      # - uses: diddlesnaps/snapcraft-review-action@v1
+      #   with:
+      #     snap: ${{ steps.build.outputs.snap }}
+      #     isClassic: 'true'
+      #   if: env.SHOULD_DEPLOY == 'yes'
+      - uses: snapcore/action-build@v1
         with:
           path: stores/snapcraft
-          architecture: ${{ matrix.platform }}
         id: build
         if: env.SHOULD_DEPLOY == 'yes'
 
-      - uses: diddlesnaps/snapcraft-review-action@v1
-        with:
-          snap: ${{ steps.build.outputs.snap }}
-          isClassic: 'true'
-        if: env.SHOULD_DEPLOY == 'yes'
 
       - uses: snapcore/action-publish@v1
         with:
