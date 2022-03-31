@@ -2,7 +2,7 @@ DEFAULT_TRUE="'default': true"
 DEFAULT_FALSE="'default': false"
 DEFAULT_ON="'default': TelemetryConfiguration.ON"
 DEFAULT_OFF="'default': TelemetryConfiguration.OFF"
-TELEMETRY_ENABLE="'telemetry.enableTelemetry':"
+TELEMETRY_ENABLE="'telemetry.enableTelemetry',"
 TELEMETRY_CRASH_REPORTER="'telemetry.enableCrashReporter':"
 TELEMETRY_CONFIGURATION=" TelemetryConfiguration.ON"
 
