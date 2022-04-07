@@ -2,7 +2,6 @@ DEFAULT_TRUE="'default': true"
 DEFAULT_FALSE="'default': false"
 DEFAULT_ON="'default': TelemetryConfiguration.ON"
 DEFAULT_OFF="'default': TelemetryConfiguration.OFF"
-TELEMETRY_ENABLE="'telemetry.enableTelemetry':"
 TELEMETRY_CRASH_REPORTER="'telemetry.enableCrashReporter':"
 TELEMETRY_CONFIGURATION=" TelemetryConfiguration.ON"
 
@@ -39,13 +38,12 @@ update_setting () {
   # construct line-aware replacement string
   if [[ $line == *"$DEFAULT_TRUE"* ]]; then
     local DEFAULT_TRUE_TO_FALSE="${LINE_NUM}s/${DEFAULT_TRUE}/${DEFAULT_FALSE}/"
-  else 
+  else
     local DEFAULT_TRUE_TO_FALSE="${LINE_NUM}s/${DEFAULT_ON}/${DEFAULT_OFF}/"
   fi
-  
+
   replace "$DEFAULT_TRUE_TO_FALSE" $FILENAME
 }
 
-update_setting "$TELEMETRY_ENABLE" src/vs/platform/telemetry/common/telemetryService.ts
 update_setting "$TELEMETRY_CRASH_REPORTER" src/vs/workbench/electron-sandbox/desktop.contribution.ts
 update_setting "$TELEMETRY_CONFIGURATION" src/vs/platform/telemetry/common/telemetryService.ts
