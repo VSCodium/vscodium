@@ -23,10 +23,10 @@ jobs:
         vscode_arch: [x64, ia32, arm64]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14
 
@@ -34,7 +34,7 @@ jobs:
         run: npm install -g yarn
 
       - name: Setup Python 2
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: '2.x'
 
@@ -61,7 +61,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Cache yarn directory
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.yarnCacheDirPath.outputs.dir }}
           key: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
