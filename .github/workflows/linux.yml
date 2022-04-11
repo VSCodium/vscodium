@@ -32,13 +32,13 @@ jobs:
           image: vscodium/vscodium-linux-build-agent:stretch-armhf
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install GH
         run: ./install_gh.sh
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14
 
@@ -68,7 +68,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Cache yarn directory
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.yarnCacheDirPath.outputs.dir }}
           key: linux-${{ matrix.npm_arch }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
@@ -110,7 +110,7 @@ jobs:
         # - arm64
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Check version
         run: ./stores/snapcraft/check_version.sh
