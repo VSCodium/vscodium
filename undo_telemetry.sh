@@ -1,6 +1,6 @@
-# dc.services.visualstudio.com
+# mobile.events.data.microsoft.com
 # vortex.data.microsoft.com
-TELEMETRY_URLS="(dc\.services\.visualstudio\.com)|(vortex\.data\.microsoft\.com)"
+TELEMETRY_URLS="[^/]+\.data\.microsoft\.com"
 REPLACEMENT="s/$TELEMETRY_URLS/0\.0\.0\.0/g"
 
 #include common functions
