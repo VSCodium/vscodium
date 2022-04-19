@@ -11,7 +11,7 @@
 
 ## <a id="dependencies"></a>Dependencies
 
-- node 14
+- node 16
 - yarn
 - jq
 - git
@@ -62,7 +62,7 @@ docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-b
 
 When inside the container, you can use the following commands to build:
 ```
-curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get install -y nodejs desktop-file-utils
 
 npm install -g yarn
