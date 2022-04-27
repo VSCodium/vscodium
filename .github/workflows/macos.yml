@@ -10,16 +10,16 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.runner }}
 
     strategy:
       fail-fast: false
       matrix:
         include:
-          - vscode_arch: x64
-            os: macOS-10.15
-          # - vscode_arch: arm64
-          #   os: macOS-11
+          - runner: macOS-10.15
+            vscode_arch: x64
+          - runner: [self-hosted, macOS, ARM64]
+            vscode_arch: arm64
 
     env:
       OS_NAME: "osx"
