@@ -47,7 +47,7 @@ If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
 brew install --cask vscodium
 ```
 
-_Note for Mac macOS Mojave users: if you see "App can't be opened because Apple cannot check it for malicious software" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on Mojave._
+*Note for macOS users: if you can't open the App, please read [the following troubleshooting](https://github.com/VSCodium/vscodium/wiki/Troubleshooting#macos).*
 
 #### <a id="install-with-winget"></a>Install with Windows Package Manager (WinGet)
 If you use Windows and have [Windows Package Manager](https://github.com/microsoft/winget-cli) installed:
@@ -134,7 +134,7 @@ The builds are run every day, but exit early if there isn't a new release from M
 ## <a id="supported-platforms"></a>Supported Platforms
 The minimal version is limited by the core component Electron, you may want to check its [supported platform list](https://www.electronjs.org/docs/tutorial/support#supported-platforms).
 - [x] macOS (`zip`, `dmg`) OS X 10.10 or newer x64
-- [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64 via x64 emulation, see [status issue](https://github.com/VSCodium/vscodium/issues/597)
+- [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64
 - [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
 - [x] GNU/Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
 - [x] GNU/Linux arm64 (`deb`, `tar.gz`)
