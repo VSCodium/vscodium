@@ -22,6 +22,10 @@ OWNER="${GITHUB_REPOSITORY_OWNER:-"VSCodium"}"
 REPO_NAME="${GITHUB_REPOSITORY:(${#OWNER}+1)}"
 REPOSITORY="${REPO_NAME:-"vscodium"}"
 
+# git workaround
+git config --global --add safe.directory /__w/vscodium/vscodium
+
+
 for FILE in *
 do
   if [[ -f "${FILE}" ]] && [[ "${FILE}" != *.sha1 ]] && [[ "${FILE}" != *.sha256 ]]; then
