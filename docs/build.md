@@ -40,7 +40,7 @@
 - sed
 - 7z
 - [WiX Toolset](http://wixtoolset.org/releases/)
-- python2
+- python3
 - 'Tools for Native Modules' from official Node.js installer
 
 ## <a id="build-scripts"></a>Build Scripts
