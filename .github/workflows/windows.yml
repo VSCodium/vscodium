@@ -20,7 +20,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        vscode_arch: [x64, ia32, arm64]
+        vscode_arch:
+          - x64
+          # - ia32
+          - arm64
 
     steps:
       - uses: actions/checkout@v3
@@ -73,8 +76,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.vscode_arch }}
           npm_config_target_arch: ${{ matrix.vscode_arch }}
-          npm_config_node_gyp:
-          npm_config_msvs_version: 2019
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
