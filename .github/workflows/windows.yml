@@ -20,7 +20,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        vscode_arch: [x64, ia32, arm64]
+        vscode_arch:
+          - x64
+          # - ia32
+          - arm64
 
     steps:
       - uses: actions/checkout@v3
@@ -33,10 +36,10 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn
 
-      - name: Setup Python 2
+      - name: Setup Python 3
         uses: actions/setup-python@v3
         with:
-          python-version: '2.x'
+          python-version: '3.x'
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
