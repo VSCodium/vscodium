@@ -34,9 +34,19 @@ done
 
 set -x
 
-if [[ "$OS_NAME" == "osx" ]]; then
+if [[ "${OS_NAME}" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional
   npm_config_argv='{"original":["--ignore-optional"]}' yarn postinstall
+elif [[ "${npm_config_arch}" == "armv7l" || "${npm_config_arch}" == "ia32" ]]; then
+  # node-gyp@9.0.0 shipped with node@16.15.0 starts using config.gypi
+  # from the custom headers path if dist-url option was set instead of
+  # using the config value from the process. Electron builds with pointer compression
+  # enabled for x64 and arm64, but incorrectly ships a single copy of config.gypi
+  # with v8_enable_pointer_compression option always set for all target architectures.
+  # We use the force_process_config option to use the config.gypi from the
+  # nodejs process executing npm for 32-bit architectures.
+  export npm_config_force_process_config="true"
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
 else
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile
 fi
