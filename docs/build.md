@@ -55,6 +55,8 @@ Each platform has its build helper script in the directory `build`.
 
 To build for Linux, you can alternatively build VSCodium in docker
 
+### X64
+
 Firstly, create the container with:
 ```
 docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-x64 bash
@@ -67,15 +69,38 @@ sudo apt-get install -y nodejs desktop-file-utils
 
 npm install -g yarn
 
-git clone https://github.com/VSCodium/vscodium.git
-
-cd vscodium
+cd /root/vscodium
 
 ./get_repo.sh
 
 export SHOULD_BUILD=yes
 export OS_NAME=linux
 export VSCODE_ARCH=x64
+
+./build.sh
+```
+
+### ARM 32bits
+
+Firstly, create the container with:
+```
+docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:stretch-armhf bash
+```
+
+When inside the container, you can use the following commands to build:
+```
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt-get install -y nodejs desktop-file-utils
+
+cd /root/vscodium
+
+./get_repo.sh
+
+export SHOULD_BUILD=yes
+export OS_NAME=linux
+export VSCODE_ARCH=armhf
+export npm_config_arch=armv7l
+export npm_config_force_process_config="true"
 
 ./build.sh
 ```
