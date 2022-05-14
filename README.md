@@ -22,6 +22,7 @@
 **This is not a fork. This is a repository of scripts to automatically build Microsoft's `vscode` repository into freely-licensed binaries with a community-driven default configuration.**
 
 ## Table of Contents
+
 - [Download/Install](#download-install)
   - [Install with Brew](#install-with-brew)
   - [Install with Windows Package Manager (WinGet)](#install-with-winget)
@@ -37,31 +38,36 @@
 - [Supported Platforms](#supported-platforms)
 
 ## <a id="download-install"></a>Download/Install
+
 :tada: :tada: [Download latest release here](https://github.com/VSCodium/vscodium/releases) :tada: :tada:
 
 [More info / helpful tips are here.](https://github.com/VSCodium/vscodium/blob/master/DOCS.md)
 
 #### <a id="install-with-brew"></a>Install with Brew (Mac)
+
 If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
 ```bash
 brew install --cask vscodium
 ```
 
-_Note for Mac macOS Mojave users: if you see "App can't be opened because Apple cannot check it for malicious software" when opening VSCodium the first time, you can right-click the application and choose Open. This should only be required the first time opening on Mojave._
+*Note for macOS users: if you can't open the App, please read [the following troubleshooting](https://github.com/VSCodium/vscodium/wiki/Troubleshooting#macos).*
 
 #### <a id="install-with-winget"></a>Install with Windows Package Manager (WinGet)
+
 If you use Windows and have [Windows Package Manager](https://github.com/microsoft/winget-cli) installed:
 ```bash
 winget install vscodium
 ```
 
 #### <a id="install-with-choco"></a>Install with Chocolatey (Windows)
+
 If you use Windows and have [Chocolatey](https://chocolatey.org) installed (thanks to [@Thilas](https://github.com/Thilas)):
 ```bash
 choco install vscodium
 ```
 
 #### <a id="install-with-scoop"></a>Install with Scoop (Windows)
+
 If you use Windows and have [Scoop](https://scoop.sh) installed:
 ```bash
 scoop bucket add extras
@@ -69,6 +75,7 @@ scoop install vscodium
 ```
 
 #### <a id="install-with-snap"></a>Install with snap (GNU/Linux)
+
 VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium), thanks to the help of the [Snapcrafters](https://github.com/snapcrafters/codium) community.
 If your GNU/Linux distribution has support for [snaps](https://snapcraft.io/docs/installing-snapd):
 ```bash
@@ -76,12 +83,15 @@ snap install codium --classic
 ```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (GNU/Linux)
+
 You can always install using the downloads (deb, rpm, tar) on the [releases page](https://github.com/VSCodium/vscodium/releases), but you can also install using your favorite package manager and get automatic updates. [@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo). Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker.
 
 #### <a id="install-on-arch-linux"></a>Install on Arch Linux
+
 VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository) as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/), maintained by [@binex-dsk](https://github.com/binex-dsk). An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/), maintained by [@cedricroijakkers](https://github.com/cedricroijakkers), is also available should you wish to compile from source yourself.
 
 #### <a id="flatpak"></a>Flatpak Option (GNU/Linux)
+
 VSCodium is (unofficially) available as a Flatpak app [here](https://flathub.org/apps/details/com.vscodium.codium) and the build repo is [here](https://github.com/flathub/com.vscodium.codium). If your distribution has support for [flatpak](https://flathub.org), and you have enabled the [flathub repo](https://flatpak.org/setup/):
 ```bash
 flatpak install flathub com.vscodium.codium
@@ -90,9 +100,11 @@ flatpak run com.vscodium.codium
 ```
 
 ## <a id="build"></a>Build
+
 Build instructions can be found [here](https://github.com/VSCodium/vscodium/blob/master/docs/build.md)
 
 ## <a id="why"></a>Why Does This Exist
+
 This repository contains build files to generate free release binaries of Microsoft's VS Code. When we speak of "free software", we're talking about freedom, not price.
 
 Microsoft's releases of Visual Studio Code are licensed under [this not-FLOSS license](https://code.visualstudio.com/license) and contain telemetry/tracking. According to [this comment](https://github.com/Microsoft/vscode/issues/60#issuecomment-161792005) from a Visual Studio Code maintainer:
@@ -119,22 +131,26 @@ Microsoft's build process (which we are running to build the binaries) does down
 ## <a id="more-info"></a>More Info
 
 ### Documentation
+
 For more information on getting all the telemetry disabled and tips for migrating from Visual Studio Code to VSCodium, have a look at this [Docs](https://github.com/VSCodium/vscodium/blob/master/DOCS.md) page.
 
 ### Extensions and the Marketplace
+
 According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace-ToU), _you may only install and use Marketplace Offerings with Visual Studio Products and Services._ For this reason, VSCodium uses [open-vsx.org](https://open-vsx.org/), an open source registry for VS Code extensions. See the [Extensions + Marketplace](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#extensions-marketplace) section on the Docs page for more details.
 
 Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
 
 ### How are the VSCodium binaries built?
+
 If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflows` for Windows, GNU/Linux and macOS. These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
 
 The builds are run every day, but exit early if there isn't a new release from Microsoft.
 
 ## <a id="supported-platforms"></a>Supported Platforms
+
 The minimal version is limited by the core component Electron, you may want to check its [supported platform list](https://www.electronjs.org/docs/tutorial/support#supported-platforms).
 - [x] macOS (`zip`, `dmg`) OS X 10.10 or newer x64
-- [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64 via x64 emulation, see [status issue](https://github.com/VSCodium/vscodium/issues/597)
+- [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64
 - [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
 - [x] GNU/Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
 - [x] GNU/Linux arm64 (`deb`, `tar.gz`)
@@ -144,11 +160,30 @@ The minimal version is limited by the core component Electron, you may want to c
 - [x] Windows 10 arm64
 
 ## <a id="donate"></a>Donate
+
 If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N`.
 
 Special thanks to:
-- @estatra for the latest logo
-- @jaredreich for the previous logo
+
+<table>
+  <tr>
+    <td>@estatra</td>
+    <td>for the latest logo</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/jaredreich" target="_blank">@jaredreich</a></td>
+    <td>for the previous logo</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/PalinuroSec" target="_blank">@PalinuroSec</a></td>
+    <td>for CDN and domain name</td>
+  </tr>
+  <tr>
+    <td><a href="https://www.macstadium.com" target="_blank"><img src="https://images.prismic.io/macstadium/66fbce64-707e-41f3-b547-241908884716_MacStadium_Logo.png?w=128&q=75" width="128" height="49" alt="MacStadium logo" /></a></td>
+    <td>for providing a Mac mini M1</td>
+  </tr>
+</table>
 
 ## <a id="license"></a>License
+
 [MIT](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
