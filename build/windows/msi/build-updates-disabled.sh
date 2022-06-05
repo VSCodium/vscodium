@@ -8,7 +8,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 SCRIPT_DIR=$( pwd )
 
-cd ../../../VSCode-win32-${VSCODE_ARCH}/resources/app
+cd "../../../VSCode-win32-${VSCODE_ARCH}/resources/app"
 
 cp product.json product.json.bak
 cat product.json.bak | jq "del(.updateUrl)" > product.json

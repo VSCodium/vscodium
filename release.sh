@@ -33,9 +33,9 @@ do
     gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
     EXIT_STATUS=$?
-    echo "exit: $EXIT_STATUS"
+    echo "exit: ${EXIT_STATUS}"
 
-    if (( $EXIT_STATUS )); then
+    if (( "${EXIT_STATUS}" )); then
       for (( i=0; i<10; i++ ))
       do
         github-release delete --owner "${OWNER}" --repo "${REPOSITORY}" --tag "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
@@ -46,15 +46,15 @@ do
         gh release upload "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
         EXIT_STATUS=$?
-        echo "exit: $EXIT_STATUS"
+        echo "exit: ${EXIT_STATUS}"
 
-        if ! (( $EXIT_STATUS )); then
+        if ! (( "${EXIT_STATUS}" )); then
           break
         fi
       done
-      echo "exit: $EXIT_STATUS"
+      echo "exit: ${EXIT_STATUS}"
 
-      if (( $EXIT_STATUS )); then
+      if (( "${EXIT_STATUS}" )); then
         echo "'${FILE}' hasn't been uploaded!"
 
         github-release delete --owner "${OWNER}" --repo "${REPOSITORY}" --tag "${MS_TAG}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"

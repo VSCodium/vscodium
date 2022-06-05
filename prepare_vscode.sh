@@ -13,21 +13,21 @@ cd vscode || exit
 { set +x; } 2>/dev/null
 
 for file in ../patches/*.patch; do
-  if [ -f "$file" ]; then
-    echo applying patch: $file;
-    git apply --ignore-whitespace "$file"
+  if [ -f "${file}" ]; then
+    echo applying patch: "${file}";
+    git apply --ignore-whitespace "${file}"
     if [ $? -ne 0 ]; then
-      echo failed to apply patch $file 1>&2
+      echo failed to apply patch "${file}" 1>&2
     fi
   fi
 done
 
 for file in ../patches/user/*.patch; do
-  if [ -f "$file" ]; then
-    echo applying user patch: $file;
-    git apply --ignore-whitespace "$file"
+  if [ -f "${file}" ]; then
+    echo applying user patch: "${file}";
+    git apply --ignore-whitespace "${file}"
     if [ $? -ne 0 ]; then
-      echo failed to apply patch $file 1>&2
+      echo failed to apply patch "${file}" 1>&2
     fi
   fi
 done
@@ -94,7 +94,7 @@ cat product.json
 
 ../undo_telemetry.sh
 
-if [[ "$OS_NAME" == "linux" ]]; then
+if [[ "${OS_NAME}" == "linux" ]]; then
   # microsoft adds their apt repo to sources
   # unless the app name is code-oss
   # as we are renaming the application to vscodium

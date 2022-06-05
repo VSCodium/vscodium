@@ -8,12 +8,12 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
 fi
 
 REPOSITORY="${GITHUB_REPOSITORY:-"VSCodium/vscodium"}"
-GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/${REPOSITORY}/releases/tags/${MS_TAG})
+GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPOSITORY}/releases/tags/${MS_TAG}")
 VSCODIUM_ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
 
 contains() {
   # add " to match the end of a string so any hashs won't be matched by mistake
-  echo "${VSCODIUM_ASSETS}" | grep "$1\""
+  echo "${VSCODIUM_ASSETS}" | grep "${1}\""
 }
 
 if [ "${VSCODIUM_ASSETS}" != "null" ]; then
