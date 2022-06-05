@@ -24,10 +24,10 @@ ICON_DIR="..\\..\\..\\src\\resources\\win32"
 LICENSE_DIR="..\\..\\..\\vscode"
 PROGRAM_FILES_86=$( env | sed -n 's/^ProgramFiles(x86)=//p' )
 
-if [[ -z "$1" ]]; then
+if [[ -z "${1}" ]]; then
 	OUTPUT_BASE_FILENAME="${PRODUCT_NAME}-${VSCODE_ARCH}-${MS_TAG}"
 else
-	OUTPUT_BASE_FILENAME="${PRODUCT_NAME}-${VSCODE_ARCH}-$1-${MS_TAG}"
+	OUTPUT_BASE_FILENAME="${PRODUCT_NAME}-${VSCODE_ARCH}-${1}-${MS_TAG}"
 fi
 
 if [[ "${VSCODE_ARCH}" == "ia32" ]]; then
@@ -38,8 +38,8 @@ fi
 
 
 BuildSetupTranslationTransform() {
-	local CULTURE=$1
-	local LANGID=$2
+	local CULTURE=${1}
+	local LANGID=${2}
 
 	LANGIDS="${LANGIDS},${LANGID}"
 

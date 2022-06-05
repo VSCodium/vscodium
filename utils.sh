@@ -7,10 +7,10 @@ is_gnu_sed () {
 }
 
 replace () {
-  echo "$1"
+  echo "${1}"
   if is_gnu_sed; then
-    sed -i -E "$1" "$2"
+    sed -i -E "${1}" "${2}"
   else
-    sed -i '' -E "$1" "$2"
+    sed -i '' -E "${1}" "${2}"
   fi
 }

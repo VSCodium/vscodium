@@ -5,10 +5,10 @@ set -e
 npm install -g checksum
 
 sum_file() {
-  if [[ -f "$1" ]]; then
-    echo "Calcuating checksum for $1"
-    checksum -a sha256 "$1" > "$1".sha256
-    checksum "$1" > "$1".sha1
+  if [[ -f "${1}" ]]; then
+    echo "Calcuating checksum for ${1}"
+    checksum -a sha256 "${1}" > "${1}".sha256
+    checksum "${1}" > "${1}".sha1
   fi
 }
 

@@ -15,7 +15,7 @@ else
 
   sudo snap install --channel stable --classic snapcraft
 
-  echo "$SNAP_STORE_LOGIN" | snapcraft login --with -
+  echo "${SNAP_STORE_LOGIN}" | snapcraft login --with -
 
   echo "Architecture: ${ARCHITECTURE}"
 
@@ -38,6 +38,6 @@ else
   fi
 fi
 
-if [[ $GITHUB_ENV ]]; then
-	echo "SHOULD_DEPLOY=$SHOULD_DEPLOY" >> "$GITHUB_ENV"
+if [[ "${GITHUB_ENV}" ]]; then
+	echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" >> "${GITHUB_ENV}"
 fi

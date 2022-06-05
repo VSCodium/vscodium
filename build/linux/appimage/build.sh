@@ -6,7 +6,7 @@ CALLER_DIR=$( pwd )
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
-if [[ "$VSCODE_ARCH" == "x64" ]]; then
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   wget -c https://github.com/$(wget -q https://github.com/AppImage/pkg2appimage/releases -O - | grep "pkg2appimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
   chmod +x ./pkg2appimage-*.AppImage
 

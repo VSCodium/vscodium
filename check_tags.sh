@@ -13,7 +13,7 @@ VSCODIUM_ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
 
 contains() {
   # add " to match the end of a string so any hashs won't be matched by mistake
-  echo "${VSCODIUM_ASSETS}" | grep "$1\""
+  echo "${VSCODIUM_ASSETS}" | grep "${1}\""
 }
 
 if [ "${VSCODIUM_ASSETS}" != "null" ]; then
