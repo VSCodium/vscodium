@@ -8,7 +8,7 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
 fi
 
 REPOSITORY="${GITHUB_REPOSITORY:-"VSCodium/vscodium"}"
-GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/${REPOSITORY}/releases/tags/${MS_TAG})
+GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPOSITORY}/releases/tags/${MS_TAG}")
 VSCODIUM_ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
 
 contains() {

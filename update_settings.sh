@@ -11,7 +11,7 @@ TELEMETRY_CONFIGURATION=" TelemetryConfiguration.ON"
 update_setting () {
   local FILENAME="$2"
   # check that the file exists
-  if [ ! -f $FILENAME ]; then
+  if [ ! -f "$FILENAME" ]; then
     echo "File to update setting in does not exist ${FILENAME}"
     return
   fi
@@ -28,7 +28,7 @@ update_setting () {
       local FOUND=1
       break
     fi
-  done < $FILENAME
+  done < "$FILENAME"
 
   if [[ "$FOUND" != "1" ]]; then
     echo "$DEFAULT_TRUE not found for setting $SETTING in file $FILENAME"
@@ -42,7 +42,7 @@ update_setting () {
     local DEFAULT_TRUE_TO_FALSE="${LINE_NUM}s/${DEFAULT_ON}/${DEFAULT_OFF}/"
   fi
 
-  replace "$DEFAULT_TRUE_TO_FALSE" $FILENAME
+  replace "$DEFAULT_TRUE_TO_FALSE" "$FILENAME"
 }
 
 update_setting "$TELEMETRY_CRASH_REPORTER" src/vs/workbench/electron-sandbox/desktop.contribution.ts

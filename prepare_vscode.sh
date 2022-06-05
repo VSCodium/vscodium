@@ -14,20 +14,20 @@ cd vscode || exit
 
 for file in ../patches/*.patch; do
   if [ -f "$file" ]; then
-    echo applying patch: $file;
+    echo applying patch: "$file";
     git apply --ignore-whitespace "$file"
     if [ $? -ne 0 ]; then
-      echo failed to apply patch $file 1>&2
+      echo failed to apply patch "$file" 1>&2
     fi
   fi
 done
 
 for file in ../patches/user/*.patch; do
   if [ -f "$file" ]; then
-    echo applying user patch: $file;
+    echo applying user patch: "$file";
     git apply --ignore-whitespace "$file"
     if [ $? -ne 0 ]; then
-      echo failed to apply patch $file 1>&2
+      echo failed to apply patch "$file" 1>&2
     fi
   fi
 done

@@ -19,7 +19,7 @@ else
 
   echo "Architecture: ${ARCHITECTURE}"
 
-  SNAP_VERSION=$(snapcraft list-revisions codium | grep -F stable* | grep ${ARCHITECTURE} | tr -s ' ' | cut -d ' ' -f 4)
+  SNAP_VERSION=$(snapcraft list-revisions codium | grep -F stable* | grep "${ARCHITECTURE}" | tr -s ' ' | cut -d ' ' -f 4)
   echo "Snap version: ${SNAP_VERSION}"
 
   wget --quiet https://api.github.com/repos/VSCodium/vscodium/releases -O gh_latest.json
@@ -39,5 +39,5 @@ else
 fi
 
 if [[ $GITHUB_ENV ]]; then
-	echo "SHOULD_DEPLOY=$SHOULD_DEPLOY" >> $GITHUB_ENV
+	echo "SHOULD_DEPLOY=$SHOULD_DEPLOY" >> "$GITHUB_ENV"
 fi
