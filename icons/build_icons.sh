@@ -22,10 +22,10 @@ SRC_PREFIX=""
 VSCODE_PREFIX=""
 
 build_darwin_types() {
-  for file in ${VSCODE_PREFIX}vscode/resources/darwin/*
+  for file in "${VSCODE_PREFIX}"vscode/resources/darwin/*
   do
     if [ -f "${file}" ]; then
-      name=$(basename $file '.icns')
+      name=$(basename "${file}" '.icns')
 
       if [[ ${name} != 'code' ]] && [ ! -f "${SRC_PREFIX}src/resources/darwin/${name}.icns" ]; then
         icns2png -x -s 512x512 "${file}" -o .
@@ -56,13 +56,13 @@ build_darwin_main() {
 }
 
 build_win32() {
-  for file in ${VSCODE_PREFIX}vscode/resources/win32/*.ico
+  for file in "${VSCODE_PREFIX}"vscode/resources/win32/*.ico
   do
     if [ -f "${file}" ]; then
-      name=$(basename $file '.ico')
+      name=$(basename "${file}" '.ico')
 
       if [[ ${name} != 'code' ]] && [ ! -f "${SRC_PREFIX}src/resources/win32/${name}.ico" ]; then
-        icotool -x -w 256 ${file}
+        icotool -x -w 256 "${file}"
 
         composite -geometry +150+185 icons/code_64.png "${name}_9_256x256x32.png" "${name}.png"
 
