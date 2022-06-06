@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p vscode
-cd vscode
+cd vscode || exit
 
 git init -q
 git remote add origin https://github.com/Microsoft/vscode.git

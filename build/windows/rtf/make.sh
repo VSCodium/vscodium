@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd "$( dirname "${BASH_SOURCE[0]}" )"/../../../vscode
+cd "$( dirname "${BASH_SOURCE[0]}" )"/../../../vscode || exit
 
 input=LICENSE.txt
 target=LICENSE.rtf
