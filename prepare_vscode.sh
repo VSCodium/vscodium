@@ -80,11 +80,12 @@ win32AppUserModelId='setpath(["win32AppUserModelId"]; "Microsoft.VSCodium")'
 win32ShellNameShort='setpath(["win32ShellNameShort"]; "VSCodium")'
 win32x64UserAppId='setpath (["win32x64UserAppId"]; "{{2E1F05D1-C245-4562-81EE-28188DB6FD17}")'
 urlProtocol='setpath(["urlProtocol"]; "vscodium")'
-serverDataFolderName='setpath(["serverDataFolderName"]; ".vscode-server-oss")'
+serverApplicationName='setpath(["serverApplicationName"]; "codium-server")'
+serverDataFolderName='setpath(["serverDataFolderName"]; ".vscodium-server")'
 reportIssueUrl='setpath(["reportIssueUrl"]; "https://github.com/VSCodium/vscodium/issues/new")'
 licenseUrl='setpath(["licenseUrl"]; "https://github.com/VSCodium/vscodium/blob/master/LICENSE")'
 
-product_json_changes="${checksumFailMoreInfoUrl} | ${tipsAndTricksUrl} | ${twitterUrl} | ${requestFeatureUrl} | ${documentationUrl} | ${introductoryVideosUrl} | ${updateUrl} | ${releaseNotesUrl} | ${keyboardShortcutsUrlMac} | ${keyboardShortcutsUrlLinux} | ${keyboardShortcutsUrlWin} | ${quality} | ${extensionsGallery} | ${linkProtectionTrustedDomains} | ${nameShort} | ${nameLong} | ${linuxIconName} | ${applicationName} | ${win32MutexName} | ${win32DirName} | ${win32NameVersion} | ${win32RegValueName} | ${win32AppUserModelId} | ${win32ShellNameShort} | ${win32x64UserAppId} | ${urlProtocol} | ${serverDataFolderName} | ${reportIssueUrl} | ${licenseUrl}"
+product_json_changes="${checksumFailMoreInfoUrl} | ${tipsAndTricksUrl} | ${twitterUrl} | ${requestFeatureUrl} | ${documentationUrl} | ${introductoryVideosUrl} | ${updateUrl} | ${releaseNotesUrl} | ${keyboardShortcutsUrlMac} | ${keyboardShortcutsUrlLinux} | ${keyboardShortcutsUrlWin} | ${quality} | ${extensionsGallery} | ${linkProtectionTrustedDomains} | ${nameShort} | ${nameLong} | ${linuxIconName} | ${applicationName} | ${win32MutexName} | ${win32DirName} | ${win32NameVersion} | ${win32RegValueName} | ${win32AppUserModelId} | ${win32ShellNameShort} | ${win32x64UserAppId} | ${urlProtocol} | ${serverApplicationName} | ${serverDataFolderName} | ${reportIssueUrl} | ${licenseUrl}"
 cat product.json.bak | jq "${product_json_changes}" > product.json.tmp
 
 jq -s '.[0] * .[1]' product.json.tmp ../product.json > product.json
