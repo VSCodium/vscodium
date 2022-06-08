@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p vscode
-cd vscode || exit
+cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 git init -q
 git remote add origin https://github.com/Microsoft/vscode.git

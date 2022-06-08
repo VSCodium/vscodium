@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd "$( dirname "${BASH_SOURCE[0]}" )"/../../../vscode || exit
+cd "$( dirname "${BASH_SOURCE[0]}" )"/../../../vscode || { echo "'vscode' dir not found"; exit 1; }
 
 input=LICENSE.txt
 target=LICENSE.rtf
