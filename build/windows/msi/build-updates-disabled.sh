@@ -16,6 +16,6 @@ rm -f product.json.bak
 
 cd "${SCRIPT_DIR}"
 
-. build.sh "updates-disabled"
+./build.sh "updates-disabled"
 
 cd "${CALLER_DIR}"

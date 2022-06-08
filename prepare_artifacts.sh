@@ -29,6 +29,8 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     mv "../VSCodium ${MS_TAG}.dmg" "../artifacts/VSCodium.${VSCODE_ARCH}.${MS_TAG}.dmg"
     popd
   fi
+
+  VSCODE_PLATFORM="darwin"
 elif [[ "${OS_NAME}" == "windows" ]]; then
   if [[ "${SHOULD_BUILD_ZIP}" != "no" ]]; then
     echo "Moving ZIP"
@@ -56,6 +58,8 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
       mv "build\\windows\\msi\\releasedir\\VSCodium-${VSCODE_ARCH}-updates-disabled-${MS_TAG}.msi" artifacts/
     fi
   fi
+
+  VSCODE_PLATFORM="win32"
 else
   if [[ "${SHOULD_BUILD_TAR}" != "no" ]]; then
     echo "Building and moving TAR"
@@ -78,6 +82,15 @@ else
     echo "Moving AppImage"
     mv build/linux/appimage/out/*.AppImage* artifacts/
   fi
+
+  VSCODE_PLATFORM="linux"
+fi
+
+if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
+  echo "Building and moving REH"
+  cd "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+  tar czf "../artifacts/vscodium-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${MS_TAG}.tar.gz" .
+  cd ..
 fi
 
 cd artifacts
