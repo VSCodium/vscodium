@@ -5,7 +5,7 @@ set -e
 cp -rp src/* vscode/
 cp -f LICENSE vscode/LICENSE.txt
 
-cd vscode || exit
+cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 ../update_settings.sh
 
