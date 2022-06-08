@@ -30,7 +30,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     popd
   fi
 
-  export VSCODE_PLATFORM="darwin"
+  VSCODE_PLATFORM="darwin"
 elif [[ "${OS_NAME}" == "windows" ]]; then
   if [[ "${SHOULD_BUILD_ZIP}" != "no" ]]; then
     echo "Moving ZIP"
@@ -59,7 +59,7 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
     fi
   fi
 
-  export VSCODE_PLATFORM="win32"
+  VSCODE_PLATFORM="win32"
 else
   if [[ "${SHOULD_BUILD_TAR}" != "no" ]]; then
     echo "Building and moving TAR"
@@ -83,7 +83,7 @@ else
     mv build/linux/appimage/out/*.AppImage* artifacts/
   fi
 
-  export VSCODE_PLATFORM="linux"
+  VSCODE_PLATFORM="linux"
 fi
 
 if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then

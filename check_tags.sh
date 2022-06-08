@@ -68,12 +68,7 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
         export SHOULD_BUILD_ZIP="no"
       fi
 
-      if [[ -z $( contains "vscodium-reh-win32-${VSCODE_ARCH}-${MS_TAG}.tar.gz" ) ]]; then
-        echo "Building on Windows arm64 because we have no REH archive"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_REH="no"
-      fi
+      export SHOULD_BUILD_REH="no"
 
       if [[ "${SHOULD_BUILD}" != "yes" ]]; then
         echo "Already have all the Windows arm64 builds"

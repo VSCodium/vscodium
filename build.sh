@@ -23,7 +23,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   if [[ "${OS_NAME}" == "osx" ]]; then
     yarn gulp "vscode-darwin-${VSCODE_ARCH}-min-ci"
 
-    export VSCODE_PLATFORM="darwin"
+    VSCODE_PLATFORM="darwin"
   elif [[ "${OS_NAME}" == "windows" ]]; then
     . ../build/windows/rtf/make.sh
 
@@ -50,9 +50,11 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
       if [[ "${SHOULD_BUILD_MSI_NOUP}" != "no" ]]; then
         . ../build/windows/msi/build-updates-disabled.sh
       fi
+    else
+      SHOULD_BUILD_REH="no"
     fi
 
-    export VSCODE_PLATFORM="win32"
+    VSCODE_PLATFORM="win32"
   else # linux
     yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
@@ -70,7 +72,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
       fi
     fi
 
-    export VSCODE_PLATFORM="linux"
+    VSCODE_PLATFORM="linux"
   fi
 
   if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
