@@ -1,17 +1,17 @@
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 1edc76f..4c0bf98 100644
+index f822373..30a0a66 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
-@@ -69,6 +69,7 @@ export interface IProductConfiguration {
+@@ -70,6 +70,7 @@ export interface IProductConfiguration {
  
  	readonly extensionsGallery?: {
  		readonly serviceUrl: string;
 +		readonly cacheUrl?: string;
  		readonly itemUrl: string;
+ 		readonly publisherUrl: string;
  		readonly resourceUrlTemplate: string;
- 		readonly controlUrl: string;
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index e22b33e..98cec93 100644
+index 7e63a16..3bfeab8 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -4,11 +4,12 @@
