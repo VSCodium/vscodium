@@ -35,8 +35,8 @@ done
 set -x
 
 if [[ "${OS_NAME}" == "osx" ]]; then
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --ignore-optional
-  npm_config_argv='{"original":["--ignore-optional"]}' yarn postinstall
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
+  yarn postinstall
 elif [[ "${npm_config_arch}" == "armv7l" || "${npm_config_arch}" == "ia32" ]]; then
   # node-gyp@9.0.0 shipped with node@16.15.0 starts using config.gypi
   # from the custom headers path if dist-url option was set instead of

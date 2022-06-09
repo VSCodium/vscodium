@@ -1,21 +1,21 @@
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 2f5a931..ac3d7e6 100644
+index 2686509..4fedec2 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -290,7 +290,7 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
- 			all = es.merge(all, gulp.src('resources/linux/code.png', { base: '.' }));
+@@ -289,7 +289,7 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		} else if (platform === 'darwin') {
  			const shortcut = gulp.src('resources/darwin/bin/code.sh')
+ 				.pipe(replace('@@APPNAME@@', product.applicationName))
 -				.pipe(rename('bin/code'));
 +				.pipe(rename('bin/' + product.applicationName));
  
  			all = es.merge(all, shortcut);
  		}
 diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-index 3bd0c57..d921c60 100644
+index f7bd477..a489ae4 100644
 --- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
 +++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-@@ -353,7 +353,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -351,7 +351,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  	}
  
  	private async getShellCommandLink(): Promise<{ readonly source: string; readonly target: string }> {
@@ -24,7 +24,7 @@ index 3bd0c57..d921c60 100644
  		const source = `/usr/local/bin/${this.productService.applicationName}`;
  
  		// Ensure source exists
-@@ -563,7 +563,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -545,7 +545,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  
  		// macOS
  		if (this.environmentMainService.isBuilt) {
