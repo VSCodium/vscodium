@@ -195,8 +195,8 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
         export SHOULD_BUILD_TAR="no"
       fi
 
-      if [[ -z $( contains "vscodium-reh-linux-arm64-${VSCODE_ARCH}-${MS_TAG}.tar.gz" ) ]]; then
-        echo "Building on Linux x64 because we have no REH archive"
+      if [[ -z $( contains "vscodium-reh-linux-arm64-${MS_TAG}.tar.gz" ) ]]; then
+        echo "Building on Linux arm64 because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_REH="no"
@@ -231,7 +231,7 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
         export SHOULD_BUILD_TAR="no"
       fi
 
-      if [[ -z $( contains "vscodium-reh-linux-armhf-${VSCODE_ARCH}-${MS_TAG}.tar.gz" ) ]]; then
+      if [[ -z $( contains "vscodium-reh-linux-armhf-${MS_TAG}.tar.gz" ) ]]; then
         echo "Building on Linux arm because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
@@ -274,7 +274,7 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
         export SHOULD_BUILD_APPIMAGE="no"
       fi
 
-      if [[ -z $( contains "vscodium-reh-linux-x64-${VSCODE_ARCH}-${MS_TAG}.tar.gz" ) ]]; then
+      if [[ -z $( contains "vscodium-reh-linux-x64-${MS_TAG}.tar.gz" ) ]]; then
         echo "Building on Linux x64 because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
