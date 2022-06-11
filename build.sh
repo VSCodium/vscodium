@@ -76,6 +76,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   fi
 
   if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
+    yarn gulp minify-vscode-reh
     yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
   fi
 
