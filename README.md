@@ -89,6 +89,9 @@ You can always install using the downloads (deb, rpm, tar) on the [releases page
 #### <a id="install-on-arch-linux"></a>Install on Arch Linux
 
 VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository) as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/), maintained by [@binex-dsk](https://github.com/binex-dsk). An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/), maintained by [@cedricroijakkers](https://github.com/cedricroijakkers), is also available should you wish to compile from source yourself.
+```bash
+yay -S aur/vscodium-bin
+```
 
 #### <a id="flatpak"></a>Flatpak Option (GNU/Linux)
 
