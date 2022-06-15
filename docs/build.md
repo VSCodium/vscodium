@@ -29,7 +29,6 @@
 - rpmbuild
 - dpkg
 - python3
-- libsecret-1-dev
 - imagemagick (for AppImage)
 
 ### <a id="dependencies-macos"></a>MacOS
