@@ -140,7 +140,9 @@ jobs:
         if: env.SHOULD_DEPLOY == 'yes'
 
 
-      - uses: snapcore/action-publish@v1
+      - uses: snapcore/action-publish@master
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         with:
           snap: ${{ steps.build.outputs.snap }}
           release: stable
