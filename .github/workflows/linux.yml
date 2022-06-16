@@ -146,4 +146,6 @@ jobs:
         with:
           snap: ${{ steps.build.outputs.snap }}
           release: stable
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         if: env.SHOULD_DEPLOY == 'yes'
