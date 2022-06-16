@@ -116,7 +116,7 @@ jobs:
         run: ./stores/snapcraft/check_version.sh
         env:
           ARCHITECTURE: ${{ matrix.platform }}
-          SNAP_STORE_LOGIN: ${{ secrets.SNAP_STORE_LOGIN }}
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
 
       # - uses: docker/setup-qemu-action@v1
       #   if: env.SHOULD_DEPLOY == 'yes'
@@ -142,7 +142,8 @@ jobs:
 
       - uses: snapcore/action-publish@v1
         with:
-          store_login: ${{ secrets.SNAP_STORE_LOGIN }}
           snap: ${{ steps.build.outputs.snap }}
           release: stable
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         if: env.SHOULD_DEPLOY == 'yes'

@@ -15,8 +15,6 @@ else
 
   sudo snap install --channel stable --classic snapcraft
 
-  echo "${SNAP_STORE_LOGIN}" | snapcraft login --with -
-
   echo "Architecture: ${ARCHITECTURE}"
 
   SNAP_VERSION=$(snapcraft list-revisions codium | grep -F "stable*" | grep "${ARCHITECTURE}" | tr -s ' ' | cut -d ' ' -f 4)
