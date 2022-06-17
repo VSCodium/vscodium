@@ -23,6 +23,8 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   if [[ "${OS_NAME}" == "osx" ]]; then
     yarn gulp "vscode-darwin-${VSCODE_ARCH}-min-ci"
 
+    find "../VSCode-darwin-${VSCODE_ARCH}" -exec touch {} \;
+
     VSCODE_PLATFORM="darwin"
   elif [[ "${OS_NAME}" == "windows" ]]; then
     . ../build/windows/rtf/make.sh
@@ -57,6 +59,8 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     VSCODE_PLATFORM="win32"
   else # linux
     yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
+
+    find "../VSCode-linux-${VSCODE_ARCH}" -exec touch {} \;
 
     if [[ "${SKIP_LINUX_PACKAGES}" != "True" ]]; then
       if [[ "${SHOULD_BUILD_DEB}" != "no" || "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
