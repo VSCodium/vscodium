@@ -8,6 +8,7 @@
   - [Windows](#dependencies-windows)
 - [Build Scripts](#build-scripts)
 - [Build in Docker](#build-docker)
+- [Patch Update Process](#patch-update-process)
 
 ## <a id="dependencies"></a>Dependencies
 
@@ -103,3 +104,14 @@ export npm_config_force_process_config="true"
 
 ./build.sh
 ```
+
+## <a id="patch-update-process"></a>Patch Update Process
+
+- run `./build/build_<os>.sh`, if a patch is failing then,
+- open vscode directory in vscodium
+- revert all changes
+- run `git apply --reject ../patches/<name>.patch`
+- fix all the `*.rej` files
+- run `yarn watch`
+- run `./script/code.sh` until everything ok
+- run `git diff > ../patches/<name>.patch`
