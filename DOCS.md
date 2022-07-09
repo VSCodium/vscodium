@@ -53,7 +53,7 @@ See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on
 
 ### <a id="howto-vscode-marketplace"></a>How to use the VS Code Marketplace
 
-You can switch and use the VS Code marketplace by using the following solutions. However, note that [it is not clear whether this is legal](https://github.com/microsoft/vscode/issues/31168).
+You can switch and use the VS Code marketplace by using the following solutions. However, note that [ this is not legal](https://github.com/microsoft/vscode/issues/31168).
 
 With the following environment variables:
 - `VSCODE_GALLERY_SERVICE_URL='https://marketplace.visualstudio.com/_apis/public/gallery'`
