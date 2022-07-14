@@ -65,6 +65,7 @@ With the following environment variables:
 Or by creating a custom `product.json` at the following location:
 - Windows: `%APPDATA%\VSCodium` or `%USERPROFILE%\AppData\Roaming\VSCodium`
 - macOS: `~/Library/Application Support/VSCodium`
+- macOS /Applications/VSCodium.app/Contents/Resources/app
 - Linux: `$XDG_CONFIG_HOME/VSCodium` or `~/.config/VSCodium`
 
 with the content:
