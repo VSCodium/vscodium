@@ -13,5 +13,5 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     ./node_modules/@vscode/ripgrep/bin/rg --no-ignore -l "${TELEMETRY_URLS}" . | xargs sed -i '' -E "${REPLACEMENT}"
   fi
 else
-  ./node_modules/@vscode/ripgrep/bin/rg --no-ignore -l "${TELEMETRY_URLS}" . | xargs -I {} bash -c 'debug "$@"' _ {}
+  ./node_modules/@vscode/ripgrep/bin/rg --no-ignore -l "${TELEMETRY_URLS}" . | xargs sed -i -E "${REPLACEMENT}"
 fi
