@@ -35,6 +35,7 @@
 - dpkg
 - python3
 - imagemagick (for AppImage)
+- ripgrep
 
 ### <a id="dependencies-macos"></a>MacOS
 

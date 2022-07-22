@@ -6,7 +6,7 @@ REPLACEMENT="s/${TELEMETRY_URLS}/0\.0\.0\.0/g"
 #include common functions
 . ../utils.sh
 
-d1=`gdate +%s`
+d1=`date +%s`
 
 if [[ "${OS_NAME}" == "linux" ]]; then
   rg --no-ignore -l "${TELEMETRY_URLS}" . | xargs -I {} bash -c 'echo "found: $@ (`date`)"; sed -i -E "$@"' _ {}
