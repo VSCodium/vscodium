@@ -8,10 +8,10 @@ REPLACEMENT="s/${TELEMETRY_URLS}/0\.0\.0\.0/g"
 
 if [[ "${OS_NAME}" == "osx" ]]; then
   if is_gnu_sed; then
-    grep -rl --exclude-dir=.git -E "${TELEMETRY_URLS}" . | xargs sed -i -E "${REPLACEMENT}"
+    ./node_modules/@vscode/ripgrep/bin/rg --no-ignore -l "${TELEMETRY_URLS}" . | xargs sed -i -E "${REPLACEMENT}"
   else
-    grep -rl --exclude-dir=.git -E "${TELEMETRY_URLS}" . | xargs sed -i '' -E "${REPLACEMENT}"
+    ./node_modules/@vscode/ripgrep/bin/rg --no-ignore -l "${TELEMETRY_URLS}" . | xargs sed -i '' -E "${REPLACEMENT}"
   fi
 else
-  grep -rl --exclude-dir=.git -E "${TELEMETRY_URLS}" . | xargs sed -i -E "${REPLACEMENT}"
+  ./node_modules/@vscode/ripgrep/bin/rg --no-ignore -l "${TELEMETRY_URLS}" . | xargs -I {} bash -c 'debug "$@"' _ {}
 fi
