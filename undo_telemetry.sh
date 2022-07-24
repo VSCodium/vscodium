@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 # list of urls to match:
 # - mobile.events.data.microsoft.com
@@ -14,11 +14,15 @@ REPLACEMENT="s|//[^/]+\.data\.microsoft\.com|//0\.0\.0\.0|g"
 
 if is_gnu_sed; then
   replace_with_debug () {
+    set -ex
+
     echo "found: ${2} (`date`)"
     sed -i -E "${1}" "${2}"
   }
 else
   replace_with_debug () {
+    set -ex
+
     echo "found: ${2} (`date`)"
     sed -i '' -E "${1}" "${2}"
   }
@@ -28,6 +32,8 @@ export -f replace_with_debug
 d1=`date +%s`
 
 if [[ "${OS_NAME}" == "linux" ]]; then
+  readelf -h /usr/bin/rg
+
   rg --no-ignore -l "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
 elif [[ "${OS_NAME}" == "osx" ]]; then
   ./node_modules/@vscode/ripgrep/bin/rg --no-ignore -l "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
