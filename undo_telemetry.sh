@@ -28,10 +28,10 @@ export -f replace_with_debug
 d1=`date +%s`
 
 if [[ "${OS_NAME}" == "linux" ]]; then
-  if [[ ${VSCODE_ARCH} == "armhf" ]]; then
-    grep -rl --exclude-dir=.git -E "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
-  else
+  if [[ ${VSCODE_ARCH} == "x64" ]]; then
     rg --no-ignore -l "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
+  else
+    grep -rl --exclude-dir=.git -E "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
   fi
 elif [[ "${OS_NAME}" == "osx" ]]; then
   ./node_modules/@vscode/ripgrep/bin/rg --no-ignore -l "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
