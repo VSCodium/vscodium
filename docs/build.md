@@ -35,6 +35,7 @@
 - dpkg
 - python3
 - imagemagick (for AppImage)
+- ripgrep
 
 ### <a id="dependencies-macos"></a>MacOS
 
@@ -65,6 +66,10 @@ Firstly, create the container with:
 ```
 docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-x64 bash
 ```
+like
+```
+docker run -ti --volume=$(pwd):/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-x64 bash
+```
 
 When inside the container, you can use the following commands to build:
 ```
@@ -89,6 +94,10 @@ export VSCODE_ARCH=x64
 Firstly, create the container with:
 ```
 docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:stretch-armhf bash
+```
+like
+```
+docker run -ti --volume=$(pwd):/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:stretch-armhf bash
 ```
 
 When inside the container, you can use the following commands to build:

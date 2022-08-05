@@ -1,17 +1,44 @@
-# mobile.events.data.microsoft.com
-# vortex.data.microsoft.com
-TELEMETRY_URLS="[^/]+\.data\.microsoft\.com"
-REPLACEMENT="s/${TELEMETRY_URLS}/0\.0\.0\.0/g"
+#!/bin/bash
 
-#include common functions
+set -ex
+
+# list of urls to match:
+# - mobile.events.data.microsoft.com
+# - vortex.data.microsoft.com
+
+SEARCH="\.data\.microsoft\.com"
+REPLACEMENT="s|//[^/]+\.data\.microsoft\.com|//0\.0\.0\.0|g"
+
+# include common functions
 . ../utils.sh
 
-if [[ "${OS_NAME}" == "osx" ]]; then
-  if is_gnu_sed; then
-    grep -rl --exclude-dir=.git -E "${TELEMETRY_URLS}" . | xargs sed -i -E "${REPLACEMENT}"
-  else
-    grep -rl --exclude-dir=.git -E "${TELEMETRY_URLS}" . | xargs sed -i '' -E "${REPLACEMENT}"
-  fi
+if is_gnu_sed; then
+  replace_with_debug () {
+    echo "found: ${2} (`date`)"
+    sed -i -E "${1}" "${2}"
+  }
 else
-  grep -rl --exclude-dir=.git -E "${TELEMETRY_URLS}" . | xargs sed -i -E "${REPLACEMENT}"
+  replace_with_debug () {
+    echo "found: ${2} (`date`)"
+    sed -i '' -E "${1}" "${2}"
+  }
 fi
+export -f replace_with_debug
+
+d1=`date +%s`
+
+if [[ "${OS_NAME}" == "linux" ]]; then
+  if [[ ${VSCODE_ARCH} == "x64" ]]; then
+    rg --no-ignore -l "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
+  else
+    grep -rl --exclude-dir=.git -E "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
+  fi
+elif [[ "${OS_NAME}" == "osx" ]]; then
+  ./node_modules/@vscode/ripgrep/bin/rg --no-ignore -l "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
+else
+  ./node_modules/@vscode/ripgrep/bin/rg --no-ignore --path-separator=// -l "${SEARCH}" . | xargs -I {} bash -c 'replace_with_debug "${1}" "{}"' _ "${REPLACEMENT}"
+fi
+
+d2=`date +%s`
+
+echo "undo_telemetry: $( echo $((${d2} - ${d1})) )s"
