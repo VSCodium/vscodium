@@ -1,0 +1,62 @@
+diff --git a/build/linux/debian/dependencies-generator.js b/build/linux/debian/dependencies-generator.js
+index 235ca26..4f0f06e 100644
+--- a/build/linux/debian/dependencies-generator.js
++++ b/build/linux/debian/dependencies-generator.js
+@@ -17,7 +17,7 @@ const dep_lists_1 = require("./dep-lists");
+ // If true, we fail the build if there are new dependencies found during that task.
+ // The reference dependencies, which one has to update when the new dependencies
+ // are valid, are in dep-lists.ts
+-const FAIL_BUILD_FOR_NEW_DEPENDENCIES = true;
++const FAIL_BUILD_FOR_NEW_DEPENDENCIES = false;
+ function getDependencies(buildDir, applicationName, arch, sysroot) {
+     // Get the files for which we want to find dependencies.
+     const nativeModulesPath = path.join(buildDir, 'resources', 'app', 'node_modules.asar.unpacked');
+diff --git a/build/linux/debian/dependencies-generator.ts b/build/linux/debian/dependencies-generator.ts
+index 9e3d466..776a4c2 100644
+--- a/build/linux/debian/dependencies-generator.ts
++++ b/build/linux/debian/dependencies-generator.ts
+@@ -19,7 +19,7 @@ import { ArchString } from './types';
+ // If true, we fail the build if there are new dependencies found during that task.
+ // The reference dependencies, which one has to update when the new dependencies
+ // are valid, are in dep-lists.ts
+-const FAIL_BUILD_FOR_NEW_DEPENDENCIES: boolean = true;
++const FAIL_BUILD_FOR_NEW_DEPENDENCIES: boolean = false;
+ 
+ export function getDependencies(buildDir: string, applicationName: string, arch: ArchString, sysroot: string): string[] {
+ 	// Get the files for which we want to find dependencies.
+diff --git a/build/linux/rpm/dependencies-generator.js b/build/linux/rpm/dependencies-generator.js
+index 90cfca9..c92579e 100644
+--- a/build/linux/rpm/dependencies-generator.js
++++ b/build/linux/rpm/dependencies-generator.js
+@@ -16,7 +16,7 @@ const dep_lists_1 = require("./dep-lists");
+ // If true, we fail the build if there are new dependencies found during that task.
+ // The reference dependencies, which one has to update when the new dependencies
+ // are valid, are in dep-lists.ts
+-const FAIL_BUILD_FOR_NEW_DEPENDENCIES = true;
++const FAIL_BUILD_FOR_NEW_DEPENDENCIES = false;
+ function getDependencies(buildDir, applicationName, arch) {
+     // Get the files for which we want to find dependencies.
+     const nativeModulesPath = path.join(buildDir, 'resources', 'app', 'node_modules.asar.unpacked');
+diff --git a/build/linux/rpm/dependencies-generator.ts b/build/linux/rpm/dependencies-generator.ts
+index 4b84640..55429fb 100644
+--- a/build/linux/rpm/dependencies-generator.ts
++++ b/build/linux/rpm/dependencies-generator.ts
+@@ -16,7 +16,7 @@ import { ArchString } from './types';
+ // If true, we fail the build if there are new dependencies found during that task.
+ // The reference dependencies, which one has to update when the new dependencies
+ // are valid, are in dep-lists.ts
+-const FAIL_BUILD_FOR_NEW_DEPENDENCIES: boolean = true;
++const FAIL_BUILD_FOR_NEW_DEPENDENCIES: boolean = false;
+ 
+ export function getDependencies(buildDir: string, applicationName: string, arch: ArchString): string[] {
+ 	// Get the files for which we want to find dependencies.
+diff --git a/resources/linux/rpm/code.spec.template b/resources/linux/rpm/code.spec.template
+index 00ddb6f..cea0e97 100644
+--- a/resources/linux/rpm/code.spec.template
++++ b/resources/linux/rpm/code.spec.template
+@@ -72,3 +72,5 @@ update-mime-database /usr/share/mime &> /dev/null || :
+ /usr/share/pixmaps/@@ICON@@.png
+ /usr/share/bash-completion/completions/@@NAME@@
+ /usr/share/zsh/site-functions/_@@NAME@@
++
++%config(noreplace) /usr/share/@@NAME@@/resources/app/product.json
