@@ -96,3 +96,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
 
+      - if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        name: Release to WinGet
+        uses: vedantmgoyal2009/winget-releaser@latest
+        with:
+          identifier: VSCodium.VSCodium
+          release-tag: env.MS_TAG
+          installers-regex: '\.exe$' # only .exe files
+          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
