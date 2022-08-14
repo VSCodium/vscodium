@@ -3,7 +3,7 @@
 set -e
 
 # include common functions
-. ../utils.sh
+. ./utils.sh
 
 cp -rp src/* vscode/
 cp -f LICENSE vscode/LICENSE.txt
