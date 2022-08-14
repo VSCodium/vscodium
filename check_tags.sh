@@ -8,12 +8,31 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
 fi
 
 VERSIONS_REPO="${GITHUB_USERNAME:-"VSCodium"}/versions"
-https://github.com/${VERSIONS_REPO}.git
-https://raw.githubusercontent.com/${VERSIONS_REPO}/master/darwin/arm64/latest.json
 
 REPOSITORY="${GITHUB_REPOSITORY:-"VSCodium/vscodium"}"
-GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPOSITORY}/releases/tags/${RELEASE_VERSION}")
-VSCODIUM_ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
+GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPOSITORY}/releases/tags/latest")
+LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c '.tag_name' )
+
+if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+  if [ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]; then
+    echo "New VSCode version, new build"
+    export SHOULD_BUILD="yes"
+
+    VSCODIUM_ASSETS="null"
+  elif [[ "${NEW_RELEASE}" == "yes" ]]; then
+    echo "New release build"
+    export SHOULD_BUILD="yes"
+
+    VSCODIUM_ASSETS="null"
+  else
+    export RELEASE_VERSION="${LATEST_VERSION}"
+    echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
+
+    echo "Switch to release version: ${RELEASE_VERSION}"
+
+    VSCODIUM_ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
+  fi
+fi
 
 contains() {
   # add " to match the end of a string so any hashs won't be matched by mistake
