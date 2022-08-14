@@ -5,7 +5,7 @@ DEFAULT_OFF="'default': TelemetryConfiguration.OFF"
 TELEMETRY_CRASH_REPORTER="'telemetry.enableCrashReporter':"
 TELEMETRY_CONFIGURATION=" TelemetryConfiguration.ON"
 
-#include common functions
+# include common functions
 . ../utils.sh
 
 update_setting () {

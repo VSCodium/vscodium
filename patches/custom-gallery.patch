@@ -1,36 +1,25 @@
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index f822373..30a0a66 100644
+index 1ae8079..eb56045 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
-@@ -70,6 +70,7 @@ export interface IProductConfiguration {
- 
- 	readonly extensionsGallery?: {
+@@ -72,2 +72,3 @@ export interface IProductConfiguration {
  		readonly serviceUrl: string;
 +		readonly cacheUrl?: string;
  		readonly itemUrl: string;
- 		readonly publisherUrl: string;
- 		readonly resourceUrlTemplate: string;
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
 index 7e63a16..3bfeab8 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -4,11 +4,12 @@
-  *--------------------------------------------------------------------------------------------*/
- 
+@@ -6,3 +6,3 @@
  import { FileAccess } from 'vs/base/common/network';
 -import { globals } from 'vs/base/common/platform';
 +import { globals, isWindows } from 'vs/base/common/platform';
  import { env } from 'vs/base/common/process';
- import { IProductConfiguration } from 'vs/base/common/product';
- import { dirname, joinPath } from 'vs/base/common/resources';
+@@ -11,2 +11,3 @@ import { dirname, joinPath } from 'vs/base/common/resources';
  import { ISandboxConfiguration } from 'vs/base/parts/sandbox/common/sandboxTypes';
 +import { getUserDataPath } from 'vs/platform/environment/node/userDataPath';
  
- /**
-  * @deprecated You MUST use `IProductService` if possible.
-@@ -34,6 +35,32 @@ else if (typeof require?.__$__nodeRequire === 'function') {
- 	product = require.__$__nodeRequire(joinPath(rootPath, 'product.json').fsPath);
- 	const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string };
+@@ -36,2 +37,28 @@ else if (typeof require?.__$__nodeRequire === 'function') {
  
 +	// Merge user-customized product.json
 +	try {
@@ -59,11 +48,7 @@ index 7e63a16..3bfeab8 100644
 +	}
 +
  	// Running out of sources
- 	if (env['VSCODE_DEV']) {
- 		Object.assign(product, {
-@@ -44,6 +71,19 @@ else if (typeof require?.__$__nodeRequire === 'function') {
- 		});
- 	}
+@@ -46,2 +73,15 @@ else if (typeof require?.__$__nodeRequire === 'function') {
  
 +	// Set user-defined extension gallery
 +	const { serviceUrl, cacheUrl, itemUrl, controlUrl, recommendationsUrl } = product.extensionsGallery || {}
@@ -79,5 +64,3 @@ index 7e63a16..3bfeab8 100644
 +	})
 +
  	Object.assign(product, {
- 		version: pkg.version
- 	});

@@ -1,5 +1,22 @@
 #!/bin/bash
 
+if [[ -z "${RELEASE_VERSION}" ]]; then
+  git fetch --all
+  MS_TAG=$( git tag -l --sort=-version:refname | head -1 )
+  date=$( date +%Y%j )
+  export RELEASE_VERSION="${MS_TAG}.${date: -5}"
+else
+  if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+$ ]];
+  then
+    MS_TAG="${BASH_REMATCH[1]}"
+  else
+    echo "Bad RELEASE_VERSION: ${RELEASE_VERSION}"
+    exit 1
+  fi
+fi
+
+echo "Release version: ${RELEASE_VERSION}"
+
 mkdir -p vscode
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
@@ -41,4 +58,7 @@ cd ..
 if [[ ${GITHUB_ENV} ]]; then
   echo "MS_TAG=${MS_TAG}" >> "${GITHUB_ENV}"
   echo "MS_COMMIT=${MS_COMMIT}" >> "${GITHUB_ENV}"
+  echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
 fi
+
+. version.sh
