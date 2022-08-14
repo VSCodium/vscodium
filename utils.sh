@@ -20,11 +20,11 @@ replace () {
 if ! exists gsed; then
   if is_gnu_sed; then
     function gsed() {
-      sed -i -E "${1}" "${2}"
+      sed -i -E "$@"
     }
   else
     function gsed() {
-      sed -i '' -E "${1}" "${2}"
+      sed -i '' -E "$@"
     }
   fi
 fi
