@@ -97,11 +97,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
 
-      - if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-        name: Release to WinGet
-        uses: vedantmgoyal2009/winget-releaser@latest
-        with:
-          identifier: VSCodium.VSCodium
-          release-tag: env.MS_TAG
-          installers-regex: '\.exe$' # only .exe files
-          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+      # - name: Set MS_TAG as job output for release-winget job
+      #   if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+      #   run: echo "::set-output name=tagname::${{ env.MS_TAG }}"
+
+  # release-winget:
+  #   name: Release to WinGet
+  #   needs: windows
+  #   if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+  #   runs-on: windows-latest # action can only be run on windows
+  #   steps:
+  #     - name: Release to WinGet
+  #       uses: vedantmgoyal2009/winget-releaser@latest
+  #       with:
+  #         identifier: VSCodium.VSCodium
+  #         release-tag: ${{ needs.windows.outputs.tagname }}
+  #         installers-regex: '\.exe$' # only .exe files
+  #         token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
