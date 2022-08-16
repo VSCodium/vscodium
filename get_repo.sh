@@ -1,13 +1,15 @@
 #!/bin/bash
 
+set -e
+
 # git workaround
 if [[ "${CI_BUILD}" != "no" ]]; then
   git config --global --add safe.directory /__w/vscodium/vscodium
 fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
-  git fetch --all
-  MS_TAG=$( git tag -l --sort=-version:refname | head -1 )
+  UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/stable/lol)
+  export MS_TAG=$(echo "${UPDATE_INFO}" | jq -r '.name')
   date=$( date +%Y%j )
   export RELEASE_VERSION="${MS_TAG}.${date: -5}"
 else
