@@ -26,7 +26,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     echo "Building and moving DMG"
     pushd "VSCode-darwin-${VSCODE_ARCH}"
     npx create-dmg VSCodium.app ..
-    mv "../VSCodium ${RELEASE_VERSION}.dmg" "../artifacts/VSCodium.${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"
+    mv "../VSCodium ${MS_TAG}.dmg" "../artifacts/VSCodium.${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"
     popd
   fi
 
