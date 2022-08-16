@@ -2,6 +2,13 @@ name: windows_build
 
 on:
   workflow_dispatch:
+    inputs:
+      new_release:
+        type: choice
+        description: Force new Release
+        options:
+        - no
+        - yes
   schedule:
     - cron: '0 0 * * *'
   push:
@@ -50,7 +57,7 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_RELEASE: ${{ secrets.NEW_RELEASE }}
+          NEW_RELEASE: ${{ github.event.inputs.new_release }}
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
