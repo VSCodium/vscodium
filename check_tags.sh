@@ -11,7 +11,7 @@ VERSIONS_REPO="${GITHUB_USERNAME:-"VSCodium"}/versions"
 
 REPOSITORY="${GITHUB_REPOSITORY:-"VSCodium/vscodium"}"
 GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPOSITORY}/releases/latest" )
-LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c '.tag_name' )
+LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
 
 if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
   if [ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]; then

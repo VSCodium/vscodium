@@ -1,18 +1,20 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 2abc3f3..91724a5 100644
+index 2abc3f3..a3cbf2d 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -238,7 +238,7 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
- 		const sources = es.merge(src, extensions, extensionsCommonDependencies)
- 			.pipe(filter(['**', '!**/*.js.map'], { dot: true }));
+@@ -246,8 +246,9 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+ 		}
  
--		let version = packageJson.version;
-+		let version = packageJson.version.replace('+', '.');
- 		const quality = product.quality;
+ 		const name = product.nameShort;
++		const release = packageJson.release;
+ 		const packageJsonStream = gulp.src(['remote/package.json'], { base: 'remote' })
+-			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined }));
++			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined }));
  
- 		if (quality && quality !== 'stable') {
+ 		const date = new Date().toISOString();
+ 
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 28f8e52..c83a4e1 100644
+index 28f8e52..f17962d 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
 @@ -187,7 +187,7 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
@@ -20,12 +22,22 @@ index 28f8e52..c83a4e1 100644
  			.pipe(filter(['**', '!**/*.js.map'], { dot: true }));
  
 -		let version = packageJson.version;
-+		let version = packageJson.version.replace('+', '.');
++		let version = packageJson.version
  		const quality = product.quality;
  
  		if (quality && quality !== 'stable') {
+@@ -195,7 +195,8 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 		}
+ 
+ 		const name = product.nameShort;
+-		const packageJsonUpdates = { name, version };
++		const release = packageJson.release;
++		const packageJsonUpdates = { name, version, release };
+ 
+ 		// for linux url handling
+ 		if (platform === 'linux') {
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index 489d9cc..51db755 100644
+index 489d9cc..e9f00f3 100644
 --- a/build/gulpfile.vscode.linux.js
 +++ b/build/gulpfile.vscode.linux.js
 @@ -83,7 +83,7 @@ function prepareDebPackage(arch) {
@@ -33,7 +45,7 @@ index 489d9cc..51db755 100644
  				gulp.src('resources/linux/debian/control.template', { base: '.' })
  					.pipe(replace('@@NAME@@', product.applicationName))
 -					.pipe(replace('@@VERSION@@', packageJson.version + '-' + linuxPackageRevision))
-+					.pipe(replace('@@VERSION@@', packageJson.version.replace('+', '.')))
++					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  					.pipe(replace('@@ARCHITECTURE@@', debArch))
  					.pipe(replace('@@DEPENDS@@', dependencies.join(', ')))
  					.pipe(replace('@@RECOMMENDS@@', debianRecommendedDependencies.join(', ')))
@@ -43,7 +55,7 @@ index 489d9cc..51db755 100644
  			.pipe(replace('@@ICON@@', product.linuxIconName))
 -			.pipe(replace('@@VERSION@@', packageJson.version))
 -			.pipe(replace('@@RELEASE@@', linuxPackageRevision))
-+			.pipe(replace('@@VERSION@@', packageJson.version.replace('+', '.')))
++			.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  			.pipe(replace('@@ARCHITECTURE@@', rpmArch))
  			.pipe(replace('@@LICENSE@@', product.licenseName))
  			.pipe(replace('@@QUALITY@@', product.quality || '@@QUALITY@@'))
@@ -52,25 +64,12 @@ index 489d9cc..51db755 100644
  		const snapcraft = gulp.src('resources/linux/snap/snapcraft.yaml', { base: '.' })
  			.pipe(replace('@@NAME@@', product.applicationName))
 -			.pipe(replace('@@VERSION@@', commit.substr(0, 8)))
-+			.pipe(replace('@@VERSION@@', packageJson.version.replace('+', '.')))
++			.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  			// Possible run-on values https://snapcraft.io/docs/architectures
  			.pipe(replace('@@ARCHITECTURE@@', arch === 'x64' ? 'amd64' : arch))
  			.pipe(rename('snap/snapcraft.yaml'));
-diff --git a/build/gulpfile.vscode.web.js b/build/gulpfile.vscode.web.js
-index 4c1259c..0d41560 100644
---- a/build/gulpfile.vscode.web.js
-+++ b/build/gulpfile.vscode.web.js
-@@ -28,7 +28,7 @@ const WEB_FOLDER = path.join(REPO_ROOT, 'remote', 'web');
- 
- const commit = util.getVersion(REPO_ROOT);
- const quality = product.quality;
--const version = (quality && quality !== 'stable') ? `${packageJson.version}-${quality}` : packageJson.version;
-+const version = (quality && quality !== 'stable') ? `${packageJson.version.replace('+', '.')}-${quality}` : packageJson.version.replace('+', '.');
- 
- const vscodeWebResourceIncludes = [
- 	// Workbench
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
-index 81ba509..a445749 100644
+index 81ba509..43f5377 100644
 --- a/build/gulpfile.vscode.win32.js
 +++ b/build/gulpfile.vscode.win32.js
 @@ -91,8 +91,8 @@ function buildWin32Setup(arch, target) {
@@ -79,8 +78,8 @@ index 81ba509..a445749 100644
  			DirName: product.win32DirName,
 -			Version: pkg.version,
 -			RawVersion: pkg.version.replace(/-\w+$/, ''),
-+			Version: pkg.version.replace('+', '.'),
-+			RawVersion: pkg.version.replace(/-\w+$/, '').replace('+', '.'),
++			Version: `${pkg.version}.${pkg.release}`,
++			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
  			ExeBasename: product.nameShort,
  			RegValueName: product.win32RegValueName,
@@ -96,89 +95,92 @@ index 00ddb6f..814c964 100644
  Summary:  Code editing. Redefined.
  Group:    Development/Tools
  Vendor:   Microsoft Corporation
-diff --git a/src/vs/platform/extensionManagement/common/extensionGalleryService.ts b/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
-index 3515dea..c0aa528 100644
---- a/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
-+++ b/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
-@@ -23,7 +23,7 @@ import { IFileService } from 'vs/platform/files/common/files';
- import { ILogService } from 'vs/platform/log/common/log';
- import { IProductService } from 'vs/platform/product/common/productService';
- import { asJson, asTextOrError, IRequestService, isSuccess } from 'vs/platform/request/common/request';
--import { resolveMarketplaceHeaders } from 'vs/platform/externalServices/common/marketplace';
-+import { getCoreVersion, resolveMarketplaceHeaders } from 'vs/platform/externalServices/common/marketplace';
- import { IStorageService } from 'vs/platform/storage/common/storage';
- import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
+index 1ae8079..0dad6ac 100644
+--- a/src/vs/base/common/product.ts
++++ b/src/vs/base/common/product.ts
+@@ -32,6 +32,7 @@ export type ExtensionVirtualWorkspaceSupport = {
  
-@@ -988,7 +988,8 @@ abstract class AbstractExtensionGalleryService implements IExtensionGalleryServi
- 			return undefined;
- 		}
+ export interface IProductConfiguration {
+ 	readonly version: string;
++	readonly release: string;
+ 	readonly date?: string;
+ 	readonly quality?: string;
+ 	readonly commit?: string;
+diff --git a/src/vs/platform/diagnostics/node/diagnosticsService.ts b/src/vs/platform/diagnostics/node/diagnosticsService.ts
+index e1c60a3..a12d52c 100644
+--- a/src/vs/platform/diagnostics/node/diagnosticsService.ts
++++ b/src/vs/platform/diagnostics/node/diagnosticsService.ts
+@@ -237,7 +237,7 @@ export class DiagnosticsService implements IDiagnosticsService {
  
--		const url = isWeb ? this.api(`/itemName/${publisher}.${name}/version/${version}/statType/${type === StatisticType.Install ? '1' : '3'}/vscodewebextension`) : this.api(`/publishers/${publisher}/extensions/${name}/${version}/stats?statType=${type}`);
-+		const coreVersion = getCoreVersion(version);
-+		const url = isWeb ? this.api(`/itemName/${publisher}.${name}/version/${coreVersion}/statType/${type === StatisticType.Install ? '1' : '3'}/vscodewebextension`) : this.api(`/publishers/${publisher}/extensions/${name}/${coreVersion}/stats?statType=${type}`);
- 		const Accept = isWeb ? 'api-version=6.1-preview.1' : '*/*;api-version=4.0-preview.1';
- 
- 		const commonHeaders = await this.commonHeadersPromise;
-diff --git a/src/vs/platform/extensions/common/extensionValidator.ts b/src/vs/platform/extensions/common/extensionValidator.ts
-index 0a5e7d2..e453393 100644
---- a/src/vs/platform/extensions/common/extensionValidator.ts
-+++ b/src/vs/platform/extensions/common/extensionValidator.ts
-@@ -9,6 +9,7 @@ import { URI } from 'vs/base/common/uri';
- import * as nls from 'vs/nls';
- import * as semver from 'vs/base/common/semver/semver';
- import { IExtensionManifest } from 'vs/platform/extensions/common/extensions';
-+import { getCoreVersion } from 'vs/platform/externalServices/common/marketplace';
- 
- export interface IParsedVersion {
- 	hasCaret: boolean;
-@@ -371,7 +372,8 @@ function isVersionValid(currentVersion: string, date: ProductDate, requestedVers
- 		}
- 	}
- 
--	if (!isValidVersion(currentVersion, date, desiredVersion)) {
-+	const coreVersion = getCoreVersion(currentVersion);
-+	if (!isValidVersion(coreVersion, date, desiredVersion)) {
- 		notices.push(nls.localize('versionMismatch', "Extension is not compatible with Code {0}. Extension requires: {1}.", currentVersion, requestedVersion));
- 		return false;
- 	}
-diff --git a/src/vs/platform/externalServices/common/marketplace.ts b/src/vs/platform/externalServices/common/marketplace.ts
-index 5923e1c..d70c59f 100644
---- a/src/vs/platform/externalServices/common/marketplace.ts
-+++ b/src/vs/platform/externalServices/common/marketplace.ts
-@@ -13,6 +13,10 @@ import { IStorageService } from 'vs/platform/storage/common/storage';
- import { ITelemetryService, TelemetryLevel } from 'vs/platform/telemetry/common/telemetry';
- import { getTelemetryLevel, supportsTelemetry } from 'vs/platform/telemetry/common/telemetryUtils';
- 
-+export function getCoreVersion(version: string): string {
-+	return version.replace(/\.[0-9]+$/, '');
-+}
-+
- export async function resolveMarketplaceHeaders(version: string,
- 	productService: IProductService,
- 	environmentService: IEnvironmentService,
-@@ -20,9 +24,10 @@ export async function resolveMarketplaceHeaders(version: string,
- 	fileService: IFileService,
- 	storageService: IStorageService | undefined,
- 	telemetryService: ITelemetryService): Promise<IHeaders> {
-+	const coreVersion = getCoreVersion(version);
- 	const headers: IHeaders = {
--		'X-Market-Client-Id': `VSCode ${version}`,
--		'User-Agent': `VSCode ${version} (${productService.nameShort})`
-+		'X-Market-Client-Id': `VSCode ${coreVersion}`,
-+		'User-Agent': `VSCode ${coreVersion} (${productService.nameShort})`
- 	};
- 	const uuid = await getServiceMachineId(environmentService, fileService, storageService);
- 	const { sessionId } = await telemetryService.getTelemetryInfo();
+ 	private formatEnvironment(info: IMainProcessInfo): string {
+ 		const output: string[] = [];
+-		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
++		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} ${this.productService.release || 'Release unknown'} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
+ 		output.push(`OS Version:       ${osLib.type()} ${osLib.arch()} ${osLib.release()}`);
+ 		const cpus = osLib.cpus();
+ 		if (cpus && cpus.length > 0) {
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 7e63a16..767f4f6 100644
+index 7e63a16..74d1f26 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -45,7 +45,7 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+@@ -32,7 +32,7 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+ 	const rootPath = dirname(FileAccess.asFileUri('', require));
+ 
+ 	product = require.__$__nodeRequire(joinPath(rootPath, 'product.json').fsPath);
+-	const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string };
++	const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string, release: string };
+ 
+ 	// Running out of sources
+ 	if (env['VSCODE_DEV']) {
+@@ -45,7 +45,8 @@ else if (typeof require?.__$__nodeRequire === 'function') {
  	}
  
  	Object.assign(product, {
 -		version: pkg.version
-+		version: pkg.version.replace('+', '.')
++		version: pkg.version,
++		release: pkg.release
  	});
  }
  
+diff --git a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
+index ec4ff95..f721052 100644
+--- a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
++++ b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
+@@ -144,7 +144,8 @@ export class BrowserDialogHandler implements IDialogHandler {
+ 	async about(): Promise<void> {
+ 		const detailString = (useAgo: boolean): string => {
+ 			return localize('aboutDetail',
+-				"Version: {0}\nCommit: {1}\nDate: {2}\nBrowser: {3}",
++				"Version: {0}\nRelease: {1}\nCommit: {2}\nDate: {3}\nBrowser: {4}",
++				this.productService.release || 'Unknown',
+ 				this.productService.version || 'Unknown',
+ 				this.productService.commit || 'Unknown',
+ 				this.productService.date ? `${this.productService.date}${useAgo ? ' (' + fromNow(new Date(this.productService.date), true) + ')' : ''}` : 'Unknown',
+diff --git a/src/vs/workbench/contrib/issue/browser/issueService.ts b/src/vs/workbench/contrib/issue/browser/issueService.ts
+index dc7430b..23def01 100644
+--- a/src/vs/workbench/contrib/issue/browser/issueService.ts
++++ b/src/vs/workbench/contrib/issue/browser/issueService.ts
+@@ -65,6 +65,7 @@ export class WebIssueService implements IWorkbenchIssueService {
+ 		return `ADD ISSUE DESCRIPTION HERE
+ 
+ Version: ${this.productService.version}
++Release: ${this.productService.release ?? 'unknown'}
+ Commit: ${this.productService.commit ?? 'unknown'}
+ User Agent: ${userAgent ?? 'unknown'}
+ Embedder: ${this.productService.embedderIdentifier ?? 'unknown'}
+diff --git a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
+index a4728e7..d1a8b94 100644
+--- a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
++++ b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
+@@ -167,8 +167,9 @@ export class NativeDialogHandler implements IDialogHandler {
+ 
+ 		const detailString = (useAgo: boolean): string => {
+ 			return localize({ key: 'aboutDetail', comment: ['Electron, Chromium, Node.js and V8 are product names that need no translation'] },
+-				"Version: {0}\nCommit: {1}\nDate: {2}\nElectron: {3}\nChromium: {4}\nNode.js: {5}\nV8: {6}\nOS: {7}",
++				"Version: {0}\nRelease: {1}\nCommit: {2}\nDate: {3}\nElectron: {4}\nChromium: {5}\nNode.js: {6}\nV8: {7}\nOS: {8}",
+ 				version,
++				this.productService.release || 'Unknown',
+ 				this.productService.commit || 'Unknown',
+ 				this.productService.date ? `${this.productService.date}${useAgo ? ' (' + fromNow(new Date(this.productService.date), true) + ')' : ''}` : 'Unknown',
+ 				process.versions['electron'],
