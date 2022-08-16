@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm -rf VSCode*
-rm -rf vscode
+rm -rf vscode*
 
 UNAME_ARCH=$( uname -m )
 
