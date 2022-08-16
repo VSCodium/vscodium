@@ -1,3 +1,29 @@
+diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
+index 2abc3f3..91724a5 100644
+--- a/build/gulpfile.reh.js
++++ b/build/gulpfile.reh.js
+@@ -238,7 +238,7 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+ 		const sources = es.merge(src, extensions, extensionsCommonDependencies)
+ 			.pipe(filter(['**', '!**/*.js.map'], { dot: true }));
+ 
+-		let version = packageJson.version;
++		let version = packageJson.version.replace('+', '.');
+ 		const quality = product.quality;
+ 
+ 		if (quality && quality !== 'stable') {
+diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
+index 28f8e52..c83a4e1 100644
+--- a/build/gulpfile.vscode.js
++++ b/build/gulpfile.vscode.js
+@@ -187,7 +187,7 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 		const sources = es.merge(src, extensions)
+ 			.pipe(filter(['**', '!**/*.js.map'], { dot: true }));
+ 
+-		let version = packageJson.version;
++		let version = packageJson.version.replace('+', '.');
+ 		const quality = product.quality;
+ 
+ 		if (quality && quality !== 'stable') {
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
 index 489d9cc..51db755 100644
 --- a/build/gulpfile.vscode.linux.js
@@ -116,7 +142,7 @@ index 0a5e7d2..e453393 100644
  		return false;
  	}
 diff --git a/src/vs/platform/externalServices/common/marketplace.ts b/src/vs/platform/externalServices/common/marketplace.ts
-index 5923e1c..a1c9db8 100644
+index 5923e1c..d70c59f 100644
 --- a/src/vs/platform/externalServices/common/marketplace.ts
 +++ b/src/vs/platform/externalServices/common/marketplace.ts
 @@ -13,6 +13,10 @@ import { IStorageService } from 'vs/platform/storage/common/storage';

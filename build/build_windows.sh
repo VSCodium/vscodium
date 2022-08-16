@@ -3,7 +3,7 @@
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build_windows.sh
 
 rm -rf VSCode*
-rm -rf vscode
+rm -rf vscode*
 rm -rf build/windows/msi/releasedir
 
 . get_repo.sh
