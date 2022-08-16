@@ -80,13 +80,13 @@ npm install -g yarn
 
 cd /root/vscodium
 
-./get_repo.sh
+. get_repo.sh
 
 export SHOULD_BUILD=yes
 export OS_NAME=linux
 export VSCODE_ARCH=x64
 
-./build.sh
+. build.sh
 ```
 
 ### <a id="build-docker-arm32"></a>ARM 32bits
@@ -107,7 +107,7 @@ sudo apt-get install -y nodejs desktop-file-utils
 
 cd /root/vscodium
 
-./get_repo.sh
+. get_repo.sh
 
 export SHOULD_BUILD=yes
 export OS_NAME=linux
@@ -115,7 +115,7 @@ export VSCODE_ARCH=armhf
 export npm_config_arch=armv7l
 export npm_config_force_process_config="true"
 
-./build.sh
+. build.sh
 ```
 
 ## <a id="patch-update-process"></a>Patch Update Process
