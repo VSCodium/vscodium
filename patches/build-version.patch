@@ -107,6 +107,32 @@ index 1ae8079..0dad6ac 100644
  	readonly date?: string;
  	readonly quality?: string;
  	readonly commit?: string;
+diff --git a/src/vs/code/electron-sandbox/issue/issueReporterMain.ts b/src/vs/code/electron-sandbox/issue/issueReporterMain.ts
+index 046cb39..3271b6c 100644
+--- a/src/vs/code/electron-sandbox/issue/issueReporterMain.ts
++++ b/src/vs/code/electron-sandbox/issue/issueReporterMain.ts
+@@ -75,7 +75,7 @@ export class IssueReporter extends Disposable {
+ 		this.issueReporterModel = new IssueReporterModel({
+ 			issueType: configuration.data.issueType || IssueType.Bug,
+ 			versionInfo: {
+-				vscodeVersion: `${configuration.product.nameShort} ${!!configuration.product.darwinUniversalAssetId ? `${configuration.product.version} (Universal)` : configuration.product.version} (${configuration.product.commit || 'Commit unknown'}, ${configuration.product.date || 'Date unknown'})`,
++				vscodeVersion: `${configuration.product.nameShort} ${!!configuration.product.darwinUniversalAssetId ? `${configuration.product.version} (Universal)` : configuration.product.version} ${configuration.product.release || 'Release unknown'} (${configuration.product.commit || 'Commit unknown'}, ${configuration.product.date || 'Date unknown'})`,
+ 				os: `${this.configuration.os.type} ${this.configuration.os.arch} ${this.configuration.os.release}${isLinuxSnap ? ' snap' : ''}`
+ 			},
+ 			extensionsDisabled: !!configuration.disableExtensions,
+diff --git a/src/vs/code/electron-sandbox/issue/issueReporterModel.ts b/src/vs/code/electron-sandbox/issue/issueReporterModel.ts
+index b0cc736..035c5cb 100644
+--- a/src/vs/code/electron-sandbox/issue/issueReporterModel.ts
++++ b/src/vs/code/electron-sandbox/issue/issueReporterModel.ts
+@@ -74,7 +74,7 @@ Type: <b>${this.getIssueTypeTitle()}</b>
+ 
+ ${this._data.issueDescription}
+ ${this.getExtensionVersion()}
+-VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
++VSCodium version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
+ OS version: ${this._data.versionInfo && this._data.versionInfo.os}
+ Modes:${modes.length ? ' ' + modes.join(', ') : ''}
+ ${this.getRemoteOSes()}
 diff --git a/src/vs/platform/diagnostics/node/diagnosticsService.ts b/src/vs/platform/diagnostics/node/diagnosticsService.ts
 index e1c60a3..a12d52c 100644
 --- a/src/vs/platform/diagnostics/node/diagnosticsService.ts
