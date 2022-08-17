@@ -69,7 +69,7 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
   elif [[ "${OS_NAME}" == "windows" ]]; then
 
     # windows-arm64
-    if [[ ${VSCODE_ARCH} == "arm64" ]]; then
+    if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
       if [[ -z $( contains "VSCodiumSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
         echo "Building on Windows arm64 because we have no system setup"
         export SHOULD_BUILD="yes"
@@ -98,7 +98,7 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
       fi
 
     # windows-ia32
-    elif [[ ${VSCODE_ARCH} == "ia32" ]]; then
+    elif [[ "${VSCODE_ARCH}" == "ia32" ]]; then
       if [[ -z $( contains "VSCodiumSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
         echo "Building on Windows ia32 because we have no system setup"
         export SHOULD_BUILD="yes"
@@ -196,7 +196,7 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
   elif [[ "${OS_NAME}" == "linux" ]]; then
 
     # linux-arm64
-    if [[ ${VSCODE_ARCH} == "arm64" ]]; then
+    if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
       if [[ -z $( contains "arm64.deb" ) ]]; then
         echo "Building on Linux arm64 because we have no DEB"
         export SHOULD_BUILD="yes"
@@ -232,7 +232,7 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
       fi
 
     # linux-armhf
-    elif [[ ${VSCODE_ARCH} == "armhf" ]]; then
+    elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
       if [[ -z $( contains "armhf.deb" ) ]]; then
         echo "Building on Linux arm because we have no DEB"
         export SHOULD_BUILD="yes"
@@ -310,6 +310,12 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
     fi
   fi
 else
+  if [[ "${OS_NAME}" == "linux" ]]; then
+    if [[ "${VSCODE_ARCH}" != "x64" ]]; then
+      export SHOULD_BUILD_APPIMAGE="no"
+    fi
+  fi
+
   echo "Release assets do not exist at all, continuing build"
   export SHOULD_BUILD="yes"
 fi
