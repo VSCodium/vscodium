@@ -19,7 +19,7 @@ if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
     export SHOULD_BUILD="yes"
 
     VSCODIUM_ASSETS="null"
-  elif [[ "${NEW_RELEASE}" == "yes" ]]; then
+  elif [[ "${NEW_RELEASE}" == "true" ]]; then
     echo "New release build"
     export SHOULD_BUILD="yes"
 
