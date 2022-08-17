@@ -13,6 +13,10 @@ fi
 
 echo "-- VSCODE_ARCH: ${VSCODE_ARCH}"
 
+if [[ "${1}" == "insider" ]]; then
+  export INSIDER="yes"
+fi
+
 . get_repo.sh
 
 SHOULD_BUILD=yes CI_BUILD=no OS_NAME=osx . build.sh

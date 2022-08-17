@@ -99,8 +99,8 @@ cat product.json
 mv package.json package.json.bak
 package_json_changes="setpath(["\""version"\""]; "\""${RELEASE_VERSION}"\"") | setpath(["\""release"\""]; "\""${RELEASE_VERSION}"\"")"
 cat package.json.bak | jq "${package_json_changes}" > package.json
-gsed -i -E 's/"version": "(.*)\.([0-9]+)"/"version": "\1"/' package.json
-gsed -i -E 's/"release": "(.*)\.([0-9]+)"/"release": "\2"/' package.json
+gsed -i -E 's/"version": "(.*)\.([0-9]+)(-insider)?"/"version": "\1\3"/' package.json
+gsed -i -E 's/"release": "(.*)\.([0-9]+)(-insider)?"/"release": "\2"/' package.json
 
 ../undo_telemetry.sh
 

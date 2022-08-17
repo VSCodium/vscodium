@@ -8,10 +8,21 @@ if [[ "${CI_BUILD}" != "no" ]]; then
 fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
-  UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/stable/lol)
+  if [ "${INSIDER}" == "yes" ]; then
+    UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/insider/lol)
+  else
+    UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/stable/lol)
+  fi
+
+  export MS_COMMIT=$(echo "${UPDATE_INFO}" | jq -r '.version')
   export MS_TAG=$(echo "${UPDATE_INFO}" | jq -r '.name')
   date=$( date +%Y%j )
-  export RELEASE_VERSION="${MS_TAG}.${date: -5}"
+
+  if [ "${INSIDER}" == "yes" ]; then
+    export RELEASE_VERSION="${MS_TAG/-insider/}.${date: -5}-insider"
+  else
+    export RELEASE_VERSION="${MS_TAG}.${date: -5}"
+  fi
 else
   if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+$ ]];
   then
@@ -31,15 +42,15 @@ git init -q
 git remote add origin https://github.com/Microsoft/vscode.git
 
 # figure out latest tag by calling MS update API
-if [ "${INSIDER}" == "1" ]; then
-  UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/insider/lol)
+if [[ -z "${MS_TAG}" ]]; then
+  if [ "${INSIDER}" == "yes" ]; then
+    UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/insider/lol)
+  else
+    UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/stable/lol)
+  fi
   export MS_COMMIT=$(echo "${UPDATE_INFO}" | jq -r '.version')
   export MS_TAG=$(echo "${UPDATE_INFO}" | jq -r '.name')
-elif [[ -z "${MS_TAG}" ]]; then
-  UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/stable/lol)
-  export MS_COMMIT=$(echo "${UPDATE_INFO}" | jq -r '.version')
-  export MS_TAG=$(echo "${UPDATE_INFO}" | jq -r '.name')
-else
+elif [[ -z "${MS_COMMIT}" ]]; then
   reference=$( git ls-remote --tags | grep -x ".*refs\/tags\/${MS_TAG}" | head -1 )
 
   if [[ -z "${reference}" ]]; then

@@ -3,6 +3,10 @@
 rm -rf VSCode*
 rm -rf vscode*
 
-./get_repo.sh
+if [[ "${1}" == "insider" ]]; then
+  export INSIDER="yes"
+fi
 
-SHOULD_BUILD=yes CI_BUILD=no OS_NAME=linux VSCODE_ARCH=x64 ./build.sh
+. get_repo.sh
+
+SHOULD_BUILD=yes CI_BUILD=no OS_NAME=linux VSCODE_ARCH=x64 . build.sh

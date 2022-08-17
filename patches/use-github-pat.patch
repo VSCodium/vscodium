@@ -1,10 +1,8 @@
 diff --git a/extensions/github-authentication/src/githubServer.ts b/extensions/github-authentication/src/githubServer.ts
-index c366ff3..75f32da 100644
+index 1614794..c6d54f6 100644
 --- a/extensions/github-authentication/src/githubServer.ts
 +++ b/extensions/github-authentication/src/githubServer.ts
-@@ -3,27 +3,13 @@
-  *  Licensed under the MIT License. See License.txt in the project root for license information.
-  *--------------------------------------------------------------------------------------------*/
+@@ -5,7 +5,4 @@
  
 -import * as nls from 'vscode-nls';
  import * as vscode from 'vscode';
@@ -12,7 +10,7 @@ index c366ff3..75f32da 100644
 -import { v4 as uuid } from 'uuid';
 -import { PromiseAdapter, promiseFromEvent } from './common/utils';
  import { ExperimentationTelemetry } from './experimentationService';
- import { AuthProviderType } from './github';
+@@ -13,15 +10,4 @@ import { AuthProviderType } from './github';
  import { Log } from './common/logger';
 -import { isSupportedEnvironment } from './common/env';
 -import { LoopbackAuthServer } from './authServer';
@@ -29,13 +27,8 @@ index c366ff3..75f32da 100644
 -const REDIRECT_URL_INSIDERS = 'https://insiders.vscode.dev/redirect';
 +const NETWORK_ERROR = 'network error';
  
- class UriEventHandler extends vscode.EventEmitter<vscode.Uri> implements vscode.UriHandler {
- 	constructor(private readonly Logger: Log) {
-@@ -43,14 +29,6 @@ export interface IGitHubServer extends vscode.Disposable {
- 	friendlyName: string;
- 	type: AuthProviderType;
- }
--
+@@ -46,9 +32,2 @@ export interface IGitHubServer extends vscode.Disposable {
+ 
 -interface IGitHubDeviceCodeResponse {
 -	device_code: string;
 -	user_code: string;
@@ -44,11 +37,7 @@ index c366ff3..75f32da 100644
 -}
 -
  async function getScopes(token: string, serverUri: vscode.Uri, logger: Log): Promise<string[]> {
- 	try {
- 		logger.info('Getting token scopes...');
-@@ -118,23 +96,11 @@ export class GitHubServer implements IGitHubServer {
- 	friendlyName = 'GitHub';
- 	type = AuthProviderType.github;
+@@ -120,19 +99,7 @@ export class GitHubServer implements IGitHubServer {
  
 -	private _pendingNonces = new Map<string, string[]>();
 -	private _codeExchangePromises = new Map<string, { promise: Promise<string>; cancel: vscode.EventEmitter<void> }>();
@@ -69,11 +58,9 @@ index c366ff3..75f32da 100644
 -			return redirectUri;
 -		});
  	}
+@@ -152,60 +119,9 @@ export class GitHubServer implements IGitHubServer {
  
- 	dispose() {
-@@ -152,181 +118,17 @@ export class GitHubServer implements IGitHubServer {
- 
- 		// Used for showing a friendlier message to the user when the explicitly cancel a flow.
+-		// Used for showing a friendlier message to the user when the explicitly cancel a flow.
  		let userCancelled: boolean | undefined;
 -		const yes = localize('yes', "Yes");
 -		const no = localize('no', "No");
@@ -103,7 +90,7 @@ index c366ff3..75f32da 100644
 -				userCancelled = e.message ?? e === 'User Cancelled';
 -			}
 -		}
--
+ 
 -		// Starting a local server isn't supported in web
 -		if (vscode.env.uiKind === vscode.UIKind.Desktop) {
 -			try {
@@ -114,7 +101,7 @@ index c366ff3..75f32da 100644
 -				userCancelled = e.message ?? e === 'User Cancelled';
 -			}
 -		}
- 
+-
 -		if (this._supportDeviceCodeFlow) {
 -			try {
 -				await promptToContinue();
@@ -137,9 +124,7 @@ index c366ff3..75f32da 100644
 +			this._logger.error(e);
 +			userCancelled = e.message ?? e === 'User Cancelled';
  		}
- 
- 		throw new Error(userCancelled ? 'Cancelled' : 'No auth flow succeeded.');
- 	}
+@@ -215,117 +131,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async doLoginWithoutLocalServer(scopes: string, nonce: string, callbackUri: vscode.Uri): Promise<string> {
 -		this._logger.info(`Trying without local server... (${scopes})`);
@@ -171,7 +156,7 @@ index c366ff3..75f32da 100644
 -			try {
 -				return await Promise.race([
 -					codeExchangePromise.promise,
--					new Promise<string>((_, reject) => setTimeout(() => reject('Cancelled'), 60000)),
+-					new Promise<string>((_, reject) => setTimeout(() => reject('Timed out'), 300_000)), // 5min timeout
 -					promiseFromEvent<any, any>(token.onCancellationRequested, (_, __, reject) => { reject('User Cancelled'); }).promise
 -				]);
 -			} finally {
@@ -204,7 +189,7 @@ index c366ff3..75f32da 100644
 -				vscode.env.openExternal(vscode.Uri.parse(`http://127.0.0.1:${port}/signin?nonce=${encodeURIComponent(server.nonce)}`));
 -				const { code } = await Promise.race([
 -					server.waitForOAuthResponse(),
--					new Promise<any>((_, reject) => setTimeout(() => reject('Cancelled'), 60000)),
+-					new Promise<any>((_, reject) => setTimeout(() => reject('Timed out'), 300_000)), // 5min timeout
 -					promiseFromEvent<any, any>(token.onCancellationRequested, (_, __, reject) => { reject('User Cancelled'); }).promise
 -				]);
 -				codeToExchange = code;
@@ -255,12 +240,9 @@ index c366ff3..75f32da 100644
 -
 -		return await this.waitForDeviceCodeAccessToken(json);
 -	}
- 
+-
  	private async doLoginWithPat(scopes: string): Promise<string> {
- 		this._logger.info(`Trying to retrieve PAT... (${scopes})`);
-@@ -351,118 +153,6 @@ export class GitHubServer implements IGitHubServer {
- 		return token;
- 	}
+@@ -353,114 +154,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async waitForDeviceCodeAccessToken(
 -		json: IGitHubDeviceCodeResponse,
@@ -375,28 +357,20 @@ index c366ff3..75f32da 100644
 -	}
 -
  	private getServerUri(path: string = '') {
- 		const apiUri = vscode.Uri.parse('https://api.github.com');
- 		return vscode.Uri.parse(`${apiUri.scheme}://${apiUri.authority}${path}`);
 diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-index 36647e6..55e722b 100644
+index d5f0967..ea256a0 100644
 --- a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
 +++ b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-@@ -271,7 +271,7 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
- 			}
- 		});
+@@ -287,3 +287,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
  
 -		if (providers.length && !menus.length) {
 +		if (!menus.length) {
  			const noAccountsAvailableAction = disposables.add(new Action('noAccountsAvailable', localize('noAccounts', "You are not signed in to any accounts"), undefined, false));
- 			menus.push(noAccountsAvailableAction);
- 		}
 diff --git a/src/vs/workbench/services/authentication/browser/authenticationService.ts b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-index f543021..ad40bc3 100644
+index 6fe923a..9eb0b0c 100644
 --- a/src/vs/workbench/services/authentication/browser/authenticationService.ts
 +++ b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-@@ -272,16 +272,6 @@ export class AuthenticationService extends Disposable implements IAuthentication
- 				this.removeAccessRequest(id, extensionId);
- 			});
+@@ -275,12 +275,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
  		}
 -
 -		if (!this._authenticationProviders.size) {
@@ -409,5 +383,3 @@ index f543021..ad40bc3 100644
 -			});
 -		}
  	}
- 
- 	async sessionsUpdate(id: string, event: AuthenticationSessionsChangeEvent): Promise<void> {

@@ -13,7 +13,7 @@ for file in ../patches/*.patch; do
       echo failed to apply patch "${file}"
       git apply --reject "${file}"
       read -p "Press any key when the conflict have been resolved..." -n1 -s
-      git diff > "${file}"
+      git diff -U1 > "${file}"
     fi
     git add .
     git reset -q --hard HEAD
