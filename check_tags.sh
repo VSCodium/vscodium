@@ -310,7 +310,11 @@ if [ "${VSCODIUM_ASSETS}" != "null" ]; then
     fi
   fi
 else
-  if [[ "${OS_NAME}" == "linux" ]]; then
+  if [[ "${OS_NAME}" == "windows" ]]; then
+    if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
+      export SHOULD_BUILD_REH="no"
+    fi
+  elif [[ "${OS_NAME}" == "linux" ]]; then
     if [[ "${VSCODE_ARCH}" != "x64" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
     fi
