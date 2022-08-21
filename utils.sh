@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#All common functions can be added to this file
+# All common functions can be added to this file
 
 exists() { type -t "$1" > /dev/null 2>&1; }
 

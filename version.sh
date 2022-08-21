@@ -1,10 +1,6 @@
 #!/bin/bash
 
-set -e
-
 if [[ -z "${BUILD_SOURCEVERSION}" ]]; then
-
-    npm install -g checksum
 
     vscodium_hash=$( git rev-parse HEAD )
 
@@ -12,7 +8,13 @@ if [[ -z "${BUILD_SOURCEVERSION}" ]]; then
     vscode_hash=$( git rev-parse HEAD )
     cd ..
 
-    export BUILD_SOURCEVERSION=$( echo "${vscodium_hash}:${vscode_hash}" | checksum )
+    if type -t "sha1sum" > /dev/null 2>&1; then
+      export BUILD_SOURCEVERSION=$( echo "${vscodium_hash}:${vscode_hash}" | sha1sum | cut -d' ' -f1 )
+    else
+      npm install -g checksum
+
+      export BUILD_SOURCEVERSION=$( echo "${vscodium_hash}:${vscode_hash}" | checksum )
+    fi
 
     echo "Build version: ${BUILD_SOURCEVERSION}"
 
