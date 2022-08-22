@@ -8,18 +8,26 @@ if [[ "${CI_BUILD}" != "no" ]]; then
 fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
-  if [ "${INSIDER}" == "yes" ]; then
-    UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/insider/lol)
+  if [[ "${INSIDER}" == "yes" ]]; then
+    if [[ "${VSCODE_LATEST}" == "yes" ]] || [[ ! -f "insider.json" ]]; then
+      UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/insider/lol )
+    else
+      export MS_COMMIT=$(jq -r '.commit' insider.json)
+      export MS_TAG=$(jq -r '.tag' insider.json)
+    fi
   else
-    UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/stable/lol)
+    UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/stable/lol )
   fi
 
-  export MS_COMMIT=$(echo "${UPDATE_INFO}" | jq -r '.version')
-  export MS_TAG=$(echo "${UPDATE_INFO}" | jq -r '.name')
+  if [[ -z "${MS_COMMIT}" ]]; then
+    export MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
+    export MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
+  fi
+
   date=$( date +%Y%j )
 
-  if [ "${INSIDER}" == "yes" ]; then
-    export RELEASE_VERSION="${MS_TAG/-insider/}.${date: -5}-insider"
+  if [[ "${INSIDER}" == "yes" ]]; then
+    export RELEASE_VERSION="${MS_TAG/\-insider/}.${date: -5}-insider"
   else
     export RELEASE_VERSION="${MS_TAG}.${date: -5}"
   fi
@@ -43,13 +51,13 @@ git remote add origin https://github.com/Microsoft/vscode.git
 
 # figure out latest tag by calling MS update API
 if [[ -z "${MS_TAG}" ]]; then
-  if [ "${INSIDER}" == "yes" ]; then
-    UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/insider/lol)
+  if [[ "${INSIDER}" == "yes" ]]; then
+    UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/insider/lol )
   else
-    UPDATE_INFO=$(curl https://update.code.visualstudio.com/api/update/darwin/stable/lol)
+    UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/stable/lol )
   fi
-  export MS_COMMIT=$(echo "${UPDATE_INFO}" | jq -r '.version')
-  export MS_TAG=$(echo "${UPDATE_INFO}" | jq -r '.name')
+  export MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
+  export MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
 elif [[ -z "${MS_COMMIT}" ]]; then
   reference=$( git ls-remote --tags | grep -x ".*refs\/tags\/${MS_TAG}" | head -1 )
 
