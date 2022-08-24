@@ -9,8 +9,14 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 WIN_SDK_MAJOR_VERSION="10"
 WIN_SDK_FULL_VERSION="10.0.17763.0"
 
-PRODUCT_NAME="VSCodium"
-PRODUCT_SKU="vscodium"
+if [[ "${INSIDER}" == "yes" ]]; then
+  PRODUCT_NAME="VSCodium - Insiders"
+  PRODUCT_SKU="vscodium-insiders"
+else
+  PRODUCT_NAME="VSCodium"
+  PRODUCT_SKU="vscodium"
+fi
+
 PRODUCT_ID=$( powershell.exe -command "[guid]::NewGuid().ToString().ToUpper()" )
 PRODUCT_ID="${PRODUCT_ID%%[[:cntrl:]]}"
 
@@ -36,7 +42,6 @@ else
    export PLATFORM="${VSCODE_ARCH}"
 fi
 
-
 BuildSetupTranslationTransform() {
 	local CULTURE=${1}
 	local LANGID=${2}
@@ -60,7 +65,7 @@ BuildSetupTranslationTransform() {
 }
 
 "${WIX}bin\\heat.exe" dir "${BINARY_DIR}" -out "Files-${OUTPUT_BASE_FILENAME}.wxs" -t vscodium.xsl -gg -sfrag -scom -sreg -srd -ke -cg "AppFiles" -var var.AppName -var var.ProductVersion -var var.IconDir -var var.LicenseDir -var var.BinaryDir -dr APPLICATIONFOLDER -platform "${PLATFORM}"
-"${WIX}bin\\candle.exe" -arch "${PLATFORM}" vscodium.wxs "Files-${OUTPUT_BASE_FILENAME}.wxs" -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -dAppName=${PRODUCT_NAME} -dProductVersion="${RELEASE_VERSION}" -dProductId="${PRODUCT_ID}" -dBinaryDir="${BINARY_DIR}" -dIconDir="${ICON_DIR}" -dLicenseDir="${LICENSE_DIR}" -dSetupResourcesDir="${SETUP_RESOURCES_DIR}" -dCulture="${CULTURE}"
+"${WIX}bin\\candle.exe" -arch "${PLATFORM}" vscodium.wxs "Files-${OUTPUT_BASE_FILENAME}.wxs" -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -dAppName="${PRODUCT_NAME}" -dProductVersion="${RELEASE_VERSION%-insider}" -dProductId="${PRODUCT_ID}" -dBinaryDir="${BINARY_DIR}" -dIconDir="${ICON_DIR}" -dLicenseDir="${LICENSE_DIR}" -dSetupResourcesDir="${SETUP_RESOURCES_DIR}" -dCulture="${CULTURE}"
 "${WIX}bin\\light.exe" vscodium.wixobj "Files-${OUTPUT_BASE_FILENAME}.wixobj" -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -spdb -cc "${TEMP}\\vscodium-cab-cache\\${PLATFORM}" -out "${SETUP_RELEASE_DIR}\\${OUTPUT_BASE_FILENAME}.msi" -loc "i18n\\${PRODUCT_SKU}.${CULTURE}.wxl" -cultures:"${CULTURE}" -sice:ICE60 -sice:ICE69
 
 BuildSetupTranslationTransform de-de 1031
