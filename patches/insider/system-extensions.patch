@@ -1,0 +1,13 @@
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
+index 81bf4b2..5a88688 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
+@@ -233,7 +233,7 @@ export class Extension implements IExtension {
+ 				return false;
+ 			}
+ 			// Do not allow updating system extensions in stable
+-			if (this.type === ExtensionType.System && this.productService.quality === 'stable') {
++			if (this.type === ExtensionType.System) {
+ 				return false;
+ 			}
+ 			if (!this.local.preRelease && this.gallery.properties.isPreReleaseVersion) {
