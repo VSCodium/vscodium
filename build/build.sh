@@ -18,7 +18,7 @@ while getopts ":il" opt; do
   esac
 done
 
-case "$OSTYPE" in
+case "${OSTYPE}" in
   darwin*)
     export OS_NAME="osx"
     ;;
