@@ -1,4 +1,4 @@
-name: linux_build
+name: stable-linux
 
 on:
   workflow_dispatch:
@@ -9,9 +9,11 @@ on:
   schedule:
     - cron: '0 0 * * *'
   push:
+    branches: [ master ]
     paths-ignore:
     - '**/*.md'
   pull_request:
+    branches: [ master ]
     paths-ignore:
     - '**/*.md'
 
@@ -131,7 +133,7 @@ jobs:
 
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
         with:
-          path: stores/snapcraft
+          path: stores/snapcraft/stable
           architecture: ${{ matrix.platform }}
         id: build
         if: env.SHOULD_DEPLOY == 'yes'
@@ -141,12 +143,6 @@ jobs:
           snap: ${{ steps.build.outputs.snap }}
           isClassic: 'true'
         if: env.SHOULD_DEPLOY == 'yes'
-
-      # - uses: snapcore/action-build@v1
-      #   with:
-      #     path: stores/snapcraft
-      #   id: build
-      #   if: env.SHOULD_DEPLOY == 'yes'
 
       - uses: snapcore/action-publish@master
         env:

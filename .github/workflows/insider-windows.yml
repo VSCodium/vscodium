@@ -1,36 +1,35 @@
-name: macos_build
+name: insider-windows
 
 on:
   workflow_dispatch:
-    inputs:
-      new_release:
-        type: boolean
-        description: Force new Release
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 1 * * *'
   push:
+    branches: [ insider ]
     paths-ignore:
     - '**/*.md'
   pull_request:
+    branches: [ insider ]
     paths-ignore:
     - '**/*.md'
 
 jobs:
-  build:
-    runs-on: ${{ matrix.runner }}
-
+  windows:
+    runs-on: windows-2019
+    defaults:
+      run:
+        shell: bash
+    env:
+      OS_NAME: 'windows'
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
+      VSCODE_QUALITY: 'insider'
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - runner: macOS-10.15
-            vscode_arch: x64
-          - runner: [self-hosted, macOS, ARM64]
-            vscode_arch: arm64
-
-    env:
-      OS_NAME: "osx"
-      VSCODE_ARCH: ${{ matrix.vscode_arch }}
+        vscode_arch:
+          - x64
+          - ia32
+          - arm64
 
     steps:
       - uses: actions/checkout@v3
@@ -40,17 +39,25 @@ jobs:
         with:
           node-version: 16
 
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+
       - name: Clone VSCode repo
-        run: . get_repo.sh
+        run: ./get_repo.sh
 
       - name: Check PR or cron
-        run: . check_cron_or_pr.sh
+        run: ./check_cron_or_pr.sh
 
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_RELEASE: ${{ github.event.inputs.new_release }}
-        run: . check_tags.sh
+        run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Compute cache key
@@ -74,28 +81,10 @@ jobs:
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_arch: ${{ matrix.vscode_arch }}
+          npm_config_target_arch: ${{ matrix.vscode_arch }}
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
-
-      - name: Sign binary
-        env:
-          CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
-          CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
-          CERTIFICATE_OSX_ID: ${{ secrets.CERTIFICATE_OSX_ID }}
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-        run: |
-          if [ -d "VSCode-darwin-${VSCODE_ARCH}" ]; then # just in case the build failed
-            cd "VSCode-darwin-${VSCODE_ARCH}"
-            export CERTIFICATE_P12=VSCodium.p12
-            echo $CERTIFICATE_OSX_P12 | base64 --decode > $CERTIFICATE_P12
-            export KEYCHAIN=$RUNNER_TEMP/build.keychain
-            security create-keychain -p mysecretpassword $KEYCHAIN
-            security default-keychain -s $KEYCHAIN
-            security unlock-keychain -p mysecretpassword $KEYCHAIN
-            security import $CERTIFICATE_P12 -k $KEYCHAIN -P $CERTIFICATE_OSX_PASSWORD -T /usr/bin/codesign
-            security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword $KEYCHAIN
-            codesign --deep --force --verbose --sign "$CERTIFICATE_OSX_ID" VSCodium.app
-          fi
 
       - name: Prepare artifacts
         run: ./prepare_artifacts.sh
@@ -113,13 +102,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
-
-      - name: Clean up keychain
-        if: always()
-        run: |
-          KEYCHAIN=$RUNNER_TEMP/build.keychain
-
-          if [ -f "$KEYCHAIN" ];
-          then
-            security delete-keychain $KEYCHAIN
-          fi

@@ -9,7 +9,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 WIN_SDK_MAJOR_VERSION="10"
 WIN_SDK_FULL_VERSION="10.0.17763.0"
 
-if [[ "${INSIDER}" == "yes" ]]; then
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   PRODUCT_NAME="VSCodium - Insiders"
   PRODUCT_SKU="vscodium-insiders"
 else

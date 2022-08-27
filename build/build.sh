@@ -4,13 +4,13 @@
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
 ###
 
-export INSIDER="no"
 export VSCODE_LATEST="no"
+export VSCODE_QUALITY="stable"
 
 while getopts ":il" opt; do
   case "$opt" in
     i)
-      export INSIDER="yes"
+      export VSCODE_QUALITY="insider"
       ;;
     l)
       export VSCODE_LATEST="yes"
@@ -41,7 +41,7 @@ fi
 echo "OS_NAME: ${OS_NAME}"
 echo "VSCODE_ARCH: ${VSCODE_ARCH}"
 echo "VSCODE_LATEST: ${VSCODE_LATEST}"
-echo "INSIDER: ${INSIDER}"
+echo "VSCODE_QUALITY: ${VSCODE_QUALITY}"
 
 rm -rf vscode* VSCode*
 

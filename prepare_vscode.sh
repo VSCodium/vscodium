@@ -5,7 +5,7 @@ set -e
 # include common functions
 . ./utils.sh
 
-if [[ "${INSIDER}" == "yes" ]]; then
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   cp -rp src/insider/* vscode/
 else
   cp -rp src/stable/* vscode/
@@ -30,7 +30,7 @@ for file in ../patches/*.patch; do
   fi
 done
 
-if [[ "${INSIDER}" == "yes" ]]; then
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   for file in ../patches/insider/*.patch; do
     if [ -f "${file}" ]; then
       echo applying patch: "${file}";
@@ -99,7 +99,7 @@ setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=85
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
 setpath "product" "updateUrl" "https://vscodium.now.sh"
 
-if [[ "${INSIDER}" == "yes" ]]; then
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "nameShort" "VSCodium - Insiders"
   setpath "product" "nameLong" "VSCodium - Insiders"
   setpath "product" "applicationName" "codium-insiders"
@@ -159,7 +159,7 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   # unless the app name is code-oss
   # as we are renaming the application to vscodium
   # we need to edit a line in the post install template
-  if [[ "${INSIDER}" == "yes" ]]; then
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     sed -i "s/code-oss/codium-insiders/" resources/linux/debian/postinst.template
   else
     sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template
