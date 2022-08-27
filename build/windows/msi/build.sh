@@ -12,9 +12,11 @@ WIN_SDK_FULL_VERSION="10.0.17763.0"
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   PRODUCT_NAME="VSCodium - Insiders"
   PRODUCT_SKU="vscodium-insiders"
+  ICON_DIR="..\\..\\..\\src\\insider\\resources\\win32"
 else
   PRODUCT_NAME="VSCodium"
   PRODUCT_SKU="vscodium"
+  ICON_DIR="..\\..\\..\\src\\stable\\resources\\win32"
 fi
 
 PRODUCT_ID=$( powershell.exe -command "[guid]::NewGuid().ToString().ToUpper()" )
@@ -26,7 +28,6 @@ LANGIDS="1033"
 SETUP_RELEASE_DIR=".\\releasedir"
 SETUP_RESOURCES_DIR=".\\resources"
 BINARY_DIR="..\\..\\..\\VSCode-win32-${VSCODE_ARCH}"
-ICON_DIR="..\\..\\..\\src\\resources\\win32"
 LICENSE_DIR="..\\..\\..\\vscode"
 PROGRAM_FILES_86=$( env | sed -n 's/^ProgramFiles(x86)=//p' )
 
