@@ -74,11 +74,15 @@ fi
 cp product.json product.json.bak
 
 setpath() {
+  { set +x; } 2>/dev/null
   echo "$( cat "${1}.json" | jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' )" > "${1}.json"
+  set -x
 }
 
 setpath_json() {
+  { set +x; } 2>/dev/null
   echo "$( cat "${1}.json" | jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' )" > "${1}.json"
+  set -x
 }
 
 # set fields in product.json
