@@ -2,7 +2,6 @@ name: insider-macos
 
 on:
   workflow_dispatch:
-    branches: [ insider ]
   schedule:
     - cron: '0 1 * * *'
   push:
@@ -75,27 +74,11 @@ jobs:
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Sign binary
+      - name: Prepare artifacts
         env:
           CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
           CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
           CERTIFICATE_OSX_ID: ${{ secrets.CERTIFICATE_OSX_ID }}
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-        run: |
-          if [ -d "VSCode-darwin-${VSCODE_ARCH}" ]; then # just in case the build failed
-            cd "VSCode-darwin-${VSCODE_ARCH}"
-            export CERTIFICATE_P12=VSCodium.p12
-            echo $CERTIFICATE_OSX_P12 | base64 --decode > $CERTIFICATE_P12
-            export KEYCHAIN=$RUNNER_TEMP/build.keychain
-            security create-keychain -p mysecretpassword $KEYCHAIN
-            security default-keychain -s $KEYCHAIN
-            security unlock-keychain -p mysecretpassword $KEYCHAIN
-            security import $CERTIFICATE_P12 -k $KEYCHAIN -P $CERTIFICATE_OSX_PASSWORD -T /usr/bin/codesign
-            security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword $KEYCHAIN
-            codesign --deep --force --verbose --sign "$CERTIFICATE_OSX_ID" VSCodium.app
-          fi
-
-      - name: Prepare artifacts
         run: ./prepare_artifacts.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
