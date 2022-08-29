@@ -32,7 +32,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
 
   rm -f pkg2appimage-*.AppImage
   rm -rf pkg2appimage.AppDir
-  rm -rf VSCodium
+  rm -rf VSCodium*
 fi
 
 cd "${CALLER_DIR}"
