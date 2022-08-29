@@ -12,7 +12,7 @@ sum_file() {
   fi
 }
 
-mkdir artifacts
+mkdir -p artifacts
 
 if [[ "${OS_NAME}" == "osx" ]]; then
   if [[ "${CI_BUILD}" != "no" ]]; then
@@ -47,8 +47,8 @@ if [[ "${OS_NAME}" == "osx" ]]; then
   if [[ "${SHOULD_BUILD_DMG}" != "no" ]]; then
     echo "Building and moving DMG"
     pushd "VSCode-darwin-${VSCODE_ARCH}"
-    npx create-dmg VSCodium.app ..
-    mv "../VSCodium ${MS_TAG}.dmg" "../artifacts/VSCodium.${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"
+    npx create-dmg ./*.app ..
+    mv ../*.dmg "../artifacts/VSCodium.${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"
     popd
   fi
 
@@ -147,6 +147,8 @@ else
   if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
     echo "Moving AppImage"
     mv build/linux/appimage/out/*.AppImage* artifacts/
+
+    rename '_-_' '-' artifacts/*.AppImage
   fi
 
   VSCODE_PLATFORM="linux"

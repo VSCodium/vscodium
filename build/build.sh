@@ -4,8 +4,8 @@
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
 ###
 
-export CI_BUILD=no
-export SHOULD_BUILD=yes
+export CI_BUILD="no"
+export SHOULD_BUILD="yes"
 export SKIP_PACKAGES="yes"
 export VSCODE_LATEST="no"
 export VSCODE_QUALITY="stable"
