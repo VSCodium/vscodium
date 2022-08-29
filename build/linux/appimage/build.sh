@@ -19,7 +19,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   sed -i 's/grep docker/# grep docker/' pkg2appimage.AppDir/usr/share/pkg2appimage/functions.sh
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    sed -i 's|@@NAME@@|VSCodium - Insiders|g' recipe.yml
+    sed -i 's|@@NAME@@|VSCodium-Insiders|g' recipe.yml
     sed -i 's|@@APPNAME@@|codium-insiders|g' recipe.yml
     sed -i 's|@@ICON@@|vscodium-insiders|g' recipe.yml
   else
