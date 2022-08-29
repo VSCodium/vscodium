@@ -4,16 +4,22 @@
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
 ###
 
+export CI_BUILD=no
+export SHOULD_BUILD=yes
+export SKIP_PACKAGES="yes"
 export VSCODE_LATEST="no"
 export VSCODE_QUALITY="stable"
 
-while getopts ":il" opt; do
+while getopts ":ilp" opt; do
   case "$opt" in
     i)
       export VSCODE_QUALITY="insider"
       ;;
     l)
       export VSCODE_LATEST="yes"
+      ;;
+    p)
+      export SKIP_PACKAGES="no"
       ;;
   esac
 done
@@ -39,16 +45,20 @@ else
 fi
 
 echo "OS_NAME: ${OS_NAME}"
+echo "SKIP_PACKAGES: ${SKIP_PACKAGES}"
 echo "VSCODE_ARCH: ${VSCODE_ARCH}"
 echo "VSCODE_LATEST: ${VSCODE_LATEST}"
 echo "VSCODE_QUALITY: ${VSCODE_QUALITY}"
 
 rm -rf vscode* VSCode*
 
-if [[ "${OS_NAME}" == "windows" ]]; then
-  rm -rf build/windows/msi/releasedir
-fi
-
 . get_repo.sh
+. build.sh
 
-SHOULD_BUILD=yes CI_BUILD=no . build.sh
+if [[ "${SKIP_PACKAGES}" == "no" ]]; then
+  if [[ "${OS_NAME}" == "windows" ]]; then
+    rm -rf build/windows/msi/releasedir
+  fi
+
+  . prepare_artifacts.sh
+fi
