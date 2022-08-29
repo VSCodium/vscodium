@@ -91,7 +91,6 @@ setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?li
 setpath "product" "keyboardShortcutsUrlWin" "https://go.microsoft.com/fwlink/?linkid=832145"
 setpath "product" "licenseUrl" "https://github.com/VSCodium/vscodium/blob/master/LICENSE"
 setpath "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
-setpath "product" "linuxIconName" "vscodium"
 setpath "product" "releaseNotesUrl" "https://go.microsoft.com/fwlink/?LinkID=533483#vscode"
 setpath "product" "reportIssueUrl" "https://github.com/VSCodium/vscodium/issues/new"
 setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
@@ -104,6 +103,7 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "nameLong" "VSCodium - Insiders"
   setpath "product" "applicationName" "codium-insiders"
   setpath "product" "dataFolderName" ".vscodium-insiders"
+  setpath "product" "linuxIconName" "vscodium-insiders"
   setpath "product" "quality" "insider"
   setpath "product" "urlProtocol" "vscodium-insiders"
   setpath "product" "serverApplicationName" "codium-server-insiders"
@@ -125,6 +125,7 @@ else
   setpath "product" "nameShort" "VSCodium"
   setpath "product" "nameLong" "VSCodium"
   setpath "product" "applicationName" "codium"
+  setpath "product" "linuxIconName" "vscodium"
   setpath "product" "quality" "stable"
   setpath "product" "urlProtocol" "vscodium"
   setpath "product" "serverApplicationName" "codium-server"
