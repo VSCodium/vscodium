@@ -5,7 +5,7 @@ set -e
 # include common functions
 . ./utils.sh
 
-if [[ "${INSIDER}" == "yes" ]]; then
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   cp -rp src/insider/* vscode/
 else
   cp -rp src/stable/* vscode/
@@ -30,7 +30,7 @@ for file in ../patches/*.patch; do
   fi
 done
 
-if [[ "${INSIDER}" == "yes" ]]; then
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   for file in ../patches/insider/*.patch; do
     if [ -f "${file}" ]; then
       echo applying patch: "${file}";
@@ -91,7 +91,6 @@ setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?li
 setpath "product" "keyboardShortcutsUrlWin" "https://go.microsoft.com/fwlink/?linkid=832145"
 setpath "product" "licenseUrl" "https://github.com/VSCodium/vscodium/blob/master/LICENSE"
 setpath "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
-setpath "product" "linuxIconName" "vscodium"
 setpath "product" "releaseNotesUrl" "https://go.microsoft.com/fwlink/?LinkID=533483#vscode"
 setpath "product" "reportIssueUrl" "https://github.com/VSCodium/vscodium/issues/new"
 setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
@@ -99,11 +98,12 @@ setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=85
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
 setpath "product" "updateUrl" "https://vscodium.now.sh"
 
-if [[ "${INSIDER}" == "yes" ]]; then
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "nameShort" "VSCodium - Insiders"
   setpath "product" "nameLong" "VSCodium - Insiders"
   setpath "product" "applicationName" "codium-insiders"
   setpath "product" "dataFolderName" ".vscodium-insiders"
+  setpath "product" "linuxIconName" "vscodium-insiders"
   setpath "product" "quality" "insider"
   setpath "product" "urlProtocol" "vscodium-insiders"
   setpath "product" "serverApplicationName" "codium-server-insiders"
@@ -125,6 +125,7 @@ else
   setpath "product" "nameShort" "VSCodium"
   setpath "product" "nameLong" "VSCodium"
   setpath "product" "applicationName" "codium"
+  setpath "product" "linuxIconName" "vscodium"
   setpath "product" "quality" "stable"
   setpath "product" "urlProtocol" "vscodium"
   setpath "product" "serverApplicationName" "codium-server"
@@ -159,7 +160,7 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   # unless the app name is code-oss
   # as we are renaming the application to vscodium
   # we need to edit a line in the post install template
-  if [[ "${INSIDER}" == "yes" ]]; then
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     sed -i "s/code-oss/codium-insiders/" resources/linux/debian/postinst.template
   else
     sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template

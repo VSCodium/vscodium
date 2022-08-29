@@ -1,4 +1,4 @@
-name: windows_build
+name: stable-windows
 
 on:
   workflow_dispatch:
@@ -10,8 +10,12 @@ on:
     - cron: '0 0 * * *'
   push:
     branches: [ master ]
+    paths-ignore:
+    - '**/*.md'
   pull_request:
     branches: [ master ]
+    paths-ignore:
+    - '**/*.md'
 
 jobs:
   windows:

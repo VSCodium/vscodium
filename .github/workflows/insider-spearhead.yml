@@ -1,0 +1,75 @@
+name: insider-spearhead
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches: [ insider ]
+    paths-ignore:
+    - '**/*.md'
+  pull_request:
+    branches: [ insider ]
+    paths-ignore:
+    - '**/*.md'
+
+jobs:
+  build:
+    runs-on: [self-hosted, macOS, ARM64]
+    env:
+      OS_NAME: 'osx'
+      VSCODE_ARCH: 'arm64'
+      VSCODE_QUALITY: 'insider'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Clone VSCode repo
+        run: . get_repo.sh
+
+      - name: Check PR or cron
+        run: . check_cron_or_pr.sh
+
+      - name: Check existing VSCodium tags/releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_RELEASE: ${{ github.event.inputs.new_release }}
+        run: . check_tags.sh
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - name: Compute cache key
+        id: yarnCacheKey
+        run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Get yarn cache directory path
+        id: yarnCacheDirPath
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Cache yarn directory
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
+          key: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
+          restore-keys: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./build.sh
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Update insider.json
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        run: ./update_insider.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+

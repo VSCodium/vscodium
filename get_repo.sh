@@ -8,7 +8,7 @@ if [[ "${CI_BUILD}" != "no" ]]; then
 fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
-  if [[ "${INSIDER}" == "yes" ]]; then
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     if [[ "${VSCODE_LATEST}" == "yes" ]] || [[ ! -f "insider.json" ]]; then
       UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/insider/lol )
     else
@@ -26,7 +26,7 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
 
   date=$( date +%Y%j )
 
-  if [[ "${INSIDER}" == "yes" ]]; then
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     export RELEASE_VERSION="${MS_TAG/\-insider/}.${date: -5}-insider"
   else
     export RELEASE_VERSION="${MS_TAG}.${date: -5}"
@@ -51,7 +51,7 @@ git remote add origin https://github.com/Microsoft/vscode.git
 
 # figure out latest tag by calling MS update API
 if [[ -z "${MS_TAG}" ]]; then
-  if [[ "${INSIDER}" == "yes" ]]; then
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/insider/lol )
   else
     UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/stable/lol )
