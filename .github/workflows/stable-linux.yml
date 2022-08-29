@@ -1,0 +1,153 @@
+name: stable-linux
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_release:
+        type: boolean
+        description: Force new Release
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches: [ master ]
+    paths-ignore:
+    - '**/*.md'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+    - '**/*.md'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+      env:
+        OS_NAME: 'linux'
+        VSCODE_ARCH: ${{ matrix.vscode_arch }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - vscode_arch: x64
+          npm_arch: x64
+          image: vscodium/vscodium-linux-build-agent:bionic-x64
+        - vscode_arch: arm64
+          npm_arch: arm64
+          image: vscodium/vscodium-linux-build-agent:stretch-arm64
+        - vscode_arch: armhf
+          npm_arch: armv7l
+          image: vscodium/vscodium-linux-build-agent:stretch-armhf
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install GH
+        run: ./install_gh.sh
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Clone VSCode repo
+        run: ./get_repo.sh
+
+      - name: Check PR or cron
+        run: ./check_cron_or_pr.sh
+
+      - name: Check existing VSCodium tags/releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_RELEASE: ${{ github.event.inputs.new_release }}
+        run: ./check_tags.sh
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - name: Compute cache key
+        id: yarnCacheKey
+        run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Get yarn cache directory path
+        id: yarnCacheDirPath
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Cache yarn directory
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
+          key: linux-${{ matrix.npm_arch }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
+          restore-keys: linux-${{ matrix.npm_arch }}-yarnCacheDir-
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_arch: ${{ matrix.npm_arch }}
+        run: ./build.sh
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Prepare artifacts
+        run: ./prepare_artifacts.sh
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./release.sh
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+      - name: Update versions repo
+        run: ./update_version.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+  snap:
+    needs: release
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - amd64
+        - arm64
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check version
+        run: ./stores/snapcraft/check_version.sh
+        env:
+          ARCHITECTURE: ${{ matrix.platform }}
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
+
+      - uses: docker/setup-qemu-action@v1
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - uses: diddlesnaps/snapcraft-multiarch-action@v1
+        with:
+          path: stores/snapcraft/stable
+          architecture: ${{ matrix.platform }}
+        id: build
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - uses: diddlesnaps/snapcraft-review-action@v1
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          isClassic: 'true'
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - uses: snapcore/action-publish@master
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: stable
+        if: env.SHOULD_DEPLOY == 'yes'

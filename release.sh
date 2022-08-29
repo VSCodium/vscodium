@@ -7,26 +7,31 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
   exit
 fi
 
+OWNER="${GITHUB_REPOSITORY_OWNER:-"VSCodium"}"
+REPO_NAME="${GITHUB_REPOSITORY:(${#OWNER}+1)}"
+
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  REPOSITORY="${REPO_NAME:-"vscodium"}-insiders"
+else
+  REPOSITORY="${REPO_NAME:-"vscodium"}"
+fi
+
 npm install -g github-release-cli
 
 if [[ $( gh release view "${RELEASE_VERSION}" 2>&1 ) =~ "release not found" ]]; then
   echo "Creating release '${RELEASE_VERSION}'"
-  gh release create "${RELEASE_VERSION}"
+  gh release create --repo "${REPOSITORY}" "${RELEASE_VERSION}"
 fi
 
 cd artifacts
 
 set +e
 
-OWNER="${GITHUB_REPOSITORY_OWNER:-"VSCodium"}"
-REPO_NAME="${GITHUB_REPOSITORY:(${#OWNER}+1)}"
-REPOSITORY="${REPO_NAME:-"vscodium"}"
-
 for FILE in *
 do
   if [[ -f "${FILE}" ]] && [[ "${FILE}" != *.sha1 ]] && [[ "${FILE}" != *.sha256 ]]; then
     echo "::group::Uploading '${FILE}' at $( date "+%T" )"
-    gh release upload "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+    gh release upload --repo "${REPOSITORY}" "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
     EXIT_STATUS=$?
     echo "exit: ${EXIT_STATUS}"
@@ -39,7 +44,7 @@ do
         sleep $(( 15 * (i + 1)))
 
         echo "RE-Uploading '${FILE}' at $( date "+%T" )"
-        gh release upload "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+        gh release upload --repo "${REPOSITORY}" "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
         EXIT_STATUS=$?
         echo "exit: ${EXIT_STATUS}"

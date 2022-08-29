@@ -1,0 +1,125 @@
+name: stable-macos
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_release:
+        type: boolean
+        description: Force new Release
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches: [ master ]
+    paths-ignore:
+    - '**/*.md'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+    - '**/*.md'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+    env:
+      OS_NAME: 'osx'
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macOS-10.15
+            vscode_arch: x64
+          - runner: [self-hosted, macOS, ARM64]
+            vscode_arch: arm64
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Clone VSCode repo
+        run: . get_repo.sh
+
+      - name: Check PR or cron
+        run: . check_cron_or_pr.sh
+
+      - name: Check existing VSCodium tags/releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_RELEASE: ${{ github.event.inputs.new_release }}
+        run: . check_tags.sh
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - name: Compute cache key
+        id: yarnCacheKey
+        run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Get yarn cache directory path
+        id: yarnCacheDirPath
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Cache yarn directory
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
+          key: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
+          restore-keys: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./build.sh
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Sign binary
+        env:
+          CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
+          CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
+          CERTIFICATE_OSX_ID: ${{ secrets.CERTIFICATE_OSX_ID }}
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        run: |
+          if [ -d "VSCode-darwin-${VSCODE_ARCH}" ]; then # just in case the build failed
+            cd "VSCode-darwin-${VSCODE_ARCH}"
+            export CERTIFICATE_P12=VSCodium.p12
+            echo $CERTIFICATE_OSX_P12 | base64 --decode > $CERTIFICATE_P12
+            export KEYCHAIN=$RUNNER_TEMP/build.keychain
+            security create-keychain -p mysecretpassword $KEYCHAIN
+            security default-keychain -s $KEYCHAIN
+            security unlock-keychain -p mysecretpassword $KEYCHAIN
+            security import $CERTIFICATE_P12 -k $KEYCHAIN -P $CERTIFICATE_OSX_PASSWORD -T /usr/bin/codesign
+            security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword $KEYCHAIN
+            codesign --deep --force --verbose --sign "$CERTIFICATE_OSX_ID" VSCodium.app
+          fi
+
+      - name: Prepare artifacts
+        run: ./prepare_artifacts.sh
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./release.sh
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+      - name: Update versions repo
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        run: ./update_version.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+
+      - name: Clean up keychain
+        if: always()
+        run: |
+          KEYCHAIN=$RUNNER_TEMP/build.keychain
+
+          if [ -f "$KEYCHAIN" ];
+          then
+            security delete-keychain $KEYCHAIN
+          fi

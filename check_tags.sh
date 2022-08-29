@@ -7,9 +7,12 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
   exit
 fi
 
-VERSIONS_REPO="${GITHUB_USERNAME:-"VSCodium"}/versions"
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  REPOSITORY="${GITHUB_REPOSITORY:-"VSCodium/vscodium"}-insiders"
+else
+  REPOSITORY="${GITHUB_REPOSITORY:-"VSCodium/vscodium"}"
+fi
 
-REPOSITORY="${GITHUB_REPOSITORY:-"VSCodium/vscodium"}"
 GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPOSITORY}/releases/latest" )
 LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
 

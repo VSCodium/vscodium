@@ -5,7 +5,7 @@
 # wget -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
 # bash -ex pkg2appimage VSCodium
 
-app: VSCodium
+app: @@NAME@@
 
 ingredients:
   packages:
@@ -17,19 +17,19 @@ ingredients:
   script:
     - pwd
     - cp ../../../../vscode/.build/linux/deb/amd64/deb/*.deb .
-    - ls codium_*.deb | cut -d _ -f 2 > VERSION
+    - ls @@APPNAME@@_*.deb | cut -d _ -f 2 > VERSION
 
 script:
-  - sed -i -e 's|/usr/share/pixmaps/||g' usr/share/applications/codium.desktop
-  - cp usr/share/applications/codium.desktop .
-  - cp usr/share/pixmaps/vscodium.png .
-  - /usr/bin/convert vscodium.png -resize 512x512 usr/share/icons/hicolor/512x512/apps/vscodium.png
-  - /usr/bin/convert vscodium.png -resize 256x256 usr/share/icons/hicolor/256x256/apps/vscodium.png
-  - /usr/bin/convert vscodium.png -resize 128x128 usr/share/icons/hicolor/128x128/apps/vscodium.png
-  - /usr/bin/convert vscodium.png -resize 64x64 usr/share/icons/hicolor/64x64/apps/vscodium.png
-  - /usr/bin/convert vscodium.png -resize 48x48 usr/share/icons/hicolor/48x48/apps/vscodium.png
-  - /usr/bin/convert vscodium.png -resize 32x32 usr/share/icons/hicolor/32x32/apps/vscodium.png
-  - ( cd usr/bin/ ; ln -s ../share/codium/codium  . )
+  - sed -i -e 's|/usr/share/pixmaps/||g' usr/share/applications/@@APPNAME@@.desktop
+  - cp usr/share/applications/@@APPNAME@@.desktop .
+  - cp usr/share/pixmaps/@@ICON@@.png .
+  - /usr/bin/convert @@ICON@@.png -resize 512x512 usr/share/icons/hicolor/512x512/apps/@@ICON@@.png
+  - /usr/bin/convert @@ICON@@.png -resize 256x256 usr/share/icons/hicolor/256x256/apps/@@ICON@@.png
+  - /usr/bin/convert @@ICON@@.png -resize 128x128 usr/share/icons/hicolor/128x128/apps/@@ICON@@.png
+  - /usr/bin/convert @@ICON@@.png -resize 64x64 usr/share/icons/hicolor/64x64/apps/@@ICON@@.png
+  - /usr/bin/convert @@ICON@@.png -resize 48x48 usr/share/icons/hicolor/48x48/apps/@@ICON@@.png
+  - /usr/bin/convert @@ICON@@.png -resize 32x32 usr/share/icons/hicolor/32x32/apps/@@ICON@@.png
+  - ( cd usr/bin/ ; ln -s ../share/@@APPNAME@@/@@APPNAME@@  . )
   - rm -rf usr/lib/x86_64-linux-gnu
   - rm -f lib/x86_64-linux-gnu/libglib*
   - cat > AppRun <<\EOF

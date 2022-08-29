@@ -31,7 +31,11 @@ fi
 # `timestamp` is $(node -e 'console.log(Date.now())')
 # `sha256hash` in <filename>.sha256
 
-URL_BASE="https://github.com/VSCodium/vscodium/releases/download/${RELEASE_VERSION}"
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  URL_BASE="https://github.com/VSCodium/vscodium-insiders/releases/download/${RELEASE_VERSION}"
+else
+  URL_BASE="https://github.com/VSCodium/vscodium/releases/download/${RELEASE_VERSION}"
+fi
 
 # to make testing on forks easier
 VERSIONS_REPO="${GITHUB_USERNAME}/versions"
@@ -102,33 +106,33 @@ cd ..
 
 if [[ "${OS_NAME}" == "osx" ]]; then
   ASSET_NAME=VSCodium-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.zip
-  VERSION_PATH="darwin/${VSCODE_ARCH}"
+  VERSION_PATH="${VSCODE_QUALITY}/darwin/${VSCODE_ARCH}"
   updateLatestVersion
 elif [[ "${OS_NAME}" == "windows" ]]; then
   # system installer
   ASSET_NAME=VSCodiumSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe
-  VERSION_PATH="win32/${VSCODE_ARCH}/system"
+  VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/system"
   updateLatestVersion
 
   # user installer
   ASSET_NAME=VSCodiumUserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe
-  VERSION_PATH="win32/${VSCODE_ARCH}/user"
+  VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/user"
   updateLatestVersion
 
   # windows archive
   ASSET_NAME=VSCodium-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip
-  VERSION_PATH="win32/${VSCODE_ARCH}/archive"
+  VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/archive"
   updateLatestVersion
 
   if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
     # msi
     ASSET_NAME=VSCodium-${VSCODE_ARCH}-${RELEASE_VERSION}.msi
-    VERSION_PATH="win32/${VSCODE_ARCH}/msi"
+    VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/msi"
     updateLatestVersion
 
     # updates-disabled msi
     ASSET_NAME=VSCodium-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi
-    VERSION_PATH="win32/${VSCODE_ARCH}/msi-updates-disabled"
+    VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/msi-updates-disabled"
     updateLatestVersion
   fi
 else # linux
@@ -136,7 +140,7 @@ else # linux
   # see https://update.code.visualstudio.com/api/update/linux-x64/stable/VERSION
   # as examples
   ASSET_NAME=VSCodium-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz
-  VERSION_PATH="linux/${VSCODE_ARCH}"
+  VERSION_PATH="${VSCODE_QUALITY}/linux/${VSCODE_ARCH}"
   updateLatestVersion
 fi
 
