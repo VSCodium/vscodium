@@ -18,7 +18,7 @@ fi
 
 npm install -g github-release-cli
 
-if [[ $( gh release view "${RELEASE_VERSION}" 2>&1 ) =~ "release not found" ]]; then
+if [[ $( gh release view --repo "${OWNER}/${REPOSITORY}" "${RELEASE_VERSION}" 2>&1 ) =~ "release not found" ]]; then
   echo "Creating release '${RELEASE_VERSION}'"
   gh release create --repo "${OWNER}/${REPOSITORY}" "${RELEASE_VERSION}"
 fi
