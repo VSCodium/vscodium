@@ -20,7 +20,7 @@ npm install -g github-release-cli
 
 if [[ $( gh release view "${RELEASE_VERSION}" 2>&1 ) =~ "release not found" ]]; then
   echo "Creating release '${RELEASE_VERSION}'"
-  gh release create --repo "${REPOSITORY}" "${RELEASE_VERSION}"
+  gh release create --repo "${OWNER}/${REPOSITORY}" "${RELEASE_VERSION}"
 fi
 
 cd artifacts
@@ -31,7 +31,7 @@ for FILE in *
 do
   if [[ -f "${FILE}" ]] && [[ "${FILE}" != *.sha1 ]] && [[ "${FILE}" != *.sha256 ]]; then
     echo "::group::Uploading '${FILE}' at $( date "+%T" )"
-    gh release upload --repo "${REPOSITORY}" "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+    gh release upload --repo "${OWNER}/${REPOSITORY}" "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
     EXIT_STATUS=$?
     echo "exit: ${EXIT_STATUS}"
@@ -44,7 +44,7 @@ do
         sleep $(( 15 * (i + 1)))
 
         echo "RE-Uploading '${FILE}' at $( date "+%T" )"
-        gh release upload --repo "${REPOSITORY}" "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
+        gh release upload --repo "${OWNER}/${REPOSITORY}" "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
         EXIT_STATUS=$?
         echo "exit: ${EXIT_STATUS}"
