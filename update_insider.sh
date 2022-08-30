@@ -14,6 +14,7 @@ fi
 
 echo "$( cat "insider.json" | jq --arg 'tag' "${MS_TAG}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )" > "insider.json"
 
+git config user.email "vscodium-ci@not-real.com"
 git config user.name "VSCodium CI"
 git add .
 
@@ -21,8 +22,8 @@ CHANGES=$( git status --porcelain )
 
 if [[ ! -z "${CHANGES}" ]]; then
   git commit -m "build(insider): update to commit ${MS_COMMIT:0:7}"
-  if ! git push origin master --quiet; then
-    git pull origin master
-    git push origin master --quiet
+  if ! git push origin insider --quiet; then
+    git pull origin insider
+    git push origin insider --quiet
   fi
 fi
