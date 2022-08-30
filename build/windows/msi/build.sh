@@ -14,11 +14,13 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   PRODUCT_SKU="vscodium-insiders"
   PRODUCT_UPGRADE_CODE="1C9B7195-5A9A-43B3-B4BD-583E20498467"
   ICON_DIR="..\\..\\..\\src\\insider\\resources\\win32"
+  SETUP_RESOURCES_DIR=".\\resources\\insider"
 else
   PRODUCT_NAME="VSCodium"
   PRODUCT_SKU="vscodium"
   PRODUCT_UPGRADE_CODE="965370CD-253C-4720-82FC-2E6B02A53808"
   ICON_DIR="..\\..\\..\\src\\stable\\resources\\win32"
+  SETUP_RESOURCES_DIR=".\\resources\\stable"
 fi
 
 PRODUCT_ID=$( powershell.exe -command "[guid]::NewGuid().ToString().ToUpper()" )
@@ -28,7 +30,6 @@ CULTURE="en-us"
 LANGIDS="1033"
 
 SETUP_RELEASE_DIR=".\\releasedir"
-SETUP_RESOURCES_DIR=".\\resources"
 BINARY_DIR="..\\..\\..\\VSCode-win32-${VSCODE_ARCH}"
 LICENSE_DIR="..\\..\\..\\vscode"
 PROGRAM_FILES_86=$( env | sed -n 's/^ProgramFiles(x86)=//p' )
@@ -46,6 +47,7 @@ else
 fi
 
 sed -i "s|@@PRODUCT_UPGRADE_CODE@@|${PRODUCT_UPGRADE_CODE}|g" .\\includes\\vscodium-variables.wxi
+sed -i "s|@@PRODUCT_NAME@@|${PRODUCT_NAME}|g" .\\vscodium.xsl
 
 find i18n -name '*.wxl' -exec sed -i "s|@@PRODUCT_NAME@@|${PRODUCT_NAME}|g" {} \;
 
@@ -57,7 +59,7 @@ BuildSetupTranslationTransform() {
 
 	echo "Building setup translation for culture \"${CULTURE}\" with LangID \"${LANGID}\"..."
 
-	"${WIX}bin\\light.exe" vscodium.wixobj "Files-${OUTPUT_BASE_FILENAME}.wixobj" -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -spdb -cc "${TEMP}\\vscodium-cab-cache\\${PLATFORM}" -reusecab -out "${SETUP_RELEASE_DIR}\\${OUTPUT_BASE_FILENAME}.${CULTURE}.msi" -loc "i18n\\${PRODUCT_SKU}.${CULTURE}.wxl" -cultures:"${CULTURE}" -sice:ICE60 -sice:ICE69
+	"${WIX}bin\\light.exe" vscodium.wixobj "Files-${OUTPUT_BASE_FILENAME}.wixobj" -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -spdb -cc "${TEMP}\\vscodium-cab-cache\\${PLATFORM}" -reusecab -out "${SETUP_RELEASE_DIR}\\${OUTPUT_BASE_FILENAME}.${CULTURE}.msi" -loc "i18n\\vscodium.${CULTURE}.wxl" -cultures:"${CULTURE}" -sice:ICE60 -sice:ICE69
 
 	cscript "${PROGRAM_FILES_86}\\Windows Kits\\${WIN_SDK_MAJOR_VERSION}\\bin\\${WIN_SDK_FULL_VERSION}\\${PLATFORM}\\WiLangId.vbs" "${SETUP_RELEASE_DIR}\\${OUTPUT_BASE_FILENAME}.${CULTURE}.msi" Product "${LANGID}"
 

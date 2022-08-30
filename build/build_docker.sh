@@ -40,11 +40,11 @@ else
   export VSCODE_ARCH="armhf"
 fi
 
-echo "OS_NAME: ${OS_NAME}"
-echo "SKIP_PACKAGES: ${SKIP_PACKAGES}"
-echo "VSCODE_ARCH: ${VSCODE_ARCH}"
-echo "VSCODE_LATEST: ${VSCODE_LATEST}"
-echo "VSCODE_QUALITY: ${VSCODE_QUALITY}"
+echo "OS_NAME=\"${OS_NAME}\""
+echo "SKIP_PACKAGES=\"${SKIP_PACKAGES}\""
+echo "VSCODE_ARCH=\"${VSCODE_ARCH}\""
+echo "VSCODE_LATEST=\"${VSCODE_LATEST}\""
+echo "VSCODE_QUALITY=\"${VSCODE_QUALITY}\""
 
 rm -rf vscode* VSCode*
 
