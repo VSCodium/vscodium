@@ -35,9 +35,9 @@ LICENSE_DIR="..\\..\\..\\vscode"
 PROGRAM_FILES_86=$( env | sed -n 's/^ProgramFiles(x86)=//p' )
 
 if [[ -z "${1}" ]]; then
-	OUTPUT_BASE_FILENAME="${PRODUCT_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}"
+	OUTPUT_BASE_FILENAME="VSCodium-${VSCODE_ARCH}-${RELEASE_VERSION}"
 else
-	OUTPUT_BASE_FILENAME="${PRODUCT_NAME}-${VSCODE_ARCH}-${1}-${RELEASE_VERSION}"
+	OUTPUT_BASE_FILENAME="VSCodium-${VSCODE_ARCH}-${1}-${RELEASE_VERSION}"
 fi
 
 if [[ "${VSCODE_ARCH}" == "ia32" ]]; then
