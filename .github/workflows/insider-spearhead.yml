@@ -3,7 +3,7 @@ name: insider-spearhead
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '30 0 * * *'
 
 jobs:
   build:
@@ -11,10 +11,13 @@ jobs:
     env:
       OS_NAME: 'osx'
       VSCODE_ARCH: 'arm64'
+      VSCODE_LATEST: 'yes'
       VSCODE_QUALITY: 'insider'
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: insider
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
@@ -24,15 +27,10 @@ jobs:
       - name: Clone VSCode repo
         run: . get_repo.sh
 
-      - name: Check PR or cron
-        run: . check_cron_or_pr.sh
-
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_RELEASE: ${{ github.event.inputs.new_release }}
         run: . check_tags.sh
-        if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Compute cache key
         id: yarnCacheKey
@@ -59,9 +57,9 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Update insider.json
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         run: ./update_insider.sh
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
+        if: env.SHOULD_BUILD == 'yes'
 
