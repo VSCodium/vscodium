@@ -32,12 +32,22 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
     export RELEASE_VERSION="${MS_TAG}.${date: -5}"
   fi
 else
-  if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+$ ]];
-  then
-    MS_TAG="${BASH_REMATCH[1]}"
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+    if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+-insider$ ]];
+    then
+      MS_TAG="${BASH_REMATCH[1]}"
+    else
+      echo "Bad RELEASE_VERSION: ${RELEASE_VERSION}"
+      exit 1
+    fi
   else
-    echo "Bad RELEASE_VERSION: ${RELEASE_VERSION}"
-    exit 1
+    if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+$ ]];
+    then
+      MS_TAG="${BASH_REMATCH[1]}"
+    else
+      echo "Bad RELEASE_VERSION: ${RELEASE_VERSION}"
+      exit 1
+    fi
   fi
 fi
 
