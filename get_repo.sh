@@ -40,6 +40,13 @@ else
       echo "Bad RELEASE_VERSION: ${RELEASE_VERSION}"
       exit 1
     fi
+
+    if [[ "${MS_TAG}" == "$(jq -r '.tag' insider.json)" ]]; then
+      export MS_COMMIT=$(jq -r '.commit' insider.json)
+    else
+      echo "No MS_COMMIT for ${RELEASE_VERSION}"
+      exit 1
+    fi
   else
     if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+$ ]];
     then
