@@ -41,7 +41,7 @@ else
   fi
 fi
 
-echo "Release version: ${RELEASE_VERSION}"
+echo "RELEASE_VERSION=\"${RELEASE_VERSION}\""
 
 mkdir -p vscode
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
@@ -73,7 +73,8 @@ elif [[ -z "${MS_COMMIT}" ]]; then
   fi
 fi
 
-echo "Got the MS tag: ${MS_TAG} version: ${MS_COMMIT}"
+echo "MS_TAG=\"${MS_TAG}\""
+echo "MS_COMMIT=\"${MS_COMMIT}\""
 
 git fetch --depth 1 origin "${MS_COMMIT}"
 git checkout FETCH_HEAD
