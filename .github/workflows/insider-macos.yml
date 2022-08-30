@@ -2,6 +2,10 @@ name: insider-macos
 
 on:
   workflow_dispatch:
+    inputs:
+      release_version:
+        type: string
+        description: Forced release version
   schedule:
     - cron: '0 1 * * *'
   push:
@@ -38,6 +42,8 @@ jobs:
           node-version: 16
 
       - name: Clone VSCode repo
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
         run: . get_repo.sh
 
       - name: Check PR or cron
@@ -46,7 +52,6 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_RELEASE: ${{ github.event.inputs.new_release }}
         run: . check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 

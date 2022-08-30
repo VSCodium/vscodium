@@ -2,6 +2,10 @@ name: insider-linux
 
 on:
   workflow_dispatch:
+    inputs:
+      release_version:
+        type: string
+        description: Forced release version
   schedule:
     - cron: '0 1 * * *'
   push:
@@ -53,6 +57,8 @@ jobs:
         run: npm install -g yarn
 
       - name: Clone VSCode repo
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
         run: ./get_repo.sh
 
       - name: Check PR or cron
