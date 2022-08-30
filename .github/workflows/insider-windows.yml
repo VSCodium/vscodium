@@ -2,6 +2,10 @@ name: insider-windows
 
 on:
   workflow_dispatch:
+    inputs:
+      release_version:
+        type: string
+        description: Forced release version
   schedule:
     - cron: '0 1 * * *'
   push:
@@ -48,6 +52,8 @@ jobs:
           python-version: '3.x'
 
       - name: Clone VSCode repo
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
         run: ./get_repo.sh
 
       - name: Check PR or cron
@@ -56,7 +62,6 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_RELEASE: ${{ github.event.inputs.new_release }}
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
@@ -92,7 +97,7 @@ jobs:
 
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
         run: ./release.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 

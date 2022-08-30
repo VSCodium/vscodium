@@ -32,16 +32,33 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
     export RELEASE_VERSION="${MS_TAG}.${date: -5}"
   fi
 else
-  if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+$ ]];
-  then
-    MS_TAG="${BASH_REMATCH[1]}"
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+    if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+-insider$ ]];
+    then
+      MS_TAG="${BASH_REMATCH[1]}"
+    else
+      echo "Bad RELEASE_VERSION: ${RELEASE_VERSION}"
+      exit 1
+    fi
+
+    if [[ "${MS_TAG}" == "$(jq -r '.tag' insider.json)" ]]; then
+      export MS_COMMIT=$(jq -r '.commit' insider.json)
+    else
+      echo "No MS_COMMIT for ${RELEASE_VERSION}"
+      exit 1
+    fi
   else
-    echo "Bad RELEASE_VERSION: ${RELEASE_VERSION}"
-    exit 1
+    if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+$ ]];
+    then
+      MS_TAG="${BASH_REMATCH[1]}"
+    else
+      echo "Bad RELEASE_VERSION: ${RELEASE_VERSION}"
+      exit 1
+    fi
   fi
 fi
 
-echo "Release version: ${RELEASE_VERSION}"
+echo "RELEASE_VERSION=\"${RELEASE_VERSION}\""
 
 mkdir -p vscode
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
@@ -73,7 +90,8 @@ elif [[ -z "${MS_COMMIT}" ]]; then
   fi
 fi
 
-echo "Got the MS tag: ${MS_TAG} version: ${MS_COMMIT}"
+echo "MS_TAG=\"${MS_TAG}\""
+echo "MS_COMMIT=\"${MS_COMMIT}\""
 
 git fetch --depth 1 origin "${MS_COMMIT}"
 git checkout FETCH_HEAD

@@ -146,13 +146,13 @@ build_win32() {
     convert -size 138x140 xc:white "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-250.bmp"
     composite -size 116x -gravity center "icons/${QUALITY}/codium_only.svg" "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-250.bmp" "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-250.bmp"
   fi
-  if [ ! -f "${SRC_PREFIX}build/windows/msi/resources/wix-banner.bmp" ]; then
-    convert -size 493x58 xc:white "${SRC_PREFIX}build/windows/msi/resources/wix-banner.bmp"
-    composite -geometry +438+6 \( "icons/${QUALITY}/codium_only.svg" -resize 50x50 \) "${SRC_PREFIX}build/windows/msi/resources/wix-banner.bmp" "${SRC_PREFIX}build/windows/msi/resources/wix-banner.bmp"
+  if [ ! -f "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-banner.bmp" ]; then
+    convert -size 493x58 xc:white "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-banner.bmp"
+    composite -geometry +438+6 \( "icons/${QUALITY}/codium_only.svg" -resize 50x50 \) "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-banner.bmp" "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-banner.bmp"
   fi
-  if [ ! -f "${SRC_PREFIX}build/windows/msi/resources/wix-dialog.bmp" ]; then
-    convert -size 493x312 xc:white "${SRC_PREFIX}build/windows/msi/resources/wix-dialog.bmp"
-    composite -geometry +22+152 \( "icons/${QUALITY}/codium_only.svg" -resize 120x90 \) "${SRC_PREFIX}build/windows/msi/resources/wix-dialog.bmp" "${SRC_PREFIX}build/windows/msi/resources/wix-dialog.bmp"
+  if [ ! -f "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-dialog.bmp" ]; then
+    convert -size 493x312 xc:white "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-dialog.bmp"
+    composite -geometry +22+152 \( "icons/${QUALITY}/codium_only.svg" -resize 120x90 \) "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-dialog.bmp" "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-dialog.bmp"
   fi
 }
 

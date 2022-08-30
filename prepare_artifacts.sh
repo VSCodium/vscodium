@@ -148,7 +148,7 @@ else
     echo "Moving AppImage"
     mv build/linux/appimage/out/*.AppImage* artifacts/
 
-    rename '_-_' '-' artifacts/*.AppImage
+    find artifacts -name '*.AppImage*' -exec bash -c 'mv $0 ${0/_-_/-}' {} \;
   fi
 
   VSCODE_PLATFORM="linux"
