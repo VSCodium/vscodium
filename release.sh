@@ -12,15 +12,17 @@ REPO_NAME="${GITHUB_REPOSITORY:(${#OWNER}+1)}"
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   REPOSITORY="${REPO_NAME:-"vscodium"}-insiders"
+  NOTES="update to [${MS_COMMIT}](https://github.com/microsoft/vscode/tree/${MS_COMMIT})"
 else
   REPOSITORY="${REPO_NAME:-"vscodium"}"
+  NOTES="update to [${MS_TAG}](https://code.visualstudio.com/updates/v$( echo ${MS_TAG//./_} \| cut -d'_' -f 1,2 ))"
 fi
 
 npm install -g github-release-cli
 
 if [[ $( gh release view --repo "${OWNER}/${REPOSITORY}" "${RELEASE_VERSION}" 2>&1 ) =~ "release not found" ]]; then
   echo "Creating release '${RELEASE_VERSION}'"
-  gh release create --repo "${OWNER}/${REPOSITORY}" "${RELEASE_VERSION}"
+  gh release create "${RELEASE_VERSION}" --repo "${OWNER}/${REPOSITORY}" --notes "${NOTES}"
 fi
 
 cd artifacts

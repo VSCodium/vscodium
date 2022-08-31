@@ -26,7 +26,7 @@ if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
   elif [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     BODY=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.body' )
 
-    if [[ "${BODY}" =~ ^MS_COMMIT:[[:blank:]]([a-z0-9]+) ]]; then
+    if [[ "${BODY}" =~ \[([a-z0-9]+)\] ]]; then
       if [ "${MS_COMMIT}" != "${BASH_REMATCH[1]}" ]; then
         echo "New VSCode Insiders version, new build"
         export SHOULD_BUILD="yes"
