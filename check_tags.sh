@@ -16,9 +16,6 @@ fi
 GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPOSITORY}/releases/latest" )
 LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
 
-
-GITHUB_RESPONSE=$( curl -s "https://api.github.com/repos/VSCodium/vscodium-insiders/releases/latest" )
-
 if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
   if [ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]; then
     echo "New VSCode version, new build"
