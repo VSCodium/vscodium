@@ -16,24 +16,36 @@ fi
 GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${REPOSITORY}/releases/latest" )
 LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
 
+
+GITHUB_RESPONSE=$( curl -s "https://api.github.com/repos/VSCodium/vscodium-insiders/releases/latest" )
+
 if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
   if [ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]; then
     echo "New VSCode version, new build"
     export SHOULD_BUILD="yes"
-
-    VSCODIUM_ASSETS="null"
   elif [[ "${NEW_RELEASE}" == "true" ]]; then
     echo "New release build"
     export SHOULD_BUILD="yes"
+  elif [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+    BODY=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.body' )
 
-    VSCODIUM_ASSETS="null"
-  else
+    if [[ "${BODY}" =~ ^MS_COMMIT:[[:blank:]]([a-z0-9]+) ]]; then
+      if [ "${MS_COMMIT}" != "${BASH_REMATCH[1]}" ]; then
+        echo "New VSCode Insiders version, new build"
+        export SHOULD_BUILD="yes"
+      fi
+    fi
+  fi
+
+  if [[ "${SHOULD_BUILD}" != "yes" ]]; then
     export RELEASE_VERSION="${LATEST_VERSION}"
     echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
 
     echo "Switch to release version: ${RELEASE_VERSION}"
 
     VSCODIUM_ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
+  else
+    VSCODIUM_ASSETS="null"
   fi
 fi
 
