@@ -22,12 +22,16 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
   if [[ -z "${MS_COMMIT}" ]]; then
     export MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
     export MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
+
+    if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+      export MS_TAG="${MS_TAG/\-insider/}"
+    fi
   fi
 
   date=$( date +%Y%j )
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    export RELEASE_VERSION="${MS_TAG/\-insider/}.${date: -5}-insider"
+    export RELEASE_VERSION="${MS_TAG}.${date: -5}-insider"
   else
     export RELEASE_VERSION="${MS_TAG}.${date: -5}"
   fi
