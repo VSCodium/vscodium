@@ -12,10 +12,10 @@ REPO_NAME="${GITHUB_REPOSITORY:(${#OWNER}+1)}"
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   REPOSITORY="${REPO_NAME:-"vscodium"}-insiders"
-  NOTES="update to [${MS_COMMIT}](https://github.com/microsoft/vscode/tree/${MS_COMMIT})"
+  NOTES="update vscode to [${MS_COMMIT}](https://github.com/microsoft/vscode/tree/${MS_COMMIT})"
 else
   REPOSITORY="${REPO_NAME:-"vscodium"}"
-  NOTES="update to [${MS_TAG}](https://code.visualstudio.com/updates/v$( echo ${MS_TAG//./_} \| cut -d'_' -f 1,2 ))"
+  NOTES="update vscode to [${MS_TAG}](https://code.visualstudio.com/updates/v$( echo ${MS_TAG//./_} | cut -d'_' -f 1,2 ))"
 fi
 
 npm install -g github-release-cli
