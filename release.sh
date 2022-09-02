@@ -22,7 +22,7 @@ npm install -g github-release-cli
 
 if [[ $( gh release view --repo "${OWNER}/${REPOSITORY}" "${RELEASE_VERSION}" 2>&1 ) =~ "release not found" ]]; then
   echo "Creating release '${RELEASE_VERSION}'"
-  gh release create "${RELEASE_VERSION}" --repo "${OWNER}/${REPOSITORY}" --notes "${NOTES}"
+  gh release create "${RELEASE_VERSION}" --repo "${OWNER}/${REPOSITORY}" --notes "${NOTES}" --generate-notes
 fi
 
 cd artifacts
