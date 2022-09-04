@@ -1,48 +1,80 @@
 diff --git a/src/vs/code/electron-sandbox/issue/issueReporterMain.ts b/src/vs/code/electron-sandbox/issue/issueReporterMain.ts
-index fcd4485..8d97e5a 100644
+index 33e66be..a7ade0a 100644
 --- a/src/vs/code/electron-sandbox/issue/issueReporterMain.ts
 +++ b/src/vs/code/electron-sandbox/issue/issueReporterMain.ts
-@@ -682,7 +682,7 @@ export class IssueReporter extends Disposable {
+@@ -468,3 +468,3 @@ export class IssueReporter extends Disposable {
+ 		if (title) {
+-			this.searchDuplicates(title, issueDescription);
++			this.searchGitHub('VSCodium/vscodium', title);
+ 		} else {
+@@ -556,33 +556,2 @@ export class IssueReporter extends Disposable {
  
- 		sourceSelect.innerText = '';
+-	@debounce(300)
+-	private searchDuplicates(title: string, body?: string): void {
+-		const url = 'https://vscode-probot.westus.cloudapp.azure.com:7890/duplicate_candidates';
+-		const init = {
+-			method: 'POST',
+-			body: JSON.stringify({
+-				title,
+-				body
+-			}),
+-			headers: new Headers({
+-				'Content-Type': 'application/json'
+-			})
+-		};
+-
+-		window.fetch(url, init).then((response) => {
+-			response.json().then(result => {
+-				this.clearSearchResults();
+-
+-				if (result && result.candidates) {
+-					this.displaySearchResults(result.candidates);
+-				} else {
+-					throw new Error('Unexpected response, no candidates property');
+-				}
+-			}).catch(_ => {
+-				// Ignore
+-			});
+-		}).catch(_ => {
+-			// Ignore
+-		});
+-	}
+-
+ 	private displaySearchResults(results: SearchResult[]) {
+@@ -674,3 +643,3 @@ export class IssueReporter extends Disposable {
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
 -		sourceSelect.append(this.makeOption('vscode', localize('vscode', "Visual Studio Code"), false));
 +		sourceSelect.append(this.makeOption('vscode', localize('vscode', "VSCodium"), false));
  		sourceSelect.append(this.makeOption('extension', localize('extension', "An extension"), false));
- 		if (this.configuration.product.reportMarketplaceIssueUrl) {
- 			sourceSelect.append(this.makeOption('marketplace', localize('marketplace', "Extensions marketplace"), false));
+diff --git a/src/vs/code/electron-sandbox/issue/issueReporterModel.ts b/src/vs/code/electron-sandbox/issue/issueReporterModel.ts
+index a58acca..1903a0c 100644
+--- a/src/vs/code/electron-sandbox/issue/issueReporterModel.ts
++++ b/src/vs/code/electron-sandbox/issue/issueReporterModel.ts
+@@ -77,3 +77,3 @@ ${this._data.issueDescription}
+ ${this.getExtensionVersion()}
+-VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
++VSCodium version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
+ OS version: ${this._data.versionInfo && this._data.versionInfo.os}
+diff --git a/src/vs/code/electron-sandbox/issue/issueReporterPage.ts b/src/vs/code/electron-sandbox/issue/issueReporterPage.ts
+index 6467d66..d425016 100644
+--- a/src/vs/code/electron-sandbox/issue/issueReporterPage.ts
++++ b/src/vs/code/electron-sandbox/issue/issueReporterPage.ts
+@@ -17,3 +17,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
+ 		comment: [
+-			'{Locked="<a href=\"https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
++			'{Locked="<a href=\"https://github.com/VSCodium/vscodium/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
+ 			'{Locked="</a>"}'
+@@ -21,3 +21,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
+ 	},
+-	'Before you report an issue here please <a href="https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
++	'Before you report an issue here please <a href="https://github.com/VSCodium/vscodium/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
+ );
 diff --git a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
-index 0c5855b..654f9a4 100644
+index 20154ad..bca59b8 100644
 --- a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
 +++ b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
-@@ -144,7 +144,7 @@ class ReportExtensionSlowAction extends Action {
- - Extension Name: \`${this.extension.name}\`
- - Extension Version: \`${this.extension.version}\`
+@@ -148,3 +148,3 @@ class ReportExtensionSlowAction extends Action {
  - OS Version: \`${osVersion}\`
 -- VS Code version: \`${this._productService.version}\`\n\n${message}`);
 +- VSCodium version: \`${this._productService.version}\`\n\n${message}`);
  
- 		const url = `${this.repoInfo.base}/${this.repoInfo.owner}/${this.repoInfo.repo}/issues/new/?body=${body}&title=${title}`;
- 		this._openerService.open(URI.parse(url));
-diff --git a/src/vs/workbench/contrib/extensions/electron-sandbox/reportExtensionIssueAction.ts b/src/vs/workbench/contrib/extensions/electron-sandbox/reportExtensionIssueAction.ts
-index f1755db..e77be21 100644
---- a/src/vs/workbench/contrib/extensions/electron-sandbox/reportExtensionIssueAction.ts
-+++ b/src/vs/workbench/contrib/extensions/electron-sandbox/reportExtensionIssueAction.ts
-@@ -14,7 +14,7 @@ import { ExtensionType, IExtensionDescription } from 'vs/platform/extensions/com
- import { IOpenerService } from 'vs/platform/opener/common/opener';
- import { URI } from 'vs/base/common/uri';
- 
--const builtinExtensionIssueUrl = 'https://github.com/microsoft/vscode';
-+const builtinExtensionIssueUrl = 'https://github.com/VSCodium/vscodium';
- 
- export class ReportExtensionIssueAction extends Action {
- 
-@@ -76,7 +76,7 @@ export class ReportExtensionIssueAction extends Action {
- - Extension Name: \`${extension.description.name}\`
- - Extension Version: \`${extension.description.version}\`
- - OS Version: \`${osVersion}\`
--- VS Code version: \`${this.productService.version}\`\n\n${message}`
-+- VSCodium version: \`${this.productService.version}\`\n\n${message}`
- 		);
- 
- 		return `${baseUrl}${queryStringPrefix}body=${body}&title=${encodeURIComponent(title)}`;
