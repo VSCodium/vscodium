@@ -1,5 +1,5 @@
 name: codium-insiders
-adopt-info: codium-insiders
+adopt-info: codium
 summary: Code editing. Redefined.
 description: |
   Binary releases of Code without branding/telemetry/licensing
@@ -73,16 +73,16 @@ parts:
     source: snap/local
 
 apps:
-  codium:
-    command: electron-launch $SNAP/usr/share/codium/bin/codium --no-sandbox
-    desktop: usr/share/applications/codium.desktop
+  codium-insiders:
+    command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --no-sandbox
+    desktop: usr/share/applications/codium-insiders.desktop
     environment:
       DISABLE_WAYLAND: 1
       GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
 
   url-handler:
-    command: electron-launch $SNAP/usr/share/codium/bin/codium --open-url --no-sandbox
-    desktop: usr/share/applications/codium-url-handler.desktop
+    command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --open-url --no-sandbox
+    desktop: usr/share/applications/codium-insiders-url-handler.desktop
     environment:
       DISABLE_WAYLAND: 1
       GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
