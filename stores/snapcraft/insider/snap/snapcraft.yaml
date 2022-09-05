@@ -27,7 +27,7 @@ parts:
       rm -f latest.json
       rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}"
       # Set version
-      snapcraftctl set-version "${VERSION/\\-insider/)"
+      snapcraftctl set-version "${VERSION/\-insider/)}"
       # Correct path to icon.
       sed -i 's|Icon=vscodium-insiders|Icon=${SNAP}/usr/share/pixmaps/vscodium-insiders.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders.desktop
       sed -i 's|Exec=/usr/share/codium-insiders/codium-insiders|Exec=codium-insiders|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders.desktop
