@@ -113,7 +113,6 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
   snap:
-    if: ${{ false }} # more testing need to be done after the first release
     needs: release
     runs-on: ubuntu-latest
     env:
@@ -157,5 +156,5 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         with:
           snap: ${{ steps.build.outputs.snap }}
-          release: stable
+          release: edge
         if: env.SHOULD_DEPLOY == 'yes'
