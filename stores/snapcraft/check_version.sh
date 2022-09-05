@@ -40,7 +40,7 @@ else
 	  export SHOULD_DEPLOY="yes"
 
     snap version
-    snap info "${SNAP_NAME}"
+    snap info "${SNAP_NAME}" 2>&1
   fi
 fi
 
