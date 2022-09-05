@@ -10,6 +10,7 @@
 - [Build in Docker](#build-docker)
   - [X64](#build-docker-x64)
   - [ARM 32bits](#build-docker-arm32)
+- [Build Snap](#build-snap)
 - [Patch Update Process](#patch-update-process)
   - [Semi-Automated](#patch-update-process-semiauto)
   - [Manual](#patch-update-process-manual)
@@ -121,6 +122,22 @@ export npm_config_arch=armv7l
 export npm_config_force_process_config="true"
 
 . build.sh
+```
+
+## <a id="build-snap"></a>Build Snap
+
+```
+# for the stable version
+cd ./stores/snapcraft/stable
+
+# for the insider version
+cd ./stores/snapcraft/insider
+
+# create the snap
+snapcraft --use-lxd
+
+# verify the snap
+review-tools.snap-review --allow-classic codium*.snap
 ```
 
 ## <a id="patch-update-process"></a>Patch Update Process
