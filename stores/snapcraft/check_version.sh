@@ -25,7 +25,7 @@ else
 
   echo "Architecture: ${ARCHITECTURE}"
 
-  SNAP_VERSION=$(snapcraft list-revisions ${SNAP_NAME} | grep -F "stable*" | grep "${ARCHITECTURE}" | tr -s ' ' | cut -d ' ' -f 4)
+  SNAP_VERSION=$(snapcraft list-revisions ${SNAP_NAME} 2>&1 | grep -F "stable*" | grep "${ARCHITECTURE}" | tr -s ' ' | cut -d ' ' -f 4)
   echo "Snap version: ${SNAP_VERSION}"
 
   wget --quiet "https://api.github.com/repos/${REPOSITORY}/releases" -O gh_latest.json
