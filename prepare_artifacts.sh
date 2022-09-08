@@ -19,20 +19,25 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     cd "VSCode-darwin-${VSCODE_ARCH}"
 
     CERTIFICATE_P12=VSCodium.p12
-    KEYCHAIN="${RUNNER_TEMP}/build.keychain"
+    CODIUM_KEYCHAIN="${RUNNER_TEMP}/build.keychain"
+    DEFAULT_KEYCHAIN="$(security default-keychain | sed -E 's|^.*/([^/]+)\-db"$|\1|')"
 
     echo "${CERTIFICATE_OSX_P12}" | base64 --decode > "${CERTIFICATE_P12}"
-    security create-keychain -p mysecretpassword "${KEYCHAIN}"
-    security default-keychain -s "${KEYCHAIN}"
-    security unlock-keychain -p mysecretpassword "${KEYCHAIN}"
-    security import "${CERTIFICATE_P12}" -k "${KEYCHAIN}" -P "${CERTIFICATE_OSX_PASSWORD}" -T /usr/bin/codesign
-    security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword "${KEYCHAIN}"
+    security create-keychain -p mysecretpassword "${CODIUM_KEYCHAIN}"
+    security default-keychain -s "${CODIUM_KEYCHAIN}"
+    security unlock-keychain -p mysecretpassword "${CODIUM_KEYCHAIN}"
+    security import "${CERTIFICATE_P12}" -k "${CODIUM_KEYCHAIN}" -P "${CERTIFICATE_OSX_PASSWORD}" -T /usr/bin/codesign
+    security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword "${CODIUM_KEYCHAIN}"
 
     if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
       codesign --deep --force --verbose --sign "${CERTIFICATE_OSX_ID}" "VSCodium - Insiders.app"
     else
       codesign --deep --force --verbose --sign "${CERTIFICATE_OSX_ID}" "VSCodium.app"
     fi
+
+    # put back old keychain
+    security delete-keychain "${CODIUM_KEYCHAIN}"
+    security default-keychain -s "${DEFAULT_KEYCHAIN}"
 
     cd ..
   fi
