@@ -10,13 +10,13 @@ fi
 if [[ -z "${RELEASE_VERSION}" ]]; then
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     if [[ "${VSCODE_LATEST}" == "yes" ]] || [[ ! -f "insider.json" ]]; then
-      UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/insider/lol )
+      UPDATE_INFO=$( curl --silent https://update.code.visualstudio.com/api/update/darwin/insider/lol )
     else
       export MS_COMMIT=$(jq -r '.commit' insider.json)
       export MS_TAG=$(jq -r '.tag' insider.json)
     fi
   else
-    UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/stable/lol )
+    UPDATE_INFO=$( curl --silent https://update.code.visualstudio.com/api/update/darwin/stable/lol )
   fi
 
   if [[ -z "${MS_COMMIT}" ]]; then
@@ -73,9 +73,9 @@ git remote add origin https://github.com/Microsoft/vscode.git
 # figure out latest tag by calling MS update API
 if [[ -z "${MS_TAG}" ]]; then
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/insider/lol )
+    UPDATE_INFO=$( curl --silent https://update.code.visualstudio.com/api/update/darwin/insider/lol )
   else
-    UPDATE_INFO=$( curl https://update.code.visualstudio.com/api/update/darwin/stable/lol )
+    UPDATE_INFO=$( curl --silent https://update.code.visualstudio.com/api/update/darwin/stable/lol )
   fi
   export MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
   export MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
