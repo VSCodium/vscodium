@@ -71,8 +71,6 @@ else
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile
 fi
 
-cp product.json product.json.bak
-
 setpath() {
   { set +x; } 2>/dev/null
   echo "$( cat "${1}.json" | jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' )" > "${1}.json"
@@ -85,7 +83,9 @@ setpath_json() {
   set -x
 }
 
-# set fields in product.json
+# product.json
+cp product.json product.json.bak
+
 setpath "product" "checksumFailMoreInfoUrl" "https://go.microsoft.com/fwlink/?LinkId=828886"
 setpath "product" "documentationUrl" "https://go.microsoft.com/fwlink/?LinkID=533484#vscode"
 setpath_json "product" "extensionsGallery" '{"serviceUrl": "https://open-vsx.org/vscode/gallery", "itemUrl": "https://open-vsx.org/vscode/item"}'
@@ -153,11 +153,20 @@ echo "$( jq -s '.[0] * .[1]' product.json ../product.json )" > product.json
 
 cat product.json
 
+# package.json
 cp package.json package.json.bak
+
 setpath "package" "version" $( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\1/p" )
 setpath "package" "release" $( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\2/p" )
 
+replace 's|Microsoft Corporation|VSCodium|' package.json
+
 ../undo_telemetry.sh
+
+replace 's|Microsoft Corporation|VSCodium|' build/lib/electron.js
+replace 's|Microsoft Corporation|VSCodium|' build/lib/electron.ts
+replace 's|([0-9]) Microsoft|\1 VSCodium|' build/lib/electron.js
+replace 's|([0-9]) Microsoft|\1 VSCodium|' build/lib/electron.ts
 
 if [[ "${OS_NAME}" == "linux" ]]; then
   # microsoft adds their apt repo to sources
@@ -192,6 +201,10 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 
   # snapcraft.yaml
   sed -i 's|Visual Studio Code|VSCodium|'  resources/linux/rpm/code.spec.template
+elif [[ "${OS_NAME}" == "windows" ]]; then
+  # code.iss
+  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' build/win32/code.iss
+  sed -i 's|Microsoft Corporation|VSCodium|' build/win32/code.iss
 fi
 
 cd ..
