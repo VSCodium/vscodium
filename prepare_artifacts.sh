@@ -36,9 +36,9 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 
     echo "codesign"
     if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-      codesign --deep --force --verbose --sign "${CERTIFICATE_OSX_ID}" "VSCodium - Insiders.app"
+      codesign --deep --force --verbose --keychain "${CODIUM_KEYCHAIN}" --sign "${CERTIFICATE_OSX_ID}" "VSCodium - Insiders.app"
     else
-      codesign --deep --force --verbose --sign "${CERTIFICATE_OSX_ID}" "VSCodium.app"
+      codesign --deep --force --verbose --keychain "${CODIUM_KEYCHAIN}" --sign "${CERTIFICATE_OSX_ID}" "VSCodium.app"
     fi
 
     cd ..
