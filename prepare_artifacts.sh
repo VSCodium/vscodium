@@ -23,21 +23,23 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     DEFAULT_KEYCHAIN="$(security default-keychain | sed -E 's|^.*/([^/]+)\-db"$|\1|')"
 
     echo "${CERTIFICATE_OSX_P12}" | base64 --decode > "${CERTIFICATE_P12}"
+    security default-keychain
     security create-keychain -p mysecretpassword "${CODIUM_KEYCHAIN}"
-    security default-keychain -s "${CODIUM_KEYCHAIN}"
+    # security default-keychain -s "${CODIUM_KEYCHAIN}"
     security unlock-keychain -p mysecretpassword "${CODIUM_KEYCHAIN}"
+
+    echo "import"
     security import "${CERTIFICATE_P12}" -k "${CODIUM_KEYCHAIN}" -P "${CERTIFICATE_OSX_PASSWORD}" -T /usr/bin/codesign
+
+    echo "set-key-partition-list"
     security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword "${CODIUM_KEYCHAIN}"
 
+    echo "codesign"
     if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
       codesign --deep --force --verbose --sign "${CERTIFICATE_OSX_ID}" "VSCodium - Insiders.app"
     else
       codesign --deep --force --verbose --sign "${CERTIFICATE_OSX_ID}" "VSCodium.app"
     fi
-
-    # put back old keychain
-    security delete-keychain "${CODIUM_KEYCHAIN}"
-    security default-keychain -s "${DEFAULT_KEYCHAIN}"
 
     cd ..
   fi
@@ -55,6 +57,12 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     npx create-dmg ./*.app ..
     mv ../*.dmg "../artifacts/VSCodium.${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"
     popd
+  fi
+
+  if [[ "${CI_BUILD}" != "no" ]]; then
+    # put back old keychain
+    security delete-keychain "${CODIUM_KEYCHAIN}"
+    security default-keychain -s "${DEFAULT_KEYCHAIN}"
   fi
 
   VSCODE_PLATFORM="darwin"
