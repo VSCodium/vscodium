@@ -25,10 +25,11 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     echo "${CERTIFICATE_OSX_P12}" | base64 --decode > "${CERTIFICATE_P12}"
 
     echo "+ create temporary keychain"
-    security default-keychain
     security create-keychain -p mysecretpassword "${CODIUM_KEYCHAIN}"
+    security set-keychain-settings -lut 21600 "${CODIUM_KEYCHAIN}"
     # security default-keychain -s "${CODIUM_KEYCHAIN}"
     security unlock-keychain -p mysecretpassword "${CODIUM_KEYCHAIN}"
+    security list-keychains -s `security list-keychains | xargs` "${CODIUM_KEYCHAIN}"
     security list-keychains -d user
     security show-keychain-info ${CODIUM_KEYCHAIN}
 
