@@ -19,24 +19,22 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     cd "VSCode-darwin-${VSCODE_ARCH}"
 
     CERTIFICATE_P12=VSCodium.p12
-    CODIUM_KEYCHAIN="${RUNNER_TEMP}/build.keychain"
-    DEFAULT_KEYCHAIN="$(security default-keychain | sed -E 's|^.*/([^/]+)\-db"$|\1|')"
+    KEYCHAIN="${RUNNER_TEMP}/build.keychain"
 
     echo "${CERTIFICATE_OSX_P12}" | base64 --decode > "${CERTIFICATE_P12}"
 
     echo "+ create temporary keychain"
-    security create-keychain -p mysecretpassword "${CODIUM_KEYCHAIN}"
-    security set-keychain-settings -lut 21600 "${CODIUM_KEYCHAIN}"
-    # security default-keychain -s "${CODIUM_KEYCHAIN}"
-    security unlock-keychain -p mysecretpassword "${CODIUM_KEYCHAIN}"
-    security list-keychains -s `security list-keychains | xargs` "${CODIUM_KEYCHAIN}"
-    security list-keychains -d user
-    security show-keychain-info ${CODIUM_KEYCHAIN}
+    security create-keychain -p mysecretpassword "${KEYCHAIN}"
+    security set-keychain-settings -lut 21600 "${KEYCHAIN}"
+    security unlock-keychain -p mysecretpassword "${KEYCHAIN}"
+    security list-keychains -s `security list-keychains | xargs` "${KEYCHAIN}"
+    # security list-keychains -d user
+    # security show-keychain-info ${KEYCHAIN}
 
     echo "+ import certificate to keychain"
-    security import "${CERTIFICATE_P12}" -k "${CODIUM_KEYCHAIN}" -P "${CERTIFICATE_OSX_PASSWORD}" -T /usr/bin/codesign
-    security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k mysecretpassword "${CODIUM_KEYCHAIN}" > /dev/null
-    security find-identity "${CODIUM_KEYCHAIN}"
+    security import "${CERTIFICATE_P12}" -k "${KEYCHAIN}" -P "${CERTIFICATE_OSX_PASSWORD}" -T /usr/bin/codesign
+    security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k mysecretpassword "${KEYCHAIN}" > /dev/null
+    # security find-identity "${KEYCHAIN}"
 
     echo "+ signing"
     if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
@@ -61,12 +59,6 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     npx create-dmg ./*.app ..
     mv ../*.dmg "../artifacts/VSCodium.${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"
     popd
-  fi
-
-  if [[ "${CI_BUILD}" != "no" ]]; then
-    # put back old keychain
-    security delete-keychain "${CODIUM_KEYCHAIN}"
-    security default-keychain -s "${DEFAULT_KEYCHAIN}"
   fi
 
   VSCODE_PLATFORM="darwin"
