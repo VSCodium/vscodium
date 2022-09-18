@@ -4,6 +4,7 @@ DEFAULT_ON="'default': TelemetryConfiguration.ON"
 DEFAULT_OFF="'default': TelemetryConfiguration.OFF"
 TELEMETRY_CRASH_REPORTER="'telemetry.enableCrashReporter':"
 TELEMETRY_CONFIGURATION=" TelemetryConfiguration.ON"
+NLS=workbench.settings.enableNaturalLanguageSearch
 
 # include common functions
 . ../utils.sh
@@ -47,3 +48,4 @@ update_setting () {
 
 update_setting "${TELEMETRY_CRASH_REPORTER}" src/vs/workbench/electron-sandbox/desktop.contribution.ts
 update_setting "${TELEMETRY_CONFIGURATION}" src/vs/platform/telemetry/common/telemetryService.ts
+update_setting "${NLS}" src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
