@@ -7,7 +7,16 @@ CALLER_DIR=$( pwd )
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  wget -c https://github.com/$(wget -q https://github.com/AppImage/pkg2appimage/releases -O - | grep "pkg2appimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+  GITHUB_RESPONSE=$( curl -s "https://api.github.com/repos/AppImage/pkg2appimage/releases/latest" )
+  APPIMAGE_URL=$( echo "${GITHUB_RESPONSE}" | jq --raw-output '.assets | map(select( .name | test("x86_64.AppImage(?!.zsync)"))) | map(.browser_download_url)[0]' )
+
+  if [[ -z "${APPIMAGE_URL}" ]]; then
+    echo "The url for pkg2appimage.AppImage hasn't been found"
+    exit 1
+  fi
+
+  wget -c "${APPIMAGE_URL}"
+
   chmod +x ./pkg2appimage-*.AppImage
 
   ./pkg2appimage-*.AppImage --appimage-extract && mv ./squashfs-root ./pkg2appimage.AppDir
