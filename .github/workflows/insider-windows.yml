@@ -18,7 +18,7 @@ on:
     - '**/*.md'
 
 jobs:
-  windows:
+  build:
     runs-on: windows-2019
     defaults:
       run:
@@ -104,8 +104,32 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         run: ./update_version.sh
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+  winget:
+    needs: build
+    runs-on: windows-latest
+    env:
+      VSCODE_QUALITY: 'insider'
+    if: env.SHOULD_DEPLOY == 'yes'
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: insider
+
+      - name: Check version
+        run: ./stores/winget/check_version.sh
+
+      - name: Release to WinGet
+        uses: vedantmgoyal2009/winget-releaser@latest
+        with:
+          identifier: VSCodium.VSCodium.Insiders
+          release-tag: ${{ env.RELEASE_VERSION }}
+          installers-regex: '\.exe$' # only .exe files
+          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+        if: env.SHOULD_DEPLOY == 'yes'

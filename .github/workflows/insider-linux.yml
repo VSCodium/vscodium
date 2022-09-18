@@ -18,7 +18,7 @@ on:
     - '**/*.md'
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
@@ -113,8 +113,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
   snap:
-    if: ${{ false }}
-    needs: release
+    needs: build
     runs-on: ubuntu-latest
     env:
       VSCODE_QUALITY: 'insider'
@@ -124,6 +123,8 @@ jobs:
         platform:
         - amd64
         - arm64
+    # if: env.SHOULD_DEPLOY == 'yes'
+    if: ${{ false }}
 
     steps:
       - uses: actions/checkout@v3
