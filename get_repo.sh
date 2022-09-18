@@ -108,7 +108,7 @@ if [[ ${GITHUB_ENV} ]]; then
   echo "MS_COMMIT=${MS_COMMIT}" >> "${GITHUB_ENV}"
   echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
 
-  echo "::set-env name=RELEASE_VERSION::${RELEASE_VERSION}"
+  echo "::set-output name=RELEASE_VERSION::${RELEASE_VERSION}"
 fi
 
 . version.sh

@@ -115,7 +115,7 @@ jobs:
     runs-on: windows-latest
     env:
       VSCODE_QUALITY: 'insider'
-    if: env.SHOULD_DEPLOY == 'yes'
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v3
@@ -124,6 +124,8 @@ jobs:
 
       - name: Check version
         run: ./stores/winget/check_version.sh
+        env:
+          RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
 
       - name: Release to WinGet
         uses: vedantmgoyal2009/winget-releaser@latest

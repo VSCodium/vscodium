@@ -119,7 +119,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: env.SHOULD_DEPLOY == 'yes'
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v3
