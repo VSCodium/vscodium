@@ -18,7 +18,7 @@ on:
     - '**/*.md'
 
 jobs:
-  windows:
+  build:
     runs-on: windows-2019
     defaults:
       run:
@@ -101,26 +101,30 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
         run: ./update_version.sh
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
-      # - name: Set MS_TAG as job output for release-winget job
-      #   if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-      #   run: echo "::set-output name=tagname::${{ env.MS_TAG }}"
+  winget:
+    needs: build
+    runs-on: windows-latest
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
-  # release-winget:
-  #   name: Release to WinGet
-  #   needs: windows
-  #   if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-  #   runs-on: windows-latest # action can only be run on windows
-  #   steps:
-  #     - name: Release to WinGet
-  #       uses: vedantmgoyal2009/winget-releaser@latest
-  #       with:
-  #         identifier: VSCodium.VSCodium
-  #         release-tag: ${{ needs.windows.outputs.tagname }}
-  #         installers-regex: '\.exe$' # only .exe files
-  #         token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check version
+        run: ./stores/winget/check_version.sh
+        env:
+          RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+
+      - name: Release to WinGet
+        uses: vedantmgoyal2009/winget-releaser@latest
+        with:
+          identifier: VSCodium.VSCodium.Insiders
+          release-tag: ${{ env.RELEASE_VERSION }}
+          installers-regex: '\.exe$' # only .exe files
+          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+        if: env.SHOULD_DEPLOY == 'yes'

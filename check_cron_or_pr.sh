@@ -25,4 +25,6 @@ fi
 if [[ "${GITHUB_ENV}" ]]; then
 	echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
 	echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" >> "${GITHUB_ENV}"
+
+  echo "::set-output name=SHOULD_DEPLOY::${SHOULD_DEPLOY}"
 fi

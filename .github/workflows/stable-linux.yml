@@ -18,7 +18,7 @@ on:
     - '**/*.md'
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
@@ -111,7 +111,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
   snap:
-    needs: release
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -119,6 +119,7 @@ jobs:
         platform:
         - amd64
         - arm64
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v3
