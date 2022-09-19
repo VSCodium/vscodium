@@ -134,11 +134,12 @@ jobs:
           RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
 
       - name: Release to WinGet
-        uses: daiyam/winget-releaser@feat-release-repo
+        uses: daiyam/winget-releaser@insider
         with:
           identifier: VSCodium.VSCodium.Insiders
+          version: ${{ env.RELEASE_VERSION }}
           release-repository: vscodium-insiders
-          release-tag: ${{ env.RELEASE_VERSION }}
+          release-tag: ${{ env.RELEASE_VERSION }}-insider
           installers-regex: '\.exe$' # only .exe files
           token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
         if: env.SHOULD_DEPLOY == 'yes'
