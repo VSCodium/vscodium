@@ -155,9 +155,10 @@ The minimal version is limited by the core component Electron, you may want to c
 - [x] GNU/Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
 - [x] GNU/Linux arm64 (`deb`, `tar.gz`)
 - [x] GNU/Linux armhf (`deb`, `tar.gz`)
-- [x] Windows 7 or newer x64
-- [x] Windows 7 or newer x86
-- [x] Windows 10 arm64
+- [x] Windows 10 / Server 2012 R2 or newer x64
+- [x] Windows 10 / Server 2012 R2 or newer x86
+- [x] Windows 10 / Server 2012 R2 or newer arm64
+
 
 ## <a id="donate"></a>Donate
 
