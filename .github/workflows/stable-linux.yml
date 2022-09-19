@@ -26,7 +26,6 @@ jobs:
         OS_NAME: 'linux'
         VSCODE_ARCH: ${{ matrix.vscode_arch }}
         VSCODE_QUALITY: 'stable'
-
     strategy:
       fail-fast: false
       matrix:
@@ -40,6 +39,9 @@ jobs:
         - vscode_arch: armhf
           npm_arch: armv7l
           image: vscodium/vscodium-linux-build-agent:stretch-armhf
+    outputs:
+      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
       - uses: actions/checkout@v3
