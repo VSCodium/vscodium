@@ -116,6 +116,9 @@ jobs:
   winget:
     needs: build
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     env:
       VSCODE_QUALITY: 'insider'
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'

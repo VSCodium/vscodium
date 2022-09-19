@@ -107,8 +107,6 @@ if [[ ${GITHUB_ENV} ]]; then
   echo "MS_TAG=${MS_TAG}" >> "${GITHUB_ENV}"
   echo "MS_COMMIT=${MS_COMMIT}" >> "${GITHUB_ENV}"
   echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
-
-  echo "::set-output name=RELEASE_VERSION::${RELEASE_VERSION}"
 fi
 
 . version.sh
