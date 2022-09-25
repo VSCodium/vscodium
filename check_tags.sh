@@ -334,7 +334,7 @@ else
     if [[ "${VSCODE_ARCH}" != "x64" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
     fi
-  if [[ "${OS_NAME}" == "osx" ]]; then
+  elif [[ "${OS_NAME}" == "osx" ]]; then
     if [[ "${VSCODE_QUALITY}" == "insider" && "${VSCODE_ARCH}" == "arm64" ]]; then
       export SHOULD_BUILD_SRC="yes"
     fi
