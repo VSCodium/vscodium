@@ -1,13 +1,5 @@
-diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 1ae8079..eb56045 100644
---- a/src/vs/base/common/product.ts
-+++ b/src/vs/base/common/product.ts
-@@ -72,2 +72,3 @@ export interface IProductConfiguration {
- 		readonly serviceUrl: string;
-+		readonly cacheUrl?: string;
- 		readonly itemUrl: string;
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 7e63a16..3bfeab8 100644
+index bceda01..174c766 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -6,3 +6,3 @@
@@ -19,8 +11,21 @@ index 7e63a16..3bfeab8 100644
  import { ISandboxConfiguration } from 'vs/base/parts/sandbox/common/sandboxTypes';
 +import { getUserDataPath } from 'vs/platform/environment/node/userDataPath';
  
-@@ -36,2 +37,28 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+@@ -35,2 +36,41 @@ else if (typeof require?.__$__nodeRequire === 'function') {
  
++	// Set user-defined extension gallery
++	const { serviceUrl, searchUrl, itemUrl, controlUrl, recommendationsUrl } = product.extensionsGallery || {}
++
++	Object.assign(product, {
++		extensionsGallery: {
++			serviceUrl: env['VSCODE_GALLERY_SERVICE_URL'] || serviceUrl,
++			searchUrl: env['VSCODE_GALLERY_SEARCH_URL'] || searchUrl,
++			itemUrl: env['VSCODE_GALLERY_ITEM_URL'] || itemUrl,
++			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
++			recommendationsUrl: env['VSCODE_GALLERY_RECOMMENDATIONS_URL'] || recommendationsUrl
++		}
++	})
++
 +	// Merge user-customized product.json
 +	try {
 +		const merge = (...objects: any[]) =>
@@ -38,7 +43,7 @@ index 7e63a16..3bfeab8 100644
 +				return result;
 +			}, {}) as any;
 +
-+		const userDataPath = getUserDataPath({} as any);
++		const userDataPath = getUserDataPath({} as any, product.nameShort);
 +		const userProductPath = isWindows ? `file:///${userDataPath}/product.json` : `file://${userDataPath}/product.json`;
 +
 +		const userProduct = require.__$__nodeRequire(FileAccess.asFileUri(userProductPath, require).fsPath);
@@ -48,19 +53,3 @@ index 7e63a16..3bfeab8 100644
 +	}
 +
  	// Running out of sources
-@@ -46,2 +73,15 @@ else if (typeof require?.__$__nodeRequire === 'function') {
- 
-+	// Set user-defined extension gallery
-+	const { serviceUrl, cacheUrl, itemUrl, controlUrl, recommendationsUrl } = product.extensionsGallery || {}
-+
-+	Object.assign(product, {
-+		extensionsGallery: {
-+			serviceUrl: env['VSCODE_GALLERY_SERVICE_URL'] || serviceUrl,
-+			cacheUrl: env['VSCODE_GALLERY_CACHE_URL'] || cacheUrl,
-+			itemUrl: env['VSCODE_GALLERY_ITEM_URL'] || itemUrl,
-+			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
-+			recommendationsUrl: env['VSCODE_GALLERY_RECOMMENDATIONS_URL'] || recommendationsUrl
-+		}
-+	})
-+
- 	Object.assign(product, {

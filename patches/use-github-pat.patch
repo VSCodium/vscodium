@@ -414,23 +414,23 @@ index 94ce542..d83e3c3 100644
 -
  	private getServerUri(path: string = '') {
 diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-index fd4c88d..1524625 100644
+index bee1974..0f57882 100644
 --- a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
 +++ b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-@@ -285,3 +285,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
+@@ -306,3 +306,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
  
 -		if (providers.length && !menus.length) {
 +		if (!menus.length) {
  			const noAccountsAvailableAction = disposables.add(new Action('noAccountsAvailable', localize('noAccounts', "You are not signed in to any accounts"), undefined, false));
 diff --git a/src/vs/workbench/services/authentication/browser/authenticationService.ts b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-index 921cfbc..264ad7e 100644
+index 69cb0d2..920d6c6 100644
 --- a/src/vs/workbench/services/authentication/browser/authenticationService.ts
 +++ b/src/vs/workbench/services/authentication/browser/authenticationService.ts
 @@ -275,12 +275,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
  		}
 -
 -		if (!this._authenticationProviders.size) {
--			this._placeholderMenuItem = MenuRegistry.appendMenuItem(MenuId.AccountsContext, {
+-			placeholderMenuItem = MenuRegistry.appendMenuItem(MenuId.AccountsContext, {
 -				command: {
 -					id: 'noAuthenticationProviders',
 -					title: nls.localize('loading', "Loading..."),
