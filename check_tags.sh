@@ -54,6 +54,14 @@ contains() {
 if [ "${VSCODIUM_ASSETS}" != "null" ]; then
   # macos
   if [[ "${OS_NAME}" == "osx" ]]; then
+    if [[ "${VSCODE_QUALITY}" == "insider" && "${VSCODE_ARCH}" == "arm64" ]]; then
+      if [[ -z $( contains "VSCodium-${RELEASE_VERSION}-src.tar.gz" ) || -z $( contains "VSCodium-${RELEASE_VERSION}-src.zip" ) ]]; then
+        echo "Building on MacOS because we have no SRC"
+        export SHOULD_BUILD="yes"
+        export SHOULD_BUILD_SRC="yes"
+      fi
+    fi
+
     if [[ -z $( contains "VSCodium-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.zip" ) ]]; then
       echo "Building on MacOS because we have no ZIP"
       export SHOULD_BUILD="yes"
@@ -348,3 +356,4 @@ echo "SHOULD_BUILD_REH=${SHOULD_BUILD_REH}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_RPM=${SHOULD_BUILD_RPM}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_TAR=${SHOULD_BUILD_TAR}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_ZIP=${SHOULD_BUILD_ZIP}" >> "${GITHUB_ENV}"
+echo "SHOULD_BUILD_SRC=${SHOULD_BUILD_SRC}" >> "${GITHUB_ENV}"

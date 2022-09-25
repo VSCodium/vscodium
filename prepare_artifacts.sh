@@ -61,6 +61,11 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     popd
   fi
 
+  if [[ "${SHOULD_BUILD_SRC}" == "yes" ]]; then
+    git archive --format tar.gz --output="./artifacts/VSCodium-${RELEASE_VERSION}-src.tar.gz" HEAD
+    git archive --format zip --output="./artifacts/VSCodium-${RELEASE_VERSION}-src.zip" HEAD
+  fi
+
   VSCODE_PLATFORM="darwin"
 elif [[ "${OS_NAME}" == "windows" ]]; then
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
