@@ -7,7 +7,7 @@ CALLER_DIR=$( pwd )
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  GITHUB_RESPONSE=$( curl -s "https://api.github.com/repos/AppImage/pkg2appimage/releases/latest" )
+  GITHUB_RESPONSE=$( curl --silent --location "https://api.github.com/repos/AppImage/pkg2appimage/releases/latest" )
   APPIMAGE_URL=$( echo "${GITHUB_RESPONSE}" | jq --raw-output '.assets | map(select( .name | test("x86_64.AppImage(?!.zsync)"))) | map(.browser_download_url)[0]' )
 
   if [[ -z "${APPIMAGE_URL}" ]]; then
