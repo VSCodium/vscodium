@@ -33,6 +33,7 @@ If applicable, add screenshots to help explain your problem.
  - OS: [e.g. Mac OS, Ubuntu 20.04, etc]
  - Architecture [e.g. x64, ia32, arm64]
  - Version [e.g. 1.33.0]
+ - App Manager [e.g. Winget, Homebrew, Snap, AUR, RPM, Nix, ...]
 
 **Additional context**
 Add any other context about the problem here.
