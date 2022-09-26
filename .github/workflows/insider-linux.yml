@@ -122,6 +122,11 @@ jobs:
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
+      - name: Get version
+        env:
+          RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+        run: echo "PACKAGE_VERSION=${RELEASE_VERSION/-*/}" >> $GITHUB_ENV
+
       - name: Register local actions
         uses: actions/checkout@master
 
@@ -129,6 +134,7 @@ jobs:
         uses: zokugun/github-actions-aur-releaser@v1
         with:
           package_name: vscodium-insiders-bin
+          package_version: ${{ env.PACKAGE_VERSION }}
           ssh_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
           git_username: ${{ secrets.AUR_USERNAME }}
           git_email: ${{ secrets.AUR_EMAIL }}
@@ -137,6 +143,7 @@ jobs:
         uses: zokugun/github-actions-aur-releaser@v1
         with:
           package_name: vscodium-insiders
+          package_version: ${{ env.PACKAGE_VERSION }}
           ssh_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
           git_username: ${{ secrets.AUR_USERNAME }}
           git_email: ${{ secrets.AUR_EMAIL }}
