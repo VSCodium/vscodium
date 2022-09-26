@@ -135,18 +135,18 @@ jobs:
         with:
           package_name: vscodium-insiders-bin
           package_version: ${{ env.PACKAGE_VERSION }}
-          ssh_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
-          git_username: ${{ secrets.AUR_USERNAME }}
-          git_email: ${{ secrets.AUR_EMAIL }}
+          aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
+          aur_username: ${{ secrets.AUR_USERNAME }}
+          aur_email: ${{ secrets.AUR_EMAIL }}
 
       - name: Publish vscodium-insiders
         uses: zokugun/github-actions-aur-releaser@v1
         with:
           package_name: vscodium-insiders
           package_version: ${{ env.PACKAGE_VERSION }}
-          ssh_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
-          git_username: ${{ secrets.AUR_USERNAME }}
-          git_email: ${{ secrets.AUR_EMAIL }}
+          aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
+          aur_username: ${{ secrets.AUR_USERNAME }}
+          aur_email: ${{ secrets.AUR_EMAIL }}
 
   snap:
     needs: build
