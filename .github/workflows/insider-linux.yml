@@ -116,6 +116,31 @@ jobs:
         run: ./update_version.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
+  aur:
+    needs: build
+    runs-on: ubuntu-latest
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+
+    steps:
+      - name: Register local actions
+        uses: actions/checkout@master
+
+      - name: Publish vscodium-insiders-bin
+        uses: zokugun/github-actions-aur-releaser@v1
+        with:
+          package_name: vscodium-insiders-bin
+          ssh_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
+          git_username: ${{ secrets.AUR_USERNAME }}
+          git_email: ${{ secrets.AUR_EMAIL }}
+
+      - name: Publish vscodium-insiders
+        uses: zokugun/github-actions-aur-releaser@v1
+        with:
+          package_name: vscodium-insiders
+          ssh_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
+          git_username: ${{ secrets.AUR_USERNAME }}
+          git_email: ${{ secrets.AUR_EMAIL }}
+
   snap:
     needs: build
     runs-on: ubuntu-latest
