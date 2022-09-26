@@ -100,7 +100,10 @@ setpath "product" "reportIssueUrl" "https://github.com/VSCodium/vscodium/issues/
 setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
 setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=852118"
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
-setpath "product" "updateUrl" "https://vscodium.now.sh"
+
+if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
+  setpath "product" "updateUrl" "https://vscodium.now.sh"
+fo
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "nameShort" "VSCodium - Insiders"
