@@ -1,0 +1,45 @@
+diff --git a/src/vs/platform/update/common/update.ts b/src/vs/platform/update/common/update.ts
+index 7cd4a84..7cbdf21 100644
+--- a/src/vs/platform/update/common/update.ts
++++ b/src/vs/platform/update/common/update.ts
+@@ -48,3 +48,4 @@ export const enum UpdateType {
+ 	Archive,
+-	Snap
++	Snap,
++	WindowsInstaller,
+ }
+diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
+index caecd71..eb85ed0 100644
+--- a/src/vs/platform/update/electron-main/updateService.win32.ts
++++ b/src/vs/platform/update/electron-main/updateService.win32.ts
+@@ -41,5 +41,9 @@ function getUpdateType(): UpdateType {
+ 	if (typeof _updateType === 'undefined') {
+-		_updateType = fs.existsSync(path.join(path.dirname(process.execPath), 'unins000.exe'))
+-			? UpdateType.Setup
+-			: UpdateType.Archive;
++		if (fs.existsSync(path.join(path.dirname(process.execPath), 'unins000.exe'))) {
++			_updateType = UpdateType.Setup;
++		} else if (path.basename(path.normalize(path.join(process.execPath, '..', ''))) === 'Program Files') {
++			_updateType = UpdateType.WindowsInstaller;
++		} else {
++			_updateType = UpdateType.Archive;
++		}
+ 	}
+@@ -89,6 +93,13 @@ export class Win32UpdateService extends AbstractUpdateService {
+ 
+-		if (getUpdateType() === UpdateType.Archive) {
+-			platform += '-archive';
+-		} else if (this.productService.target === 'user') {
+-			platform += '-user';
++		switch (getUpdateType()) {
++			case UpdateType.Archive:
++				platform += '-archive';
++				break;
++			case UpdateType.WindowsInstaller:
++				platform += '-msi';
++				break;
++			default:
++				if (this.productService.target === 'user') {
++					platform += '-user';
++				}
+ 		}
