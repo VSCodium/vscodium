@@ -1045,32 +1045,32 @@
               </Extension>
             </ProgId>
           </Component>
-          <Component Id="AddFileTypeAssociationVSCodiumSourceFile" Guid="*">
-            <RegistryValue Root="HKCR" Key="VSCodiumSourceFile" Value="VSCodium" Type="string" Action="write" />
-            <RegistryValue Root="HKCR" Key="VSCodiumSourceFile\DefaultIcon" Value="[#DEFAULT.ICO]" Type="string" Action="write" />
-            <RegistryValue Root="HKCR" Key="VSCodiumSourceFile\shell\open\command" Value="&quot;[APPLICATIONFOLDER]VSCodium.exe&quot; &quot;%1&quot;" Type="string" Action="write" />
+          <Component Id="AddFileTypeAssociation$(var.AppCodeName)SourceFile" Guid="*">
+            <RegistryValue Root="HKCR" Key="$(var.AppCodeName)SourceFile" Value="$(var.AppName)" Type="string" Action="write" />
+            <RegistryValue Root="HKCR" Key="$(var.AppCodeName)SourceFile\DefaultIcon" Value="[#DEFAULT.ICO]" Type="string" Action="write" />
+            <RegistryValue Root="HKCR" Key="$(var.AppCodeName)SourceFile\shell\open\command" Value="&quot;[APPLICATIONFOLDER]$(var.AppName).exe&quot; &quot;%1&quot;" Type="string" Action="write" />
           </Component>
-          <Component Id="AddFileTypeAssociationApplicationsVSCodium" Guid="*">
-            <RegistryValue Root="HKCR" Key="Applications\VSCodium.exe\DefaultIcon" Value="[#DEFAULT.ICO]" Type="string" Action="write" />
-            <RegistryValue Root="HKCR" Key="Applications\VSCodium.exe\shell\open\command" Value="&quot;[APPLICATIONFOLDER]VSCodium.exe&quot; &quot;%1&quot;" Type="string" Action="write" />
+          <Component Id="AddFileTypeAssociationApplications$(var.AppCodeName)" Guid="*">
+            <RegistryValue Root="HKCR" Key="Applications\$(var.AppName).exe\DefaultIcon" Value="[#DEFAULT.ICO]" Type="string" Action="write" />
+            <RegistryValue Root="HKCR" Key="Applications\$(var.AppName).exe\shell\open\command" Value="&quot;[APPLICATIONFOLDER]$(var.AppName).exe&quot; &quot;%1&quot;" Type="string" Action="write" />
           </Component>
 
           <Component Id="AddContextMenuFiles" Guid="*">
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\*\shell\$(var.AppCodeName)" Value="Open with VSCodium" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\*\shell\$(var.AppCodeName)" Name="Icon" Value="[APPLICATIONFOLDER]VSCodium.exe" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\*\shell\$(var.AppCodeName)\command" Value="&quot;[APPLICATIONFOLDER]VSCodium.exe&quot; &quot;%1&quot;" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\*\shell\$(var.AppCodeName)" Value="Open with $(var.AppName)" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\*\shell\$(var.AppCodeName)" Name="Icon" Value="[APPLICATIONFOLDER]$(var.AppName).exe" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\*\shell\$(var.AppCodeName)\command" Value="&quot;[APPLICATIONFOLDER]$(var.AppName).exe&quot; &quot;%1&quot;" Type="string" Action="write" />
           </Component>
 
           <Component Id="AddContextMenuFolders" Guid="*">
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\shell\$(var.AppCodeName)" Value="Open with VSCodium" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\shell\$(var.AppCodeName)" Name="Icon" Value="[APPLICATIONFOLDER]VSCodium.exe" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\shell\$(var.AppCodeName)\command" Value="&quot;[APPLICATIONFOLDER]VSCodium.exe&quot; &quot;%V&quot;" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\background\shell\$(var.AppCodeName)" Value="Open with VSCodium" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\background\shell\$(var.AppCodeName)" Name="Icon" Value="[APPLICATIONFOLDER]VSCodium.exe" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\background\shell\$(var.AppCodeName)\command" Value="&quot;[APPLICATIONFOLDER]VSCodium.exe&quot; &quot;%V&quot;" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Drive\shell\$(var.AppCodeName)" Value="Open with VSCodium" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Drive\shell\$(var.AppCodeName)" Name="Icon" Value="[APPLICATIONFOLDER]VSCodium.exe" Type="string" Action="write" />
-            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Drive\shell\$(var.AppCodeName)\command" Value="&quot;[APPLICATIONFOLDER]VSCodium.exe&quot; &quot;%V&quot;" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\shell\$(var.AppCodeName)" Value="Open with $(var.AppName)" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\shell\$(var.AppCodeName)" Name="Icon" Value="[APPLICATIONFOLDER]$(var.AppName).exe" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\shell\$(var.AppCodeName)\command" Value="&quot;[APPLICATIONFOLDER]$(var.AppName).exe&quot; &quot;%V&quot;" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\background\shell\$(var.AppCodeName)" Value="Open with $(var.AppName)" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\background\shell\$(var.AppCodeName)" Name="Icon" Value="[APPLICATIONFOLDER]$(var.AppName).exe" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\directory\background\shell\$(var.AppCodeName)\command" Value="&quot;[APPLICATIONFOLDER]$(var.AppName).exe&quot; &quot;%V&quot;" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Drive\shell\$(var.AppCodeName)" Value="Open with $(var.AppName)" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Drive\shell\$(var.AppCodeName)" Name="Icon" Value="[APPLICATIONFOLDER]$(var.AppName).exe" Type="string" Action="write" />
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Drive\shell\$(var.AppCodeName)\command" Value="&quot;[APPLICATIONFOLDER]$(var.AppName).exe&quot; &quot;%V&quot;" Type="string" Action="write" />
           </Component>
 
           <Component Id="AddToEnvironmentPath" Guid="{A75E4C99-6713-45B9-8EC2-B9391592984C}">
@@ -1080,17 +1080,17 @@
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="VSCodiumProgramMenuFolder" Name="$(var.AppName)">
+        <Directory Id="$(var.AppCodeName)ProgramMenuFolder" Name="$(var.AppName)">
           <Component Id="StartMenuShortcut" Guid="*">
-            <Shortcut Id="VSCodiumStartMenuShortcut" Advertise="no" Name="$(var.AppName)" Directory="VSCodiumProgramMenuFolder" Target="[APPLICATIONFOLDER]VSCodium.exe" WorkingDirectory="APPLICATIONFOLDER" />
-            <RemoveFolder Id="VSCodiumProgramMenuFolder" On="uninstall" />
+            <Shortcut Id="$(var.AppCodeName)StartMenuShortcut" Advertise="no" Name="$(var.AppName)" Directory="$(var.AppCodeName)ProgramMenuFolder" Target="[APPLICATIONFOLDER]$(var.AppName).exe" WorkingDirectory="APPLICATIONFOLDER" />
+            <RemoveFolder Id="$(var.AppCodeName)ProgramMenuFolder" On="uninstall" />
             <RegistryValue Root="HKCU" Key="Software\$(var.ProductManufacturerShort)\$(var.AppName)\Components" Name="StartMenuShortcutInstalled" Type="integer" Value="1" KeyPath="yes" />
           </Component>
         </Directory>
       </Directory>
       <Directory Id="DesktopFolder">
         <Component Id="DesktopShortcut" Guid="*">
-          <Shortcut Id="VSCodiumDesktopShortcut" Advertise="no" Name="$(var.AppName)" Directory="DesktopFolder" Target="[APPLICATIONFOLDER]VSCodium.exe" WorkingDirectory="APPLICATIONFOLDER" />
+          <Shortcut Id="$(var.AppCodeName)DesktopShortcut" Advertise="no" Name="$(var.AppName)" Directory="DesktopFolder" Target="[APPLICATIONFOLDER]$(var.AppName).exe" WorkingDirectory="APPLICATIONFOLDER" />
           <RegistryValue Root="HKCU" Key="Software\$(var.ProductManufacturerShort)\$(var.AppName)\Components" Name="DesktopShortcutInstalled" Type="integer" Value="1" KeyPath="yes" />
         </Component>
       </Directory>
@@ -1108,8 +1108,8 @@
         <ComponentRef Id="DesktopShortcut" />
       </Feature>
       <Feature Id="FeatureFileTypeAssociations" Title="!(loc.FeatureFileTypeAssociationsTitle)" Description="!(loc.FeatureFileTypeAssociationsDescription)" Level="2" Absent="allow" AllowAdvertise="no" InstallDefault="followParent">
-        <ComponentRef Id="AddFileTypeAssociationVSCodiumSourceFile" />
-        <ComponentRef Id="AddFileTypeAssociationApplicationsVSCodium" />
+        <ComponentRef Id="AddFileTypeAssociation$(var.AppCodeName)SourceFile" />
+        <ComponentRef Id="AddFileTypeAssociationApplications$(var.AppCodeName)" />
 
         <Feature Id="FeatureFileTypeAssocASCX" Title=".ascx" Description="ASCX" Level="2" Absent="allow" AllowAdvertise="no" InstallDefault="followParent">
           <ComponentRef Id="AddFileTypeAssociationASCX" />
