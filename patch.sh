@@ -7,7 +7,7 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 git add .
 git reset -q --hard HEAD
 
-if [[ -f "${file}" ]]; then
+if [[ -f "${FILE}" ]]; then
   git apply --reject "${FILE}"
 fi
 
