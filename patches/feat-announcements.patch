@@ -4,32 +4,32 @@ index 9564618..35cde81 100644
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 @@ -116,2 +116,3 @@ type GettingStartedActionEvent = {
  type RecentEntry = (IRecentFolder | IRecentWorkspace) & { id: string };
-+type AnnoucementEntry = { id: string, title: string, url: string };
++type AnnouncementEntry = { id: string, title: string, url: string };
  
 @@ -148,2 +149,4 @@ export class GettingStartedPage extends EditorPane {
  	private gettingStartedList?: GettingStartedIndexList<IResolvedWalkthrough>;
-+	private annoucementList?: GettingStartedIndexList<AnnoucementEntry>;
-+	private annoucementData?: AnnoucementEntry[];
++	private announcementList?: GettingStartedIndexList<AnnouncementEntry>;
++	private announcementData?: AnnouncementEntry[];
  
 @@ -767,2 +770,3 @@ export class GettingStartedPage extends EditorPane {
  		const gettingStartedList = this.buildGettingStartedWalkthroughsList();
-+		const annoucementList = await this.buildAnnoucementList();
++		const announcementList = await this.buildAnnouncementList();
  
 @@ -777,3 +781,3 @@ export class GettingStartedPage extends EditorPane {
  				this.container.classList.remove('noWalkthroughs');
 -				reset(leftColumn, startList.getDomElement(), recentList.getDomElement());
-+				reset(leftColumn, startList.getDomElement(), recentList.getDomElement(), annoucementList.getDomElement());
++				reset(leftColumn, startList.getDomElement(), recentList.getDomElement(), announcementList.getDomElement());
  				reset(rightColumn, gettingStartedList.getDomElement());
 @@ -783,3 +787,3 @@ export class GettingStartedPage extends EditorPane {
  				this.container.classList.add('noWalkthroughs');
 -				reset(leftColumn, startList.getDomElement());
-+				reset(leftColumn, startList.getDomElement(), annoucementList.getDomElement());
++				reset(leftColumn, startList.getDomElement(), announcementList.getDomElement());
  				reset(rightColumn, recentList.getDomElement());
 @@ -930,2 +934,41 @@ export class GettingStartedPage extends EditorPane {
  
-+	private async buildAnnoucementList(): Promise<GettingStartedIndexList<AnnoucementEntry>> {
-+		const renderRecent = (annoucement: AnnoucementEntry) => {
-+			const { title, url } = annoucement;
++	private async buildAnnouncementList(): Promise<GettingStartedIndexList<AnnouncementEntry>> {
++		const renderRecent = (announcement: AnnouncementEntry) => {
++			const { title, url } = announcement;
 +			const li = $('li');
 +
 +			const anchor: HTMLLinkElement = $('a');
@@ -41,29 +41,29 @@ index 9564618..35cde81 100644
 +			return li;
 +		};
 +
-+		if (this.annoucementList) { this.annoucementList.dispose(); }
++		if (this.announcementList) { this.announcementList.dispose(); }
 +
-+		const annoucementList = this.annoucementList = new GettingStartedIndexList({
-+			title: localize('annoucements', "VSCodium Annoucements"),
-+			klass: 'annoucements',
++		const announcementList = this.announcementList = new GettingStartedIndexList({
++			title: localize('announcements', "VSCodium Announcements"),
++			klass: 'announcements',
 +			limit: 5,
-+			empty: $('.empty-recent', {}, localize('noAnnoucements', "There is no annoucements.")),
++			empty: $('.empty-recent', {}, localize('noAnnouncements', "There is no announcements.")),
 +			renderElement: renderRecent,
 +			contextService: this.contextService
 +		});
 +
-+		if (!this.annoucementData) {
++		if (!this.announcementData) {
 +			const branch = this.productService.quality === 'insider' ? 'insider' : 'master';
-+			const res = await fetch(`https://raw.githubusercontent.com/VSCodium/vscodium/${branch}/annoucements.json`);
++			const res = await fetch(`https://raw.githubusercontent.com/VSCodium/vscodium/${branch}/announcements.json`);
 +
 +			if (res.ok) {
-+				this.annoucementData = await res.json() as AnnoucementEntry[];
++				this.announcementData = await res.json() as AnnouncementEntry[];
 +			}
 +		}
 +
-+		annoucementList.setEntries(this.annoucementData);
++		announcementList.setEntries(this.announcementData);
 +
-+		return annoucementList;
++		return announcementList;
 +	}
 +
  	private buildStartList(): GettingStartedIndexList<IWelcomePageStartEntry> {
