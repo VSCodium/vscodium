@@ -16,7 +16,7 @@ if [[ -z "${BUILD_SOURCEVERSION}" ]]; then
       export BUILD_SOURCEVERSION=$( echo "${vscodium_hash}:${vscode_hash}" | checksum )
     fi
 
-    echo "Build version: ${BUILD_SOURCEVERSION}"
+    echo "BUILD_SOURCEVERSION=\"${BUILD_SOURCEVERSION}\""
 
     # for GH actions
     if [[ $GITHUB_ENV ]]; then

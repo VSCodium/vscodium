@@ -80,16 +80,16 @@ if [[ -z "${MS_TAG}" ]]; then
   export MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
   export MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
 elif [[ -z "${MS_COMMIT}" ]]; then
-  reference=$( git ls-remote --tags | grep -x ".*refs\/tags\/${MS_TAG}" | head -1 )
+  REFERENCE=$( git ls-remote --tags | grep -x ".*refs\/tags\/${MS_TAG}" | head -1 )
 
-  if [[ -z "${reference}" ]]; then
+  if [[ -z "${REFERENCE}" ]]; then
     echo "The following tag can't be found: ${MS_TAG}"
     exit 1
-  elif [[ "${reference}" =~ ^([[:alnum:]]+)[[:space:]]+refs\/tags\/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+  elif [[ "${REFERENCE}" =~ ^([[:alnum:]]+)[[:space:]]+refs\/tags\/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
     export MS_COMMIT="${BASH_REMATCH[1]}"
     export MS_TAG="${BASH_REMATCH[2]}"
   else
-    echo "The following reference can't be parsed: ${reference}"
+    echo "The following reference can't be parsed: ${REFERENCE}"
     exit 1
   fi
 fi
