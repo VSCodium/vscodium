@@ -17,17 +17,17 @@ index 9564618..eb8adfe 100644
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 @@ -116,4 +116,8 @@ type GettingStartedActionEvent = {
  type RecentEntry = (IRecentFolder | IRecentWorkspace) & { id: string };
-+type AnnoucementEntry = { id: string, title: string, url: string };
++type AnnouncementEntry = { id: string, title: string, url: string };
  
  const REDUCED_MOTION_KEY = 'workbench.welcomePage.preferReducedMotion';
 +
-+const BUILTIN_ANNOUNCEMENTS: AnnoucementEntry[] = [/* BUILTIN_ANNOUNCEMENTS */];
++const BUILTIN_ANNOUNCEMENTS: AnnouncementEntry[] = [/* BUILTIN_ANNOUNCEMENTS */];
 +
  export class GettingStartedPage extends EditorPane {
 @@ -148,2 +152,4 @@ export class GettingStartedPage extends EditorPane {
  	private gettingStartedList?: GettingStartedIndexList<IResolvedWalkthrough>;
-+	private annoucementList?: GettingStartedIndexList<AnnoucementEntry>;
-+	private annoucementData?: AnnoucementEntry[];
++	private announcementList?: GettingStartedIndexList<AnnouncementEntry>;
++	private announcementData?: AnnouncementEntry[];
  
 @@ -760,3 +766,2 @@ export class GettingStartedPage extends EditorPane {
  
@@ -35,23 +35,23 @@ index 9564618..eb8adfe 100644
  		const leftColumn = $('.categories-column.categories-column-left', {},);
 @@ -767,2 +772,3 @@ export class GettingStartedPage extends EditorPane {
  		const gettingStartedList = this.buildGettingStartedWalkthroughsList();
-+		const annoucementList = await this.buildAnnoucementList();
++		const announcementList = await this.buildAnnouncementList();
  
 @@ -777,3 +783,3 @@ export class GettingStartedPage extends EditorPane {
  				this.container.classList.remove('noWalkthroughs');
 -				reset(leftColumn, startList.getDomElement(), recentList.getDomElement());
-+				reset(leftColumn, startList.getDomElement(), recentList.getDomElement(), annoucementList.getDomElement());
++				reset(leftColumn, startList.getDomElement(), recentList.getDomElement(), announcementList.getDomElement());
  				reset(rightColumn, gettingStartedList.getDomElement());
 @@ -783,3 +789,3 @@ export class GettingStartedPage extends EditorPane {
  				this.container.classList.add('noWalkthroughs');
 -				reset(leftColumn, startList.getDomElement());
-+				reset(leftColumn, startList.getDomElement(), annoucementList.getDomElement());
++				reset(leftColumn, startList.getDomElement(), announcementList.getDomElement());
  				reset(rightColumn, recentList.getDomElement());
 @@ -930,2 +936,51 @@ export class GettingStartedPage extends EditorPane {
  
-+	private async buildAnnoucementList(): Promise<GettingStartedIndexList<AnnoucementEntry>> {
-+		const renderAnnoucement = (annoucement: AnnoucementEntry) => {
-+			const { title, url } = annoucement;
++	private async buildAnnouncementList(): Promise<GettingStartedIndexList<AnnouncementEntry>> {
++		const renderAnnouncement = (announcement: AnnouncementEntry) => {
++			const { title, url } = announcement;
 +			const li = $('li');
 +
 +			const anchor: HTMLLinkElement = $('a');
@@ -63,39 +63,39 @@ index 9564618..eb8adfe 100644
 +			return li;
 +		};
 +
-+		if (this.annoucementList) { this.annoucementList.dispose(); }
++		if (this.announcementList) { this.announcementList.dispose(); }
 +
-+		const annoucementList = this.annoucementList = new GettingStartedIndexList({
-+			title: localize('annoucements', "VSCodium Annoucements"),
-+			klass: 'annoucements',
++		const announcementList = this.announcementList = new GettingStartedIndexList({
++			title: localize('announcements', "VSCodium Announcements"),
++			klass: 'announcements',
 +			limit: 5,
-+			empty: $('.empty-recent', {}, localize('noAnnoucements', "There are no current annoucements.")),
-+			renderElement: renderAnnoucement,
++			empty: $('.empty-recent', {}, localize('noAnnouncements', "There are no current announcements.")),
++			renderElement: renderAnnouncement,
 +			contextService: this.contextService
 +		});
 +
-+		if (!this.annoucementData) {
++		if (!this.announcementData) {
 +			const showExtras = this.configurationService.getValue<boolean>('workbench.welcomePage.extraAnnouncements');
 +
 +			if (showExtras) {
 +				const branch = this.productService.quality === 'insider' ? 'insider' : 'master';
-+				const res = await fetch(`https://raw.githubusercontent.com/VSCodium/vscodium/${branch}/annoucements-extra.json`);
++				const res = await fetch(`https://raw.githubusercontent.com/VSCodium/vscodium/${branch}/announcements-extra.json`);
 +
 +				if (res.ok) {
-+					var extraAnnouncements = await res.json() as AnnoucementEntry[];
++					var extraAnnouncements = await res.json() as AnnouncementEntry[];
 +
-+					this.annoucementData = [...extraAnnouncements, ...BUILTIN_ANNOUNCEMENTS];
++					this.announcementData = [...extraAnnouncements, ...BUILTIN_ANNOUNCEMENTS];
 +				} else {
-+					this.annoucementData = BUILTIN_ANNOUNCEMENTS;
++					this.announcementData = BUILTIN_ANNOUNCEMENTS;
 +				}
 +			} else {
-+				this.annoucementData = BUILTIN_ANNOUNCEMENTS;
++				this.announcementData = BUILTIN_ANNOUNCEMENTS;
 +			}
 +		}
 +
-+		annoucementList.setEntries(this.annoucementData);
++		announcementList.setEntries(this.announcementData);
 +
-+		return annoucementList;
++		return announcementList;
 +	}
 +
  	private buildStartList(): GettingStartedIndexList<IWelcomePageStartEntry> {
