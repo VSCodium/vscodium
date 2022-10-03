@@ -164,6 +164,9 @@ setpath "package" "release" $( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.(
 
 replace 's|Microsoft Corporation|VSCodium|' package.json
 
+# announcements
+replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( cat ../announcements-builtin.json | tr -d '\n' )|" src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
+
 ../undo_telemetry.sh
 
 replace 's|Microsoft Corporation|VSCodium|' build/lib/electron.js
