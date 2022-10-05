@@ -1,8 +1,8 @@
-name: Lock Threads
+name: Lock Issues
 
 on:
   schedule:
-    - cron: '0 0 * * Mon'
+    - cron: '0 2 * * *'
 
 jobs:
   lock:
@@ -13,3 +13,4 @@ jobs:
           github-token: ${{ github.token }}
           issue-inactive-days: '90'
           pr-inactive-days: '90'
+          log-output: true
