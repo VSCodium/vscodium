@@ -24,9 +24,12 @@ jobs:
       run:
         shell: bash
     env:
-      OS_NAME: 'windows'
+      APP_NAME: VSCodium
+      ASSETS_REPOSITORY: ${{ github.repository }}
+      VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+      OS_NAME: windows
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-      VSCODE_QUALITY: 'stable'
+      VSCODE_QUALITY: stable
     strategy:
       fail-fast: false
       matrix:
@@ -93,8 +96,8 @@ jobs:
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Prepare artifacts
-        run: ./prepare_artifacts.sh
+      - name: Prepare assets
+        run: ./prepare_assets.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Release
@@ -116,6 +119,8 @@ jobs:
     defaults:
       run:
         shell: bash
+    env:
+      APP_IDENTIFIER: VSCodium.VSCodium
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
@@ -127,9 +132,10 @@ jobs:
           RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
 
       - name: Release to WinGet
-        uses: vedantmgoyal2009/winget-releaser@latest
+        uses: daiyam/winget-releaser@insider
         with:
-          identifier: VSCodium.VSCodium
+          identifier: ${{ env.APP_IDENTIFIER }}
+          version: ${{ env.RELEASE_VERSION }}
           release-tag: ${{ env.RELEASE_VERSION }}
           installers-regex: '\.exe$' # only .exe files
           token: ${{ secrets.STRONGER_GITHUB_TOKEN }}

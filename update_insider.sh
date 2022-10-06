@@ -14,8 +14,8 @@ fi
 
 echo "$( cat "insider.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )" > "insider.json"
 
-git config --global user.email "vscodium-ci@not-real.com"
-git config --global user.name "VSCodium CI"
+git config user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
+git config user.name "${GITHUB_USERNAME} CI"
 git add .
 
 CHANGES=$( git status --porcelain )

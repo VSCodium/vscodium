@@ -23,9 +23,12 @@ jobs:
     container:
       image: ${{ matrix.image }}
       env:
-        OS_NAME: 'linux'
+        APP_NAME: VSCodium
+        ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+        VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+        OS_NAME: linux
         VSCODE_ARCH: ${{ matrix.vscode_arch }}
-        VSCODE_QUALITY: 'insider'
+        VSCODE_QUALITY: insider
     strategy:
       fail-fast: false
       matrix:
@@ -98,8 +101,8 @@ jobs:
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Prepare artifacts
-        run: ./prepare_artifacts.sh
+      - name: Prepare assets
+        run: ./prepare_assets.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Release
@@ -149,6 +152,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
+      APP_NAME: codium
+      ASSETS_REPOSITORY: ${{ github.repository }}-insiders
       VSCODE_QUALITY: 'insider'
     strategy:
       fail-fast: false

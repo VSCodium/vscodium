@@ -4,7 +4,7 @@ set -e
 
 # git workaround
 if [[ "${CI_BUILD}" != "no" ]]; then
-  git config --global --add safe.directory /__w/vscodium/vscodium
+  git config --global --add safe.directory "/__w/$( echo "${GITHUB_REPOSITORY}" | awk '{print tolower($0)}' )"
 fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
