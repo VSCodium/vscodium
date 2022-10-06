@@ -23,7 +23,7 @@ fi
 #  }
 
 # `url` is URL_BASE + filename of asset e.g.
-#    darwin: https://github.com/VSCodium/vscodium/releases/download/${RELEASE_VERSION}/VSCodium-darwin-${RELEASE_VERSION}.zip
+#    darwin: https://github.com/${ASSETS_REPOSITORY}/releases/download/${RELEASE_VERSION}/${APP_NAME}-darwin-${RELEASE_VERSION}.zip
 # `name` is $RELEASE_VERSION
 # `version` is $BUILD_SOURCEVERSION
 # `productVersion` is $RELEASE_VERSION
@@ -31,15 +31,7 @@ fi
 # `timestamp` is $(node -e 'console.log(Date.now())')
 # `sha256hash` in <filename>.sha256
 
-if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  URL_BASE="https://github.com/VSCodium/vscodium-insiders/releases/download/${RELEASE_VERSION}"
-else
-  URL_BASE="https://github.com/VSCodium/vscodium/releases/download/${RELEASE_VERSION}"
-fi
-
-# to make testing on forks easier
-VERSIONS_REPO="${GITHUB_USERNAME}/versions"
-echo "Versions repo: ${VERSIONS_REPO}"
+URL_BASE="https://github.com/${ASSETS_REPOSITORY}/releases/download/${RELEASE_VERSION}"
 
 generateJson() {
   JSON_DATA="{}"
@@ -51,13 +43,13 @@ generateJson() {
   local productVersion="${RELEASE_VERSION}"
   local timestamp=$(node -e 'console.log(Date.now())')
 
-  if [[ ! -f "artifacts/${ASSET_NAME}" ]]; then
-    echo "Downloading artifact '${ASSET_NAME}'"
-    gh release download "${RELEASE_VERSION}" --dir "artifacts" --pattern "${ASSET_NAME}*"
+  if [[ ! -f "assets/${ASSET_NAME}" ]]; then
+    echo "Downloading asset '${ASSET_NAME}'"
+    gh release download --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" --dir "assets" --pattern "${ASSET_NAME}*"
   fi
 
-  local sha1hash=$(cat "artifacts/${ASSET_NAME}.sha1" | awk '{ print $1 }')
-  local sha256hash=$(cat "artifacts/${ASSET_NAME}.sha256" | awk '{ print $1 }')
+  local sha1hash=$(cat "assets/${ASSET_NAME}.sha1" | awk '{ print $1 }')
+  local sha256hash=$(cat "assets/${ASSET_NAME}.sha256" | awk '{ print $1 }')
 
   # check that nothing is blank (blank indicates something awry with build)
   for key in url name version productVersion sha1hash timestamp sha256hash; do
@@ -96,42 +88,42 @@ updateLatestVersion() {
 
 # init versions repo for later commiting + pushing the json file to it
 # thank you https://www.vinaygopinath.me/blog/tech/commit-to-master-branch-on-github-using-travis-ci/
-git clone "https://github.com/${VERSIONS_REPO}.git"
+git clone "https://github.com/${VERSIONS_REPOSITORY}.git"
 cd versions
-git config user.email "vscodium-ci@not-real.com"
-git config user.name "VSCodium CI"
+git config user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
+git config user.name "${GITHUB_USERNAME} CI"
 git remote rm origin
-git remote add origin "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${VERSIONS_REPO}.git" > /dev/null 2>&1
+git remote add origin "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${VERSIONS_REPOSITORY}.git" > /dev/null 2>&1
 cd ..
 
 if [[ "${OS_NAME}" == "osx" ]]; then
-  ASSET_NAME=VSCodium-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.zip
+  ASSET_NAME="${APP_NAME}-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.zip"
   VERSION_PATH="${VSCODE_QUALITY}/darwin/${VSCODE_ARCH}"
   updateLatestVersion
 elif [[ "${OS_NAME}" == "windows" ]]; then
   # system installer
-  ASSET_NAME=VSCodiumSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe
+  ASSET_NAME="${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"
   VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/system"
   updateLatestVersion
 
   # user installer
-  ASSET_NAME=VSCodiumUserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe
+  ASSET_NAME="${APP_NAME}UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"
   VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/user"
   updateLatestVersion
 
   # windows archive
-  ASSET_NAME=VSCodium-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip
+  ASSET_NAME="${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip"
   VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/archive"
   updateLatestVersion
 
   if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
     # msi
-    ASSET_NAME=VSCodium-${VSCODE_ARCH}-${RELEASE_VERSION}.msi
+    ASSET_NAME="${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi"
     VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/msi"
     updateLatestVersion
 
     # updates-disabled msi
-    ASSET_NAME=VSCodium-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi
+    ASSET_NAME="${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi"
     VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/msi-updates-disabled"
     updateLatestVersion
   fi
@@ -139,7 +131,7 @@ else # linux
   # update service links to tar.gz file
   # see https://update.code.visualstudio.com/api/update/linux-x64/stable/VERSION
   # as examples
-  ASSET_NAME=VSCodium-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz
+  ASSET_NAME="${APP_NAME}-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz"
   VERSION_PATH="${VSCODE_QUALITY}/linux/${VSCODE_ARCH}"
   updateLatestVersion
 fi

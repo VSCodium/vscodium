@@ -4,10 +4,11 @@
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
 ###
 
+export APP_NAME="VSCodium"
 export CI_BUILD="no"
 export SHOULD_BUILD="yes"
 export SKIP_BUILD="no"
-export SKIP_PACKAGES="yes"
+export SKIP_ASSETS="yes"
 export VSCODE_LATEST="no"
 export VSCODE_QUALITY="stable"
 
@@ -23,7 +24,7 @@ while getopts ":ilop" opt; do
       export SKIP_BUILD="yes"
       ;;
     p)
-      export SKIP_PACKAGES="no"
+      export SKIP_ASSETS="no"
       ;;
   esac
 done
@@ -50,7 +51,7 @@ fi
 
 echo "OS_NAME=\"${OS_NAME}\""
 echo "SKIP_BUILD=\"${SKIP_BUILD}\""
-echo "SKIP_PACKAGES=\"${SKIP_PACKAGES}\""
+echo "SKIP_ASSETS=\"${SKIP_ASSETS}\""
 echo "VSCODE_ARCH=\"${VSCODE_ARCH}\""
 echo "VSCODE_LATEST=\"${VSCODE_LATEST}\""
 echo "VSCODE_QUALITY=\"${VSCODE_QUALITY}\""
@@ -80,10 +81,10 @@ else
   echo "BUILD_SOURCEVERSION=\"${BUILD_SOURCEVERSION}\""
 fi
 
-if [[ "${SKIP_PACKAGES}" == "no" ]]; then
+if [[ "${SKIP_ASSETS}" == "no" ]]; then
   if [[ "${OS_NAME}" == "windows" ]]; then
     rm -rf build/windows/msi/releasedir
   fi
 
-  . prepare_artifacts.sh
+  . prepare_assets.sh
 fi

@@ -24,9 +24,12 @@ jobs:
       run:
         shell: bash
     env:
-      OS_NAME: 'windows'
+      APP_NAME: VSCodium
+      ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+      VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+      OS_NAME: windows
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-      VSCODE_QUALITY: 'insider'
+      VSCODE_QUALITY: insider
     strategy:
       fail-fast: false
       matrix:
@@ -96,8 +99,8 @@ jobs:
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Prepare artifacts
-        run: ./prepare_artifacts.sh
+      - name: Prepare assets
+        run: ./prepare_assets.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Release
@@ -121,6 +124,7 @@ jobs:
       run:
         shell: bash
     env:
+      APP_IDENTIFIER: VSCodium.VSCodium.Insiders
       VSCODE_QUALITY: 'insider'
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
@@ -137,7 +141,7 @@ jobs:
       - name: Release to WinGet
         uses: vedantmgoyal2009/winget-releaser@latest
         with:
-          identifier: VSCodium.VSCodium.Insiders
+          identifier: ${{ env.APP_IDENTIFIER }}
           version: ${{ env.RELEASE_VERSION }}
           release-repository: vscodium-insiders
           release-tag: ${{ env.RELEASE_VERSION }}-insider

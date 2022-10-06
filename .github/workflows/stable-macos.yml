@@ -21,9 +21,12 @@ jobs:
   build:
     runs-on: ${{ matrix.runner }}
     env:
-      OS_NAME: 'osx'
+      APP_NAME: VSCodium
+      ASSETS_REPOSITORY: ${{ github.repository }}
+      VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+      OS_NAME: osx
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-      VSCODE_QUALITY: 'stable'
+      VSCODE_QUALITY: stable
     strategy:
       fail-fast: false
       matrix:
@@ -78,12 +81,12 @@ jobs:
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Prepare artifacts
+      - name: Prepare assets
         env:
           CERTIFICATE_OSX_P12: ${{ secrets.CERTIFICATE_OSX_P12 }}
           CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
           CERTIFICATE_OSX_ID: ${{ secrets.CERTIFICATE_OSX_ID }}
-        run: ./prepare_artifacts.sh
+        run: ./prepare_assets.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Release

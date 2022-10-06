@@ -2,10 +2,11 @@
 
 exists() { type -t "$1" > /dev/null 2>&1; }
 
+export APP_NAME="VSCodium"
 export CI_BUILD="no"
 export OS_NAME="linux"
 export SHOULD_BUILD="yes"
-export SKIP_PACKAGES="yes"
+export SKIP_ASSETS="yes"
 export VSCODE_LATEST="no"
 export VSCODE_QUALITY="stable"
 
@@ -18,7 +19,7 @@ while getopts ":ilp" opt; do
       export VSCODE_LATEST="yes"
       ;;
     p)
-      export SKIP_PACKAGES="no"
+      export SKIP_ASSETS="no"
       ;;
   esac
 done
@@ -41,7 +42,7 @@ else
 fi
 
 echo "OS_NAME=\"${OS_NAME}\""
-echo "SKIP_PACKAGES=\"${SKIP_PACKAGES}\""
+echo "SKIP_ASSETS=\"${SKIP_ASSETS}\""
 echo "VSCODE_ARCH=\"${VSCODE_ARCH}\""
 echo "VSCODE_LATEST=\"${VSCODE_LATEST}\""
 echo "VSCODE_QUALITY=\"${VSCODE_QUALITY}\""
@@ -51,6 +52,6 @@ rm -rf vscode* VSCode*
 . get_repo.sh
 . build.sh
 
-if [[ "${SKIP_PACKAGES}" == "no" ]]; then
-  . prepare_artifacts.sh
+if [[ "${SKIP_ASSETS}" == "no" ]]; then
+  . prepare_assets.sh
 fi

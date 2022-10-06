@@ -9,10 +9,13 @@ jobs:
   build:
     runs-on: [self-hosted, macOS, ARM64]
     env:
-      OS_NAME: 'osx'
-      VSCODE_ARCH: 'arm64'
-      VSCODE_LATEST: 'yes'
-      VSCODE_QUALITY: 'insider'
+      APP_NAME: VSCodium
+      ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+      VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+      OS_NAME: osx
+      VSCODE_ARCH: arm64
+      VSCODE_LATEST: yes
+      VSCODE_QUALITY: insider
 
     steps:
       - uses: actions/checkout@v3
