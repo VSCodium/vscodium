@@ -49,7 +49,7 @@ contains() {
 if [ "${ASSETS}" != "null" ]; then
   # macos
   if [[ "${OS_NAME}" == "osx" ]]; then
-    if [[ "${VSCODE_QUALITY}" == "insider" && "${VSCODE_ARCH}" == "arm64" ]]; then
+    if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
       if [[ -z $( contains "${APP_NAME}-${RELEASE_VERSION}-src.tar.gz" ) || -z $( contains "${APP_NAME}-${RELEASE_VERSION}-src.zip" ) ]]; then
         echo "Building on MacOS because we have no SRC"
         export SHOULD_BUILD="yes"
