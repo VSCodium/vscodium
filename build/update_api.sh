@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 export VSCODE_QUALITY="stable"
 
 while getopts ":ilp" opt; do
