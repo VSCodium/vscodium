@@ -170,10 +170,10 @@ jobs:
           ref: insider
 
       - name: Check version
-        run: ./stores/snapcraft/check_version.sh
         env:
           ARCHITECTURE: ${{ matrix.platform }}
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
+        run: ./stores/snapcraft/check_version.sh
 
       - uses: docker/setup-qemu-action@v1
         if: env.SHOULD_DEPLOY == 'yes'

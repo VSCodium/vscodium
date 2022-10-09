@@ -156,10 +156,10 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Check version
-        run: ./stores/snapcraft/check_version.sh
         env:
           ARCHITECTURE: ${{ matrix.platform }}
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
+        run: ./stores/snapcraft/check_version.sh
 
       - uses: docker/setup-qemu-action@v1
         if: env.SHOULD_DEPLOY == 'yes'
@@ -189,8 +189,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+
     steps:
       - name: Trigger repository rebuild
-        run: curl -X POST --fail -F token=$GL_PAGES_TOKEN -F ref=master https://gitlab.com/api/v4/projects/8762263/trigger/pipeline
         env:
-          GL_PAGES_TOKEN: ${{ GL_PAGES_TOKEN }}
+          GL_PAGES_TOKEN: ${{ secrets.GL_PAGES_TOKEN }}
+        run: curl -X POST --fail -F token="${GL_PAGES_TOKEN}" -F ref=master https://gitlab.com/api/v4/projects/8762263/trigger/pipeline
