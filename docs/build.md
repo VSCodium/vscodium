@@ -17,12 +17,14 @@
 
 ## <a id="dependencies"></a>Dependencies
 
+### <a id="dependencies-linux"></a>Linux
+
 - node 16
 - yarn
 - jq
 - git
 
-### <a id="dependencies-linux"></a>Linux
+### <a id="dependencies-macos"></a>MacOS
 
 - GCC
 - make
@@ -36,8 +38,6 @@
 - dpkg
 - python3
 - imagemagick (for AppImage)
-
-### <a id="dependencies-macos"></a>MacOS
 
 ### <a id="dependencies-windows"></a>Windows
 
