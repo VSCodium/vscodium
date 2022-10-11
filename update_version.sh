@@ -75,15 +75,20 @@ generateJson() {
 updateLatestVersion() {
   echo "Generating ${VERSION_PATH}/latest.json"
 
+  # do not update the same version since BUILD_SOURCEVERSION might be different
+  if [[ -f "versions/${VERSION_PATH}/latest.json" ]]; then
+    CURRENT_VERSION=$( jq -r '.name' "versions/${VERSION_PATH}/latest.json" )
+
+    if [[ "${CURRENT_VERSION}" == "${RELEASE_VERSION}" ]]; then
+      return
+    fi
+  fi
+
+  mkdir -p "versions/${VERSION_PATH}"
+
   generateJson
 
-  cd versions
-
-  # create/update the latest.json file in the correct location
-  mkdir -p "${VERSION_PATH}"
-  echo "${JSON_DATA}" > "${VERSION_PATH}/latest.json"
-
-  cd ..
+  echo "${JSON_DATA}" > "versions/${VERSION_PATH}/latest.json"
 }
 
 # init versions repo for later commiting + pushing the json file to it
