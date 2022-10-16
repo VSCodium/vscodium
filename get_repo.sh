@@ -103,7 +103,7 @@ git checkout FETCH_HEAD
 cd ..
 
 # for GH actions
-if [[ ${GITHUB_ENV} ]]; then
+if [[ "${GITHUB_ENV}" ]]; then
   echo "MS_TAG=${MS_TAG}" >> "${GITHUB_ENV}"
   echo "MS_COMMIT=${MS_COMMIT}" >> "${GITHUB_ENV}"
   echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
