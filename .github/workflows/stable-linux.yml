@@ -118,22 +118,22 @@ jobs:
   aur:
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - package_name: vscodium
+          package_type: stable
+        - package_name: vscodium-git
+          package_type: rolling
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
-      - name: Publish vscodium
+      - name: Publish ${{ matrix.package_name }}
         uses: zokugun/github-actions-aur-releaser@v1
         with:
-          package_name: vscodium
-          aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
-          aur_username: ${{ secrets.AUR_USERNAME }}
-          aur_email: ${{ secrets.AUR_EMAIL }}
-
-      - name: Publish vscodium-git
-        uses: zokugun/github-actions-aur-releaser@v1
-        with:
-          package_name: vscodium-git
-          package_type: rolling
+          package_name: ${{ matrix.package_name }}
+          package_type: ${{ matrix.package_type }}
           aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
           aur_username: ${{ secrets.AUR_USERNAME }}
           aur_email: ${{ secrets.AUR_EMAIL }}
