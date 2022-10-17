@@ -59,7 +59,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
   yarn postinstall
 elif [[ "${npm_config_arch}" == "armv7l" || "${npm_config_arch}" == "ia32" ]]; then
   # node-gyp@9.0.0 shipped with node@16.15.0 starts using config.gypi
-  # from the custom headers path if dist-url option was set instead of
+  # from the custom headers path if dist-url option was set, instead of
   # using the config value from the process. Electron builds with pointer compression
   # enabled for x64 and arm64, but incorrectly ships a single copy of config.gypi
   # with v8_enable_pointer_compression option always set for all target architectures.
@@ -94,7 +94,7 @@ setpath "product" "keyboardShortcutsUrlLinux" "https://go.microsoft.com/fwlink/?
 setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?linkid=832143"
 setpath "product" "keyboardShortcutsUrlWin" "https://go.microsoft.com/fwlink/?linkid=832145"
 setpath "product" "licenseUrl" "https://github.com/VSCodium/vscodium/blob/master/LICENSE"
-setpath "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
+setpath_json "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
 setpath "product" "releaseNotesUrl" "https://go.microsoft.com/fwlink/?LinkID=533483#vscode"
 setpath "product" "reportIssueUrl" "https://github.com/VSCodium/vscodium/issues/new"
 setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
