@@ -108,5 +108,3 @@ if [[ "${GITHUB_ENV}" ]]; then
   echo "MS_COMMIT=${MS_COMMIT}" >> "${GITHUB_ENV}"
   echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
 fi
-
-. version.sh
