@@ -131,11 +131,16 @@ jobs:
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
+      - name: Get version
+        env:
+          RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+        run: echo "PACKAGE_VERSION=${RELEASE_VERSION/-*/}" >> "${GITHUB_ENV}"
+
       - name: Publish ${{ matrix.package_name }}
         uses: zokugun/github-actions-aur-releaser@v1
         with:
           package_name: ${{ matrix.package_name }}
-          package_version: ${{ needs.build.outputs.RELEASE_VERSION }}
+          package_version: ${{ env.PACKAGE_VERSION }}
           aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
           aur_username: ${{ secrets.AUR_USERNAME }}
           aur_email: ${{ secrets.AUR_EMAIL }}
