@@ -117,16 +117,17 @@ This repo exists so that you don't have to download+build from source. The build
 
 If you want to build from source yourself, head over to [Microsoft's vscode repo](https://github.com/Microsoft/vscode) and follow their [instructions](https://github.com/Microsoft/vscode/wiki/How-to-Contribute#build-and-run). This repo exists to make it easier to get the latest version of MIT-licensed VS Code.
 
-Microsoft's build process (which we are running to build the binaries) does download additional files. This was brought up in [Microsoft/vscode#141340](https://github.com/Microsoft/vscode/issues/141340) and [Microsoft/vscode#45978](https://github.com/Microsoft/vscode/issues/45978). These are the packages downloaded during build:
+Microsoft's build process (which we are running to build the binaries) does download additional files. This was brought up in [Microsoft/vscode#146863](https://github.com/microsoft/vscode/pull/146863) and [Microsoft/vscode#45978](https://github.com/Microsoft/vscode/issues/45978). These are the packages downloaded during build:
 
-- Extensions from the Microsoft Marketplace:
-  - [ms-vscode.references-view](https://marketplace.visualstudio.com/items?itemName=ms-vscode.references-view)
-  - [ms-vscode.js-debug-companion](https://marketplace.visualstudio.com/items?itemName=ms-vscode.js-debug-companion)
-  - [ms-vscode.js-debug](https://marketplace.visualstudio.com/items?itemName=ms-vscode.js-debug)
-  - [ms-vscode.vscode-js-profile-table](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-js-profile-table)
+- Extensions from Microsoft's GitHub repos (see product.json in vscode repo):
+  - ms-vscode.js-debug-companion
+  - ms-vscode.js-debug
+  - ms-vscode.vscode-js-profile-table
 - From [Electron releases](https://github.com/electron/electron/releases) (using [gulp-atom-electron](https://github.com/joaomoreno/gulp-atom-electron))
   - electron
   - ffmpeg
+
+The build process used to (but no longer) download built-in extensions from the VS Marketplace.
 
 ## <a id="more-info"></a>More Info
 
