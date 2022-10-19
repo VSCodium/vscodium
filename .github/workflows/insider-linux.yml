@@ -122,27 +122,24 @@ jobs:
   aur:
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - package_name: vscodium-insiders-bin
+        - package_name: vscodium-insiders
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - name: Get version
         env:
           RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
-        run: echo "PACKAGE_VERSION=${RELEASE_VERSION/-*/}" >> $GITHUB_ENV
+        run: echo "PACKAGE_VERSION=${RELEASE_VERSION/-*/}" >> "${GITHUB_ENV}"
 
-      - name: Publish vscodium-insiders-bin
+      - name: Publish ${{ matrix.package_name }}
         uses: zokugun/github-actions-aur-releaser@v1
         with:
-          package_name: vscodium-insiders-bin
-          package_version: ${{ env.PACKAGE_VERSION }}
-          aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
-          aur_username: ${{ secrets.AUR_USERNAME }}
-          aur_email: ${{ secrets.AUR_EMAIL }}
-
-      - name: Publish vscodium-insiders
-        uses: zokugun/github-actions-aur-releaser@v1
-        with:
-          package_name: vscodium-insiders
+          package_name: ${{ matrix.package_name }}
           package_version: ${{ env.PACKAGE_VERSION }}
           aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
           aur_username: ${{ secrets.AUR_USERNAME }}
@@ -170,10 +167,10 @@ jobs:
           ref: insider
 
       - name: Check version
-        run: ./stores/snapcraft/check_version.sh
         env:
           ARCHITECTURE: ${{ matrix.platform }}
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
+        run: ./stores/snapcraft/check_version.sh
 
       - uses: docker/setup-qemu-action@v1
         if: env.SHOULD_DEPLOY == 'yes'

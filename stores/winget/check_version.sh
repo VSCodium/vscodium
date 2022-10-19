@@ -8,7 +8,7 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   RELEASE_VERSION="${RELEASE_VERSION/\-insider/}"
 fi
 
-WINGET_VERSION=$( echo "${VERSIONS}" | jq -r 'map(.name) | last' )
+WINGET_VERSION=$( echo "${VERSIONS}" | jq -r 'map(select(.name | startswith("1."))) | map(.name) | last' )
 
 echo "RELEASE_VERSION=\"${RELEASE_VERSION}\""
 echo "WINGET_VERSION=\"${WINGET_VERSION}\""

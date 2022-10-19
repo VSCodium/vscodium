@@ -2,6 +2,8 @@
 
 set -ex
 
+. version.sh
+
 if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   npm config set scripts-prepend-node-path true
   npm config set node_gyp
