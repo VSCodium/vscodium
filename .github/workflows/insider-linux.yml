@@ -165,7 +165,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Restore remote dependencies
-       uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v3
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
         if: ${{ matrix.vscode_arch }} != 'armhf'
