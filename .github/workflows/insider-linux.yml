@@ -23,8 +23,10 @@ jobs:
     container:
       image: vscodium/vscodium-linux-build-agent:bionic-x64
       env:
+        GITHUB_BRANCH: insider
         VSCODE_QUALITY: insider
     outputs:
+      GITHUB_BRANCH: ${{ env.GITHUB_BRANCH }}
       MS_COMMIT: ${{ env.MS_COMMIT }}
       MS_TAG: ${{ env.MS_TAG }}
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
@@ -35,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: insider
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Clone VSCode repo
         env:
@@ -45,19 +47,16 @@ jobs:
       - name: Check PR or cron
         run: ./check_cron_or_pr.sh
 
-      - name: Save repositories
-        uses: actions/upload-artifact@v3
-        with:
-          name: repositories
-          path: .
-        if: env.SHOULD_BUILD == 'yes' || env.SHOULD_DEPLOY == 'yes'
-
   dependencies:
     needs: check
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
       env:
+        GITHUB_BRANCH: ${{ needs.check.outputs.GITHUB_BRANCH }}
+        MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+        MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+        RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
         VSCODE_QUALITY: ${{ needs.check.outputs.VSCODE_QUALITY }}
     strategy:
       fail-fast: false
@@ -66,10 +65,17 @@ jobs:
         - vscode_arch: x64
           image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
         - vscode_arch: arm64
-          image: ubuntu-latest
+          image: ubuntu:20.04
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Clone VSCode repo
+        run: ./get_repo.sh
+
       - uses: docker/setup-qemu-action@v2
         if: matrix.vscode_arch == 'arm64'
 
@@ -80,12 +86,6 @@ jobs:
 
       - name: Install Yarn
         run: npm install -g yarn
-
-      - name: Restore repositories
-        uses: actions/download-artifact@v3
-        with:
-          name: repositories
-          path: .
 
       - name: Install remote dependencies (x64)
         env:
@@ -113,6 +113,7 @@ jobs:
       env:
         APP_NAME: VSCodium
         ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+        GITHUB_BRANCH: ${{ needs.check.outputs.GITHUB_BRANCH }}
         MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
         MS_TAG: ${{ needs.check.outputs.MS_TAG }}
         OS_NAME: linux
@@ -138,6 +139,13 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Clone VSCode repo
+        run: ./get_repo.sh
+
       - name: Install GH
         run: ./install_gh.sh
 
@@ -148,12 +156,6 @@ jobs:
 
       - name: Install Yarn
         run: npm install -g yarn
-
-      - name: Restore repositories
-        uses: actions/download-artifact@v3
-        with:
-          name: repositories
-          path: .
 
       - name: Check existing VSCodium tags/releases
         env:
