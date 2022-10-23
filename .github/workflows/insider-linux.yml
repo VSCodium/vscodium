@@ -23,10 +23,10 @@ jobs:
     container:
       image: vscodium/vscodium-linux-build-agent:bionic-x64
       env:
-        GIT_BRANCH: insider
+        GITHUB_BRANCH: insider
         VSCODE_QUALITY: insider
     outputs:
-      GIT_BRANCH: ${{ env.GIT_BRANCH }}
+      GITHUB_BRANCH: ${{ env.GITHUB_BRANCH }}
       MS_COMMIT: ${{ env.MS_COMMIT }}
       MS_TAG: ${{ env.MS_TAG }}
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ env.GIT_BRANCH }}
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Clone VSCode repo
         env:
@@ -53,7 +53,7 @@ jobs:
     container:
       image: ${{ matrix.image }}
       env:
-        GIT_BRANCH: ${{ needs.check.outputs.GIT_BRANCH }}
+        GITHUB_BRANCH: ${{ needs.check.outputs.GITHUB_BRANCH }}
         MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
         MS_TAG: ${{ needs.check.outputs.MS_TAG }}
         RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
@@ -71,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ env.GIT_BRANCH }}
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
@@ -113,7 +113,7 @@ jobs:
       env:
         APP_NAME: VSCodium
         ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-        GIT_BRANCH: ${{ needs.check.outputs.GIT_BRANCH }}
+        GITHUB_BRANCH: ${{ needs.check.outputs.GITHUB_BRANCH }}
         MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
         MS_TAG: ${{ needs.check.outputs.MS_TAG }}
         OS_NAME: linux
@@ -141,7 +141,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ env.GIT_BRANCH }}
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
