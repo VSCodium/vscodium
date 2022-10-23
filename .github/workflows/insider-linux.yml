@@ -23,10 +23,10 @@ jobs:
     container:
       image: vscodium/vscodium-linux-build-agent:bionic-x64
       env:
-        GITHUB_BRANCH: insider
+        GIT_BRANCH: insider
         VSCODE_QUALITY: insider
     outputs:
-      GITHUB_BRANCH: ${{ env.GITHUB_BRANCH }}
+      GIT_BRANCH: ${{ env.GIT_BRANCH }}
       MS_COMMIT: ${{ env.MS_COMMIT }}
       MS_TAG: ${{ env.MS_TAG }}
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ env.GITHUB_BRANCH }}
+          ref: ${{ env.GIT_BRANCH }}
 
       - name: Clone VSCode repo
         env:
@@ -53,7 +53,7 @@ jobs:
     container:
       image: ${{ matrix.image }}
       env:
-        GITHUB_BRANCH: ${{ needs.check.outputs.GITHUB_BRANCH }}
+        GIT_BRANCH: ${{ needs.check.outputs.GIT_BRANCH }}
         MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
         MS_TAG: ${{ needs.check.outputs.MS_TAG }}
         RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
@@ -65,13 +65,13 @@ jobs:
         - vscode_arch: x64
           image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
         - vscode_arch: arm64
-          image: ubuntu:20.04
+          image: vscodium/vscodium-linux-build-agent:bionic-x64
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ env.GITHUB_BRANCH }}
+          ref: ${{ env.GIT_BRANCH }}
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
@@ -113,7 +113,7 @@ jobs:
       env:
         APP_NAME: VSCodium
         ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-        GITHUB_BRANCH: ${{ needs.check.outputs.GITHUB_BRANCH }}
+        GIT_BRANCH: ${{ needs.check.outputs.GIT_BRANCH }}
         MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
         MS_TAG: ${{ needs.check.outputs.MS_TAG }}
         OS_NAME: linux
@@ -141,7 +141,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ env.GITHUB_BRANCH }}
+          ref: ${{ env.GIT_BRANCH }}
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
