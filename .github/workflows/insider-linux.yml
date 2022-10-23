@@ -66,6 +66,7 @@ jobs:
         - vscode_arch: x64
           image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
         - vscode_arch: arm64
+          image: ubuntu-latest
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
@@ -84,6 +85,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: repositories
+          path: .
 
       - name: Install remote dependencies (x64)
         env:
@@ -148,7 +150,10 @@ jobs:
         run: npm install -g yarn
 
       - name: Restore repositories
-        run: ./restore_repositories.sh
+        uses: actions/download-artifact@v3
+        with:
+          name: repositories
+          path: .
 
       - name: Check existing VSCodium tags/releases
         env:
@@ -178,6 +183,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
+          path: .
         if: ${{ matrix.vscode_arch }} != 'armhf'
 
       - name: Build
