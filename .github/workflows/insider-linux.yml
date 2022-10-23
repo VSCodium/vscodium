@@ -18,15 +18,96 @@ on:
     - '**/*.md'
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    container:
+      image: vscodium/vscodium-linux-build-agent:bionic-x64
+      env:
+        VSCODE_QUALITY: insider
+    outputs:
+      MS_COMMIT: ${{ env.MS_COMMIT }}
+      MS_TAG: ${{ env.MS_TAG }}
+      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
+      SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: insider
+
+      - name: Clone VSCode repo
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+        run: ./get_repo.sh
+
+      - name: Check PR or cron
+        run: ./check_cron_or_pr.sh
+
+      - name: Save repositories
+        uses: actions/upload-artifact@v3
+        with:
+          name: repositories
+          path: .
+        if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
+
+  dependencies:
+    needs: check
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - vscode_arch: x64
+          npm_arch: x64
+          image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
+        - vscode_arch: arm64
+          npm_arch: arm64
+          image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-arm64
+    if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
+
+    steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Restore repositories
+        uses: actions/download-artifact@v3
+        with:
+          name: repositories
+
+      - name: Install remote dependencies
+        env:
+          npm_config_arch: ${{ matrix.npm_arch }}
+        run: ./install_remote_dependencies.sh
+
+      - name: Save remote dependencies
+        uses: actions/upload-artifact@v3
+        with:
+          name: remote-dependencies-${{ matrix.vscode_arch }}
+          path: ./vscode/remote/node_modules
+
   build:
+    needs: dependencies
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
       env:
         APP_NAME: VSCodium
         ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-        VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+        MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+        MS_TAG: ${{ needs.check.outputs.MS_TAG }}
         OS_NAME: linux
+        RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+        SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+        SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
+        VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
         VSCODE_ARCH: ${{ matrix.vscode_arch }}
         VSCODE_QUALITY: insider
     strategy:
@@ -42,15 +123,9 @@ jobs:
         - vscode_arch: armhf
           npm_arch: armv7l
           image: vscodium/vscodium-linux-build-agent:stretch-armhf
-    outputs:
-      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
-      SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
+    if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: insider
-
       - name: Install GH
         run: ./install_gh.sh
 
@@ -62,13 +137,8 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn
 
-      - name: Clone VSCode repo
-        env:
-          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-        run: ./get_repo.sh
-
-      - name: Check PR or cron
-        run: ./check_cron_or_pr.sh
+      - name: Restore repositories
+        run: ./restore_repositories.sh
 
       - name: Check existing VSCodium tags/releases
         env:
@@ -93,6 +163,12 @@ jobs:
           key: linux-${{ matrix.npm_arch }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
           restore-keys: linux-${{ matrix.npm_arch }}-yarnCacheDir-
         if: env.SHOULD_BUILD == 'yes'
+
+      - name: Restore remote dependencies
+       uses: actions/download-artifact@v3
+        with:
+          name: remote-dependencies-${{ matrix.vscode_arch }}
+        if: ${{ matrix.vscode_arch }} != 'armhf'
 
       - name: Build
         env:
@@ -128,12 +204,12 @@ jobs:
         include:
         - package_name: vscodium-insiders-bin
         - package_name: vscodium-insiders
-    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - name: Get version
         env:
-          RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+          RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
         run: echo "PACKAGE_VERSION=${RELEASE_VERSION/-*/}" >> "${GITHUB_ENV}"
 
       - name: Publish ${{ matrix.package_name }}
@@ -158,7 +234,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    # if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+    # if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
     if: ${{ false }}
 
     steps:
