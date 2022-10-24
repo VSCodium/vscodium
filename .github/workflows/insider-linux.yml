@@ -48,7 +48,8 @@ jobs:
         run: ./check_cron_or_pr.sh
 
   dependencies:
-    needs: check
+    needs:
+      - check
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
@@ -104,9 +105,12 @@ jobs:
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
           path: ./vscode/remote/node_modules
+          retention-days: ${{ needs.check.outputs.SHOULD_BUILD == 'yes' && 30 || 1 }}
 
   build:
-    needs: dependencies
+    needs:
+      - check
+      - dependencies
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
@@ -186,7 +190,7 @@ jobs:
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
           path: .
-        if: ${{ matrix.vscode_arch }} == 'x64'
+        if: env.SHOULD_BUILD == 'yes' && matrix.vscode_arch == 'x64'
 
       - name: Build
         env:
@@ -214,7 +218,9 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
   aur:
-    needs: build
+    needs:
+      - check
+      - build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -240,7 +246,9 @@ jobs:
           aur_email: ${{ secrets.AUR_EMAIL }}
 
   snap:
-    needs: build
+    needs:
+      - check
+      - build
     runs-on: ubuntu-latest
     env:
       APP_NAME: codium
