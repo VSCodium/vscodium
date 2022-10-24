@@ -6,6 +6,9 @@ on:
       release_version:
         type: string
         description: Forced release version
+      new_release:
+        type: boolean
+        description: Force new Release
   schedule:
     - cron: '0 8 * * *'
   push:
@@ -70,17 +73,18 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_RELEASE: ${{ github.event.inputs.new_release }}
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Compute cache key
         id: yarnCacheKey
-        run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
+        run: echo "value=$(node build/azure-pipelines/computeYarnCacheKey.js)" >> $GITHUB_OUTPUT
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Get yarn cache directory path
         id: yarnCacheDirPath
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Cache yarn directory

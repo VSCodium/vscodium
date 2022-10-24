@@ -59,12 +59,12 @@ jobs:
 
       - name: Compute cache key
         id: yarnCacheKey
-        run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
+        run: echo "value=$(node build/azure-pipelines/computeYarnCacheKey.js)" >> $GITHUB_OUTPUT
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Get yarn cache directory path
         id: yarnCacheDirPath
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Cache yarn directory
