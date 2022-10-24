@@ -17,22 +17,22 @@ on:
     paths-ignore:
     - '**/*.md'
 
+env:
+  ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+  GITHUB_BRANCH: insider
+  VSCODE_QUALITY: insider
+
 jobs:
   check:
     runs-on: ubuntu-latest
     container:
       image: vscodium/vscodium-linux-build-agent:bionic-x64
-      env:
-        GITHUB_BRANCH: insider
-        VSCODE_QUALITY: insider
     outputs:
-      GITHUB_BRANCH: ${{ env.GITHUB_BRANCH }}
       MS_COMMIT: ${{ env.MS_COMMIT }}
       MS_TAG: ${{ env.MS_TAG }}
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
-      VSCODE_QUALITY: ${{ env.VSCODE_QUALITY }}
 
     steps:
       - uses: actions/checkout@v3
@@ -54,11 +54,9 @@ jobs:
     container:
       image: ${{ matrix.image }}
       env:
-        GITHUB_BRANCH: ${{ needs.check.outputs.GITHUB_BRANCH }}
         MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
         MS_TAG: ${{ needs.check.outputs.MS_TAG }}
         RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-        VSCODE_QUALITY: ${{ needs.check.outputs.VSCODE_QUALITY }}
     strategy:
       fail-fast: false
       matrix:
@@ -116,8 +114,6 @@ jobs:
       image: ${{ matrix.image }}
       env:
         APP_NAME: VSCodium
-        ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-        GITHUB_BRANCH: ${{ needs.check.outputs.GITHUB_BRANCH }}
         MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
         MS_TAG: ${{ needs.check.outputs.MS_TAG }}
         OS_NAME: linux
@@ -126,7 +122,6 @@ jobs:
         SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
         VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
         VSCODE_ARCH: ${{ matrix.vscode_arch }}
-        VSCODE_QUALITY: ${{ needs.check.outputs.VSCODE_QUALITY }}
     strategy:
       fail-fast: false
       matrix:
@@ -174,12 +169,12 @@ jobs:
 
       - name: Compute cache key
         id: yarnCacheKey
-        run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
+        run: echo "value=$(node build/azure-pipelines/computeYarnCacheKey.js)" >> $GITHUB_OUTPUT
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Get yarn cache directory path
         id: yarnCacheDirPath
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Cache yarn directory
@@ -257,8 +252,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP_NAME: codium
-      ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-      VSCODE_QUALITY: 'insider'
     strategy:
       fail-fast: false
       matrix:
