@@ -105,7 +105,7 @@ jobs:
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
           path: ./vscode/remote/node_modules
-          retention-days: ${{ needs.check.outputs.SHOULD_BUILD == 'yes' && 30 || 1 }}
+          retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
 
   build:
     needs:
@@ -143,6 +143,11 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
+      - name: Re-export env variables
+        run: |
+          echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
+          echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" >> "${GITHUB_ENV}"
+
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.GITHUB_BRANCH }}
