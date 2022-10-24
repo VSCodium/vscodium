@@ -194,7 +194,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
-          path: .
+          path: ./vscode/remote/node_modules
         if: env.SHOULD_BUILD == 'yes' && matrix.vscode_arch == 'x64'
 
       - name: Build
