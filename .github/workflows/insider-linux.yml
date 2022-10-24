@@ -64,8 +64,8 @@ jobs:
         include:
         - vscode_arch: x64
           image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
-        - vscode_arch: arm64
-          image: vscodium/vscodium-linux-build-agent:bionic-x64
+        # - vscode_arch: arm64
+        #   image: vscodium/vscodium-linux-build-agent:bionic-x64
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
@@ -93,11 +93,11 @@ jobs:
         run: ./install_remote_dependencies.sh
         if: matrix.vscode_arch == 'x64'
 
-      - name: Install remote dependencies (arm64)
-        run: |
-          set -e
-          docker run -e VSCODE_QUALITY -e GITHUB_TOKEN -v $(pwd):/root/vscodium vscodium/vscodium-linux-build-agent:centos7-devtoolset8-arm64 /root/vscodium/install_remote_dependencies.sh
-        if: matrix.vscode_arch == 'arm64'
+      # - name: Install remote dependencies (arm64)
+      #   run: |
+      #     set -e
+      #     docker run -e VSCODE_QUALITY -e GITHUB_TOKEN -v $(pwd):/root/vscodium vscodium/vscodium-linux-build-agent:centos7-devtoolset8-arm64 /root/vscodium/install_remote_dependencies.sh
+      #   if: matrix.vscode_arch == 'arm64'
 
       - name: Save remote dependencies
         uses: actions/upload-artifact@v3
@@ -186,7 +186,7 @@ jobs:
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
           path: .
-        if: ${{ matrix.vscode_arch }} != 'armhf'
+        if: ${{ matrix.vscode_arch }} == 'x64'
 
       - name: Build
         env:
