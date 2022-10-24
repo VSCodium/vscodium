@@ -136,14 +136,13 @@ jobs:
       image: ${{ matrix.image }}
       env:
         VSCODE_ARCH: ${{ matrix.vscode_arch }}
+    outputs:
+      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
+      SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
-      # - name: Re-export env variables
-      #   run: |
-      #     echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
-      #     echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" >> "${GITHUB_ENV}"
-
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.GITHUB_BRANCH }}
@@ -220,7 +219,6 @@ jobs:
 
   aur:
     needs:
-      - check
       - build
     runs-on: ubuntu-latest
     strategy:
@@ -229,12 +227,12 @@ jobs:
         include:
         - package_name: vscodium-insiders-bin
         - package_name: vscodium-insiders
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - name: Get version
         env:
-          RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+          RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
         run: echo "PACKAGE_VERSION=${RELEASE_VERSION/-*/}" >> "${GITHUB_ENV}"
 
       - name: Publish ${{ matrix.package_name }}
@@ -248,7 +246,6 @@ jobs:
 
   snap:
     needs:
-      - check
       - build
     runs-on: ubuntu-latest
     env:
@@ -259,7 +256,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    # if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
+    # if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
     if: false
 
     steps:
