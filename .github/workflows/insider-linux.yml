@@ -18,8 +18,11 @@ on:
     - '**/*.md'
 
 env:
+  APP_NAME: VSCodium
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
   GITHUB_BRANCH: insider
+  OS_NAME: linux
+  VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
   VSCODE_QUALITY: insider
 
 jobs:
@@ -51,12 +54,10 @@ jobs:
     needs:
       - check
     runs-on: ubuntu-latest
-    container:
-      image: ${{ matrix.image }}
-      env:
-        MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
-        MS_TAG: ${{ needs.check.outputs.MS_TAG }}
-        RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+    env:
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
     strategy:
       fail-fast: false
       matrix:
@@ -65,6 +66,8 @@ jobs:
           image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
         # - vscode_arch: arm64
         #   image: vscodium/vscodium-linux-build-agent:bionic-x64
+    container:
+      image: ${{ matrix.image }}
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
@@ -110,18 +113,12 @@ jobs:
       - check
       - dependencies
     runs-on: ubuntu-latest
-    container:
-      image: ${{ matrix.image }}
-      env:
-        APP_NAME: VSCodium
-        MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
-        MS_TAG: ${{ needs.check.outputs.MS_TAG }}
-        OS_NAME: linux
-        RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-        SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
-        SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
-        VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
-        VSCODE_ARCH: ${{ matrix.vscode_arch }}
+    env:
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
     strategy:
       fail-fast: false
       matrix:
@@ -135,13 +132,17 @@ jobs:
         - vscode_arch: armhf
           npm_arch: armv7l
           image: vscodium/vscodium-linux-build-agent:stretch-armhf
+    container:
+      image: ${{ matrix.image }}
+      env:
+        VSCODE_ARCH: ${{ matrix.vscode_arch }}
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
-      - name: Re-export env variables
-        run: |
-          echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
-          echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" >> "${GITHUB_ENV}"
+      # - name: Re-export env variables
+      #   run: |
+      #     echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
+      #     echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" >> "${GITHUB_ENV}"
 
       - uses: actions/checkout@v3
         with:
@@ -259,7 +260,7 @@ jobs:
         - amd64
         - arm64
     # if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
-    if: ${{ false }}
+    if: false
 
     steps:
       - uses: actions/checkout@v3
