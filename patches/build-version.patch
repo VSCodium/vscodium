@@ -139,7 +139,7 @@ index dc7430b..23def01 100644
 +Release: ${this.productService.release ?? 'unknown'}
  Commit: ${this.productService.commit ?? 'unknown'}
 diff --git a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-index f63b75f..218373f 100644
+index f63b75f..7cac588 100644
 --- a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 @@ -8,3 +8,3 @@ import { fromNow } from 'vs/base/common/date';
@@ -155,7 +155,7 @@ index f63b75f..218373f 100644
 +			'ru': 'Релиз',
 +			'zh-hans': '发布版本',
 +			'zh-hant': '發布版本',
-+		})(language) || RELEASE_DEFAULT;
++		})[language] || RELEASE_DEFAULT;
 +
  		const detailString = (useAgo: boolean): string => {
 @@ -179,3 +187,3 @@ export class NativeDialogHandler implements IDialogHandler {
