@@ -139,13 +139,27 @@ index dc7430b..23def01 100644
 +Release: ${this.productService.release ?? 'unknown'}
  Commit: ${this.productService.commit ?? 'unknown'}
 diff --git a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-index f63b75f..8e24c02 100644
+index f63b75f..218373f 100644
 --- a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-@@ -169,4 +169,5 @@ export class NativeDialogHandler implements IDialogHandler {
- 			return localize({ key: 'aboutDetail', comment: ['Electron, Chromium, Node.js and V8 are product names that need no translation'] },
--				"Version: {0}\nCommit: {1}\nDate: {2}\nElectron: {3}\nChromium: {4}\nNode.js: {5}\nV8: {6}\nOS: {7}\nSandboxed: {8}",
-+				"Version: {0}\nRelease: {1}\nCommit: {2}\nDate: {3}\nElectron: {4}\nChromium: {5}\nNode.js: {6}\nV8: {7}\nOS: {8}\nSandboxed: {9}",
- 				version,
-+				this.productService.release || 'Unknown',
- 				this.productService.commit || 'Unknown',
+@@ -8,3 +8,3 @@ import { fromNow } from 'vs/base/common/date';
+ import { mnemonicButtonLabel } from 'vs/base/common/labels';
+-import { isLinux, isLinuxSnap, isWindows } from 'vs/base/common/platform';
++import { isLinux, isLinuxSnap, isWindows, language } from 'vs/base/common/platform';
+ import Severity from 'vs/base/common/severity';
+@@ -167,2 +167,10 @@ export class NativeDialogHandler implements IDialogHandler {
+ 
++		const RELEASE_DEFAULT = 'Release';
++		const releaseString = ({
++			'en': RELEASE_DEFAULT,
++			'ru': 'Релиз',
++			'zh-hans': '发布版本',
++			'zh-hant': '發布版本',
++		})(language) || RELEASE_DEFAULT;
++
+ 		const detailString = (useAgo: boolean): string => {
+@@ -179,3 +187,3 @@ export class NativeDialogHandler implements IDialogHandler {
+ 				process.sandboxed ? 'Yes' : 'No' // TODO@bpasero remove me once sandbox is final
+-			);
++			).replace('\n', `\n${releaseString}: ${this.productService.release || 'Unknown'}`);
+ 		};
