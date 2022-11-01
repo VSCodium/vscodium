@@ -1,8 +1,8 @@
 diff --git a/.vscode/settings.json b/.vscode/settings.json
-index 184042b..a067194 100644
+index 3907bc7..1772769 100644
 --- a/.vscode/settings.json
 +++ b/.vscode/settings.json
-@@ -87,3 +87,3 @@
+@@ -88,3 +88,3 @@
  		"editor.defaultFormatter": "vscode.typescript-language-features",
 -		"editor.formatOnSave": true
 +		// "editor.formatOnSave": true
@@ -120,16 +120,43 @@ index bceda01..4fe44e2 100644
 +			release: pkg.release
  		});
 diff --git a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-index ec4ff95..36e882f 100644
+index ec4ff95..2ed2c03 100644
 --- a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-@@ -146,4 +146,5 @@ export class BrowserDialogHandler implements IDialogHandler {
+@@ -22,2 +22,3 @@ import { IInstantiationService } from 'vs/platform/instantiation/common/instanti
+ import { MarkdownRenderer } from 'vs/editor/contrib/markdownRenderer/browser/markdownRenderer';
++import { getReleaseString } from 'vs/workbench/common/release';
+
+@@ -145,2 +146,4 @@ export class BrowserDialogHandler implements IDialogHandler {
+ 		const detailString = (useAgo: boolean): string => {
++			const releaseString = getReleaseString();
++
  			return localize('aboutDetail',
--				"Version: {0}\nCommit: {1}\nDate: {2}\nBrowser: {3}",
-+				"Version: {0}\nRelease: {1}\nCommit: {2}\nDate: {3}\nBrowser: {4}",
- 				this.productService.version || 'Unknown',
-+				this.productService.release || 'Unknown',
- 				this.productService.commit || 'Unknown',
+@@ -151,3 +154,3 @@ export class BrowserDialogHandler implements IDialogHandler {
+ 				navigator.userAgent
+-			);
++			).replace('\n', `\n${releaseString} ${this.productService.release || 'Unknown'}\n`);
+ 		};
+diff --git a/src/vs/workbench/common/release.ts b/src/vs/workbench/common/release.ts
+new file mode 100644
+index 0000000..2a8ea57
+--- /dev/null
++++ b/src/vs/workbench/common/release.ts
+@@ -0,0 +1,14 @@
++import { language } from 'vs/base/common/platform';
++
++const DEFAULT_LABEL = 'Release:';
++const LABELS: { [key: string]: string } = {
++	'en': DEFAULT_LABEL,
++	'fr': 'Révision :',
++	'ru': 'Релиз:',
++	'zh-hans': '发布版本:',
++	'zh-hant': '發布版本:',
++};
++
++export function getReleaseString(): string {
++	return LABELS[language] ?? DEFAULT_LABEL;
++}
 diff --git a/src/vs/workbench/contrib/issue/browser/issueService.ts b/src/vs/workbench/contrib/issue/browser/issueService.ts
 index dc7430b..23def01 100644
 --- a/src/vs/workbench/contrib/issue/browser/issueService.ts
@@ -139,27 +166,19 @@ index dc7430b..23def01 100644
 +Release: ${this.productService.release ?? 'unknown'}
  Commit: ${this.productService.commit ?? 'unknown'}
 diff --git a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-index f63b75f..7cac588 100644
+index f63b75f..2b77c1b 100644
 --- a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-@@ -8,3 +8,3 @@ import { fromNow } from 'vs/base/common/date';
- import { mnemonicButtonLabel } from 'vs/base/common/labels';
--import { isLinux, isLinuxSnap, isWindows } from 'vs/base/common/platform';
-+import { isLinux, isLinuxSnap, isWindows, language } from 'vs/base/common/platform';
- import Severity from 'vs/base/common/severity';
-@@ -167,2 +167,10 @@ export class NativeDialogHandler implements IDialogHandler {
+@@ -17,2 +17,3 @@ import { IProductService } from 'vs/platform/product/common/productService';
+ import { process } from 'vs/base/parts/sandbox/electron-sandbox/globals';
++import { getReleaseString } from 'vs/workbench/common/release';
  
-+		const RELEASE_DEFAULT = 'Release';
-+		const releaseString = ({
-+			'en': RELEASE_DEFAULT,
-+			'ru': 'Релиз',
-+			'zh-hans': '发布版本',
-+			'zh-hant': '發布版本',
-+		})[language] || RELEASE_DEFAULT;
-+
- 		const detailString = (useAgo: boolean): string => {
-@@ -179,3 +187,3 @@ export class NativeDialogHandler implements IDialogHandler {
+@@ -166,2 +167,3 @@ export class NativeDialogHandler implements IDialogHandler {
+ 		const osProps = await this.nativeHostService.getOSProperties();
++		const releaseString = getReleaseString();
+
+@@ -179,3 +181,3 @@ export class NativeDialogHandler implements IDialogHandler {
  				process.sandboxed ? 'Yes' : 'No' // TODO@bpasero remove me once sandbox is final
 -			);
-+			).replace('\n', `\n${releaseString}: ${this.productService.release || 'Unknown'}`);
++			).replace('\n', `\n${releaseString} ${this.productService.release || 'Unknown'}\n`);
  		};

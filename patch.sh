@@ -13,7 +13,8 @@ fi
 
 read -p "Press any key when the conflict have been resolved..." -n1 -s
 
-git diff -U1 > "${FILE}"
+git add .
+git diff --staged -U1 > "${FILE}"
 
 cd ..
 
