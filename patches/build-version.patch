@@ -126,7 +126,7 @@ index ec4ff95..2ed2c03 100644
 @@ -22,2 +22,3 @@ import { IInstantiationService } from 'vs/platform/instantiation/common/instanti
  import { MarkdownRenderer } from 'vs/editor/contrib/markdownRenderer/browser/markdownRenderer';
 +import { getReleaseString } from 'vs/workbench/common/release';
-
+ 
 @@ -145,2 +146,4 @@ export class BrowserDialogHandler implements IDialogHandler {
  		const detailString = (useAgo: boolean): string => {
 +			const releaseString = getReleaseString();
@@ -176,7 +176,7 @@ index f63b75f..2b77c1b 100644
 @@ -166,2 +167,3 @@ export class NativeDialogHandler implements IDialogHandler {
  		const osProps = await this.nativeHostService.getOSProperties();
 +		const releaseString = getReleaseString();
-
+ 
 @@ -179,3 +181,3 @@ export class NativeDialogHandler implements IDialogHandler {
  				process.sandboxed ? 'Yes' : 'No' // TODO@bpasero remove me once sandbox is final
 -			);
