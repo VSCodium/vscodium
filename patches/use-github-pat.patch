@@ -1,22 +1,18 @@
 diff --git a/extensions/github-authentication/src/githubServer.ts b/extensions/github-authentication/src/githubServer.ts
-index 94ce542..2e93aea 100644
+index 830e698..cd6f27e 100644
 --- a/extensions/github-authentication/src/githubServer.ts
 +++ b/extensions/github-authentication/src/githubServer.ts
-@@ -5,7 +5,4 @@
- 
--import * as nls from 'vscode-nls';
- import * as vscode from 'vscode';
+@@ -7,4 +7,2 @@ import * as vscode from 'vscode';
  import fetch, { Response } from 'node-fetch';
 -import { v4 as uuid } from 'uuid';
 -import { PromiseAdapter, promiseFromEvent } from './common/utils';
  import { ExperimentationTelemetry } from './experimentationService';
-@@ -13,14 +10,5 @@ import { AuthProviderType } from './github';
+@@ -12,13 +10,4 @@ import { AuthProviderType } from './github';
  import { Log } from './common/logger';
 -import { isSupportedEnvironment } from './common/env';
 -import { LoopbackAuthServer } from './authServer';
 -import path = require('path');
- 
--const localize = nls.loadMessageBundle();
+-
 -const CLIENT_ID = '01ab8ac9400c4e429b23';
 -const GITHUB_TOKEN_URL = 'https://vscode.dev/codeExchangeProxyEndpoints/github/login/oauth/access_token';
  const NETWORK_ERROR = 'network error';
@@ -25,7 +21,7 @@ index 94ce542..2e93aea 100644
 -const REDIRECT_URL_INSIDERS = 'https://insiders.vscode.dev/redirect';
 -
  class UriEventHandler extends vscode.EventEmitter<vscode.Uri> implements vscode.UriHandler {
-@@ -44,9 +32,2 @@ export interface IGitHubServer extends vscode.Disposable {
+@@ -42,9 +31,2 @@ export interface IGitHubServer extends vscode.Disposable {
  
 -interface IGitHubDeviceCodeResponse {
 -	device_code: string;
@@ -35,12 +31,12 @@ index 94ce542..2e93aea 100644
 -}
 -
  async function getScopes(token: string, serverUri: vscode.Uri, logger: Log): Promise<string[]> {
-@@ -57,3 +38,3 @@ async function getScopes(token: string, serverUri: vscode.Uri, logger: Log): Pro
+@@ -55,3 +37,3 @@ async function getScopes(token: string, serverUri: vscode.Uri, logger: Log): Pro
  				Authorization: `token ${token}`,
 -				'User-Agent': 'Visual-Studio-Code'
 +				'User-Agent': 'VSCodium'
  			}
-@@ -77,7 +58,4 @@ export class GitHubServer implements IGitHubServer {
+@@ -75,7 +57,4 @@ export class GitHubServer implements IGitHubServer {
  
 -	private _pendingNonces = new Map<string, string[]>();
 -	private _codeExchangePromises = new Map<string, { promise: Promise<string>; cancel: vscode.EventEmitter<void> }>();
@@ -48,11 +44,11 @@ index 94ce542..2e93aea 100644
  	private static _uriHandler: UriEventHandler | undefined;
 -	private _redirectEndpoint: string | undefined;
  
-@@ -85,2 +63,3 @@ export class GitHubServer implements IGitHubServer {
+@@ -83,2 +62,3 @@ export class GitHubServer implements IGitHubServer {
  		public readonly type: AuthProviderType,
 +		// @ts-ignore
  		private readonly _supportDeviceCodeFlow: boolean,
-@@ -104,41 +83,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -102,41 +82,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async getRedirectEndpoint(): Promise<string> {
 -		if (this._redirectEndpoint) {
@@ -94,27 +90,27 @@ index 94ce542..2e93aea 100644
 -	}
 -
  	dispose() {
-@@ -158,58 +98,8 @@ export class GitHubServer implements IGitHubServer {
+@@ -156,58 +97,8 @@ export class GitHubServer implements IGitHubServer {
  		let userCancelled: boolean | undefined;
--		const yes = localize('yes', "Yes");
--		const no = localize('no', "No");
+-		const yes = vscode.l10n.t('Yes');
+-		const no = vscode.l10n.t('No');
 -		const promptToContinue = async () => {
 -			if (userCancelled === undefined) {
 -				// We haven't had a failure yet so wait to prompt
 -				return;
 -			}
 -			const message = userCancelled
--				? localize('userCancelledMessage', "Having trouble logging in? Would you like to try a different way?")
--				: localize('otherReasonMessage', "You have not yet finished authorizing this extension to use GitHub. Would you like to keep trying?");
+-				? vscode.l10n.t('Having trouble logging in? Would you like to try a different way?')
+-				: vscode.l10n.t('You have not yet finished authorizing this extension to use GitHub. Would you like to keep trying?');
 -			const result = await vscode.window.showWarningMessage(message, yes, no);
 -			if (result !== yes) {
 -				throw new Error('Cancelled');
 -			}
 -		};
- 
+-
 -		const nonce = uuid();
 -		const callbackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.github-authentication/did-authenticate?nonce=${encodeURIComponent(nonce)}`));
--
+ 
 -		const supported = isSupportedEnvironment(callbackUri);
 -		if (supported) {
 -			try {
@@ -158,13 +154,17 @@ index 94ce542..2e93aea 100644
 +			this._logger.error(e);
 +			userCancelled = e.message ?? e === 'User Cancelled';
  		}
-@@ -219,127 +109,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -217,136 +108,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async doLoginWithoutLocalServer(scopes: string, nonce: string, callbackUri: vscode.Uri): Promise<string> {
 -		this._logger.info(`Trying without local server... (${scopes})`);
 -		return await vscode.window.withProgress<string>({
 -			location: vscode.ProgressLocation.Notification,
--			title: localize('signingIn', 'Signing in to {0}...', this.baseUri.authority),
+-			title: vscode.l10n.t({
+-				message: 'Signing in to {0}...',
+-				args: [this.baseUri.authority],
+-				comment: ['The {0} will be a url, e.g. github.com']
+-			}),
 -			cancellable: true
 -		}, async (_, token) => {
 -			const existingNonces = this._pendingNonces.get(scopes) || [];
@@ -209,7 +209,11 @@ index 94ce542..2e93aea 100644
 -		this._logger.info(`Trying with local server... (${scopes})`);
 -		return await vscode.window.withProgress<string>({
 -			location: vscode.ProgressLocation.Notification,
--			title: localize('signingInAnotherWay', "Signing in to {0}...", this.baseUri.authority),
+-			title: vscode.l10n.t({
+-				message: 'Signing in to {0}...',
+-				args: [this.baseUri.authority],
+-				comment: ['The {0} will be a url, e.g. github.com']
+-			}),
 -			cancellable: true
 -		}, async (_, token) => {
 -			const redirectUri = await this.getRedirectEndpoint();
@@ -266,15 +270,15 @@ index 94ce542..2e93aea 100644
 -
 -		const json = await result.json() as IGitHubDeviceCodeResponse;
 -
--
+-		const button = vscode.l10n.t('Copy & Continue to GitHub');
 -		const modalResult = await vscode.window.showInformationMessage(
--			localize('code.title', "Your Code: {0}", json.user_code),
+-			vscode.l10n.t({ message: 'Your Code: {0}', args: [json.user_code], comment: ['The {0} will be a code, e.g. 123-456'] }),
 -			{
 -				modal: true,
--				detail: localize('code.detail', "To finish authenticating, navigate to GitHub and paste in the above one-time code.")
--			}, 'Copy & Continue to GitHub');
+-				detail: vscode.l10n.t('To finish authenticating, navigate to GitHub and paste in the above one-time code.')
+-			}, button);
 -
--		if (modalResult !== 'Copy & Continue to GitHub') {
+-		if (modalResult !== button) {
 -			throw new Error('User Cancelled');
 -		}
 -
@@ -285,8 +289,9 @@ index 94ce542..2e93aea 100644
 -
 -		return await this.waitForDeviceCodeAccessToken(json);
 -	}
- 
-@@ -368,121 +133,2 @@ export class GitHubServer implements IGitHubServer {
+-
+ 	private async doLoginWithPat(scopes: string): Promise<string> {
+@@ -374,124 +131,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async waitForDeviceCodeAccessToken(
 -		json: IGitHubDeviceCodeResponse,
@@ -294,11 +299,14 @@ index 94ce542..2e93aea 100644
 -		return await vscode.window.withProgress<string>({
 -			location: vscode.ProgressLocation.Notification,
 -			cancellable: true,
--			title: localize(
--				'progress',
--				"Open [{0}]({0}) in a new tab and paste your one-time code: {1}",
--				json.verification_uri,
--				json.user_code)
+-			title: vscode.l10n.t({
+-				message: 'Open [{0}]({0}) in a new tab and paste your one-time code: {1}',
+-				args: [json.verification_uri, json.user_code],
+-				comment: [
+-					'The [{0}]({0}) will be a url and the {1} will be a code, e.g. 123-456',
+-					'{Locked="[{0}]({0})"}'
+-				]
+-			})
 -		}, async (_, token) => {
 -			const refreshTokenUri = this.baseUri.with({
 -				path: '/login/oauth/access_token',
@@ -409,7 +417,7 @@ index 94ce542..2e93aea 100644
 -
  	private getServerUri(path: string = '') {
 diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-index 1f16d17..61d5ccf 100644
+index ce2a3e8..2a5cf60 100644
 --- a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
 +++ b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
 @@ -306,3 +306,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
@@ -418,10 +426,10 @@ index 1f16d17..61d5ccf 100644
 +		if (!menus.length) {
  			const noAccountsAvailableAction = disposables.add(new Action('noAccountsAvailable', localize('noAccounts', "You are not signed in to any accounts"), undefined, false));
 diff --git a/src/vs/workbench/services/authentication/browser/authenticationService.ts b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-index 69cb0d2..920d6c6 100644
+index d5e2b75..a996eb7 100644
 --- a/src/vs/workbench/services/authentication/browser/authenticationService.ts
 +++ b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-@@ -275,12 +275,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
+@@ -279,12 +279,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
  		}
 -
 -		if (!this._authenticationProviders.size) {
