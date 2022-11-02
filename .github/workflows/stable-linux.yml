@@ -17,18 +17,105 @@ on:
     paths-ignore:
     - '**/*.md'
 
+env:
+  APP_NAME: VSCodium
+  ASSETS_REPOSITORY: ${{ github.repository }}
+  OS_NAME: linux
+  VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+  VSCODE_QUALITY: stable
+
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     container:
+      image: vscodium/vscodium-linux-build-agent:bionic-x64
+    outputs:
+      MS_COMMIT: ${{ env.MS_COMMIT }}
+      MS_TAG: ${{ env.MS_TAG }}
+      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
+      SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Clone VSCode repo
+        run: ./get_repo.sh
+
+      - name: Check PR or cron
+        run: ./check_cron_or_pr.sh
+
+  dependencies:
+    needs:
+      - check
+    runs-on: ubuntu-latest
+    env:
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - vscode_arch: x64
+          image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
+        # - vscode_arch: arm64
+        #   image: vscodium/vscodium-linux-build-agent:bionic-x64
+    container:
       image: ${{ matrix.image }}
-      env:
-        APP_NAME: VSCodium
-        ASSETS_REPOSITORY: ${{ github.repository }}
-        VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
-        OS_NAME: linux
-        VSCODE_ARCH: ${{ matrix.vscode_arch }}
-        VSCODE_QUALITY: stable
+    if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Clone VSCode repo
+        run: ./get_repo.sh
+
+      - uses: docker/setup-qemu-action@v2
+        if: matrix.vscode_arch == 'arm64'
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install remote dependencies (x64)
+        env:
+          npm_config_arch: x64
+        run: ./install_remote_dependencies.sh
+        if: matrix.vscode_arch == 'x64'
+
+      # - name: Install remote dependencies (arm64)
+      #   run: |
+      #     set -e
+      #     docker run -e VSCODE_QUALITY -e GITHUB_TOKEN -v $(pwd):/root/vscodium vscodium/vscodium-linux-build-agent:centos7-devtoolset8-arm64 /root/vscodium/install_remote_dependencies.sh
+      #   if: matrix.vscode_arch == 'arm64'
+
+      - name: Save remote dependencies
+        uses: actions/upload-artifact@v3
+        with:
+          name: remote-dependencies-${{ matrix.vscode_arch }}
+          path: ./vscode/remote/node_modules
+          retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
+
+  build:
+    needs:
+      - check
+      - dependencies
+    runs-on: ubuntu-latest
+    env:
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
     strategy:
       fail-fast: false
       matrix:
@@ -42,12 +129,21 @@ jobs:
         - vscode_arch: armhf
           npm_arch: armv7l
           image: vscodium/vscodium-linux-build-agent:stretch-armhf
+    container:
+      image: ${{ matrix.image }}
+      env:
+        VSCODE_ARCH: ${{ matrix.vscode_arch }}
     outputs:
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
+    if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Clone VSCode repo
+        run: ./get_repo.sh
 
       - name: Install GH
         run: ./install_gh.sh
@@ -60,12 +156,6 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn
 
-      - name: Clone VSCode repo
-        run: ./get_repo.sh
-
-      - name: Check PR or cron
-        run: ./check_cron_or_pr.sh
-
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -73,23 +163,12 @@ jobs:
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
-      - name: Compute cache key
-        id: yarnCacheKey
-        run: echo "value=$(node build/azure-pipelines/computeYarnCacheKey.js)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Get yarn cache directory path
-        id: yarnCacheDirPath
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Cache yarn directory
-        uses: actions/cache@v3
+      - name: Restore remote dependencies
+        uses: actions/download-artifact@v3
         with:
-          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
-          key: linux-${{ matrix.npm_arch }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
-          restore-keys: linux-${{ matrix.npm_arch }}-yarnCacheDir-
-        if: env.SHOULD_BUILD == 'yes'
+          name: remote-dependencies-${{ matrix.vscode_arch }}
+          path: ./vscode/remote/node_modules
+        if: env.SHOULD_BUILD == 'yes' && matrix.vscode_arch == 'x64'
 
       - name: Build
         env:
@@ -116,7 +195,8 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
   aur:
-    needs: build
+    needs:
+      - build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -139,11 +219,11 @@ jobs:
           aur_email: ${{ secrets.AUR_EMAIL }}
 
   snap:
-    needs: build
+    needs:
+      - build
     runs-on: ubuntu-latest
     env:
       APP_NAME: codium
-      ASSETS_REPOSITORY: ${{ github.repository }}
     strategy:
       fail-fast: false
       matrix:
@@ -186,7 +266,8 @@ jobs:
         if: env.SHOULD_DEPLOY == 'yes'
 
   deb-rpm-repo-hook:
-    needs: build
+    needs:
+      - build
     runs-on: ubuntu-latest
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 

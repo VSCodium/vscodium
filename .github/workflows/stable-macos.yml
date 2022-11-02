@@ -17,16 +17,18 @@ on:
     paths-ignore:
     - '**/*.md'
 
+env:
+  APP_NAME: VSCodium
+  ASSETS_REPOSITORY: ${{ github.repository }}
+  OS_NAME: osx
+  VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+  VSCODE_QUALITY: stable
+
 jobs:
   build:
     runs-on: ${{ matrix.runner }}
     env:
-      APP_NAME: VSCodium
-      ASSETS_REPOSITORY: ${{ github.repository }}
-      VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
-      OS_NAME: osx
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-      VSCODE_QUALITY: stable
     strategy:
       fail-fast: false
       matrix:
@@ -56,24 +58,6 @@ jobs:
           NEW_RELEASE: ${{ github.event.inputs.new_release }}
         run: . check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
-
-      - name: Compute cache key
-        id: yarnCacheKey
-        run: echo "value=$(node build/azure-pipelines/computeYarnCacheKey.js)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Get yarn cache directory path
-        id: yarnCacheDirPath
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Cache yarn directory
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
-          key: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
-          restore-keys: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-
-        if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:

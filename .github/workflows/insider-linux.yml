@@ -171,24 +171,6 @@ jobs:
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
-      - name: Compute cache key
-        id: yarnCacheKey
-        run: echo "value=$(node build/azure-pipelines/computeYarnCacheKey.js)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Get yarn cache directory path
-        id: yarnCacheDirPath
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Cache yarn directory
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
-          key: linux-${{ matrix.npm_arch }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
-          restore-keys: linux-${{ matrix.npm_arch }}-yarnCacheDir-
-        if: env.SHOULD_BUILD == 'yes'
-
       - name: Restore remote dependencies
         uses: actions/download-artifact@v3
         with:

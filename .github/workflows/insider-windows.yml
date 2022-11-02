@@ -20,6 +20,14 @@ on:
     paths-ignore:
     - '**/*.md'
 
+env:
+  APP_NAME: VSCodium
+  ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+  GITHUB_BRANCH: insider
+  OS_NAME: windows
+  VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+  VSCODE_QUALITY: insider
+
 jobs:
   build:
     runs-on: windows-2019
@@ -27,12 +35,7 @@ jobs:
       run:
         shell: bash
     env:
-      APP_NAME: VSCodium
-      ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-      VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
-      OS_NAME: windows
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-      VSCODE_QUALITY: insider
     strategy:
       fail-fast: false
       matrix:
@@ -47,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: insider
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
@@ -76,24 +79,6 @@ jobs:
           NEW_RELEASE: ${{ github.event.inputs.new_release }}
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
-
-      - name: Compute cache key
-        id: yarnCacheKey
-        run: echo "value=$(node build/azure-pipelines/computeYarnCacheKey.js)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Get yarn cache directory path
-        id: yarnCacheDirPath
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Cache yarn directory
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
-          key: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
-          restore-keys: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-
-        if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:
@@ -129,13 +114,12 @@ jobs:
         shell: bash
     env:
       APP_IDENTIFIER: VSCodium.VSCodium.Insiders
-      VSCODE_QUALITY: 'insider'
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: insider
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Check version
         run: ./stores/winget/check_version.sh
@@ -147,7 +131,7 @@ jobs:
         with:
           identifier: ${{ env.APP_IDENTIFIER }}
           version: ${{ env.RELEASE_VERSION }}
-          release-repository: vscodium-insiders
+          release-repository: ${{ env.ASSETS_REPOSITORY }}
           release-tag: ${{ env.RELEASE_VERSION }}-insider
           installers-regex: '\.exe$' # only .exe files
           token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
