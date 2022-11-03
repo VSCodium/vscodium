@@ -5,7 +5,9 @@
 - [Getting all the Telemetry Out](#disable-telemetry)
   - [Replacements to Microsoft Online Services](#replacement-online-services)
 - [Extensions + Marketplace](#extensions-marketplace)
+  - [How to use the OpenVSX Marketplace](#howto-openvsx-marketplace)
   - [How to use the VS Code Marketplace](#howto-vscode-marketplace)
+  - [How to self host your own VS Code Marketplace](#howto-selfhost-marketplace)
   - [Proprietary Debugging Tools](#proprietary-debugging-tools)
   - [Proprietary Extensions](#proprietary-extensions)
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
@@ -43,7 +45,9 @@ Likewise, while the descriptions for "Extensions: Auto Check Updates" and "Exten
 
 ## <a id="extensions-marketplace"></a>Extensions + Marketplace
 
-The `product.json` file is set up to use [open-vsx.org](https://open-vsx.org/) as extension gallery, which has an [adapter](https://github.com/eclipse/openvsx/wiki/Using-Open-VSX-in-VS-Code) to the Marketplace API used by VS Code. Since that is a rather new project, you will likely miss some extensions you know from the VS Code Marketplace. You have the following options to obtain such missing extensions:
+### <a id="howto-openvsx-marketplace"></a>How to use the OpenVSX Marketplace
+
+By default the `product.json` file is set up to use [open-vsx.org](https://open-vsx.org/) as extension gallery, which has an [adapter](https://github.com/eclipse/openvsx/wiki/Using-Open-VSX-in-VS-Code) to the Marketplace API used by VS Code. Since that is a rather new project, you will likely miss some extensions you know from the VS Code Marketplace. You have the following options to obtain such missing extensions:
 
 * Ask the extension maintainers to publish to [open-vsx.org](https://open-vsx.org/) in addition to the VS Code Marketplace. The publishing process is documented in the [Open VSX Wiki](https://github.com/eclipse/openvsx/wiki/Publishing-Extensions).
 * Create a pull request to [this repository](https://github.com/open-vsx/publish-extensions) to have the [@open-vsx](https://github.com/open-vsx) service account publish the extensions for you.
@@ -80,6 +84,13 @@ with the content:
   }
 }
 ```
+
+### <a id="howto-selfhost-marketplace"></a>How to self-host your own VS Code Marketplace
+
+Individual developers and enterprise companies in regulated or security-conscious industries can self-host their own VS Code Marketplace using the [code-marketplace](https://coder.com/blog/running-a-private-vs-code-extension-marketplace) open-source project.
+
+> `code-marketplace` is a self-contained go binary that does not have a frontend or any mechanisms for extension authors to add or update extensions in the marketplace. It simply reads extensions from file storage and provides an API for VSCode compatible editors to consume.
+
 
 ### <a id="proprietary-debugging-tools"></a>Proprietary Debugging Tools
 
