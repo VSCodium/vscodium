@@ -60,6 +60,7 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
   rm -rf vscode* VSCode*
 
   . get_repo.sh
+  . version.sh
 
   # save variables for later
   echo "MS_TAG=\"${MS_TAG}\"" > build.env
