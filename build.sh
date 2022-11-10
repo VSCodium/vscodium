@@ -4,6 +4,9 @@ set -ex
 
 if [ -f  "./remote-dependencies.tar" ]; then
   tar -xf ./remote-dependencies.tar ./vscode/remote/node_modules
+else
+  ls -la .
+  ls -la ./remote-dependencies.tar
 fi
 
 . version.sh
