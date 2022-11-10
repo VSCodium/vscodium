@@ -2,6 +2,10 @@
 
 set -ex
 
+if [ -f  "./remote-dependencies.tar" ]; then
+  tar -xf ./remote-dependencies.tar ./vscode/remote/node_modules
+fi
+
 . version.sh
 
 if [[ "${SHOULD_BUILD}" == "yes" ]]; then

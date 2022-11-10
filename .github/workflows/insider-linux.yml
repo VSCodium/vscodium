@@ -108,7 +108,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
-          path: ./vscode/remote/node_modules
+          path: ./remote-dependencies.tar
           retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
 
   build:
@@ -175,7 +175,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
-          path: ./vscode/remote/node_modules
+          path: ./remote-dependencies.tar
         if: env.SHOULD_BUILD == 'yes' && matrix.vscode_arch == 'x64'
 
       - name: Build
