@@ -8,4 +8,4 @@ yarn --cwd remote --frozen-lockfile --check-files
 
 cd ..
 
-tar cf remote-dependencies.tar ./vscode/remote/node_modules
+tar -cf remote-dependencies.tar ./vscode/remote/node_modules
