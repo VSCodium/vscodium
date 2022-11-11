@@ -34,6 +34,7 @@ If applicable, add screenshots to help explain your problem.
  - Architecture [e.g. x64, ia32, arm64]
  - Version [e.g. 1.33.0]
  - App Manager [e.g. Winget, Homebrew, Snap, AUR, RPM, Nix, ...]
+ - Sandboxed [e.g. no, Flatpak, Snap]
 
 **Additional context**
 Add any other context about the problem here.
