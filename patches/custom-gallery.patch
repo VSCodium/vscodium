@@ -1,19 +1,18 @@
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 3f50bef..2b4e8c2 100644
+index ef798fa..35b848b 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -5,4 +5,4 @@
+@@ -5,3 +5,4 @@
  
--import { FileAccess } from 'vs/base/common/network';
 -import { globals } from 'vs/base/common/platform';
 +import { AppResourcePath, FileAccess } from 'vs/base/common/network';
 +import { globals, isWindows } from 'vs/base/common/platform';
  import { env } from 'vs/base/common/process';
-@@ -11,2 +11,3 @@ import { dirname, joinPath } from 'vs/base/common/resources';
+@@ -9,2 +10,3 @@ import { IProductConfiguration } from 'vs/base/common/product';
  import { ISandboxConfiguration } from 'vs/base/parts/sandbox/common/sandboxTypes';
 +import { getUserDataPath } from 'vs/platform/environment/node/userDataPath';
  
-@@ -35,2 +36,41 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+@@ -29,2 +31,41 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
  
 +	// Set user-defined extension gallery
 +	const { serviceUrl, searchUrl, itemUrl, controlUrl, recommendationsUrl } = product.extensionsGallery || {}

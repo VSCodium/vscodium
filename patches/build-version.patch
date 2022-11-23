@@ -1,14 +1,5 @@
-diff --git a/.vscode/settings.json b/.vscode/settings.json
-index 3abb868..309c37f 100644
---- a/.vscode/settings.json
-+++ b/.vscode/settings.json
-@@ -90,3 +90,3 @@
- 		"editor.defaultFormatter": "vscode.typescript-language-features",
--		"editor.formatOnSave": true
-+		// "editor.formatOnSave": true
- 	},
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 7475e04..d930611 100644
+index f3cdbff..ac7c39b 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
 @@ -246,4 +246,5 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
@@ -24,21 +15,21 @@ index 7475e04..d930611 100644
 +			.pipe(json({ commit, date, version, release }));
  
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index d5b4db0..46ca809 100644
+index cdc802b..49ab315 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -226,3 +226,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -227,3 +227,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  
 -		let version = packageJson.version;
 +		let version = packageJson.version
  		const quality = product.quality;
-@@ -234,3 +234,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -235,3 +235,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const name = product.nameShort;
 -		const packageJsonUpdates = { name, version };
 +		const release = packageJson.release;
 +		const packageJsonUpdates = { name, version, release };
  
-@@ -245,3 +246,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -246,3 +247,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const date = new Date().toISOString();
 -		const productJsonUpdate = { commit, date, checksums, version };
 +		const productJsonUpdate = { commit, date, checksums, version, release };
@@ -89,7 +80,7 @@ index 61659d2..5cafa06 100644
 +Release:  el7
  Summary:  Code editing. Redefined.
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 149c3b9..6d8dd99 100644
+index 7ec238b..9295018 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
 @@ -34,2 +34,3 @@ export interface IProductConfiguration {
@@ -106,13 +97,13 @@ index 561966b..30814a0 100644
 +		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} ${this.productService.release || 'Release unknown'} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
  		output.push(`OS Version:       ${osLib.type()} ${osLib.arch()} ${osLib.release()}`);
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 3f50bef..465ca43 100644
+index ef798fa..cfa7866 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -49,6 +49,7 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+@@ -43,6 +43,7 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
  	if (!product.version) {
--		const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string };
-+		const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string, release: string };
+-		const pkg = globalThis._VSCODE_PACKAGE_JSON as { version: string };
++		const pkg = globalThis._VSCODE_PACKAGE_JSON as { version: string, release: string };
  
  		Object.assign(product, {
 -			version: pkg.version
