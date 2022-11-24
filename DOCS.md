@@ -45,51 +45,72 @@ Likewise, while the descriptions for "Extensions: Auto Check Updates" and "Exten
 
 ## <a id="extensions-marketplace"></a>Extensions + Marketplace
 
-### <a id="howto-openvsx-marketplace"></a>How to use the OpenVSX Marketplace
+Being a vscode based editor, VSCodium gets additional features by installing VS Code extensions.
+Unfortunately, as Microsoft [prohibits usages of the Microsoft marketplace by any other products](https://github.com/microsoft/vscode/issues/31168) or redistribution of `.vsix` files from it, in order to use VS Code extensions in non-Microsoft products those need to be installed differently.
 
-By default the `product.json` file is set up to use [open-vsx.org](https://open-vsx.org/) as extension gallery, which has an [adapter](https://github.com/eclipse/openvsx/wiki/Using-Open-VSX-in-VS-Code) to the Marketplace API used by VS Code. Since that is a rather new project, you will likely miss some extensions you know from the VS Code Marketplace. You have the following options to obtain such missing extensions:
+By default, the `product.json` file is set up to use [open-vsx.org](https://open-vsx.org/) as extension gallery, which has an [adapter](https://github.com/eclipse/openvsx/wiki/Using-Open-VSX-in-VS-Code) to the Marketplace API used by VS Code. Since that is a rather new project, you will likely miss some extensions you know from the VS Code Marketplace. You have the following options to obtain such missing extensions:
 
 * Ask the extension maintainers to publish to [open-vsx.org](https://open-vsx.org/) in addition to the VS Code Marketplace. The publishing process is documented in the [Open VSX Wiki](https://github.com/eclipse/openvsx/wiki/Publishing-Extensions).
 * Create a pull request to [this repository](https://github.com/open-vsx/publish-extensions) to have the [@open-vsx](https://github.com/open-vsx) service account publish the extensions for you.
-* Download and [install the vsix files](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
+* Download and [install the vsix files](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix), for example from the release page in their source repository.
 
+### <a id="howto-openvsx-marketplace"></a>How to use the Open VSX Registry
+
+As noted above, the [Open VSX Registry](https://open-vsx.org/) is the pre-set extension gallery in VSCodium. Using the extension view in VSCodium will therefore by default use it.  
 See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on the motivation behind Open VSX.
 
-### <a id="howto-vscode-marketplace"></a>How to use the VS Code Marketplace
+### <a id="howto-switch-marketplace"></a>How to use a different extension gallery
 
-You can switch and use the VS Code marketplace by using the following solutions. However, note that [ this is not legal](https://github.com/microsoft/vscode/issues/31168).
+You can switch from the pre-set Open VSX Registry by configuring the endpoints using the following solutions.
+These examples use the URLs for Microsoft's VS Code Marketplace, see [below](#howto-vscode-marketplace) for more information on that.
 
 With the following environment variables:
 - `VSCODE_GALLERY_SERVICE_URL='https://marketplace.visualstudio.com/_apis/public/gallery'`
-- `VSCODE_GALLERY_CACHE_URL='https://vscode.blob.core.windows.net/gallery/index'`
 - `VSCODE_GALLERY_ITEM_URL='https://marketplace.visualstudio.com/items'`
+- `VSCODE_GALLERY_CACHE_URL='https://vscode.blob.core.windows.net/gallery/index'`
 - `VSCODE_GALLERY_CONTROL_URL=''`
 - `VSCODE_GALLERY_RECOMMENDATIONS_URL=''`
 
-Or by creating a custom `product.json` at the following location:
+Or by creating a custom `product.json` at the following location (replace `VSCodium` by `VSCodium - Insiders` if you use that):
 - Windows: `%APPDATA%\VSCodium` or `%USERPROFILE%\AppData\Roaming\VSCodium`
 - macOS: `~/Library/Application Support/VSCodium`
 - Linux: `$XDG_CONFIG_HOME/VSCodium` or `~/.config/VSCodium`
 
 with the content:
 
-```json
+```jsonc
 {
   "extensionsGallery": {
     "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
-    "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
     "itemUrl": "https://marketplace.visualstudio.com/items",
+    "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index", // set to empty string for every other extension gallery
     "controlUrl": "",
     "recommendationsUrl": ""
   }
 }
 ```
 
-### <a id="howto-selfhost-marketplace"></a>How to self-host your own VS Code Marketplace
+### <a id="howto-selfhost-marketplace"></a>How to self-host your own extension gallery
 
-Individual developers and enterprise companies in regulated or security-conscious industries can self-host their own VS Code Marketplace using the [code-marketplace](https://coder.com/blog/running-a-private-vs-code-extension-marketplace) open-source project.
+Individual developers and enterprise companies in regulated or security-conscious industries can self-host their own extension gallery. In all of these cases you'd enter its endpoint URLs as noted above, replacing `marketplace.visualstudio.com` with `your-self-hosted-marketplace-address.example.com` (or IP address), setting `cacheUrl` / `VSCODE_GALLERY_CACHE_URL` to an empty string.
 
-> `code-marketplace` is a self-contained go binary that does not have a frontend or any mechanisms for extension authors to add or update extensions in the marketplace. It simply reads extensions from file storage and provides an API for VSCode compatible editors to consume.
+There are likely other options, but the following were reported to work:
+
+* [Open VSX](https://github.com/eclipse/openvsx) eclipse open-source project  
+  While the public instance which is run by the Eclipse Foundation is the pre-set endpoint in VSCodium, you can host your own instance.
+
+    > Open VSX is a [vendor-neutral](https://projects.eclipse.org/projects/ecd.openvsx) open-source alternative to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/vscode). It provides a server application that manages [VS Code extensions](https://code.visualstudio.com/api) in a database, a web application similar to the VS Code Marketplace, and a command-line tool for publishing extensions similar to [vsce](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#vsce).
+
+* [code-marketplace](https://coder.com/blog/running-a-private-vs-code-extension-marketplace) open-source project
+
+    > `code-marketplace` is a self-contained go binary that does not have a frontend or any mechanisms for extension authors to add or update extensions in the marketplace. It simply reads extensions from file storage and provides an API for VSCode compatible editors to consume.
+
+### <a id="howto-vscode-marketplace"></a>How to use the VS Code Marketplace
+
+As with any online service, ensure you've understood [its terms of use](https://aka.ms/vsmarketplace-ToU).  
+Also note that this extension gallery hosts multiple extensions that are non-free and have license-agreements that explicit forbid to use them in non-Microsoft products, along with using telemetry.
+
+The endpoint URLs are given in the [example above](#howto-switch-marketplace).
 
 
 ### <a id="proprietary-debugging-tools"></a>Proprietary Debugging Tools
@@ -102,7 +123,7 @@ A workaround exists to get debugging working in C# projects, by using Samsung's 
 
 Like the debuggers mentioned above, some extensions you may find in the marketplace (like the [Remote Development Extensions](https://code.visualstudio.com/docs/remote/remote-overview)) only function with the official Visual Studio Code build. You can work around this by adding the extension's internal ID (found on the extension's page) to the `extensionAllowedProposedApi` property of the product.json in your VSCodium installation. For example:
 
-```json
+```jsonc
   "extensionAllowedProposedApi": [
     // ...
     "ms-vscode-remote.vscode-remote-extensionpack",
