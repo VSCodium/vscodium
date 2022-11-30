@@ -193,7 +193,7 @@ inode/directory=codium.desktop;org.gnome.Nautilus.desktop;
 This is a common question for Visual Studio Code and the procedure is slightly different in VSCodium because the `defaults` path is different.
 
 ```bash
-$ defaults write com.visualstudio.code.oss ApplePressAndHoldEnabled -bool false
+$ defaults write com.vscodium ApplePressAndHoldEnabled -bool false
 ```
 
 ## <a id="terminal-support"></a>How do I open VSCodium from the terminal?
