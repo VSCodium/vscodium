@@ -64,7 +64,6 @@ With the following environment variables:
 - `VSCODE_GALLERY_CACHE_URL='https://vscode.blob.core.windows.net/gallery/index'`
 - `VSCODE_GALLERY_ITEM_URL='https://marketplace.visualstudio.com/items'`
 - `VSCODE_GALLERY_CONTROL_URL=''`
-- `VSCODE_GALLERY_RECOMMENDATIONS_URL=''`
 
 Or by creating a custom `product.json` at the following location:
 - Windows: `%APPDATA%\VSCodium` or `%USERPROFILE%\AppData\Roaming\VSCodium`
@@ -80,7 +79,6 @@ with the content:
     "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
     "itemUrl": "https://marketplace.visualstudio.com/items",
     "controlUrl": "",
-    "recommendationsUrl": ""
   }
 }
 ```

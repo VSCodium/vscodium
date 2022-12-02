@@ -1,5 +1,5 @@
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index ef798fa..35b848b 100644
+index ef798fa..5a0550b 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -5,3 +5,4 @@
@@ -12,10 +12,10 @@ index ef798fa..35b848b 100644
  import { ISandboxConfiguration } from 'vs/base/parts/sandbox/common/sandboxTypes';
 +import { getUserDataPath } from 'vs/platform/environment/node/userDataPath';
  
-@@ -29,2 +31,41 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+@@ -29,2 +31,40 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
  
 +	// Set user-defined extension gallery
-+	const { serviceUrl, searchUrl, itemUrl, controlUrl, recommendationsUrl } = product.extensionsGallery || {}
++	const { serviceUrl, searchUrl, itemUrl, controlUrl } = product.extensionsGallery || {}
 +
 +	Object.assign(product, {
 +		extensionsGallery: {
@@ -23,7 +23,6 @@ index ef798fa..35b848b 100644
 +			searchUrl: env['VSCODE_GALLERY_SEARCH_URL'] || searchUrl,
 +			itemUrl: env['VSCODE_GALLERY_ITEM_URL'] || itemUrl,
 +			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
-+			recommendationsUrl: env['VSCODE_GALLERY_RECOMMENDATIONS_URL'] || recommendationsUrl
 +		}
 +	})
 +
