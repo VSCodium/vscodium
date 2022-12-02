@@ -30,4 +30,6 @@ fi
 
 APIS=`cat ${DIRECTORY}/resources/app/product.json | jq -r '.extensionEnabledApiProposals'`
 
+APIS=`echo "${APIS}" | jq '. += {"jeanp413.open-remote-ssh": ["resolvers", "tunnels", "terminalDataWriteEvent", "contribViewsRemote"]}'`
+
 cat <<< $(jq --argjson v "${APIS}" 'setpath(["extensionEnabledApiProposals"]; $v)' product.json) > product.json
