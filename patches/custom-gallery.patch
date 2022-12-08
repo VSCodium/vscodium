@@ -1,20 +1,21 @@
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index bceda01..174c766 100644
+index ef798fa..5a0550b 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -6,3 +6,3 @@
- import { FileAccess } from 'vs/base/common/network';
+@@ -5,3 +5,4 @@
+ 
 -import { globals } from 'vs/base/common/platform';
++import { AppResourcePath, FileAccess } from 'vs/base/common/network';
 +import { globals, isWindows } from 'vs/base/common/platform';
  import { env } from 'vs/base/common/process';
-@@ -11,2 +11,3 @@ import { dirname, joinPath } from 'vs/base/common/resources';
+@@ -9,2 +10,3 @@ import { IProductConfiguration } from 'vs/base/common/product';
  import { ISandboxConfiguration } from 'vs/base/parts/sandbox/common/sandboxTypes';
 +import { getUserDataPath } from 'vs/platform/environment/node/userDataPath';
  
-@@ -35,2 +36,41 @@ else if (typeof require?.__$__nodeRequire === 'function') {
+@@ -29,2 +31,40 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
  
 +	// Set user-defined extension gallery
-+	const { serviceUrl, searchUrl, itemUrl, controlUrl, recommendationsUrl } = product.extensionsGallery || {}
++	const { serviceUrl, searchUrl, itemUrl, controlUrl } = product.extensionsGallery || {}
 +
 +	Object.assign(product, {
 +		extensionsGallery: {
@@ -22,7 +23,6 @@ index bceda01..174c766 100644
 +			searchUrl: env['VSCODE_GALLERY_SEARCH_URL'] || searchUrl,
 +			itemUrl: env['VSCODE_GALLERY_ITEM_URL'] || itemUrl,
 +			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
-+			recommendationsUrl: env['VSCODE_GALLERY_RECOMMENDATIONS_URL'] || recommendationsUrl
 +		}
 +	})
 +
@@ -46,7 +46,7 @@ index bceda01..174c766 100644
 +		const userDataPath = getUserDataPath({} as any, product.nameShort);
 +		const userProductPath = isWindows ? `file:///${userDataPath}/product.json` : `file://${userDataPath}/product.json`;
 +
-+		const userProduct = require.__$__nodeRequire(FileAccess.asFileUri(userProductPath, require).fsPath);
++		const userProduct = require.__$__nodeRequire(FileAccess.asFileUri(userProductPath as AppResourcePath).fsPath);
 +
 +		product = merge(product, userProduct);
 +	} catch (ex) {

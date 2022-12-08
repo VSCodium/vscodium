@@ -23,7 +23,7 @@ if [[ $( gh release view --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" 2>&1
     CREATE_OPTIONS="--generate-notes"
   fi
 
-  gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --notes "${NOTES}" ${CREATE_OPTIONS}
+  gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --title "${RELEASE_VERSION}" --notes "${NOTES}" ${CREATE_OPTIONS}
 fi
 
 cd assets

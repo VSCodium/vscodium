@@ -1,18 +1,19 @@
 diff --git a/extensions/github-authentication/src/githubServer.ts b/extensions/github-authentication/src/githubServer.ts
-index 830e698..cd6f27e 100644
+index e1f766d..4f11dbe 100644
 --- a/extensions/github-authentication/src/githubServer.ts
 +++ b/extensions/github-authentication/src/githubServer.ts
-@@ -7,4 +7,2 @@ import * as vscode from 'vscode';
- import fetch, { Response } from 'node-fetch';
--import { v4 as uuid } from 'uuid';
+@@ -6,4 +6,2 @@
+ import * as vscode from 'vscode';
+-import * as path from 'path';
 -import { PromiseAdapter, promiseFromEvent } from './common/utils';
- import { ExperimentationTelemetry } from './experimentationService';
-@@ -12,13 +10,4 @@ import { AuthProviderType } from './github';
+ import { ExperimentationTelemetry } from './common/experimentationService';
+@@ -11,14 +9,6 @@ import { AuthProviderType, UriEventHandler } from './github';
  import { Log } from './common/logger';
 -import { isSupportedEnvironment } from './common/env';
--import { LoopbackAuthServer } from './authServer';
--import path = require('path');
--
+-import { LoopbackAuthServer } from './node/authServer';
+-import { crypto } from './node/crypto';
+ import { fetching } from './node/fetch';
+ 
 -const CLIENT_ID = '01ab8ac9400c4e429b23';
 -const GITHUB_TOKEN_URL = 'https://vscode.dev/codeExchangeProxyEndpoints/github/login/oauth/access_token';
  const NETWORK_ERROR = 'network error';
@@ -20,8 +21,8 @@ index 830e698..cd6f27e 100644
 -const REDIRECT_URL_STABLE = 'https://vscode.dev/redirect';
 -const REDIRECT_URL_INSIDERS = 'https://insiders.vscode.dev/redirect';
 -
- class UriEventHandler extends vscode.EventEmitter<vscode.Uri> implements vscode.UriHandler {
-@@ -42,9 +31,2 @@ export interface IGitHubServer extends vscode.Disposable {
+ export interface IGitHubServer {
+@@ -30,9 +20,2 @@ export interface IGitHubServer {
  
 -interface IGitHubDeviceCodeResponse {
 -	device_code: string;
@@ -31,30 +32,28 @@ index 830e698..cd6f27e 100644
 -}
 -
  async function getScopes(token: string, serverUri: vscode.Uri, logger: Log): Promise<string[]> {
-@@ -55,3 +37,3 @@ async function getScopes(token: string, serverUri: vscode.Uri, logger: Log): Pro
- 				Authorization: `token ${token}`,
--				'User-Agent': 'Visual-Studio-Code'
-+				'User-Agent': 'VSCodium'
- 			}
-@@ -75,7 +57,4 @@ export class GitHubServer implements IGitHubServer {
+@@ -63,8 +46,4 @@ export class GitHubServer implements IGitHubServer {
  
--	private _pendingNonces = new Map<string, string[]>();
--	private _codeExchangePromises = new Map<string, { promise: Promise<string>; cancel: vscode.EventEmitter<void> }>();
- 	private _disposable: vscode.Disposable | undefined;
- 	private static _uriHandler: UriEventHandler | undefined;
+-	private readonly _pendingNonces = new Map<string, string[]>();
+-	private readonly _codeExchangePromises = new Map<string, { promise: Promise<string>; cancel: vscode.EventEmitter<void> }>();
+ 	private readonly _type: AuthProviderType;
+ 
 -	private _redirectEndpoint: string | undefined;
- 
-@@ -83,2 +62,3 @@ export class GitHubServer implements IGitHubServer {
- 		public readonly type: AuthProviderType,
+-
+ 	constructor(
+@@ -72,3 +51,5 @@ export class GitHubServer implements IGitHubServer {
+ 		private readonly _telemetryReporter: ExperimentationTelemetry,
++		// @ts-ignore
+ 		private readonly _uriHandler: UriEventHandler,
 +		// @ts-ignore
  		private readonly _supportDeviceCodeFlow: boolean,
-@@ -102,41 +82,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -87,41 +68,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async getRedirectEndpoint(): Promise<string> {
 -		if (this._redirectEndpoint) {
 -			return this._redirectEndpoint;
 -		}
--		if (this.type === AuthProviderType.github) {
+-		if (this._type === AuthProviderType.github) {
 -			const proxyEndpoints = await vscode.commands.executeCommand<{ [providerId: string]: string } | undefined>('workbench.getCodeExchangeProxyEndpoints');
 -			// If we are running in insiders vscode.dev, then ensure we use the redirect route on that.
 -			this._redirectEndpoint = REDIRECT_URL_STABLE;
@@ -64,7 +63,7 @@ index 830e698..cd6f27e 100644
 -			return this._redirectEndpoint;
 -		} else {
 -			// GHES
--			const result = await fetch(this.getServerUri('/meta').toString(true));
+-			const result = await fetching(this.getServerUri('/meta').toString(true));
 -			if (result.ok) {
 -				try {
 -					const json: { installed_version: string } = await result.json();
@@ -89,8 +88,8 @@ index 830e698..cd6f27e 100644
 -		return this._redirectEndpoint;
 -	}
 -
- 	dispose() {
-@@ -156,58 +97,8 @@ export class GitHubServer implements IGitHubServer {
+ 	// TODO@joaomoreno TODO@TylerLeonhardt
+@@ -137,58 +79,8 @@ export class GitHubServer implements IGitHubServer {
  		let userCancelled: boolean | undefined;
 -		const yes = vscode.l10n.t('Yes');
 -		const no = vscode.l10n.t('No');
@@ -108,7 +107,7 @@ index 830e698..cd6f27e 100644
 -			}
 -		};
 -
--		const nonce = uuid();
+-		const nonce: string = crypto.getRandomValues(new Uint32Array(2)).reduce((prev, curr) => prev += curr.toString(16), '');
 -		const callbackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.github-authentication/did-authenticate?nonce=${encodeURIComponent(nonce)}`));
  
 -		const supported = isSupportedEnvironment(callbackUri);
@@ -154,7 +153,7 @@ index 830e698..cd6f27e 100644
 +			this._logger.error(e);
 +			userCancelled = e.message ?? e === 'User Cancelled';
  		}
-@@ -217,136 +108,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -198,136 +90,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async doLoginWithoutLocalServer(scopes: string, nonce: string, callbackUri: vscode.Uri): Promise<string> {
 -		this._logger.info(`Trying without local server... (${scopes})`);
@@ -187,7 +186,7 @@ index 830e698..cd6f27e 100644
 -			// before completing it.
 -			let codeExchangePromise = this._codeExchangePromises.get(scopes);
 -			if (!codeExchangePromise) {
--				codeExchangePromise = promiseFromEvent(GitHubServer._uriHandler!.event, this.handleUri(scopes));
+-				codeExchangePromise = promiseFromEvent(this._uriHandler!.event, this.handleUri(scopes));
 -				this._codeExchangePromises.set(scopes, codeExchangePromise);
 -			}
 -
@@ -258,7 +257,7 @@ index 830e698..cd6f27e 100644
 -			path: '/login/device/code',
 -			query: `client_id=${CLIENT_ID}&scope=${scopes}`
 -		});
--		const result = await fetch(uri.toString(true), {
+-		const result = await fetching(uri.toString(true), {
 -			method: 'POST',
 -			headers: {
 -				Accept: 'application/json'
@@ -291,7 +290,7 @@ index 830e698..cd6f27e 100644
 -	}
 -
  	private async doLoginWithPat(scopes: string): Promise<string> {
-@@ -374,124 +131,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -355,124 +113,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async waitForDeviceCodeAccessToken(
 -		json: IGitHubDeviceCodeResponse,
@@ -322,7 +321,7 @@ index 830e698..cd6f27e 100644
 -				}
 -				let accessTokenResult;
 -				try {
--					accessTokenResult = await fetch(refreshTokenUri.toString(true), {
+-					accessTokenResult = await fetching(refreshTokenUri.toString(true), {
 -						method: 'POST',
 -						headers: {
 -							Accept: 'application/json'
@@ -388,11 +387,11 @@ index 830e698..cd6f27e 100644
 -		const endpointUrl = proxyEndpoints?.github ? `${proxyEndpoints.github}login/oauth/access_token` : GITHUB_TOKEN_URL;
 -
 -		const body = new URLSearchParams([['code', code]]);
--		if (this.type === AuthProviderType.githubEnterprise) {
+-		if (this._type === AuthProviderType.githubEnterprise) {
 -			body.append('github_enterprise', this.baseUri.toString(true));
 -			body.append('redirect_uri', await this.getRedirectEndpoint());
 -		}
--		const result = await fetch(endpointUrl, {
+-		const result = await fetching(endpointUrl, {
 -			method: 'POST',
 -			headers: {
 -				Accept: 'application/json',
@@ -417,19 +416,19 @@ index 830e698..cd6f27e 100644
 -
  	private getServerUri(path: string = '') {
 diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-index ce2a3e8..2a5cf60 100644
+index 2fff6cf..46967ce 100644
 --- a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
 +++ b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-@@ -306,3 +306,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
+@@ -307,3 +307,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
  
 -		if (providers.length && !menus.length) {
 +		if (!menus.length) {
  			const noAccountsAvailableAction = disposables.add(new Action('noAccountsAvailable', localize('noAccounts', "You are not signed in to any accounts"), undefined, false));
 diff --git a/src/vs/workbench/services/authentication/browser/authenticationService.ts b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-index d5e2b75..a996eb7 100644
+index 1d9ac76..57b915c 100644
 --- a/src/vs/workbench/services/authentication/browser/authenticationService.ts
 +++ b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-@@ -279,12 +279,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
+@@ -267,12 +267,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
  		}
 -
 -		if (!this._authenticationProviders.size) {

@@ -14,12 +14,12 @@ REPLACEMENT="s|//[^/]+\.data\.microsoft\.com|//0\.0\.0\.0|g"
 
 if is_gnu_sed; then
   replace_with_debug () {
-    echo "found: ${2} (`date`)"
+    echo "found: ${2}"
     sed -i -E "${1}" "${2}"
   }
 else
   replace_with_debug () {
-    echo "found: ${2} (`date`)"
+    echo "found: ${2}"
     sed -i '' -E "${1}" "${2}"
   }
 fi
