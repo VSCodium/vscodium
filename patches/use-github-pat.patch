@@ -1,5 +1,5 @@
 diff --git a/extensions/github-authentication/src/githubServer.ts b/extensions/github-authentication/src/githubServer.ts
-index e1f766d..4f11dbe 100644
+index f292b3a..1010092 100644
 --- a/extensions/github-authentication/src/githubServer.ts
 +++ b/extensions/github-authentication/src/githubServer.ts
 @@ -6,4 +6,2 @@
@@ -46,7 +46,7 @@ index e1f766d..4f11dbe 100644
 +		// @ts-ignore
  		private readonly _uriHandler: UriEventHandler,
 +		// @ts-ignore
- 		private readonly _supportDeviceCodeFlow: boolean,
+ 		private readonly _extensionKind: vscode.ExtensionKind,
 @@ -87,41 +68,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async getRedirectEndpoint(): Promise<string> {
@@ -89,7 +89,7 @@ index e1f766d..4f11dbe 100644
 -	}
 -
  	// TODO@joaomoreno TODO@TylerLeonhardt
-@@ -137,58 +79,8 @@ export class GitHubServer implements IGitHubServer {
+@@ -137,64 +79,8 @@ export class GitHubServer implements IGitHubServer {
  		let userCancelled: boolean | undefined;
 -		const yes = vscode.l10n.t('Yes');
 -		const no = vscode.l10n.t('No');
@@ -120,8 +120,13 @@ index e1f766d..4f11dbe 100644
 -			}
 -		}
 -
--		// Starting a local server isn't supported in web
--		if (vscode.env.uiKind === vscode.UIKind.Desktop) {
+-		// Starting a local server is only supported if:
+-		// 1. We are in a UI extension because we need to open a port on the machine that has the browser
+-		// 2. We are in a node runtime because we need to open a port on the machine
+-		if (
+-			this._extensionKind === vscode.ExtensionKind.UI &&
+-			typeof navigator === 'undefined'
+-		) {
 -			try {
 -				await promptToContinue();
 -				return await this.doLoginWithLocalServer(scopes);
@@ -131,7 +136,8 @@ index e1f766d..4f11dbe 100644
 -			}
 -		}
 -
--		if (this._supportDeviceCodeFlow) {
+-		// We only can use the Device Code flow when we have a full node environment because of CORS.
+-		if (typeof navigator === 'undefined') {
 -			try {
 -				await promptToContinue();
 -				return await this.doLoginDeviceCodeFlow(scopes);
@@ -153,7 +159,7 @@ index e1f766d..4f11dbe 100644
 +			this._logger.error(e);
 +			userCancelled = e.message ?? e === 'User Cancelled';
  		}
-@@ -198,136 +90,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -204,135 +90,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async doLoginWithoutLocalServer(scopes: string, nonce: string, callbackUri: vscode.Uri): Promise<string> {
 -		this._logger.info(`Trying without local server... (${scopes})`);
@@ -288,9 +294,8 @@ index e1f766d..4f11dbe 100644
 -
 -		return await this.waitForDeviceCodeAccessToken(json);
 -	}
--
- 	private async doLoginWithPat(scopes: string): Promise<string> {
-@@ -355,124 +113,2 @@ export class GitHubServer implements IGitHubServer {
+ 
+@@ -361,124 +114,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async waitForDeviceCodeAccessToken(
 -		json: IGitHubDeviceCodeResponse,
@@ -416,7 +421,7 @@ index e1f766d..4f11dbe 100644
 -
  	private getServerUri(path: string = '') {
 diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-index 2fff6cf..46967ce 100644
+index 266311d..f066323 100644
 --- a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
 +++ b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
 @@ -307,3 +307,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
@@ -425,10 +430,10 @@ index 2fff6cf..46967ce 100644
 +		if (!menus.length) {
  			const noAccountsAvailableAction = disposables.add(new Action('noAccountsAvailable', localize('noAccounts', "You are not signed in to any accounts"), undefined, false));
 diff --git a/src/vs/workbench/services/authentication/browser/authenticationService.ts b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-index 1d9ac76..57b915c 100644
+index 8dd6e19..10c2611 100644
 --- a/src/vs/workbench/services/authentication/browser/authenticationService.ts
 +++ b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-@@ -267,12 +267,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
+@@ -274,12 +274,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
  		}
 -
 -		if (!this._authenticationProviders.size) {
