@@ -18,9 +18,6 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-  # compile the `build` directory
-  yarn --cwd build compile
-
   yarn monaco-compile-check
   yarn valid-layers-check
 
