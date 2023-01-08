@@ -79,7 +79,7 @@ updateLatestVersion() {
   if [[ -f "versions/${VERSION_PATH}/latest.json" ]]; then
     CURRENT_VERSION=$( jq -r '.name' "versions/${VERSION_PATH}/latest.json" )
 
-    if [[ "${CURRENT_VERSION}" == "${RELEASE_VERSION}" ]]; then
+    if [[ "${CURRENT_VERSION}" == "${RELEASE_VERSION}" && "${FORCE_UPDATE}" != "true" ]]; then
       return
     fi
   fi

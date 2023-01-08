@@ -6,6 +6,9 @@ on:
       new_release:
         type: boolean
         description: Force new Release
+      force_version:
+        type: boolean
+        description: Force update version
   schedule:
     - cron: '0 18 * * *'
   push:
@@ -93,10 +96,11 @@ jobs:
 
       - name: Update versions repo
         env:
+          FORCE_UPDATE: ${{ github.event.inputs.force_version }}
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_DEPLOY == 'yes'
 
   winget:
     needs: build
