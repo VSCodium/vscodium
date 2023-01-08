@@ -12,6 +12,15 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
   exit
 fi
 
+if [[ "${FORCE_UPDATE}" == "true" ]]; then
+  . version.sh
+fi
+
+if [[ -z "${BUILD_SOURCEVERSION}" ]]; then
+  echo "Will not update version JSON because no BUILD_SOURCEVERSION defined"
+  exit
+fi
+
 #  {
 #    "url": "https://az764295.vo.msecnd.net/stable/51b0b28134d51361cf996d2f0a1c698247aeabd8/VSCode-darwin-stable.zip",
 #    "name": "1.33.1",
@@ -75,7 +84,7 @@ generateJson() {
 updateLatestVersion() {
   echo "Generating ${VERSION_PATH}/latest.json"
 
-  # do not update the same version since BUILD_SOURCEVERSION might be different
+  # do not update the same version
   if [[ -f "versions/${VERSION_PATH}/latest.json" ]]; then
     CURRENT_VERSION=$( jq -r '.name' "versions/${VERSION_PATH}/latest.json" )
 
