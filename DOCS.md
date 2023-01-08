@@ -77,13 +77,15 @@ Or by creating a custom `product.json` at the following location (replace `VSCod
 
 with the content:
 
+- Note: set `cacheUrl` to empty string for every other extension gallery
+
 ```jsonc
 {
   "extensionsGallery": {
     "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
     "itemUrl": "https://marketplace.visualstudio.com/items",
-    "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index", // set to empty string for every other extension gallery
-    "controlUrl": "",
+    "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
+    "controlUrl": ""
   }
 }
 ```

@@ -1,0 +1,18 @@
+diff --git a/build/lib/compilation.js b/build/lib/compilation.js
+index f26b7ac..15d930c 100644
+--- a/build/lib/compilation.js
++++ b/build/lib/compilation.js
+@@ -109,3 +109,3 @@ function compileTask(src, out, build) {
+             mangleStream = es.through(function write(data) {
+-                const newContents = newContentsByFileName.get(data.path);
++                const newContents = newContentsByFileName.get(data.path.replace(/\\/g, '/'));
+                 if (newContents !== undefined) {
+diff --git a/build/lib/compilation.ts b/build/lib/compilation.ts
+index 2cc04d2..9029c62 100644
+--- a/build/lib/compilation.ts
++++ b/build/lib/compilation.ts
+@@ -128,3 +128,3 @@ export function compileTask(src: string, out: string, build: boolean): () => Nod
+ 			mangleStream = es.through(function write(data: File) {
+-				const newContents = newContentsByFileName.get(data.path);
++				const newContents = newContentsByFileName.get(data.path.replace(/\\/g, '/'));
+ 				if (newContents !== undefined) {
