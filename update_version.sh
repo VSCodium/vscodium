@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ "${SHOULD_BUILD}" != "yes" ]]; then
+if [[ "${SHOULD_BUILD}" != "yes" && "${FORCE_UPDATE}" != "true" ]]; then
   echo "Will not update version JSON because we did not build"
   exit
 fi
