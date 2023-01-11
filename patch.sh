@@ -1,6 +1,10 @@
 #!/bin/bash
 
-FILE="../patches/${1}.patch"
+if [[ "${1}" == *patch ]]; then
+  FILE="../patches/${1}"
+else
+  FILE="../patches/${1}.patch"
+fi
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
