@@ -167,12 +167,8 @@ Special thanks to:
 
 <table>
   <tr>
-    <td>@estatra</td>
-    <td>for the latest logo</td>
-  </tr>
-  <tr>
     <td><a href="https://github.com/jaredreich" target="_blank">@jaredreich</a></td>
-    <td>for the previous logo</td>
+    <td>for the logo</td>
   </tr>
   <tr>
     <td><a href="https://github.com/PalinuroSec" target="_blank">@PalinuroSec</a></td>
