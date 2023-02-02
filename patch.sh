@@ -1,6 +1,10 @@
 #!/bin/bash
 
-FILE="../patches/${1}.patch"
+if [[ "${1}" == *patch ]]; then
+  FILE="../patches/${1}"
+else
+  FILE="../patches/${1}.patch"
+fi
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
@@ -11,7 +15,11 @@ if [[ -f "${FILE}" ]]; then
   git apply --reject "${FILE}"
 fi
 
+git apply --reject "../patches/helper/settings.patch"
+
 read -p "Press any key when the conflict have been resolved..." -n1 -s
+
+git restore .vscode/settings.json
 
 git add .
 git diff --staged -U1 > "${FILE}"
