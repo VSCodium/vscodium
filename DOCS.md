@@ -108,7 +108,7 @@ There are likely other options, but the following were reported to work:
 ### <a id="howto-vscode-marketplace"></a>How to use the VS Code Marketplace
 
 As with any online service, ensure you've understood [its terms of use](https://aka.ms/vsmarketplace-ToU).  
-Also note that this extension gallery hosts multiple extensions that are non-free and have license-agreements that explicit forbid to use them in non-Microsoft products, along with using telemetry.
+Also note that this extension gallery hosts multiple extensions that are non-free and have license-agreements that explicitly forbid using them in non-Microsoft products, along with using telemetry.
 
 The endpoint URLs are given in the [example above](#howto-switch-marketplace).
 
