@@ -1,12 +1,12 @@
 diff --git a/build/lib/compilation.js b/build/lib/compilation.js
-index 71bc9fb..238a3b9 100644
+index 8449e98..72424b8 100644
 --- a/build/lib/compilation.js
 +++ b/build/lib/compilation.js
-@@ -20,3 +20,2 @@ const File = require("vinyl");
+@@ -21,3 +21,2 @@ const File = require("vinyl");
  const task = require("./task");
 -const mangleTypeScript_1 = require("./mangleTypeScript");
  const watch = require('./watch');
-@@ -103,23 +102,3 @@ function compileTask(src, out, build) {
+@@ -104,24 +103,3 @@ function compileTask(src, out, build) {
          }
 -        // mangle: TypeScript to TypeScript
 -        let mangleStream = es.through();
@@ -14,7 +14,8 @@ index 71bc9fb..238a3b9 100644
 -            let ts2tsMangler = new mangleTypeScript_1.Mangler(compile.projectPath, (...data) => fancyLog(ansiColors.blue('[mangler]'), ...data));
 -            const newContentsByFileName = ts2tsMangler.computeNewFileContents();
 -            mangleStream = es.through(function write(data) {
--                const newContents = newContentsByFileName.get(data.path);
+-                const tsNormalPath = ts.normalizePath(data.path);
+-                const newContents = newContentsByFileName.get(tsNormalPath);
 -                if (newContents !== undefined) {
 -                    data.contents = Buffer.from(newContents.out);
 -                    data.sourceMap = newContents.sourceMap && JSON.parse(newContents.sourceMap);
@@ -31,7 +32,7 @@ index 71bc9fb..238a3b9 100644
 -            .pipe(mangleStream)
              .pipe(generator.stream)
 diff --git a/build/lib/compilation.ts b/build/lib/compilation.ts
-index 8e0f19a..27ea44c 100644
+index 8e2f7bf..27ea44c 100644
 --- a/build/lib/compilation.ts
 +++ b/build/lib/compilation.ts
 @@ -19,4 +19,2 @@ import * as File from 'vinyl';
@@ -39,7 +40,7 @@ index 8e0f19a..27ea44c 100644
 -import { Mangler } from './mangleTypeScript';
 -import { RawSourceMap } from 'source-map';
  const watch = require('./watch');
-@@ -123,24 +121,3 @@ export function compileTask(src: string, out: string, build: boolean): () => Nod
+@@ -123,26 +121,3 @@ export function compileTask(src: string, out: string, build: boolean): () => Nod
  
 -		// mangle: TypeScript to TypeScript
 -		let mangleStream = es.through();
@@ -47,7 +48,9 @@ index 8e0f19a..27ea44c 100644
 -			let ts2tsMangler = new Mangler(compile.projectPath, (...data) => fancyLog(ansiColors.blue('[mangler]'), ...data));
 -			const newContentsByFileName = ts2tsMangler.computeNewFileContents();
 -			mangleStream = es.through(function write(data: File & { sourceMap?: RawSourceMap }) {
--				const newContents = newContentsByFileName.get(data.path);
+-				type TypeScriptExt = typeof ts & { normalizePath(path: string): string };
+-				const tsNormalPath = (<TypeScriptExt>ts).normalizePath(data.path);
+-				const newContents = newContentsByFileName.get(tsNormalPath);
 -				if (newContents !== undefined) {
 -					data.contents = Buffer.from(newContents.out);
 -					data.sourceMap = newContents.sourceMap && JSON.parse(newContents.sourceMap);
