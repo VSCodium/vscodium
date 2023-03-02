@@ -21,8 +21,13 @@ for FILE in ../patches/*.patch; do
     git apply --ignore-whitespace "${FILE}"
     if [ $? -ne 0 ]; then
       echo failed to apply patch "${FILE}"
+
       git apply --reject "${FILE}"
+      git apply --reject "../patches/helper/settings.patch"
+
       read -p "Press any key when the conflict have been resolved..." -n1 -s
+
+      git restore .vscode/settings.json
       git add .
       git diff --staged -U1 > "${FILE}"
     fi
@@ -38,8 +43,13 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
       git apply --ignore-whitespace "${FILE}"
       if [ $? -ne 0 ]; then
         echo failed to apply patch "${FILE}"
+
         git apply --reject "${FILE}"
+        git apply --reject "../patches/helper/settings.patch"
+
         read -p "Press any key when the conflict have been resolved..." -n1 -s
+
+        git restore .vscode/settings.json
         git add .
         git diff --staged -U1 > "${FILE}"
       fi

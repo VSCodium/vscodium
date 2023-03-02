@@ -1,5 +1,5 @@
 diff --git a/extensions/github-authentication/src/githubServer.ts b/extensions/github-authentication/src/githubServer.ts
-index 8565178..e35d29f 100644
+index dc7278f..a1adcf7 100644
 --- a/extensions/github-authentication/src/githubServer.ts
 +++ b/extensions/github-authentication/src/githubServer.ts
 @@ -6,4 +6,2 @@
@@ -7,11 +7,12 @@ index 8565178..e35d29f 100644
 -import * as path from 'path';
 -import { PromiseAdapter, promiseFromEvent } from './common/utils';
  import { ExperimentationTelemetry } from './common/experimentationService';
-@@ -11,14 +9,6 @@ import { AuthProviderType, UriEventHandler } from './github';
+@@ -11,14 +9,7 @@ import { AuthProviderType, UriEventHandler } from './github';
  import { Log } from './common/logger';
--import { isSupportedEnvironment } from './common/env';
+-import { isSupportedClient, isSupportedTarget } from './common/env';
 -import { LoopbackAuthServer } from './node/authServer';
 -import { crypto } from './node/crypto';
++import { isSupportedTarget } from './common/env';
  import { fetching } from './node/fetch';
  
 -const CLIENT_ID = '01ab8ac9400c4e429b23';
@@ -22,7 +23,7 @@ index 8565178..e35d29f 100644
 -const REDIRECT_URL_INSIDERS = 'https://insiders.vscode.dev/redirect';
 -
  export interface IGitHubServer {
-@@ -30,8 +20,2 @@ export interface IGitHubServer {
+@@ -30,9 +21,2 @@ export interface IGitHubServer {
  
 -interface IGitHubDeviceCodeResponse {
 -	device_code: string;
@@ -30,7 +31,8 @@ index 8565178..e35d29f 100644
 -	verification_uri: string;
 -	interval: number;
 -}
- 
+-
+ async function getScopes(token: string, serverUri: vscode.Uri, logger: Log): Promise<string[]> {
 @@ -63,8 +47,4 @@ export class GitHubServer implements IGitHubServer {
  
 -	private readonly _pendingNonces = new Map<string, string[]>();
@@ -46,7 +48,7 @@ index 8565178..e35d29f 100644
  		private readonly _uriHandler: UriEventHandler,
 +		// @ts-ignore
  		private readonly _extensionKind: vscode.ExtensionKind,
-@@ -87,41 +69,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -87,26 +69,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async getRedirectEndpoint(): Promise<string> {
 -		if (this._redirectEndpoint) {
@@ -59,36 +61,21 @@ index 8565178..e35d29f 100644
 -			if (proxyEndpoints?.github && new URL(proxyEndpoints.github).hostname === 'insiders.vscode.dev') {
 -				this._redirectEndpoint = REDIRECT_URL_INSIDERS;
 -			}
--			return this._redirectEndpoint;
 -		} else {
--			// GHES
--			const result = await fetching(this.getServerUri('/meta').toString(true));
--			if (result.ok) {
--				try {
--					const json: { installed_version: string } = await result.json();
--					const [majorStr, minorStr, _patch] = json.installed_version.split('.');
--					const major = Number(majorStr);
--					const minor = Number(minorStr);
--					if (major >= 4 || major === 3 && minor >= 8
--					) {
--						// GHES 3.8 and above used vscode.dev/redirect as the route.
--						// It only supports a single redirect endpoint, so we can't use
--						// insiders.vscode.dev/redirect when we're running in Insiders, unfortunately.
--						this._redirectEndpoint = 'https://vscode.dev/redirect';
--					}
--				} catch (e) {
--					this._logger.error(e);
--				}
--			}
--
--			// TODO in like 1 year change the default vscode.dev/redirect maybe
--			this._redirectEndpoint = 'https://vscode-auth.github.com/';
+-			// GHE only supports a single redirect endpoint, so we can't use
+-			// insiders.vscode.dev/redirect when we're running in Insiders, unfortunately.
+-			// Additionally, we make the assumption that this function will only be used
+-			// in flows that target supported GHE targets, not on-prem GHES. Because of this
+-			// assumption, we can assume that the GHE version used is at least 3.8 which is
+-			// the version that changed the redirect endpoint to this URI from the old
+-			// GitHub maintained server.
+-			this._redirectEndpoint = 'https://vscode.dev/redirect';
 -		}
 -		return this._redirectEndpoint;
 -	}
 -
  	// TODO@joaomoreno TODO@TylerLeonhardt
-@@ -137,57 +80,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -122,71 +80,8 @@ export class GitHubServer implements IGitHubServer {
  		let userCancelled: boolean | undefined;
 -		const yes = vscode.l10n.t('Yes');
 -		const no = vscode.l10n.t('No');
@@ -108,9 +95,10 @@ index 8565178..e35d29f 100644
 -
 -		const nonce: string = crypto.getRandomValues(new Uint32Array(2)).reduce((prev, curr) => prev += curr.toString(16), '');
 -		const callbackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.github-authentication/did-authenticate?nonce=${encodeURIComponent(nonce)}`));
--
--		const supported = isSupportedEnvironment(callbackUri);
--		if (supported) {
+ 
+-		const supportedClient = isSupportedClient(callbackUri);
+-		const supportedTarget = isSupportedTarget(this._type, this._ghesUri);
+-		if (supportedClient && supportedTarget) {
 -			try {
 -				return await this.doLoginWithoutLocalServer(scopes, nonce, callbackUri);
 -			} catch (e) {
@@ -122,9 +110,11 @@ index 8565178..e35d29f 100644
 -		// Starting a local server is only supported if:
 -		// 1. We are in a UI extension because we need to open a port on the machine that has the browser
 -		// 2. We are in a node runtime because we need to open a port on the machine
+-		// 3. code exchange can only be done with a supported target
 -		if (
 -			this._extensionKind === vscode.ExtensionKind.UI &&
--			typeof navigator === 'undefined'
+-			typeof navigator === 'undefined' &&
+-			supportedTarget
 -		) {
 -			try {
 -				await promptToContinue();
@@ -145,10 +135,10 @@ index 8565178..e35d29f 100644
 -				userCancelled = e.message ?? e === 'User Cancelled';
 -			}
 -		}
- 
-@@ -195,10 +83,7 @@ export class GitHubServer implements IGitHubServer {
- 		// With that said, GitHub Enterprise isn't used by Settings Sync so we can use PATs for that.
--		if (!supported || this._type === AuthProviderType.githubEnterprise) {
+-
+-		// In a supported environment, we can't use PAT auth because we use this auth for Settings Sync and it doesn't support PATs.
+-		// With that said, GitHub Enterprise isn't used by Settings Sync so we can use PATs for that.
+-		if (!supportedClient || this._type === AuthProviderType.githubEnterprise) {
 -			try {
 -				await promptToContinue();
 -				return await this.doLoginWithPat(scopes);
@@ -162,7 +152,7 @@ index 8565178..e35d29f 100644
 +			this._logger.error(e);
 +			userCancelled = e.message ?? e === 'User Cancelled';
  		}
-@@ -208,136 +93,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -196,136 +91,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async doLoginWithoutLocalServer(scopes: string, nonce: string, callbackUri: vscode.Uri): Promise<string> {
 -		this._logger.info(`Trying without local server... (${scopes})`);
@@ -299,7 +289,7 @@ index 8565178..e35d29f 100644
 -	}
 -
  	private async doLoginWithPat(scopes: string): Promise<string> {
-@@ -381,124 +132,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -369,123 +130,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async waitForDeviceCodeAccessToken(
 -		json: IGitHubDeviceCodeResponse,
@@ -422,19 +412,18 @@ index 8565178..e35d29f 100644
 -			throw error;
 -		}
 -	}
--
- 	private getServerUri(path: string = '') {
+ 
 diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-index 266311d..f066323 100644
+index 8c7e84a..2dd5cab 100644
 --- a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
 +++ b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-@@ -307,3 +307,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
+@@ -309,3 +309,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
  
 -		if (providers.length && !menus.length) {
 +		if (!menus.length) {
  			const noAccountsAvailableAction = disposables.add(new Action('noAccountsAvailable', localize('noAccounts', "You are not signed in to any accounts"), undefined, false));
 diff --git a/src/vs/workbench/services/authentication/browser/authenticationService.ts b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-index 8dd6e19..10c2611 100644
+index 68fcc20..93484ee 100644
 --- a/src/vs/workbench/services/authentication/browser/authenticationService.ts
 +++ b/src/vs/workbench/services/authentication/browser/authenticationService.ts
 @@ -274,12 +274,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
