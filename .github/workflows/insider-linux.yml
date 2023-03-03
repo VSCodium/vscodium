@@ -255,7 +255,7 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         run: ./stores/snapcraft/check_version.sh
 
-      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-qemu-action@v2
         if: env.SHOULD_DEPLOY == 'yes'
 
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
