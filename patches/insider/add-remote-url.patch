@@ -1,14 +1,14 @@
 diff --git a/src/vs/workbench/contrib/remote/browser/remote.contribution.ts b/src/vs/workbench/contrib/remote/browser/remote.contribution.ts
-index 63e7f2d..e9a6b7d 100644
+index 932a92c..afa3272 100644
 --- a/src/vs/workbench/contrib/remote/browser/remote.contribution.ts
 +++ b/src/vs/workbench/contrib/remote/browser/remote.contribution.ts
-@@ -13,2 +13,4 @@ import { RemoteStatusIndicator } from 'vs/workbench/contrib/remote/browser/remot
- import { AutomaticPortForwarding, ForwardedPortsView, PortRestore } from 'vs/workbench/contrib/remote/browser/remoteExplorer';
+@@ -14,2 +14,4 @@ import { AutomaticPortForwarding, ForwardedPortsView, PortRestore } from 'vs/wor
+ import { RemoteStartEntry } from 'vs/workbench/contrib/remote/browser/remoteStartEntry';
 +import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 +import { localize } from 'vs/nls';
  
-@@ -23 +25,13 @@ workbenchContributionsRegistry.registerWorkbenchContribution(AutomaticPortForwar
- workbenchContributionsRegistry.registerWorkbenchContribution(RemoteMarkers, LifecyclePhase.Eventually);
+@@ -25 +27,13 @@ workbenchContributionsRegistry.registerWorkbenchContribution(RemoteMarkers, Life
+ workbenchContributionsRegistry.registerWorkbenchContribution(RemoteStartEntry, LifecyclePhase.Starting);
 +
 +CommandsRegistry.registerCommand({
 +	id: 'remote.serverDownloadUrlTemplate',
@@ -21,3 +21,4 @@ index 63e7f2d..e9a6b7d 100644
 +		return 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz';
 +	}
 +});
+\ No newline at end of file
