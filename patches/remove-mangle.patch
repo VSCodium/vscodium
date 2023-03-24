@@ -1,16 +1,16 @@
 diff --git a/build/lib/compilation.js b/build/lib/compilation.js
-index cfd735b..d5179ac 100644
+index 63ddeb2..31d2f35 100644
 --- a/build/lib/compilation.js
 +++ b/build/lib/compilation.js
 @@ -21,3 +21,2 @@ const File = require("vinyl");
  const task = require("./task");
 -const mangleTypeScript_1 = require("./mangleTypeScript");
  const watch = require('./watch');
-@@ -104,24 +103,3 @@ function compileTask(src, out, build) {
+@@ -104,24 +103,3 @@ function compileTask(src, out, build, options = {}) {
          }
 -        // mangle: TypeScript to TypeScript
 -        let mangleStream = es.through();
--        if (build) {
+-        if (build && !options.disableMangle) {
 -            let ts2tsMangler = new mangleTypeScript_1.Mangler(compile.projectPath, (...data) => fancyLog(ansiColors.blue('[mangler]'), ...data));
 -            const newContentsByFileName = ts2tsMangler.computeNewFileContents(new Set(['saveState']));
 -            mangleStream = es.through(function write(data) {
@@ -32,7 +32,7 @@ index cfd735b..d5179ac 100644
 -            .pipe(mangleStream)
              .pipe(generator.stream)
 diff --git a/build/lib/compilation.ts b/build/lib/compilation.ts
-index 4f890b8..27ea44c 100644
+index d5cd196..afe16d3 100644
 --- a/build/lib/compilation.ts
 +++ b/build/lib/compilation.ts
 @@ -19,4 +19,2 @@ import * as File from 'vinyl';
@@ -40,11 +40,11 @@ index 4f890b8..27ea44c 100644
 -import { Mangler } from './mangleTypeScript';
 -import { RawSourceMap } from 'source-map';
  const watch = require('./watch');
-@@ -123,26 +121,3 @@ export function compileTask(src: string, out: string, build: boolean): () => Nod
+@@ -123,26 +121,3 @@ export function compileTask(src: string, out: string, build: boolean, options: {
  
 -		// mangle: TypeScript to TypeScript
 -		let mangleStream = es.through();
--		if (build) {
+-		if (build && !options.disableMangle) {
 -			let ts2tsMangler = new Mangler(compile.projectPath, (...data) => fancyLog(ansiColors.blue('[mangler]'), ...data));
 -			const newContentsByFileName = ts2tsMangler.computeNewFileContents(new Set(['saveState']));
 -			mangleStream = es.through(function write(data: File & { sourceMap?: RawSourceMap }) {

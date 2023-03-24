@@ -1,23 +1,18 @@
-diff --git a/src/vs/workbench/contrib/remote/browser/remote.contribution.ts b/src/vs/workbench/contrib/remote/browser/remote.contribution.ts
-index 63e7f2d..e9a6b7d 100644
---- a/src/vs/workbench/contrib/remote/browser/remote.contribution.ts
-+++ b/src/vs/workbench/contrib/remote/browser/remote.contribution.ts
-@@ -13,2 +13,4 @@ import { RemoteStatusIndicator } from 'vs/workbench/contrib/remote/browser/remot
- import { AutomaticPortForwarding, ForwardedPortsView, PortRestore } from 'vs/workbench/contrib/remote/browser/remoteExplorer';
-+import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-+import { localize } from 'vs/nls';
+diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
+index ae33cc9..06c2a67 100644
+--- a/build/gulpfile.reh.js
++++ b/build/gulpfile.reh.js
+@@ -251,3 +251,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+ 		const productJsonStream = gulp.src(['product.json'], { base: '.' })
+-			.pipe(json({ commit, date, version, release }));
++			.pipe(json({ commit, date, version, release, serverDownloadUrlTemplate: 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }));
  
-@@ -23 +25,13 @@ workbenchContributionsRegistry.registerWorkbenchContribution(AutomaticPortForwar
- workbenchContributionsRegistry.registerWorkbenchContribution(RemoteMarkers, LifecyclePhase.Eventually);
-+
-+CommandsRegistry.registerCommand({
-+	id: 'remote.serverDownloadUrlTemplate',
-+	description: {
-+		description: localize('remote.serverDownloadUrlTemplate', 'Provides the url template to download the server archive'),
-+		args: [],
-+		returns: 'string',
-+	},
-+	handler: async (_) => {
-+		return 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz';
-+	}
-+});
+diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
+index 938943d..2d84a15 100644
+--- a/build/gulpfile.vscode.js
++++ b/build/gulpfile.vscode.js
+@@ -245,3 +245,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 		const date = new Date().toISOString();
+-		const productJsonUpdate = { commit, date, checksums, version, release };
++		const productJsonUpdate = { commit, date, checksums, version, release, serverDownloadUrlTemplate: 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' };
+ 
