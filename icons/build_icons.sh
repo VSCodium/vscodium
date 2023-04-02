@@ -46,7 +46,7 @@ build_darwin_main() { # {{{
 } # }}}
 
 build_darwin_types() { # {{{
-  rsvg-convert -w 128 -h 128 "icons/${QUALITY}/codium_border.svg" -o "code_logo.png"
+  rsvg-convert -w 128 -h 128 "icons/${QUALITY}/codium_border_8.svg" -o "code_logo.png"
 
   for file in "${VSCODE_PREFIX}"vscode/resources/darwin/*
   do
@@ -74,11 +74,13 @@ build_darwin_types() { # {{{
 build_linux_main() { # {{{
   if [ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" ]; then
     convert -size 1024x1024 canvas:transparent PNG32:"code_1024.png"
-    rsvg-convert -w 896 -h 896 "icons/${QUALITY}/codium.svg" -o "code_logo.png"
+    rsvg-convert -w 896 -h 896 "icons/${QUALITY}/codium_border_05.svg" -o "code_logo.png"
     composite "code_logo.png" -geometry +75+72 -background none "code_1024.png" "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
 
     rm code_1024.png code_logo.png
   fi
+
+  mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/linux/rpm"
 
   if [ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/linux/rpm/code.xpm" ]; then
     convert "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" "${SRC_PREFIX}src/${QUALITY}/resources/linux/rpm/code.xpm"
