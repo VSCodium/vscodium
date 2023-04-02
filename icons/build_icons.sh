@@ -35,8 +35,8 @@ VSCODE_PREFIX=""
 
 build_darwin_main() { # {{{
   if [ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/darwin/code.icns" ]; then
-    rsvg-convert -w 700 -h 700 "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
-    composite "code_logo.png" -geometry +165+190 "icons/template_macos.png" "code_1024.png"
+    rsvg-convert -w 655 -h 655 "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
+    composite "code_logo.png" -gravity center "icons/template_macos.png" "code_1024.png"
     convert "code_1024.png" -resize 512x512 code_512.png
     convert "code_1024.png" -resize 256x256 code_256.png
     convert "code_1024.png" -resize 128x128 code_128.png
