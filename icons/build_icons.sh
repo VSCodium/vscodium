@@ -89,7 +89,10 @@ build_linux_main() { # {{{
 
 build_windows_main() { # {{{
   if [ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico" ]; then
-    convert "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" -define icon:auto-resize=256,128,96,64,48,32,24,20,16 "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
+    rsvg-convert -w 1024 -h 1024 "icons/${QUALITY}/codium_border_05.svg" -o "code_logo.png"
+    convert "code_logo.png" -define icon:auto-resize=256,128,96,64,48,32,24,20,16 "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
+
+    rm code_logo.png
   fi
 } # }}}
 
