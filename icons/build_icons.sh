@@ -46,7 +46,7 @@ build_darwin_main() { # {{{
 } # }}}
 
 build_darwin_types() { # {{{
-  rsvg-convert -w 128 -h 128 "icons/${QUALITY}/codium_border_8.svg" -o "code_logo.png"
+  rsvg-convert -w 128 -h 128 "icons/${QUALITY}/codium_w80_b8.svg" -o "code_logo.png"
 
   for file in "${VSCODE_PREFIX}"vscode/resources/darwin/*
   do
@@ -74,7 +74,7 @@ build_darwin_types() { # {{{
 build_linux_main() { # {{{
   if [ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" ]; then
     convert -size 1024x1024 canvas:transparent PNG32:"code_1024.png"
-    rsvg-convert -w 896 -h 896 "icons/${QUALITY}/codium_border_05.svg" -o "code_logo.png"
+    rsvg-convert -w 896 -h 896 "icons/${QUALITY}/codium_w100_b05.svg" -o "code_logo.png"
     composite "code_logo.png" -geometry +75+72 -background none "code_1024.png" "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
 
     rm code_1024.png code_logo.png
@@ -89,7 +89,7 @@ build_linux_main() { # {{{
 
 build_windows_main() { # {{{
   if [ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico" ]; then
-    rsvg-convert -w 1024 -h 1024 "icons/${QUALITY}/codium_border_05.svg" -o "code_logo.png"
+    rsvg-convert -w 1024 -h 1024 "icons/${QUALITY}/codium_w100_b05.svg" -o "code_logo.png"
     convert "code_logo.png" -define icon:auto-resize=256,128,96,64,48,32,24,20,16 "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
 
     rm code_logo.png
