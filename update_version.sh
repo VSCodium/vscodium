@@ -40,6 +40,7 @@ fi
 # `timestamp` is $(node -e 'console.log(Date.now())')
 # `sha256hash` in <filename>.sha256
 
+REPOSITORY_NAME="${VERSIONS_REPOSITORY/*\//}"
 URL_BASE="https://github.com/${ASSETS_REPOSITORY}/releases/download/${RELEASE_VERSION}"
 
 generateJson() {
@@ -103,7 +104,7 @@ updateLatestVersion() {
 # init versions repo for later commiting + pushing the json file to it
 # thank you https://www.vinaygopinath.me/blog/tech/commit-to-master-branch-on-github-using-travis-ci/
 git clone "https://github.com/${VERSIONS_REPOSITORY}.git"
-cd versions
+cd "${REPOSITORY_NAME}" || { echo "'${REPOSITORY_NAME}' dir not found"; exit 1; }
 git config user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
 git config user.name "${GITHUB_USERNAME} CI"
 git remote rm origin
@@ -150,7 +151,7 @@ else # linux
   updateLatestVersion
 fi
 
-cd versions
+cd "${REPOSITORY_NAME}" || { echo "'${REPOSITORY_NAME}' dir not found"; exit 1; }
 
 git pull origin master # in case another build just pushed
 git add .
