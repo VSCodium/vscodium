@@ -1,0 +1,71 @@
+diff --git a/src/vs/workbench/browser/parts/banner/bannerPart.ts b/src/vs/workbench/browser/parts/banner/bannerPart.ts
+index b120c94..1bb2b88 100644
+--- a/src/vs/workbench/browser/parts/banner/bannerPart.ts
++++ b/src/vs/workbench/browser/parts/banner/bannerPart.ts
+@@ -11,3 +11,3 @@ import { InstantiationType, registerSingleton } from 'vs/platform/instantiation/
+ import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
+-import { IStorageService } from 'vs/platform/storage/common/storage';
++import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
+ import { IThemeService } from 'vs/platform/theme/common/themeService';
+@@ -30,2 +30,3 @@ import { widgetClose } from 'vs/platform/theme/common/iconRegistry';
+ import { BannerFocused } from 'vs/workbench/common/contextkeys';
++import { INeverShowAgainOptions, NeverShowAgainScope } from 'vs/platform/notification/common/notification';
+ 
+@@ -67,3 +68,3 @@ export class BannerPart extends Part implements IBannerService {
+ 		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+-		@IStorageService storageService: IStorageService,
++		@IStorageService private readonly storageService: IStorageService,
+ 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
+@@ -187,2 +188,14 @@ export class BannerPart extends Part implements IBannerService {
+ 
++		if (item.neverShowAgain) {
++			const scope = this.toStorageScope(item.neverShowAgain);
++			const id = item.neverShowAgain.id;
++
++			// If the user already picked to not show the notification
++			// again, we return with a no-op notification here
++			if (this.storageService.getBoolean(id, scope)) {
++				this.close(item);
++				return;
++			}
++		}
++
+ 		// Clear previous item
+@@ -234,2 +247,15 @@ export class BannerPart extends Part implements IBannerService {
+ 
++	private toStorageScope(options: INeverShowAgainOptions): StorageScope {
++		switch (options.scope) {
++			case NeverShowAgainScope.APPLICATION:
++				return StorageScope.APPLICATION;
++			case NeverShowAgainScope.PROFILE:
++				return StorageScope.PROFILE;
++			case NeverShowAgainScope.WORKSPACE:
++				return StorageScope.WORKSPACE;
++			default:
++				return StorageScope.APPLICATION;
++		}
++	}
++
+ 	toJSON(): object {
+diff --git a/src/vs/workbench/electron-sandbox/window.ts b/src/vs/workbench/electron-sandbox/window.ts
+index cf6af9d..1344cb5 100644
+--- a/src/vs/workbench/electron-sandbox/window.ts
++++ b/src/vs/workbench/electron-sandbox/window.ts
+@@ -725,3 +725,4 @@ export class NativeWindow extends Disposable {
+ 					actions,
+-					icon: Codicon.warning
++					icon: Codicon.warning,
++					neverShowAgain: { id: 'windowseol', isSecondary: true, scope: NeverShowAgainScope.APPLICATION }
+ 				});
+diff --git a/src/vs/workbench/services/banner/browser/bannerService.ts b/src/vs/workbench/services/banner/browser/bannerService.ts
+index 639b1b2..70e8847 100644
+--- a/src/vs/workbench/services/banner/browser/bannerService.ts
++++ b/src/vs/workbench/services/banner/browser/bannerService.ts
+@@ -10,2 +10,3 @@ import { ILinkDescriptor } from 'vs/platform/opener/browser/link';
+ import { ThemeIcon } from 'vs/base/common/themables';
++import { INeverShowAgainOptions } from 'vs/platform/notification/common/notification';
+ 
+@@ -18,2 +19,3 @@ export interface IBannerItem {
+ 	readonly onClose?: () => void;
++	readonly neverShowAgain?: INeverShowAgainOptions;
+ }
