@@ -48,7 +48,7 @@ index b120c94..1bb2b88 100644
 +
  	toJSON(): object {
 diff --git a/src/vs/workbench/electron-sandbox/window.ts b/src/vs/workbench/electron-sandbox/window.ts
-index cf6af9d..1344cb5 100644
+index cf6af9d..108ce8f 100644
 --- a/src/vs/workbench/electron-sandbox/window.ts
 +++ b/src/vs/workbench/electron-sandbox/window.ts
 @@ -725,3 +725,4 @@ export class NativeWindow extends Disposable {
@@ -56,6 +56,12 @@ index cf6af9d..1344cb5 100644
 -					icon: Codicon.warning
 +					icon: Codicon.warning,
 +					neverShowAgain: { id: 'windowseol', isSecondary: true, scope: NeverShowAgainScope.APPLICATION }
+ 				});
+@@ -764,3 +765,4 @@ export class NativeWindow extends Disposable {
+ 					actions,
+-					icon: Codicon.warning
++					icon: Codicon.warning,
++					neverShowAgain: { id: 'macoseol', isSecondary: true, scope: NeverShowAgainScope.APPLICATION }
  				});
 diff --git a/src/vs/workbench/services/banner/browser/bannerService.ts b/src/vs/workbench/services/banner/browser/bannerService.ts
 index 639b1b2..70e8847 100644
