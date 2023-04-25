@@ -43,7 +43,7 @@ index 46949b2..174e65f 100644
 -				reset(leftColumn, startList.getDomElement(), recentList.getDomElement());
 +				reset(leftColumn, startList.getDomElement(), announcementList.getDomElement());
  				reset(rightColumn, featuredExtensionList.getDomElement());
-@@ -982,2 +989,51 @@ export class GettingStartedPage extends EditorPane {
+@@ -982,2 +989,55 @@ export class GettingStartedPage extends EditorPane {
  
 +	private async buildAnnouncementList(): Promise<GettingStartedIndexList<AnnouncementEntry>> {
 +		const renderAnnouncement = (announcement: AnnouncementEntry) => {
@@ -75,15 +75,19 @@ index 46949b2..174e65f 100644
 +
 +			if (showExtras) {
 +				const branch = this.productService.quality === 'insider' ? 'insider' : 'master';
-+				const res = await fetch(`https://raw.githubusercontent.com/VSCodium/vscodium/${branch}/announcements-extra.json`);
++				await fetch(`https://raw.githubusercontent.com/VSCodium/vscodium/${branch}/announcements-extra.json`)
++					.then(async res => {
++						if (res.ok) {
++							var extraAnnouncements = await res.json() as AnnouncementEntry[];
 +
-+				if (res.ok) {
-+					var extraAnnouncements = await res.json() as AnnouncementEntry[];
-+
-+					this.announcementData = [...extraAnnouncements, ...BUILTIN_ANNOUNCEMENTS];
-+				} else {
-+					this.announcementData = BUILTIN_ANNOUNCEMENTS;
-+				}
++							this.announcementData = [...extraAnnouncements, ...BUILTIN_ANNOUNCEMENTS];
++						} else {
++							this.announcementData = BUILTIN_ANNOUNCEMENTS;
++						}
++					})
++					.catch(err => {
++						this.announcementData = BUILTIN_ANNOUNCEMENTS;
++					});
 +			} else {
 +				this.announcementData = BUILTIN_ANNOUNCEMENTS;
 +			}
