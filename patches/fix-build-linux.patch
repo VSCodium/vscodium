@@ -1,14 +1,14 @@
 diff --git a/build/linux/dependencies-generator.js b/build/linux/dependencies-generator.js
-index af20828..f09ba66 100644
+index 0ea6699..c4524de 100644
 --- a/build/linux/dependencies-generator.js
 +++ b/build/linux/dependencies-generator.js
 @@ -22,3 +22,3 @@ const types_2 = require("./rpm/types");
  // are valid, are in dep-lists.ts
 -const FAIL_BUILD_FOR_NEW_DEPENDENCIES = true;
 +const FAIL_BUILD_FOR_NEW_DEPENDENCIES = false;
- // Based on https://source.chromium.org/chromium/chromium/src/+/refs/tags/98.0.4758.109:chrome/installer/linux/BUILD.gn;l=64-80
+ // Based on https://source.chromium.org/chromium/chromium/src/+/refs/tags/108.0.5359.215:chrome/installer/linux/BUILD.gn;l=64-80
 diff --git a/build/linux/dependencies-generator.ts b/build/linux/dependencies-generator.ts
-index 34573c4..91adb8f 100644
+index c0d8112..3bb0366 100644
 --- a/build/linux/dependencies-generator.ts
 +++ b/build/linux/dependencies-generator.ts
 @@ -23,3 +23,3 @@ import { isRpmArchString, RpmArchString } from './rpm/types';
@@ -17,10 +17,10 @@ index 34573c4..91adb8f 100644
 +const FAIL_BUILD_FOR_NEW_DEPENDENCIES: boolean = false;
  
 diff --git a/resources/linux/rpm/code.spec.template b/resources/linux/rpm/code.spec.template
-index 61659d2..6331a67 100644
+index 06b8549..a7e3dfb 100644
 --- a/resources/linux/rpm/code.spec.template
 +++ b/resources/linux/rpm/code.spec.template
-@@ -78 +78,3 @@ update-mime-database %{_datadir}/mime &> /dev/null || :
+@@ -81 +81,3 @@ update-mime-database %{_datadir}/mime &> /dev/null || :
  %{_datadir}/zsh/site-functions/_%{name}
 +
 +%config(noreplace) /usr/share/%{name}/resources/app/product.json
