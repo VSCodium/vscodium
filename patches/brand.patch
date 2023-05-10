@@ -1,0 +1,1149 @@
+diff --git a/extensions/configuration-editing/src/configurationEditingMain.ts b/extensions/configuration-editing/src/configurationEditingMain.ts
+index acbd032..737ad03 100644
+--- a/extensions/configuration-editing/src/configurationEditingMain.ts
++++ b/extensions/configuration-editing/src/configurationEditingMain.ts
+@@ -54,4 +54,4 @@ function registerVariableCompletions(pattern: string): vscode.Disposable {
+ 				return [
+-					{ label: 'workspaceFolder', detail: vscode.l10n.t("The path of the folder opened in VS Code") },
+-					{ label: 'workspaceFolderBasename', detail: vscode.l10n.t("The name of the folder opened in VS Code without any slashes (/)") },
++					{ label: 'workspaceFolder', detail: vscode.l10n.t("The path of the folder opened in VSCodium") },
++					{ label: 'workspaceFolderBasename', detail: vscode.l10n.t("The name of the folder opened in VSCodium without any slashes (/)") },
+ 					{ label: 'relativeFile', detail: vscode.l10n.t("The current opened file relative to ${workspaceFolder}") },
+diff --git a/extensions/configuration-editing/src/settingsDocumentHelper.ts b/extensions/configuration-editing/src/settingsDocumentHelper.ts
+index 110494f..9f01ff2 100644
+--- a/extensions/configuration-editing/src/settingsDocumentHelper.ts
++++ b/extensions/configuration-editing/src/settingsDocumentHelper.ts
+@@ -118,3 +118,3 @@ export class SettingsDocument {
+ 		completions.push(this.newSimpleCompletionItem(getText('folderPath'), range, vscode.l10n.t("file path of the workspace folder the file is contained in (e.g. /Users/Development/myFolder)")));
+-		completions.push(this.newSimpleCompletionItem(getText('appName'), range, vscode.l10n.t("e.g. VS Code")));
++		completions.push(this.newSimpleCompletionItem(getText('appName'), range, vscode.l10n.t("e.g. VSCodium")));
+ 		completions.push(this.newSimpleCompletionItem(getText('remoteName'), range, vscode.l10n.t("e.g. SSH")));
+diff --git a/extensions/css-language-features/package.nls.json b/extensions/css-language-features/package.nls.json
+index 784eaa5..b27b0fd 100644
+--- a/extensions/css-language-features/package.nls.json
++++ b/extensions/css-language-features/package.nls.json
+@@ -4,4 +4,4 @@
+ 	"css.title": "CSS",
+-	"css.customData.desc": "A list of relative file paths pointing to JSON files following the [custom data format](https://github.com/microsoft/vscode-css-languageservice/blob/master/docs/customData.md).\n\nVS Code loads custom data on startup to enhance its CSS support for the custom CSS properties, at directives, pseudo classes and pseudo elements you specify in the JSON files.\n\nThe file paths are relative to workspace and only workspace folder settings are considered.",
+-	"css.completion.triggerPropertyValueCompletion.desc": "By default, VS Code triggers property value completion after selecting a CSS property. Use this setting to disable this behavior.",
++	"css.customData.desc": "A list of relative file paths pointing to JSON files following the [custom data format](https://github.com/microsoft/vscode-css-languageservice/blob/master/docs/customData.md).\n\nVSCodium loads custom data on startup to enhance its CSS support for the custom CSS properties, at directives, pseudo classes and pseudo elements you specify in the JSON files.\n\nThe file paths are relative to workspace and only workspace folder settings are considered.",
++	"css.completion.triggerPropertyValueCompletion.desc": "By default, VSCodium triggers property value completion after selecting a CSS property. Use this setting to disable this behavior.",
+ 	"css.completion.completePropertyWithSemicolon.desc": "Insert semicolon at end of line when completing CSS properties.",
+@@ -27,3 +27,3 @@
+ 	"css.lint.zeroUnits.desc": "No unit for zero needed.",
+-	"css.trace.server.desc": "Traces the communication between VS Code and the CSS language server.",
++	"css.trace.server.desc": "Traces the communication between VSCodium and the CSS language server.",
+ 	"css.validate.title": "Controls CSS validation and problem severities.",
+@@ -40,3 +40,3 @@
+ 	"less.title": "LESS",
+-	"less.completion.triggerPropertyValueCompletion.desc": "By default, VS Code triggers property value completion after selecting a CSS property. Use this setting to disable this behavior.",
++	"less.completion.triggerPropertyValueCompletion.desc": "By default, VSCodium triggers property value completion after selecting a CSS property. Use this setting to disable this behavior.",
+ 	"less.completion.completePropertyWithSemicolon.desc": "Insert semicolon at end of line when completing CSS properties.",
+@@ -74,3 +74,3 @@
+ 	"scss.title": "SCSS (Sass)",
+-	"scss.completion.triggerPropertyValueCompletion.desc": "By default, VS Code triggers property value completion after selecting a CSS property. Use this setting to disable this behavior.",
++	"scss.completion.triggerPropertyValueCompletion.desc": "By default, VSCodium triggers property value completion after selecting a CSS property. Use this setting to disable this behavior.",
+ 	"scss.completion.completePropertyWithSemicolon.desc": "Insert semicolon at end of line when completing CSS properties.",
+diff --git a/extensions/emmet/package.nls.json b/extensions/emmet/package.nls.json
+index 2a58c39..af508f3 100644
+--- a/extensions/emmet/package.nls.json
++++ b/extensions/emmet/package.nls.json
+@@ -1,3 +1,3 @@
+ {
+-	"description": "Emmet support for VS Code",
++	"description": "Emmet support for VSCodium",
+ 	"command.wrapWithAbbreviation": "Wrap with Abbreviation",
+diff --git a/extensions/extension-editing/src/extensionLinter.ts b/extensions/extension-editing/src/extensionLinter.ts
+index bb980cf..11d635b 100644
+--- a/extensions/extension-editing/src/extensionLinter.ts
++++ b/extensions/extension-editing/src/extensionLinter.ts
+@@ -34,6 +34,6 @@ const relativeIconUrlRequiresHttpsRepository = l10n.t("An icon requires a reposi
+ const relativeBadgeUrlRequiresHttpsRepository = l10n.t("Relative badge URLs require a repository with HTTPS protocol to be specified in this package.json.");
+-const apiProposalNotListed = l10n.t("This proposal cannot be used because for this extension the product defines a fixed set of API proposals. You can test your extension but before publishing you MUST reach out to the VS Code team.");
++const apiProposalNotListed = l10n.t("This proposal cannot be used because for this extension the product defines a fixed set of API proposals. You can test your extension but before publishing you MUST reach out to the VSCodium team.");
+ const implicitActivationEvent = l10n.t("This activation event cannot be explicitly listed by your extension.");
+-const redundantImplicitActivationEvent = l10n.t("This activation event can be removed as VS Code generates these automatically from your package.json contribution declarations.");
+-const bumpEngineForImplicitActivationEvents = l10n.t("This activation event can be removed for extensions targeting engine version ^1.75 as VS Code will generate these automatically from your package.json contribution declarations.");
++const redundantImplicitActivationEvent = l10n.t("This activation event can be removed as VSCodium generates these automatically from your package.json contribution declarations.");
++const bumpEngineForImplicitActivationEvents = l10n.t("This activation event can be removed for extensions targeting engine version ^1.75 as VSCodium will generate these automatically from your package.json contribution declarations.");
+ const starActivation = l10n.t("Using '*' activation is usually a bad idea as it impacts performance.");
+diff --git a/extensions/git/package.nls.json b/extensions/git/package.nls.json
+index f772158..75c9f6d 100644
+--- a/extensions/git/package.nls.json
++++ b/extensions/git/package.nls.json
+@@ -199,3 +199,3 @@
+ 			"{Locked='](command:git.showOutput'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -226,4 +226,4 @@
+ 	"config.showCommitInput": "Controls whether to show the commit input in the Git source control panel.",
+-	"config.terminalAuthentication": "Controls whether to enable VS Code to be the authentication handler for Git processes spawned in the Integrated Terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
+-	"config.terminalGitEditor": "Controls whether to enable VS Code to be the Git editor for Git processes spawned in the integrated terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
++	"config.terminalAuthentication": "Controls whether to enable VSCodium to be the authentication handler for Git processes spawned in the Integrated Terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
++	"config.terminalGitEditor": "Controls whether to enable VSCodium to be the Git editor for Git processes spawned in the integrated terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
+ 	"config.timeline.showAuthor": "Controls whether to show the commit author in the Timeline view.",
+@@ -277,3 +277,3 @@
+ 			"{Locked='](command:workbench.action.reloadWindow'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -285,3 +285,3 @@
+ 			"{Locked='](command:workbench.action.reloadWindow'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -293,3 +293,3 @@
+ 			"{Locked='](command:workbench.action.reloadWindow'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -299,6 +299,6 @@
+ 	"view.workbench.scm.disabled": {
+-		"message": "If you would like to use git features, please enable git in your [settings](command:workbench.action.openSettings?%5B%22git.enabled%22%5D).\nTo learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
++		"message": "If you would like to use git features, please enable git in your [settings](command:workbench.action.openSettings?%5B%22git.enabled%22%5D).\nTo learn more about how to use git and source control in VSCodium [read our docs](https://aka.ms/vscode-scm).",
+ 		"comment": [
+ 			"{Locked='](command:workbench.action.openSettings?%5B%22git.enabled%22%5D'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -307,6 +307,6 @@
+ 	"view.workbench.scm.empty": {
+-		"message": "In order to use git features, you can open a folder containing a git repository or clone from a URL.\n[Open Folder](command:vscode.openFolder)\n[Clone Repository](command:git.clone)\nTo learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
++		"message": "In order to use git features, you can open a folder containing a git repository or clone from a URL.\n[Open Folder](command:vscode.openFolder)\n[Clone Repository](command:git.clone)\nTo learn more about how to use git and source control in VSCodium [read our docs](https://aka.ms/vscode-scm).",
+ 		"comment": [
+ 			"{Locked='](command:vscode.openFolder'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -315,6 +315,6 @@
+ 	"view.workbench.scm.folder": {
+-		"message": "The folder currently open doesn't have a git repository. You can initialize a repository which will enable source control features powered by git.\n[Initialize Repository](command:git.init?%5Btrue%5D)\nTo learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
++		"message": "The folder currently open doesn't have a git repository. You can initialize a repository which will enable source control features powered by git.\n[Initialize Repository](command:git.init?%5Btrue%5D)\nTo learn more about how to use git and source control in VSCodium [read our docs](https://aka.ms/vscode-scm).",
+ 		"comment": [
+ 			"{Locked='](command:git.init?%5Btrue%5D'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -323,6 +323,6 @@
+ 	"view.workbench.scm.workspace": {
+-		"message": "The workspace currently open doesn't have any folders containing git repositories. You can initialize a repository on a folder which will enable source control features powered by git.\n[Initialize Repository](command:git.init)\nTo learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
++		"message": "The workspace currently open doesn't have any folders containing git repositories. You can initialize a repository on a folder which will enable source control features powered by git.\n[Initialize Repository](command:git.init)\nTo learn more about how to use git and source control in VSCodium [read our docs](https://aka.ms/vscode-scm).",
+ 		"comment": [
+ 			"{Locked='](command:git.init'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -331,6 +331,6 @@
+ 	"view.workbench.scm.emptyWorkspace": {
+-		"message": "The workspace currently open doesn't have any folders containing git repositories.\n[Add Folder to Workspace](command:workbench.action.addRootFolder)\nTo learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
++		"message": "The workspace currently open doesn't have any folders containing git repositories.\n[Add Folder to Workspace](command:workbench.action.addRootFolder)\nTo learn more about how to use git and source control in VSCodium [read our docs](https://aka.ms/vscode-scm).",
+ 		"comment": [
+ 			"{Locked='](command:workbench.action.addRootFolder'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -349,3 +349,3 @@
+ 			"{Locked='](command:workbench.action.openSettings?%5B%22git.openRepositoryInParentFolders%22%5D'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -358,3 +358,3 @@
+ 			"{Locked='](command:workbench.action.openSettings?%5B%22git.openRepositoryInParentFolders%22%5D'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -366,3 +366,3 @@
+ 			"{Locked='](command:git.manageUnsafeRepositories'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -374,3 +374,3 @@
+ 			"{Locked='](command:git.manageUnsafeRepositories'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -382,3 +382,3 @@
+ 			"{Locked='](command:git.clone'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -386,3 +386,3 @@
+ 	},
+-	"view.workbench.learnMore": "To learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm)."
++	"view.workbench.learnMore": "To learn more about how to use git and source control in VSCodium [read our docs](https://aka.ms/vscode-scm)."
+ }
+diff --git a/extensions/github/package.nls.json b/extensions/github/package.nls.json
+index ad3cf82..10f4b40 100644
+--- a/extensions/github/package.nls.json
++++ b/extensions/github/package.nls.json
+@@ -2,5 +2,5 @@
+ 	"displayName": "GitHub",
+-	"description": "GitHub features for VS Code",
++	"description": "GitHub features for VSCodium",
+ 	"config.branchProtection": "Controls whether to query repository rules for GitHub repositories",
+-	"config.gitAuthentication": "Controls whether to enable automatic GitHub authentication for git commands within VS Code.",
++	"config.gitAuthentication": "Controls whether to enable automatic GitHub authentication for git commands within VSCodium.",
+ 	"config.gitProtocol": "Controls which protocol is used to clone a GitHub repository",
+@@ -12,3 +12,3 @@
+ 			"{Locked='](command:github.publish'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+@@ -22,3 +22,3 @@
+ 			"{Locked='](command:github.publish'}",
+-			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
++			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VSCodium",
+ 			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
+diff --git a/extensions/grunt/package.nls.json b/extensions/grunt/package.nls.json
+index 789a579..fcf39ff 100644
+--- a/extensions/grunt/package.nls.json
++++ b/extensions/grunt/package.nls.json
+@@ -1,4 +1,4 @@
+ {
+-	"description": "Extension to add Grunt capabilities to VS Code.",
+-	"displayName": "Grunt support for VS Code",
++	"description": "Extension to add Grunt capabilities to VSCodium.",
++	"displayName": "Grunt support for VSCodium",
+ 	"config.grunt.autoDetect": "Controls enablement of Grunt task detection. Grunt task detection can cause files in any open workspace to be executed.",
+diff --git a/extensions/html-language-features/client/src/htmlClient.ts b/extensions/html-language-features/client/src/htmlClient.ts
+index 7b69c79..6441167 100644
+--- a/extensions/html-language-features/client/src/htmlClient.ts
++++ b/extensions/html-language-features/client/src/htmlClient.ts
+@@ -108,3 +108,3 @@ export async function startClient(context: ExtensionContext, newLanguageClient:
+ 					const configure = l10n.t('Configure');
+-					const res = await window.showInformationMessage(l10n.t('VS Code now has built-in support for auto-renaming tags. Do you want to enable it?'), configure);
++					const res = await window.showInformationMessage(l10n.t('VSCodium now has built-in support for auto-renaming tags. Do you want to enable it?'), configure);
+ 					if (res === configure) {
+diff --git a/extensions/html-language-features/package.nls.json b/extensions/html-language-features/package.nls.json
+index acb6474..830f010 100644
+--- a/extensions/html-language-features/package.nls.json
++++ b/extensions/html-language-features/package.nls.json
+@@ -3,3 +3,3 @@
+ 	"description": "Provides rich language support for HTML and Handlebar files",
+-	"html.customData.desc": "A list of relative file paths pointing to JSON files following the [custom data format](https://github.com/microsoft/vscode-html-languageservice/blob/master/docs/customData.md).\n\nVS Code loads custom data on startup to enhance its HTML support for the custom HTML tags, attributes and attribute values you specify in the JSON files.\n\nThe file paths are relative to workspace and only workspace folder settings are considered.",
++	"html.customData.desc": "A list of relative file paths pointing to JSON files following the [custom data format](https://github.com/microsoft/vscode-html-languageservice/blob/master/docs/customData.md).\n\nVSCodium loads custom data on startup to enhance its HTML support for the custom HTML tags, attributes and attribute values you specify in the JSON files.\n\nThe file paths are relative to workspace and only workspace folder settings are considered.",
+ 	"html.format.enable.desc": "Enable/disable default HTML formatter.",
+@@ -25,3 +25,3 @@
+ 	"html.suggest.html5.desc": "Controls whether the built-in HTML language support suggests HTML5 tags, properties and values.",
+-	"html.trace.server.desc": "Traces the communication between VS Code and the HTML language server.",
++	"html.trace.server.desc": "Traces the communication between VSCodium and the HTML language server.",
+ 	"html.validate.scripts": "Controls whether the built-in HTML language support validates embedded scripts.",
+diff --git a/extensions/html-language-features/schemas/package.schema.json b/extensions/html-language-features/schemas/package.schema.json
+index ef717db..c0856e7 100644
+--- a/extensions/html-language-features/schemas/package.schema.json
++++ b/extensions/html-language-features/schemas/package.schema.json
+@@ -10,3 +10,3 @@
+ 					"type": "array",
+-					"markdownDescription": "A list of relative file paths pointing to JSON files following the [custom data format](https://github.com/microsoft/vscode-html-languageservice/blob/master/docs/customData.md).\n\nVS Code loads custom data on startup to enhance its HTML support for the custom HTML tags, attributes and attribute values you specify in the JSON files.\n\nThe file paths are relative to workspace and only workspace folder settings are considered.",
++					"markdownDescription": "A list of relative file paths pointing to JSON files following the [custom data format](https://github.com/microsoft/vscode-html-languageservice/blob/master/docs/customData.md).\n\nVSCodium loads custom data on startup to enhance its HTML support for the custom HTML tags, attributes and attribute values you specify in the JSON files.\n\nThe file paths are relative to workspace and only workspace folder settings are considered.",
+ 					"items": {
+diff --git a/extensions/jake/package.nls.json b/extensions/jake/package.nls.json
+index e82030e..1a634bd 100644
+--- a/extensions/jake/package.nls.json
++++ b/extensions/jake/package.nls.json
+@@ -1,4 +1,4 @@
+ {
+-	"description": "Extension to add Jake capabilities to VS Code.",
+-	"displayName": "Jake support for VS Code",
++	"description": "Extension to add Jake capabilities to VSCodium.",
++	"displayName": "Jake support for VSCodium",
+ 	"jake.taskDefinition.type.description": "The Jake task to customize.",
+diff --git a/extensions/json-language-features/package.nls.json b/extensions/json-language-features/package.nls.json
+index 571d047..ca31e06 100644
+--- a/extensions/json-language-features/package.nls.json
++++ b/extensions/json-language-features/package.nls.json
+@@ -11,3 +11,3 @@
+ 	"json.validate.enable.desc": "Enable/disable JSON validation.",
+-	"json.tracing.desc": "Traces the communication between VS Code and the JSON language server.",
++	"json.tracing.desc": "Traces the communication between VSCodium and the JSON language server.",
+ 	"json.colorDecorators.enable.desc": "Enables or disables color decorators",
+diff --git a/extensions/markdown-language-features/package.nls.json b/extensions/markdown-language-features/package.nls.json
+index 350c1af..48ca372 100644
+--- a/extensions/markdown-language-features/package.nls.json
++++ b/extensions/markdown-language-features/package.nls.json
+@@ -20,3 +20,3 @@
+ 	"markdown.trace.extension.desc": "Enable debug logging for the Markdown extension.",
+-	"markdown.trace.server.desc": "Traces the communication between VS Code and the Markdown language server.",
++	"markdown.trace.server.desc": "Traces the communication between VSCodium and the Markdown language server.",
+ 	"markdown.server.log.desc": "Controls the logging level of the Markdown language server.",
+diff --git a/extensions/media-preview/package.nls.json b/extensions/media-preview/package.nls.json
+index 27fe241..fb9008f 100644
+--- a/extensions/media-preview/package.nls.json
++++ b/extensions/media-preview/package.nls.json
+@@ -2,3 +2,3 @@
+ 	"displayName": "Media Preview",
+-	"description": "Provides VS Code's built-in previews for images, audio, and video",
++	"description": "Provides VSCodium's built-in previews for images, audio, and video",
+ 	"customEditor.audioPreview.displayName": "Audio Preview",
+diff --git a/extensions/media-preview/src/audioPreview.ts b/extensions/media-preview/src/audioPreview.ts
+index e21a418..dc0698b 100644
+--- a/extensions/media-preview/src/audioPreview.ts
++++ b/extensions/media-preview/src/audioPreview.ts
+@@ -82,3 +82,3 @@ class AudioPreview extends MediaPreview {
+ 		<p>${vscode.l10n.t("An error occurred while loading the audio file.")}</p>
+-		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using VS Code's standard text/binary editor?")}</a>
++		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using VSCodium's standard text/binary editor?")}</a>
+ 	</div>
+diff --git a/extensions/media-preview/src/videoPreview.ts b/extensions/media-preview/src/videoPreview.ts
+index 5897792..b7f1f02 100644
+--- a/extensions/media-preview/src/videoPreview.ts
++++ b/extensions/media-preview/src/videoPreview.ts
+@@ -83,3 +83,3 @@ class VideoPreview extends MediaPreview {
+ 		<p>${vscode.l10n.t("An error occurred while loading the video file.")}</p>
+-		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using VS Code's standard text/binary editor?")}</a>
++		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using VSCodium's standard text/binary editor?")}</a>
+ 	</div>
+diff --git a/extensions/notebook-renderers/package.json b/extensions/notebook-renderers/package.json
+index 3f9f3d2..897ee93 100644
+--- a/extensions/notebook-renderers/package.json
++++ b/extensions/notebook-renderers/package.json
+@@ -21,3 +21,3 @@
+ 				"entrypoint": "./renderer-out/index.js",
+-				"displayName": "VS Code Builtin Notebook Output Renderer",
++				"displayName": "VSCodium Builtin Notebook Output Renderer",
+ 				"requiresMessaging": "never",
+diff --git a/extensions/npm/package.nls.json b/extensions/npm/package.nls.json
+index 1b2e878..478bc13 100644
+--- a/extensions/npm/package.nls.json
++++ b/extensions/npm/package.nls.json
+@@ -2,3 +2,3 @@
+ 	"description": "Extension to add task support for npm scripts.",
+-	"displayName": "NPM support for VS Code",
++	"displayName": "NPM support for VSCodium",
+ 	"workspaceTrust": "This extension executes tasks, which require trust to run.",
+diff --git a/extensions/swift/syntaxes/swift.tmLanguage.json b/extensions/swift/syntaxes/swift.tmLanguage.json
+index f63b127..799111f 100644
+--- a/extensions/swift/syntaxes/swift.tmLanguage.json
++++ b/extensions/swift/syntaxes/swift.tmLanguage.json
+@@ -260,3 +260,3 @@
+ 				{
+-					"comment": "The simpler (?<=\\bProcess\\.|\\bCommandLine\\.) breaks VS Code / Atom, see https://github.com/textmate/swift.tmbundle/issues/29",
++					"comment": "The simpler (?<=\\bProcess\\.|\\bCommandLine\\.) breaks VSCodium / Atom, see https://github.com/textmate/swift.tmbundle/issues/29",
+ 					"match": "(?<=^Process\\.|\\WProcess\\.|^CommandLine\\.|\\WCommandLine\\.)(arguments|argc|unsafeArgv)",
+diff --git a/extensions/typescript-language-features/package.nls.json b/extensions/typescript-language-features/package.nls.json
+index 20306b9..a570a97 100644
+--- a/extensions/typescript-language-features/package.nls.json
++++ b/extensions/typescript-language-features/package.nls.json
+@@ -72,3 +72,3 @@
+ 	"configuration.tsserver.experimental.enableProjectDiagnostics": "(Experimental) Enables project wide error reporting.",
+-	"typescript.locale": "Sets the locale used to report JavaScript and TypeScript errors. Defaults to use VS Code's locale.",
++	"typescript.locale": "Sets the locale used to report JavaScript and TypeScript errors. Defaults to use VSCodium's locale.",
+ 	"configuration.implicitProjectConfig.module": "Sets the module system for the program. See more: https://www.typescriptlang.org/tsconfig#module.",
+@@ -141,3 +141,3 @@
+ 	"typescript.preferences.autoImportFileExcludePatterns": "Specify glob patterns of files to exclude from auto imports. Requires using TypeScript 4.8 or newer in the workspace.",
+-	"typescript.updateImportsOnFileMove.enabled": "Enable/disable automatic updating of import paths when you rename or move a file in VS Code.",
++	"typescript.updateImportsOnFileMove.enabled": "Enable/disable automatic updating of import paths when you rename or move a file in VSCodium.",
+ 	"typescript.updateImportsOnFileMove.enabled.prompt": "Prompt on each rename.",
+@@ -147,3 +147,3 @@
+ 	"typescript.suggest.enabled": "Enabled/disable autocomplete suggestions.",
+-	"configuration.surveys.enabled": "Enabled/disable occasional surveys that help us improve VS Code's JavaScript and TypeScript support.",
++	"configuration.surveys.enabled": "Enabled/disable occasional surveys that help us improve VSCodium's JavaScript and TypeScript support.",
+ 	"configuration.suggest.completeJSDocs": "Enable/disable suggestion to complete JSDoc comments.",
+@@ -200,3 +200,3 @@
+ 
+-	"typescript.experimental.tsserver.web.enableProjectWideIntellisense": "Enable/disable project-wide IntelliSense on web. Requires that VS Code is running in a trusted context.",
++	"typescript.experimental.tsserver.web.enableProjectWideIntellisense": "Enable/disable project-wide IntelliSense on web. Requires that VSCodium is running in a trusted context.",
+ 
+@@ -215,3 +215,3 @@
+ 	"walkthroughs.nodejsWelcome.debugJsFile.title": "Run and Debug your JavaScript",
+-	"walkthroughs.nodejsWelcome.debugJsFile.description": "Once you've installed Node.js, you can run JavaScript programs at a terminal by entering ``node your-file-name.js``\nAnother easy way to run Node.js programs is by using VS Code's debugger which lets you run your code, pause at different points, and help you understand what's going on step-by-step.\n[Start Debugging](command:javascript-walkthrough.commands.debugJsFile)",
++	"walkthroughs.nodejsWelcome.debugJsFile.description": "Once you've installed Node.js, you can run JavaScript programs at a terminal by entering ``node your-file-name.js``\nAnother easy way to run Node.js programs is by using VSCodium's debugger which lets you run your code, pause at different points, and help you understand what's going on step-by-step.\n[Start Debugging](command:javascript-walkthrough.commands.debugJsFile)",
+ 	"walkthroughs.nodejsWelcome.debugJsFile.altText": "Debug and run your JavaScript code in Node.js with Visual Studio Code.",
+@@ -219,3 +219,3 @@
+ 	"walkthroughs.nodejsWelcome.learnMoreAboutJs.title": "Explore More",
+-	"walkthroughs.nodejsWelcome.learnMoreAboutJs.description": "Want to get more comfortable with JavaScript, Node.js, and VS Code? Be sure to check out our docs!\nWe've got lots of resources for learning [JavaScript](https://code.visualstudio.com/docs/nodejs/working-with-javascript) and [Node.js](https://code.visualstudio.com/docs/nodejs/nodejs-tutorial).\n\n[Learn More](https://code.visualstudio.com/docs/nodejs/nodejs-tutorial)",
++	"walkthroughs.nodejsWelcome.learnMoreAboutJs.description": "Want to get more comfortable with JavaScript, Node.js, and VSCodium? Be sure to check out our docs!\nWe've got lots of resources for learning [JavaScript](https://code.visualstudio.com/docs/nodejs/working-with-javascript) and [Node.js](https://code.visualstudio.com/docs/nodejs/nodejs-tutorial).\n\n[Learn More](https://code.visualstudio.com/docs/nodejs/nodejs-tutorial)",
+ 	"walkthroughs.nodejsWelcome.learnMoreAboutJs.altText": "Learn more about JavaScript and Node.js in Visual Studio Code."
+diff --git a/extensions/typescript-language-features/src/tsServer/versionManager.ts b/extensions/typescript-language-features/src/tsServer/versionManager.ts
+index 43a2413..277a089 100644
+--- a/extensions/typescript-language-features/src/tsServer/versionManager.ts
++++ b/extensions/typescript-language-features/src/tsServer/versionManager.ts
+@@ -100,3 +100,3 @@ export class TypeScriptVersionManager extends Disposable {
+ 				? '• '
+-				: '') + vscode.l10n.t("Use VS Code's Version"),
++				: '') + vscode.l10n.t("Use VSCodium's Version"),
+ 			description: bundledVersion.displayName,
+diff --git a/extensions/typescript-language-features/src/tsconfig.ts b/extensions/typescript-language-features/src/tsconfig.ts
+index ebbdd2a..ad8558a 100644
+--- a/extensions/typescript-language-features/src/tsconfig.ts
++++ b/extensions/typescript-language-features/src/tsconfig.ts
+@@ -147,3 +147,3 @@ export async function openProjectConfigForFile(
+ 		vscode.window.showInformationMessage(
+-			vscode.l10n.t("Please open a folder in VS Code to use a TypeScript or JavaScript project"));
++			vscode.l10n.t("Please open a folder in VSCodium to use a TypeScript or JavaScript project"));
+ 		return;
+diff --git a/extensions/typescript-language-features/src/typescriptServiceClient.ts b/extensions/typescript-language-features/src/typescriptServiceClient.ts
+index 31e86e6..da6d385 100644
+--- a/extensions/typescript-language-features/src/typescriptServiceClient.ts
++++ b/extensions/typescript-language-features/src/typescriptServiceClient.ts
+@@ -604,3 +604,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+ 						prompt = vscode.window.showErrorMessage<vscode.MessageItem>(
+-							vscode.l10n.t("The JS/TS language service immediately crashed 5 times. The service will not be restarted.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
++							vscode.l10n.t("The JS/TS language service immediately crashed 5 times. The service will not be restarted.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
+ 					} else {
+@@ -625,3 +625,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+ 							prompt = vscode.window.showWarningMessage<vscode.MessageItem>(
+-								vscode.l10n.t("The JS/TS language service crashed 5 times in the last 5 Minutes.\nThis may be caused by a plugin contributed by one of these extensions: {0}\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
++								vscode.l10n.t("The JS/TS language service crashed 5 times in the last 5 Minutes.\nThis may be caused by a plugin contributed by one of these extensions: {0}\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
+ 						} else {
+@@ -639,3 +639,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+ 						prompt = vscode.window.showWarningMessage<vscode.MessageItem>(
+-							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
++							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
+ 					} else {
+diff --git a/extensions/vscode-api-tests/package.json b/extensions/vscode-api-tests/package.json
+index 16655a6..2f70ee9 100644
+--- a/extensions/vscode-api-tests/package.json
++++ b/extensions/vscode-api-tests/package.json
+@@ -2,3 +2,3 @@
+   "name": "vscode-api-tests",
+-  "description": "API tests for VS Code",
++  "description": "API tests for VSCodium",
+   "version": "0.0.1",
+diff --git a/extensions/vscode-colorize-tests/package.json b/extensions/vscode-colorize-tests/package.json
+index e2517c8..f9ea3c7 100644
+--- a/extensions/vscode-colorize-tests/package.json
++++ b/extensions/vscode-colorize-tests/package.json
+@@ -2,3 +2,3 @@
+   "name": "vscode-colorize-tests",
+-  "description": "Colorize tests for VS Code",
++  "description": "Colorize tests for VSCodium",
+   "version": "0.0.1",
+diff --git a/extensions/vscode-colorize-tests/test/colorize-fixtures/14119.less b/extensions/vscode-colorize-tests/test/colorize-fixtures/14119.less
+index a0006d8..5ab2754 100644
+--- a/extensions/vscode-colorize-tests/test/colorize-fixtures/14119.less
++++ b/extensions/vscode-colorize-tests/test/colorize-fixtures/14119.less
+@@ -1,2 +1,2 @@
+-#f(@hm: "broken highlighting in VS Code") {
++#f(@hm: "broken highlighting in VSCodium") {
+     content: "";
+diff --git a/extensions/vscode-colorize-tests/test/colorize-results/14119_less.json b/extensions/vscode-colorize-tests/test/colorize-results/14119_less.json
+index 69544dc..e9ddf26 100644
+--- a/extensions/vscode-colorize-tests/test/colorize-results/14119_less.json
++++ b/extensions/vscode-colorize-tests/test/colorize-results/14119_less.json
+@@ -114,3 +114,3 @@
+ 	{
+-		"c": "broken highlighting in VS Code",
++		"c": "broken highlighting in VSCodium",
+ 		"t": "source.css.less string.quoted.double.css",
+diff --git a/extensions/vscode-test-resolver/package.json b/extensions/vscode-test-resolver/package.json
+index 167275a..0da8b2d 100644
+--- a/extensions/vscode-test-resolver/package.json
++++ b/extensions/vscode-test-resolver/package.json
+@@ -2,3 +2,3 @@
+   "name": "vscode-test-resolver",
+-  "description": "Test resolver for VS Code",
++  "description": "Test resolver for VSCodium",
+   "version": "0.0.1",
+diff --git a/extensions/vscode-test-resolver/src/download.ts b/extensions/vscode-test-resolver/src/download.ts
+index fa001b5..13abac2 100644
+--- a/extensions/vscode-test-resolver/src/download.ts
++++ b/extensions/vscode-test-resolver/src/download.ts
+@@ -32,3 +32,3 @@ async function downloadVSCodeServerArchive(updateUrl: string, commit: string, qu
+ 	return new Promise((resolve, reject) => {
+-		log(`Downloading VS Code Server from: ${downloadUrl}`);
++		log(`Downloading VSCodium Server from: ${downloadUrl}`);
+ 		const requestOptions: https.RequestOptions = parseUrl(downloadUrl);
+@@ -37,3 +37,3 @@ async function downloadVSCodeServerArchive(updateUrl: string, commit: string, qu
+ 			if (res.statusCode !== 302) {
+-				reject('Failed to get VS Code server archive location');
++				reject('Failed to get VSCodium server archive location');
+ 			}
+@@ -41,3 +41,3 @@ async function downloadVSCodeServerArchive(updateUrl: string, commit: string, qu
+ 			if (!archiveUrl) {
+-				reject('Failed to get VS Code server archive location');
++				reject('Failed to get VSCodium server archive location');
+ 				return;
+@@ -70,3 +70,3 @@ async function downloadVSCodeServerArchive(updateUrl: string, commit: string, qu
+ /**
+- * Unzip a .zip or .tar.gz VS Code archive
++ * Unzip a .zip or .tar.gz VSCodium archive
+  */
+@@ -104,3 +104,3 @@ export async function downloadAndUnzipVSCodeServer(updateUrl: string, commit: st
+ 	} else {
+-		log(`Downloading VS Code Server ${quality} - ${commit} into ${extractDir}.`);
++		log(`Downloading VSCodium Server ${quality} - ${commit} into ${extractDir}.`);
+ 		try {
+@@ -113,3 +113,3 @@ export async function downloadAndUnzipVSCodeServer(updateUrl: string, commit: st
+ 		} catch (err) {
+-			throw Error(`Failed to download and unzip VS Code ${quality} - ${commit}`);
++			throw Error(`Failed to download and unzip VSCodium ${quality} - ${commit}`);
+ 		}
+diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
+index 1f63c26..8551ddc 100644
+--- a/src/vs/code/electron-main/app.ts
++++ b/src/vs/code/electron-main/app.ts
+@@ -500,3 +500,3 @@ export class CodeApplication extends Disposable {
+ 	async startup(): Promise<void> {
+-		this.logService.debug('Starting VS Code');
++		this.logService.debug('Starting VSCodium');
+ 		this.logService.debug(`from: ${this.environmentMainService.appRoot}`);
+diff --git a/src/vs/platform/contextkey/common/contextkeys.ts b/src/vs/platform/contextkey/common/contextkeys.ts
+index 296245b..cf03674 100644
+--- a/src/vs/platform/contextkey/common/contextkeys.ts
++++ b/src/vs/platform/contextkey/common/contextkeys.ts
+@@ -19,3 +19,3 @@ export const IsMobileContext = new RawContextKey<boolean>('isMobile', isMobile,
+ export const IsDevelopmentContext = new RawContextKey<boolean>('isDevelopment', false, true);
+-export const ProductQualityContext = new RawContextKey<string>('productQualityType', '', localize('productQualityType', "Quality type of VS Code"));
++export const ProductQualityContext = new RawContextKey<string>('productQualityType', '', localize('productQualityType', "Quality type of VSCodium"));
+ 
+diff --git a/src/vs/platform/extensionManagement/node/extensionManagementService.ts b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
+index 1883f94..7a201f8 100644
+--- a/src/vs/platform/extensionManagement/node/extensionManagementService.ts
++++ b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
+@@ -151,3 +151,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ 			if (manifest.engines && manifest.engines.vscode && !isEngineValid(manifest.engines.vscode, this.productService.version, this.productService.date)) {
+-				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VS Code '{1}'.", getGalleryExtensionId(manifest.publisher, manifest.name), this.productService.version));
++				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VSCodium '{1}'.", getGalleryExtensionId(manifest.publisher, manifest.name), this.productService.version));
+ 			}
+@@ -213,3 +213,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ 		} catch (e) {
+-			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start VS Code before trying again.", toErrorMessage(e)));
++			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start VSCodium before trying again.", toErrorMessage(e)));
+ 		}
+@@ -921,3 +921,3 @@ class InstallVSIXTask extends InstallExtensionTask {
+ 				} catch (e) {
+-					throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
++					throw new Error(nls.localize('restartCode', "Please restart VSCodium before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
+ 				}
+@@ -934,3 +934,3 @@ class InstallVSIXTask extends InstallExtensionTask {
+ 				} catch (e) {
+-					throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
++					throw new Error(nls.localize('restartCode', "Please restart VSCodium before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
+ 				}
+diff --git a/src/vs/platform/externalTerminal/node/externalTerminalService.ts b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
+index 9b0b2ba..6467756 100644
+--- a/src/vs/platform/externalTerminal/node/externalTerminalService.ts
++++ b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
+@@ -16,3 +16,3 @@ import { ITerminalEnvironment } from 'vs/platform/terminal/common/terminal';
+ 
+-const TERMINAL_TITLE = nls.localize('console.title', "VS Code Console");
++const TERMINAL_TITLE = nls.localize('console.title', "VSCodium Console");
+ 
+diff --git a/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts b/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
+index 98bea9d..f807bc9 100644
+--- a/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
++++ b/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
+@@ -441,3 +441,3 @@ const terminalPlatformConfiguration: IConfigurationNode = {
+ 			scope: ConfigurationScope.APPLICATION,
+-			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from VS Code, which may source a login shell to ensure $PATH and other development variables are initialized. This has no effect on Windows."),
++			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from VSCodium, which may source a login shell to ensure $PATH and other development variables are initialized. This has no effect on Windows."),
+ 			type: 'boolean',
+diff --git a/src/vs/platform/update/common/update.config.contribution.ts b/src/vs/platform/update/common/update.config.contribution.ts
+index 4134233..b2f52b2 100644
+--- a/src/vs/platform/update/common/update.config.contribution.ts
++++ b/src/vs/platform/update/common/update.config.contribution.ts
+@@ -47,3 +47,3 @@ configurationRegistry.registerConfiguration({
+ 			title: localize('enableWindowsBackgroundUpdatesTitle', "Enable Background Updates on Windows"),
+-			description: localize('enableWindowsBackgroundUpdates', "Enable to download and install new VS Code versions in the background on Windows."),
++			description: localize('enableWindowsBackgroundUpdates', "Enable to download and install new VSCodium versions in the background on Windows."),
+ 			included: isWindows && !isWeb
+diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
+index 42bb9cd..119cbfd 100644
+--- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
++++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
+@@ -23,3 +23,3 @@ export type UpdateNotAvailableClassification = {
+ 	explicit: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Whether the user has manually checked for updates, or this was an automatic check.' };
+-	comment: 'This is used to understand how often VS Code pings the update server for an update and there\'s none available.';
++	comment: 'This is used to understand how often VSCodium pings the update server for an update and there\'s none available.';
+ };
+diff --git a/src/vs/platform/update/electron-main/updateService.darwin.ts b/src/vs/platform/update/electron-main/updateService.darwin.ts
+index 8794110..f6041e5 100644
+--- a/src/vs/platform/update/electron-main/updateService.darwin.ts
++++ b/src/vs/platform/update/electron-main/updateService.darwin.ts
+@@ -95,4 +95,4 @@ export class DarwinUpdateService extends AbstractUpdateService {
+ 			owner: 'joaomoreno';
+-			version: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The version number of the new VS Code that has been downloaded.' };
+-			comment: 'This is used to know how often VS Code has successfully downloaded the update.';
++			version: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The version number of the new VSCodium that has been downloaded.' };
++			comment: 'This is used to know how often VSCodium has successfully downloaded the update.';
+ 		};
+diff --git a/src/vs/server/node/server.cli.ts b/src/vs/server/node/server.cli.ts
+index 138f6dd..ebb720f 100644
+--- a/src/vs/server/node/server.cli.ts
++++ b/src/vs/server/node/server.cli.ts
+@@ -422,3 +422,3 @@ function asExtensionIdOrVSIX(inputs: string[] | undefined) {
+ function fatal(message: string, err: any): void {
+-	console.error('Unable to connect to VS Code server: ' + message);
++	console.error('Unable to connect to VSCodium server: ' + message);
+ 	console.error(err);
+diff --git a/src/vs/workbench/api/browser/mainThreadInteractiveEditor.ts b/src/vs/workbench/api/browser/mainThreadInteractiveEditor.ts
+index af4720d..45d7bce 100644
+--- a/src/vs/workbench/api/browser/mainThreadInteractiveEditor.ts
++++ b/src/vs/workbench/api/browser/mainThreadInteractiveEditor.ts
+@@ -36,3 +36,3 @@ export class MainThreadInteractiveEditor implements MainThreadInteractiveEditorS
+ 		if (this.productService.quality === 'stable') {
+-			this.logService.trace(`The interactive editor API is not supported in stable VS Code.`);
++			this.logService.trace(`The interactive editor API is not supported in stable VSCodium.`);
+ 			return;
+diff --git a/src/vs/workbench/api/browser/mainThreadInteractiveSession.ts b/src/vs/workbench/api/browser/mainThreadInteractiveSession.ts
+index 2b91c13..f936153 100644
+--- a/src/vs/workbench/api/browser/mainThreadInteractiveSession.ts
++++ b/src/vs/workbench/api/browser/mainThreadInteractiveSession.ts
+@@ -43,3 +43,3 @@ export class MainThreadInteractiveSession extends Disposable implements MainThre
+ 		if (this.productService.quality === 'stable') {
+-			this.logService.trace(`The interactive session API is not supported in stable VS Code.`);
++			this.logService.trace(`The interactive session API is not supported in stable VSCodium.`);
+ 			return;
+diff --git a/src/vs/workbench/api/browser/viewsExtensionPoint.ts b/src/vs/workbench/api/browser/viewsExtensionPoint.ts
+index 5fc7d5d..469bc82 100644
+--- a/src/vs/workbench/api/browser/viewsExtensionPoint.ts
++++ b/src/vs/workbench/api/browser/viewsExtensionPoint.ts
+@@ -49,3 +49,3 @@ const viewsContainerSchema: IJSONSchema = {
+ 		id: {
+-			description: localize({ key: 'vscode.extension.contributes.views.containers.id', comment: ['Contribution refers to those that an extension contributes to VS Code through an extension/contribution point. '] }, "Unique id used to identify the container in which views can be contributed using 'views' contribution point"),
++			description: localize({ key: 'vscode.extension.contributes.views.containers.id', comment: ['Contribution refers to those that an extension contributes to VSCodium through an extension/contribution point. '] }, "Unique id used to identify the container in which views can be contributed using 'views' contribution point"),
+ 			type: 'string',
+diff --git a/src/vs/workbench/api/common/extHostApiCommands.ts b/src/vs/workbench/api/common/extHostApiCommands.ts
+index 68db008..dee0f95 100644
+--- a/src/vs/workbench/api/common/extHostApiCommands.ts
++++ b/src/vs/workbench/api/common/extHostApiCommands.ts
+@@ -409,3 +409,3 @@ const newCommands: ApiCommand[] = [
+ 			ApiCommandArgument.Uri.with('resource', 'Resource to open'),
+-			ApiCommandArgument.String.with('viewId', 'Custom editor view id or \'default\' to use VS Code\'s default editor'),
++			ApiCommandArgument.String.with('viewId', 'Custom editor view id or \'default\' to use VSCodium\'s default editor'),
+ 			new ApiCommandArgument<vscode.ViewColumn | typeConverters.TextEditorOpenOptions | undefined, [vscode.ViewColumn?, ITextEditorOptions?] | undefined>('columnOrOptions', 'Either the column in which to open or editor options, see vscode.TextDocumentShowOptions',
+diff --git a/src/vs/workbench/api/common/extHostCommands.ts b/src/vs/workbench/api/common/extHostCommands.ts
+index c2053ac..7995087 100644
+--- a/src/vs/workbench/api/common/extHostCommands.ts
++++ b/src/vs/workbench/api/common/extHostCommands.ts
+@@ -447,3 +447,3 @@ export class ApiCommandArgument<V, O = V> {
+ 	static readonly TypeHierarchyItem = new ApiCommandArgument('item', 'A type hierarchy item', v => v instanceof extHostTypes.TypeHierarchyItem, extHostTypeConverter.TypeHierarchyItem.from);
+-	static readonly TestItem = new ApiCommandArgument('testItem', 'A VS Code TestItem', v => v instanceof TestItemImpl, extHostTypeConverter.TestItem.from);
++	static readonly TestItem = new ApiCommandArgument('testItem', 'A VSCodium TestItem', v => v instanceof TestItemImpl, extHostTypeConverter.TestItem.from);
+ 
+diff --git a/src/vs/workbench/api/test/browser/extHostNotebook.test.ts b/src/vs/workbench/api/test/browser/extHostNotebook.test.ts
+index 0252b10..6d81208 100644
+--- a/src/vs/workbench/api/test/browser/extHostNotebook.test.ts
++++ b/src/vs/workbench/api/test/browser/extHostNotebook.test.ts
+@@ -353,3 +353,3 @@ suite('NotebookCell#Document', function () {
+ 
+-	test('Opening a notebook results in VS Code firing the event onDidChangeActiveNotebookEditor twice #118470', function () {
++	test('Opening a notebook results in VSCodium firing the event onDidChangeActiveNotebookEditor twice #118470', function () {
+ 		let count = 0;
+diff --git a/src/vs/workbench/browser/parts/editor/accessibilityStatus.ts b/src/vs/workbench/browser/parts/editor/accessibilityStatus.ts
+index 1e2ee57..9812cf4 100644
+--- a/src/vs/workbench/browser/parts/editor/accessibilityStatus.ts
++++ b/src/vs/workbench/browser/parts/editor/accessibilityStatus.ts
+@@ -45,3 +45,3 @@ export class AccessibilityStatus extends Disposable implements IWorkbenchContrib
+ 				Severity.Info,
+-				localize('screenReaderDetectedExplanation.question', "Are you using a screen reader to operate VS Code?"),
++				localize('screenReaderDetectedExplanation.question', "Are you using a screen reader to operate VSCodium?"),
+ 				[{
+diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
+index 122cdf3..c9b6b9e 100644
+--- a/src/vs/workbench/browser/workbench.contribution.ts
++++ b/src/vs/workbench/browser/workbench.contribution.ts
+@@ -505,3 +505,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+ 		localize('profileName', "`${profileName}`: name of the profile in which the workspace is opened (e.g. Data Science (Profile)). Ignored if default profile is used."),
+-		localize('appName', "`${appName}`: e.g. VS Code."),
++		localize('appName', "`${appName}`: e.g. VSCodium."),
+ 		localize('remoteName', "`${remoteName}`: e.g. SSH"),
+diff --git a/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts b/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts
+index 1084c37..0b526b1 100644
+--- a/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts
++++ b/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts
+@@ -153,3 +153,3 @@ export class AdapterManager extends Disposable implements IAdapterManager {
+ 						type: 'number',
+-						description: nls.localize('debugServer', "For debug extension development only: if a port is specified VS Code tries to connect to a debug adapter running in server mode"),
++						description: nls.localize('debugServer', "For debug extension development only: if a port is specified VSCodium tries to connect to a debug adapter running in server mode"),
+ 						default: 4711
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensionEditor.ts b/src/vs/workbench/contrib/extensions/browser/extensionEditor.ts
+index cd670be..2ee052a 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensionEditor.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensionEditor.ts
+@@ -585,3 +585,3 @@ export class ExtensionEditor extends EditorPane {
+ 		if (manifest && manifest.contributes) {
+-			template.navbar.push(ExtensionEditorTab.Contributions, localize('contributions', "Feature Contributions"), localize('contributionstooltip', "Lists contributions to VS Code by this extension"));
++			template.navbar.push(ExtensionEditorTab.Contributions, localize('contributions', "Feature Contributions"), localize('contributionstooltip', "Lists contributions to VSCodium by this extension"));
+ 		}
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
+index fbf7362..c4dc351 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
+@@ -298,3 +298,3 @@ CommandsRegistry.registerCommand({
+ 				description: '(optional) Options for installing the extension. Object with the following properties: ' +
+-					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
++					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, VSCodium installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
+ 				isOptional: true,
+@@ -305,3 +305,3 @@ CommandsRegistry.registerCommand({
+ 							'type': 'boolean',
+-							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
++							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, VSCodium installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
+ 							default: false
+@@ -310,3 +310,3 @@ CommandsRegistry.registerCommand({
+ 							'type': 'boolean',
+-							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, VS Code installs the pre-release version of the extension if available."),
++							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, VSCodium installs the pre-release version of the extension if available."),
+ 							default: false
+@@ -315,3 +315,3 @@ CommandsRegistry.registerCommand({
+ 							'type': 'boolean',
+-							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, VS Code do not sync this extension when Settings Sync is on."),
++							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, VSCodium do not sync this extension when Settings Sync is on."),
+ 							default: false
+@@ -820,3 +820,3 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
+ 							const requireReload = !(extension.local && extensionService.canAddExtension(toExtensionDescription(extension.local)));
+-							const message = requireReload ? localize('InstallVSIXAction.successReload', "Completed installing {0} extension from VSIX. Please reload Visual Studio Code to enable it.", extension.displayName || extension.name)
++							const message = requireReload ? localize('InstallVSIXAction.successReload', "Completed installing {0} extension from VSIX. Please reload VSCodium to enable it.", extension.displayName || extension.name)
+ 								: localize('InstallVSIXAction.success', "Completed installing {0} extension from VSIX.", extension.displayName || extension.name);
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
+index f996bfa..1a96837 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
+@@ -104,3 +104,3 @@ export class PromptExtensionInstallFailureAction extends Action {
+ 		if (this.error.name === ExtensionManagementErrorCode.Unsupported) {
+-			const productName = isWeb ? localize('VS Code for Web', "{0} for the Web", this.productService.nameLong) : this.productService.nameLong;
++			const productName = isWeb ? localize('VSCodium for Web', "{0} for the Web", this.productService.nameLong) : this.productService.nameLong;
+ 			const message = localize('cannot be installed', "The '{0}' extension is not available in {1}. Click 'More Information' to learn more.", this.extension.displayName || this.extension.identifier.id, productName);
+@@ -380,3 +380,3 @@ export abstract class AbstractInstallAction extends ExtensionAction {
+ 			} else if (this.extension.deprecationInfo.settings) {
+-				detail = localize('deprecated with alternate settings message', "This extension is deprecated as this functionality is now built-in to VS Code.");
++				detail = localize('deprecated with alternate settings message', "This extension is deprecated as this functionality is now built-in to VSCodium.");
+ 
+@@ -600,3 +600,3 @@ export class InstallAndSyncAction extends AbstractInstallAction {
+ 			extensionsWorkbenchService, instantiationService, runtimeExtensionService, workbenchThemeService, labelService, dialogService, preferencesService, telemetryService);
+-		this.tooltip = localize({ key: 'install everywhere tooltip', comment: ['Placeholder is the name of the product. Eg: Visual Studio Code or Visual Studio Code - Insiders'] }, "Install this extension in all your synced {0} instances", productService.nameLong);
++		this.tooltip = localize({ key: 'install everywhere tooltip', comment: ['Placeholder is the name of the product. Eg: VSCodium or VSCodium - Insiders'] }, "Install this extension in all your synced {0} instances", productService.nameLong);
+ 		this._register(Event.any(userDataSyncEnablementService.onDidChangeEnablement,
+@@ -873,3 +873,3 @@ export class UninstallAction extends ExtensionAction {
+ 		return this.extensionsWorkbenchService.uninstall(this.extension).then(() => {
+-			alert(localize('uninstallExtensionComplete', "Please reload Visual Studio Code to complete the uninstallation of the extension {0}.", this.extension!.displayName));
++			alert(localize('uninstallExtensionComplete', "Please reload VSCodium to complete the uninstallation of the extension {0}.", this.extension!.displayName));
+ 		});
+@@ -2339,3 +2339,3 @@ export class ExtensionStatusAction extends ExtensionAction {
+ 				const link = `[${localize('settings', "settings")}](${URI.parse(`command:workbench.action.openSettings?${encodeURIComponent(JSON.stringify([this.extension.deprecationInfo.settings.map(setting => `@id:${setting}`).join(' ')]))}`)})`;
+-				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to VS Code. Configure these {0} to use this functionality.", link)) }, true);
++				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to VSCodium. Configure these {0} to use this functionality.", link)) }, true);
+ 			} else {
+@@ -2363,3 +2363,3 @@ export class ExtensionStatusAction extends ExtensionAction {
+ 			if (this.extensionManagementServerService.webExtensionManagementServer) {
+-				const productName = localize('VS Code for Web', "{0} for the Web", this.productService.nameLong);
++				const productName = localize('VSCodium for Web', "{0} for the Web", this.productService.nameLong);
+ 				const message = new MarkdownString(`${localize('not web tooltip', "The '{0}' extension is not available in {1}.", this.extension.displayName || this.extension.identifier.id, productName)} [${localize('learn why', "Learn Why")}](https://aka.ms/vscode-web-extensions-guide)`);
+@@ -2625,3 +2625,3 @@ export class ReinstallAction extends Action {
+ 						const requireReload = !(extension.local && this.extensionService.canAddExtension(toExtensionDescription(extension.local)));
+-						const message = requireReload ? localize('ReinstallAction.successReload', "Please reload Visual Studio Code to complete reinstalling the extension {0}.", extension.identifier.id)
++						const message = requireReload ? localize('ReinstallAction.successReload', "Please reload VSCodium to complete reinstalling the extension {0}.", extension.identifier.id)
+ 							: localize('ReinstallAction.success', "Reinstalling the extension {0} is completed.", extension.identifier.id);
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
+index b510ab0..c2c782e 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
+@@ -343,3 +343,3 @@ export class Extension implements IExtension {
+ 			return Promise.resolve(`# ${this.displayName || this.name}
+-**Notice:** This extension is bundled with Visual Studio Code. It can be disabled but not uninstalled.
++**Notice:** This extension is bundled with VSCodium. It can be disabled but not uninstalled.
+ ## Features
+@@ -376,3 +376,3 @@ ${this.description}
+ 		if (this.type === ExtensionType.System) {
+-			return Promise.resolve('Please check the [VS Code Release Notes](command:update.showCurrentReleaseNotes) for changes to the built-in extensions.');
++			return Promise.resolve('Please check the [VSCodium Release Notes](command:update.showCurrentReleaseNotes) for changes to the built-in extensions.');
+ 		}
+@@ -1105,3 +1105,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
+ 			if (!canRemoveRunningExtension && isSameExtensionRunning) {
+-				return nls.localize('postUninstallTooltip', "Please reload Visual Studio Code to complete the uninstallation of this extension.");
++				return nls.localize('postUninstallTooltip', "Please reload VSCodium to complete the uninstallation of this extension.");
+ 			}
+@@ -1125,3 +1125,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
+ 						if (extension.version !== runningExtension.version || extension.local.targetPlatform !== runningExtension.targetPlatform) {
+-							return nls.localize('postUpdateTooltip', "Please reload Visual Studio Code to enable the updated extension.");
++							return nls.localize('postUpdateTooltip', "Please reload VSCodium to enable the updated extension.");
+ 						}
+@@ -1133,3 +1133,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
+ 								if (runningExtensionServer === this.extensionManagementServerService.remoteExtensionManagementServer && this.extensionManifestPropertiesService.prefersExecuteOnUI(extension.local!.manifest) && extensionInOtherServer.server === this.extensionManagementServerService.localExtensionManagementServer) {
+-									return nls.localize('enable locally', "Please reload Visual Studio Code to enable this extension locally.");
++									return nls.localize('enable locally', "Please reload VSCodium to enable this extension locally.");
+ 								}
+@@ -1138,3 +1138,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
+ 								if (runningExtensionServer === this.extensionManagementServerService.localExtensionManagementServer && this.extensionManifestPropertiesService.prefersExecuteOnWorkspace(extension.local!.manifest) && extensionInOtherServer.server === this.extensionManagementServerService.remoteExtensionManagementServer) {
+-									return nls.localize('enable remote', "Please reload Visual Studio Code to enable this extension in {0}.", this.extensionManagementServerService.remoteExtensionManagementServer?.label);
++									return nls.localize('enable remote', "Please reload VSCodium to enable this extension in {0}.", this.extensionManagementServerService.remoteExtensionManagementServer?.label);
+ 								}
+@@ -1148,3 +1148,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
+ 							if (this.extensionManifestPropertiesService.prefersExecuteOnUI(extension.local!.manifest)) {
+-								return nls.localize('postEnableTooltip', "Please reload Visual Studio Code to enable this extension.");
++								return nls.localize('postEnableTooltip', "Please reload VSCodium to enable this extension.");
+ 							}
+@@ -1154,3 +1154,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
+ 							if (this.extensionManifestPropertiesService.prefersExecuteOnWorkspace(extension.local!.manifest)) {
+-								return nls.localize('postEnableTooltip', "Please reload Visual Studio Code to enable this extension.");
++								return nls.localize('postEnableTooltip', "Please reload VSCodium to enable this extension.");
+ 							}
+@@ -1161,3 +1161,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
+ 					if (isSameExtensionRunning) {
+-						return nls.localize('postDisableTooltip', "Please reload Visual Studio Code to disable this extension.");
++						return nls.localize('postDisableTooltip', "Please reload VSCodium to disable this extension.");
+ 					}
+@@ -1170,3 +1170,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
+ 				if (isEnabled && !this.extensionService.canAddExtension(toExtensionDescription(extension.local))) {
+-					return nls.localize('postEnableTooltip', "Please reload Visual Studio Code to enable this extension.");
++					return nls.localize('postEnableTooltip', "Please reload VSCodium to enable this extension.");
+ 				}
+@@ -1178,3 +1178,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
+ 					if (extensionInOtherServer && extensionInOtherServer.local && this.extensionEnablementService.isEnabled(extensionInOtherServer.local)) {
+-						return nls.localize('postEnableTooltip', "Please reload Visual Studio Code to enable this extension.");
++						return nls.localize('postEnableTooltip', "Please reload VSCodium to enable this extension.");
+ 					}
+diff --git a/src/vs/workbench/contrib/extensions/common/extensionsFileTemplate.ts b/src/vs/workbench/contrib/extensions/common/extensionsFileTemplate.ts
+index 3e8cd71..6142f61 100644
+--- a/src/vs/workbench/contrib/extensions/common/extensionsFileTemplate.ts
++++ b/src/vs/workbench/contrib/extensions/common/extensionsFileTemplate.ts
+@@ -29,3 +29,3 @@ export const ExtensionsConfigurationSchema: IJSONSchema = {
+ 			type: 'array',
+-			description: localize('app.extensions.json.unwantedRecommendations', "List of extensions recommended by VS Code that should not be recommended for users of this workspace. The identifier of an extension is always '${publisher}.${name}'. For example: 'vscode.csharp'."),
++			description: localize('app.extensions.json.unwantedRecommendations', "List of extensions recommended by VSCodium that should not be recommended for users of this workspace. The identifier of an extension is always '${publisher}.${name}'. For example: 'vscode.csharp'."),
+ 			items: {
+@@ -48,3 +48,3 @@ export const ExtensionsConfigurationInitialContent: string = [
+ 	'\t],',
+-	'\t// List of extensions recommended by VS Code that should not be recommended for users of this workspace.',
++	'\t// List of extensions recommended by VSCodium that should not be recommended for users of this workspace.',
+ 	'\t"unwantedRecommendations": [',
+diff --git a/src/vs/workbench/contrib/externalTerminal/electron-sandbox/externalTerminal.contribution.ts b/src/vs/workbench/contrib/externalTerminal/electron-sandbox/externalTerminal.contribution.ts
+index 88a88a3..ece5d80 100644
+--- a/src/vs/workbench/contrib/externalTerminal/electron-sandbox/externalTerminal.contribution.ts
++++ b/src/vs/workbench/contrib/externalTerminal/electron-sandbox/externalTerminal.contribution.ts
+@@ -107,3 +107,3 @@ export class ExternalTerminalContribution implements IWorkbenchContribution {
+ 					enumDescriptions: [
+-						nls.localize('terminal.explorerKind.integrated', "Use VS Code's integrated terminal."),
++						nls.localize('terminal.explorerKind.integrated', "Use VSCodium's integrated terminal."),
+ 						nls.localize('terminal.explorerKind.external', "Use the configured external terminal."),
+diff --git a/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts b/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts
+index 94ea24e..e8afce1 100644
+--- a/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts
++++ b/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts
+@@ -57,3 +57,3 @@ export const externalUriOpenersConfigurationNode: IConfigurationNode = {
+ 						enum: [defaultExternalUriOpenerId],
+-						enumDescriptions: [nls.localize('externalUriOpeners.defaultId', "Open using VS Code's standard opener.")],
++						enumDescriptions: [nls.localize('externalUriOpeners.defaultId', "Open using VSCodium's standard opener.")],
+ 					},
+diff --git a/src/vs/workbench/contrib/interactiveSession/browser/interactiveSessionContributionServiceImpl.ts b/src/vs/workbench/contrib/interactiveSession/browser/interactiveSessionContributionServiceImpl.ts
+index a5a9b6b..e165038 100644
+--- a/src/vs/workbench/contrib/interactiveSession/browser/interactiveSessionContributionServiceImpl.ts
++++ b/src/vs/workbench/contrib/interactiveSession/browser/interactiveSessionContributionServiceImpl.ts
+@@ -72,3 +72,3 @@ export class InteractiveSessionContributionService implements IInteractiveSessio
+ 			if (productService.quality === 'stable') {
+-				logService.trace(`InteractiveSessionContributionService#setHandler: the interactiveSession extension point is not available in stable VS Code.`);
++				logService.trace(`InteractiveSessionContributionService#setHandler: the interactiveSession extension point is not available in stable VSCodium.`);
+ 				return;
+diff --git a/src/vs/workbench/contrib/localization/common/localization.contribution.ts b/src/vs/workbench/contrib/localization/common/localization.contribution.ts
+index 568c39f..7660d3f 100644
+--- a/src/vs/workbench/contrib/localization/common/localization.contribution.ts
++++ b/src/vs/workbench/contrib/localization/common/localization.contribution.ts
+@@ -54,5 +54,5 @@ export class BaseLocalizationWorkbenchContribution extends Disposable implements
+ 										type: 'string',
+-										description: localize('vscode.extension.contributes.localizations.translations.id', "Id of VS Code or Extension for which this translation is contributed to. Id of VS Code is always `vscode` and of extension should be in format `publisherId.extensionName`."),
++										description: localize('vscode.extension.contributes.localizations.translations.id', "Id of VSCodium or Extension for which this translation is contributed to. Id of VSCodium is always `vscode` and of extension should be in format `publisherId.extensionName`."),
+ 										pattern: '^((vscode)|([a-z0-9A-Z][a-z0-9A-Z-]*)\\.([a-z0-9A-Z][a-z0-9A-Z-]*))$',
+-										patternErrorMessage: localize('vscode.extension.contributes.localizations.translations.id.pattern', "Id should be `vscode` or in format `publisherId.extensionName` for translating VS code or an extension respectively.")
++										patternErrorMessage: localize('vscode.extension.contributes.localizations.translations.id.pattern', "Id should be `vscode` or in format `publisherId.extensionName` for translating VSCodium or an extension respectively.")
+ 									},
+diff --git a/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts b/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts
+index fdbef87..0f6a6fa 100644
+--- a/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts
++++ b/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts
+@@ -95,4 +95,4 @@ interface IUnknownLayout {
+ const DEFAULT_CONTENT: string = [
+-	`// ${nls.localize('displayLanguage', 'Defines the keyboard layout used in VS Code in the browser environment.')}`,
+-	`// ${nls.localize('doc', 'Open VS Code and run "Developer: Inspect Key Mappings (JSON)" from Command Palette.')}`,
++	`// ${nls.localize('displayLanguage', 'Defines the keyboard layout used in VSCodium in the browser environment.')}`,
++	`// ${nls.localize('doc', 'Open VSCodium and run "Developer: Inspect Key Mappings (JSON)" from Command Palette.')}`,
+ 	``,
+diff --git a/src/vs/workbench/contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribution.ts b/src/vs/workbench/contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribution.ts
+index 61b0815..c788d66 100644
+--- a/src/vs/workbench/contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribution.ts
++++ b/src/vs/workbench/contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribution.ts
+@@ -512,3 +512,3 @@ export class RemoteTunnelWorkbenchContribution extends Disposable implements IWo
+ 								},
+-								"You can now access this machine anywhere via the secure tunnel [{0}](command:{4}). To connect via a different machine, use the generated [{1}]({2}) link or use the [{6}]({7}) extension in the desktop or web. You can [configure](command:{3}) or [turn off](command:{5}) this access via the VS Code Accounts menu.",
++								"You can now access this machine anywhere via the secure tunnel [{0}](command:{4}). To connect via a different machine, use the generated [{1}]({2}) link or use the [{6}]({7}) extension in the desktop or web. You can [configure](command:{3}) or [turn off](command:{5}) this access via the VSCodium Accounts menu.",
+ 								connectionInfo.tunnelName, connectionInfo.domain, linkToOpenForMarkdown, RemoteTunnelCommandIds.manage, RemoteTunnelCommandIds.configure, RemoteTunnelCommandIds.turnOff, remoteExtension.friendlyName, 'https://code.visualstudio.com/docs/remote/tunnels'
+diff --git a/src/vs/workbench/contrib/search/browser/search.contribution.ts b/src/vs/workbench/contrib/search/browser/search.contribution.ts
+index 4498b08..20e7395 100644
+--- a/src/vs/workbench/contrib/search/browser/search.contribution.ts
++++ b/src/vs/workbench/contrib/search/browser/search.contribution.ts
+@@ -355,3 +355,3 @@ configurationRegistry.registerConfiguration({
+ 			type: 'boolean',
+-			description: nls.localize('search.experimental.notebookSearch', "Controls whether to use the experimental notebook search in the global search. Please reload your VS Code instance for changes to this setting to take effect."),
++			description: nls.localize('search.experimental.notebookSearch', "Controls whether to use the experimental notebook search in the global search. Please reload your VSCodium instance for changes to this setting to take effect."),
+ 			default: typeof product.quality === 'string' && product.quality !== 'stable', // only enable as default in insiders
+diff --git a/src/vs/workbench/contrib/surveys/browser/ces.contribution.ts b/src/vs/workbench/contrib/surveys/browser/ces.contribution.ts
+index 386247a..e791a51 100644
+--- a/src/vs/workbench/contrib/surveys/browser/ces.contribution.ts
++++ b/src/vs/workbench/contrib/surveys/browser/ces.contribution.ts
+@@ -75,3 +75,3 @@ class CESContribution extends Disposable implements IWorkbenchContribution {
+ 
+-		const message = await this.tasExperimentService?.getTreatment<string>('CESSurveyMessage') ?? nls.localize('cesSurveyQuestion', 'Got a moment to help the VS Code team? Please tell us about your experience with VS Code so far.');
++		const message = await this.tasExperimentService?.getTreatment<string>('CESSurveyMessage') ?? nls.localize('cesSurveyQuestion', 'Got a moment to help the VSCodium team? Please tell us about your experience with VSCodium so far.');
+ 		const button = await this.tasExperimentService?.getTreatment<string>('CESSurveyButton') ?? nls.localize('giveFeedback', "Give Feedback");
+diff --git a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
+index b0e9ee2..c24cbff 100644
+--- a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
++++ b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
+@@ -3145,3 +3145,3 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
+ 						if (response.code && response.code === TerminateResponseCode.ProcessNotFound) {
+-							this._notificationService.error(nls.localize('TerminateAction.noProcess', 'The launched process doesn\'t exist anymore. If the task spawned background tasks exiting VS Code might result in orphaned processes.'));
++							this._notificationService.error(nls.localize('TerminateAction.noProcess', 'The launched process doesn\'t exist anymore. If the task spawned background tasks exiting VSCodium might result in orphaned processes.'));
+ 						} else {
+diff --git a/src/vs/workbench/contrib/tasks/common/jsonSchemaCommon.ts b/src/vs/workbench/contrib/tasks/common/jsonSchemaCommon.ts
+index 9cae427..bfb5063 100644
+--- a/src/vs/workbench/contrib/tasks/common/jsonSchemaCommon.ts
++++ b/src/vs/workbench/contrib/tasks/common/jsonSchemaCommon.ts
+@@ -193,3 +193,3 @@ const schema: IJSONSchema = {
+ 					type: 'boolean',
+-					description: nls.localize('JsonSchema.tasks.promptOnClose', 'Whether the user is prompted when VS Code closes with a running task.'),
++					description: nls.localize('JsonSchema.tasks.promptOnClose', 'Whether the user is prompted when VSCodium closes with a running task.'),
+ 					default: false
+@@ -247,3 +247,3 @@ const schema: IJSONSchema = {
+ 					type: 'boolean',
+-					description: nls.localize('JsonSchema.promptOnClose', 'Whether the user is prompted when VS Code closes with a running background task.'),
++					description: nls.localize('JsonSchema.promptOnClose', 'Whether the user is prompted when VSCodium closes with a running background task.'),
+ 					default: false
+diff --git a/src/vs/workbench/contrib/tasks/common/jsonSchema_v2.ts b/src/vs/workbench/contrib/tasks/common/jsonSchema_v2.ts
+index 4d90798..38bd65b 100644
+--- a/src/vs/workbench/contrib/tasks/common/jsonSchema_v2.ts
++++ b/src/vs/workbench/contrib/tasks/common/jsonSchema_v2.ts
+@@ -411,3 +411,3 @@ const taskConfiguration: IJSONSchema = {
+ 			type: 'boolean',
+-			description: nls.localize('JsonSchema.tasks.promptOnClose', 'Whether the user is prompted when VS Code closes with a running task.'),
++			description: nls.localize('JsonSchema.tasks.promptOnClose', 'Whether the user is prompted when VSCodium closes with a running task.'),
+ 			default: false
+diff --git a/src/vs/workbench/contrib/tasks/electron-sandbox/taskService.ts b/src/vs/workbench/contrib/tasks/electron-sandbox/taskService.ts
+index 34fb9cc..965008e 100644
+--- a/src/vs/workbench/contrib/tasks/electron-sandbox/taskService.ts
++++ b/src/vs/workbench/contrib/tasks/electron-sandbox/taskService.ts
+@@ -212,3 +212,3 @@ export class TaskService extends AbstractTaskService {
+ 						return this._dialogService.confirm({
+-							message: nls.localize('TaskSystem.noProcess', 'The launched task doesn\'t exist anymore. If the task spawned background processes exiting VS Code might result in orphaned processes. To avoid this start the last background process with a wait flag.'),
++							message: nls.localize('TaskSystem.noProcess', 'The launched task doesn\'t exist anymore. If the task spawned background processes exiting VSCodium might result in orphaned processes. To avoid this start the last background process with a wait flag.'),
+ 							primaryButton: nls.localize({ key: 'TaskSystem.exitAnyways', comment: ['&& denotes a mnemonic'] }, "&&Exit Anyways"),
+diff --git a/src/vs/workbench/contrib/terminal/browser/media/shellIntegration.fish b/src/vs/workbench/contrib/terminal/browser/media/shellIntegration.fish
+index f863cd2..7c0040b 100644
+--- a/src/vs/workbench/contrib/terminal/browser/media/shellIntegration.fish
++++ b/src/vs/workbench/contrib/terminal/browser/media/shellIntegration.fish
+@@ -57,3 +57,3 @@ end
+ # Helper function
+-function __vsc_esc -d "Emit escape sequences for VS Code shell integration"
++function __vsc_esc -d "Emit escape sequences for VSCodium shell integration"
+ 	builtin printf "\e]633;%s\a" (string join ";" $argv)
+diff --git a/src/vs/workbench/contrib/terminal/browser/terminalView.ts b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
+index 73a3442..22e36f6 100644
+--- a/src/vs/workbench/contrib/terminal/browser/terminalView.ts
++++ b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
+@@ -159,3 +159,3 @@ export class TerminalViewPane extends ViewPane {
+ 					}];
+-					this._notificationService.prompt(Severity.Warning, nls.localize('terminal.monospaceOnly', "The terminal only supports monospace fonts. Be sure to restart VS Code if this is a newly installed font."), choices);
++					this._notificationService.prompt(Severity.Warning, nls.localize('terminal.monospaceOnly', "The terminal only supports monospace fonts. Be sure to restart VSCodium if this is a newly installed font."), choices);
+ 				}
+diff --git a/src/vs/workbench/contrib/themes/browser/themes.contribution.ts b/src/vs/workbench/contrib/themes/browser/themes.contribution.ts
+index 2510f34..f248999 100644
+--- a/src/vs/workbench/contrib/themes/browser/themes.contribution.ts
++++ b/src/vs/workbench/contrib/themes/browser/themes.contribution.ts
+@@ -770,3 +770,3 @@ class DefaultThemeUpdatedNotificationContribution implements IWorkbenchContribut
+ 				Severity.Info,
+-				localize({ key: 'themeUpdatedNotification', comment: ['{0} is the name of the new default theme'] }, "Visual Studio Code now ships with a new default theme '{0}'. If you prefer, you can switch back to the old theme or try one of the many other color themes available.", newTheme.label),
++				localize({ key: 'themeUpdatedNotification', comment: ['{0} is the name of the new default theme'] }, "VSCodium now ships with a new default theme '{0}'. If you prefer, you can switch back to the old theme or try one of the many other color themes available.", newTheme.label),
+ 				choices,
+@@ -798,3 +798,3 @@ class DefaultThemeUpdatedNotificationContribution implements IWorkbenchContribut
+ 				Severity.Info,
+-				localize({ key: 'newThemeNotification', comment: ['{0} is the name of the new default theme'] }, "Visual Studio Code now ships with a new default theme '{0}'. Do you want to give it a try?", theme.label),
++				localize({ key: 'newThemeNotification', comment: ['{0} is the name of the new default theme'] }, "VSCodium now ships with a new default theme '{0}'. Do you want to give it a try?", theme.label),
+ 				choices,
+diff --git a/src/vs/workbench/contrib/update/browser/update.ts b/src/vs/workbench/contrib/update/browser/update.ts
+index 5100099..b697747 100644
+--- a/src/vs/workbench/contrib/update/browser/update.ts
++++ b/src/vs/workbench/contrib/update/browser/update.ts
+@@ -512,4 +512,4 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
+ 							detail: newQuality === 'insider' ?
+-								nls.localize('relaunchDetailInsiders', "Press the reload button to switch to the Insiders version of VS Code.") :
+-								nls.localize('relaunchDetailStable', "Press the reload button to switch to the Stable version of VS Code."),
++								nls.localize('relaunchDetailInsiders', "Press the reload button to switch to the Insiders version of VSCodium.") :
++								nls.localize('relaunchDetailStable', "Press the reload button to switch to the Stable version of VSCodium."),
+ 							primaryButton: nls.localize({ key: 'reload', comment: ['&& denotes a mnemonic'] }, "&&Reload")
+@@ -548,3 +548,3 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
+ 						message: nls.localize('selectSyncService.message', "Choose the settings sync service to use after changing the version"),
+-						detail: nls.localize('selectSyncService.detail', "The Insiders version of VS Code will synchronize your settings, keybindings, extensions, snippets and UI State using separate insiders settings sync service by default."),
++						detail: nls.localize('selectSyncService.detail', "The Insiders version of VSCodium will synchronize your settings, keybindings, extensions, snippets and UI State using separate insiders settings sync service by default."),
+ 						buttons: [
+diff --git a/src/vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider.ts b/src/vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider.ts
+index c13d93e..206e46a 100644
+--- a/src/vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider.ts
++++ b/src/vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider.ts
+@@ -55,3 +55,3 @@ function computeTrustedDomainContent(defaultTrustedDomains: string[], trustedDom
+ 	if (defaultTrustedDomains.length > 0) {
+-		content += `// By default, VS Code trusts "localhost" as well as the following domains:\n`;
++		content += `// By default, VSCodium trusts "localhost" as well as the following domains:\n`;
+ 		defaultTrustedDomains.forEach(d => {
+@@ -60,3 +60,3 @@ function computeTrustedDomainContent(defaultTrustedDomains: string[], trustedDom
+ 	} else {
+-		content += `// By default, VS Code trusts "localhost".\n`;
++		content += `// By default, VSCodium trusts "localhost".\n`;
+ 	}
+diff --git a/src/vs/workbench/contrib/webview/browser/pre/index-no-csp.html b/src/vs/workbench/contrib/webview/browser/pre/index-no-csp.html
+index eceefad..b8ae78a 100644
+--- a/src/vs/workbench/contrib/webview/browser/pre/index-no-csp.html
++++ b/src/vs/workbench/contrib/webview/browser/pre/index-no-csp.html
+@@ -188,3 +188,3 @@
+ 							if (acquired && !${allowMultipleAPIAcquire}) {
+-								throw new Error('An instance of the VS Code API has already been acquired');
++								throw new Error('An instance of the VSCodium API has already been acquired');
+ 							}
+diff --git a/src/vs/workbench/contrib/webview/browser/pre/index.html b/src/vs/workbench/contrib/webview/browser/pre/index.html
+index 8e3d08e..3975d37 100644
+--- a/src/vs/workbench/contrib/webview/browser/pre/index.html
++++ b/src/vs/workbench/contrib/webview/browser/pre/index.html
+@@ -189,3 +189,3 @@
+ 							if (acquired && !${allowMultipleAPIAcquire}) {
+-								throw new Error('An instance of the VS Code API has already been acquired');
++								throw new Error('An instance of the VSCodium API has already been acquired');
+ 							}
+diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
+index 5b4255e..f52e6bf 100644
+--- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
++++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
+@@ -306,3 +306,3 @@ configurationRegistry.registerConfiguration({
+ 				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.none' }, "Start without an editor."),
+-				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with VS Code and extensions."),
++				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with VSCodium and extensions."),
+ 				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.readme' }, "Open the README when opening a folder that contains one, fallback to 'welcomePage' otherwise. Note: This is only observed as a global configuration, it will be ignored if set in a workspace or folder configuration."),
+diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStartedExtensionPoint.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStartedExtensionPoint.ts
+index 9141402..b1aa321 100644
+--- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStartedExtensionPoint.ts
++++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStartedExtensionPoint.ts
+@@ -161,3 +161,3 @@ export const walkthroughsExtensionPoint = ExtensionsRegistry.registerExtensionPo
+ 											label: 'onCommand',
+-											description: localize('walkthroughs.steps.completionEvents.onCommand', 'Check off step when a given command is executed anywhere in VS Code.'),
++											description: localize('walkthroughs.steps.completionEvents.onCommand', 'Check off step when a given command is executed anywhere in VSCodium.'),
+ 											body: 'onCommand:${1:commandId}'
+diff --git a/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts b/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts
+index e3fe20c..b879dca 100644
+--- a/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts
++++ b/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts
+@@ -13,3 +13,3 @@ export default function content(accessor: ServicesAccessor) {
+ ## Interactive Editor Playground
+-The core editor in VS Code is packed with features.  This page highlights a number of them and lets you interactively try them out through the use of a number of embedded editors.  For full details on the editor features for VS Code and more head over to our [documentation](command:workbench.action.openDocumentationUrl).
++The core editor in VSCodium is packed with features.  This page highlights a number of them and lets you interactively try them out through the use of a number of embedded editors.  For full details on the editor features for VSCodium and more head over to our [documentation](command:workbench.action.openDocumentationUrl).
+ 
+@@ -46,3 +46,3 @@ That is the tip of the iceberg for multi-cursor editing. Have a look at the sele
+ 
+-Visual Studio Code comes with the powerful IntelliSense for JavaScript and TypeScript pre-installed. In the below example, position the text cursor right after the dot and press kb(editor.action.triggerSuggest) to invoke IntelliSense.  Notice how the suggestions come from the Canvas API.
++VSCodium comes with the powerful IntelliSense for JavaScript and TypeScript pre-installed. In the below example, position the text cursor right after the dot and press kb(editor.action.triggerSuggest) to invoke IntelliSense.  Notice how the suggestions come from the Canvas API.
+ 
+@@ -97,3 +97,3 @@ function Book(title, author) {
+ 
+-> **JSDoc Tip:** VS Code's IntelliSense uses JSDoc comments to provide richer suggestions. The types and documentation from JSDoc comments show up when you hover over a reference to |Book| or in IntelliSense when you create a new instance of |Book|.
++> **JSDoc Tip:** VSCodium's IntelliSense uses JSDoc comments to provide richer suggestions. The types and documentation from JSDoc comments show up when you hover over a reference to |Book| or in IntelliSense when you create a new instance of |Book|.
+ 
+@@ -183,3 +183,3 @@ easy = 42;
+ ## Thanks!
+-Well if you have got this far then you will have touched on some of the editing features in Visual Studio Code.  But don't stop now :)  We have lots of additional [documentation](https://code.visualstudio.com/docs), [introductory videos](https://code.visualstudio.com/docs/getstarted/introvideos) and [tips and tricks](https://go.microsoft.com/fwlink/?linkid=852118) for the product that will help you learn how to use it.  And while you are here, here are a few additional things you can try:
++Well if you have got this far then you will have touched on some of the editing features in VSCodium.  But don't stop now :)  We have lots of additional [documentation](https://code.visualstudio.com/docs), [introductory videos](https://code.visualstudio.com/docs/getstarted/introvideos) and [tips and tricks](https://go.microsoft.com/fwlink/?linkid=852118) for the product that will help you learn how to use it.  And while you are here, here are a few additional things you can try:
+ - Open the Integrated Terminal by pressing kb(workbench.action.terminal.toggleTerminal), then see what's possible by [reviewing the terminal documentation](https://code.visualstudio.com/docs/editor/integrated-terminal)
+diff --git a/src/vs/workbench/contrib/workspace/browser/workspace.contribution.ts b/src/vs/workbench/contrib/workspace/browser/workspace.contribution.ts
+index 9709a33..804347f 100644
+--- a/src/vs/workbench/contrib/workspace/browser/workspace.contribution.ts
++++ b/src/vs/workbench/contrib/workspace/browser/workspace.contribution.ts
+@@ -698,3 +698,3 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
+ 				default: true,
+-				description: localize('workspace.trust.description', "Controls whether or not Workspace Trust is enabled within VS Code."),
++				description: localize('workspace.trust.description', "Controls whether or not Workspace Trust is enabled within VSCodium."),
+ 				tags: [WORKSPACE_TRUST_SETTING_TAG],
+@@ -744,3 +744,3 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
+ 				default: true,
+-				markdownDescription: localize('workspace.trust.emptyWindow.description', "Controls whether or not the empty window is trusted by default within VS Code. When used with `#{0}#`, you can enable the full functionality of VS Code without prompting in an empty window.", WORKSPACE_TRUST_UNTRUSTED_FILES),
++				markdownDescription: localize('workspace.trust.emptyWindow.description', "Controls whether or not the empty window is trusted by default within VSCodium. When used with `#{0}#`, you can enable the full functionality of VSCodium without prompting in an empty window.", WORKSPACE_TRUST_UNTRUSTED_FILES),
+ 				tags: [WORKSPACE_TRUST_SETTING_TAG],
+diff --git a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
+index f590419..5562d1b 100644
+--- a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
++++ b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
+@@ -457,3 +457,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
+ 
+-		const productName = localize('VS Code for Web', "{0} for the Web", this.productService.nameLong);
++		const productName = localize('VSCodium for Web', "{0} for the Web", this.productService.nameLong);
+ 		const virtualWorkspaceSupport = this.extensionManifestPropertiesService.getExtensionVirtualWorkspaceSupportType(manifest);
+diff --git a/src/vs/workbench/services/extensions/browser/extensionUrlHandler.ts b/src/vs/workbench/services/extensions/browser/extensionUrlHandler.ts
+index 1fb7ee8..94dab97 100644
+--- a/src/vs/workbench/services/extensions/browser/extensionUrlHandler.ts
++++ b/src/vs/workbench/services/extensions/browser/extensionUrlHandler.ts
+@@ -85,3 +85,3 @@ type ExtensionUrlHandlerClassification = {
+ 	readonly extensionId: { classification: 'PublicNonPersonalData'; purpose: 'FeatureInsight'; comment: 'The ID of the extension that should handle the URI' };
+-	comment: 'This is used to understand the drop funnel of extension URI handling by the OS & VS Code.';
++	comment: 'This is used to understand the drop funnel of extension URI handling by the OS & VSCodium.';
+ };
+diff --git a/src/vs/workbench/services/extensions/common/extensionsRegistry.ts b/src/vs/workbench/services/extensions/common/extensionsRegistry.ts
+index 0df7ff1..3c6ce7b 100644
+--- a/src/vs/workbench/services/extensions/common/extensionsRegistry.ts
++++ b/src/vs/workbench/services/extensions/common/extensionsRegistry.ts
+@@ -171,3 +171,3 @@ export const schema: IJSONSchema = {
+ 					type: 'string',
+-					description: nls.localize('vscode.extension.engines.vscode', 'For VS Code extensions, specifies the VS Code version that the extension is compatible with. Cannot be *. For example: ^0.10.5 indicates compatibility with a minimum VS Code version of 0.10.5.'),
++					description: nls.localize('vscode.extension.engines.vscode', 'For VSCodium extensions, specifies the VSCodium version that the extension is compatible with. Cannot be *. For example: ^0.10.5 indicates compatibility with a minimum VSCodium version of 0.10.5.'),
+ 					default: '^1.22.0',
+@@ -177,3 +177,3 @@ export const schema: IJSONSchema = {
+ 		publisher: {
+-			description: nls.localize('vscode.extension.publisher', 'The publisher of the VS Code extension.'),
++			description: nls.localize('vscode.extension.publisher', 'The publisher of the VSCodium extension.'),
+ 			type: 'string'
+@@ -181,3 +181,3 @@ export const schema: IJSONSchema = {
+ 		displayName: {
+-			description: nls.localize('vscode.extension.displayName', 'The display name for the extension used in the VS Code gallery.'),
++			description: nls.localize('vscode.extension.displayName', 'The display name for the extension used in the VSCodium gallery.'),
+ 			type: 'string'
+@@ -185,3 +185,3 @@ export const schema: IJSONSchema = {
+ 		categories: {
+-			description: nls.localize('vscode.extension.categories', 'The categories used by the VS Code gallery to categorize the extension.'),
++			description: nls.localize('vscode.extension.categories', 'The categories used by the VSCodium gallery to categorize the extension.'),
+ 			type: 'array',
+@@ -202,6 +202,6 @@ export const schema: IJSONSchema = {
+ 			type: 'object',
+-			description: nls.localize('vscode.extension.galleryBanner', 'Banner used in the VS Code marketplace.'),
++			description: nls.localize('vscode.extension.galleryBanner', 'Banner used in the VSCodium marketplace.'),
+ 			properties: {
+ 				color: {
+-					description: nls.localize('vscode.extension.galleryBanner.color', 'The banner color on the VS Code marketplace page header.'),
++					description: nls.localize('vscode.extension.galleryBanner.color', 'The banner color on the VSCodium marketplace page header.'),
+ 					type: 'string'
+@@ -216,3 +216,3 @@ export const schema: IJSONSchema = {
+ 		contributes: {
+-			description: nls.localize('vscode.extension.contributes', 'All contributions of the VS Code extension represented by this package.'),
++			description: nls.localize('vscode.extension.contributes', 'All contributions of the VSCodium extension represented by this package.'),
+ 			type: 'object',
+@@ -250,3 +250,3 @@ export const schema: IJSONSchema = {
+ 		activationEvents: {
+-			description: nls.localize('vscode.extension.activationEvents', 'Activation events for the VS Code extension.'),
++			description: nls.localize('vscode.extension.activationEvents', 'Activation events for the VSCodium extension.'),
+ 			type: 'array',
+@@ -377,3 +377,3 @@ export const schema: IJSONSchema = {
+ 						label: '*',
+-						description: nls.localize('vscode.extension.activationEvents.star', 'An activation event emitted on VS Code startup. To ensure a great end user experience, please use this activation event in your extension only when no other activation events combination works in your use-case.'),
++						description: nls.localize('vscode.extension.activationEvents.star', 'An activation event emitted on VSCodium startup. To ensure a great end user experience, please use this activation event in your extension only when no other activation events combination works in your use-case.'),
+ 						body: '*'
+@@ -549,3 +549,3 @@ export const schema: IJSONSchema = {
+ 				'vscode:prepublish': {
+-					description: nls.localize('vscode.extension.scripts.prepublish', 'Script executed before the package is published as a VS Code extension.'),
++					description: nls.localize('vscode.extension.scripts.prepublish', 'Script executed before the package is published as a VSCodium extension.'),
+ 					type: 'string'
+@@ -553,3 +553,3 @@ export const schema: IJSONSchema = {
+ 				'vscode:uninstall': {
+-					description: nls.localize('vscode.extension.scripts.uninstall', 'Uninstall hook for VS Code extension. Script that gets executed when the extension is completely uninstalled from VS Code which is when VS Code is restarted (shutdown and start) after the extension is uninstalled. Only Node scripts are supported.'),
++					description: nls.localize('vscode.extension.scripts.uninstall', 'Uninstall hook for VSCodium extension. Script that gets executed when the extension is completely uninstalled from VSCodium which is when VSCodium is restarted (shutdown and start) after the extension is uninstalled. Only Node scripts are supported.'),
+ 					type: 'string'
+diff --git a/src/vs/workbench/services/extensions/electron-sandbox/nativeExtensionService.ts b/src/vs/workbench/services/extensions/electron-sandbox/nativeExtensionService.ts
+index f93db1e..3f048de 100644
+--- a/src/vs/workbench/services/extensions/electron-sandbox/nativeExtensionService.ts
++++ b/src/vs/workbench/services/extensions/electron-sandbox/nativeExtensionService.ts
+@@ -170,3 +170,3 @@ export class NativeExtensionService extends AbstractExtensionService implements
+ 					[{
+-						label: nls.localize('relaunch', "Relaunch VS Code"),
++						label: nls.localize('relaunch', "Relaunch VSCodium"),
+ 						run: () => {
+diff --git a/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts b/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
+index 44ca40c..c21acfd 100644
+--- a/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
++++ b/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
+@@ -127,3 +127,3 @@ export class UserDataProfileManagementService extends Disposable implements IUse
+ 			const { confirmed } = await this.dialogService.confirm({
+-				message: reloadMessage ?? localize('reload message', "Switching a profile requires reloading VS Code."),
++				message: reloadMessage ?? localize('reload message', "Switching a profile requires reloading VSCodium."),
+ 				primaryButton: localize('reload button', "&&Reload"),

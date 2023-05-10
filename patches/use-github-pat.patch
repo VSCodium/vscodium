@@ -1,5 +1,5 @@
 diff --git a/extensions/github-authentication/src/githubServer.ts b/extensions/github-authentication/src/githubServer.ts
-index dc7278f..a1adcf7 100644
+index 3662719..5bf55e0 100644
 --- a/extensions/github-authentication/src/githubServer.ts
 +++ b/extensions/github-authentication/src/githubServer.ts
 @@ -6,4 +6,2 @@
@@ -7,7 +7,7 @@ index dc7278f..a1adcf7 100644
 -import * as path from 'path';
 -import { PromiseAdapter, promiseFromEvent } from './common/utils';
  import { ExperimentationTelemetry } from './common/experimentationService';
-@@ -11,14 +9,7 @@ import { AuthProviderType, UriEventHandler } from './github';
+@@ -11,10 +9,5 @@ import { AuthProviderType, UriEventHandler } from './github';
  import { Log } from './common/logger';
 -import { isSupportedClient, isSupportedTarget } from './common/env';
 -import { LoopbackAuthServer } from './node/authServer';
@@ -17,13 +17,19 @@ index dc7278f..a1adcf7 100644
  
 -const CLIENT_ID = '01ab8ac9400c4e429b23';
 -const GITHUB_TOKEN_URL = 'https://vscode.dev/codeExchangeProxyEndpoints/github/login/oauth/access_token';
- const NETWORK_ERROR = 'network error';
+-
+ // This is the error message that we throw if the login was cancelled for any reason. Extensions
+@@ -23,3 +16,2 @@ const CANCELLATION_ERROR = 'Cancelled';
+ // These error messages are internal and should not be shown to the user in any way.
+-const TIMED_OUT_ERROR = 'Timed out';
+ const USER_CANCELLATION_ERROR = 'User Cancelled';
+@@ -27,5 +19,2 @@ const NETWORK_ERROR = 'network error';
  
 -const REDIRECT_URL_STABLE = 'https://vscode.dev/redirect';
 -const REDIRECT_URL_INSIDERS = 'https://insiders.vscode.dev/redirect';
 -
  export interface IGitHubServer {
-@@ -30,9 +21,2 @@ export interface IGitHubServer {
+@@ -37,9 +26,2 @@ export interface IGitHubServer {
  
 -interface IGitHubDeviceCodeResponse {
 -	device_code: string;
@@ -33,7 +39,7 @@ index dc7278f..a1adcf7 100644
 -}
 -
  async function getScopes(token: string, serverUri: vscode.Uri, logger: Log): Promise<string[]> {
-@@ -63,8 +47,4 @@ export class GitHubServer implements IGitHubServer {
+@@ -70,8 +52,4 @@ export class GitHubServer implements IGitHubServer {
  
 -	private readonly _pendingNonces = new Map<string, string[]>();
 -	private readonly _codeExchangePromises = new Map<string, { promise: Promise<string>; cancel: vscode.EventEmitter<void> }>();
@@ -42,13 +48,13 @@ index dc7278f..a1adcf7 100644
 -	private _redirectEndpoint: string | undefined;
 -
  	constructor(
-@@ -72,3 +52,5 @@ export class GitHubServer implements IGitHubServer {
+@@ -79,3 +57,5 @@ export class GitHubServer implements IGitHubServer {
  		private readonly _telemetryReporter: ExperimentationTelemetry,
 +		// @ts-ignore
  		private readonly _uriHandler: UriEventHandler,
 +		// @ts-ignore
  		private readonly _extensionKind: vscode.ExtensionKind,
-@@ -87,26 +69,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -94,26 +74,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async getRedirectEndpoint(): Promise<string> {
 -		if (this._redirectEndpoint) {
@@ -75,27 +81,27 @@ index dc7278f..a1adcf7 100644
 -	}
 -
  	// TODO@joaomoreno TODO@TylerLeonhardt
-@@ -122,71 +80,8 @@ export class GitHubServer implements IGitHubServer {
+@@ -129,68 +85,7 @@ export class GitHubServer implements IGitHubServer {
  		let userCancelled: boolean | undefined;
 -		const yes = vscode.l10n.t('Yes');
 -		const no = vscode.l10n.t('No');
--		const promptToContinue = async () => {
+-		const promptToContinue = async (mode: string) => {
 -			if (userCancelled === undefined) {
 -				// We haven't had a failure yet so wait to prompt
 -				return;
 -			}
 -			const message = userCancelled
--				? vscode.l10n.t('Having trouble logging in? Would you like to try a different way?')
--				: vscode.l10n.t('You have not yet finished authorizing this extension to use GitHub. Would you like to keep trying?');
+-				? vscode.l10n.t('Having trouble logging in? Would you like to try a different way? ({0})', mode)
+-				: vscode.l10n.t('You have not yet finished authorizing this extension to use GitHub. Would you like to try a different way? ({0})', mode);
 -			const result = await vscode.window.showWarningMessage(message, yes, no);
 -			if (result !== yes) {
--				throw new Error('Cancelled');
+-				throw new Error(CANCELLATION_ERROR);
 -			}
 -		};
 -
 -		const nonce: string = crypto.getRandomValues(new Uint32Array(2)).reduce((prev, curr) => prev += curr.toString(16), '');
 -		const callbackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.github-authentication/did-authenticate?nonce=${encodeURIComponent(nonce)}`));
- 
+-
 -		const supportedClient = isSupportedClient(callbackUri);
 -		const supportedTarget = isSupportedTarget(this._type, this._ghesUri);
 -		if (supportedClient && supportedTarget) {
@@ -103,7 +109,7 @@ index dc7278f..a1adcf7 100644
 -				return await this.doLoginWithoutLocalServer(scopes, nonce, callbackUri);
 -			} catch (e) {
 -				this._logger.error(e);
--				userCancelled = e.message ?? e === 'User Cancelled';
+-				userCancelled = e.message ?? e === USER_CANCELLATION_ERROR;
 -			}
 -		}
 -
@@ -117,42 +123,38 @@ index dc7278f..a1adcf7 100644
 -			supportedTarget
 -		) {
 -			try {
--				await promptToContinue();
+-				await promptToContinue(vscode.l10n.t('local server'));
 -				return await this.doLoginWithLocalServer(scopes);
 -			} catch (e) {
--				this._logger.error(e);
--				userCancelled = e.message ?? e === 'User Cancelled';
+-				userCancelled = this.processLoginError(e);
 -			}
 -		}
 -
 -		// We only can use the Device Code flow when we have a full node environment because of CORS.
 -		if (typeof navigator === 'undefined') {
 -			try {
--				await promptToContinue();
+-				await promptToContinue(vscode.l10n.t('device code'));
 -				return await this.doLoginDeviceCodeFlow(scopes);
 -			} catch (e) {
--				this._logger.error(e);
--				userCancelled = e.message ?? e === 'User Cancelled';
+-				userCancelled = this.processLoginError(e);
 -			}
 -		}
--
+ 
 -		// In a supported environment, we can't use PAT auth because we use this auth for Settings Sync and it doesn't support PATs.
 -		// With that said, GitHub Enterprise isn't used by Settings Sync so we can use PATs for that.
 -		if (!supportedClient || this._type === AuthProviderType.githubEnterprise) {
 -			try {
--				await promptToContinue();
+-				await promptToContinue(vscode.l10n.t('personal access token'));
 -				return await this.doLoginWithPat(scopes);
 -			} catch (e) {
--				this._logger.error(e);
--				userCancelled = e.message ?? e === 'User Cancelled';
+-				userCancelled = this.processLoginError(e);
 -			}
 +		try {
 +			return await this.doLoginWithPat(scopes);
 +		} catch (e) {
-+			this._logger.error(e);
-+			userCancelled = e.message ?? e === 'User Cancelled';
++			userCancelled = this.processLoginError(e);
  		}
-@@ -196,136 +91,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -200,136 +95,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async doLoginWithoutLocalServer(scopes: string, nonce: string, callbackUri: vscode.Uri): Promise<string> {
 -		this._logger.info(`Trying without local server... (${scopes})`);
@@ -192,8 +194,8 @@ index dc7278f..a1adcf7 100644
 -			try {
 -				return await Promise.race([
 -					codeExchangePromise.promise,
--					new Promise<string>((_, reject) => setTimeout(() => reject('Timed out'), 300_000)), // 5min timeout
--					promiseFromEvent<any, any>(token.onCancellationRequested, (_, __, reject) => { reject('User Cancelled'); }).promise
+-					new Promise<string>((_, reject) => setTimeout(() => reject(TIMED_OUT_ERROR), 300_000)), // 5min timeout
+-					promiseFromEvent<any, any>(token.onCancellationRequested, (_, __, reject) => { reject(USER_CANCELLATION_ERROR); }).promise
 -				]);
 -			} finally {
 -				this._pendingNonces.delete(scopes);
@@ -233,8 +235,8 @@ index dc7278f..a1adcf7 100644
 -				vscode.env.openExternal(vscode.Uri.parse(`http://127.0.0.1:${port}/signin?nonce=${encodeURIComponent(server.nonce)}`));
 -				const { code } = await Promise.race([
 -					server.waitForOAuthResponse(),
--					new Promise<any>((_, reject) => setTimeout(() => reject('Timed out'), 300_000)), // 5min timeout
--					promiseFromEvent<any, any>(token.onCancellationRequested, (_, __, reject) => { reject('User Cancelled'); }).promise
+-					new Promise<any>((_, reject) => setTimeout(() => reject(TIMED_OUT_ERROR), 300_000)), // 5min timeout
+-					promiseFromEvent<any, any>(token.onCancellationRequested, (_, __, reject) => { reject(USER_CANCELLATION_ERROR); }).promise
 -				]);
 -				codeToExchange = code;
 -			} finally {
@@ -277,7 +279,7 @@ index dc7278f..a1adcf7 100644
 -			}, button);
 -
 -		if (modalResult !== button) {
--			throw new Error('User Cancelled');
+-			throw new Error(USER_CANCELLATION_ERROR);
 -		}
 -
 -		await vscode.env.clipboard.writeText(json.user_code);
@@ -289,7 +291,7 @@ index dc7278f..a1adcf7 100644
 -	}
 -
  	private async doLoginWithPat(scopes: string): Promise<string> {
-@@ -369,123 +130,2 @@ export class GitHubServer implements IGitHubServer {
+@@ -373,124 +134,2 @@ export class GitHubServer implements IGitHubServer {
  
 -	private async waitForDeviceCodeAccessToken(
 -		json: IGitHubDeviceCodeResponse,
@@ -316,7 +318,7 @@ index dc7278f..a1adcf7 100644
 -			for (let i = 0; i < attempts; i++) {
 -				await new Promise(resolve => setTimeout(resolve, json.interval * 1000));
 -				if (token.isCancellationRequested) {
--					throw new Error('User Cancelled');
+-					throw new Error(USER_CANCELLATION_ERROR);
 -				}
 -				let accessTokenResult;
 -				try {
@@ -347,7 +349,7 @@ index dc7278f..a1adcf7 100644
 -				return accessTokenJson.access_token;
 -			}
 -
--			throw new Error('Cancelled');
+-			throw new Error(TIMED_OUT_ERROR);
 -		});
 -	}
 -
@@ -412,18 +414,19 @@ index dc7278f..a1adcf7 100644
 -			throw error;
 -		}
 -	}
- 
+-
+ 	private getServerUri(path: string = '') {
 diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-index 8c7e84a..2dd5cab 100644
+index ce04327..e66a7f5 100644
 --- a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
 +++ b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-@@ -309,3 +309,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
+@@ -355,3 +355,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
  
 -		if (providers.length && !menus.length) {
 +		if (!menus.length) {
  			const noAccountsAvailableAction = disposables.add(new Action('noAccountsAvailable', localize('noAccounts', "You are not signed in to any accounts"), undefined, false));
 diff --git a/src/vs/workbench/services/authentication/browser/authenticationService.ts b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-index 68fcc20..93484ee 100644
+index 5285663..08f9e42 100644
 --- a/src/vs/workbench/services/authentication/browser/authenticationService.ts
 +++ b/src/vs/workbench/services/authentication/browser/authenticationService.ts
 @@ -274,12 +274,2 @@ export class AuthenticationService extends Disposable implements IAuthentication

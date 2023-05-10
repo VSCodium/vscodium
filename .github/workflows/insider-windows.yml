@@ -41,7 +41,7 @@ jobs:
       matrix:
         vscode_arch:
           - x64
-          - ia32
+          # - ia32
           - arm64
     outputs:
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
@@ -55,7 +55,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 16.17
 
       - name: Install Yarn
         run: npm install -g yarn
