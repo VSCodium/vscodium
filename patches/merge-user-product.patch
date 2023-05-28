@@ -1,19 +1,13 @@
 diff --git a/src/main.js b/src/main.js
-index d986fee6f6d..f925c91c3f5 100644
+index d986fee..1ad0ef0 100644
 --- a/src/main.js
 +++ b/src/main.js
-@@ -16,6 +16,7 @@ const perf = require('./vs/base/common/performance');
- perf.mark('code/didStartMain');
-
+@@ -18,2 +18,3 @@ perf.mark('code/didStartMain');
  const path = require('path');
 +const { fileURLToPath } = require('url');
  const fs = require('fs');
- const os = require('os');
- const bootstrap = require('./bootstrap');
-@@ -147,6 +148,18 @@ app.once('ready', function () {
- 	}
- });
-
+@@ -149,2 +150,14 @@ app.once('ready', function () {
+ 
 +function resolveUserProduct() {
 +	const userDataPath = getUserDataPath({}, product.nameShort ?? 'code-oss-dev');
 +	const userProductPath = `file:///${userDataPath}/product.json`;
@@ -27,24 +21,16 @@ index d986fee6f6d..f925c91c3f5 100644
 +}
 +
  /**
-  * Main startup routine
-  *
-@@ -158,6 +171,7 @@ function startup(codeCachePath, nlsConfig) {
-
- 	process.env['VSCODE_NLS_CONFIG'] = JSON.stringify(nlsConfig);
+@@ -160,2 +173,3 @@ function startup(codeCachePath, nlsConfig) {
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
 +	resolveUserProduct();
-
- 	// Load main in AMD
- 	perf.mark('code/willLoadMainBundle');
+ 
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 51a55e1..ec5ed67 100644
+index 51a55e1..e2af375 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -27,6 +27,40 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
- 	// Obtain values from product.json and package.json-data
- 	product = globalThis._VSCODE_PRODUCT_JSON as unknown as IProductConfiguration;
-
+@@ -29,2 +29,36 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+ 
 +	const { serviceUrl, searchUrl, itemUrl, controlUrl } = product.extensionsGallery || {};
 +
 +	Object.assign(product, {
@@ -80,5 +66,3 @@ index 51a55e1..ec5ed67 100644
 +	}
 +
  	// Running out of sources
- 	if (env['VSCODE_DEV']) {
- 		Object.assign(product, {
