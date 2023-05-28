@@ -23,7 +23,7 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 for file in ../patches/*.patch; do
   if [ -f "${file}" ]; then
     echo applying patch: "${file}";
-    patch --ignore-whitespace -p1 < "${file}"
+    git apply --ignore-whitespace "${file}"
     if [ $? -ne 0 ]; then
       echo failed to apply patch "${file}" 1>&2
     fi
@@ -34,7 +34,7 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   for file in ../patches/insider/*.patch; do
     if [ -f "${file}" ]; then
       echo applying patch: "${file}";
-      patch --ignore-whitespace -p1 < "${file}"
+      git apply --ignore-whitespace "${file}"
       if [ $? -ne 0 ]; then
         echo failed to apply patch "${file}" 1>&2
       fi
@@ -45,7 +45,7 @@ fi
 for file in ../patches/user/*.patch; do
   if [ -f "${file}" ]; then
     echo applying user patch: "${file}";
-    patch --ignore-whitespace -p1 < "${file}"
+    git apply --ignore-whitespace "${file}"
     if [ $? -ne 0 ]; then
       echo failed to apply patch "${file}" 1>&2
     fi
