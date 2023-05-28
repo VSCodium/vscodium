@@ -1,5 +1,5 @@
 diff --git a/src/main.js b/src/main.js
-index d986fee..88d052e 100644
+index d986fee6f6d..eb2b37a0957 100644
 --- a/src/main.js
 +++ b/src/main.js
 @@ -16,6 +16,7 @@ const perf = require('./vs/base/common/performance');
@@ -18,10 +18,10 @@ index d986fee..88d052e 100644
 +	const userDataPath = getUserDataPath({}, product.nameShort ?? 'code-oss-dev');
 +	const isWindows = (process.platform === 'win32');
 +	const userProductPath = isWindows ? `file:///${userDataPath}/product.json` : `file://${userDataPath}/product.json`;
-+	const productPath = require(fileURLToPath(userProductPath));
 +
 +	try {
 +		// Assign the product configuration to the global scope
++		const productPath = require(fileURLToPath(userProductPath));
 +		global["_VSCODE_USER_PRODUCT_JSON"] = productPath;
 +	} catch (ex) {
 +	}
