@@ -1,13 +1,9 @@
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index 93424ca..133657e 100644
+index d45291e..74d4080 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
-@@ -53,7 +53,7 @@ export class Win32UpdateService extends AbstractUpdateService {
- 
- 	@memoize
+@@ -55,3 +55,3 @@ export class Win32UpdateService extends AbstractUpdateService {
  	get cachePath(): Promise<string> {
--		const result = path.join(tmpdir(), `vscode-update-${this.productService.target}-${process.arch}`);
-+		const result = path.join(tmpdir(), `${this.productService.applicationName}-update-${this.productService.target}-${process.arch}`);
+-		const result = path.join(tmpdir(), `vscode-${this.productService.quality}-${this.productService.target}-${process.arch}`);
++		const result = path.join(tmpdir(), `${this.productService.applicationName}-${this.productService.quality}-${this.productService.target}-${process.arch}`);
  		return pfs.Promises.mkdir(result, { recursive: true }).then(() => result);
- 	}
- 
