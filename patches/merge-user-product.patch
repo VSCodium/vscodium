@@ -1,0 +1,84 @@
+diff --git a/src/main.js b/src/main.js
+index d986fee6f6d..f925c91c3f5 100644
+--- a/src/main.js
++++ b/src/main.js
+@@ -16,6 +16,7 @@ const perf = require('./vs/base/common/performance');
+ perf.mark('code/didStartMain');
+
+ const path = require('path');
++const { fileURLToPath } = require('url');
+ const fs = require('fs');
+ const os = require('os');
+ const bootstrap = require('./bootstrap');
+@@ -147,6 +148,18 @@ app.once('ready', function () {
+ 	}
+ });
+
++function resolveUserProduct() {
++	const userDataPath = getUserDataPath({}, product.nameShort ?? 'code-oss-dev');
++	const userProductPath = `file:///${userDataPath}/product.json`;
++
++	try {
++		// Assign the product configuration to the global scope
++		const productPath = require(fileURLToPath(userProductPath));
++		global["_VSCODE_USER_PRODUCT_JSON"] = productPath;
++	} catch (ex) {
++	}
++}
++
+ /**
+  * Main startup routine
+  *
+@@ -158,6 +171,7 @@ function startup(codeCachePath, nlsConfig) {
+
+ 	process.env['VSCODE_NLS_CONFIG'] = JSON.stringify(nlsConfig);
+ 	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
++	resolveUserProduct();
+
+ 	// Load main in AMD
+ 	perf.mark('code/willLoadMainBundle');
+diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
+index 51a55e1..ec5ed67 100644
+--- a/src/vs/platform/product/common/product.ts
++++ b/src/vs/platform/product/common/product.ts
+@@ -27,6 +27,40 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+ 	// Obtain values from product.json and package.json-data
+ 	product = globalThis._VSCODE_PRODUCT_JSON as unknown as IProductConfiguration;
+
++	const { serviceUrl, searchUrl, itemUrl, controlUrl } = product.extensionsGallery || {};
++
++	Object.assign(product, {
++		extensionsGallery: {
++			serviceUrl: env['VSCODE_GALLERY_SERVICE_URL'] || serviceUrl,
++			searchUrl: env['VSCODE_GALLERY_SEARCH_URL'] || searchUrl,
++			itemUrl: env['VSCODE_GALLERY_ITEM_URL'] || itemUrl,
++			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
++		}
++	});
++
++	// Merge user-customized product.json
++	try {
++		const merge = (...objects: any[]) =>
++			objects.reduce((result, current) => {
++				Object.keys(current).forEach((key) => {
++					if (Array.isArray(result[key]) && Array.isArray(current[key])) {
++						result[key] = current[key];
++					} else if (typeof result[key] === 'object' && typeof current[key] === 'object') {
++						result[key] = merge(result[key], current[key]);
++					} else {
++						result[key] = current[key];
++					}
++				});
++
++				return result;
++			}, {}) as any;
++
++		const userProduct = (globalThis as Record<string, any>)._VSCODE_USER_PRODUCT_JSON || {};
++
++		product = merge(product, userProduct);
++	} catch (ex) {
++	}
++
+ 	// Running out of sources
+ 	if (env['VSCODE_DEV']) {
+ 		Object.assign(product, {
