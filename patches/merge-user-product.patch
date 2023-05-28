@@ -1,5 +1,5 @@
 diff --git a/src/main.js b/src/main.js
-index d986fee6f6d..eb2b37a0957 100644
+index d986fee6f6d..f925c91c3f5 100644
 --- a/src/main.js
 +++ b/src/main.js
 @@ -16,6 +16,7 @@ const perf = require('./vs/base/common/performance');
@@ -10,14 +10,13 @@ index d986fee6f6d..eb2b37a0957 100644
  const fs = require('fs');
  const os = require('os');
  const bootstrap = require('./bootstrap');
-@@ -147,6 +148,19 @@ app.once('ready', function () {
+@@ -147,6 +148,18 @@ app.once('ready', function () {
  	}
  });
 
 +function resolveUserProduct() {
 +	const userDataPath = getUserDataPath({}, product.nameShort ?? 'code-oss-dev');
-+	const isWindows = (process.platform === 'win32');
-+	const userProductPath = `file:///${userDataPath}/product.json`
++	const userProductPath = `file:///${userDataPath}/product.json`;
 +
 +	try {
 +		// Assign the product configuration to the global scope
@@ -30,7 +29,7 @@ index d986fee6f6d..eb2b37a0957 100644
  /**
   * Main startup routine
   *
-@@ -158,6 +172,7 @@ function startup(codeCachePath, nlsConfig) {
+@@ -158,6 +171,7 @@ function startup(codeCachePath, nlsConfig) {
 
  	process.env['VSCODE_NLS_CONFIG'] = JSON.stringify(nlsConfig);
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
