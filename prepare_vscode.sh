@@ -54,6 +54,9 @@ done
 
 set -x
 
+export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+
 if [[ "${OS_NAME}" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile
   yarn postinstall
@@ -82,6 +85,8 @@ elif [[ "${npm_config_arch}" == "armv7l" || "${npm_config_arch}" == "ia32" ]]; t
   # We use the force_process_config option to use the config.gypi from the
   # nodejs process executing npm for 32-bit architectures.
   export npm_config_force_process_config="true"
+
+  echo "${npm_config_arch}"
 
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile
 else
