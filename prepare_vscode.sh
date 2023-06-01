@@ -63,17 +63,19 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 elif [[ "${npm_config_arch}" == "armv7l" || "${npm_config_arch}" == "ia32" ]]; then
   # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
   # gets merged.
-  rm -rf .build/node-gyp
-  mkdir -p .build/node-gyp
-  cd .build/node-gyp
+  if [[ "${npm_config_arch}" == "ia32" ]]; then
+    rm -rf .build/node-gyp
+    mkdir -p .build/node-gyp
+    cd .build/node-gyp
 
-  git clone https://github.com/rzhao271/node-gyp.git .
-  git checkout 102b347da0c92c29f9c67df22e864e70249cf086
-  npm install
+    git clone https://github.com/rzhao271/node-gyp.git .
+    git checkout 102b347da0c92c29f9c67df22e864e70249cf086
+    npm install
 
-  export npm_config_node_gyp=`pwd`
+    export npm_config_node_gyp=`pwd`
 
-  cd ../..
+    cd ../..
+  fi
 
   # node-gyp@9.0.0 shipped with node@16.15.0 starts using config.gypi
   # from the custom headers path if dist-url option was set, instead of
