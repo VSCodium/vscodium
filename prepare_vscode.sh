@@ -60,7 +60,7 @@ export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 if [[ "${OS_NAME}" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile
   yarn postinstall
-elif [[ "${npm_config_arch}" == "armv7l" || "${npm_config_arch}" == "ia32" ]]; then
+elif [[ "${npm_config_arch}" == "arm" || "${npm_config_arch}" == "ia32" ]]; then
   # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
   # gets merged.
   if [[ "${npm_config_arch}" == "ia32" ]]; then
