@@ -75,9 +75,6 @@ elif [[ "${npm_config_arch}" == "arm" || "${npm_config_arch}" == "ia32" ]]; then
     export npm_config_node_gyp=`pwd`
 
     cd ../..
-  else
-    # install arm32 toolchains
-    sudo apt-get install -yq gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf binutils-arm-linux-gnueabihf
   fi
 
   # node-gyp@9.0.0 shipped with node@16.15.0 starts using config.gypi
