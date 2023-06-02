@@ -54,21 +54,33 @@ done
 
 set -x
 
+export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+
 if [[ "${OS_NAME}" == "osx" ]]; then
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
+
   yarn postinstall
-elif [[ "${npm_config_arch}" == "armv7l" || "${npm_config_arch}" == "ia32" ]]; then
-  # node-gyp@9.0.0 shipped with node@16.15.0 starts using config.gypi
-  # from the custom headers path if dist-url option was set, instead of
-  # using the config value from the process. Electron builds with pointer compression
-  # enabled for x64 and arm64, but incorrectly ships a single copy of config.gypi
-  # with v8_enable_pointer_compression option always set for all target architectures.
-  # We use the force_process_config option to use the config.gypi from the
-  # nodejs process executing npm for 32-bit architectures.
-  export npm_config_force_process_config="true"
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
 else
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
+  if [[ "${npm_config_arch}" == "arm" ]]; then
+    export npm_config_arm_version=7
+  elif [[ "${npm_config_arch}" == "ia32" ]]; then
+    # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
+    # gets merged.
+    rm -rf .build/node-gyp
+    mkdir -p .build/node-gyp
+    cd .build/node-gyp
+
+    git clone https://github.com/rzhao271/node-gyp.git .
+    git checkout 102b347da0c92c29f9c67df22e864e70249cf086
+    npm install
+
+    export npm_config_node_gyp=`pwd`
+
+    cd ../..
+  fi
+
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
 fi
 
 setpath() {
