@@ -58,12 +58,15 @@ export ELECTRON_SKIP_BINARY_DOWNLOAD=1
 export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 if [[ "${OS_NAME}" == "osx" ]]; then
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
+
   yarn postinstall
-elif [[ "${npm_config_arch}" == "arm" || "${npm_config_arch}" == "ia32" ]]; then
-  # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
-  # gets merged.
-  if [[ "${npm_config_arch}" == "ia32" ]]; then
+else
+  if [[ "${npm_config_arch}" == "arm" ]]; then
+    export npm_config_arm_version=7
+  elif [[ "${npm_config_arch}" == "ia32" ]]; then
+    # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
+    # gets merged.
     rm -rf .build/node-gyp
     mkdir -p .build/node-gyp
     cd .build/node-gyp
@@ -77,9 +80,7 @@ elif [[ "${npm_config_arch}" == "arm" || "${npm_config_arch}" == "ia32" ]]; then
     cd ../..
   fi
 
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
-else
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
 fi
 
 setpath() {
