@@ -79,7 +79,7 @@ jobs:
         run: ./get_repo.sh
 
       - uses: docker/setup-qemu-action@v2
-        if: matrix.vscode_arch == 'arm64'
+        if: matrix.vscode_arch == 'arm64' || matrix.vscode_arch == 'ppc64le'
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
@@ -132,6 +132,9 @@ jobs:
         - vscode_arch: armhf
           npm_arch: arm
           image: vscodium/vscodium-linux-build-agent:buster-armhf
+        - vscode_arch: ppc64le
+          npm_arch: ppcc64le
+          image: vscodium/vscodium-linux-build-agent:bionic-ppc64le
     container:
       image: ${{ matrix.image }}
       env:

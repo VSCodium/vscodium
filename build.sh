@@ -42,6 +42,8 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     fi
 
     VSCODE_PLATFORM="win32"
+  elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then # linux-ppc64le
+    VSCODE_PLATFORM="linux"
   else # linux
     yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
