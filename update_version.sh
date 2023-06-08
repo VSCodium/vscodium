@@ -21,6 +21,11 @@ if [[ -z "${BUILD_SOURCEVERSION}" ]]; then
   exit
 fi
 
+if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+  echo "Skip ppc64le since only reh is published"
+  exit
+fi
+
 #  {
 #    "url": "https://az764295.vo.msecnd.net/stable/51b0b28134d51361cf996d2f0a1c698247aeabd8/VSCode-darwin-stable.zip",
 #    "name": "1.33.1",
