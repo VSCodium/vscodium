@@ -169,12 +169,18 @@ git add .
 CHANGES=$( git status --porcelain )
 
 if [[ ! -z "${CHANGES}" ]]; then
+  echo "${CHANGES}"
+
   dateAndMonth=$( date "+%D %T" )
+
   git commit -m "CI update: ${dateAndMonth} (Build ${GITHUB_RUN_NUMBER})"
+
   if ! git push origin master --quiet; then
     git pull origin master
     git push origin master --quiet
   fi
+else
+  echo "No changes"
 fi
 
 cd ..
