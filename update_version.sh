@@ -88,22 +88,27 @@ generateJson() {
 }
 
 updateLatestVersion() {
-  echo "Generating ${VERSION_PATH}/latest.json"
+  echo "Updating ${VERSION_PATH}/latest.json"
 
   # do not update the same version
   if [[ -f "versions/${VERSION_PATH}/latest.json" ]]; then
     CURRENT_VERSION=$( jq -r '.name' "versions/${VERSION_PATH}/latest.json" )
+    echo "CURRENT_VERSION: ${CURRENT_VERSION}"
 
     if [[ "${CURRENT_VERSION}" == "${RELEASE_VERSION}" && "${FORCE_UPDATE}" != "true" ]]; then
       return
     fi
   fi
 
+  echo "Generating ${VERSION_PATH}/latest.json"
+
   mkdir -p "versions/${VERSION_PATH}"
 
   generateJson
 
   echo "${JSON_DATA}" > "versions/${VERSION_PATH}/latest.json"
+
+  echo "${JSON_DATA}"
 }
 
 # init versions repo for later commiting + pushing the json file to it
