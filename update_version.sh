@@ -91,8 +91,8 @@ updateLatestVersion() {
   echo "Updating ${VERSION_PATH}/latest.json"
 
   # do not update the same version
-  if [[ -f "versions/${VERSION_PATH}/latest.json" ]]; then
-    CURRENT_VERSION=$( jq -r '.name' "versions/${VERSION_PATH}/latest.json" )
+  if [[ -f "${REPOSITORY_NAME}/${VERSION_PATH}/latest.json" ]]; then
+    CURRENT_VERSION=$( jq -r '.name' "${REPOSITORY_NAME}/${VERSION_PATH}/latest.json" )
     echo "CURRENT_VERSION: ${CURRENT_VERSION}"
 
     if [[ "${CURRENT_VERSION}" == "${RELEASE_VERSION}" && "${FORCE_UPDATE}" != "true" ]]; then
@@ -102,11 +102,11 @@ updateLatestVersion() {
 
   echo "Generating ${VERSION_PATH}/latest.json"
 
-  mkdir -p "versions/${VERSION_PATH}"
+  mkdir -p "${REPOSITORY_NAME}/${VERSION_PATH}"
 
   generateJson
 
-  echo "${JSON_DATA}" > "versions/${VERSION_PATH}/latest.json"
+  echo "${JSON_DATA}" > "${REPOSITORY_NAME}/${VERSION_PATH}/latest.json"
 
   echo "${JSON_DATA}"
 }
@@ -169,12 +169,18 @@ git add .
 CHANGES=$( git status --porcelain )
 
 if [[ ! -z "${CHANGES}" ]]; then
+  echo "Some changes have been found, pushing them"
+
   dateAndMonth=$( date "+%D %T" )
+
   git commit -m "CI update: ${dateAndMonth} (Build ${GITHUB_RUN_NUMBER})"
+
   if ! git push origin master --quiet; then
     git pull origin master
     git push origin master --quiet
   fi
+else
+  echo "No changes"
 fi
 
 cd ..
