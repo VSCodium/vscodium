@@ -344,7 +344,12 @@ if [ "${ASSETS}" != "null" ]; then
   fi
 else
   if [[ "${OS_NAME}" == "linux" ]]; then
-    if [[ "${VSCODE_ARCH}" != "x64" ]]; then
+    if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+      SHOULD_BUILD_DEB="no"
+      SHOULD_BUILD_APPIMAGE="no"
+      SHOULD_BUILD_RPM="no"
+      SHOULD_BUILD_TAR="no"
+    elif [[ "${VSCODE_ARCH}" != "x64" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
     fi
   elif [[ "${OS_NAME}" == "osx" ]]; then
