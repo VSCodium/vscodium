@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -21,10 +21,9 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 { set +x; } 2>/dev/null
 
 for file in ../patches/*.patch; do
-  if [ -f "${file}" ]; then
+  if [[ -f "${file}" ]]; then
     echo applying patch: "${file}";
-    git apply --ignore-whitespace "${file}"
-    if [ $? -ne 0 ]; then
+    if ! git apply --ignore-whitespace "${file}"; then
       echo failed to apply patch "${file}" 1>&2
     fi
   fi
@@ -32,10 +31,9 @@ done
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   for file in ../patches/insider/*.patch; do
-    if [ -f "${file}" ]; then
+    if [[ -f "${file}" ]]; then
       echo applying patch: "${file}";
-      git apply --ignore-whitespace "${file}"
-      if [ $? -ne 0 ]; then
+      if ! git apply --ignore-whitespace "${file}"; then
         echo failed to apply patch "${file}" 1>&2
       fi
     fi
@@ -43,10 +41,9 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
 fi
 
 for file in ../patches/user/*.patch; do
-  if [ -f "${file}" ]; then
+  if [[ -f "${file}" ]]; then
     echo applying user patch: "${file}";
-    git apply --ignore-whitespace "${file}"
-    if [ $? -ne 0 ]; then
+    if ! git apply --ignore-whitespace "${file}"; then
       echo failed to apply patch "${file}" 1>&2
     fi
   fi
