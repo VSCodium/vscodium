@@ -13,7 +13,7 @@ while getopts ":ilp" opt; do
 done
 
 
-URL=`curl -s "https://update.code.visualstudio.com/api/update/win32-x64-archive/${VSCODE_QUALITY}/VERSION" | jq -c '.url' | sed -E 's/.*"([^"]+)".*/\1/'`
+URL=`curl -s "https://update.code.visualstudio.com/api/update/win32-x64-archive/${VSCODE_QUALITY}/0000000000000000000000000000000000000000" | jq -c '.url' | sed -E 's/.*"([^"]+)".*/\1/'`
 # echo "url: ${URL}"
 FILE=`echo "${URL}" | sed -E 's|.*/([^/]+\.zip)$|\1|'`
 # echo "file: ${FILE}"
