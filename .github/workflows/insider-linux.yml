@@ -87,7 +87,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: '16.17'
+          node-version: '16'
 
       - name: Install Yarn
         run: npm install -g yarn
@@ -117,6 +117,7 @@ jobs:
       - dependencies
     runs-on: ubuntu-latest
     env:
+      DISABLE_UPDATE: 'yes'
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
@@ -162,7 +163,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: '16.17'
+          node-version: '16'
 
       - name: Install Yarn
         run: npm install -g yarn

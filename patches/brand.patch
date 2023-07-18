@@ -68,7 +68,7 @@ index 459bd9a..925945a 100644
 +const bumpEngineForImplicitActivationEvents = l10n.t("This activation event can be removed for extensions targeting engine version ^1.75 as VSCodium will generate these automatically from your package.json contribution declarations.");
  const starActivation = l10n.t("Using '*' activation is usually a bad idea as it impacts performance.");
 diff --git a/extensions/git/package.nls.json b/extensions/git/package.nls.json
-index 89bd6b5..cd1e6ac 100644
+index 74386ba..dae5d9a 100644
 --- a/extensions/git/package.nls.json
 +++ b/extensions/git/package.nls.json
 @@ -201,3 +201,3 @@
@@ -259,7 +259,7 @@ index 571d047..ca31e06 100644
 +	"json.tracing.desc": "Traces the communication between VSCodium and the JSON language server.",
  	"json.colorDecorators.enable.desc": "Enables or disables color decorators",
 diff --git a/extensions/markdown-language-features/package.nls.json b/extensions/markdown-language-features/package.nls.json
-index 9f7d5f4..6c4e8f1 100644
+index e39e597..3202c03 100644
 --- a/extensions/markdown-language-features/package.nls.json
 +++ b/extensions/markdown-language-features/package.nls.json
 @@ -21,3 +21,3 @@
@@ -268,7 +268,7 @@ index 9f7d5f4..6c4e8f1 100644
 +	"markdown.trace.server.desc": "Traces the communication between VSCodium and the Markdown language server.",
  	"markdown.server.log.desc": "Controls the logging level of the Markdown language server.",
 diff --git a/extensions/media-preview/package.nls.json b/extensions/media-preview/package.nls.json
-index 27fe241..fb9008f 100644
+index c45e1e2..d8408d8 100644
 --- a/extensions/media-preview/package.nls.json
 +++ b/extensions/media-preview/package.nls.json
 @@ -2,3 +2,3 @@
@@ -286,10 +286,10 @@ index e21a418..dc0698b 100644
 +		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using VSCodium's standard text/binary editor?")}</a>
  	</div>
 diff --git a/extensions/media-preview/src/videoPreview.ts b/extensions/media-preview/src/videoPreview.ts
-index 5897792..b7f1f02 100644
+index efc6be7..e2a186d 100644
 --- a/extensions/media-preview/src/videoPreview.ts
 +++ b/extensions/media-preview/src/videoPreview.ts
-@@ -83,3 +83,3 @@ class VideoPreview extends MediaPreview {
+@@ -86,3 +86,3 @@ class VideoPreview extends MediaPreview {
  		<p>${vscode.l10n.t("An error occurred while loading the video file.")}</p>
 -		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using VS Code's standard text/binary editor?")}</a>
 +		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using VSCodium's standard text/binary editor?")}</a>
@@ -383,7 +383,7 @@ index 984356f..72cc766 100644
 +							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
  					} else {
 diff --git a/extensions/vscode-api-tests/package.json b/extensions/vscode-api-tests/package.json
-index 76a988c..f35ecdd 100644
+index b230a1a..9d61f5d 100644
 --- a/extensions/vscode-api-tests/package.json
 +++ b/extensions/vscode-api-tests/package.json
 @@ -2,3 +2,3 @@
@@ -461,10 +461,10 @@ index fa001b5..13abac2 100644
 +			throw Error(`Failed to download and unzip VSCodium ${quality} - ${commit}`);
  		}
 diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
-index 0951095..05ca0a2 100644
+index b907a06..7bfe096 100644
 --- a/src/vs/code/electron-main/app.ts
 +++ b/src/vs/code/electron-main/app.ts
-@@ -508,3 +508,3 @@ export class CodeApplication extends Disposable {
+@@ -510,3 +510,3 @@ export class CodeApplication extends Disposable {
  	async startup(): Promise<void> {
 -		this.logService.debug('Starting VS Code');
 +		this.logService.debug('Starting VSCodium');
@@ -479,25 +479,20 @@ index 296245b..cf03674 100644
 +export const ProductQualityContext = new RawContextKey<string>('productQualityType', '', localize('productQualityType', "Quality type of VSCodium"));
  
 diff --git a/src/vs/platform/extensionManagement/node/extensionManagementService.ts b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-index 840f47e..3b35ddc 100644
+index c0a62f8..9c41634 100644
 --- a/src/vs/platform/extensionManagement/node/extensionManagementService.ts
 +++ b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-@@ -151,3 +151,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
- 			if (manifest.engines && manifest.engines.vscode && !isEngineValid(manifest.engines.vscode, this.productService.version, this.productService.date)) {
--				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VS Code '{1}'.", getGalleryExtensionId(manifest.publisher, manifest.name), this.productService.version));
-+				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VSCodium '{1}'.", getGalleryExtensionId(manifest.publisher, manifest.name), this.productService.version));
- 			}
-@@ -213,3 +213,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+@@ -221,3 +221,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
  		} catch (e) {
 -			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start VS Code before trying again.", toErrorMessage(e)));
 +			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start VSCodium before trying again.", toErrorMessage(e)));
  		}
-@@ -921,3 +921,3 @@ class InstallVSIXTask extends InstallExtensionTask {
+@@ -936,3 +936,3 @@ class InstallVSIXTask extends InstallExtensionTask {
  				} catch (e) {
 -					throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
 +					throw new Error(nls.localize('restartCode', "Please restart VSCodium before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
  				}
-@@ -934,3 +934,3 @@ class InstallVSIXTask extends InstallExtensionTask {
+@@ -949,3 +949,3 @@ class InstallVSIXTask extends InstallExtensionTask {
  				} catch (e) {
 -					throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
 +					throw new Error(nls.localize('restartCode', "Please restart VSCodium before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
@@ -512,10 +507,10 @@ index 9b0b2ba..6467756 100644
 +const TERMINAL_TITLE = nls.localize('console.title', "VSCodium Console");
  
 diff --git a/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts b/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
-index 0978c3a..ea54458 100644
+index 01ab403..3f167c6 100644
 --- a/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
 +++ b/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
-@@ -438,3 +438,3 @@ const terminalPlatformConfiguration: IConfigurationNode = {
+@@ -338,3 +338,3 @@ const terminalPlatformConfiguration: IConfigurationNode = {
  			scope: ConfigurationScope.APPLICATION,
 -			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from VS Code, which may source a login shell to ensure $PATH and other development variables are initialized. This has no effect on Windows."),
 +			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from VSCodium, which may source a login shell to ensure $PATH and other development variables are initialized. This has no effect on Windows."),
@@ -550,7 +545,7 @@ index 3a38daa..3f2cc88 100644
 +			comment: 'This is used to know how often VSCodium has successfully downloaded the update.';
  		};
 diff --git a/src/vs/server/node/server.cli.ts b/src/vs/server/node/server.cli.ts
-index 138f6dd..ebb720f 100644
+index 6163df6..a3f3b82 100644
 --- a/src/vs/server/node/server.cli.ts
 +++ b/src/vs/server/node/server.cli.ts
 @@ -422,3 +422,3 @@ function asExtensionIdOrVSIX(inputs: string[] | undefined) {
@@ -586,10 +581,10 @@ index c2053ac..7995087 100644
 +	static readonly TestItem = new ApiCommandArgument('testItem', 'A VSCodium TestItem', v => v instanceof TestItemImpl, extHostTypeConverter.TestItem.from);
  
 diff --git a/src/vs/workbench/api/test/browser/extHostNotebook.test.ts b/src/vs/workbench/api/test/browser/extHostNotebook.test.ts
-index 0252b10..6d81208 100644
+index d13779a..246889f 100644
 --- a/src/vs/workbench/api/test/browser/extHostNotebook.test.ts
 +++ b/src/vs/workbench/api/test/browser/extHostNotebook.test.ts
-@@ -353,3 +353,3 @@ suite('NotebookCell#Document', function () {
+@@ -357,3 +357,3 @@ suite('NotebookCell#Document', function () {
  
 -	test('Opening a notebook results in VS Code firing the event onDidChangeActiveNotebookEditor twice #118470', function () {
 +	test('Opening a notebook results in VSCodium firing the event onDidChangeActiveNotebookEditor twice #118470', function () {
@@ -604,10 +599,10 @@ index 7d464e0..4d12d65 100644
 +				localize('screenReaderDetectedExplanation.question', "Are you using a screen reader to operate VSCodium?"),
  				[{
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index f8d1715..5bfadac 100644
+index e0c1272..84f9d08 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -522,3 +522,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -534,3 +534,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  		localize('profileName', "`${profileName}`: name of the profile in which the workspace is opened (e.g. Data Science (Profile)). Ignored if default profile is used."),
 -		localize('appName', "`${appName}`: e.g. VS Code."),
 +		localize('appName', "`${appName}`: e.g. VSCodium."),
@@ -826,10 +821,10 @@ index 386247a..e791a51 100644
 +		const message = await this.tasExperimentService?.getTreatment<string>('CESSurveyMessage') ?? nls.localize('cesSurveyQuestion', 'Got a moment to help the VSCodium team? Please tell us about your experience with VSCodium so far.');
  		const button = await this.tasExperimentService?.getTreatment<string>('CESSurveyButton') ?? nls.localize('giveFeedback', "Give Feedback");
 diff --git a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
-index 6a40c19..9f91ef1 100644
+index 9fc3493..cee8724 100644
 --- a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
 +++ b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
-@@ -3088,3 +3088,3 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
+@@ -3093,3 +3093,3 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
  						if (response.code && response.code === TerminateResponseCode.ProcessNotFound) {
 -							this._notificationService.error(nls.localize('TerminateAction.noProcess', 'The launched process doesn\'t exist anymore. If the task spawned background tasks exiting VS Code might result in orphaned processes.'));
 +							this._notificationService.error(nls.localize('TerminateAction.noProcess', 'The launched process doesn\'t exist anymore. If the task spawned background tasks exiting VSCodium might result in orphaned processes.'));
@@ -867,7 +862,7 @@ index 34fb9cc..965008e 100644
 +							message: nls.localize('TaskSystem.noProcess', 'The launched task doesn\'t exist anymore. If the task spawned background processes exiting VSCodium might result in orphaned processes. To avoid this start the last background process with a wait flag.'),
  							primaryButton: nls.localize({ key: 'TaskSystem.exitAnyways', comment: ['&& denotes a mnemonic'] }, "&&Exit Anyways"),
 diff --git a/src/vs/workbench/contrib/terminal/browser/terminalView.ts b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
-index c89bf58..6403ebd 100644
+index c780642..ec47c94 100644
 --- a/src/vs/workbench/contrib/terminal/browser/terminalView.ts
 +++ b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
 @@ -159,3 +159,3 @@ export class TerminalViewPane extends ViewPane {
@@ -920,10 +915,10 @@ index c13d93e..206e46a 100644
 +		content += `// By default, VSCodium trusts "localhost".\n`;
  	}
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-index 9078840..f78cdc9 100644
+index 074ecfe..e5b495d 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-@@ -316,3 +316,3 @@ configurationRegistry.registerConfiguration({
+@@ -309,3 +309,3 @@ configurationRegistry.registerConfiguration({
  				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.none' }, "Start without an editor."),
 -				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with VS Code and extensions."),
 +				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with VSCodium and extensions."),
@@ -976,10 +971,10 @@ index 6d70549..c78c2db 100644
 +				markdownDescription: localize('workspace.trust.emptyWindow.description', "Controls whether or not the empty window is trusted by default within VSCodium. When used with `#{0}#`, you can enable the full functionality of VSCodium without prompting in an empty window.", WORKSPACE_TRUST_UNTRUSTED_FILES),
  				tags: [WORKSPACE_TRUST_SETTING_TAG],
 diff --git a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-index b29c51d..84f69c8 100644
+index 218befa..492b7b1 100644
 --- a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
 +++ b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-@@ -459,3 +459,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
+@@ -492,3 +492,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
  
 -		const productName = localize('VS Code for Web', "{0} for the Web", this.productService.nameLong);
 +		const productName = localize('VSCodium for Web', "{0} for the Web", this.productService.nameLong);
@@ -1061,7 +1056,7 @@ index 0f604a3..e4da080 100644
 +						label: nls.localize('relaunch', "Relaunch VSCodium"),
  						run: () => {
 diff --git a/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts b/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
-index fad2c8d..2372e16 100644
+index 75d7d57..05dea0a 100644
 --- a/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
 +++ b/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
 @@ -134,3 +134,3 @@ export class UserDataProfileManagementService extends Disposable implements IUse
