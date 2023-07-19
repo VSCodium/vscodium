@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -12,28 +12,28 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
     if [[ "${VSCODE_LATEST}" == "yes" ]] || [[ ! -f "insider.json" ]]; then
       UPDATE_INFO=$( curl --silent --fail https://update.code.visualstudio.com/api/update/darwin/insider/0000000000000000000000000000000000000000 )
     else
-      export MS_COMMIT=$(jq -r '.commit' insider.json)
-      export MS_TAG=$(jq -r '.tag' insider.json)
+      MS_COMMIT=$(jq -r '.commit' insider.json); export MS_COMMIT
+      MS_TAG=$(jq -r '.tag' insider.json); export MS_TAG
     fi
   else
     UPDATE_INFO=$( curl --silent --fail https://update.code.visualstudio.com/api/update/darwin/stable/0000000000000000000000000000000000000000 )
   fi
 
   if [[ -z "${MS_COMMIT}" ]]; then
-    export MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
-    export MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
+    MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' ); export MS_COMMIT
+    MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' ); export MS_TAG
 
     if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-      export MS_TAG="${MS_TAG/\-insider/}"
+      MS_TAG="${MS_TAG/\-insider/}"; export MS_TAG
     fi
   fi
 
   date=$( date +%Y%j )
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    export RELEASE_VERSION="${MS_TAG}.${date: -5}-insider"
+    RELEASE_VERSION="${MS_TAG}.${date: -5}-insider"; export RELEASE_VERSION
   else
-    export RELEASE_VERSION="${MS_TAG}.${date: -5}"
+    RELEASE_VERSION="${MS_TAG}.${date: -5}"; export RELEASE_VERSION
   fi
 else
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
@@ -46,7 +46,7 @@ else
     fi
 
     if [[ "${MS_TAG}" == "$(jq -r '.tag' insider.json)" ]]; then
-      export MS_COMMIT=$(jq -r '.commit' insider.json)
+      MS_COMMIT=$(jq -r '.commit' insider.json); export MS_COMMIT
     else
       echo "Error: No MS_COMMIT for ${RELEASE_VERSION}"
       exit 1
@@ -77,8 +77,8 @@ if [[ -z "${MS_TAG}" ]]; then
   else
     UPDATE_INFO=$( curl --silent --fail https://update.code.visualstudio.com/api/update/darwin/stable/0000000000000000000000000000000000000000 )
   fi
-  export MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
-  export MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
+  MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' ); export MS_COMMIT
+  MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' ); export MS_TAG
 elif [[ -z "${MS_COMMIT}" ]]; then
   REFERENCE=$( git ls-remote --tags | grep -x ".*refs\/tags\/${MS_TAG}" | head -1 )
 
@@ -103,8 +103,7 @@ git checkout FETCH_HEAD
 cd ..
 
 # for GH actions
-if [[ "${GITHUB_ENV}" ]]; then
-  echo "MS_TAG=${MS_TAG}" >> "${GITHUB_ENV}"
-  echo "MS_COMMIT=${MS_COMMIT}" >> "${GITHUB_ENV}"
-  echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
-fi
+[[ "${GITHUB_ENV}" ]] && {
+  echo "MS_TAG=${MS_TAG}"
+  echo "MS_COMMIT=${MS_COMMIT}"
+  echo "RELEASE_VERSION=${RELEASE_VERSION}"; } >> "${GITHUB_ENV}"

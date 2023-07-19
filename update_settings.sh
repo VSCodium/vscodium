@@ -1,3 +1,5 @@
+# shellcheck disable=SC1091,2148
+
 DEFAULT_TRUE="'default': true"
 DEFAULT_FALSE="'default': false"
 DEFAULT_ON="'default': TelemetryConfiguration.ON"
@@ -21,7 +23,7 @@ update_setting () {
   local SETTING="${1}"
   local LINE_NUM=0
   while read -r line; do
-    local LINE_NUM=$(( $LINE_NUM + 1 ))
+    local LINE_NUM=$(( LINE_NUM + 1 ))
     if [[ "${line}" == *"${SETTING}"* ]]; then
       local IN_SETTING=1
     fi

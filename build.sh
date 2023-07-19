@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
 
 set -ex
 
-if [ -f  "./remote-dependencies.tar" ]; then
+if [[ -f  "./remote-dependencies.tar" ]]; then
   tar -xf ./remote-dependencies.tar ./vscode/remote/node_modules
 fi
 

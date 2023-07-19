@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -12,7 +12,7 @@ GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://ap
 LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
 
 if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
-  if [ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]; then
+  if [[ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]]; then
     echo "New VSCode version, new build"
     export SHOULD_BUILD="yes"
   elif [[ "${NEW_RELEASE}" == "true" ]]; then
@@ -22,7 +22,7 @@ if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
     BODY=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.body' )
 
     if [[ "${BODY}" =~ \[([a-z0-9]+)\] ]]; then
-      if [ "${MS_COMMIT}" != "${BASH_REMATCH[1]}" ]; then
+      if [[ "${MS_COMMIT}" != "${BASH_REMATCH[1]}" ]]; then
         echo "New VSCode Insiders version, new build"
         export SHOULD_BUILD="yes"
       fi
@@ -46,7 +46,7 @@ contains() {
   echo "${ASSETS}" | grep "${1}\""
 }
 
-if [ "${ASSETS}" != "null" ]; then
+if [[ "${ASSETS}" != "null" ]]; then
   # macos
   if [[ "${OS_NAME}" == "osx" ]]; then
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
@@ -366,16 +366,17 @@ else
   export SHOULD_BUILD="yes"
 fi
 
-echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_APPIMAGE=${SHOULD_BUILD_APPIMAGE}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_DEB=${SHOULD_BUILD_DEB}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_DMG=${SHOULD_BUILD_DMG}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_EXE_SYS=${SHOULD_BUILD_EXE_SYS}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_EXE_USR=${SHOULD_BUILD_EXE_USR}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_MSI=${SHOULD_BUILD_MSI}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_MSI_NOUP=${SHOULD_BUILD_MSI_NOUP}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_REH=${SHOULD_BUILD_REH}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_RPM=${SHOULD_BUILD_RPM}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_TAR=${SHOULD_BUILD_TAR}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_ZIP=${SHOULD_BUILD_ZIP}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_SRC=${SHOULD_BUILD_SRC}" >> "${GITHUB_ENV}"
+{
+echo "SHOULD_BUILD=${SHOULD_BUILD}"
+echo "SHOULD_BUILD_APPIMAGE=${SHOULD_BUILD_APPIMAGE}"
+echo "SHOULD_BUILD_DEB=${SHOULD_BUILD_DEB}"
+echo "SHOULD_BUILD_DMG=${SHOULD_BUILD_DMG}"
+echo "SHOULD_BUILD_EXE_SYS=${SHOULD_BUILD_EXE_SYS}"
+echo "SHOULD_BUILD_EXE_USR=${SHOULD_BUILD_EXE_USR}"
+echo "SHOULD_BUILD_MSI=${SHOULD_BUILD_MSI}"
+echo "SHOULD_BUILD_MSI_NOUP=${SHOULD_BUILD_MSI_NOUP}"
+echo "SHOULD_BUILD_REH=${SHOULD_BUILD_REH}"
+echo "SHOULD_BUILD_RPM=${SHOULD_BUILD_RPM}"
+echo "SHOULD_BUILD_TAR=${SHOULD_BUILD_TAR}"
+echo "SHOULD_BUILD_ZIP=${SHOULD_BUILD_ZIP}"
+echo "SHOULD_BUILD_SRC=${SHOULD_BUILD_SRC}"; } >> "${GITHUB_ENV}"
