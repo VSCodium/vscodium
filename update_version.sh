@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
 
 set -e
 
@@ -49,22 +50,23 @@ REPOSITORY_NAME="${VERSIONS_REPOSITORY/*\//}"
 URL_BASE="https://github.com/${ASSETS_REPOSITORY}/releases/download/${RELEASE_VERSION}"
 
 generateJson() {
+  local url name version productVersion sha1hash sha256hash timestamp
   JSON_DATA="{}"
 
   # generate parts
-  local url="${URL_BASE}/${ASSET_NAME}"
-  local name="${RELEASE_VERSION}"
-  local version="${BUILD_SOURCEVERSION}"
-  local productVersion="${RELEASE_VERSION}"
-  local timestamp=$(node -e 'console.log(Date.now())')
+  url="${URL_BASE}/${ASSET_NAME}"
+  name="${RELEASE_VERSION}"
+  version="${BUILD_SOURCEVERSION}"
+  productVersion="${RELEASE_VERSION}"
+  timestamp=$( node -e 'console.log(Date.now())' )
 
   if [[ ! -f "assets/${ASSET_NAME}" ]]; then
     echo "Downloading asset '${ASSET_NAME}'"
     gh release download --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" --dir "assets" --pattern "${ASSET_NAME}*"
   fi
 
-  local sha1hash=$(cat "assets/${ASSET_NAME}.sha1" | awk '{ print $1 }')
-  local sha256hash=$(cat "assets/${ASSET_NAME}.sha256" | awk '{ print $1 }')
+  sha1hash=$( awk '{ print $1 }' "assets/${ASSET_NAME}.sha1" )
+  sha256hash=$( awk '{ print $1 }' "assets/${ASSET_NAME}.sha256" )
 
   # check that nothing is blank (blank indicates something awry with build)
   for key in url name version productVersion sha1hash timestamp sha256hash; do
@@ -75,7 +77,7 @@ generateJson() {
   done
 
   # generate json
-  JSON_DATA=$(jq \
+  JSON_DATA=$( jq \
     --arg url             "${url}" \
     --arg name            "${name}" \
     --arg version         "${version}" \
@@ -84,7 +86,7 @@ generateJson() {
     --arg timestamp       "${timestamp}" \
     --arg sha256hash      "${sha256hash}" \
     '. | .url=$url | .name=$name | .version=$version | .productVersion=$productVersion | .hash=$hash | .timestamp=$timestamp | .sha256hash=$sha256hash' \
-    <<<'{}')
+    <<<'{}' )
 }
 
 updateLatestVersion() {
@@ -168,7 +170,7 @@ git add .
 
 CHANGES=$( git status --porcelain )
 
-if [[ ! -z "${CHANGES}" ]]; then
+if [[ -n "${CHANGES}" ]]; then
   echo "Some changes have been found, pushing them"
 
   dateAndMonth=$( date "+%D %T" )

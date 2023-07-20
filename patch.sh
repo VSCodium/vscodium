@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [[ "${1}" == *patch ]]; then
   FILE="../patches/${1}"
@@ -17,7 +17,7 @@ fi
 
 git apply --reject "../patches/helper/settings.patch"
 
-read -p "Press any key when the conflict have been resolved..." -n1 -s
+read -rp "Press any key when the conflict have been resolved..." -n1 -s
 
 git restore .vscode/settings.json
 

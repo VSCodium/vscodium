@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
 
 set -e
 
@@ -29,7 +30,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     security create-keychain -p mysecretpassword "${KEYCHAIN}"
     security set-keychain-settings -lut 21600 "${KEYCHAIN}"
     security unlock-keychain -p mysecretpassword "${KEYCHAIN}"
-    security list-keychains -s `security list-keychains | xargs` "${KEYCHAIN}"
+    security list-keychains -s "$(security list-keychains | xargs)" "${KEYCHAIN}"
     # security list-keychains -d user
     # security show-keychain-info ${KEYCHAIN}
 
