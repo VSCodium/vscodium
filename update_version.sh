@@ -50,13 +50,14 @@ REPOSITORY_NAME="${VERSIONS_REPOSITORY/*\//}"
 URL_BASE="https://github.com/${ASSETS_REPOSITORY}/releases/download/${RELEASE_VERSION}"
 
 generateJson() {
+  local url name version productVersion sha1hash sha256hash
   JSON_DATA="{}"
 
   # generate parts
-  local url="${URL_BASE}/${ASSET_NAME}"
-  local name="${RELEASE_VERSION}"
-  local version="${BUILD_SOURCEVERSION}"
-  local productVersion="${RELEASE_VERSION}"
+  url="${URL_BASE}/${ASSET_NAME}"
+  name="${RELEASE_VERSION}"
+  version="${BUILD_SOURCEVERSION}"
+  productVersion="${RELEASE_VERSION}"
   timestamp=$(node -e 'console.log(Date.now())'); local timestamp
 
   if [[ ! -f "assets/${ASSET_NAME}" ]]; then
@@ -64,8 +65,8 @@ generateJson() {
     gh release download --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" --dir "assets" --pattern "${ASSET_NAME}*"
   fi
 
-  sha1hash=$(awk '{ print $1 }' "assets/${ASSET_NAME}.sha1"); local sha1hash
-  sha256hash=$(awk '{ print $1 }' "assets/${ASSET_NAME}.sha256"); local sha256hash
+  sha1hash=$(awk '{ print $1 }' "assets/${ASSET_NAME}.sha1")
+  sha256hash=$(awk '{ print $1 }' "assets/${ASSET_NAME}.sha256")
 
   # check that nothing is blank (blank indicates something awry with build)
   for key in url name version productVersion sha1hash timestamp sha256hash; do

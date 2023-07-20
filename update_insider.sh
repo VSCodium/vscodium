@@ -12,8 +12,8 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
   exit
 fi
 
-jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. "insider.json" | .tag=$tag | .commit=$commit' > "insider.json.tmp"
-mv -f "insider.json.tmp" "insider.json"
+jsonTmp=$(jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. "insider.json" | .tag=$tag | .commit=$commit')
+echo "$jsonTmp" > "insider.json"
 
 git config user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
 git config user.name "${GITHUB_USERNAME} CI"

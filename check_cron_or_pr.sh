@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2129
 
 set -e
 
@@ -22,8 +23,9 @@ else
 	export SHOULD_DEPLOY="yes"
 fi
 
-[[ "${GITHUB_ENV}" ]] && {
-  echo "GITHUB_BRANCH=${GITHUB_BRANCH}"
-  echo "SHOULD_BUILD=${SHOULD_BUILD}"
-  echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" 
-  echo "VSCODE_QUALITY=${VSCODE_QUALITY}"; } >> "${GITHUB_ENV}"
+if [[ "${GITHUB_ENV}" ]]; then 
+  echo "GITHUB_BRANCH=${GITHUB_BRANCH}" >> "${GITHUB_ENV}"
+  echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
+  echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" >> "${GITHUB_ENV}"
+  echo "VSCODE_QUALITY=${VSCODE_QUALITY}" >> "${GITHUB_ENV}"
+fi

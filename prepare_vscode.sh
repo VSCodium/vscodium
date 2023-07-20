@@ -84,15 +84,15 @@ fi
 
 setpath() {
   { set +x; } 2>/dev/null
-  jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" > "${1}.json.tmp"
-  mv -f "${1}.json.tmp" "${1}.json"
+  jsonTmp=$(jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json")
+  echo "$jsonTmp" > "${1}.json" && unset jsonTmp
   set -x
 }
 
 setpath_json() {
   { set +x; } 2>/dev/null
-  jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" > "${1}.json.tmp"
-  mv -f "${1}.json.tmp" "${1}.json"
+  jsonTmp=$(jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json")
+  echo "$jsonTmp" > "${1}.json" && unset jsonTmp
   set -x
 }
 
@@ -166,8 +166,8 @@ else
   setpath "product" "win32arm64UserAppId" "{{57FD70A5-1B8D-4875-9F40-C5553F094828}"
 fi
 
-jq -s '.[0] * .[1]' product.json ../product.json > product.json.tmp
-mv -f product.json.tmp product.json
+jsonTmp=$(jq -s '.[0] * .[1]' product.json ../product.json)
+echo "$jsonTmp" > ../product.json
 
 cat product.json
 
