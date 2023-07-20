@@ -73,7 +73,7 @@ else
     git checkout 102b347da0c92c29f9c67df22e864e70249cf086
     npm install
 
-    npm_config_node_gyp=$(pwd)
+    npm_config_node_gyp=$( pwd )
     export npm_config_node_gyp
 
     cd ../..
@@ -83,16 +83,18 @@ else
 fi
 
 setpath() {
+  local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$(jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json")
-  echo "$jsonTmp" > "${1}.json" && unset jsonTmp
+  jsonTmp=$( jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
+  echo "${jsonTmp}" > "${1}.json"
   set -x
 }
 
 setpath_json() {
+  local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$(jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json")
-  echo "$jsonTmp" > "${1}.json" && unset jsonTmp
+  jsonTmp=$( jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
+  echo "${jsonTmp}" > "${1}.json"
   set -x
 }
 
@@ -166,8 +168,9 @@ else
   setpath "product" "win32arm64UserAppId" "{{57FD70A5-1B8D-4875-9F40-C5553F094828}"
 fi
 
-jsonTmp=$(jq -s '.[0] * .[1]' product.json ../product.json)
-echo "$jsonTmp" > ../product.json
+jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
+echo "${jsonTmp}" > ../product.json
+unset jsonTmp
 
 cat product.json
 

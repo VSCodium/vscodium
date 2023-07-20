@@ -46,8 +46,8 @@ else
       exit 1
     fi
 
-    if [[ "${MS_TAG}" == "$(jq -r '.tag' insider.json)" ]]; then
-      MS_COMMIT=$(jq -r '.commit' insider.json)
+    if [[ "${MS_TAG}" == "$( jq -r '.tag' insider.json )" ]]; then
+      MS_COMMIT=$( jq -r '.commit' insider.json )
     else
       echo "Error: No MS_COMMIT for ${RELEASE_VERSION}"
       exit 1
