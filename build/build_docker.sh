@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
 
-exists() { type -t "$1" > /dev/null 2>&1; }
+exists() { type -t "$1" &> /dev/null; }
 
 export APP_NAME="VSCodium"
 export CI_BUILD="no"
@@ -19,7 +20,9 @@ while getopts ":ilp" opt; do
       export VSCODE_LATEST="yes"
       ;;
     p)
-      export SKIP_ASSETS="no"
+      export SKIP_ASSETS="no" 
+      ;;
+    *)
       ;;
   esac
 done

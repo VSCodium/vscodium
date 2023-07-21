@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -ex
 
@@ -15,11 +15,11 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
     exit 1
   fi
 
-  wget -c "${APPIMAGE_URL}"
+wget -c "${APPIMAGE_URL}" -o pkg2appimage.AppImage
 
-  chmod +x ./pkg2appimage-*.AppImage
+chmod +x ./pkg2appimage.AppImage
 
-  ./pkg2appimage-*.AppImage --appimage-extract && mv ./squashfs-root ./pkg2appimage.AppDir
+./pkg2appimage.AppImage --appimage-extract && mv ./squashfs-root ./pkg2appimage.AppDir
 
   # add update's url
   sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"/' pkg2appimage.AppDir/AppRun

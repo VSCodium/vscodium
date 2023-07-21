@@ -120,7 +120,7 @@ cd "${REPOSITORY_NAME}" || { echo "'${REPOSITORY_NAME}' dir not found"; exit 1; 
 git config user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
 git config user.name "${GITHUB_USERNAME} CI"
 git remote rm origin
-git remote add origin "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${VERSIONS_REPOSITORY}.git" > /dev/null 2>&1
+git remote add origin "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${VERSIONS_REPOSITORY}.git" &> /dev/null
 cd ..
 
 if [[ "${OS_NAME}" == "osx" ]]; then
