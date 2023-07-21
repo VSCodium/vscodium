@@ -25,7 +25,7 @@ for file in ../patches/*.patch; do
   if [[ -f "${file}" ]]; then
     echo applying patch: "${file}";
     if ! git apply --ignore-whitespace "${file}"; then
-      echo failed to apply patch "${file}" 1>&2
+      echo failed to apply patch "${file}" >&2
     fi
   fi
 done
@@ -35,7 +35,7 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     if [[ -f "${file}" ]]; then
       echo applying patch: "${file}";
       if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" 1>&2
+        echo failed to apply patch "${file}" >&2
       fi
     fi
   done
@@ -45,7 +45,7 @@ for file in ../patches/user/*.patch; do
   if [[ -f "${file}" ]]; then
     echo applying user patch: "${file}";
     if ! git apply --ignore-whitespace "${file}"; then
-      echo failed to apply patch "${file}" 1>&2
+      echo failed to apply patch "${file}" >&2
     fi
   fi
 done
@@ -99,7 +99,7 @@ setpath_json() {
 }
 
 # product.json
-cp product.json product.json.bak
+cp product.json{,.bak}
 
 setpath "product" "checksumFailMoreInfoUrl" "https://go.microsoft.com/fwlink/?LinkId=828886"
 setpath "product" "documentationUrl" "https://go.microsoft.com/fwlink/?LinkID=533484#vscode"
@@ -169,13 +169,12 @@ else
 fi
 
 jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
-echo "${jsonTmp}" > ../product.json
-unset jsonTmp
+echo "${jsonTmp}" > ../product.json && unset jsonTmp
 
 cat product.json
 
 # package.json
-cp package.json package.json.bak
+cp package.json{,.bak}
 
 setpath "package" "version" "$( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\1/p" )"
 setpath "package" "release" "$( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\2/p" )"

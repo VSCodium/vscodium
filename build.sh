@@ -30,7 +30,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   if [[ "${OS_NAME}" == "osx" ]]; then
     yarn gulp "vscode-darwin-${VSCODE_ARCH}-min-ci"
 
-    find "../VSCode-darwin-${VSCODE_ARCH}" -exec touch {} \;
+    find "../VSCode-darwin-${VSCODE_ARCH}" -print0 | xargs -o touch -c
 
     VSCODE_PLATFORM="darwin"
   elif [[ "${OS_NAME}" == "windows" ]]; then
@@ -48,7 +48,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   else # linux
     yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
-    find "../VSCode-linux-${VSCODE_ARCH}" -exec touch {} \;
+    find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -o touch -c
 
     VSCODE_PLATFORM="linux"
   fi
