@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC1091,SC2129
 
 ### Windows
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
@@ -13,7 +14,7 @@ export SKIP_SOURCE="no"
 export VSCODE_LATEST="no"
 export VSCODE_QUALITY="stable"
 
-while getopts ":ilop" opt; do
+while getopts ":ilops" opt; do
   case "$opt" in
     i)
       export VSCODE_QUALITY="insider"
@@ -29,6 +30,8 @@ while getopts ":ilop" opt; do
       ;;
     s)
       export SKIP_SOURCE="yes"
+      ;;
+    *)
       ;;
   esac
 done
@@ -100,7 +103,8 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
   . build.sh
 
   if [[ "${VSCODE_QUALITY}" == "insider" && "${VSCODE_LATEST}" == "yes" ]]; then
-    echo "$( cat "insider.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )" > "insider.json"
+    jsonTmp=$( jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. "insider.json" | .tag=$tag | .commit=$commit' )
+    echo "${jsonTmp}" > "insider.json" && unset jsonTmp
   fi
 fi
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -ex
 
@@ -11,7 +11,7 @@ SCRIPT_DIR=$( pwd )
 cd "../../../VSCode-win32-${VSCODE_ARCH}/resources/app"
 
 cp product.json product.json.bak
-cat product.json.bak | jq "del(.updateUrl)" > product.json
+jq "del(.updateUrl)" product.json.bak > product.json
 rm -f product.json.bak
 
 cd "${SCRIPT_DIR}"

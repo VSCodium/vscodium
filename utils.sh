@@ -2,10 +2,10 @@
 
 # All common functions can be added to this file
 
-exists() { type -t "$1" > /dev/null 2>&1; }
+exists() { type -t "$1" &> /dev/null; }
 
 is_gnu_sed () {
-  sed --version >/dev/null 2>&1
+  sed --version &> /dev/null
 }
 
 replace () {
