@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2034
 
 set -ex
 
@@ -12,14 +11,12 @@ WIN_SDK_FULL_VERSION="10.0.17763.0"
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   PRODUCT_NAME="VSCodium - Insiders"
-  PRODUCT_SKU="vscodium-insiders"
   PRODUCT_CODE="VSCodiumInsiders"
   PRODUCT_UPGRADE_CODE="1C9B7195-5A9A-43B3-B4BD-583E20498467"
   ICON_DIR="..\\..\\..\\src\\insider\\resources\\win32"
   SETUP_RESOURCES_DIR=".\\resources\\insider"
 else
   PRODUCT_NAME="VSCodium"
-  PRODUCT_SKU="vscodium"
   PRODUCT_CODE="VSCodium"
   PRODUCT_UPGRADE_CODE="965370CD-253C-4720-82FC-2E6B02A53808"
   ICON_DIR="..\\..\\..\\src\\stable\\resources\\win32"

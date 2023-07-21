@@ -15,11 +15,11 @@ while getopts ":i" opt; do
 done
 
 
-URL=$( curl -s "https://update.code.visualstudio.com/api/update/win32-x64-archive/${VSCODE_QUALITY}/VERSION" | jq -c '.url' | sed -E 's/.*"([^"]+)".*/\1/' )
+URL=$( curl -s "https://update.code.visualstudio.com/api/update/win32-x64-archive/${VSCODE_QUALITY}/0000000000000000000000000000000000000000" | jq -c '.url' | sed -E 's/.*"([^"]+)".*/\1/' )
 # echo "url: ${URL}"
-FILE=$( echo "${URL}" | sed -E 's|.*/([^/]+\.zip)$|\1|' )
+FILE="${URL##*/}"
 # echo "file: ${FILE}"
-DIRECTORY=$( echo "${URL}" | sed -E 's|.*/([^/]+)\.zip$|\1|' )
+DIRECTORY="${FILE%.zip}"
 # echo "directory: ${DIRECTORY}"
 
 if [[ ! -f "${FILE}" ]]; then
@@ -34,5 +34,5 @@ APIS=$( jq -r '.extensionEnabledApiProposals' "${DIRECTORY}/resources/app/produc
 
 APIS=$( echo "${APIS}" | jq '. += {"jeanp413.open-remote-ssh": ["resolvers", "tunnels", "terminalDataWriteEvent", "contribRemoteHelp", "contribViewsRemote"]}' )
 
-jsonTmp=$(jq --argjson v "${APIS}" 'setpath(["extensionEnabledApiProposals"]; $v)' product.json)
+jsonTmp=$( jq --argjson v "${APIS}" 'setpath(["extensionEnabledApiProposals"]; $v)' product.json )
 echo "${jsonTmp}" > product.json && unset jsonTmp
