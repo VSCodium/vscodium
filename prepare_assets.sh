@@ -3,7 +3,7 @@
 
 set -e
 
-APP_NAME_LC="${APP_NAME,,}"
+APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
 npm install -g checksum
 
