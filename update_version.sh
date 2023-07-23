@@ -117,7 +117,7 @@ updateLatestVersion() {
 # thank you https://www.vinaygopinath.me/blog/tech/commit-to-master-branch-on-github-using-travis-ci/
 git clone "https://github.com/${VERSIONS_REPOSITORY}.git"
 cd "${REPOSITORY_NAME}" || { echo "'${REPOSITORY_NAME}' dir not found"; exit 1; }
-git config user.email "${GITHUB_USERNAME,,}-ci@not-real.com"
+git config user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
 git config user.name "${GITHUB_USERNAME} CI"
 git remote rm origin
 git remote add origin "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${VERSIONS_REPOSITORY}.git" &> /dev/null

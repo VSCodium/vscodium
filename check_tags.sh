@@ -8,7 +8,7 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
   exit 0
 fi
 
-APP_NAME_LC="${APP_NAME,,}"
+APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases/latest" )
 LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
 

@@ -100,53 +100,29 @@ build_windows_main() { # {{{
   fi
 } # }}}
 
+build_windows_type() {
+  local FILE_PATH IMG_SIZE IMG_BG_COLOR LOGO_SIZE GRAVITY
+
+  FILE_PATH="$1"
+  IMG_SIZE="$2"
+  IMG_BG_COLOR="$3"
+  LOGO_SIZE="$4"
+  GRAVITY="$5"
+
+  if [[ ! -f "${FILE_PATH}" ]]; then
+    if [[ "${FILE_PATH##*.}" == "png" ]]; then
+      convert -size "${IMG_SIZE}" "${IMG_BG_COLOR}" PNG32:"${FILE_PATH}"
+    else
+      convert -size "${IMG_SIZE}" "${IMG_BG_COLOR}" "${FILE_PATH}"
+    fi
+
+    rsvg-convert -w "${LOGO_SIZE}" -h "${LOGO_SIZE}" "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
+
+    composite -gravity "${GRAVITY}" "code_logo.png" "${FILE_PATH}" "${FILE_PATH}"
+  fi
+}
+
 build_windows_types() { # {{{
-  local FILEPATH SIZE COLOR SVG GRAVITY
-
-  FILEPATH=(
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/code_70x70.png"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/code_150x150.png"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-100.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-125.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-150.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-175.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-200.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-225.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-250.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-100.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-125.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-150.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-175.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-200.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-225.bmp"
-    "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-250.bmp"
-    "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-banner.bmp"
-    "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-dialog.bmp"
-    )
-
-  SIZE=(
-    "70x70" "150x150" "164x314" "192x386" "246x459" "273x556"
-    "328x604" "355x700" "410x797" "55x55" "64x68" "83x80" "92x97"
-    "110x106" "119x123" "138x140" "493x58" "493x312"
-    )
-
-  COLOR=(
-    "canvas:transparent PNG32" "canvas:transparent PNG32" "xc:white"
-    "xc:white" "xc:white" "xc:white" "xc:white" "xc:white" "xc:white"
-    "xc:white" "xc:white" "xc:white" "xc:white" "xc:white" "xc:white"
-    "xc:white" "xc:white" "xc:white"
-    )
-
-  SVG=(
-    "126" "147" "190" "211" "255" "273" "317" "44" "52"
-    "63" "76" "86" "103" "116" "50" "120" "45" "64"
-    )
-
-  GRAVITY=(
-    "center" "center" "center" "center" "center" "center" "center" "center"
-    "center" "center" "center" "center" "center" "center" "+438+6" "+22+152"
-  )
-
   mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/win32"
 
   rsvg-convert -b "#F5F6F7" -w 64 -h 64 "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
@@ -167,13 +143,24 @@ build_windows_types() { # {{{
     fi
   done
 
-  for i in "${!FILEPATH[@]}"; do
-    if [[ ! -f "${FILEPATH[i]}" ]]; then
-      convert -size "${SIZE[i]}" "${COLOR[i]}":"${FILEPATH[i]}"
-      rsvg-convert -w "${SVG[i]}" -h "${SVG[i]}" "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
-      composite -gravity "${GRAVITY[i]}" "code_logo.png" "${FILEPATH[i]}" "${FILEPATH[i]}"
-    fi
-  done
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/code_70x70.png" "70x70" "canvas:transparent" "45" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/code_150x150.png" "150x150" "canvas:transparent" "64" "+44+25"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-100.bmp" "164x314" "xc:white" "126" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-125.bmp" "192x386" "xc:white" "147" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-150.bmp" "246x459" "xc:white" "190" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-175.bmp" "273x556" "xc:white" "211" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-200.bmp" "328x604" "xc:white" "255" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-225.bmp" "355x700" "xc:white" "273" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-big-250.bmp" "410x797" "xc:white" "317" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-100.bmp" "55x55" "xc:white" "44" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-125.bmp" "64x68" "xc:white" "52" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-150.bmp" "83x80" "xc:white" "63" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-175.bmp" "92x97" "xc:white" "76" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-200.bmp" "110x106" "xc:white" "86" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-225.bmp" "119x123" "xc:white" "103" "center"
+  create_image "${SRC_PREFIX}src/${QUALITY}/resources/win32/inno-small-250.bmp" "138x140" "xc:white" "116" "center"
+  create_image "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-banner.bmp" "493x58" "xc:white" "50" "+438+6"
+  create_image "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}/wix-dialog.bmp" "493x312" "xc:white" "120" "+22+152"
 
   rm code_logo.png
 } # }}}
