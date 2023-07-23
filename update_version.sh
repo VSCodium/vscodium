@@ -5,12 +5,12 @@ set -e
 
 if [[ "${SHOULD_BUILD}" != "yes" && "${FORCE_UPDATE}" != "true" ]]; then
   echo "Will not update version JSON because we did not build"
-  exit
+  exit 0
 fi
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
   echo "Will not update version JSON because no GITHUB_TOKEN defined"
-  exit
+  exit 0
 fi
 
 if [[ "${FORCE_UPDATE}" == "true" ]]; then
@@ -19,12 +19,12 @@ fi
 
 if [[ -z "${BUILD_SOURCEVERSION}" ]]; then
   echo "Will not update version JSON because no BUILD_SOURCEVERSION defined"
-  exit
+  exit 0
 fi
 
 if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   echo "Skip ppc64le since only reh is published"
-  exit
+  exit 0
 fi
 
 #  {
@@ -98,7 +98,7 @@ updateLatestVersion() {
     echo "CURRENT_VERSION: ${CURRENT_VERSION}"
 
     if [[ "${CURRENT_VERSION}" == "${RELEASE_VERSION}" && "${FORCE_UPDATE}" != "true" ]]; then
-      return
+      return 0
     fi
   fi
 

@@ -4,12 +4,12 @@ set -e
 
 if [[ "${SHOULD_BUILD}" != "yes" ]]; then
   echo "Will not update version JSON because we did not build"
-  exit
+  exit 0
 fi
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
   echo "Will not update insider.json because no GITHUB_TOKEN defined"
-  exit
+  exit 0
 fi
 
 jsonTmp=$( jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. "insider.json" | .tag=$tag | .commit=$commit' )

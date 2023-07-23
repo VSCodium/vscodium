@@ -3,7 +3,7 @@
 
 set -e
 
-APP_NAME_LC=$( echo "${APP_NAME}" | awk '{print tolower($0)}' )
+APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
 npm install -g checksum
 
@@ -180,8 +180,7 @@ fi
 
 cd assets
 
-for FILE in *
-do
+for FILE in *; do
   if [[ -f "${FILE}" ]]; then
     sum_file "${FILE}"
   fi

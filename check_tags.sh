@@ -5,10 +5,10 @@ set -e
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
   echo "Will not build because no GITHUB_TOKEN defined"
-  exit
+  exit 0
 fi
 
-APP_NAME_LC=$( echo "${APP_NAME}" | awk '{print tolower($0)}' )
+APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases/latest" )
 LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
 
@@ -58,21 +58,21 @@ if [[ "${ASSETS}" != "null" ]]; then
       fi
     fi
 
-    if [[ -z $( contains "${APP_NAME}-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.zip" ) ]]; then
+    if contains "${APP_NAME}-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.zip"; then
       echo "Building on MacOS because we have no ZIP"
       export SHOULD_BUILD="yes"
     else
       export SHOULD_BUILD_ZIP="no"
     fi
 
-    if [[ -z $( contains ".${VSCODE_ARCH}.${RELEASE_VERSION}.dmg" ) ]]; then
+    if contains ".${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"; then
       echo "Building on MacOS because we have no DMG"
       export SHOULD_BUILD="yes"
     else
       export SHOULD_BUILD_DMG="no"
     fi
 
-    if [[ -z $( contains "${APP_NAME_LC}-reh-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+    if contains "${APP_NAME_LC}-reh-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz"; then
       echo "Building on MacOS because we have no REH archive"
       export SHOULD_BUILD="yes"
     else
@@ -86,21 +86,21 @@ if [[ "${ASSETS}" != "null" ]]; then
 
     # windows-arm64
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
-      if [[ -z $( contains "${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
+      if contains "${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"; then
         echo "Building on Windows arm64 because we have no system setup"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_EXE_SYS="no"
       fi
 
-      if [[ -z $( contains "UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
+      if contains "UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"; then
         echo "Building on Windows arm64 because we have no user setup"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_EXE_USR="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip" ) ]]; then
+      if contains "${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip"; then
         echo "Building on Windows arm64 because we have no zip"
         export SHOULD_BUILD="yes"
       else
@@ -115,42 +115,42 @@ if [[ "${ASSETS}" != "null" ]]; then
 
     # windows-ia32
     elif [[ "${VSCODE_ARCH}" == "ia32" ]]; then
-      if [[ -z $( contains "${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
+      if contains "${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"; then
         echo "Building on Windows ia32 because we have no system setup"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_EXE_SYS="no"
       fi
 
-      if [[ -z $( contains "UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
+      if contains "UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"; then
         echo "Building on Windows ia32 because we have no user setup"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_EXE_USR="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip" ) ]]; then
+      if contains "${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip"; then
         echo "Building on Windows ia32 because we have no zip"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_ZIP="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
+      if contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi"; then
         echo "Building on Windows ia32 because we have no msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
+      if contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi"; then
         echo "Building on Windows ia32 because we have no updates-disabled msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI_NOUP="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME_LC}-reh-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if contains "${APP_NAME_LC}-reh-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz"; then
         echo "Building on Windows ia32 because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
@@ -163,42 +163,42 @@ if [[ "${ASSETS}" != "null" ]]; then
 
     # windows-x64
     else
-      if [[ -z $( contains "${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
+      if contains "${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"; then
         echo "Building on Windows x64 because we have no system setup"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_EXE_SYS="no"
       fi
 
-      if [[ -z $( contains "UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
+      if contains "UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"; then
         echo "Building on Windows x64 because we have no user setup"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_EXE_USR="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip" ) ]]; then
+      if contains "${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip"; then
         echo "Building on Windows x64 because we have no zip"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_ZIP="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
+      if contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi"; then
         echo "Building on Windows x64 because we have no msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
+      if contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi"; then
         echo "Building on Windows x64 because we have no updates-disabled msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI_NOUP="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME_LC}-reh-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if contains "${APP_NAME_LC}-reh-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz"; then
         echo "Building on Windows x64 because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
@@ -213,28 +213,28 @@ if [[ "${ASSETS}" != "null" ]]; then
 
     # linux-arm64
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
-      if [[ -z $( contains "arm64.deb" ) ]]; then
+      if contains "arm64.deb"; then
         echo "Building on Linux arm64 because we have no DEB"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_DEB="no"
       fi
 
-      if [[ -z $( contains "aarch64.rpm" ) ]]; then
+      if contains "aarch64.rpm"; then
         echo "Building on Linux arm64 because we have no RPM"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_RPM="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-linux-arm64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if contains "${APP_NAME}-linux-arm64-${RELEASE_VERSION}.tar.gz"; then
         echo "Building on Linux arm64 because we have no TAR"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_TAR="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-arm64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if contains "${APP_NAME_LC}-reh-linux-arm64-${RELEASE_VERSION}.tar.gz"; then
         echo "Building on Linux arm64 because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
@@ -249,28 +249,28 @@ if [[ "${ASSETS}" != "null" ]]; then
 
     # linux-armhf
     elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
-      if [[ -z $( contains "armhf.deb" ) ]]; then
+      if contains "armhf.deb"; then
         echo "Building on Linux arm because we have no DEB"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_DEB="no"
       fi
 
-      if [[ -z $( contains "armv7hl.rpm" ) ]]; then
+      if contains "armv7hl.rpm"; then
         echo "Building on Linux arm because we have no RPM"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_RPM="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-linux-armhf-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if contains "${APP_NAME}-linux-armhf-${RELEASE_VERSION}.tar.gz"; then
         echo "Building on Linux arm because we have no TAR"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_TAR="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-armhf-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if contains "${APP_NAME_LC}-reh-linux-armhf-${RELEASE_VERSION}.tar.gz"; then
         echo "Building on Linux arm because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
@@ -290,7 +290,7 @@ if [[ "${ASSETS}" != "null" ]]; then
       SHOULD_BUILD_RPM="no"
       SHOULD_BUILD_TAR="no"
 
-      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-ppc64le-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if contains "${APP_NAME_LC}-reh-linux-ppc64le-${RELEASE_VERSION}.tar.gz"; then
         echo "Building on Linux PowerPC64LE because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
@@ -303,35 +303,35 @@ if [[ "${ASSETS}" != "null" ]]; then
 
     # linux-x64
     else
-      if [[ -z $( contains "amd64.deb" ) ]]; then
+      if contains "amd64.deb"; then
         echo "Building on Linux x64 because we have no DEB"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_DEB="no"
       fi
 
-      if [[ -z $( contains "x86_64.rpm" ) ]]; then
+      if contains "x86_64.rpm"; then
         echo "Building on Linux x64 because we have no RPM"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_RPM="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-linux-x64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if contains "${APP_NAME}-linux-x64-${RELEASE_VERSION}.tar.gz"; then
         echo "Building on Linux x64 because we have no TAR"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_TAR="no"
       fi
 
-      if [[ -z $( contains "x86_64.AppImage" ) ]]; then
+      if contains "x86_64.AppImage"; then
         echo "Building on Linux x64 because we have no AppImage"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_APPIMAGE="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-x64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if contains "${APP_NAME_LC}-reh-linux-x64-${RELEASE_VERSION}.tar.gz"; then
         echo "Building on Linux x64 because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
