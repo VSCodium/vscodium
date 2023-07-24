@@ -15,7 +15,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
     exit 1
   fi
 
-  wget -c "${APPIMAGE_URL}" -o pkg2appimage.AppImage
+  wget -c "${APPIMAGE_URL}" -O pkg2appimage.AppImage
 
   chmod +x ./pkg2appimage.AppImage
 
