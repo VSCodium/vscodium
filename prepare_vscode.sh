@@ -169,7 +169,7 @@ else
 fi
 
 jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
-echo "${jsonTmp}" > ../product.json && unset jsonTmp
+echo "${jsonTmp}" > product.json && unset jsonTmp
 
 cat product.json
 
