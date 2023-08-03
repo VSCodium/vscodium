@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -19,7 +19,7 @@ if [[ $( gh release view --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" 2>&1
     NOTES="update vscode to [${MS_COMMIT}](https://github.com/microsoft/vscode/tree/${MS_COMMIT})"
     CREATE_OPTIONS=""
   else
-    NOTES="update vscode to [${MS_TAG}](https://code.visualstudio.com/updates/v$( echo ${MS_TAG//./_} | cut -d'_' -f 1,2 ))"
+    NOTES="update vscode to [${MS_TAG}](https://code.visualstudio.com/updates/v$( echo "${MS_TAG//./_}" | cut -d'_' -f 1,2 ))"
     CREATE_OPTIONS="--generate-notes"
   fi
 
@@ -30,8 +30,7 @@ cd assets
 
 set +e
 
-for FILE in *
-do
+for FILE in *; do
   if [[ -f "${FILE}" ]] && [[ "${FILE}" != *.sha1 ]] && [[ "${FILE}" != *.sha256 ]]; then
     echo "::group::Uploading '${FILE}' at $( date "+%T" )"
     gh release upload --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
@@ -40,8 +39,7 @@ do
     echo "exit: ${EXIT_STATUS}"
 
     if (( "${EXIT_STATUS}" )); then
-      for (( i=0; i<10; i++ ))
-      do
+      for (( i=0; i<10; i++ )); do
         github-release delete --owner "${REPOSITORY_OWNER}" --repo "${REPOSITORY_NAME}" --tag "${RELEASE_VERSION}" "${FILE}" "${FILE}.sha1" "${FILE}.sha256"
 
         sleep $(( 15 * (i + 1)))

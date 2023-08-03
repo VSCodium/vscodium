@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
 
 set -e
 
-APP_NAME_LC=$( echo "${APP_NAME}" | awk '{print tolower($0)}' )
+APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
 npm install -g checksum
 
@@ -29,7 +30,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     security create-keychain -p mysecretpassword "${KEYCHAIN}"
     security set-keychain-settings -lut 21600 "${KEYCHAIN}"
     security unlock-keychain -p mysecretpassword "${KEYCHAIN}"
-    security list-keychains -s `security list-keychains | xargs` "${KEYCHAIN}"
+    security list-keychains -s "$(security list-keychains | xargs)" "${KEYCHAIN}"
     # security list-keychains -d user
     # security show-keychain-info ${KEYCHAIN}
 
@@ -179,8 +180,7 @@ fi
 
 cd assets
 
-for FILE in *
-do
+for FILE in *; do
   if [[ -f "${FILE}" ]]; then
     sum_file "${FILE}"
   fi

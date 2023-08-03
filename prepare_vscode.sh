@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC1091,2154
 
 set -e
 
@@ -21,33 +22,30 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 { set +x; } 2>/dev/null
 
 for file in ../patches/*.patch; do
-  if [ -f "${file}" ]; then
+  if [[ -f "${file}" ]]; then
     echo applying patch: "${file}";
-    git apply --ignore-whitespace "${file}"
-    if [ $? -ne 0 ]; then
-      echo failed to apply patch "${file}" 1>&2
+    if ! git apply --ignore-whitespace "${file}"; then
+      echo failed to apply patch "${file}" >&2
     fi
   fi
 done
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   for file in ../patches/insider/*.patch; do
-    if [ -f "${file}" ]; then
+    if [[ -f "${file}" ]]; then
       echo applying patch: "${file}";
-      git apply --ignore-whitespace "${file}"
-      if [ $? -ne 0 ]; then
-        echo failed to apply patch "${file}" 1>&2
+      if ! git apply --ignore-whitespace "${file}"; then
+        echo failed to apply patch "${file}" >&2
       fi
     fi
   done
 fi
 
 for file in ../patches/user/*.patch; do
-  if [ -f "${file}" ]; then
+  if [[ -f "${file}" ]]; then
     echo applying user patch: "${file}";
-    git apply --ignore-whitespace "${file}"
-    if [ $? -ne 0 ]; then
-      echo failed to apply patch "${file}" 1>&2
+    if ! git apply --ignore-whitespace "${file}"; then
+      echo failed to apply patch "${file}" >&2
     fi
   fi
 done
@@ -75,7 +73,8 @@ else
     git checkout 102b347da0c92c29f9c67df22e864e70249cf086
     npm install
 
-    export npm_config_node_gyp=`pwd`
+    npm_config_node_gyp=$( pwd )
+    export npm_config_node_gyp
 
     cd ../..
   fi
@@ -84,19 +83,23 @@ else
 fi
 
 setpath() {
+  local jsonTmp
   { set +x; } 2>/dev/null
-  echo "$( cat "${1}.json" | jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' )" > "${1}.json"
+  jsonTmp=$( jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
+  echo "${jsonTmp}" > "${1}.json"
   set -x
 }
 
 setpath_json() {
+  local jsonTmp
   { set +x; } 2>/dev/null
-  echo "$( cat "${1}.json" | jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' )" > "${1}.json"
+  jsonTmp=$( jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
+  echo "${jsonTmp}" > "${1}.json"
   set -x
 }
 
 # product.json
-cp product.json product.json.bak
+cp product.json{,.bak}
 
 setpath "product" "checksumFailMoreInfoUrl" "https://go.microsoft.com/fwlink/?LinkId=828886"
 setpath "product" "documentationUrl" "https://go.microsoft.com/fwlink/?LinkID=533484#vscode"
@@ -165,20 +168,21 @@ else
   setpath "product" "win32arm64UserAppId" "{{57FD70A5-1B8D-4875-9F40-C5553F094828}"
 fi
 
-echo "$( jq -s '.[0] * .[1]' product.json ../product.json )" > product.json
+jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
+echo "${jsonTmp}" > product.json && unset jsonTmp
 
 cat product.json
 
 # package.json
-cp package.json package.json.bak
+cp package.json{,.bak}
 
-setpath "package" "version" $( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\1/p" )
-setpath "package" "release" $( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\2/p" )
+setpath "package" "version" "$( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\1/p" )"
+setpath "package" "release" "$( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\2/p" )"
 
 replace 's|Microsoft Corporation|VSCodium|' package.json
 
 # announcements
-replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( cat ../announcements-builtin.json | tr -d '\n' )|" src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
+replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( tr -d '\n' < ../announcements-builtin.json )|" src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 
 ../undo_telemetry.sh
 

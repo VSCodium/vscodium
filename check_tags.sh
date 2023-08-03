@@ -1,18 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC2129
 
 set -e
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
   echo "Will not build because no GITHUB_TOKEN defined"
-  exit
+  exit 0
 fi
 
-APP_NAME_LC=$( echo "${APP_NAME}" | awk '{print tolower($0)}' )
+APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases/latest" )
 LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
 
 if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
-  if [ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]; then
+  if [[ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]]; then
     echo "New VSCode version, new build"
     export SHOULD_BUILD="yes"
   elif [[ "${NEW_RELEASE}" == "true" ]]; then
@@ -22,7 +23,7 @@ if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
     BODY=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.body' )
 
     if [[ "${BODY}" =~ \[([a-z0-9]+)\] ]]; then
-      if [ "${MS_COMMIT}" != "${BASH_REMATCH[1]}" ]; then
+      if [[ "${MS_COMMIT}" != "${BASH_REMATCH[1]}" ]]; then
         echo "New VSCode Insiders version, new build"
         export SHOULD_BUILD="yes"
       fi
@@ -46,7 +47,7 @@ contains() {
   echo "${ASSETS}" | grep "${1}\""
 }
 
-if [ "${ASSETS}" != "null" ]; then
+if [[ "${ASSETS}" != "null" ]]; then
   # macos
   if [[ "${OS_NAME}" == "osx" ]]; then
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
@@ -365,6 +366,7 @@ else
   echo "Release assets do not exist at all, continuing build"
   export SHOULD_BUILD="yes"
 fi
+
 
 echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_APPIMAGE=${SHOULD_BUILD_APPIMAGE}" >> "${GITHUB_ENV}"

@@ -1,3 +1,5 @@
+# shellcheck disable=SC1091,2148
+
 DEFAULT_TRUE="'default': true"
 DEFAULT_FALSE="'default': false"
 DEFAULT_ON="'default': TelemetryConfiguration.ON"
@@ -10,23 +12,25 @@ NLS=workbench.settings.enableNaturalLanguageSearch
 . ../utils.sh
 
 update_setting () {
-  local FILENAME="${2}"
+  local FILENAME SETTING LINE_NUM IN_SETTING FOUND DEFAULT_TRUE_TO_FALSE
+
+  FILENAME="${2}"
   # check that the file exists
-  if [ ! -f "${FILENAME}" ]; then
+  if [[ ! -f "${FILENAME}" ]]; then
     echo "File to update setting in does not exist ${FILENAME}"
     return
   fi
 
   # go through lines of file, looking for block that contains setting
-  local SETTING="${1}"
-  local LINE_NUM=0
+  SETTING="${1}"
+  LINE_NUM=0
   while read -r line; do
-    local LINE_NUM=$(( $LINE_NUM + 1 ))
+    LINE_NUM=$(( LINE_NUM + 1 ))
     if [[ "${line}" == *"${SETTING}"* ]]; then
-      local IN_SETTING=1
+      IN_SETTING=1
     fi
     if [[ ("${line}" == *"${DEFAULT_TRUE}"* || "${line}" == *"${DEFAULT_ON}"*) && "${IN_SETTING}" == "1" ]]; then
-      local FOUND=1
+      FOUND=1
       break
     fi
   done < "${FILENAME}"
@@ -38,9 +42,9 @@ update_setting () {
 
   # construct line-aware replacement string
   if [[ "${line}" == *"${DEFAULT_TRUE}"* ]]; then
-    local DEFAULT_TRUE_TO_FALSE="${LINE_NUM}s/${DEFAULT_TRUE}/${DEFAULT_FALSE}/"
+    DEFAULT_TRUE_TO_FALSE="${LINE_NUM}s/${DEFAULT_TRUE}/${DEFAULT_FALSE}/"
   else
-    local DEFAULT_TRUE_TO_FALSE="${LINE_NUM}s/${DEFAULT_ON}/${DEFAULT_OFF}/"
+    DEFAULT_TRUE_TO_FALSE="${LINE_NUM}s/${DEFAULT_ON}/${DEFAULT_OFF}/"
   fi
 
   replace "${DEFAULT_TRUE_TO_FALSE}" "${FILENAME}"

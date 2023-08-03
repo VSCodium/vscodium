@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -12,11 +12,11 @@ sudo snap install --channel stable --classic snapcraft
 
 echo "Architecture: ${ARCHITECTURE}"
 
-SNAP_VERSION=$(snapcraft list-revisions ${SNAP_NAME} | grep -F "stable*" | grep "${ARCHITECTURE}" | tr -s ' ' | cut -d ' ' -f 4)
+SNAP_VERSION=$( snapcraft list-revisions "${SNAP_NAME}" | grep -F "stable*" | grep "${ARCHITECTURE}" | tr -s ' ' | cut -d ' ' -f 4 )
 echo "Snap version: ${SNAP_VERSION}"
 
 wget --quiet "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases" -O gh_latest.json
-GH_VERSION=$(jq -r 'sort_by(.tag_name)|last.tag_name' gh_latest.json)
+GH_VERSION=$( jq -r 'sort_by(.tag_name)|last.tag_name' gh_latest.json )
 echo "GH version: ${GH_VERSION}"
 
 rm -f gh_latest.json
@@ -27,7 +27,7 @@ else
   export SHOULD_DEPLOY="yes"
 
   snap version
-  snap info "${SNAP_NAME}" | true
+  snap info "${SNAP_NAME}" || true
 fi
 
 if [[ "${GITHUB_ENV}" ]]; then
