@@ -26,6 +26,7 @@ for file in ../patches/*.patch; do
     echo applying patch: "${file}";
     if ! git apply --ignore-whitespace "${file}"; then
       echo failed to apply patch "${file}" >&2
+      exit 1
     fi
   fi
 done
@@ -36,6 +37,7 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
       echo applying patch: "${file}";
       if ! git apply --ignore-whitespace "${file}"; then
         echo failed to apply patch "${file}" >&2
+        exit 1
       fi
     fi
   done
@@ -46,6 +48,7 @@ for file in ../patches/user/*.patch; do
     echo applying user patch: "${file}";
     if ! git apply --ignore-whitespace "${file}"; then
       echo failed to apply patch "${file}" >&2
+      exit 1
     fi
   fi
 done
