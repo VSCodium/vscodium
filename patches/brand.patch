@@ -259,7 +259,7 @@ index 571d047..ca31e06 100644
 +	"json.tracing.desc": "Traces the communication between VSCodium and the JSON language server.",
  	"json.colorDecorators.enable.desc": "Enables or disables color decorators",
 diff --git a/extensions/markdown-language-features/package.nls.json b/extensions/markdown-language-features/package.nls.json
-index 0468fbf..d365117 100644
+index 7336657..9bc1827 100644
 --- a/extensions/markdown-language-features/package.nls.json
 +++ b/extensions/markdown-language-features/package.nls.json
 @@ -21,3 +21,3 @@
@@ -364,26 +364,26 @@ index 40a5a5c..6852a05 100644
 +			vscode.l10n.t("Please open a folder in VSCodium to use a TypeScript or JavaScript project"));
  		return;
 diff --git a/extensions/typescript-language-features/src/typescriptServiceClient.ts b/extensions/typescript-language-features/src/typescriptServiceClient.ts
-index 984356f..72cc766 100644
+index 86c6bb8..137feb2 100644
 --- a/extensions/typescript-language-features/src/typescriptServiceClient.ts
 +++ b/extensions/typescript-language-features/src/typescriptServiceClient.ts
-@@ -606,3 +606,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+@@ -607,3 +607,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  						prompt = vscode.window.showErrorMessage<vscode.MessageItem>(
 -							vscode.l10n.t("The JS/TS language service immediately crashed 5 times. The service will not be restarted.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
 +							vscode.l10n.t("The JS/TS language service immediately crashed 5 times. The service will not be restarted.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
  					} else {
-@@ -627,3 +627,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+@@ -628,3 +628,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  							prompt = vscode.window.showWarningMessage<vscode.MessageItem>(
 -								vscode.l10n.t("The JS/TS language service crashed 5 times in the last 5 Minutes.\nThis may be caused by a plugin contributed by one of these extensions: {0}\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
 +								vscode.l10n.t("The JS/TS language service crashed 5 times in the last 5 Minutes.\nThis may be caused by a plugin contributed by one of these extensions: {0}\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
  						} else {
-@@ -641,3 +641,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+@@ -642,3 +642,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  						prompt = vscode.window.showWarningMessage<vscode.MessageItem>(
 -							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
 +							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
  					} else {
 diff --git a/extensions/vscode-api-tests/package.json b/extensions/vscode-api-tests/package.json
-index 369927c..6f27d52 100644
+index b3e681d..7c98d41 100644
 --- a/extensions/vscode-api-tests/package.json
 +++ b/extensions/vscode-api-tests/package.json
 @@ -2,3 +2,3 @@
@@ -479,7 +479,7 @@ index 296245b..cf03674 100644
 +export const ProductQualityContext = new RawContextKey<string>('productQualityType', '', localize('productQualityType', "Quality type of VSCodium"));
  
 diff --git a/src/vs/platform/extensionManagement/node/extensionManagementService.ts b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-index 5852d66..a20ec77 100644
+index ab8b3c3..8f89f60 100644
 --- a/src/vs/platform/extensionManagement/node/extensionManagementService.ts
 +++ b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
 @@ -221,3 +221,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
@@ -487,12 +487,12 @@ index 5852d66..a20ec77 100644
 -			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start VS Code before trying again.", toErrorMessage(e)));
 +			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start VSCodium before trying again.", toErrorMessage(e)));
  		}
-@@ -959,3 +959,3 @@ class InstallVSIXTask extends InstallExtensionTask {
+@@ -961,3 +961,3 @@ class InstallVSIXTask extends InstallExtensionTask {
  				} catch (e) {
 -					throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
 +					throw new Error(nls.localize('restartCode', "Please restart VSCodium before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
  				}
-@@ -972,3 +972,3 @@ class InstallVSIXTask extends InstallExtensionTask {
+@@ -974,3 +974,3 @@ class InstallVSIXTask extends InstallExtensionTask {
  				} catch (e) {
 -					throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
 +					throw new Error(nls.localize('restartCode', "Please restart VSCodium before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
@@ -599,7 +599,7 @@ index 7d464e0..4d12d65 100644
 +				localize('screenReaderDetectedExplanation.question', "Are you using a screen reader to operate VSCodium?"),
  				[{
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index 98d32c5..4616c28 100644
+index c88db4f..84591da 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
 @@ -537,3 +537,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
@@ -626,7 +626,7 @@ index 366c4d2..8e49fc5 100644
 +			template.navbar.push(ExtensionEditorTab.Contributions, localize('contributions', "Feature Contributions"), localize('contributionstooltip', "Lists contributions to VSCodium by this extension"));
  		}
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-index a705f12..d3a688f 100644
+index 78f7de8..61256e4 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 @@ -298,3 +298,3 @@ CommandsRegistry.registerCommand({
@@ -655,7 +655,7 @@ index a705f12..d3a688f 100644
 +							const message = requireReload ? localize('InstallVSIXAction.successReload', "Completed installing {0} extension from VSIX. Please reload VSCodium to enable it.", extension.displayName || extension.name)
  								: localize('InstallVSIXAction.success', "Completed installing {0} extension from VSIX.", extension.displayName || extension.name);
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
-index 8ad6138..1afde4b 100644
+index fd41ea7..5441994 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 @@ -103,3 +103,3 @@ export class PromptExtensionInstallFailureAction extends Action {
@@ -673,23 +673,23 @@ index 8ad6138..1afde4b 100644
 -			alert(localize('uninstallExtensionComplete', "Please reload Visual Studio Code to complete the uninstallation of the extension {0}.", this.extension!.displayName));
 +			alert(localize('uninstallExtensionComplete', "Please reload VSCodium to complete the uninstallation of the extension {0}.", this.extension!.displayName));
  		});
-@@ -2219,3 +2219,3 @@ export class ExtensionStatusAction extends ExtensionAction {
+@@ -2220,3 +2220,3 @@ export class ExtensionStatusAction extends ExtensionAction {
  				const link = `[${localize('settings', "settings")}](${URI.parse(`command:workbench.action.openSettings?${encodeURIComponent(JSON.stringify([this.extension.deprecationInfo.settings.map(setting => `@id:${setting}`).join(' ')]))}`)})`;
 -				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to VS Code. Configure these {0} to use this functionality.", link)) }, true);
 +				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to VSCodium. Configure these {0} to use this functionality.", link)) }, true);
  			} else {
-@@ -2243,3 +2243,3 @@ export class ExtensionStatusAction extends ExtensionAction {
+@@ -2244,3 +2244,3 @@ export class ExtensionStatusAction extends ExtensionAction {
  			if (this.extensionManagementServerService.webExtensionManagementServer) {
 -				const productName = localize('VS Code for Web', "{0} for the Web", this.productService.nameLong);
 +				const productName = localize('VSCodium for Web', "{0} for the Web", this.productService.nameLong);
  				const message = new MarkdownString(`${localize('not web tooltip', "The '{0}' extension is not available in {1}.", this.extension.displayName || this.extension.identifier.id, productName)} [${localize('learn why', "Learn Why")}](https://aka.ms/vscode-web-extensions-guide)`);
-@@ -2505,3 +2505,3 @@ export class ReinstallAction extends Action {
+@@ -2506,3 +2506,3 @@ export class ReinstallAction extends Action {
  						const requireReload = !(extension.local && this.extensionService.canAddExtension(toExtensionDescription(extension.local)));
 -						const message = requireReload ? localize('ReinstallAction.successReload', "Please reload Visual Studio Code to complete reinstalling the extension {0}.", extension.identifier.id)
 +						const message = requireReload ? localize('ReinstallAction.successReload', "Please reload VSCodium to complete reinstalling the extension {0}.", extension.identifier.id)
  							: localize('ReinstallAction.success', "Reinstalling the extension {0} is completed.", extension.identifier.id);
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index de295f7..3046f08 100644
+index 96659a5..3a5265e 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 @@ -344,3 +344,3 @@ export class Extension implements IExtension {
@@ -708,7 +708,7 @@ index de295f7..3046f08 100644
 +				return nls.localize('postUninstallTooltip', "Please reload VSCodium to complete the uninstallation of this extension.");
  			}
 @@ -1130,3 +1130,3 @@ export class ExtensionsWorkbenchService extends Disposable implements IExtension
- 						if (extension.version !== runningExtension.version || extension.local.targetPlatform !== runningExtension.targetPlatform) {
+ 						if (!runningExtension.isUnderDevelopment && (extension.version !== runningExtension.version || extension.local.targetPlatform !== runningExtension.targetPlatform)) {
 -							return nls.localize('postUpdateTooltip', "Please reload Visual Studio Code to enable the updated extension.");
 +							return nls.localize('postUpdateTooltip', "Please reload VSCodium to enable the updated extension.");
  						}
@@ -821,7 +821,7 @@ index b24d91f..a098a62 100644
 +		const message = await this.tasExperimentService?.getTreatment<string>('CESSurveyMessage') ?? nls.localize('cesSurveyQuestion', 'Got a moment to help the VSCodium team? Please tell us about your experience with VSCodium so far.');
  		const button = await this.tasExperimentService?.getTreatment<string>('CESSurveyButton') ?? nls.localize('giveFeedback', "Give Feedback");
 diff --git a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
-index 04b21c5..8d25f65 100644
+index d6c4dff..8f98834 100644
 --- a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
 +++ b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
 @@ -3106,3 +3106,3 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
@@ -862,10 +862,10 @@ index 34fb9cc..965008e 100644
 +							message: nls.localize('TaskSystem.noProcess', 'The launched task doesn\'t exist anymore. If the task spawned background processes exiting VSCodium might result in orphaned processes. To avoid this start the last background process with a wait flag.'),
  							primaryButton: nls.localize({ key: 'TaskSystem.exitAnyways', comment: ['&& denotes a mnemonic'] }, "&&Exit Anyways"),
 diff --git a/src/vs/workbench/contrib/terminal/browser/terminalView.ts b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
-index f91f800..44c19cb 100644
+index 1f70e8d..6fa5288 100644
 --- a/src/vs/workbench/contrib/terminal/browser/terminalView.ts
 +++ b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
-@@ -169,3 +169,3 @@ export class TerminalViewPane extends ViewPane {
+@@ -171,3 +171,3 @@ export class TerminalViewPane extends ViewPane {
  					}];
 -					this._notificationService.prompt(Severity.Warning, nls.localize('terminal.monospaceOnly', "The terminal only supports monospace fonts. Be sure to restart VS Code if this is a newly installed font."), choices);
 +					this._notificationService.prompt(Severity.Warning, nls.localize('terminal.monospaceOnly', "The terminal only supports monospace fonts. Be sure to restart VSCodium if this is a newly installed font."), choices);
@@ -1056,10 +1056,10 @@ index 0f604a3..e4da080 100644
 +						label: nls.localize('relaunch', "Relaunch VSCodium"),
  						run: () => {
 diff --git a/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts b/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
-index 9468c15..26c1289 100644
+index 33757af..ce96a11 100644
 --- a/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
 +++ b/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
-@@ -140,3 +140,3 @@ export class UserDataProfileManagementService extends Disposable implements IUse
+@@ -163,3 +163,3 @@ export class UserDataProfileManagementService extends Disposable implements IUse
  			const { confirmed } = await this.dialogService.confirm({
 -				message: reloadMessage ?? localize('reload message', "Switching a profile requires reloading VS Code."),
 +				message: reloadMessage ?? localize('reload message', "Switching a profile requires reloading VSCodium."),
