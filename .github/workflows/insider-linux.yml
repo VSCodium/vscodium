@@ -67,8 +67,8 @@ jobs:
         include:
         - vscode_arch: x64
           image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
-        - vscode_arch: arm64
-          image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-arm64
+        # - vscode_arch: arm64
+        #   image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-arm64
     container:
       image: ${{ matrix.image }}
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
@@ -170,7 +170,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
-        if: env.SHOULD_BUILD == 'yes' && (matrix.vscode_arch == 'x64' || matrix.vscode_arch == 'arm64')
+        if: env.SHOULD_BUILD == 'yes' && matrix.vscode_arch == 'x64'
 
       - name: Build
         env:
