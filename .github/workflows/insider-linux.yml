@@ -89,14 +89,6 @@ jobs:
       - uses: docker/setup-qemu-action@v2
         if: matrix.vscode_arch == 'arm64' || matrix.vscode_arch == 'ppc64le'
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      - name: Install Yarn
-        run: npm install -g yarn
-
       - name: Install remote dependencies
         run: ./install_remote_dependencies.sh
 
@@ -155,14 +147,6 @@ jobs:
 
       - name: Install GH
         run: ./install_gh.sh
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      - name: Install Yarn
-        run: npm install -g yarn
 
       - name: Check existing VSCodium tags/releases
         env:

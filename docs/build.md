@@ -83,31 +83,20 @@ docker run -ti --volume=$(pwd):/root/vscodium --name=vscodium-build-agent vscodi
 
 When inside the container, you can use the following commands to build:
 ```
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-sudo apt-get install -y nodejs desktop-file-utils
-
-npm install -g yarn
-
 cd /root/vscodium
 
-. get_repo.sh
-
-export SHOULD_BUILD=yes
-export OS_NAME=linux
-export VSCODE_ARCH=x64
-
-. build.sh
+./build/build.sh
 ```
 
 ### <a id="build-docker-arm32"></a>ARM 32bits
 
 Firstly, create the container with:
 ```
-docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:stretch-armhf bash
+docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-armhf bash
 ```
 like
 ```
-docker run -ti --volume=$(pwd):/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:stretch-armhf bash
+docker run -ti --volume=$(pwd):/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-armhf bash
 ```
 
 When inside the container, you can use the following commands to build:
@@ -117,15 +106,7 @@ sudo apt-get install -y nodejs desktop-file-utils
 
 cd /root/vscodium
 
-. get_repo.sh
-
-export SHOULD_BUILD=yes
-export OS_NAME=linux
-export VSCODE_ARCH=armhf
-export npm_config_arch=armv7l
-export npm_config_force_process_config="true"
-
-. build.sh
+./build/build.sh
 ```
 
 ## <a id="build-snap"></a>Build Snap
