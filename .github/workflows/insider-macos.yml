@@ -9,6 +9,9 @@ on:
       new_release:
         type: boolean
         description: Force new Release
+      test_asset_builder:
+        type: boolean
+        description: Test the assets builder
   schedule:
     - cron: '0 8 * * *'
   push:
@@ -58,6 +61,8 @@ jobs:
         run: . get_repo.sh
 
       - name: Check PR or cron
+        env:
+          TEST_ASSET_BUILDER: ${{ github.event.inputs.test_asset_builder }}
         run: . check_cron_or_pr.sh
 
       - name: Check existing VSCodium tags/releases
@@ -79,7 +84,7 @@ jobs:
           CERTIFICATE_OSX_PASSWORD: ${{ secrets.CERTIFICATE_OSX_PASSWORD }}
           CERTIFICATE_OSX_ID: ${{ secrets.CERTIFICATE_OSX_ID }}
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.test_asset_builder == 'true')
 
       - name: Release
         env:
