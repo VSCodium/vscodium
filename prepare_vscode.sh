@@ -21,37 +21,24 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 # apply patches
 { set +x; } 2>/dev/null
 
-for file in ../patches/*.patch; do
-  if [[ -f "${file}" ]]; then
-    echo applying patch: "${file}";
-    if ! git apply --ignore-whitespace "${file}"; then
-      echo failed to apply patch "${file}" >&2
-      exit 1
-    fi
-  fi
-done
-
-if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  for file in ../patches/insider/*.patch; do
+apply_patches() {
+  local file
+  for file in ${1}; do
     if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
+      echo applying patch: "${file}"
       if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
+        echo failed to apply patch "${file}" >&2; exit 1
       fi
     fi
   done
-fi
+}
 
-for file in ../patches/user/*.patch; do
-  if [[ -f "${file}" ]]; then
-    echo applying user patch: "${file}";
-    if ! git apply --ignore-whitespace "${file}"; then
-      echo failed to apply patch "${file}" >&2
-      exit 1
-    fi
-  fi
-done
+apply_patches "../patches/*.patch"
+apply_patches "../patches/user/*.patch"
+
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  apply_patches "../patches/insider/*.patch"
+fi
 
 set -x
 
@@ -88,15 +75,7 @@ fi
 setpath() {
   local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$( jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
-  echo "${jsonTmp}" > "${1}.json"
-  set -x
-}
-
-setpath_json() {
-  local jsonTmp
-  { set +x; } 2>/dev/null
-  jsonTmp=$( jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
+  jsonTmp=$( jq --arg 'path' "${2}" "${4:---arg}" 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
   echo "${jsonTmp}" > "${1}.json"
   set -x
 }
@@ -106,13 +85,13 @@ cp product.json{,.bak}
 
 setpath "product" "checksumFailMoreInfoUrl" "https://go.microsoft.com/fwlink/?LinkId=828886"
 setpath "product" "documentationUrl" "https://go.microsoft.com/fwlink/?LinkID=533484#vscode"
-setpath_json "product" "extensionsGallery" '{"serviceUrl": "https://open-vsx.org/vscode/gallery", "itemUrl": "https://open-vsx.org/vscode/item"}'
+setpath "product" "extensionsGallery" '{"serviceUrl": "https://open-vsx.org/vscode/gallery", "itemUrl": "https://open-vsx.org/vscode/item"}' "--argjson"
 setpath "product" "introductoryVideosUrl" "https://go.microsoft.com/fwlink/?linkid=832146"
 setpath "product" "keyboardShortcutsUrlLinux" "https://go.microsoft.com/fwlink/?linkid=832144"
 setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?linkid=832143"
 setpath "product" "keyboardShortcutsUrlWin" "https://go.microsoft.com/fwlink/?linkid=832145"
 setpath "product" "licenseUrl" "https://github.com/VSCodium/vscodium/blob/master/LICENSE"
-setpath_json "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
+setpath "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]' "--argjson"
 setpath "product" "releaseNotesUrl" "https://go.microsoft.com/fwlink/?LinkID=533483#vscode"
 setpath "product" "reportIssueUrl" "https://github.com/VSCodium/vscodium/issues/new"
 setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
