@@ -28,14 +28,14 @@ apply_patches() {
     if ! git apply --ignore-whitespace "${file}"; then
       echo failed to apply patch "${file}" >&2; exit 1
     fi
-  done < <( find "${1}" -type f -name "*.patch" )
+  done < <( find "${1}" -maxdepth 1 -type f -name "*.patch" )
 }
 
-apply_patches "../patches/"
-apply_patches "../patches/user/"
+apply_patches "../patches"
+apply_patches "../patches/user"
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  apply_patches "../patches/insider/"
+  apply_patches "../patches/insider"
 fi
 
 set -x
