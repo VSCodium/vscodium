@@ -1,18 +1,19 @@
 # shellcheck disable=SC1091,2148
 
-DEFAULT_TRUE="'default': true"
-DEFAULT_FALSE="'default': false"
-DEFAULT_ON="'default': TelemetryConfiguration.ON"
-DEFAULT_OFF="'default': TelemetryConfiguration.OFF"
-TELEMETRY_CRASH_REPORTER="'telemetry.enableCrashReporter':"
-TELEMETRY_CONFIGURATION=" TelemetryConfiguration.ON"
-NLS=workbench.settings.enableNaturalLanguageSearch
-
 # include common functions
 . ../utils.sh
 
 update_setting () {
-  local FILENAME SETTING LINE_NUM IN_SETTING FOUND DEFAULT_TRUE_TO_FALSE
+  local FILENAME SETTING LINE_NUM IN_SETTING FOUND DEFAULT_TRUE_TO_FALSE DEFAULT_TRUE DEFAULT_FALSE
+  local DEFAULT_ON DEFAULT_OFF TELEMETRY_CRASH_REPORTER TELEMETRY_CONFIGURATION NLS line
+
+  DEFAULT_TRUE="'default': true"
+  DEFAULT_FALSE="'default': false"
+  DEFAULT_ON="'default': TelemetryConfiguration.ON"
+  DEFAULT_OFF="'default': TelemetryConfiguration.OFF"
+  TELEMETRY_CRASH_REPORTER="'telemetry.enableCrashReporter':"
+  TELEMETRY_CONFIGURATION=" TelemetryConfiguration.ON"
+  NLS=workbench.settings.enableNaturalLanguageSearch
 
   FILENAME="${2}"
   # check that the file exists

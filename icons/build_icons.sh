@@ -21,6 +21,7 @@ while getopts ":i" opt; do
 done
 
 check_programs() { # {{{
+  local arg
   for arg in "$@"; do
     if ! command -v "${arg}" &> /dev/null; then
       echo "${arg} could not be found"
@@ -51,11 +52,12 @@ build_darwin_main() { # {{{
 } # }}}
 
 build_darwin_types() { # {{{
+  local file name
   rsvg-convert -w 128 -h 128 "icons/${QUALITY}/codium_cnl_w80_b8.svg" -o "code_logo.png"
 
   for file in "${VSCODE_PREFIX}"vscode/resources/darwin/*; do
     if [[ -f "${file}" ]]; then
-      name=$(basename "${file}" '.icns')
+      name="${file%.icns}"
 
       if [[ "${name}" != 'code' ]] && [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/darwin/${name}.icns" ]]; then
         icns2png -x -s 512x512 "${file}" -o .
@@ -123,13 +125,14 @@ build_windows_type() {
 }
 
 build_windows_types() { # {{{
+  local file name
   mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/win32"
 
   rsvg-convert -b "#F5F6F7" -w 64 -h 64 "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
 
   for file in "${VSCODE_PREFIX}"vscode/resources/win32/*.ico; do
     if [[ -f "${file}" ]]; then
-      name=$(basename "${file}" '.ico')
+      name="${file%.ico}"
 
       if [[ "${name}" != 'code' ]] && [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/${name}.ico" ]]; then
         icotool -x -w 256 "${file}"

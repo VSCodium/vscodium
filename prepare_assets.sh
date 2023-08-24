@@ -173,12 +173,15 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   cd ..
 fi
 
+get_sum() {
+  local file
+  for file in *; do
+    if [[ -f "${file}" ]]; then
+      sum_file "${file}"
+    fi
+  done
+}
+
 cd assets
-
-for FILE in *; do
-  if [[ -f "${FILE}" ]]; then
-    sum_file "${FILE}"
-  fi
-done
-
+get_sum
 cd ..

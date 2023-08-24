@@ -23,21 +23,19 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 apply_patches() {
   local file
-  for file in ${1}; do
-    if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}"
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2; exit 1
-      fi
+  while IFS= read -r file; do
+    echo applying patch: "${file}"
+    if ! git apply --ignore-whitespace "${file}"; then
+      echo failed to apply patch "${file}" >&2; exit 1
     fi
-  done
+  done < <( find "${1}" -type f -name "*.patch" )
 }
 
-apply_patches "../patches/*.patch"
-apply_patches "../patches/user/*.patch"
+apply_patches "../patches/"
+apply_patches "../patches/user/"
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  apply_patches "../patches/insider/*.patch"
+  apply_patches "../patches/insider/"
 fi
 
 set -x

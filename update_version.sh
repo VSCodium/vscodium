@@ -50,7 +50,7 @@ REPOSITORY_NAME="${VERSIONS_REPOSITORY/*\//}"
 URL_BASE="https://github.com/${ASSETS_REPOSITORY}/releases/download/${RELEASE_VERSION}"
 
 generateJson() {
-  local url name version productVersion sha1hash sha256hash timestamp
+  local url name version productVersion sha1hash sha256hash timestamp key
   JSON_DATA="{}"
 
   # generate parts
@@ -168,21 +168,26 @@ cd "${REPOSITORY_NAME}" || { echo "'${REPOSITORY_NAME}' dir not found"; exit 1; 
 git pull origin master # in case another build just pushed
 git add .
 
-CHANGES=$( git status --porcelain )
+push_if_changes() {
+  local changes
+  changes=$( git status --porcelain )
 
-if [[ -n "${CHANGES}" ]]; then
-  echo "Some changes have been found, pushing them"
+  if [[ -n "${changes}" ]]; then
+    echo "Some changes have been found, pushing them"
 
-  dateAndMonth=$( date "+%D %T" )
+    dateAndMonth=$( date "+%D %T" )
 
-  git commit -m "CI update: ${dateAndMonth} (Build ${GITHUB_RUN_NUMBER})"
+    git commit -m "CI update: ${dateAndMonth} (Build ${GITHUB_RUN_NUMBER})"
 
-  if ! git push origin master --quiet; then
-    git pull origin master
-    git push origin master --quiet
+    if ! git push origin master --quiet; then
+      git pull origin master
+      git push origin master --quiet
+    fi
+  else
+    echo "No changes"
   fi
-else
-  echo "No changes"
-fi
+}
+
+push_if_changes
 
 cd ..
