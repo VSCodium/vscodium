@@ -26,7 +26,7 @@ on:
 env:
   APP_NAME: VSCodium
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-  GITHUB_BRANCH: insider
+  GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'insider' }}
   OS_NAME: windows
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
   VSCODE_QUALITY: insider
