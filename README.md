@@ -55,8 +55,8 @@ brew install --cask vscodium
 #### <a id="install-with-winget"></a>Install with Windows Package Manager (WinGet)
 
 If you use Windows and have [Windows Package Manager](https://github.com/microsoft/winget-cli) installed:
-```bash
-winget install vscodium
+```cmd
+winget install -e --id VSCodium.VSCodium
 ```
 
 #### <a id="install-with-choco"></a>Install with Chocolatey (Windows)
