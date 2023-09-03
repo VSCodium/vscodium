@@ -33,6 +33,7 @@ fi
 APIS=$( jq -r '.extensionEnabledApiProposals' "${DIRECTORY}/resources/app/product.json" )
 
 APIS=$( echo "${APIS}" | jq '. += {"jeanp413.open-remote-ssh": ["resolvers", "tunnels", "terminalDataWriteEvent", "contribRemoteHelp", "contribViewsRemote"]}' )
+APIS=$( echo "${APIS}" | jq '. += {"jeanp413.open-remote-wsl": ["resolvers", "contribRemoteHelp", "contribViewsRemote"]}' )
 
 jsonTmp=$( jq --argjson v "${APIS}" 'setpath(["extensionEnabledApiProposals"]; $v)' product.json )
 echo "${jsonTmp}" > product.json && unset jsonTmp
