@@ -12,6 +12,7 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     if [[ "${VSCODE_LATEST}" == "yes" ]] || [[ ! -f "insider.json" ]]; then
       UPDATE_INFO=$( curl --silent --fail https://update.code.visualstudio.com/api/update/darwin/insider/0000000000000000000000000000000000000000 )
+      echo "${UPDATE_INFO}"
     else
       MS_COMMIT=$( jq -r '.commit' insider.json )
       MS_TAG=$( jq -r '.tag' insider.json )
@@ -22,7 +23,9 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
 
   if [[ -z "${MS_COMMIT}" ]]; then
     MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
+    echo "${MS_COMMIT}"
     MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
+    echo "${MS_TAG}"
 
     if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
       MS_TAG="${MS_TAG/\-insider/}"
