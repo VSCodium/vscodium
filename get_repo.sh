@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2129
 
-set -e
+set -ex
 
 # git workaround
 if [[ "${CI_BUILD}" != "no" ]]; then
