@@ -51,7 +51,7 @@ jobs:
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
@@ -123,7 +123,7 @@ jobs:
     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
