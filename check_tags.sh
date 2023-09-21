@@ -324,12 +324,13 @@ if [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_TAR="no"
       fi
 
-      if [[ -z $( contains "x86_64.AppImage" ) ]]; then
-        echo "Building on Linux x64 because we have no AppImage"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_APPIMAGE="no"
-      fi
+      # if [[ -z $( contains "x86_64.AppImage" ) ]]; then
+      #   echo "Building on Linux x64 because we have no AppImage"
+      #   export SHOULD_BUILD="yes"
+      # else
+      #   export SHOULD_BUILD_APPIMAGE="no"
+      # fi
+      export SHOULD_BUILD_APPIMAGE="no"
 
       if [[ -z $( contains "${APP_NAME_LC}-reh-linux-x64-${RELEASE_VERSION}.tar.gz" ) ]]; then
         echo "Building on Linux x64 because we have no REH archive"
