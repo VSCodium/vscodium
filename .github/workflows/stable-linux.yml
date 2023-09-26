@@ -83,7 +83,7 @@ jobs:
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
-      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-qemu-action@v3
         if: matrix.vscode_arch == 'arm64' || matrix.vscode_arch == 'ppc64le'
 
       - name: Install remote dependencies
@@ -228,7 +228,7 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         run: ./stores/snapcraft/check_version.sh
 
-      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-qemu-action@v3
         if: env.SHOULD_DEPLOY == 'yes'
 
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
