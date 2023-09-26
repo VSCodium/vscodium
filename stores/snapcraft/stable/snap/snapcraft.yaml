@@ -26,7 +26,7 @@ parts:
       rm -f latest.json
       rm -f "${CRAFT_PART_INSTALL}/${DEB}"
       # Set version
-      craftctl set-version "$VERSION"
+      craftctl set version=$VERSION
       # Correct path to icon.
       sed -i 's|Icon=vscodium|Icon=${SNAP}/usr/share/pixmaps/vscodium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
       #sed -i 's|Exec=/usr/share/codium/codium|Exec=codium|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
@@ -34,29 +34,29 @@ parts:
     build-packages:
       - wget
       - jq
-    stage-packages:
-      - fcitx-frontend-gtk3
-      - gvfs-libs
-      - libasound2
-      - libgconf-2-4
-      - libglib2.0-bin
-      - libgnome-keyring0
-      - libgtk-3-0
-      - libnotify4
-      - libnspr4
-      - libnss3
-      - libpcre3
-      - libpulse0
-      - libsecret-1-0
-      - libxshmfence1
-      - libxss1
-      - libxtst6
-      - zlib1g
-      - libx11-xcb1
-      - libxkbfile1
-      - libdrm2
-      - libgbm1
-      - libxcb-dri3-0
+        # stage-packages:
+        #- fcitx-frontend-gtk3
+        #- gvfs-libs
+      # - libasound2
+      # - libgconf-2-4
+      # - libglib2.0-bin
+      # - libgnome-keyring0
+      # - libgtk-3-0
+      # - libnotify4
+      # - libnspr4
+      # - libnss3
+      # - libpcre3
+      # - libpulse0
+      # - libsecret-1-0
+      # - libxshmfence1
+      # - libxss1
+      # - libxtst6
+      # - zlib1g
+      # - libx11-xcb1
+      # - libxkbfile1
+      # - libdrm2
+      # - libgbm1
+      # - libxcb-dri3-0
     prime:
       - -usr/share/doc
       - -usr/share/fonts
@@ -69,7 +69,27 @@ parts:
     after:
       - codium
     plugin: dump
-    source: snap/local
+    source: snap/local/bin
+
+plugs:
+    desktop:
+        mount-host-font-cache: false
+    gtk-3-themes:
+        interface: content
+        target: $SNAP/data-dir/themes
+        default-provider: gtk-common-themes
+    icon-themes:
+        interface: content
+        target: $SNAP/data-dir/icons
+        default-provider: gtk-common-themes
+    sound-themes:
+        interface: content
+        target: $SNAP/data-dir/sounds
+        default-provider: gtk-common-themes
+    gnome-42-2204:
+        interface: content
+        target: $SNAP/gnome-platform
+        default-provider: gnome-42-2204
 
 apps:
   codium:
@@ -77,9 +97,11 @@ apps:
     desktop: usr/share/applications/codium.desktop
     environment:
       GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
+      LD_LIBRARY_PATH: $SNAP/gnome-platform/usr/lib:$SNAP/gnome-platform/usr/lib/$CRAFT_ARCH_TRIPLET:$SNAP/gnome-platform/lib:$SNAP/gnome-platform/lib/$CRAFT_ARCH_TRIPLET:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET:$SNAP/lib:$SNAP/lib/$CRAFT_ARCH_TRIPLET:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 
   url-handler:
     command: electron-launch $SNAP/usr/share/codium/bin/codium --open-url --no-sandbox
     desktop: usr/share/applications/codium-url-handler.desktop
     environment:
       GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
+      LD_LIBRARY_PATH: $SNAP/gnome-platform/usr/lib:$SNAP/gnome-platform/usr/lib/$CRAFT_ARCH_TRIPLET:$SNAP/gnome-platform/lib:$SNAP/gnome-platform/lib/$CRAFT_ARCH_TRIPLET:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET:$SNAP/lib:$SNAP/lib/$CRAFT_ARCH_TRIPLET:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
