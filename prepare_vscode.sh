@@ -74,8 +74,8 @@ else
     mkdir -p .build/node-gyp
     cd .build/node-gyp
 
-    git config user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
-    git config user.name "${GITHUB_USERNAME} CI"
+    git config --global user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
+    git config --global user.name "${GITHUB_USERNAME} CI"
     git clone https://github.com/nodejs/node-gyp.git .
     git checkout v9.4.0
     git am --3way --whitespace=fix ../../build/npm/gyp/patches/gyp_spectre_mitigation_support.patch
