@@ -76,8 +76,12 @@ winget install -e --id VSCodium.VSCodium.Insiders
 #### <a id="install-with-choco"></a>Install with Chocolatey (Windows)
 
 If you use Windows and have [Chocolatey](https://chocolatey.org) installed (thanks to [@Thilas](https://github.com/Thilas)):
-```bash
+```cmd
+:: stable
 choco install vscodium
+
+:: insider
+choco install vscodium-insiders
 ```
 
 #### <a id="install-with-scoop"></a>Install with Scoop (Windows)
