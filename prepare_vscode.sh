@@ -68,6 +68,8 @@ if [[ "${OS_NAME}" == "osx" ]]; then
   yarn postinstall
 else
   if [[ "${OS_NAME}" == "windows" ]]; then
+    npm install --global --production windows-build-tools
+
     # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
     # gets merged.
     rm -rf .build/node-gyp
@@ -90,9 +92,6 @@ else
   if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7
   fi
-
-  echo "${PATH}"
-  echo "${PYTHON}"
 
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
 fi
