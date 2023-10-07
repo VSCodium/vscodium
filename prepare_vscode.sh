@@ -68,8 +68,6 @@ if [[ "${OS_NAME}" == "osx" ]]; then
   yarn postinstall
 else
   if [[ "${OS_NAME}" == "windows" ]]; then
-    npm install --global --production windows-build-tools
-
     # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
     # gets merged.
     rm -rf .build/node-gyp
