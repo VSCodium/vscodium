@@ -198,7 +198,7 @@ $ defaults write com.vscodium ApplePressAndHoldEnabled -bool false
 
 ## <a id="terminal-support"></a>How do I open VSCodium from the terminal?
 
-For MacOS and Windows:
+For macOS and Windows:
 - Go to the command palette (View | Command Palette...)
 - Choose `Shell command: Install 'codium' command in PATH`.
 
