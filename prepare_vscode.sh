@@ -81,7 +81,7 @@ else
     git am --3way --whitespace=fix ../../build/npm/gyp/patches/gyp_spectre_mitigation_support.patch
     npm install
 
-    npm_config_node_gyp="$( pwd )/bin/node-gyp.js"
+    npm_config_node_gyp=$( pwd )
     export npm_config_node_gyp
 
     cd ../..
@@ -90,6 +90,9 @@ else
   if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7
   fi
+
+  echo "${PATH}"
+  echo "${PYTHON}"
 
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
 fi
