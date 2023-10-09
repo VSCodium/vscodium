@@ -33,20 +33,11 @@ index ebc4749..18fd732 100644
 +export function isHostedGitHubEnterprise(_uri: Uri): boolean {
 +	return false;
  }
-diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-index d09cfa0..dacbde5 100644
---- a/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-+++ b/src/vs/workbench/browser/parts/activitybar/activitybarActions.ts
-@@ -356,3 +356,3 @@ export class AccountsActivityActionViewItem extends MenuActivityActionViewItem {
- 
--		if (providers.length && !menus.length) {
-+		if (!menus.length) {
- 			const noAccountsAvailableAction = disposables.add(new Action('noAccountsAvailable', localize('noAccounts', "You are not signed in to any accounts"), undefined, false));
 diff --git a/src/vs/workbench/services/authentication/browser/authenticationService.ts b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-index f6c2f14..aa27b28 100644
+index 7ad8444..6020185 100644
 --- a/src/vs/workbench/services/authentication/browser/authenticationService.ts
 +++ b/src/vs/workbench/services/authentication/browser/authenticationService.ts
-@@ -284,12 +284,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
+@@ -279,12 +279,2 @@ export class AuthenticationService extends Disposable implements IAuthentication
  		}
 -
 -		if (!this._authenticationProviders.size) {
