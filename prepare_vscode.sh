@@ -63,7 +63,7 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 fi
 
 if [[ "${OS_NAME}" == "osx" ]]; then
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
+  CHILD_CONCURRENCY=1 yarn --network-timeout 180000
 
   yarn postinstall
 else
@@ -91,7 +91,7 @@ else
     export npm_config_arm_version=7
   fi
 
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
+  CHILD_CONCURRENCY=1 yarn --check-files --network-timeout 180000
 fi
 
 setpath() {
