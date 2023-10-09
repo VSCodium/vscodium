@@ -62,18 +62,6 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   export VSCODE_SKIP_NODE_VERSION_CHECK=1
 fi
 
-add_deps() {
-  local jsonTmp
-  { set +x; } 2>/dev/null
-  jsonTmp=$( jq 'setpath(["dependencies", "node-gyp"]; "^9.4.0")' "${1}" )
-  echo "${jsonTmp}" > "${1}"
-  set -x
-}
-
-add_deps "package.json"
-add_deps "extensions/package.json"
-add_deps "remote/package.json"
-
 if [[ "${OS_NAME}" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --network-timeout 180000
 
