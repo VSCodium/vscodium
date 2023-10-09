@@ -91,7 +91,7 @@ else
     export npm_config_arm_version=7
   fi
 
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
+  CHILD_CONCURRENCY=1 yarn --check-files --network-timeout 180000
 fi
 
 setpath() {
