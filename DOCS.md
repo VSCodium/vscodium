@@ -17,6 +17,7 @@
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
   - [From Linux .tar.gz](#from-linux-targz)
+- [How do I fix rendering glitches such as text and/or the entire interface not appearing?](#rendering-glitches)
 - [How to build VSCodium](https://github.com/VSCodium/vscodium/blob/master/docs/build.md)
 
 ## <a id="disable-telemetry"></a>Getting all the Telemetry Out
@@ -194,6 +195,11 @@ This is a common question for Visual Studio Code and the procedure is slightly d
 
 ```bash
 $ defaults write com.vscodium ApplePressAndHoldEnabled -bool false
+```
+## <a id="rendering-glitches"></a>How do I fix rendering glitches such as text and/or the entire interface not appearing?
+You have likely encountered [a bug in Chromium and Electron](microsoft/vscode#190437) when compiling GPU shaders, which has affected all VSCode and VSCodium versions since 1.82.  The current workaround (see microsoft/vscode#190437) is to delete the GPU cache as follows:
+```bash
+rm -rf ~/.config/VSCodium/GPUCache
 ```
 
 ## <a id="terminal-support"></a>How do I open VSCodium from the terminal?
