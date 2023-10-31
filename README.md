@@ -95,7 +95,7 @@ scoop install vscodium
 #### <a id="install-with-snap"></a>Install with snap (GNU/Linux)
 
 VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium),
-thanks to the help of the [Snapcrafters](https://github.com/snapcrafters/codium) community.  
+thanks to the help of the [Snapcrafters](https://github.com/snapcrafters/codium) community.
 If your GNU/Linux distribution has support for [snaps](https://snapcraft.io/docs/installing-snapd):
 ```bash
 snap install codium --classic
@@ -109,7 +109,7 @@ You can always install using the downloads (deb, rpm, tar) on the releases page 
 install using your favorite package manager and get automatic updates.
 
 [@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions
-for `apt`, `dnf` and `zypper` [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo).  
+for `apt`, `dnf` and `zypper` [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo).
 
 Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker.
 
@@ -118,11 +118,11 @@ Any issues installing VSCodium using your package manager should be directed to 
 VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository),
 maintained by [@binex-dsk](https://github.com/binex-dsk)
 as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/) (stable) and
-as [vscodium-insiders-bin](https://aur.archlinux.org/packages/vscodium-insiders-bin).  
+as [vscodium-insiders-bin](https://aur.archlinux.org/packages/vscodium-insiders-bin).
 
 If you want to save disk space by having VSCodium use the Electron system-wide, you also have
 [vscodium-electron](https://aur.archlinux.org/packages/vscodium-electron),
-maintained by [@m00nw4tch3r](https://aur.archlinux.org/account/m00nw4tch3r).  
+maintained by [@m00nw4tch3r](https://aur.archlinux.org/account/m00nw4tch3r).
 
 An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/),
 maintained by [@cedricroijakkers](https://github.com/cedricroijakkers),
@@ -131,7 +131,7 @@ is also available should you wish to compile from source yourself.
 #### <a id="flatpak"></a>Flatpak Option (GNU/Linux)
 
 VSCodium is (unofficially) available as a Flatpak app [here](https://flathub.org/apps/details/com.vscodium.codium)
-and the build repo is [here](https://github.com/flathub/com.vscodium.codium). 
+and the build repo is [here](https://github.com/flathub/com.vscodium.codium).
 If your distribution has support for [flatpak](https://flathub.org), and you have enabled the [flathub repo](https://flatpak.org/setup/):
 ```bash
 flatpak install flathub com.vscodium.codium
@@ -171,6 +171,10 @@ Microsoft's build process (which we are running to build the binaries) does down
 ### Documentation
 
 For more information on getting all the telemetry disabled and tips for migrating from Visual Studio Code to VSCodium, have a look at this [Docs](https://github.com/VSCodium/vscodium/blob/master/DOCS.md) page.
+
+### Troubleshooting
+
+If you have any issue, please check [the Troubleshooting Wiki page](https://github.com/VSCodium/vscodium/wiki/Troubleshooting) or the existing issues.
 
 ### Extensions and the Marketplace
 
