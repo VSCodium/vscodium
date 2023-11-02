@@ -1,5 +1,5 @@
 diff --git a/src/vs/platform/update/common/update.ts b/src/vs/platform/update/common/update.ts
-index 7cd4a84..7cbdf21 100644
+index 0f79e17..97ea778 100644
 --- a/src/vs/platform/update/common/update.ts
 +++ b/src/vs/platform/update/common/update.ts
 @@ -48,3 +48,4 @@ export const enum UpdateType {
@@ -9,7 +9,7 @@ index 7cd4a84..7cbdf21 100644
 +	WindowsInstaller,
  }
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index d45291e..4d8c5df 100644
+index 99bf807..27e77f0 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
 @@ -41,5 +41,9 @@ function getUpdateType(): UpdateType {
@@ -25,7 +25,7 @@ index d45291e..4d8c5df 100644
 +			_updateType = UpdateType.Archive;
 +		}
  	}
-@@ -89,6 +93,13 @@ export class Win32UpdateService extends AbstractUpdateService {
+@@ -103,6 +107,16 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -		if (getUpdateType() === UpdateType.Archive) {
 -			platform += '-archive';
@@ -42,8 +42,11 @@ index d45291e..4d8c5df 100644
 +				if (this.productService.target === 'user') {
 +					platform += '-user';
 +				}
++				else {
++					platform += '-system';
++				}
  		}
-@@ -243,6 +254,14 @@ export class Win32UpdateService extends AbstractUpdateService {
+@@ -257,6 +271,14 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  		} else {
 -			spawn(this.availableUpdate.packagePath, ['/silent', '/log', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
 -				detached: true,
