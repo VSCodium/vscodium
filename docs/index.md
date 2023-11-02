@@ -10,14 +10,18 @@
   - [How to self host your own VS Code Marketplace](#howto-selfhost-marketplace)
   - [Proprietary Debugging Tools](#proprietary-debugging-tools)
   - [Proprietary Extensions](#proprietary-extensions)
+- [Extensions compatibility](https://github.com/VSCodium/vscodium/blob/master/docs/extensions-compatibility.md)
 - [Migrating from Visual Studio Code to VSCodium](#migrating)
 - [Sign in with GitHub](#signin-github)
+- [Accounts authentication](https://github.com/VSCodium/vscodium/blob/master/docs/accounts-authentication.md)
 - [How do I run VSCodium in portable mode?](#portable)
 - [How do I fix the default file manager?](#file-manager)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
   - [From Linux .tar.gz](#from-linux-targz)
-- [How to build VSCodium](https://github.com/VSCodium/vscodium/blob/master/docs/build.md)
+- [Troubleshooting](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md)
+- [Contributing](https://github.com/VSCodium/vscodium/blob/master/CONTRIBUTING.md)
+- [How to build VSCodium](https://github.com/VSCodium/vscodium/blob/master/docs/howto-build.md)
 
 ## <a id="disable-telemetry"></a>Getting all the Telemetry Out
 
@@ -56,7 +60,7 @@ By default, the `product.json` file is set up to use [open-vsx.org](https://open
 
 ### <a id="howto-openvsx-marketplace"></a>How to use the Open VSX Registry
 
-As noted above, the [Open VSX Registry](https://open-vsx.org/) is the pre-set extension gallery in VSCodium. Using the extension view in VSCodium will therefore by default use it.  
+As noted above, the [Open VSX Registry](https://open-vsx.org/) is the pre-set extension gallery in VSCodium. Using the extension view in VSCodium will therefore by default use it.
 See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on the motivation behind Open VSX.
 
 ### <a id="howto-switch-marketplace"></a>How to use a different extension gallery
@@ -96,7 +100,7 @@ Individual developers and enterprise companies in regulated or security-consciou
 
 There are likely other options, but the following were reported to work:
 
-* [Open VSX](https://github.com/eclipse/openvsx) eclipse open-source project  
+* [Open VSX](https://github.com/eclipse/openvsx) eclipse open-source project
   While the public instance which is run by the Eclipse Foundation is the pre-set endpoint in VSCodium, you can host your own instance.
 
     > Open VSX is a [vendor-neutral](https://projects.eclipse.org/projects/ecd.openvsx) open-source alternative to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/vscode). It provides a server application that manages [VS Code extensions](https://code.visualstudio.com/api) in a database, a web application similar to the VS Code Marketplace, and a command-line tool for publishing extensions similar to [vsce](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#vsce).
@@ -107,7 +111,7 @@ There are likely other options, but the following were reported to work:
 
 ### <a id="howto-vscode-marketplace"></a>How to use the VS Code Marketplace
 
-As with any online service, ensure you've understood [its terms of use](https://aka.ms/vsmarketplace-ToU).  
+As with any online service, ensure you've understood [its terms of use](https://aka.ms/vsmarketplace-ToU).
 Also note that this extension gallery hosts multiple extensions that are non-free and have license-agreements that explicitly forbid using them in non-Microsoft products, along with using telemetry.
 
 The endpoint URLs are given in the [example above](#howto-switch-marketplace).
