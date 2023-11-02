@@ -45,7 +45,7 @@ Download latest release here:
 [insiders](https://github.com/VSCodium/vscodium-insiders/releases)
 :tada: :tada:
 
-[More info / helpful tips are here.](https://github.com/VSCodium/vscodium/blob/master/DOCS.md)
+[More info / helpful tips are here.](https://github.com/VSCodium/vscodium/blob/master/docs/index.md)
 
 
 #### <a id="install-with-brew"></a>Install with Brew (Mac)
@@ -60,7 +60,7 @@ brew tap homebrew/cask-versions
 brew install --cask vscodium-insiders
 ```
 
-*Note for macOS users: if you can't open the App, please read [the following troubleshooting](https://github.com/VSCodium/vscodium/wiki/Troubleshooting#macos).*
+*Note for macOS users: if you can't open the App, please read [the following troubleshooting](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md#macos).*
 
 #### <a id="install-with-winget"></a>Install with Windows Package Manager (WinGet)
 
@@ -140,7 +140,7 @@ flatpak run com.vscodium.codium
 
 ## <a id="build"></a>Build
 
-Build instructions can be found [here](https://github.com/VSCodium/vscodium/blob/master/docs/build.md)
+Build instructions can be found [here](https://github.com/VSCodium/vscodium/blob/master/docs/howto-build.md)
 
 ## <a id="why"></a>Why Does This Exist
 
@@ -170,17 +170,17 @@ Microsoft's build process (which we are running to build the binaries) does down
 
 ### Documentation
 
-For more information on getting all the telemetry disabled and tips for migrating from Visual Studio Code to VSCodium, have a look at this [Docs](https://github.com/VSCodium/vscodium/blob/master/DOCS.md) page.
+For more information on getting all the telemetry disabled, tips for migrating from Visual Studio Code to VSCodium and more, have a look at [the Docs page](https://github.com/VSCodium/vscodium/blob/master/docs/index.md) page.
 
 ### Troubleshooting
 
-If you have any issue, please check [the Troubleshooting Wiki page](https://github.com/VSCodium/vscodium/wiki/Troubleshooting) or the existing issues.
+If you have any issue, please check [the Troubleshooting page](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md) or the existing issues.
 
 ### Extensions and the Marketplace
 
-According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace-ToU), _you may only install and use Marketplace Offerings with Visual Studio Products and Services._ For this reason, VSCodium uses [open-vsx.org](https://open-vsx.org/), an open source registry for VS Code extensions. See the [Extensions + Marketplace](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#extensions-marketplace) section on the Docs page for more details.
+According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace-ToU), _you may only install and use Marketplace Offerings with Visual Studio Products and Services._ For this reason, VSCodium uses [open-vsx.org](https://open-vsx.org/), an open source registry for VS Code extensions. See the [Extensions + Marketplace](https://github.com/VSCodium/vscodium/blob/master/docs/index.md#extensions-marketplace) section on the Docs page for more details.
 
-Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
+Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/docs/index.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
 
 ### How are the VSCodium binaries built?
 

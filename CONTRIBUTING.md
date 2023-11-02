@@ -1,4 +1,4 @@
-# Contributing to CONTRIBUTING.md
+# Contributing
 
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
@@ -16,20 +16,20 @@ This project and everyone participating in it is governed by the [VSCodium Code 
 
 ### Before Submitting an Issue
 
-Before creating bug reports, please check existing issues and [the Troubleshooting Wiki page](https://github.com/VSCodium/vscodium/wiki/Troubleshooting) as you might find out that you don't need to create one.
+Before creating bug reports, please check existing issues and [the Troubleshooting page](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md) as you might find out that you don't need to create one.
 When you are creating a bug report, please include as many details as possible. Fill out [the required template](https://github.com/VSCodium/vscodium/issues/new?&labels=bug&&template=bug_report.md), the information it asks for helps us resolve issues faster.
 
 ## Making Changes
 
-If you want to make changes, please read the documentation [/docs/build.md](./docs/build.md).
+If you want to make changes, please read [the Build page](./docs/howto-build.md).
 
 ### Building VSCodium
 
-To build VSCOdium, please follow the command found in the section [`Build Scripts`](./docs/build.md#build-scripts).
+To build VSCOdium, please follow the command found in the section [`Build Scripts`](./docs/howto-build.md#build-scripts).
 
 ### Updating patches
 
-If you want to update the existing patches, please follow the section [`Patch Update Process - Semi-Automated`](./docs/build.md#patch-update-process-semiauto).
+If you want to update the existing patches, please follow the section [`Patch Update Process - Semi-Automated`](./docs/howto-build.md#patch-update-process-semiauto).
 
 ### Add a new patch
 
