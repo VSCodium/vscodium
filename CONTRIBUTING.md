@@ -25,7 +25,7 @@ If you want to make changes, please read [the Build page](./docs/howto-build.md)
 
 ### Building VSCodium
 
-To build VSCOdium, please follow the command found in the section [`Build Scripts`](./docs/howto-build.md#build-scripts).
+To build VSCodium, please follow the command found in the section [`Build Scripts`](./docs/howto-build.md#build-scripts).
 
 ### Updating patches
 
@@ -33,9 +33,9 @@ If you want to update the existing patches, please follow the section [`Patch Up
 
 ### Add a new patch
 
-- firstly, you need to build VSCodium
+- first, you need to build VSCodium
 - then use the command `patch.sh <your patch name>`, to initiate a new patch
-- when the script pause at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
+- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
 - run `yarn watch`
 - run `./script/code.sh`
 - make your changes
