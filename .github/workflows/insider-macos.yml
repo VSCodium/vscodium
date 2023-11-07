@@ -55,6 +55,11 @@ jobs:
         with:
           node-version: '18.17'
 
+      - name: Setup Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
       - name: Clone VSCode repo
         env:
           RELEASE_VERSION: ${{ github.event.inputs.release_version }}
