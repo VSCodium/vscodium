@@ -96,7 +96,7 @@ with the content:
 
 ### <a id="howto-selfhost-marketplace"></a>How to self-host your own extension gallery
 
-Individual developers and enterprise companies in regulated or security-conscious industries can self-host their own extension gallery. In all of these cases you'd enter its endpoint URLs as noted above, replacing `marketplace.visualstudio.com` with `your-self-hosted-marketplace-address.example.com` (or IP address), setting `cacheUrl` / `VSCODE_GALLERY_CACHE_URL` to an empty string.
+Individual developers and enterprise companies in regulated or security-conscious industries can self-host their own extension gallery. In all of these cases, you'd enter its endpoint URLs as noted above, replacing `marketplace.visualstudio.com` with `your-self-hosted-marketplace-address.example.com` (or IP address), setting `cacheUrl` / `VSCODE_GALLERY_CACHE_URL` to an empty string.
 
 There are likely other options, but the following were reported to work:
 
@@ -164,7 +164,7 @@ To copy your settings manually:
 
 In VSCodium, `Sign in with GitHub` is using a Personal Access Token.<br />
 Follow the documentation https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token to create your token.<br />
-Select the scopes dependending of the extension which need access to GitHub. (GitLens requires the `repo` scope.)
+Select the scopes dependending on the extension which needs access to GitHub. (GitLens requires the `repo` scope.)
 
 ### Linux
 
@@ -177,7 +177,7 @@ You can follow the [Portable Mode instructions](https://code.visualstudio.com/do
 
 ## <a id="file-manager"></a>How do I fix the default file manager (Linux)?
 
-In some case, VSCodium becomes the file manager used to open directories (instead of apps like Dolphin or Nautilus).<br />
+In some cases, VSCodium becomes the file manager used to open directories (instead of apps like Dolphin or Nautilus).<br />
 It's due to that no application was defined as the default file manager and so the system is using the latest capable application.
 
 To set the default app, create the file `~/.config/mimeapps.list` with the content like:

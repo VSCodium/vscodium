@@ -30,13 +30,13 @@ Install these packages on Fedora:
 * dbus-glib-devel
 * libdbusmenu
 
-On Ubuntu this package called `libdbusmenu-glib4`.
+On Ubuntu this package is called `libdbusmenu-glib4`.
 
 Credits: [Gerson](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/91)
 
 ## <a id="macos"></a>macOS
 
-Since the App is signed with self-signed certificate, on the first launch, you might see the following messages:
+Since the App is signed with a self-signed certificate, on the first launch, you might see the following messages:
 
 #### <a id="macos-unidentified-developer"></a>*App can't be opened because Apple cannot check it for malicious software*
 
