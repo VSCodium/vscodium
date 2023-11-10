@@ -1056,7 +1056,7 @@ index 9141402..b1aa321 100644
 +											description: localize('walkthroughs.steps.completionEvents.onCommand', 'Check off step when a given command is executed anywhere in VSCodium.'),
  											body: 'onCommand:${1:commandId}'
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-index 69520a4..1755696 100644
+index b844d92..9da5c43 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 @@ -173,4 +173,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
@@ -1072,13 +1072,13 @@ index 69520a4..1755696 100644
 -					description: localize('gettingStarted.settingsSync.description.interpolated', "Keep your essential VS Code customizations backed up and updated across all your devices.\n{0}", Button(localize('enableSync', "Backup and Sync Settings"), 'command:workbench.userDataSync.actions.turnOn')),
 +					title: localize('gettingStarted.settingsSync.title', "Personalize your VSCodium"),
 +					description: localize('gettingStarted.settingsSync.description.interpolated', "Keep your essential VSCodium customizations backed up and updated across all your devices.\n{0}", Button(localize('enableSync', "Backup and Sync Settings"), 'command:workbench.userDataSync.actions.turnOn')),
- 					when: 'syncStatus != uninitialized',
-@@ -205,3 +205,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+ 					completionEvents: ['onEvent:sync-enabled'],
+@@ -204,3 +204,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPalette.title', "One shortcut to access everything"),
 -					description: localize('gettingStarted.commandPalette.description.interpolated', "Commands are the keyboard way to accomplish any task in VS Code. **Practice** by looking up your frequent ones to save time.\n{0}\n__Try searching for 'view toggle'.__", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPalette.description.interpolated', "Commands are the keyboard way to accomplish any task in VSCodium. **Practice** by looking up your frequent ones to save time.\n{0}\n__Try searching for 'view toggle'.__", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'svg', altText: 'Command Palette overlay for searching and executing commands.', path: 'commandPalette.svg' },
-@@ -211,6 +211,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -210,6 +210,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Limitless extensibility"),
 -					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VS Code's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopular', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VSCodium's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopular', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1087,36 +1087,36 @@ index 69520a4..1755696 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions-web.svg'
 +						type: 'svg', altText: 'VSCodium extension marketplace with featured language extensions', path: 'extensions-web.svg'
  					},
-@@ -229,3 +229,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -228,3 +228,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -					description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VS Code.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFileFolder')),
 +					description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VSCodium.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFileFolder')),
  					when: 'isMac && workspaceFolderCount == 0',
-@@ -238,3 +238,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -237,3 +237,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -					description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VS Code.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFolder')),
 +					description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VSCodium.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFolder')),
  					when: '!isMac && workspaceFolderCount == 0',
-@@ -259,4 +259,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -258,4 +258,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		id: 'SetupWeb',
 -		title: localize('gettingStarted.setupWeb.title', "Get Started with VS Code for the Web"),
 -		description: localize('gettingStarted.setupWeb.description', "Discover the best customizations to make VS Code for the Web yours."),
 +		title: localize('gettingStarted.setupWeb.title', "Get Started with VSCodium for the Web"),
 +		description: localize('gettingStarted.setupWeb.description', "Discover the best customizations to make VSCodium for the Web yours."),
  		isFeatured: true,
-@@ -270,4 +270,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -269,4 +269,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					id: 'settingsSyncWeb',
 -					title: localize('gettingStarted.settingsSync.title', "Personalize your VS Code"),
 -					description: localize('gettingStarted.settingsSync.description.interpolated', "Keep your essential VS Code customizations backed up and updated across all your devices.\n{0}", Button(localize('enableSync', "Backup and Sync Settings"), 'command:workbench.userDataSync.actions.turnOn')),
 +					title: localize('gettingStarted.settingsSync.title', "Personalize your VSCodium"),
 +					description: localize('gettingStarted.settingsSync.description.interpolated', "Keep your essential VSCodium customizations backed up and updated across all your devices.\n{0}", Button(localize('enableSync', "Backup and Sync Settings"), 'command:workbench.userDataSync.actions.turnOn')),
  					when: 'syncStatus != uninitialized',
-@@ -291,3 +291,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -290,3 +290,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPalette.title', "One shortcut to access everything"),
 -					description: localize('gettingStarted.commandPalette.description.interpolated', "Commands are the keyboard way to accomplish any task in VS Code. **Practice** by looking up your frequent ones to save time.\n{0}\n__Try searching for 'view toggle'.__", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPalette.description.interpolated', "Commands are the keyboard way to accomplish any task in VSCodium. **Practice** by looking up your frequent ones to save time.\n{0}\n__Try searching for 'view toggle'.__", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'svg', altText: 'Command Palette overlay for searching and executing commands.', path: 'commandPalette.svg' },
-@@ -306,6 +306,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -305,6 +305,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Limitless extensibility"),
 -					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VS Code's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopular', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VSCodium's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopular', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1125,17 +1125,17 @@ index 69520a4..1755696 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions-web.svg'
 +						type: 'svg', altText: 'VSCodium extension marketplace with featured language extensions', path: 'extensions-web.svg'
  					},
-@@ -324,3 +324,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -323,3 +323,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into VS Code.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
 +					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into VSCodium.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
  					when: 'workspaceFolderCount == 0',
-@@ -349,3 +349,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -348,3 +348,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		next: 'Intermediate',
 -		description: localize('gettingStarted.beginner.description', "Jump right into VS Code and get an overview of the must-have features."),
 +		description: localize('gettingStarted.beginner.description', "Jump right into VSCodium and get an overview of the must-have features."),
  		content: {
-@@ -373,6 +373,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -372,6 +372,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Limitless extensibility"),
 -					description: localize('gettingStarted.extensions.description.interpolated', "Extensions are VS Code's power-ups. They range from handy productivity hacks, expanding out-of-the-box features, to adding completely new capabilities.\n{0}", Button(localize('browseRecommended', "Browse Recommended Extensions"), 'command:workbench.extensions.action.showRecommendedExtensions')),
 +					description: localize('gettingStarted.extensions.description.interpolated', "Extensions are VSCodium's power-ups. They range from handy productivity hacks, expanding out-of-the-box features, to adding completely new capabilities.\n{0}", Button(localize('browseRecommended', "Browse Recommended Extensions"), 'command:workbench.extensions.action.showRecommendedExtensions')),
@@ -1144,7 +1144,7 @@ index 69520a4..1755696 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions.svg'
 +						type: 'svg', altText: 'VSCodium extension marketplace with featured language extensions', path: 'extensions.svg'
  					},
-@@ -382,5 +382,5 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -381,5 +381,5 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.settings.title', "Tune your settings"),
 -					description: localize('gettingStarted.settings.description.interpolated', "Tweak every aspect of VS Code and your extensions to your liking. Commonly used settings are listed first to get you started.\n{0}", Button(localize('tweakSettings', "Tweak my Settings"), 'command:toSide:workbench.action.openSettings')),
 +					description: localize('gettingStarted.settings.description.interpolated', "Tweak every aspect of VSCodium and your extensions to your liking. Commonly used settings are listed first to get you started.\n{0}", Button(localize('tweakSettings', "Tweak my Settings"), 'command:toSide:workbench.action.openSettings')),
@@ -1152,7 +1152,7 @@ index 69520a4..1755696 100644
 -						type: 'svg', altText: 'VS Code Settings', path: 'settings.svg'
 +						type: 'svg', altText: 'VSCodium Settings', path: 'settings.svg'
  					},
-@@ -389,6 +389,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -388,6 +388,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					id: 'profiles',
 -					title: localize('gettingStarted.profiles.title', "Customize VS Code with Profiles"),
 -					description: localize('gettingStarted.profiles.description.interpolated', "Profiles let you create sets of VS Code customizations that include settings, extensions and UI state. Create your own profile from scratch or use the predefined set of profile templates for your specific workflow.\n{0}", Button(localize('tryProfiles', "Try Profiles"), 'command:workbench.profiles.actions.createProfile')),
@@ -1162,7 +1162,7 @@ index 69520a4..1755696 100644
 -						type: 'svg', altText: 'VS Code Profiles', path: 'profiles.svg'
 +						type: 'svg', altText: 'VSCodium Profiles', path: 'profiles.svg'
  					},
-@@ -407,4 +407,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -406,4 +406,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.videoTutorial.title', "Lean back and learn"),
 -					description: localize('gettingStarted.videoTutorial.description.interpolated', "Watch the first in a series of short & practical video tutorials for VS Code's key features.\n{0}", Button(localize('watch', "Watch Tutorial"), 'https://aka.ms/vscode-getting-started-video')),
 -					media: { type: 'svg', altText: 'VS Code Settings', path: 'learn.svg' },
