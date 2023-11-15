@@ -6,14 +6,9 @@ on:
       release_version:
         type: string
         description: Forced release version
-      new_release:
-        type: boolean
-        description: Force new Release
       test_asset_builder:
         type: boolean
         description: Test the assets builder
-  schedule:
-    - cron: '0 8 * * *'
   push:
     branches: [ insider ]
     paths-ignore:
@@ -74,7 +69,6 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_RELEASE: ${{ github.event.inputs.new_release }}
         run: . check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
