@@ -39,6 +39,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_RELEASE: ${{ github.event.inputs.new_release }}
+          IS_SPEARHEAD: 'yes'
         run: . check_tags.sh
 
       - name: Build
