@@ -6,6 +6,9 @@ on:
       new_release:
         type: boolean
         description: Force new Release
+      force_dispatch:
+        type: boolean
+        description: Force dispatch
   schedule:
     - cron: '0 18 * * *'
 
@@ -69,31 +72,19 @@ jobs:
           GITHUB_USERNAME: ${{ github.repository_owner }}
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Prepare assets
+      - name: Prepare source
         run: ./prepare_src.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Release
+      - name: Release source
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Dispatch Linux build
+      - name: Dispatch builds
         uses: peter-evans/repository-dispatch@v2
         with:
-          event-type: 'stable-linux'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Dispatch Windows build
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: 'stable-windows'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Dispatch macOS build
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: 'stable-macos'
-        if: env.SHOULD_BUILD == 'yes'
+          event-type: 'stable'
+        if: env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true'
