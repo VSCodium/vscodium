@@ -7,19 +7,19 @@ on:
         type: boolean
         description: Force new Release
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 18 * * *'
 
 jobs:
   build:
     runs-on: [self-hosted, macOS, ARM64]
     env:
       APP_NAME: VSCodium
-      ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+      ASSETS_REPOSITORY: ${{ github.repository }}
       VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
       OS_NAME: osx
       VSCODE_ARCH: arm64
       VSCODE_LATEST: yes
-      VSCODE_QUALITY: insider
+      VSCODE_QUALITY: stable
 
     steps:
       - uses: actions/checkout@v4
@@ -85,18 +85,17 @@ jobs:
       - name: Dispatch Linux build
         uses: peter-evans/repository-dispatch@v2
         with:
-          event-type: 'insider-linux'
+          event-type: 'stable-linux'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Dispatch Windows build
         uses: peter-evans/repository-dispatch@v2
         with:
-          event-type: 'insider-windows'
+          event-type: 'stable-windows'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Dispatch macOS build
         uses: peter-evans/repository-dispatch@v2
         with:
-          event-type: 'insider-macos'
+          event-type: 'stable-macos'
         if: env.SHOULD_BUILD == 'yes'
-

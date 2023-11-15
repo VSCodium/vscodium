@@ -8,12 +8,12 @@ if [[ "${SHOULD_BUILD}" != "yes" ]]; then
 fi
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
-  echo "Will not update insider.json because no GITHUB_TOKEN defined"
+  echo "Will not update ${VSCODE_QUALITY}.json because no GITHUB_TOKEN defined"
   exit 0
 fi
 
-jsonTmp=$( cat "insider.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
-echo "${jsonTmp}" > "insider.json" && unset jsonTmp
+jsonTmp=$( cat "${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
+echo "${jsonTmp}" > "${VSCODE_QUALITY}.json" && unset jsonTmp
 
 git config user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
 git config user.name "${GITHUB_USERNAME} CI"
