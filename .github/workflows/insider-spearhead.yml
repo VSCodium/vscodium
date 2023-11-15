@@ -6,6 +6,9 @@ on:
       new_release:
         type: boolean
         description: Force new Release
+      force_dispatch:
+        type: boolean
+        description: Force dispatch
   schedule:
     - cron: '0 7 * * *'
 
@@ -38,25 +41,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_RELEASE: ${{ github.event.inputs.new_release }}
+          IS_SPEARHEAD: 'yes'
         run: . check_tags.sh
-
-      - name: Compute cache key
-        id: yarnCacheKey
-        run: echo "value=$(node build/azure-pipelines/computeYarnCacheKey.js)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Get yarn cache directory path
-        id: yarnCacheDirPath
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Cache yarn directory
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
-          key: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
-          restore-keys: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-
-        if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:
@@ -71,32 +57,19 @@ jobs:
           GITHUB_USERNAME: ${{ github.repository_owner }}
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Prepare assets
+      - name: Prepare source
         run: ./prepare_src.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Release
+      - name: Release source
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Dispatch Linux build
+      - name: Dispatch builds
         uses: peter-evans/repository-dispatch@v2
         with:
-          event-type: 'insider-linux'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Dispatch Windows build
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: 'insider-windows'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Dispatch macOS build
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: 'insider-macos'
-        if: env.SHOULD_BUILD == 'yes'
-
+          event-type: 'insider'
+        if: env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true'
