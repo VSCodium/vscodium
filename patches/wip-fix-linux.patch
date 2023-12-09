@@ -1,22 +1,44 @@
 diff --git a/build/lib/builtInExtensions.js b/build/lib/builtInExtensions.js
-index 1b0adc48d4c..3c9719c9641 100644
+index 1b0adc4..b595123 100644
 --- a/build/lib/builtInExtensions.js
 +++ b/build/lib/builtInExtensions.js
-@@ -47,5 +47,3 @@ function isUpToDate(extension) {
+@@ -47,5 +47,4 @@ function isUpToDate(extension) {
  function getExtensionDownloadStream(extension) {
 -    const galleryServiceUrl = productjson.extensionsGallery?.serviceUrl;
 -    return (galleryServiceUrl ? ext.fromMarketplace(galleryServiceUrl, extension) : ext.fromGithub(extension))
 -        .pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
++	fancyLog(extension);
 +    return ext.fromGithub(extension).pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
  }
 diff --git a/build/lib/builtInExtensions.ts b/build/lib/builtInExtensions.ts
-index fefed436bb9..66520d3ef69 100644
+index fefed43..4ae553e 100644
 --- a/build/lib/builtInExtensions.ts
 +++ b/build/lib/builtInExtensions.ts
-@@ -72,5 +72,3 @@ function isUpToDate(extension: IExtensionDefinition): boolean {
+@@ -72,5 +72,4 @@ function isUpToDate(extension: IExtensionDefinition): boolean {
  function getExtensionDownloadStream(extension: IExtensionDefinition) {
 -	const galleryServiceUrl = productjson.extensionsGallery?.serviceUrl;
 -	return (galleryServiceUrl ? ext.fromMarketplace(galleryServiceUrl, extension) : ext.fromGithub(extension))
 -		.pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
++	fancyLog(extension);
 +	return ext.fromGithub(extension).pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
  }
+diff --git a/build/lib/extensions.js b/build/lib/extensions.js
+index c81568c..f51ff83 100644
+--- a/build/lib/extensions.js
++++ b/build/lib/extensions.js
+@@ -223,3 +223,4 @@ function fromGithub({ name, version, repo, sha256, metadata }) {
+         name: name => name.endsWith('.vsix'),
+-        checksumSha256: sha256
++        checksumSha256: sha256,
++		verbose: true
+     })
+diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
+index 6edfdcb..e756289 100644
+--- a/build/lib/extensions.ts
++++ b/build/lib/extensions.ts
+@@ -260,3 +260,4 @@ export function fromGithub({ name, version, repo, sha256, metadata }: IExtension
+ 		name: name => name.endsWith('.vsix'),
+-		checksumSha256: sha256
++		checksumSha256: sha256,
++		verbose: true
+ 	})
