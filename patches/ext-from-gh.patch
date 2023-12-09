@@ -7,7 +7,6 @@ index 1b0adc4..b595123 100644
 -    const galleryServiceUrl = productjson.extensionsGallery?.serviceUrl;
 -    return (galleryServiceUrl ? ext.fromMarketplace(galleryServiceUrl, extension) : ext.fromGithub(extension))
 -        .pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
-+	fancyLog(extension);
 +    return ext.fromGithub(extension).pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
  }
 diff --git a/build/lib/builtInExtensions.ts b/build/lib/builtInExtensions.ts
@@ -19,26 +18,5 @@ index fefed43..4ae553e 100644
 -	const galleryServiceUrl = productjson.extensionsGallery?.serviceUrl;
 -	return (galleryServiceUrl ? ext.fromMarketplace(galleryServiceUrl, extension) : ext.fromGithub(extension))
 -		.pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
-+	fancyLog(extension);
 +	return ext.fromGithub(extension).pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
  }
-diff --git a/build/lib/extensions.js b/build/lib/extensions.js
-index c81568c..f51ff83 100644
---- a/build/lib/extensions.js
-+++ b/build/lib/extensions.js
-@@ -223,3 +223,4 @@ function fromGithub({ name, version, repo, sha256, metadata }) {
-         name: name => name.endsWith('.vsix'),
--        checksumSha256: sha256
-+        checksumSha256: sha256,
-+		verbose: true
-     })
-diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
-index 6edfdcb..e756289 100644
---- a/build/lib/extensions.ts
-+++ b/build/lib/extensions.ts
-@@ -260,3 +260,4 @@ export function fromGithub({ name, version, repo, sha256, metadata }: IExtension
- 		name: name => name.endsWith('.vsix'),
--		checksumSha256: sha256
-+		checksumSha256: sha256,
-+		verbose: true
- 	})
