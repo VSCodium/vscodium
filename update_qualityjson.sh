@@ -22,10 +22,12 @@ git add .
 CHANGES=$( git status --porcelain )
 
 if [[ -n "${CHANGES}" ]]; then
-  git commit -m "build(insider): update to commit ${MS_COMMIT:0:7}"
+  git commit -m "build(${VSCODE_QUALITY}): update to commit ${MS_COMMIT:0:7}"
 
-  if ! git push origin insider --quiet; then
-    git pull origin insider
-    git push origin insider --quiet
+  BRANCH_NAME=$( git rev-parse --abbrev-ref HEAD )
+
+  if ! git push origin "${BRANCH_NAME}" --quiet; then
+    git pull origin "${BRANCH_NAME}"
+    git push origin "${BRANCH_NAME}" --quiet
   fi
 fi
