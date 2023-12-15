@@ -15,12 +15,12 @@ parts:
     override-build: |
       set -eu
       # Get GitHub releases
-      wget --quiet https://api.github.com/repos/VSCodium/vscodium/releases -O latest.json
+      axel --quiet https://api.github.com/repos/VSCodium/vscodium/releases -o latest.json
       VERSION=$(jq -r 'sort_by(.tag_name)|last.tag_name' latest.json)
       DEB_URL=$(jq -r 'map(select(.tag_name == "'"$VERSION"'"))|first.assets[].browser_download_url|select(endswith("'"_${CRAFT_TARGET_ARCH}.deb"'"))' latest.json)
       DEB=$(basename "${DEB_URL}")
       # Downloading .deb"
-      wget "${DEB_URL}" -O "${CRAFT_PART_INSTALL}/${DEB}"
+      axel --quiet "${DEB_URL}" -o "${CRAFT_PART_INSTALL}/${DEB}"
       # Unpacking .deb"
       dpkg -x "${CRAFT_PART_INSTALL}/${DEB}" ${SNAPCRAFT_PART_INSTALL}
       rm -f latest.json
@@ -31,32 +31,33 @@ parts:
       sed -i 's|Icon=vscodium|Icon=${SNAP}/usr/share/pixmaps/vscodium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
       #sed -i 's|Exec=/usr/share/codium/codium|Exec=codium|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
       sed -i 's|Icon=vscodium|Icon=/usr/share/pixmaps/vscodium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-url-handler.desktop
+    build-snaps:
+      - axel
     build-packages:
-      - wget
       - jq
-        # stage-packages:
-        #- fcitx-frontend-gtk3
-        #- gvfs-libs
-      # - libasound2
-      # - libgconf-2-4
-      # - libglib2.0-bin
-      # - libgnome-keyring0
-      # - libgtk-3-0
-      # - libnotify4
-      # - libnspr4
-      # - libnss3
-      # - libpcre3
-      # - libpulse0
-      # - libsecret-1-0
-      # - libxshmfence1
-      # - libxss1
-      # - libxtst6
-      # - zlib1g
-      # - libx11-xcb1
-      # - libxkbfile1
-      # - libdrm2
-      # - libgbm1
-      # - libxcb-dri3-0
+    stage-packages:
+      - fcitx-frontend-gtk3
+      - gvfs-libs
+      - libasound2
+      - libgconf-2-4
+      - libglib2.0-bin
+      - gnome-keyring
+      - libgtk-3-0
+      - libnspr4
+      - libnss3
+      - libnotify4
+      - libpcre3
+      - libpulse0
+      - libsecret-1-0
+      - libxshmfence1
+      - libxss1
+      - libxtst6
+      - zlib1g
+      - libx11-xcb1
+      - libxkbfile1
+      - libdrm2
+      - libgbm1
+      - libxcb-dri3-0
     prime:
       - -usr/share/doc
       - -usr/share/fonts
@@ -64,6 +65,16 @@ parts:
       - -usr/share/lintian
       - -usr/share/man
       - -usr/share/codium/chrome-sandbox
+    build-attributes:
+      - enable-patchelf
+    override-prime: |
+      set -eux
+      craftctl default
+      for snap in "core22"; do
+        cd /snap/$snap/current/usr/lib/$CRAFT_ARCH_TRIPLET
+        find . -type f,l -name "*.so*" -exec bash -c "rm -f $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/{}*" \;
+      done
+
 
   electron-launch:
     after:
@@ -71,25 +82,6 @@ parts:
     plugin: dump
     source: snap/local/bin
 
-plugs:
-    desktop:
-        mount-host-font-cache: false
-    gtk-3-themes:
-        interface: content
-        target: $SNAP/data-dir/themes
-        default-provider: gtk-common-themes
-    icon-themes:
-        interface: content
-        target: $SNAP/data-dir/icons
-        default-provider: gtk-common-themes
-    sound-themes:
-        interface: content
-        target: $SNAP/data-dir/sounds
-        default-provider: gtk-common-themes
-    gnome-42-2204:
-        interface: content
-        target: $SNAP/gnome-platform
-        default-provider: gnome-42-2204
 
 apps:
   codium:
