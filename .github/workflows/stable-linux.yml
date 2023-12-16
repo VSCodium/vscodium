@@ -6,9 +6,12 @@ on:
       force_version:
         type: boolean
         description: Force update version
-      test_asset_builder:
+      generate_assets:
         type: boolean
-        description: Test the assets builder
+        description: Generate assets
+      checkout_pr:
+        type: string
+        description: Checkout PR
   repository_dispatch:
     types: [stable]
   push:
@@ -44,12 +47,18 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
+      - name: Checkout PR
+        uses: dawidd6/action-checkout-pr@v1
+        with:
+          pr: ${{ github.event.inputs.checkout_pr }}
+        if: github.event.inputs.checkout_pr != ''
+
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
       - name: Check PR or cron
         env:
-          TEST_ASSET_BUILDER: ${{ github.event.inputs.test_asset_builder }}
+          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
         run: ./check_cron_or_pr.sh
 
   dependencies:
@@ -76,6 +85,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Checkout PR
+        uses: dawidd6/action-checkout-pr@v1
+        with:
+          pr: ${{ github.event.inputs.checkout_pr }}
+        if: github.event.inputs.checkout_pr != ''
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
@@ -133,6 +148,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Checkout PR
+        uses: dawidd6/action-checkout-pr@v1
+        with:
+          pr: ${{ github.event.inputs.checkout_pr }}
+        if: github.event.inputs.checkout_pr != ''
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
@@ -161,7 +184,15 @@ jobs:
 
       - name: Prepare assets
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.test_asset_builder == 'true')
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
+      - name: Upload assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: assets
+          path: ./assets/
+          retention-days: 3
+        if: github.event.inputs.generate_assets == 'true'
 
       - name: Release
         env:

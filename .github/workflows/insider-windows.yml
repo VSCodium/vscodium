@@ -6,9 +6,9 @@ on:
       release_version:
         type: string
         description: Forced release version
-      test_asset_builder:
+      generate_assets:
         type: boolean
-        description: Test the assets builder
+        description: Generate assets
   repository_dispatch:
     types: [insider]
   push:
@@ -72,7 +72,7 @@ jobs:
 
       - name: Check PR or cron
         env:
-          TEST_ASSET_BUILDER: ${{ github.event.inputs.test_asset_builder }}
+          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
         run: ./check_cron_or_pr.sh
 
       - name: Check existing VSCodium tags/releases
@@ -91,7 +91,7 @@ jobs:
 
       - name: Prepare assets
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.test_asset_builder == 'true')
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Release
         env:
