@@ -13,7 +13,7 @@ if [[ -n "${PULL_REQUEST_ID}" ]]; then
 
   git fetch origin "pull/${PULL_REQUEST_ID}/head"
   git checkout FETCH_HEAD
-  git merge "origin/${BRANCH_NAME}"
+  git merge --no-edit "origin/${BRANCH_NAME}"
 fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
