@@ -11,6 +11,7 @@ fi
 if [[ -n "${PULL_REQUEST_ID}" ]]; then
   BRANCH_NAME=$( git rev-parse --abbrev-ref HEAD )
 
+  git fetch --unshallow
   git fetch origin "pull/${PULL_REQUEST_ID}/head"
   git checkout FETCH_HEAD
   git merge --no-edit "origin/${BRANCH_NAME}"
