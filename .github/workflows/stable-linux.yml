@@ -48,9 +48,11 @@ jobs:
           ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Checkout PR
-        uses: dawidd6/action-checkout-pr@v1
-        with:
-          pr: ${{ github.event.inputs.checkout_pr }}
+        env:
+          PR_ID: ${{ github.event.inputs.checkout_pr }}
+        run: |
+          git fetch origin pull/$PR_ID/head
+          git checkout FETCH_HEAD
         if: github.event.inputs.checkout_pr != ''
 
       - name: Clone VSCode repo
