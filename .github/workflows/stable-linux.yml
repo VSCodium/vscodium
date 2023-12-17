@@ -83,8 +83,8 @@ jobs:
           ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Clone VSCode repo
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        # env:
+        #   PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
       - uses: docker/setup-qemu-action@v3
