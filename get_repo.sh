@@ -14,7 +14,7 @@ if [[ -n "${PULL_REQUEST_ID}" ]]; then
   git fetch --unshallow
   git fetch origin "pull/${PULL_REQUEST_ID}/head"
   git checkout FETCH_HEAD
-  git merge --no-commit "origin/${BRANCH_NAME}"
+  git merge --no-ff --no-commit "origin/${BRANCH_NAME}"
 fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
