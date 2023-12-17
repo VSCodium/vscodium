@@ -9,8 +9,11 @@ if [[ "${CI_BUILD}" != "no" ]]; then
 fi
 
 if [[ -n "${PULL_REQUEST_ID}" ]]; then
+  BRANCH_NAME=$( git rev-parse --abbrev-ref HEAD )
+
   git fetch origin "pull/${PULL_REQUEST_ID}/head"
   git checkout FETCH_HEAD
+  git merge "origin/${BRANCH_NAME}"
 fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
