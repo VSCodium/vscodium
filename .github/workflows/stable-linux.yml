@@ -47,15 +47,9 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
-      - name: Checkout PR
-        env:
-          PR_ID: ${{ github.event.inputs.checkout_pr }}
-        run: |
-          git fetch origin pull/$PR_ID/head
-          git checkout FETCH_HEAD
-        if: github.event.inputs.checkout_pr != ''
-
       - name: Clone VSCode repo
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
       - name: Check PR or cron
@@ -88,13 +82,9 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
-      - name: Checkout PR
-        uses: dawidd6/action-checkout-pr@v1
-        with:
-          pr: ${{ github.event.inputs.checkout_pr }}
-        if: github.event.inputs.checkout_pr != ''
-
       - name: Clone VSCode repo
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
       - uses: docker/setup-qemu-action@v3
@@ -153,13 +143,9 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
-      - name: Checkout PR
-        uses: dawidd6/action-checkout-pr@v1
-        with:
-          pr: ${{ github.event.inputs.checkout_pr }}
-        if: github.event.inputs.checkout_pr != ''
-
       - name: Clone VSCode repo
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
       - name: Install GH
@@ -194,7 +180,7 @@ jobs:
           name: assets
           path: ./assets/
           retention-days: 3
-        if: github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD == 'yes' && github.event.inputs.generate_assets == 'true'
 
       - name: Release
         env:
