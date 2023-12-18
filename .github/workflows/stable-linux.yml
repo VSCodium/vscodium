@@ -158,7 +158,7 @@ jobs:
         if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Restore remote dependencies
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
         if: env.SHOULD_BUILD == 'yes' && matrix.vscode_arch == 'x64'
