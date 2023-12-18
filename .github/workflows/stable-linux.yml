@@ -94,7 +94,7 @@ jobs:
         run: ./install_remote_dependencies.sh
 
       - name: Save remote dependencies
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: remote-dependencies-${{ matrix.vscode_arch }}
           path: ./remote-dependencies.tar
@@ -175,7 +175,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Upload assets
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: assets
           path: ./assets/
