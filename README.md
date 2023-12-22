@@ -84,6 +84,13 @@ choco install vscodium
 choco install vscodium-insiders
 ```
 
+#### <a id="install-with-wapt"></a>Install with WAPT (Windows, Mac, Linux)
+
+If you use Windows, Mac or Linux and have [WAPT](https://www.tranquil.it/wapt-enterprise/) installed, you can install the [VSCodium package](https://wapt.tranquil.it/store/tis-vscodium):
+```cmd
+wapt-get install tis-vscodium
+```
+
 #### <a id="install-with-scoop"></a>Install with Scoop (Windows)
 
 If you use Windows and have [Scoop](https://scoop.sh) installed:
