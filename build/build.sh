@@ -5,12 +5,12 @@
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
 ###
 
-export APP_NAME="VSCodium"
+export APP_NAME="Codium Editor"
 export CI_BUILD="no"
 export SHOULD_BUILD="yes"
 export SKIP_ASSETS="yes"
 export SKIP_BUILD="no"
-export SKIP_SOURCE="no"
+export SKIP_SOURCE="yes"
 export VSCODE_LATEST="no"
 export VSCODE_QUALITY="stable"
 
