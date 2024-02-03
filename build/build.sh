@@ -102,9 +102,9 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
 
   . build.sh
 
-  if [[ "${VSCODE_QUALITY}" == "insider" && "${VSCODE_LATEST}" == "yes" ]]; then
-    jsonTmp=$( cat "insider.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
-    echo "${jsonTmp}" > "insider.json" && unset jsonTmp
+  if [[ "${VSCODE_LATEST}" == "yes" ]]; then
+    jsonTmp=$( cat "${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
+    echo "${jsonTmp}" > "${VSCODE_QUALITY}.json" && unset jsonTmp
   fi
 fi
 

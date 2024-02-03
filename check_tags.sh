@@ -48,16 +48,14 @@ contains() {
 }
 
 if [[ "${ASSETS}" != "null" ]]; then
-  # macos
-  if [[ "${OS_NAME}" == "osx" ]]; then
-    if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
-      if [[ -z $( contains "${APP_NAME}-${RELEASE_VERSION}-src.tar.gz" ) || -z $( contains "${APP_NAME}-${RELEASE_VERSION}-src.zip" ) ]]; then
-        echo "Building on MacOS because we have no SRC"
-        export SHOULD_BUILD="yes"
-        export SHOULD_BUILD_SRC="yes"
-      fi
+  if [[ "${IS_SPEARHEAD}" == "yes" ]]; then
+    if [[ -z $( contains "${APP_NAME}-${RELEASE_VERSION}-src.tar.gz" ) || -z $( contains "${APP_NAME}-${RELEASE_VERSION}-src.zip" ) ]]; then
+      echo "Building because we have no SRC"
+      export SHOULD_BUILD="yes"
+      export SHOULD_BUILD_SRC="yes"
     fi
-
+  # macos
+  elif [[ "${OS_NAME}" == "osx" ]]; then
     if [[ -z $( contains "${APP_NAME}-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.zip" ) ]]; then
       echo "Building on MacOS because we have no ZIP"
       export SHOULD_BUILD="yes"
@@ -345,7 +343,9 @@ if [[ "${ASSETS}" != "null" ]]; then
     fi
   fi
 else
-  if [[ "${OS_NAME}" == "linux" ]]; then
+  if [[ "${IS_SPEARHEAD}" == "yes" ]]; then
+    export SHOULD_BUILD_SRC="yes"
+  elif [[ "${OS_NAME}" == "linux" ]]; then
     if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_APPIMAGE="no"
@@ -353,10 +353,6 @@ else
       SHOULD_BUILD_TAR="no"
     elif [[ "${VSCODE_ARCH}" != "x64" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
-    fi
-  elif [[ "${OS_NAME}" == "osx" ]]; then
-    if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
-      export SHOULD_BUILD_SRC="yes"
     fi
   elif [[ "${OS_NAME}" == "windows" ]]; then
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then

@@ -1,4 +1,4 @@
-# Build
+# How to build VSCodium
 
 ## Table of Contents
 
@@ -50,7 +50,7 @@
 - 7z
 - [WiX Toolset](http://wixtoolset.org/releases/)
 - python3
-- 'Tools for Native Modules' from official Node.js installer
+- 'Tools for Native Modules' from hte official Node.js installer
 
 ## <a id="build-scripts"></a>Build Scripts
 
@@ -64,7 +64,7 @@ A build helper script can be found at `build/build.sh`.
 
 The `insider` version can be built with `./build/build.sh -i` on the `insider` branch.
 
-You can try the lastest version with the command `./build/build.sh -il` but the patches might not be up to date.
+You can try the latest version with the command `./build/build.sh -il` but the patches might not be up to date.
 
 ## <a id="build-docker"></a>Build in Docker
 
@@ -131,10 +131,10 @@ review-tools.snap-review --allow-classic codium*.snap
 
 - run `./build/build_<os>.sh`, if a patch is failing then,
 - run `./build/update_patches.sh`
-- when the script pause at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
+- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
 - fix all the `*.rej` files
 - run `yarn watch`
-- run `./script/code.sh` until everything ok
+- run `./script/code.sh` until everything is ok
 - press any key to continue the script `update_patches.sh`
 
 ## <a id="patch-update-process-manual"></a>Manual
@@ -145,5 +145,5 @@ review-tools.snap-review --allow-classic codium*.snap
 - run `git apply --reject ../patches/<name>.patch`
 - fix all the `*.rej` files
 - run `yarn watch`
-- run `./script/code.sh` until everything ok
+- run `./script/code.sh` until everything is ok
 - run `git diff > ../patches/<name>.patch`

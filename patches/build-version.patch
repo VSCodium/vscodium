@@ -1,69 +1,67 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 2a0c236..9fea722 100644
+index df18cf0..6f59211 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -250,4 +250,5 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -289,4 +289,5 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const name = product.nameShort;
 +		const release = packageJson.release;
  		const packageJsonStream = gulp.src(['remote/package.json'], { base: 'remote' })
 -			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined }));
 +			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined }));
  
-@@ -256,3 +257,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -295,3 +296,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
 -			.pipe(json({ commit, date, version }));
 +			.pipe(json({ commit, date, version, release }));
  
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 0ca2cfd..3fb21d5 100644
+index bfd5c89..bc84f18 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -225,3 +225,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -233,3 +233,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  
 -		let version = packageJson.version;
 +		let version = packageJson.version
  		const quality = product.quality;
-@@ -233,3 +233,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -241,3 +241,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const name = product.nameShort;
 -		const packageJsonUpdates = { name, version };
 +		const release = packageJson.release;
 +		const packageJsonUpdates = { name, version, release };
  
-@@ -244,3 +245,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -252,3 +253,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const date = new Date().toISOString();
 -		const productJsonUpdate = { commit, date, checksums, version };
 +		const productJsonUpdate = { commit, date, checksums, version, release };
  
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index 90f75cc..275c958 100644
+index 8c2b62f..098f8d9 100644
 --- a/build/gulpfile.vscode.linux.js
 +++ b/build/gulpfile.vscode.linux.js
-@@ -25,4 +25,2 @@ const commit = getVersion(root);
+@@ -24,4 +24,2 @@ const commit = getVersion(root);
  
 -const linuxPackageRevision = Math.floor(new Date().getTime() / 1000);
 -
  /**
-@@ -88,3 +86,3 @@ function prepareDebPackage(arch) {
+@@ -86,3 +84,3 @@ function prepareDebPackage(arch) {
  					.pipe(replace('@@NAME@@', product.applicationName))
 -					.pipe(replace('@@VERSION@@', packageJson.version + '-' + linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  					.pipe(replace('@@ARCHITECTURE@@', debArch))
-@@ -193,4 +191,3 @@ function prepareRpmPackage(arch) {
- 			.pipe(replace('@@ICON@@', product.linuxIconName))
--			.pipe(replace('@@VERSION@@', packageJson.version))
--			.pipe(replace('@@RELEASE@@', linuxPackageRevision))
-+			.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
- 			.pipe(replace('@@ARCHITECTURE@@', rpmArch))
-@@ -267,3 +264,3 @@ function prepareSnapPackage(arch) {
+@@ -196,2 +194,3 @@ function prepareRpmPackage(arch) {
+ 					.pipe(replace('@@RELEASE@@', linuxPackageRevision))
++					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
+ 					.pipe(replace('@@ARCHITECTURE@@', rpmArch))
+@@ -270,3 +269,3 @@ function prepareSnapPackage(arch) {
  			.pipe(replace('@@NAME@@', product.applicationName))
 -			.pipe(replace('@@VERSION@@', commit.substr(0, 8)))
 +			.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  			// Possible run-on values https://snapcraft.io/docs/architectures
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
-index 6e9a6f3..9d80b6b 100644
+index 5adfdfb..d6ddead 100644
 --- a/build/gulpfile.vscode.win32.js
 +++ b/build/gulpfile.vscode.win32.js
-@@ -94,4 +94,4 @@ function buildWin32Setup(arch, target) {
+@@ -90,4 +90,4 @@ function buildWin32Setup(arch, target) {
  			DirName: product.win32DirName,
 -			Version: pkg.version,
 -			RawVersion: pkg.version.replace(/-\w+$/, ''),
@@ -71,16 +69,16 @@ index 6e9a6f3..9d80b6b 100644
 +			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 diff --git a/resources/linux/rpm/code.spec.template b/resources/linux/rpm/code.spec.template
-index 06b8549..3af1f45 100644
+index c9e57db..aef439c 100644
 --- a/resources/linux/rpm/code.spec.template
 +++ b/resources/linux/rpm/code.spec.template
 @@ -2,3 +2,3 @@ Name:     @@NAME@@
  Version:  @@VERSION@@
--Release:  @@RELEASE@@.el7
-+Release:  el7
+-Release:  @@RELEASE@@.el8
++Release:  el8
  Summary:  Code editing. Redefined.
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index ac9cd5d..87b6105 100644
+index cbd573f..c7bbc90 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
 @@ -58,2 +58,3 @@ export interface IProductConfiguration {
@@ -97,7 +95,7 @@ index 0be311f..d6c4a18 100644
 +		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} ${this.productService.release || 'Release unknown'} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
  		output.push(`OS Version:       ${osLib.type()} ${osLib.arch()} ${osLib.release()}`);
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 51a55e1..26dfe7b 100644
+index 9482a2c..c3ef5bd 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -43,6 +43,7 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
@@ -111,7 +109,7 @@ index 51a55e1..26dfe7b 100644
 +			release: pkg.release
  		});
 diff --git a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-index 4b320bb..6619c75 100644
+index c064ebc..72a9fa9 100644
 --- a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 @@ -22,2 +22,3 @@ import { defaultButtonStyles, defaultCheckboxStyles, defaultDialogStyles, defaul
@@ -149,7 +147,7 @@ index 0000000..2a8ea57
 +	return LABELS[language] ?? DEFAULT_LABEL;
 +}
 diff --git a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-index 575bde3..f427833 100644
+index 3940ab6..609e5ed 100644
 --- a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 @@ -14,2 +14,3 @@ import { IProductService } from 'vs/platform/product/common/productService';
@@ -160,7 +158,7 @@ index 575bde3..f427833 100644
  		const osProps = await this.nativeHostService.getOSProperties();
 +		const releaseString = getReleaseString();
  
-@@ -89,3 +91,3 @@ export class NativeDialogHandler extends AbstractDialogHandler {
+@@ -90,3 +92,3 @@ export class NativeDialogHandler extends AbstractDialogHandler {
  				`${osProps.type} ${osProps.arch} ${osProps.release}${isLinuxSnap ? ' snap' : ''}`
 -			);
 +			).replace('\n', `\n${releaseString} ${this.productService.release || 'Unknown'}\n`);

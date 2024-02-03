@@ -24,6 +24,7 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 for file in ../patches/*.patch; do
   if [[ -f "${file}" ]]; then
     echo applying patch: "${file}";
+    # grep '^+++' "${file}"  | sed -e 's#+++ [ab]/#./vscode/#' | while read line; do shasum -a 256 "${line}"; done
     if ! git apply --ignore-whitespace "${file}"; then
       echo failed to apply patch "${file}" >&2
       exit 1

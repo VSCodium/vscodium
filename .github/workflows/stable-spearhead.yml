@@ -1,4 +1,4 @@
-name: insider-spearhead
+name: stable-spearhead
 
 on:
   workflow_dispatch:
@@ -10,24 +10,22 @@ on:
         type: boolean
         description: Force dispatch
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 18 * * *'
 
 jobs:
   build:
     runs-on: [self-hosted, macOS, ARM64]
     env:
       APP_NAME: VSCodium
-      ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+      ASSETS_REPOSITORY: ${{ github.repository }}
       VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
       OS_NAME: osx
       VSCODE_ARCH: arm64
       VSCODE_LATEST: yes
-      VSCODE_QUALITY: insider
+      VSCODE_QUALITY: stable
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: insider
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
@@ -71,5 +69,5 @@ jobs:
       - name: Dispatch builds
         uses: peter-evans/repository-dispatch@v3
         with:
-          event-type: 'insider'
+          event-type: 'stable'
         if: env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true'

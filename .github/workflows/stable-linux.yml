@@ -3,17 +3,17 @@ name: stable-linux
 on:
   workflow_dispatch:
     inputs:
-      new_release:
-        type: boolean
-        description: Force new Release
       force_version:
         type: boolean
         description: Force update version
-      test_asset_builder:
+      generate_assets:
         type: boolean
-        description: Test the assets builder
-  schedule:
-    - cron: '0 18 * * *'
+        description: Generate assets
+      checkout_pr:
+        type: string
+        description: Checkout PR
+  repository_dispatch:
+    types: [stable]
   push:
     branches: [ master ]
     paths-ignore:
@@ -48,11 +48,13 @@ jobs:
           ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Clone VSCode repo
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
       - name: Check PR or cron
         env:
-          TEST_ASSET_BUILDER: ${{ github.event.inputs.test_asset_builder }}
+          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
         run: ./check_cron_or_pr.sh
 
   dependencies:
@@ -81,6 +83,8 @@ jobs:
           ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Clone VSCode repo
+        # env:
+        #   PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
       - uses: docker/setup-qemu-action@v3
@@ -114,16 +118,16 @@ jobs:
         include:
         - vscode_arch: x64
           npm_arch: x64
-          image: vscodium/vscodium-linux-build-agent:bionic-x64
+          image: vscodium/vscodium-linux-build-agent:focal-x64
         - vscode_arch: arm64
           npm_arch: arm64
-          image: vscodium/vscodium-linux-build-agent:bionic-arm64
+          image: vscodium/vscodium-linux-build-agent:focal-arm64
         - vscode_arch: armhf
           npm_arch: arm
-          image: vscodium/vscodium-linux-build-agent:bionic-armhf
+          image: vscodium/vscodium-linux-build-agent:focal-armhf
         - vscode_arch: ppc64le
           npm_arch: ppc64
-          image: vscodium/vscodium-linux-build-agent:bionic-ppc64le
+          image: vscodium/vscodium-linux-build-agent:focal-ppc64le
     container:
       image: ${{ matrix.image }}
       env:
@@ -136,8 +140,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Clone VSCode repo
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
       - name: Install GH
@@ -146,7 +154,6 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_RELEASE: ${{ github.event.inputs.new_release }}
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
@@ -165,7 +172,15 @@ jobs:
 
       - name: Prepare assets
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.test_asset_builder == 'true')
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
+      - name: Upload assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: assets
+          path: ./assets/
+          retention-days: 3
+        if: env.SHOULD_BUILD == 'yes' && github.event.inputs.generate_assets == 'true'
 
       - name: Release
         env:
