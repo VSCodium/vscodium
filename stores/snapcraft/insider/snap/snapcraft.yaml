@@ -4,7 +4,7 @@ summary: Code editing. Redefined.
 description: |
   Binary releases of Code Insiders without branding/telemetry/licensing
 
-base: core18
+base: core20
 grade: stable
 confinement: classic
 compression: lzo
@@ -36,35 +36,41 @@ parts:
       - wget
       - jq
     stage-packages:
-      - fcitx-frontend-gtk3
-      - gvfs-libs
+      - ca-certificates
       - libasound2
-      - libgconf-2-4
-      - libglib2.0-bin
-      - libgnome-keyring0
-      - libgtk-3-0
-      - libnotify4
-      - libnspr4
-      - libnss3
-      - libpcre3
-      - libpulse0
-      - libsecret-1-0
-      - libxshmfence1
-      - libxss1
-      - libxtst6
-      - zlib1g
-      - libx11-xcb1
-      - libxkbfile1
+      - libatk-bridge2.0-0
+      - libatk1.0-0
+      - libatspi2.0-0
+      - libcairo2
+      - libcanberra-gtk3-module
+      - libcurl3-gnutls
+      - libcurl3-nss
+      - libcurl4
       - libdrm2
       - libgbm1
-      - libxcb-dri3-0
+      - libgl1
+      - libglib2.0-0
+      - libgtk-3-0
+      - libibus-1.0-5
+      - libnss3
+      - libpango-1.0-0
+      - libsecret-1-0
+      - libxcomposite1
+      - libxdamage1
+      - libxfixes3
+      - libxkbcommon0
+      - libxkbfile1
+      - libxrandr2
+      - libxss1
+      - locales-all
+      - packagekit-gtk3-module
+      - xdg-utils
     prime:
       - -usr/share/doc
       - -usr/share/fonts
       - -usr/share/icons
       - -usr/share/lintian
       - -usr/share/man
-      - -usr/share/codium/chrome-sandbox
 
   electron-launch:
     after:
@@ -72,15 +78,23 @@ parts:
     plugin: dump
     source: snap/local
 
+  cleanup:
+    after:
+      - electron-launch
+    plugin: nil
+    build-snaps:
+      - core20
+    override-prime: |
+      set -eux
+      for snap in "core20"; do
+        cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+      done
+      patchelf --print-rpath $SNAPCRAFT_PRIME/usr/share/codium-insiders/chrome_crashpad_handler
+
 apps:
   codium-insiders:
     command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --no-sandbox
-    desktop: usr/share/applications/codium-insiders.desktop
-    environment:
-      GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
+    common-id: codium-insiders.desktop
 
   url-handler:
     command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --open-url --no-sandbox
-    desktop: usr/share/applications/codium-insiders-url-handler.desktop
-    environment:
-      GSETTINGS_SCHEMA_DIR: $SNAP/usr/share/glib-2.0/schemas
