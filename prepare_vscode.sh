@@ -62,7 +62,7 @@ export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 if [[ "${OS_NAME}" == "linux" ]]; then
   export VSCODE_SKIP_NODE_VERSION_CHECK=1
 
-  mv .nvmrc.linux .nvmrc
+  mv ../.nvmrc.linux ../.nvmrc
 
   for file in ../patches/linux/*.patch; do
     if [[ -f "${file}" ]]; then
