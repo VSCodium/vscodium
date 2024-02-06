@@ -25,3 +25,4 @@ The following extensions are not compatible with VSCodium due to their licensing
 The following extensions are functional replacements for incompatible extensions:
 
 - [Open Remote - SSH](https://open-vsx.org/extension/jeanp413/open-remote-ssh)
+- [Open Remote - WSL](https://open-vsx.org/extension/jeanp413/open-remote-wsl)

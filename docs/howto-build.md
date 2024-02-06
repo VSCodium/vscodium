@@ -17,31 +17,31 @@
 
 ## <a id="dependencies"></a>Dependencies
 
-- node 16
+- node 18.15
 - yarn
 - jq
 - git
+- python3 3.11
 
 ### <a id="dependencies-linux"></a>Linux
 
-- GCC
+- gcc
+- g++
 - make
 - pkg-config
 - libx11-dev
 - libxkbfile-dev
 - libsecret-1-dev
+- libkrb5-dev
 - fakeroot
 - rpm
 - rpmbuild
 - dpkg
-- python3
 - imagemagick (for AppImage)
 
 ### <a id="dependencies-macos"></a>MacOS
-- imagemagick
-- png2icns (`npm install png2icns -g`)
-- librsvg
 
+see [the common dependencies](#dependencies)
 
 ### <a id="dependencies-windows"></a>Windows
 
@@ -49,8 +49,7 @@
 - sed
 - 7z
 - [WiX Toolset](http://wixtoolset.org/releases/)
-- python3
-- 'Tools for Native Modules' from hte official Node.js installer
+- 'Tools for Native Modules' from the official Node.js installer
 
 ## <a id="build-scripts"></a>Build Scripts
 
@@ -65,6 +64,16 @@ A build helper script can be found at `build/build.sh`.
 The `insider` version can be built with `./build/build.sh -i` on the `insider` branch.
 
 You can try the latest version with the command `./build/build.sh -il` but the patches might not be up to date.
+
+### Flags
+
+The script `build/build.sh` provides several flags:
+
+- `-i`: build the Insiders version
+- `-l`: build with latest version of Visual Studio Code
+- `-o`: skip the build step
+- `-p`: generate the packages/assets/installers
+- `-s`: do not retrieve the source code of Visual Studio Code, it won't delete the existing build
 
 ## <a id="build-docker"></a>Build in Docker
 
@@ -147,3 +156,11 @@ review-tools.snap-review --allow-classic codium*.snap
 - run `yarn watch`
 - run `./script/code.sh` until everything is ok
 - run `git diff > ../patches/<name>.patch`
+
+### <a id="icons"></a>icons/build_icons.sh
+
+To run `icons/build_icons.sh`, you will need:
+
+- imagemagick
+- png2icns (`npm install png2icns -g`)
+- librsvg
