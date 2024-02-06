@@ -6,6 +6,7 @@
 ###
 
 export APP_NAME="VSCodium"
+export BINARY_NAME="codium"
 export CI_BUILD="no"
 export SHOULD_BUILD="yes"
 export SKIP_ASSETS="yes"
@@ -17,6 +18,7 @@ export VSCODE_QUALITY="stable"
 while getopts ":ilops" opt; do
   case "$opt" in
     i)
+      export BINARY_NAME="codium-insiders"
       export VSCODE_QUALITY="insider"
       ;;
     l)

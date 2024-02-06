@@ -1,0 +1,81 @@
+name: @@SNAP_NAME@@
+version: '@@SNAP_VERSION@@'
+summary: Code editing. Redefined.
+description: |
+  Binary releases of Visual Studio Code - Insiders without branding/telemetry/licensing
+
+base: core20
+grade: stable
+confinement: classic
+compression: lzo
+
+parts:
+  @@SNAP_NAME@@:
+    plugin: dump
+    source: .
+    stage-packages:
+      - ca-certificates
+      - libasound2
+      - libatk-bridge2.0-0
+      - libatk1.0-0
+      - libatspi2.0-0
+      - libcairo2
+      - libcanberra-gtk3-module
+      - libcurl3-gnutls
+      - libcurl3-nss
+      - libcurl4
+      - libdrm2
+      - libgbm1
+      - libgl1
+      - libglib2.0-0
+      - libgtk-3-0
+      - libibus-1.0-5
+      - libnss3
+      - libpango-1.0-0
+      - libsecret-1-0
+      - libxcomposite1
+      - libxdamage1
+      - libxfixes3
+      - libxkbcommon0
+      - libxkbfile1
+      - libxrandr2
+      - libxss1
+      - locales-all
+      - packagekit-gtk3-module
+      - xdg-utils
+    prime:
+      - -usr/share/doc
+      - -usr/share/fonts
+      - -usr/share/icons
+      - -usr/share/lintian
+      - -usr/share/man
+    build-attributes:
+      - enable-patchelf
+    build-packages:
+      - patchelf
+    override-build: |
+      snapcraftctl build
+      patchelf --force-rpath --set-rpath '$ORIGIN/../../lib/x86_64-linux-gnu:$ORIGIN:/snap/core20/current/lib/x86_64-linux-gnu' $SNAPCRAFT_PART_INSTALL/snap/usr/share/@@SNAP_NAME@@/chrome_crashpad_handler
+
+  cleanup:
+    after:
+      - @@SNAP_NAME@@
+    plugin: nil
+    build-snaps:
+      - core20
+    build-packages:
+      - patchelf
+    override-prime: |
+      set -eux
+      for snap in "core20"; do
+        cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+      done
+      patchelf --print-rpath $SNAPCRAFT_PRIME/snap/usr/share/@@SNAP_NAME@@/chrome_crashpad_handler
+
+apps:
+  @@SNAP_NAME@@:
+    command: electron-launch $SNAP/snap/usr/share/@@SNAP_NAME@@/bin/@@SNAP_NAME@@ --no-sandbox
+    common-id: @@SNAP_NAME@@.desktop
+
+  url-handler:
+    command: electron-launch $SNAP/snap/usr/share/@@SNAP_NAME@@/bin/@@SNAP_NAME@@ --open-url --no-sandbox
