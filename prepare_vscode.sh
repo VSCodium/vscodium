@@ -61,6 +61,18 @@ export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 if [[ "${OS_NAME}" == "linux" ]]; then
   export VSCODE_SKIP_NODE_VERSION_CHECK=1
+
+  mv .nvmrc.linux .nvmrc
+
+  for file in ../patches/linux/*.patch; do
+    if [[ -f "${file}" ]]; then
+      echo applying patch: "${file}";
+      if ! git apply --ignore-whitespace "${file}"; then
+        echo failed to apply patch "${file}" >&2
+        exit 1
+      fi
+    fi
+  done
 fi
 
 if [[ "${OS_NAME}" == "osx" ]]; then
