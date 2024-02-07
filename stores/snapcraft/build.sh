@@ -9,6 +9,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 # Include utilities
 . ../../utils.sh
 
+SNAP_VERSION=$( echo "${RELEASE_VERSION}" | sed 's|\-insider||' )
 ICON_NAME="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
@@ -18,7 +19,7 @@ fi
 rm -rf .build
 mkdir -p .build/snap/gui
 
-DEB_ARCHIVE=$( ls ../../assets/*.deb )
+DEB_ARCHIVE=$( ls ../../vscode/.build/linux/deb/amd64/deb/*.deb )
 
 if [[ -z "${DEB_ARCHIVE}" ]]; then
   ARCHITECTURE=$( dpkg --print-architecture )
@@ -43,8 +44,6 @@ mv ".build/deb/usr/share/${BINARY_NAME}" ".build/snap/usr/share/${BINARY_NAME}"
 
 # Prepare snapcraft.yaml
 cp ${VSCODE_QUALITY}/snapcraft.yaml .build/snap/snapcraft.yaml
-
-SNAP_VERSION=$( echo "${RELEASE_VERSION}" | sed 's|\-insider||' )
 
 replace "s|@@SNAP_NAME@@|${BINARY_NAME}|g" .build/snap/snapcraft.yaml
 replace "s|@@SNAP_VERSION@@|${SNAP_VERSION}|g" .build/snap/snapcraft.yaml
