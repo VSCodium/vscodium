@@ -38,6 +38,7 @@
 - rpmbuild
 - dpkg
 - imagemagick (for AppImage)
+- snapcraft
 
 ### <a id="dependencies-macos"></a>MacOS
 
