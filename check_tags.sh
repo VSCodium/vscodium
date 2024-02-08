@@ -239,13 +239,6 @@ if [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_REH="no"
       fi
 
-      if [[ -z $( contains "arm64.snap" ) ]]; then
-        echo "Building on Linux arm64 because we have no Snap"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_SNAP="no"
-      fi
-
       export SHOULD_BUILD_APPIMAGE="no"
 
       if [[ "${SHOULD_BUILD}" != "yes" ]]; then
@@ -283,7 +276,6 @@ if [[ "${ASSETS}" != "null" ]]; then
       fi
 
       export SHOULD_BUILD_APPIMAGE="no"
-      export SHOULD_BUILD_SNAP="no"
 
       if [[ "${SHOULD_BUILD}" != "yes" ]]; then
         echo "Already have all the Linux arm builds"
@@ -294,7 +286,6 @@ if [[ "${ASSETS}" != "null" ]]; then
       SHOULD_BUILD_APPIMAGE="no"
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
-      SHOULD_BUILD_SNAP="no"
       SHOULD_BUILD_TAR="no"
 
       if [[ -z $( contains "${APP_NAME_LC}-reh-linux-ppc64le-${RELEASE_VERSION}.tar.gz" ) ]]; then
@@ -338,13 +329,6 @@ if [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_APPIMAGE="no"
       fi
 
-      if [[ -z $( contains "amd64.snap" ) ]]; then
-        echo "Building on Linux x64 because we have no Snap"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_SNAP="no"
-      fi
-
       if [[ -z $( contains "${APP_NAME_LC}-reh-linux-x64-${RELEASE_VERSION}.tar.gz" ) ]]; then
         echo "Building on Linux x64 because we have no REH archive"
         export SHOULD_BUILD="yes"
@@ -364,14 +348,10 @@ else
     if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
-      SHOULD_BUILD_SNAP="no"
       SHOULD_BUILD_TAR="no"
     fi
     if [[ "${VSCODE_ARCH}" != "x64" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
-    fi
-    if [[ "${VSCODE_ARCH}" != "arm64" && "${VSCODE_ARCH}" != "x64" ]]; then
-      export SHOULD_BUILD_SNAP="no"
     fi
   elif [[ "${OS_NAME}" == "windows" ]]; then
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
@@ -394,7 +374,6 @@ echo "SHOULD_BUILD_MSI=${SHOULD_BUILD_MSI}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_MSI_NOUP=${SHOULD_BUILD_MSI_NOUP}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_REH=${SHOULD_BUILD_REH}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_RPM=${SHOULD_BUILD_RPM}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_SNAP=${SHOULD_BUILD_SNAP}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_TAR=${SHOULD_BUILD_TAR}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_ZIP=${SHOULD_BUILD_ZIP}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_SRC=${SHOULD_BUILD_SRC}" >> "${GITHUB_ENV}"
