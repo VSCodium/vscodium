@@ -9,6 +9,9 @@ on:
       force_dispatch:
         type: boolean
         description: Force dispatch
+      dont_update:
+        type: boolean
+        description: Don't update VSCode
   schedule:
     - cron: '0 18 * * *'
 
@@ -53,7 +56,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && github.event.inputs.dont_update != 'true'
 
       - name: Prepare source
         run: ./prepare_src.sh
