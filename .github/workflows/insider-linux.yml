@@ -244,24 +244,24 @@ jobs:
         run: ./stores/snapcraft/build.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      # - uses: diddlesnaps/snapcraft-multiarch-action@v1
-      #   with:
-      #     path: stores/snapcraft/out
-      #     architecture: ${{ matrix.platform }}
-      #   id: build
-      #   if: env.SHOULD_BUILD == 'yes'
-
-      - uses: snapcore/action-build@v1
+      - uses: diddlesnaps/snapcraft-multiarch-action@v1
         with:
           path: stores/snapcraft/out
+          architecture: ${{ matrix.platform }}
         id: build
         if: env.SHOULD_BUILD == 'yes'
 
-      # - uses: diddlesnaps/snapcraft-review-action@v1
+      # - uses: snapcore/action-build@v1
       #   with:
-      #     snap: ${{ steps.build.outputs.snap }}
-      #     isClassic: 'true'
+      #     path: stores/snapcraft/out
+      #   id: build
       #   if: env.SHOULD_BUILD == 'yes'
+
+      - uses: diddlesnaps/snapcraft-review-action@v1
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          isClassic: 'true'
+        if: env.SHOULD_BUILD == 'yes'
 
       - uses: svenstaro/upload-release-action@v2
         with:

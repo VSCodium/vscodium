@@ -55,7 +55,7 @@ parts:
       - patchelf
     override-build: |
       snapcraftctl build
-      patchelf --force-rpath --set-rpath '$ORIGIN/../../lib/x86_64-linux-gnu:$ORIGIN:/snap/core20/current/lib/x86_64-linux-gnu' $SNAPCRAFT_PART_INSTALL/snap/usr/share/@@SNAP_NAME@@/chrome_crashpad_handler
+      patchelf --force-rpath --set-rpath '$ORIGIN/../../lib/x86_64-linux-gnu:$ORIGIN:/core20/current/lib/x86_64-linux-gnu' $SNAPCRAFT_PART_INSTALL/snap/usr/share/@@SNAP_NAME@@/chrome_crashpad_handler
 
   cleanup:
     after:

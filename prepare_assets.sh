@@ -139,6 +139,10 @@ else
 
   cd ..
 
+  if [[ "${CI_BUILD}" == "no" ]]; then
+    . ./stores/snapcraft/build.sh
+  fi
+
   if [[ "${SHOULD_BUILD_TAR}" != "no" ]]; then
     echo "Building and moving TAR"
     cd "VSCode-linux-${VSCODE_ARCH}"

@@ -20,7 +20,7 @@ rm -rf build
 mkdir -p build/snap/gui
 
 if [[ "${CI_BUILD}" == "no" ]]; then
-  DEB_ARCHIVE=$( ls ../../vscode/build/linux/deb/amd64/deb/*.deb )
+  DEB_ARCHIVE=$( ls ../../vscode/.build/linux/deb/amd64/deb/*.deb )
 else
   # Get GitHub releases
   wget --quiet "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases" -O gh_latest.json
@@ -37,8 +37,8 @@ fi
 # Unpacking .deb
 dpkg -x "${DEB_ARCHIVE}" build/deb
 
-mkdir -p build/snap/usr/share
-mv "build/deb/usr/share/${BINARY_NAME}" "build/snap/usr/share/${BINARY_NAME}"
+mkdir -p build/snap/local/usr/share
+mv "build/deb/usr/share/${BINARY_NAME}" "build/snap/local/usr/share/${BINARY_NAME}"
 
 # Prepare snapcraft.yaml
 cp ${VSCODE_QUALITY}/snapcraft.yaml build/snap/snapcraft.yaml
@@ -47,7 +47,7 @@ replace "s|@@SNAP_NAME@@|${BINARY_NAME}|g" build/snap/snapcraft.yaml
 replace "s|@@SNAP_VERSION@@|${SNAP_VERSION}|g" build/snap/snapcraft.yaml
 
 # Prepare electron-launch
-cp ${VSCODE_QUALITY}/electron-launch build/snap/electron-launch
+cp ${VSCODE_QUALITY}/electron-launch build/electron-launch
 
 # Prepare GUI
 cp "../../src/${VSCODE_QUALITY}/resources/linux/code.png" "build/snap/gui/${BINARY_NAME}.png"
