@@ -226,7 +226,6 @@ jobs:
       - build
     runs-on: ubuntu-latest
     env:
-      APP_NAME: codium
       RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
     strategy:
       fail-fast: false
@@ -234,7 +233,8 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+    # if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+    if: false
 
     steps:
       - uses: actions/checkout@v3
@@ -248,18 +248,32 @@ jobs:
       - uses: docker/setup-qemu-action@v3
         if: env.SHOULD_DEPLOY == 'yes'
 
+      - name: Prepare snapcraft.yaml
+        env:
+          ARCHITECTURE: ${{ matrix.platform }}
+        run: ./stores/snapcraft/build.sh
+        if: env.SHOULD_BUILD == 'yes'
+
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
         with:
           path: stores/snapcraft/stable
           architecture: ${{ matrix.platform }}
         id: build
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes'
 
       - uses: diddlesnaps/snapcraft-review-action@v1
         with:
           snap: ${{ steps.build.outputs.snap }}
           isClassic: 'true'
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes'
+
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_name: ${{ env.ASSETS_REPOSITORY }}
+          repo_token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          file: ${{ steps.build.outputs.snap }}
+          tag: ${{ env.RELEASE_VERSION }}
+        if: env.SHOULD_DEPLOY_TO_RELEASE == 'yes'
 
       - uses: snapcore/action-publish@master
         env:
@@ -267,7 +281,7 @@ jobs:
         with:
           snap: ${{ steps.build.outputs.snap }}
           release: stable
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_DEPLOY_TO_STORE == 'yes'
 
   deb-rpm-repo-hook:
     needs:

@@ -6,15 +6,15 @@ export SHOULD_BUILD="no"
 export SHOULD_DEPLOY_TO_RELEASE="no"
 export SHOULD_DEPLOY_TO_STORE="no"
 
-if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  wget --quiet "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases" -O gh_latest.json
-  SNAP_URL=$( jq -r 'map(select(.tag_name == "'"${RELEASE_VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${ARCHITECTURE}.snap"'"))' gh_latest.json )
+wget --quiet "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases" -O gh_latest.json
+SNAP_URL=$( jq -r 'map(select(.tag_name == "'"${RELEASE_VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${ARCHITECTURE}.snap"'"))' gh_latest.json )
 
-  if [[ -z "${SNAP_URL}" ]]; then
-    export SHOULD_BUILD="yes"
-    export SHOULD_DEPLOY_TO_RELEASE="yes"
-  fi
-else
+if [[ -z "${SNAP_URL}" ]]; then
+  export SHOULD_BUILD="yes"
+  export SHOULD_DEPLOY_TO_RELEASE="yes"
+fi
+
+if [[ "${VSCODE_QUALITY}" == "stable" ]]; then
   sudo snap install --channel stable --classic snapcraft
 
   echo "Architecture: ${ARCHITECTURE}"

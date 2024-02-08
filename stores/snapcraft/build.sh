@@ -65,12 +65,6 @@ cd build
 
 if [[ "${CI_BUILD}" == "no" ]]; then
   snapcraft --use-lxd --debug
-# else
-#   snapcraft
-
-#   SNAP_ARCHIVE=$( ls *.snap )
-
-#   echo "snap=$( pwd )/${SNAP_ARCHIVE}" >> "$GITHUB_OUTPUT"
 fi
 
 cd "${CALLER_DIR}"
