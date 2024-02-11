@@ -47,5 +47,5 @@ You can right-click the App and choose `Open`.
 The following command will remove the quarantine attribute.
 
 ```
-xattr -r -d com.apple.quarantine /Applications/VSCodium.app
+xattr -d com.apple.quarantine /Applications/VSCodium.app
 ```
