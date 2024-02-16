@@ -98,7 +98,7 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 
       export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
     elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
-      export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-arm32v7"
+      export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-armhf"
     fi
 
     ./build/azure-pipelines/linux/install.sh
