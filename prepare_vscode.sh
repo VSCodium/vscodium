@@ -77,30 +77,40 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   done
 fi
 
-if [[ "${OS_NAME}" == "osx" ]]; then
+if [[ "${OS_NAME}" == "linux" ]]; then
+   if [[ "${npm_config_arch}" == "arm" ]]; then
+    export npm_config_arm_version=7
+  fi
+
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
+
+  mkdir -p .build
+
+  export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
+
+  ./build/azure-pipelines/linux/install.sh
+elif [[ "${OS_NAME}" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
 
   yarn postinstall
 else
-  if [[ "${OS_NAME}" == "windows" ]]; then
-    # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
-    # gets merged.
-    rm -rf .build/node-gyp
-    mkdir -p .build/node-gyp
-    cd .build/node-gyp
+  # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
+  # gets merged.
+  rm -rf .build/node-gyp
+  mkdir -p .build/node-gyp
+  cd .build/node-gyp
 
-    git config --global user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
-    git config --global user.name "${GITHUB_USERNAME} CI"
-    git clone https://github.com/nodejs/node-gyp.git .
-    git checkout v9.4.0
-    git am --3way --whitespace=fix ../../build/npm/gyp/patches/gyp_spectre_mitigation_support.patch
-    npm install
+  git config --global user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
+  git config --global user.name "${GITHUB_USERNAME} CI"
+  git clone https://github.com/nodejs/node-gyp.git .
+  git checkout v9.4.0
+  git am --3way --whitespace=fix ../../build/npm/gyp/patches/gyp_spectre_mitigation_support.patch
+  npm install
 
-    npm_config_node_gyp="$( pwd )/bin/node-gyp.js"
-    export npm_config_node_gyp
+  npm_config_node_gyp="$( pwd )/bin/node-gyp.js"
+  export npm_config_node_gyp
 
-    cd ../..
-  fi
+  cd ../..
 
   if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7

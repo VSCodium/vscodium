@@ -23,28 +23,61 @@ index adbe2d2..dfc3bd7 100644
 +target "16.20.2"
  ms_build_id "252256"
 diff --git a/remote/package.json b/remote/package.json
-index b1fbc7b..87716c0 100644
+index b1fbc7b..a49694c 100644
 --- a/remote/package.json
 +++ b/remote/package.json
+@@ -11,3 +11,3 @@
+     "@vscode/ripgrep": "^1.15.9",
+-    "@vscode/spdlog": "^0.14.0",
++    "@vscode/spdlog": "0.13.11",
+     "@vscode/vscode-languagedetection": "1.0.21",
 @@ -31,3 +31,3 @@
      "native-watchdog": "^1.4.1",
 -    "node-pty": "1.1.0-beta5",
-+    "node-pty": "1.1.0-beta4",
++    "node-pty": "1.1.0-beta1",
      "tas-client-umd": "0.1.8",
 diff --git a/remote/yarn.lock b/remote/yarn.lock
-index bb20531..8f7c051 100644
+index bb20531..64c480a 100644
 --- a/remote/yarn.lock
 +++ b/remote/yarn.lock
-@@ -433,6 +433,6 @@ node-gyp-build@^4.3.0:
+@@ -83,9 +83,9 @@
+ 
+-"@vscode/spdlog@^0.14.0":
+-  version "0.14.0"
+-  resolved "https://registry.yarnpkg.com/@vscode/spdlog/-/spdlog-0.14.0.tgz#3cdf589ca59b9ce792ef58b5f773e29a732a360f"
+-  integrity sha512-mpblZa3v6AGEJC1qTwIkpgTc6NItdiiuTxufGxr6XD14srXCvVAUXFIYNqszxC6RY57qDQMX1d9Wd4/oZDxuUQ==
++"@vscode/spdlog@0.13.11":
++  version "0.13.11"
++  resolved "https://registry.npmjs.org/@vscode/spdlog/-/spdlog-0.13.11.tgz#1c65c3527dd8e9679ada7f427c4d9e4af2ea097a"
++  integrity sha512-4qk6G3XKTJNsrqsGwmo9lr8NPaH84WeLsoFVPrpvoEC1t1tFu7H6l4RRMgzKNeE92nwRbjejLv1nATJNoabRfA==
+   dependencies:
+     bindings "^1.5.0"
+-    mkdirp "^1.0.4"
++    mkdirp "^0.5.5"
+     nan "^2.17.0"
+@@ -381,6 +381,8 @@ mkdirp-classic@^0.5.2, mkdirp-classic@^0.5.3:
+ 
+-mkdirp@^1.0.4:
+-  version "1.0.4"
+-  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
+-  integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
++mkdirp@^0.5.5:
++  version "0.5.6"
++  resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.6.tgz#7def03d2432dcae4ba1d611445c48396062255f6"
++  integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
++  dependencies:
++    minimist "^1.2.6"
+ 
+@@ -433,6 +435,6 @@ node-gyp-build@^4.3.0:
  
 -node-pty@1.1.0-beta5:
 -  version "1.1.0-beta5"
 -  resolved "https://registry.yarnpkg.com/node-pty/-/node-pty-1.1.0-beta5.tgz#364386b7058a93070234064f13164ec1ef914993"
 -  integrity sha512-j3QdgFHnLY0JWxztrvM3g67RaQLOGvytv+C6mFu0PqD+JILlzqfwuoyqRqVxdZZjoOTUXPfSRj1qPVCaCH+eOw==
-+node-pty@1.1.0-beta4:
-+  version "1.1.0-beta4"
-+  resolved "https://registry.yarnpkg.com/node-pty/-/node-pty-1.1.0-beta4.tgz#ee74d909c9f422ffc7f675e1092529673f8906ec"
-+  integrity sha512-CgffN9AxVtH4g7vDxtanm2qaR7jw3oet9r+ArzziGiFvmds9SdR3gXkZF0fqZWSxhTHZusJWvsuKvRv+5O2K8A==
++node-pty@1.1.0-beta1:
++  version "1.1.0-beta1"
++  resolved "https://registry.npmjs.org/node-pty/-/node-pty-1.1.0-beta1.tgz#95d4baf406c043b78042f951b325e9713df2beac"
++  integrity sha512-h+1E/gX/brFqsp3yZKGERHOhdo1POG1rrsI+8tEuocqdEddHd029471gq8KOuiHKicd52h2pSU8Gtqb3Vo2PfQ==
    dependencies:
 diff --git a/resources/server/bin/code-server-linux.sh b/resources/server/bin/code-server-linux.sh
 index e3d96bd..3df32df 100644

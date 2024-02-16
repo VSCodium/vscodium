@@ -30,85 +30,10 @@ env:
   VSCODE_QUALITY: insider
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    container:
-      image: vscodium/vscodium-linux-build-agent:bionic-x64
-    outputs:
-      MS_COMMIT: ${{ env.MS_COMMIT }}
-      MS_TAG: ${{ env.MS_TAG }}
-      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
-      SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
-      SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ env.GITHUB_BRANCH }}
-
-      - name: Clone VSCode repo
-        env:
-          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-        run: ./get_repo.sh
-
-      - name: Check PR or cron
-        env:
-          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
-        run: ./check_cron_or_pr.sh
-
-  dependencies:
-    needs:
-      - check
-    runs-on: ubuntu-latest
-    env:
-      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
-      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
-      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - vscode_arch: x64
-          image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
-        # - vscode_arch: arm64
-        #   image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-arm64
-    container:
-      image: ${{ matrix.image }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ env.GITHUB_BRANCH }}
-
-      - name: Clone VSCode repo
-        run: ./get_repo.sh
-
-      - uses: docker/setup-qemu-action@v3
-        if: matrix.vscode_arch == 'arm64' || matrix.vscode_arch == 'ppc64le'
-
-      - name: Install remote dependencies
-        run: ./install_remote_dependencies.sh
-
-      - name: Save remote dependencies
-        uses: actions/upload-artifact@v3
-        with:
-          name: remote-dependencies-${{ matrix.vscode_arch }}
-          path: ./remote-dependencies.tar
-          retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
-
   build:
-    needs:
-      - check
-      - dependencies
     runs-on: ubuntu-latest
     env:
       DISABLE_UPDATE: 'yes'
-      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
-      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
-      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
-      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
     strategy:
       fail-fast: false
       matrix:
@@ -130,10 +55,11 @@ jobs:
       env:
         VSCODE_ARCH: ${{ matrix.vscode_arch }}
     outputs:
+      MS_COMMIT: ${{ env.MS_COMMIT }}
+      MS_TAG: ${{ env.MS_TAG }}
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v3
@@ -143,20 +69,20 @@ jobs:
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
+       - name: Check PR or cron
+        env:
+          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
+        run: ./check_cron_or_pr.sh
+
       - name: Install GH
         run: ./install_gh.sh
+        if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
-
-      - name: Restore remote dependencies
-        uses: actions/download-artifact@v3
-        with:
-          name: remote-dependencies-${{ matrix.vscode_arch }}
-        if: env.SHOULD_BUILD == 'yes' && matrix.vscode_arch == 'x64'
 
       - name: Build
         env:
