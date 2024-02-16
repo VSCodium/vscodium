@@ -1,5 +1,5 @@
 diff --git a/src/vs/workbench/browser/parts/banner/bannerPart.ts b/src/vs/workbench/browser/parts/banner/bannerPart.ts
-index b120c94..1bb2b88 100644
+index b522e75..5205e2b 100644
 --- a/src/vs/workbench/browser/parts/banner/bannerPart.ts
 +++ b/src/vs/workbench/browser/parts/banner/bannerPart.ts
 @@ -11,3 +11,3 @@ import { InstantiationType, registerSingleton } from 'vs/platform/instantiation/
@@ -31,7 +31,7 @@ index b120c94..1bb2b88 100644
 +		}
 +
  		// Clear previous item
-@@ -234,2 +247,15 @@ export class BannerPart extends Part implements IBannerService {
+@@ -236,2 +249,15 @@ export class BannerPart extends Part implements IBannerService {
  
 +	private toStorageScope(options: INeverShowAgainOptions): StorageScope {
 +		switch (options.scope) {
@@ -48,7 +48,7 @@ index b120c94..1bb2b88 100644
 +
  	toJSON(): object {
 diff --git a/src/vs/workbench/services/banner/browser/bannerService.ts b/src/vs/workbench/services/banner/browser/bannerService.ts
-index 639b1b2..70e8847 100644
+index d8560ce..23f5c0c 100644
 --- a/src/vs/workbench/services/banner/browser/bannerService.ts
 +++ b/src/vs/workbench/services/banner/browser/bannerService.ts
 @@ -10,2 +10,3 @@ import { ILinkDescriptor } from 'vs/platform/opener/browser/link';
@@ -58,4 +58,4 @@ index 639b1b2..70e8847 100644
 @@ -18,2 +19,3 @@ export interface IBannerItem {
  	readonly onClose?: () => void;
 +	readonly neverShowAgain?: INeverShowAgainOptions;
- }
+ 	readonly disableCloseAction?: boolean;

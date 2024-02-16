@@ -62,9 +62,9 @@ export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 if [[ "${OS_NAME}" == "linux" ]]; then
   export VSCODE_SKIP_NODE_VERSION_CHECK=1
 
-  if [[ -f "../.nvmrc.linux" ]]; then
-    mv ../.nvmrc.linux ../.nvmrc
-  fi
+  # if [[ -f "../.nvmrc.linux" ]]; then
+  #   mv ../.nvmrc.linux ../.nvmrc
+  # fi
 
   for file in ../patches/linux/*.patch; do
     if [[ -f "${file}" ]]; then
@@ -84,11 +84,29 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
 
-  mkdir -p .build
+  if [[ "${CI_BUILD}" != "no" ]]; then
+    mkdir -p .build
 
-  export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
+    export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
-  ./build/azure-pipelines/linux/install.sh
+    VSCODE_HOST_MOUNT="$( pwd )"
+
+    export VSCODE_HOST_MOUNT
+
+    if [[ "${VSCODE_ARCH}" == "x64" || "${VSCODE_ARCH}" == "arm64" ]]; then
+      VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
+
+      export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
+    elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
+      export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-arm32v7"
+    fi
+
+    ./build/azure-pipelines/linux/install.sh
+
+    EXPECTED_GLIBC_VERSION="2.17" EXPECTED_GLIBCXX_VERSION="3.4.19" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+
+    node build/azure-pipelines/distro/mixin-npm
+  fi
 elif [[ "${OS_NAME}" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
 

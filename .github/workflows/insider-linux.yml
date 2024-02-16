@@ -31,29 +31,22 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    env:
-      DISABLE_UPDATE: 'yes'
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         include:
         - vscode_arch: x64
           npm_arch: x64
-          image: vscodium/vscodium-linux-build-agent:bionic-x64
         - vscode_arch: arm64
           npm_arch: arm64
-          image: vscodium/vscodium-linux-build-agent:bionic-arm64
         - vscode_arch: armhf
           npm_arch: arm
-          image: vscodium/vscodium-linux-build-agent:bionic-armhf
-        - vscode_arch: ppc64le
-          npm_arch: ppc64
-          image: vscodium/vscodium-linux-build-agent:bionic-ppc64le
-    container:
-      image: ${{ matrix.image }}
-      env:
-        VSCODE_ARCH: ${{ matrix.vscode_arch }}
+        # - vscode_arch: ppc64le
+        #   npm_arch: ppc64
+    env:
+      DISABLE_UPDATE: 'yes'
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
     outputs:
       MS_COMMIT: ${{ env.MS_COMMIT }}
       MS_TAG: ${{ env.MS_TAG }}
@@ -62,9 +55,22 @@ jobs:
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.17'
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
