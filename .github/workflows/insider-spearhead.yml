@@ -12,6 +12,9 @@ on:
       dont_update:
         type: boolean
         description: Don't update VSCode
+      dont_dispatch:
+        type: boolean
+        description: Disable dispatch
   schedule:
     - cron: '0 7 * * *'
 
@@ -75,4 +78,4 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           event-type: 'insider'
-        if: env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true'
+        if: github.event.inputs.dont_dispatch != 'true' && (env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true')
