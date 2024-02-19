@@ -54,6 +54,30 @@ for file in ../patches/user/*.patch; do
   fi
 done
 
+if [[ -d "../patches/${OS_NAME}/" ]]; then
+  for file in "../patches/${OS_NAME}/"*.patch; do
+    if [[ -f "${file}" ]]; then
+      echo applying patch: "${file}";
+      if ! git apply --ignore-whitespace "${file}"; then
+        echo failed to apply patch "${file}" >&2
+        exit 1
+      fi
+    fi
+  done
+
+  if [[ -d "../patches/${OS_NAME}/${VSCODE_ARCH}/" ]]; then
+    for file in "../patches/${OS_NAME}/${VSCODE_ARCH}/"*.patch; do
+      if [[ -f "${file}" ]]; then
+        echo applying patch: "${file}";
+        if ! git apply --ignore-whitespace "${file}"; then
+          echo failed to apply patch "${file}" >&2
+          exit 1
+        fi
+      fi
+    done
+  fi
+fi
+
 set -x
 
 export ELECTRON_SKIP_BINARY_DOWNLOAD=1
@@ -65,16 +89,6 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   if [[ -f "../.nvmrc.linux" ]]; then
     mv ../.nvmrc.linux ../.nvmrc
   fi
-
-  for file in ../patches/linux/*.patch; do
-    if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
-      fi
-    fi
-  done
 fi
 
 if [[ "${OS_NAME}" == "linux" ]]; then
