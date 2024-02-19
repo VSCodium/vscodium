@@ -125,6 +125,10 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
 else
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+  if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" && "${VSCODE_ARCH}" != "x64" ]]; then
+    SHOULD_BUILD_APPIMAGE="no"
+  fi
+
   if [[ "${SHOULD_BUILD_DEB}" != "no" || "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
     yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
   fi

@@ -90,8 +90,8 @@ jobs:
       #   with:
       #     python-version: '3.11'
 
-      - name: Install libkrb5-dev
-        run: sudo apt-get install -y libkrb5-dev
+      # - name: Install libkrb5-dev
+      #   run: sudo apt-get install -y libkrb5-dev
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
@@ -137,7 +137,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.vscode_arch }}
           path: assets/
