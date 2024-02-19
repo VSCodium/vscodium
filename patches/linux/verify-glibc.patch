@@ -1,0 +1,14 @@
+diff --git a/build/azure-pipelines/linux/verify-glibc-requirements.sh b/build/azure-pipelines/linux/verify-glibc-requirements.sh
+index f07c0ba..bd9aac1 100755
+--- a/build/azure-pipelines/linux/verify-glibc-requirements.sh
++++ b/build/azure-pipelines/linux/verify-glibc-requirements.sh
+@@ -36,3 +36,3 @@ for file in $files; do
+   if [[ "$glibc_version" != "$EXPECTED_GLIBC_VERSION" ]]; then
+-    echo "Error: File $file has dependency on GLIBC > $EXPECTED_GLIBC_VERSION"
++    echo "Error: File $file has dependency on GLIBC($glibc_version) != $EXPECTED_GLIBC_VERSION"
+     exit 1
+@@ -40,3 +40,3 @@ for file in $files; do
+   if [[ "$glibcxx_version" != "$EXPECTED_GLIBCXX_VERSION" ]]; then
+-    echo "Error: File $file has dependency on GLIBCXX > $EXPECTED_GLIBCXX_VERSION"
++    echo "Error: File $file has dependency on GLIBCXX($glibcxx_version) != $EXPECTED_GLIBCXX_VERSION"
+     exit 1

@@ -103,8 +103,6 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 
     export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
-    # export NPM_REGISTRY='https://registry.yarnpkg.com'
-
     for i in {1..5}; do # try 5 times
       yarn --cwd build --frozen-lockfile --check-files && break
       if [[ $i == 3 ]]; then
