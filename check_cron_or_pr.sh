@@ -6,7 +6,12 @@ set -e
 if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
 	echo "It's a PR"
 
-	export SHOULD_BUILD="yes"
+  if [[ "${OS_NAME}" != "linux" || "${VSCODE_ARCH}" == "x64" ]]; then
+    export SHOULD_BUILD="yes"
+  else
+  	export SHOULD_BUILD="no"
+  fi
+
 	export SHOULD_DEPLOY="no"
 elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
 	echo "It's a Push"

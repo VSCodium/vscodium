@@ -114,7 +114,7 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 
     ./build/azure-pipelines/linux/install.sh
 
-    EXPECTED_GLIBC_VERSION="2.17" EXPECTED_GLIBCXX_VERSION="3.4.19" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+    EXPECTED_GLIBC_VERSION="2.17" EXPECTED_GLIBCXX_VERSION="3.4.22" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
     node build/azure-pipelines/distro/mixin-npm
   fi
