@@ -103,6 +103,8 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 
     export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
+    export NPM_REGISTRY='https://registry.yarnpkg.com'
+
     ./build/azure-pipelines/linux/install.sh
 
     EXPECTED_GLIBC_VERSION="2.17" EXPECTED_GLIBCXX_VERSION="3.4.19" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
