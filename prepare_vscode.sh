@@ -103,7 +103,16 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 
     export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
-    export NPM_REGISTRY='https://registry.yarnpkg.com'
+    # export NPM_REGISTRY='https://registry.yarnpkg.com'
+
+    for i in {1..5}; do # try 5 times
+      yarn --cwd build --frozen-lockfile --check-files && break
+      if [[ $i == 3 ]]; then
+        echo "Yarn failed too many times" >&2
+        exit 1
+      fi
+      echo "Yarn failed $i, trying again..."
+    done
 
     ./build/azure-pipelines/linux/install.sh
 
