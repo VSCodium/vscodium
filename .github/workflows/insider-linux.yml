@@ -42,8 +42,8 @@ jobs:
           npm_arch: arm64
         - vscode_arch: armhf
           npm_arch: arm
-        # - vscode_arch: ppc64le
-        #   npm_arch: ppc64
+        - vscode_arch: ppc64le
+          npm_arch: ppc64
     env:
       DISABLE_UPDATE: 'yes'
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
@@ -117,6 +117,13 @@ jobs:
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+      - name: Upload assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: assets
+          path: assets/
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   aur:
     needs:
