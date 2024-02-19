@@ -121,8 +121,9 @@ jobs:
       - name: Upload assets
         uses: actions/upload-artifact@v4
         with:
-          name: assets
+          name: ${{ matrix.vscode_arch }}
           path: assets/
+          retention-days: 3
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   aur:

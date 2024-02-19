@@ -82,9 +82,9 @@ if [[ "${OS_NAME}" == "linux" ]]; then
     export npm_config_arm_version=7
   fi
 
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
-
-  if [[ "${CI_BUILD}" != "no" ]]; then
+  if [[ "${CI_BUILD}" == "no" ]]; then
+    yarn --frozen-lockfile --check-files
+  else
     mkdir -p .build
 
     export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
@@ -95,8 +95,10 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 
     if [[ "${VSCODE_ARCH}" == "x64" || "${VSCODE_ARCH}" == "arm64" ]]; then
       VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
-    else
-      VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-${VSCODE_ARCH}"
+    elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
+      VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-arm32v7"
+    elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+      VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-ppc64le"
     fi
 
     export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
