@@ -108,7 +108,6 @@ if [[ "${OS_NAME}" == "linux" ]]; then
     export VSCODE_HOST_MOUNT
 
     ls "${VSCODE_HOST_MOUNT}"
-    ls /home/runner/work/vscodium/vscodium/vscode
 
     if [[ "${VSCODE_ARCH}" == "x64" || "${VSCODE_ARCH}" == "arm64" ]]; then
       VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
