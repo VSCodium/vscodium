@@ -2,7 +2,7 @@ diff --git a/build/npm/postinstall.js b/build/npm/postinstall.js
 index 72dd74f..0f70d8c 100644
 --- a/build/npm/postinstall.js
 +++ b/build/npm/postinstall.js
-@@ -55,10 +55,7 @@ function yarnInstall(dir, opts) {
+@@ -55,10 +55,6 @@ function yarnInstall(dir, opts) {
  		opts.cwd = root;
 -		if (process.env['npm_config_arch'] === 'arm64' || process.env['npm_config_arch'] === 'arm') {
 +		if (process.env['npm_config_arch'] === 'arm64' || process.env['npm_config_arch'] === 'arm' || process.env['npm_config_arch'] === 'ppc64') {
@@ -13,6 +13,5 @@ index 72dd74f..0f70d8c 100644
 -		} else {
 -			run('sudo', ['docker', 'run', '-e', 'GITHUB_TOKEN', '-e', 'npm_config_arch', '-v', `${process.env['VSCODE_HOST_MOUNT']}:/root/vscode`, '-v', `${process.env['VSCODE_HOST_MOUNT']}/.build/.netrc:/root/.netrc`, process.env['VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME'], 'yarn', '--cwd', dir, ...args], opts);
 -		}
-+		run('sudo', ['docker', 'run', '-e', 'GITHUB_TOKEN', '-e', 'npm_config_arch', '-v', `${process.env['VSCODE_HOST_MOUNT']}:/root/vscode`, '-v', `${process.env['VSCODE_HOST_MOUNT']}/.build/.netrc:/root/.netrc`, process.env['VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME'], 'pwd'], opts);
-+		run('sudo', ['docker', 'run', '-e', 'GITHUB_TOKEN', '-e', 'npm_config_arch', '-v', `${process.env['VSCODE_HOST_MOUNT']}:/root/vscode`, '-v', `${process.env['VSCODE_HOST_MOUNT']}/.build/.netrc:/root/.netrc`, process.env['VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME'], 'ls', '-la'], opts);
++		run('sudo', ['docker', 'run', '-e', 'GITHUB_TOKEN', '-e', 'npm_config_arch', '-v', `${process.env['VSCODE_HOST_MOUNT']}:/root/vscode`, '-v', `${process.env['VSCODE_HOST_MOUNT']}/.build/.netrc:/root/.netrc`, process.env['VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME'], 'yarn', '--cwd', dir, ...args], opts);
  		run('sudo', ['chown', '-R', `${userinfo.uid}:${userinfo.gid}`, `${dir}/node_modules`], opts);
