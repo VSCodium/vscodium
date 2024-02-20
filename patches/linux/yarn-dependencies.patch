@@ -2,11 +2,6 @@ diff --git a/build/npm/postinstall.js b/build/npm/postinstall.js
 index 72dd74f..0f70d8c 100644
 --- a/build/npm/postinstall.js
 +++ b/build/npm/postinstall.js
-@@ -50,3 +50,3 @@ function yarnInstall(dir, opts) {
- 
--	if (process.env['VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME'] && /^(.build\/distro\/npm\/)?remote$/.test(dir)) {
-+	if (process.env['VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME']) {
- 		const userinfo = os.userInfo();
 @@ -55,10 +55,6 @@ function yarnInstall(dir, opts) {
  		opts.cwd = root;
 -		if (process.env['npm_config_arch'] === 'arm64' || process.env['npm_config_arch'] === 'arm') {
