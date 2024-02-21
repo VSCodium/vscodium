@@ -96,7 +96,7 @@ jobs:
 
       - name: Compress vscode artifact
         run: |
-          tar -cz --exclude='.build/node' --exclude='.git' --exclude='**/node_modules' -f vscode.tar.gz vscode
+          tar -cz --exclude='.build/node' --exclude='**/node_modules' -f vscode.tar.gz vscode
 
       - name: Upload vscode artifact
         uses: actions/upload-artifact@v3
@@ -123,9 +123,6 @@ jobs:
         - vscode_arch: armhf
           npm_arch: arm
           image: vscodium/vscodium-linux-build-agent:bionic-armhf
-        - vscode_arch: ppc64le
-          npm_arch: ppc64
-          image: vscodium/vscodium-linux-build-agent:bionic-ppc64le
     container:
       image: ${{ matrix.image }}
     env:
@@ -207,8 +204,8 @@ jobs:
           npm_arch: arm64
         - vscode_arch: armhf
           npm_arch: arm
-        - vscode_arch: ppc64le
-          npm_arch: ppc64
+        # - vscode_arch: ppc64le
+        #   npm_arch: ppc64
     env:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}

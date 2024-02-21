@@ -11,6 +11,7 @@ tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+export VSCODE_PLATFORM='linux'
 export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
 VSCODE_HOST_MOUNT="$( pwd )"
