@@ -86,12 +86,6 @@ export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 if [[ "${OS_NAME}" == "linux" ]]; then
   export VSCODE_SKIP_NODE_VERSION_CHECK=1
 
-  if [[ -f "../.nvmrc.linux" ]]; then
-    mv ../.nvmrc.linux ../.nvmrc
-  fi
-fi
-
-if [[ "${OS_NAME}" == "linux" ]]; then
    if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7
   fi
