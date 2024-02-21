@@ -64,18 +64,6 @@ if [[ -d "../patches/${OS_NAME}/" ]]; then
       fi
     fi
   done
-
-  if [[ -d "../patches/${OS_NAME}/${VSCODE_ARCH}/" ]]; then
-    for file in "../patches/${OS_NAME}/${VSCODE_ARCH}/"*.patch; do
-      if [[ -f "${file}" ]]; then
-        echo applying patch: "${file}";
-        if ! git apply --ignore-whitespace "${file}"; then
-          echo failed to apply patch "${file}" >&2
-          exit 1
-        fi
-      fi
-    done
-  fi
 fi
 
 set -x
@@ -96,20 +84,6 @@ if [[ "${OS_NAME}" == "linux" ]]; then
     mkdir -p .build
 
     export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
-
-    VSCODE_HOST_MOUNT="$( pwd )"
-
-    export VSCODE_HOST_MOUNT
-
-    # if [[ "${VSCODE_ARCH}" == "x64" || "${VSCODE_ARCH}" == "arm64" ]]; then
-    #   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
-    # elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
-    #   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-arm32v7"
-    # elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-    #   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-ppc64le"
-    # fi
-
-    # export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
     for i in {1..5}; do # try 5 times
       yarn --cwd build --frozen-lockfile --check-files && break
