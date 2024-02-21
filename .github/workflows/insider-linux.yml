@@ -66,6 +66,7 @@ jobs:
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
       SHOULD_BUILD: 'yes'
+      VSCODE_ARCH: 'x64'
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
