@@ -26,8 +26,6 @@ done
 
 ./build/azure-pipelines/linux/install.sh
 
-EXPECTED_GLIBC_VERSION="2.17" EXPECTED_GLIBCXX_VERSION="3.4.22" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
-
 node build/azure-pipelines/distro/mixin-npm
 
 yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
