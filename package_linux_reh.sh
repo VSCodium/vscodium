@@ -50,6 +50,10 @@ yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
 cd ..
 
+APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+
+mkdir -p assets
+
 echo "Building and moving REH"
 cd "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
