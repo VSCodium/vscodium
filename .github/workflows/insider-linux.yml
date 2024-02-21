@@ -98,13 +98,13 @@ jobs:
 
       - name: Compress vscode artifact
         run: |
-          tar -c --exclude='.build/node' --exclude='.git' --exclude='**/node_modules' -f vscode.tar vscode
+          tar -cz --exclude='.build/node' --exclude='.git' --exclude='**/node_modules' -f vscode.tar.gz vscode
 
       - name: Upload vscode artifact
         uses: actions/upload-artifact@v3
         with:
-          name: vscode.tar
-          path: ./vscode.tar
+          name: vscode
+          path: ./vscode.tar.gz
           retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
 
   build:
@@ -159,7 +159,7 @@ jobs:
       - name: Download vscode artifact
         uses: actions/download-artifact@v3
         with:
-          name: vscode.tar
+          name: vscode
 
       - name: Build
         env:
@@ -234,7 +234,7 @@ jobs:
       - name: Download vscode artifact
         uses: actions/download-artifact@v3
         with:
-          name: vscode.tar
+          name: vscode
         if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
 
       - name: Build
