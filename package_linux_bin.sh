@@ -7,6 +7,8 @@ if [[ "${CI_BUILD}" == "no" ]]; then
   exit 1
 fi
 
+export VSCODE_SKIP_NODE_VERSION_CHECK=1
+
 tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }

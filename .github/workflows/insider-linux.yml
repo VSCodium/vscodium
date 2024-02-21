@@ -33,8 +33,6 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
-    container:
-      image: vscodium/vscodium-linux-build-agent:bionic-x64
     outputs:
       MS_COMMIT: ${{ env.MS_COMMIT }}
       MS_TAG: ${{ env.MS_TAG }}
@@ -43,7 +41,7 @@ jobs:
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
@@ -70,7 +68,7 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
@@ -109,6 +107,7 @@ jobs:
 
   build:
     needs:
+      - check
       - compile
     runs-on: ubuntu-latest
     strategy:
@@ -195,6 +194,7 @@ jobs:
 
   reh:
     needs:
+      - check
       - compile
     runs-on: ubuntu-20.04
     strategy:
