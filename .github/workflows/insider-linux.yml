@@ -106,7 +106,7 @@ jobs:
           retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
 
   build:
-     needs:
+    needs:
       - compile
     runs-on: ubuntu-latest
     strategy:
