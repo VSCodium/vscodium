@@ -65,6 +65,7 @@ jobs:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SHOULD_BUILD: 'yes'
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
@@ -234,10 +235,10 @@ jobs:
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
-      - name: Download compilation artifact
+      - name: Download vscode artifact
         uses: actions/download-artifact@v3
         with:
-          name: compilation.tar.gz
+          name: vscode.tar.gz
         if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
 
       - name: Build
