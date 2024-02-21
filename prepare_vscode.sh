@@ -78,28 +78,7 @@ if [[ "${OS_NAME}" == "linux" ]]; then
     export npm_config_arm_version=7
   fi
 
-  if [[ "${CI_BUILD}" == "no" ]]; then
-    yarn --frozen-lockfile --check-files
-  else
-    mkdir -p .build
-
-    export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
-
-    for i in {1..5}; do # try 5 times
-      yarn --cwd build --frozen-lockfile --check-files && break
-      if [[ $i == 3 ]]; then
-        echo "Yarn failed too many times" >&2
-        exit 1
-      fi
-      echo "Yarn failed $i, trying again..."
-    done
-
-    ./build/azure-pipelines/linux/install.sh
-
-    EXPECTED_GLIBC_VERSION="2.17" EXPECTED_GLIBCXX_VERSION="3.4.22" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
-
-    node build/azure-pipelines/distro/mixin-npm
-  fi
+  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
 elif [[ "${OS_NAME}" == "osx" ]]; then
   CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
 
