@@ -9,13 +9,14 @@ fi
 
 tar -xzf ./vscode.tar.gz
 
+ls -la
+
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
-pwd
-ls -la *
+ls -la .git
 
 git clean -xfd .
 yarn cache clean
