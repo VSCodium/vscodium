@@ -16,7 +16,17 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
-rm -rf remote
+if [[ -d "../patches/${OS_NAME}/client/" ]]; then
+  for file in "../patches/${OS_NAME}/client/"*.patch; do
+    if [[ -f "${file}" ]]; then
+      echo applying patch: "${file}";
+      if ! git apply --ignore-whitespace "${file}"; then
+        echo failed to apply patch "${file}" >&2
+        exit 1
+      fi
+    fi
+  done
+fi
 
 for i in {1..5}; do # try 5 times
   yarn --cwd build --frozen-lockfile --check-files && break
