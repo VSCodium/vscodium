@@ -47,7 +47,9 @@ contains() {
   echo "${ASSETS}" | grep "${1}\""
 }
 
-if [[ "${ASSETS}" != "null" && "${CHECK_ASSETS}" != "no" ]]; then
+if [[ "${CHECK_ASSETS}" == "no" ]]; then
+  echo "Don't check assets, yet"
+elif [[ "${ASSETS}" != "null" ]]; then
   if [[ "${IS_SPEARHEAD}" == "yes" ]]; then
     if [[ -z $( contains "${APP_NAME}-${RELEASE_VERSION}-src.tar.gz" ) || -z $( contains "${APP_NAME}-${RELEASE_VERSION}-src.zip" ) ]]; then
       echo "Building because we have no SRC"
