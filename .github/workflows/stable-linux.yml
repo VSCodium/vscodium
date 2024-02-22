@@ -27,6 +27,7 @@ env:
   APP_NAME: VSCodium
   ASSETS_REPOSITORY: ${{ github.repository }}
   BINARY_NAME: codium
+  DISABLE_UPDATE: 'yes'
   OS_NAME: linux
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
   VSCODE_QUALITY: stable
@@ -34,8 +35,6 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
-    container:
-      image: vscodium/vscodium-linux-build-agent:bionic-x64
     outputs:
       MS_COMMIT: ${{ env.MS_COMMIT }}
       MS_TAG: ${{ env.MS_TAG }}
@@ -44,7 +43,7 @@ jobs:
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
@@ -58,61 +57,70 @@ jobs:
           GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
         run: ./check_cron_or_pr.sh
 
-  dependencies:
+      - name: Check existing VSCodium tags/releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./check_tags.sh
+
+  compile:
     needs:
       - check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - vscode_arch: x64
-          image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-x64
-        # - vscode_arch: arm64
-        #   image: vscodium/vscodium-linux-build-agent:centos7-devtoolset8-arm64
-    container:
-      image: ${{ matrix.image }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
+      SHOULD_BUILD: 'yes'
+      VSCODE_ARCH: 'x64'
+    outputs:
+      BUILD_SOURCEVERSION: ${{ env.BUILD_SOURCEVERSION }}
+    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.17'
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install libkrb5-dev
+        run: sudo apt-get install -y libkrb5-dev
+
       - name: Clone VSCode repo
-        # env:
-        #   PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
-      - uses: docker/setup-qemu-action@v3
-        if: matrix.vscode_arch == 'arm64' || matrix.vscode_arch == 'ppc64le'
+      - name: Build
+        run: ./build.sh
 
-      - name: Install remote dependencies
-        run: ./install_remote_dependencies.sh
+      - name: Compress vscode artifact
+        run: |
+          tar -cz --exclude='.build/node' --exclude='**/node_modules' -f vscode.tar.gz vscode
 
-      - name: Save remote dependencies
+      - name: Upload vscode artifact
         uses: actions/upload-artifact@v3
         with:
-          name: remote-dependencies-${{ matrix.vscode_arch }}
-          path: ./remote-dependencies.tar
+          name: vscode
+          path: ./vscode.tar.gz
           retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
 
   build:
     needs:
       - check
-      - dependencies
+      - compile
     runs-on: ubuntu-latest
-    env:
-      DISABLE_UPDATE: 'yes'
-      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
-      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
-      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
-      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
     strategy:
       fail-fast: false
       matrix:
@@ -126,28 +134,113 @@ jobs:
         - vscode_arch: armhf
           npm_arch: arm
           image: vscodium/vscodium-linux-build-agent:bionic-armhf
-        - vscode_arch: ppc64le
-          npm_arch: ppc64
-          image: vscodium/vscodium-linux-build-agent:bionic-ppc64le
     container:
       image: ${{ matrix.image }}
-      env:
-        VSCODE_ARCH: ${{ matrix.vscode_arch }}
+    env:
+      BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
     outputs:
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || needs.check.outputs.SHOULD_DEPLOY == 'yes'
+    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
-      - name: Clone VSCode repo
+      - name: Install GH
+        run: ./install_gh.sh
+        if: env.SHOULD_DEPLOY == 'yes'
+
+      - name: Check existing VSCodium tags/releases
         env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_repo.sh
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHECK_REH: 'no'
+        run: ./check_tags.sh
+
+      - name: Install libkrb5-dev
+        run: sudo apt-get install -y libkrb5-dev
+        if: env.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+
+      - name: Download vscode artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: vscode
+        if: env.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_arch: ${{ matrix.npm_arch }}
+        run: ./package_linux_bin.sh
+        if: env.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+
+      - name: Prepare assets
+        env:
+          SHOULD_BUILD_REH: 'no'
+        run: ./prepare_assets.sh
+        if: (env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes') || github.event.inputs.generate_assets == 'true'
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+        run: ./release.sh
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+      - name: Update versions repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+        run: ./update_version.sh
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+      - name: Upload assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: bin-${{ matrix.vscode_arch }}
+          path: assets/
+          retention-days: 3
+        if: env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+
+  reh:
+    needs:
+      - check
+      - compile
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - vscode_arch: x64
+          npm_arch: x64
+        - vscode_arch: arm64
+          npm_arch: arm64
+        - vscode_arch: armhf
+          npm_arch: arm
+        # - vscode_arch: ppc64le
+        #   npm_arch: ppc64
+    env:
+      BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
+    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Install GH
         run: ./install_gh.sh
@@ -155,50 +248,40 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHECK_ONLY_REH: 'yes'
         run: ./check_tags.sh
-        if: env.SHOULD_DEPLOY == 'yes'
 
-      - name: Restore remote dependencies
+      - name: Download vscode artifact
         uses: actions/download-artifact@v3
         with:
-          name: remote-dependencies-${{ matrix.vscode_arch }}
-        if: env.SHOULD_BUILD == 'yes' && matrix.vscode_arch == 'x64'
+          name: vscode
+        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
-        run: ./build.sh
-        if: env.SHOULD_BUILD == 'yes'
+        run: ./package_linux_reh.sh
+        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
 
-      - name: Prepare assets
-        run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+        run: ./release.sh
+        if: env.SHOULD_BUILD_REH != 'no' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
         uses: actions/upload-artifact@v3
         with:
-          name: assets
-          path: ./assets/
+          name: reh-${{ matrix.vscode_arch }}
+          path: assets/
           retention-days: 3
-        if: env.SHOULD_BUILD == 'yes' && github.event.inputs.generate_assets == 'true'
-
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./release.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-
-      - name: Update versions repo
-        env:
-          FORCE_UPDATE: ${{ github.event.inputs.force_version }}
-          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository_owner }}
-        run: ./update_version.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   aur:
     needs:
+      - check
       - build
     runs-on: ubuntu-latest
     strategy:
@@ -209,7 +292,7 @@ jobs:
           package_type: stable
         - package_name: vscodium-git
           package_type: rolling
-    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - name: Publish ${{ matrix.package_name }}
@@ -223,10 +306,11 @@ jobs:
 
   snap:
     needs:
+      - check
       - build
     runs-on: ubuntu-latest
     env:
-      RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
     strategy:
       fail-fast: false
       matrix:
@@ -285,9 +369,10 @@ jobs:
 
   deb-rpm-repo-hook:
     needs:
+      - check
       - build
     runs-on: ubuntu-latest
-    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - name: Trigger repository rebuild
