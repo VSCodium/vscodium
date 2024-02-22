@@ -164,6 +164,8 @@ jobs:
         run: ./package_linux_bin.sh
 
       - name: Prepare assets
+        env:
+          SHOULD_BUILD_REH: 'no'
         run: ./prepare_assets.sh
         if: env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
 
