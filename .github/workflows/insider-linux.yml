@@ -55,6 +55,12 @@ jobs:
           GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
         run: ./check_cron_or_pr.sh
 
+      - name: Check existing VSCodium tags/releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHECK_ASSETS: 'no'
+        run: ./check_tags.sh
+
   compile:
     needs:
       - check
@@ -90,12 +96,6 @@ jobs:
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
-
-      - name: Check existing VSCodium tags/releases
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CHECK_ASSETS: 'no'
-        run: ./check_tags.sh
 
       - name: Build
         run: ./build.sh
@@ -180,21 +180,21 @@ jobs:
         env:
           SHOULD_BUILD_REH: 'no'
         run: ./prepare_assets.sh
-        if: env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
+        if: (env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes') || github.event.inputs.generate_assets == 'true'
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
         uses: actions/upload-artifact@v3
@@ -262,7 +262,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD_REH != 'no' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
         uses: actions/upload-artifact@v3
@@ -274,6 +274,7 @@ jobs:
 
   aur:
     needs:
+      - check
       - build
     runs-on: ubuntu-latest
     strategy:
@@ -282,12 +283,12 @@ jobs:
         include:
         - package_name: vscodium-insiders-bin
         - package_name: vscodium-insiders
-    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - name: Get version
         env:
-          RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+          RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
         run: echo "PACKAGE_VERSION=${RELEASE_VERSION/-*/}" >> "${GITHUB_ENV}"
 
       - name: Publish ${{ matrix.package_name }}
@@ -301,17 +302,18 @@ jobs:
 
   snap:
     needs:
+      - check
       - build
     runs-on: ubuntu-latest
     env:
-      RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
     strategy:
       fail-fast: false
       matrix:
         platform:
         - amd64
         - arm64
-    # if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+    # if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
     if: false
 
     steps:
