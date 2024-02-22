@@ -58,3 +58,23 @@ echo "Building and moving REH"
 cd "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
 cd ..
+
+npm install -g checksum
+
+sum_file() {
+  if [[ -f "${1}" ]]; then
+    echo "Calculating checksum for ${1}"
+    checksum -a sha256 "${1}" > "${1}".sha256
+    checksum "${1}" > "${1}".sha1
+  fi
+}
+
+cd assets
+
+for FILE in *; do
+  if [[ -f "${FILE}" ]]; then
+    sum_file "${FILE}"
+  fi
+done
+
+cd ..
