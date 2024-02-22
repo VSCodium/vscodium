@@ -27,7 +27,7 @@ jobs:
       VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
       OS_NAME: osx
       VSCODE_ARCH: arm64
-      VSCODE_LATEST: ${{ github.event.inputs.dont_update && 'no' || 'yes' }}
+      VSCODE_LATEST: ${{ github.event.inputs.dont_update == 'true' && 'no' || 'yes' }}
       VSCODE_QUALITY: insider
 
     steps:
