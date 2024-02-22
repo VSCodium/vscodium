@@ -103,8 +103,8 @@ jobs:
 
       - name: Compress vscode artifact
         run: |
-          find vscode/* -not -path "*/node_modules" -not -path "*/node_modules/*" -not -path ".build/node" | sort -r | awk 'a!~"^"$0{a=$0;print}' | sort > vscode.txt
-          find vscode/.build/extensions/node_modules/* | sort -r | awk 'a!~"^"$0{a=$0;print}' | sort >> vscode.txt
+          find vscode/* -type f -not -path "*/node_modules" -not -path "*/node_modules/*" -not -path ".build/node" > vscode.txt
+          find vscode/.build/extensions/node_modules/* -type f >> vscode.txt
           tar -czf vscode.tar.gz -T vscode.txt
 
       - name: Upload vscode artifact
