@@ -16,6 +16,8 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
+rm -rf remote
+
 for i in {1..5}; do # try 5 times
   yarn --cwd build --frozen-lockfile --check-files && break
   if [[ $i == 3 ]]; then
