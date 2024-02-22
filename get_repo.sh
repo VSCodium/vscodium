@@ -21,8 +21,10 @@ fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
   if [[ "${VSCODE_LATEST}" == "yes" ]] || [[ ! -f "${VSCODE_QUALITY}.json" ]]; then
+    echo "Retrieve lastest version"
     UPDATE_INFO=$( curl --silent --fail "https://update.code.visualstudio.com/api/update/darwin/${VSCODE_QUALITY}/0000000000000000000000000000000000000000" )
   else
+    echo "Get version from ${VSCODE_QUALITY}.json"
     MS_COMMIT=$( jq -r '.commit' "${VSCODE_QUALITY}.json" )
     MS_TAG=$( jq -r '.tag' "${VSCODE_QUALITY}.json" )
   fi
