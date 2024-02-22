@@ -153,6 +153,7 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHECK_REH: 'no'
         run: ./check_tags.sh
 
       - name: Download vscode artifact
@@ -231,6 +232,7 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHECK_ONLY_REH: 'yes'
         run: ./check_tags.sh
 
       - name: Download vscode artifact

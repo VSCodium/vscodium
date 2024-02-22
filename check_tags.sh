@@ -209,8 +209,17 @@ if [[ "${ASSETS}" != "null" ]]; then
     fi
   elif [[ "${OS_NAME}" == "linux" ]]; then
 
+    if [[ "${CHECK_ONLY_REH}" == "yes" ]]; then
+      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+        echo "Building on Linux ${VSCODE_ARCH} because we have no REH archive"
+        export SHOULD_BUILD="yes"
+      else
+        echo "Already have the Linux REH ${VSCODE_ARCH} archive"
+        export SHOULD_BUILD_REH="no"
+      fi
+
     # linux-arm64
-    if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
+    elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
       if [[ -z $( contains "arm64.deb" ) ]]; then
         echo "Building on Linux arm64 because we have no DEB"
         export SHOULD_BUILD="yes"
@@ -232,7 +241,7 @@ if [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_TAR="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-arm64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if [[ "${CHECK_REH}" != "no" && -z $( contains "${APP_NAME_LC}-reh-linux-arm64-${RELEASE_VERSION}.tar.gz" ) ]]; then
         echo "Building on Linux arm64 because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
@@ -268,7 +277,7 @@ if [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_TAR="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-armhf-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if [[ "${CHECK_REH}" != "no" && -z $( contains "${APP_NAME_LC}-reh-linux-armhf-${RELEASE_VERSION}.tar.gz" ) ]]; then
         echo "Building on Linux arm because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
@@ -329,7 +338,7 @@ if [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_APPIMAGE="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-x64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      if [[ "${CHECK_REH}" != "no" && -z $( contains "${APP_NAME_LC}-reh-linux-x64-${RELEASE_VERSION}.tar.gz" ) ]]; then
         echo "Building on Linux x64 because we have no REH archive"
         export SHOULD_BUILD="yes"
       else
