@@ -107,7 +107,10 @@ jobs:
 
       - name: Compress vscode artifact
         run: |
-          tar -cz --exclude='.build/node' --exclude='**/node_modules' -f vscode.tar.gz vscode
+          find vscode -type f -not -path "*/node_modules/*" -not -path "vscode/.build/node/*" -not -path "vscode/.git/*" > vscode.txt
+          echo "vscode/.build/extensions/node_modules" >> vscode.txt
+          echo "vscode/.git" >> vscode.txt
+          tar -czf vscode.tar.gz -T vscode.txt
 
       - name: Upload vscode artifact
         uses: actions/upload-artifact@v3
