@@ -322,7 +322,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.build.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
       - uses: actions/checkout@v3
