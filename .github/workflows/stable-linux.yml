@@ -105,7 +105,7 @@ jobs:
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
-        if: needs.check.outputs.SHOULD_BUif: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:
