@@ -14,11 +14,10 @@ parts:
     plugin: nil
     override-build: |
       set -eu
-      ARCHITECTURE=$(dpkg --print-architecture)
       # Get GitHub releases
       wget --quiet https://api.github.com/repos/VSCodium/vscodium/releases -O latest.json
       VERSION=$(jq -r 'sort_by(.tag_name)|last.tag_name' latest.json)
-      DEB_URL=$(jq -r 'map(select(.tag_name == "'"$VERSION"'"))|first.assets[].browser_download_url|select(endswith("'"_$ARCHITECTURE.deb"'"))' latest.json)
+      DEB_URL=$(jq -r 'map(select(.tag_name == "'"$VERSION"'"))|first.assets[].browser_download_url|select(endswith("'"_$SNAPCRAFT_TARGET_ARCH.deb"'"))' latest.json)
       DEB=$(basename "${DEB_URL}")
       # Downloading .deb"
       wget "${DEB_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${DEB}"
@@ -30,7 +29,7 @@ parts:
       snapcraftctl set-version "$VERSION"
       # Correct path to icon.
       sed -i 's|Icon=vscodium|Icon=${SNAP}/usr/share/pixmaps/vscodium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
-      sed -i 's|Exec=/usr/share/codium/codium|Exec=codium|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
+      #sed -i 's|Exec=/usr/share/codium/codium|Exec=codium|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop
       sed -i 's|Icon=vscodium|Icon=/usr/share/pixmaps/vscodium.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-url-handler.desktop
     build-packages:
       - wget
@@ -72,12 +71,21 @@ parts:
       - -usr/share/lintian
       - -usr/share/man
       - -usr/share/codium/chrome-sandbox
+    build-attributes:
+      - enable-patchelf
+    override-prime: |
+      set -eux
+      craftctl default
+      for snap in "core20"; do
+        cd /snap/$snap/current/usr/lib/$SNAPCRAFT_ARCH_TRIPLET
+        find . -type f,l -name "*.so*" -exec bash -c "rm -f $SNAPCRAFT_PART_INSTALL/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/{}*" \;
+      done
 
   electron-launch:
     after:
       - codium
     plugin: dump
-    source: snap/local
+    source: snap/local/bin
 
 apps:
   codium:
