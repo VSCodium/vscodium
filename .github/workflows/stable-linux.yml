@@ -357,7 +357,7 @@ jobs:
         with:
           snap: ${{ steps.build.outputs.snap }}
           isClassic: 'true'
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.SHOULD_DEPLOY_TO_RELEASE == 'yes' || env.SHOULD_DEPLOY_TO_STORE == 'yes'
 
       - uses: svenstaro/upload-release-action@v2
         with:
