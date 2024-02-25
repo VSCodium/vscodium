@@ -99,6 +99,8 @@ jobs:
         run: ./get_repo.sh
 
       - name: Build
+        env:
+          SHOULD_BUILD_REH: 'no'
         run: ./build.sh
 
       - name: Compress vscode artifact
@@ -289,7 +291,7 @@ jobs:
         include:
         - package_name: vscodium-insiders-bin
         - package_name: vscodium-insiders
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
 
     steps:
       - name: Get version
@@ -305,66 +307,3 @@ jobs:
           aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
           aur_username: ${{ secrets.AUR_USERNAME }}
           aur_email: ${{ secrets.AUR_EMAIL }}
-
-  snap:
-    needs:
-      - check
-      - build
-    runs-on: ubuntu-latest
-    env:
-      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-        - amd64
-        - arm64
-    # if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
-    if: false
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ env.GITHUB_BRANCH }}
-
-      - name: Check version
-        env:
-          ARCHITECTURE: ${{ matrix.platform }}
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
-        run: ./stores/snapcraft/check_version.sh
-
-      - uses: docker/setup-qemu-action@v3
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Prepare snapcraft.yaml
-        env:
-          ARCHITECTURE: ${{ matrix.platform }}
-        run: ./stores/snapcraft/build.sh
-        if: env.SHOULD_BUILD == 'yes'
-
-      # - uses: diddlesnaps/snapcraft-multiarch-action@v1
-      #   with:
-      #     path: stores/snapcraft/build
-      #     architecture: ${{ matrix.platform }}
-      #   id: build
-      #   if: env.SHOULD_BUILD == 'yes'
-
-      - uses: snapcore/action-build@v1
-        with:
-          path: stores/snapcraft/build
-        id: build
-        if: env.SHOULD_BUILD == 'yes'
-
-      # - uses: diddlesnaps/snapcraft-review-action@v1
-      #   with:
-      #     snap: ${{ steps.build.outputs.snap }}
-      #     isClassic: 'true'
-      #   if: env.SHOULD_BUILD == 'yes'
-
-      - uses: svenstaro/upload-release-action@v2
-        with:
-          repo_name: ${{ env.ASSETS_REPOSITORY }}
-          repo_token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-          file: ${{ steps.build.outputs.snap }}
-          tag: ${{ env.RELEASE_VERSION }}
-        if: env.SHOULD_DEPLOY_TO_RELEASE == 'yes'

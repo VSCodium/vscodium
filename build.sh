@@ -38,12 +38,10 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     VSCODE_PLATFORM="win32"
   else # linux
     # in CI, packaging will be done by a different job
-    if [[ "${CI_BUILD}" != "no" ]]; then
+    if [[ "${CI_BUILD}" == "no" ]]; then
       yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
       find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
-
-      SHOULD_BUILD_REH="no"
     fi
 
     VSCODE_PLATFORM="linux"

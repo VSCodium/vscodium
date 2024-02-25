@@ -103,6 +103,8 @@ jobs:
         run: ./get_repo.sh
 
       - name: Build
+        env:
+          SHOULD_BUILD_REH: 'no'
         run: ./build.sh
 
       - name: Compress vscode artifact
@@ -320,8 +322,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    # if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
-    if: false
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
 
     steps:
       - uses: actions/checkout@v3
@@ -329,16 +330,11 @@ jobs:
       - name: Check version
         env:
           ARCHITECTURE: ${{ matrix.platform }}
+          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         run: ./stores/snapcraft/check_version.sh
 
       - uses: docker/setup-qemu-action@v3
-        if: env.SHOULD_DEPLOY == 'yes'
-
-      - name: Prepare snapcraft.yaml
-        env:
-          ARCHITECTURE: ${{ matrix.platform }}
-        run: ./stores/snapcraft/build.sh
         if: env.SHOULD_BUILD == 'yes'
 
       - uses: diddlesnaps/snapcraft-multiarch-action@v1
@@ -369,6 +365,14 @@ jobs:
           snap: ${{ steps.build.outputs.snap }}
           release: stable
         if: env.SHOULD_DEPLOY_TO_STORE == 'yes'
+
+       - name: Upload assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: snap-${{ matrix.platform }}
+          path: ${{ steps.build.outputs.snap }}
+          retention-days: 3
+        if: github.event.inputs.generate_assets == 'true'
 
   deb-rpm-repo-hook:
     needs:
