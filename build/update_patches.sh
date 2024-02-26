@@ -58,3 +58,23 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     fi
   done
 fi
+
+for FILE in ../patches/linux/*.patch; do
+  if [[ -f "${FILE}" ]]; then
+    echo applying patch: "${FILE}"
+    if ! git apply --ignore-whitespace "${FILE}"; then
+      echo failed to apply patch "${FILE}"
+
+      git apply --reject "${FILE}"
+      git apply --reject "../patches/helper/settings.patch"
+
+      read -rp "Press any key when the conflict have been resolved..." -n1 -s
+
+      git restore .vscode/settings.json
+      git add .
+      git diff --staged -U1 > "${FILE}"
+    fi
+    git add .
+    git reset -q --hard HEAD
+  fi
+done

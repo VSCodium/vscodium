@@ -23,29 +23,45 @@ index cac528f..0d11e36 100644
 +target "16.20.2"
  ms_build_id "255375"
 diff --git a/remote/package.json b/remote/package.json
-index b1fbc7b..87716c0 100644
+index 1d341b0..751c326 100644
 --- a/remote/package.json
 +++ b/remote/package.json
 @@ -31,3 +31,3 @@
      "native-watchdog": "^1.4.1",
--    "node-pty": "1.1.0-beta5",
+-    "node-pty": "1.1.0-beta6",
 +    "node-pty": "1.1.0-beta4",
      "tas-client-umd": "0.1.8",
 diff --git a/remote/yarn.lock b/remote/yarn.lock
-index bb20531..8f7c051 100644
+index 5fdbd09..74dc7c6 100644
 --- a/remote/yarn.lock
 +++ b/remote/yarn.lock
-@@ -433,6 +433,6 @@ node-gyp-build@^4.3.0:
+@@ -391,2 +391,7 @@ ms@2.1.2:
  
--node-pty@1.1.0-beta5:
--  version "1.1.0-beta5"
--  resolved "https://registry.yarnpkg.com/node-pty/-/node-pty-1.1.0-beta5.tgz#364386b7058a93070234064f13164ec1ef914993"
--  integrity sha512-j3QdgFHnLY0JWxztrvM3g67RaQLOGvytv+C6mFu0PqD+JILlzqfwuoyqRqVxdZZjoOTUXPfSRj1qPVCaCH+eOw==
++nan@^2.17.0:
++  version "2.18.0"
++  resolved "https://registry.npmjs.org/nan/-/nan-2.18.0.tgz#26a6faae7ffbeb293a39660e88a76b82e30b7554"
++  integrity sha512-W7tfG7vMOGtD30sHoZSSc/JVYiyDPEyQVso/Zz+/uQd0B0L46gtC+pHha5FFMRpil6fm/AoEcRWyOVi4+E/f8w==
++
+ napi-build-utils@^1.0.1:
+@@ -408,3 +413,3 @@ node-abi@^3.3.0:
+ 
+-node-addon-api@7.1.0, node-addon-api@^7.1.0:
++node-addon-api@7.1.0:
+   version "7.1.0"
+@@ -433,8 +438,8 @@ node-gyp-build@^4.3.0:
+ 
+-node-pty@1.1.0-beta6:
+-  version "1.1.0-beta6"
+-  resolved "https://registry.yarnpkg.com/node-pty/-/node-pty-1.1.0-beta6.tgz#8b27ce40268e313868925e1b46f2af98cc677881"
+-  integrity sha512-ZcuPz5wIbfF4rebVv8sl+nf2Cn5dVMqlEl9PtabCt4uIffGDnovOpmwh16Oh/MThrwSmeJL6gBwu6lIbBtW7DQ==
 +node-pty@1.1.0-beta4:
 +  version "1.1.0-beta4"
-+  resolved "https://registry.yarnpkg.com/node-pty/-/node-pty-1.1.0-beta4.tgz#ee74d909c9f422ffc7f675e1092529673f8906ec"
++  resolved "https://registry.npmjs.org/node-pty/-/node-pty-1.1.0-beta4.tgz#ee74d909c9f422ffc7f675e1092529673f8906ec"
 +  integrity sha512-CgffN9AxVtH4g7vDxtanm2qaR7jw3oet9r+ArzziGiFvmds9SdR3gXkZF0fqZWSxhTHZusJWvsuKvRv+5O2K8A==
    dependencies:
+-    node-addon-api "^7.1.0"
++    nan "^2.17.0"
+ 
 diff --git a/resources/server/bin/code-server-linux.sh b/resources/server/bin/code-server-linux.sh
 index e3d96bd..3df32df 100644
 --- a/resources/server/bin/code-server-linux.sh
