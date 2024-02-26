@@ -97,6 +97,14 @@ jobs:
         run: ./update_version.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
+      - name: Upload assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: bin-${{ matrix.vscode_arch }}
+          path: assets/
+          retention-days: 3
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+
       - name: Clean up keychain
         if: always()
         run: |
