@@ -93,8 +93,7 @@ else
   git config --global user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
   git config --global user.name "${GITHUB_USERNAME} CI"
   git clone https://github.com/nodejs/node-gyp.git .
-  git checkout v9.4.0
-  git am --3way --whitespace=fix ../../build/npm/gyp/patches/gyp_spectre_mitigation_support.patch
+  git checkout v10.0.1
   npm install
 
   npm_config_node_gyp="$( pwd )/bin/node-gyp.js"
