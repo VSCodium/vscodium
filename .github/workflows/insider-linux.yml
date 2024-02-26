@@ -68,40 +68,46 @@ jobs:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SHOULD_BUILD: 'yes'
+      SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
       VSCODE_ARCH: 'x64'
     outputs:
       BUILD_SOURCEVERSION: ${{ env.BUILD_SOURCEVERSION }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
           node-version: '18.17'
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Install Yarn
         run: npm install -g yarn
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Install libkrb5-dev
         run: sudo apt-get install -y libkrb5-dev
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:
           SHOULD_BUILD_REH: 'no'
         run: ./build.sh
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Compress vscode artifact
         run: |
@@ -109,6 +115,7 @@ jobs:
           echo "vscode/.build/extensions/node_modules" >> vscode.txt
           echo "vscode/.git" >> vscode.txt
           tar -czf vscode.tar.gz -T vscode.txt
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload vscode artifact
         uses: actions/upload-artifact@v3
@@ -116,6 +123,7 @@ jobs:
           name: vscode
           path: ./vscode.tar.gz
           retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
+        if: env.SHOULD_BUILD == 'yes'
 
   build:
     needs:
@@ -142,52 +150,53 @@ jobs:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+      SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
       SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
     outputs:
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Install GH
         run: ./install_gh.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_REH: 'no'
         run: ./check_tags.sh
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Install libkrb5-dev
         run: sudo apt-get install -y libkrb5-dev
-        if: env.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
         uses: actions/download-artifact@v3
         with:
           name: vscode
-        if: env.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./package_linux_bin.sh
-        if: env.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Prepare assets
         env:
           SHOULD_BUILD_REH: 'no'
         run: ./prepare_assets.sh
-        if: (env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes') || github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Release
         env:
@@ -209,7 +218,7 @@ jobs:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/
           retention-days: 3
-        if: env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   reh:
     needs:
@@ -307,3 +316,50 @@ jobs:
           aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
           aur_username: ${{ secrets.AUR_USERNAME }}
           aur_email: ${{ secrets.AUR_EMAIL }}
+
+  snap:
+    needs:
+      - check
+      - build
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - amd64
+        - arm64
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: diddlesnaps/snapcraft-multiarch-action@v1
+        with:
+          path: stores/snapcraft/insider
+          architecture: ${{ matrix.platform }}
+        id: build
+
+      - uses: diddlesnaps/snapcraft-review-action@v1
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          isClassic: 'true'
+
+      - uses: snapcore/action-publish@master
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: stable
+        if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
+
+      - name: Upload assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: snap-${{ matrix.platform }}
+          path: ${{ steps.build.outputs.snap }}
+          retention-days: 3
+        if: github.event.inputs.generate_assets == 'true'
