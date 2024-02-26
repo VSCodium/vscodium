@@ -191,22 +191,20 @@ The builds are run every day, but exit early if there isn't a new release from M
 ## <a id="supported-platforms"></a>Supported Platforms
 
 The minimal version is limited by the core component Electron, you may want to check its [platform prerequisites](https://www.electronjs.org/docs/latest/development/build-instructions-gn#platform-prerequisites).
-- [x] macOS (`zip`, `dmg`) OS X 10.10 or newer x64
-- [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64
-- [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
-- [x] GNU/Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
-- [x] GNU/Linux arm64 (`deb`, `tar.gz`)
-- [x] GNU/Linux armhf (`deb`, `tar.gz`)
-- [x] Windows 10 / Server 2012 R2 or newer x64
-- [x] Windows 10 / Server 2012 R2 or newer x86
-- [x] Windows 10 / Server 2012 R2 or newer arm64
 
+- [x] macOS (`zip`, `dmg`) macOS 10.15 or newer x64
+- [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64
+- [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `snap`, `tar.gz`)
+- [x] GNU/Linux arm64 (`deb`, `rpm`, `snap`, `tar.gz`)
+- [x] GNU/Linux armhf (`deb`, `rpm`, `tar.gz`)
+- [x] Windows 10 / Server 2012 R2 or newer x64
+- [x] Windows 10 / Server 2012 R2 or newer arm64
 
 ## <a id="donate"></a>Donate
 
-If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N`.
+If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N` (@stripedpajamas).
 
-Special thanks to:
+## <a id="thanks"></a>Special thanks
 
 <table>
   <tr>
