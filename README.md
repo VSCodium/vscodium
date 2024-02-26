@@ -202,7 +202,7 @@ The minimal version is limited by the core component Electron, you may want to c
 
 ## <a id="donate"></a>Donate
 
-If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N` (@stripedpajamas).
+If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N` (<a href="https://github.com/stripedpajamas" target="_blank">@stripedpajamas</a>).
 
 ## <a id="thanks"></a>Special thanks
 
