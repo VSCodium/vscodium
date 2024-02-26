@@ -122,7 +122,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload vscode artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vscode
           path: ./vscode.tar.gz
@@ -376,7 +376,7 @@ jobs:
         if: env.SHOULD_DEPLOY_TO_STORE == 'yes'
 
       - name: Upload assets
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: snap-${{ matrix.platform }}
           path: ${{ steps.build.outputs.snap }}
