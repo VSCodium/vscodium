@@ -331,7 +331,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v3
@@ -374,14 +374,6 @@ jobs:
           snap: ${{ steps.build.outputs.snap }}
           release: stable
         if: env.SHOULD_DEPLOY_TO_STORE == 'yes'
-
-      - name: Upload assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: snap-${{ matrix.platform }}
-          path: ${{ steps.build.outputs.snap }}
-          retention-days: 3
-        if: github.event.inputs.generate_assets == 'true'
 
   deb-rpm-repo-hook:
     needs:

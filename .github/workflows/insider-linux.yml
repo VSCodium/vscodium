@@ -326,6 +326,10 @@ jobs:
           CHECK_ONLY_REH: 'yes'
         run: ./check_tags.sh
 
+      - name: Install libkrb5-dev
+        run: sudo apt-get install -y libkrb5-dev
+        if: env.SHOULD_BUILD == 'yes'
+
       - name: Download vscode artifact
         uses: actions/download-artifact@v3
         with:
@@ -395,7 +399,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v3
@@ -420,11 +424,3 @@ jobs:
           snap: ${{ steps.build.outputs.snap }}
           release: stable
         if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
-
-      - name: Upload assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: snap-${{ matrix.platform }}
-          path: ${{ steps.build.outputs.snap }}
-          retention-days: 3
-        if: github.event.inputs.generate_assets == 'true'
