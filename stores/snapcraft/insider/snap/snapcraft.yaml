@@ -92,11 +92,29 @@ parts:
     plugin: dump
     source: snap/local/bin
 
+  mesa-patchelf:
+    plugin: nil
+    stage-packages:
+    - libgl1-mesa-dri
+    stage:
+      - -usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
+
+  mesa-no-patchelf:
+    plugin: nil
+    stage-packages:
+      - libgl1-mesa-dri
+    build-attributes:
+      - no-patchelf
+    stage:
+      - usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
+
 apps:
   codium:
     command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --no-sandbox
     desktop: usr/share/applications/codium-insiders.desktop
     common-id: codium-insiders.desktop
+    environment:
+      LIBGL_DRIVERS_PATH: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
 
   url-handler:
     command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --open-url --no-sandbox
