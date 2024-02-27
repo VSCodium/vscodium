@@ -33,7 +33,14 @@ done
 node build/azure-pipelines/distro/mixin-npm
 
 yarn gulp minify-vscode-reh
-yarn gulp "vscode-reh-linux-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  PA_NAME="linux-alpine"
+else
+  PA_NAME="alpine-arm64"
+fi
+
+yarn gulp "vscode-reh-${PA_NAME}-min-ci"
 
 cd ..
 
@@ -42,7 +49,7 @@ APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 mkdir -p assets
 
 echo "Building and moving REH"
-cd "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+cd "vscode-reh-${PA_NAME}"
 tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
 cd ..
 
