@@ -16,7 +16,8 @@ parts:
       set -eu
       # Get .deb url
       wget --quiet https://api.github.com/repos/VSCodium/vscodium-insiders/releases -O latest.json
-      DEB_URL=$( jq -r 'map(select(.tag_name == "'"${RELEASE_VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${SNAPCRAFT_TARGET_ARCH}.deb"'"))' latest.json )
+      VERSION=$( jq -r 'sort_by(.tag_name)|last.tag_name' latest.json )
+      DEB_URL=$( jq -r 'map(select(.tag_name == "'"${VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${SNAPCRAFT_TARGET_ARCH}.deb"'"))' latest.json )
       DEB_NAME=$( basename "${DEB_URL}" )
       # Downloading .deb
       wget "${DEB_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${DEB_NAME}"
@@ -26,7 +27,7 @@ parts:
       rm -f latest.json
       rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB_NAME}"
       # Set version
-      snapcraftctl set-version "${RELEASE_VERSION/-*/}"
+      snapcraftctl set-version "${VERSION/-*/}"
       # Prepare GUI
       mkdir -p "${SNAPCRAFT_PART_INSTALL}/meta/gui"
       cp "${SNAPCRAFT_PART_INSTALL}/usr/share/codium-insiders/resources/app/resources/linux/code.png" "${SNAPCRAFT_PART_INSTALL}/meta/gui/codium-insiders.png"
