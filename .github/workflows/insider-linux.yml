@@ -419,10 +419,9 @@ jobs:
           snap: ${{ steps.build.outputs.snap }}
           isClassic: 'true'
 
-      - uses: snapcore/action-publish@master
-        env:
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
+      - uses: svenstaro/upload-release-action@v2
         with:
-          snap: ${{ steps.build.outputs.snap }}
-          release: stable
-        if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
+          repo_name: ${{ env.ASSETS_REPOSITORY }}
+          repo_token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          file: ${{ steps.build.outputs.snap }}
+          tag: ${{ env.RELEASE_VERSION }}
