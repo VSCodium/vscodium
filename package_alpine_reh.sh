@@ -33,7 +33,7 @@ done
 node build/azure-pipelines/distro/mixin-npm
 
 yarn gulp minify-vscode-reh
-yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+yarn gulp "vscode-reh-linux-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
 cd ..
 

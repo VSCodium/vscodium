@@ -254,6 +254,7 @@ jobs:
 
       - name: Install GH
         run: ./install_gh.sh
+        if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
         env:
@@ -319,6 +320,7 @@ jobs:
 
       - name: Install GH
         run: ./install_gh.sh
+        if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
         env:
