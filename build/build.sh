@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1091,SC2129
+# shellcheck disable=SC1091,SC2129,SC2002
 
 ### Windows
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
