@@ -37,7 +37,7 @@ for i in {1..5}; do # try 5 times
   echo "Yarn failed $i, trying again..."
 done
 
-./build/azure-pipelines/linux/install.sh
+./build/azure-pipelines/linux/setup-env.sh --only-remote
 
 EXPECTED_GLIBC_VERSION="2.17" EXPECTED_GLIBCXX_VERSION="3.4.22" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
