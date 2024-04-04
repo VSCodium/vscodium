@@ -9,6 +9,9 @@ on:
       generate_assets:
         type: boolean
         description: Generate assets
+      checkout_pr:
+        type: string
+        description: Checkout PR
   repository_dispatch:
     types: [stable]
   push:
@@ -55,6 +58,8 @@ jobs:
           python-version: '3.11'
 
       - name: Clone VSCode repo
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: . get_repo.sh
 
       - name: Check PR or cron
