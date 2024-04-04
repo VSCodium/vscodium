@@ -39,6 +39,15 @@ done
 
 ./build/azure-pipelines/linux/setup-env.sh
 
+for i in {1..5}; do # try 5 times
+  yarn --frozen-lockfile --check-files && break
+  if [ $i -eq 3 ]; then
+    echo "Yarn failed too many times" >&2
+    exit 1
+  fi
+  echo "Yarn failed $i, trying again..."
+done
+
 node build/azure-pipelines/distro/mixin-npm
 
 yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
