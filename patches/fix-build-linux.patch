@@ -19,21 +19,21 @@ index 8c2b62f..843e8d4 100644
 +	const buildRpmTask = task.define(`vscode-linux-${arch}-build-rpm`, task.series(prepareRpmTask, buildRpmPackage(arch)));
  	gulp.task(buildRpmTask);
 diff --git a/build/linux/dependencies-generator.js b/build/linux/dependencies-generator.js
-index e40ed70..3e7dbc9 100644
+index 80c247d..40f1df2 100644
 --- a/build/linux/dependencies-generator.js
 +++ b/build/linux/dependencies-generator.js
 @@ -24,3 +24,3 @@ const product = require("../../product.json");
  // are valid, are in dep-lists.ts
 -const FAIL_BUILD_FOR_NEW_DEPENDENCIES = true;
 +const FAIL_BUILD_FOR_NEW_DEPENDENCIES = false;
- // Based on https://source.chromium.org/chromium/chromium/src/+/refs/tags/118.0.5993.159:chrome/installer/linux/BUILD.gn;l=64-80
+ // Based on https://source.chromium.org/chromium/chromium/src/+/refs/tags/120.0.6099.268:chrome/installer/linux/BUILD.gn;l=64-80
 @@ -56,3 +56,3 @@ async function getDependencies(packageType, buildDir, applicationName, arch) {
      // Add the tunnel binary.
 -    files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
 +    // files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
      // Add the main executable.
 diff --git a/build/linux/dependencies-generator.ts b/build/linux/dependencies-generator.ts
-index 12bc3c0..4c3a4ac 100644
+index 9f1a068..48e3d52 100644
 --- a/build/linux/dependencies-generator.ts
 +++ b/build/linux/dependencies-generator.ts
 @@ -25,3 +25,3 @@ import product = require('../../product.json');

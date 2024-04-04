@@ -37,7 +37,16 @@ for i in {1..5}; do # try 5 times
   echo "Yarn failed $i, trying again..."
 done
 
-./build/azure-pipelines/linux/install.sh
+./build/azure-pipelines/linux/setup-env.sh --only-remote
+
+for i in {1..5}; do # try 5 times
+  yarn --frozen-lockfile --check-files && break
+  if [ $i -eq 3 ]; then
+    echo "Yarn failed too many times" >&2
+    exit 1
+  fi
+  echo "Yarn failed $i, trying again..."
+done
 
 EXPECTED_GLIBC_VERSION="2.17" EXPECTED_GLIBCXX_VERSION="3.4.22" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 

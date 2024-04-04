@@ -1,10 +1,16 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 595d0ce..2e94d99 100644
+index c2b81d0..2e94d99 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -375,10 +375,2 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -375,16 +375,2 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  
--		if (platform === 'linux' || platform === 'alpine') {
+-		if (platform === 'linux' && process.env['VSCODE_NODE_GLIBC'] === '-glibc-2.17') {
+-			result = es.merge(result,
+-				gulp.src(`resources/server/bin/helpers/check-requirements-linux-legacy.sh`, { base: '.' })
+-					.pipe(rename(`bin/helpers/check-requirements.sh`))
+-					.pipe(util.setExecutableBit())
+-			);
+-		} else if (platform === 'linux' || platform === 'alpine') {
 -			result = es.merge(result,
 -				gulp.src(`resources/server/bin/helpers/check-requirements-linux.sh`, { base: '.' })
 -					.pipe(rename(`bin/helpers/check-requirements.sh`))
@@ -14,25 +20,25 @@ index 595d0ce..2e94d99 100644
 -
  		return result.pipe(vfs.dest(destination));
 diff --git a/remote/.yarnrc b/remote/.yarnrc
-index cac528f..0d11e36 100644
+index 4e7208c..f7304bc 100644
 --- a/remote/.yarnrc
 +++ b/remote/.yarnrc
 @@ -1,3 +1,3 @@
  disturl "https://nodejs.org/dist"
--target "18.17.1"
+-target "18.18.2"
 +target "16.20.2"
- ms_build_id "255375"
+ ms_build_id "256117"
 diff --git a/remote/package.json b/remote/package.json
-index 1d341b0..751c326 100644
+index 974450e..513856f 100644
 --- a/remote/package.json
 +++ b/remote/package.json
 @@ -31,3 +31,3 @@
      "native-watchdog": "^1.4.1",
--    "node-pty": "1.1.0-beta6",
+-    "node-pty": "1.1.0-beta11",
 +    "node-pty": "1.1.0-beta4",
      "tas-client-umd": "0.1.8",
 diff --git a/remote/yarn.lock b/remote/yarn.lock
-index 5fdbd09..74dc7c6 100644
+index d62eb4b..f175b85 100644
 --- a/remote/yarn.lock
 +++ b/remote/yarn.lock
 @@ -391,2 +391,7 @@ ms@2.1.2:
@@ -50,10 +56,10 @@ index 5fdbd09..74dc7c6 100644
    version "7.1.0"
 @@ -433,8 +438,8 @@ node-gyp-build@^4.3.0:
  
--node-pty@1.1.0-beta6:
--  version "1.1.0-beta6"
--  resolved "https://registry.yarnpkg.com/node-pty/-/node-pty-1.1.0-beta6.tgz#8b27ce40268e313868925e1b46f2af98cc677881"
--  integrity sha512-ZcuPz5wIbfF4rebVv8sl+nf2Cn5dVMqlEl9PtabCt4uIffGDnovOpmwh16Oh/MThrwSmeJL6gBwu6lIbBtW7DQ==
+-node-pty@1.1.0-beta11:
+-  version "1.1.0-beta11"
+-  resolved "https://registry.yarnpkg.com/node-pty/-/node-pty-1.1.0-beta11.tgz#909d5dd8f9aa2a7857e7b632fd4d2d4768bdf69f"
+-  integrity sha512-vTjF+VrvSCfPDILUkIT+YrG1Fdn06/eBRS2fc9a3JzYAvknMB1Ip8aoJhxl8hNpjWAbprmCEiV91mlfNpCD+GQ==
 +node-pty@1.1.0-beta4:
 +  version "1.1.0-beta4"
 +  resolved "https://registry.npmjs.org/node-pty/-/node-pty-1.1.0-beta4.tgz#ee74d909c9f422ffc7f675e1092529673f8906ec"
@@ -62,30 +68,3 @@ index 5fdbd09..74dc7c6 100644
 -    node-addon-api "^7.1.0"
 +    nan "^2.17.0"
  
-diff --git a/resources/server/bin/code-server-linux.sh b/resources/server/bin/code-server-linux.sh
-index e3d96bd..3df32df 100644
---- a/resources/server/bin/code-server-linux.sh
-+++ b/resources/server/bin/code-server-linux.sh
-@@ -11,22 +11,2 @@ ROOT="$(dirname "$(dirname "$(readlink -f "$0")")")"
- 
--# Do not remove this check.
--# Provides a way to skip the server requirements check from
--# outside the install flow. A system process can create this
--# file before the server is downloaded and installed.
--skip_check=0
--if [ -f "/tmp/vscode-skip-server-requirements-check" ]; then
--	echo "!!! WARNING: Skipping server pre-requisite check !!!"
--	echo "!!! Server stability is not guaranteed. Proceed at your own risk. !!!"
--	skip_check=1
--fi
--
--# Check platform requirements
--if [ "$(echo "$@" | grep -c -- "--skip-requirements-check")" -eq 0 ] && [ $skip_check -eq 0 ]; then
--	$ROOT/bin/helpers/check-requirements.sh
--	exit_code=$?
--	if [ $exit_code -ne 0 ]; then
--		exit $exit_code
--	fi
--fi
--
- "$ROOT/node" ${INSPECT:-} "$ROOT/out/server-main.js" "$@"

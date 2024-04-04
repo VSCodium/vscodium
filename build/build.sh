@@ -61,6 +61,8 @@ else
   export VSCODE_ARCH="x64"
 fi
 
+export NODE_OPTIONS="--max-old-space-size=8192"
+
 echo "OS_NAME=\"${OS_NAME}\""
 echo "SKIP_SOURCE=\"${SKIP_SOURCE}\""
 echo "SKIP_BUILD=\"${SKIP_BUILD}\""

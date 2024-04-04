@@ -1,5 +1,5 @@
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-index fc6c589..ed0df30 100644
+index 66b9062..0a659dc 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 @@ -315,2 +315,8 @@ configurationRegistry.registerConfiguration({
@@ -12,10 +12,10 @@ index fc6c589..ed0df30 100644
 +		},
  		'workbench.startupEditor': {
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
-index 99d6a26..b42713d 100644
+index a73549a..fc95016 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
-@@ -114,4 +114,8 @@ type GettingStartedActionEvent = {
+@@ -115,4 +115,8 @@ type GettingStartedActionEvent = {
  type RecentEntry = (IRecentFolder | IRecentWorkspace) & { id: string };
 +type AnnouncementEntry = { id: string, title: string, url: string };
  
@@ -24,26 +24,35 @@ index 99d6a26..b42713d 100644
 +const BUILTIN_ANNOUNCEMENTS: AnnouncementEntry[] = [/* BUILTIN_ANNOUNCEMENTS */];
 +
  export class GettingStartedPage extends EditorPane {
-@@ -150,2 +154,4 @@ export class GettingStartedPage extends EditorPane {
+@@ -151,2 +155,4 @@ export class GettingStartedPage extends EditorPane {
  	private gettingStartedList?: GettingStartedIndexList<IResolvedWalkthrough>;
 +	private announcementList?: GettingStartedIndexList<AnnouncementEntry>;
 +	private announcementData?: AnnouncementEntry[];
- 
-@@ -809,2 +815,3 @@ export class GettingStartedPage extends EditorPane {
+ 	private videoList?: GettingStartedIndexList<IWelcomePageStartEntry>;
+@@ -844,2 +850,3 @@ export class GettingStartedPage extends EditorPane {
  		const gettingStartedList = this.buildGettingStartedWalkthroughsList();
 +		const announcementList = await this.buildAnnouncementList();
  
-@@ -819,3 +826,3 @@ export class GettingStartedPage extends EditorPane {
- 				this.container.classList.remove('noWalkthroughs');
--				reset(rightColumn, gettingStartedList.getDomElement());
-+				reset(rightColumn, gettingStartedList.getDomElement(), announcementList.getDomElement());
- 			}
-@@ -823,3 +830,3 @@ export class GettingStartedPage extends EditorPane {
- 				this.container.classList.add('noWalkthroughs');
--				reset(rightColumn);
-+				reset(rightColumn, announcementList.getDomElement());
- 
-@@ -976,2 +983,55 @@ export class GettingStartedPage extends EditorPane {
+@@ -856,6 +863,6 @@ export class GettingStartedPage extends EditorPane {
+ 					this.container.classList.remove('noVideos');
+-					reset(rightColumn, videoList?.getDomElement(), gettingStartedList.getDomElement());
++					reset(rightColumn, videoList?.getDomElement(), gettingStartedList.getDomElement(), announcementList.getDomElement());
+ 				} else {
+ 					this.container.classList.add('noVideos');
+-					reset(rightColumn, gettingStartedList.getDomElement());
++					reset(rightColumn, gettingStartedList.getDomElement(), announcementList.getDomElement());
+ 				}
+@@ -866,3 +873,3 @@ export class GettingStartedPage extends EditorPane {
+ 					this.container.classList.remove('noVideos');
+-					reset(rightColumn, videoList?.getDomElement());
++					reset(rightColumn, videoList?.getDomElement(), announcementList.getDomElement());
+ 				}
+@@ -870,3 +877,3 @@ export class GettingStartedPage extends EditorPane {
+ 					this.container.classList.add('noVideos');
+-					reset(rightColumn);
++					reset(rightColumn, announcementList.getDomElement());
+ 				}
+@@ -1023,2 +1030,55 @@ export class GettingStartedPage extends EditorPane {
  
 +	private async buildAnnouncementList(): Promise<GettingStartedIndexList<AnnouncementEntry>> {
 +		const renderAnnouncement = (announcement: AnnouncementEntry) => {

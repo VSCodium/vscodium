@@ -211,6 +211,7 @@ jobs:
 
       - name: Update versions repo
         env:
+          FORCE_UPDATE: ${{ github.event.inputs.force_version }}
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
@@ -255,6 +256,19 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.17'
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install libkrb5-dev
+        run: sudo apt-get install -y libkrb5-dev
 
       - name: Install GH
         run: ./install_gh.sh
