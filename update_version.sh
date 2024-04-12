@@ -22,7 +22,7 @@ if [[ -z "${BUILD_SOURCEVERSION}" ]]; then
   exit 0
 fi
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+if [[ "${VSCODE_ARCH}" == "ppc64le" ]] || [[ "${VSCODE_ARCH}" == "riscv64" ]] ; then
   echo "Skip ppc64le since only reh is published"
   exit 0
 fi
