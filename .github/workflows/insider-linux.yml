@@ -61,6 +61,7 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHECK_ALL: 'yes'
         run: ./check_tags.sh
 
   compile:
@@ -241,8 +242,8 @@ jobs:
           npm_arch: arm64
         - vscode_arch: armhf
           npm_arch: arm
-        # - vscode_arch: ppc64le
-        #   npm_arch: ppc64
+        - vscode_arch: ppc64le
+          npm_arch: ppc64
         - vscode_arch: riscv64
           npm_arch: riscv64
     env:
