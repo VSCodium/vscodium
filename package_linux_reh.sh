@@ -24,6 +24,14 @@ elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-arm32v7"
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-ppc64le"
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  # Unofficial RISC-V nodejs builds doesn't provide v16.x
+  sed -i '/target/s/"16.*"/"18.18.1"/' remote/.yarnrc
 fi
 
 export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME

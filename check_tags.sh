@@ -310,6 +310,24 @@ elif [[ "${ASSETS}" != "null" ]]; then
         echo "Already have all the Linux PowerPC64LE builds"
       fi
 
+    # linux-riscv64
+    elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
+      SHOULD_BUILD_APPIMAGE="no"
+      SHOULD_BUILD_DEB="no"
+      SHOULD_BUILD_RPM="no"
+      SHOULD_BUILD_TAR="no"
+
+      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-riscv64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+        echo "Building on Linux RISC-V64 because we have no REH archive"
+        export SHOULD_BUILD="yes"
+      else
+        export SHOULD_BUILD_REH="no"
+      fi
+
+      if [[ "${SHOULD_BUILD}" != "yes" ]]; then
+        echo "Already have all the Linux PowerPC64LE builds"
+      fi
+
     # linux-x64
     else
       if [[ -z $( contains "amd64.deb" ) ]]; then

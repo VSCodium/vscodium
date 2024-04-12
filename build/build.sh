@@ -57,6 +57,8 @@ if [[ "${UNAME_ARCH}" == "arm64" ]]; then
   export VSCODE_ARCH="arm64"
 elif [[ "${UNAME_ARCH}" == "ppc64le" ]]; then
   export VSCODE_ARCH="ppc64le"
+elif [[ "${UNAME_ARCH}" == "riscv64" ]]; then
+  export VSCODE_ARCH="riscv64"
 else
   export VSCODE_ARCH="x64"
 fi
