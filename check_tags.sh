@@ -43,6 +43,8 @@ else
 
       ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
     elif [[ "${RECHECK_ASSETS}" == "yes" ]]; then
+      export SHOULD_BUILD="no"
+
       ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
     else
       ASSETS="null"
