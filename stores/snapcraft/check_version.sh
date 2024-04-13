@@ -26,7 +26,7 @@ else
     SNAP_VERSION=$( snapcraft list-revisions "${SNAP_NAME}" | grep -F "stable*" | grep "${ARCHITECTURE}" | tr -s ' ' | cut -d ' ' -f 4 )
     echo "Snap version: ${SNAP_VERSION}"
 
-    if [[ "${SNAP_VERSION}" != "${RELEASE_VERSION}" ]]; then
+    if [[ -n "${SNAP_VERSION}" && "${SNAP_VERSION}" != "${RELEASE_VERSION}" ]]; then
       export SHOULD_BUILD="yes"
       export SHOULD_DEPLOY_TO_STORE="yes"
 
