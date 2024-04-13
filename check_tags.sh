@@ -9,36 +9,47 @@ if [[ -z "${GITHUB_TOKEN}" ]]; then
 fi
 
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
-GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases/latest" )
-LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
 
-if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
-  if [[ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]]; then
-    echo "New VSCode version, new build"
-    export SHOULD_BUILD="yes"
-  elif [[ "${NEW_RELEASE}" == "true" ]]; then
-    echo "New release build"
-    export SHOULD_BUILD="yes"
-  elif [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    BODY=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.body' )
+if [[ "${SHOULD_DEPLOY}" == "no" ]]; then
+  ASSETS="null"
+else
+  GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases/latest" )
+  LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
+  RECHECK_ASSETS="${SHOULD_BUILD}"
 
-    if [[ "${BODY}" =~ \[([a-z0-9]+)\] ]]; then
-      if [[ "${MS_COMMIT}" != "${BASH_REMATCH[1]}" ]]; then
-        echo "New VSCode Insiders version, new build"
-        export SHOULD_BUILD="yes"
+  if [[ "${LATEST_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+    if [[ "${MS_TAG}" != "${BASH_REMATCH[1]}" ]]; then
+      echo "New VSCode version, new build"
+      export SHOULD_BUILD="yes"
+    elif [[ "${NEW_RELEASE}" == "true" ]]; then
+      echo "New release build"
+      export SHOULD_BUILD="yes"
+    elif [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+      BODY=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.body' )
+
+      if [[ "${BODY}" =~ \[([a-z0-9]+)\] ]]; then
+        if [[ "${MS_COMMIT}" != "${BASH_REMATCH[1]}" ]]; then
+          echo "New VSCode Insiders version, new build"
+          export SHOULD_BUILD="yes"
+        fi
       fi
     fi
-  fi
 
-  if [[ "${SHOULD_BUILD}" != "yes" ]]; then
-    export RELEASE_VERSION="${LATEST_VERSION}"
-    echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
+    if [[ "${SHOULD_BUILD}" != "yes" ]]; then
+      export RELEASE_VERSION="${LATEST_VERSION}"
+      echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
 
-    echo "Switch to release version: ${RELEASE_VERSION}"
+      echo "Switch to release version: ${RELEASE_VERSION}"
 
-    ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
+      ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
+    elif [[ "${RECHECK_ASSETS}" == "yes" ]]; then
+      ASSETS=$( echo "${GITHUB_RESPONSE}" | jq -c '.assets | map(.name)?' )
+    else
+      ASSETS="null"
+    fi
   else
-    ASSETS="null"
+    echo "can't check assets"
+    exit 1
   fi
 fi
 
@@ -47,6 +58,7 @@ contains() {
   echo "${ASSETS}" | grep "${1}\""
 }
 
+# shellcheck disable=SC2153
 if [[ "${CHECK_ASSETS}" == "no" ]]; then
   echo "Don't check assets, yet"
 elif [[ "${ASSETS}" != "null" ]]; then
