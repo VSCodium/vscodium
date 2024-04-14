@@ -1,5 +1,5 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index e42a6b12b1f..b31af12b086 100755
+index 9bfbf9ab41a..3064f783d8c 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
 @@ -7,6 +7,10 @@ if [ "$SYSROOT_ARCH" == "x64" ]; then
@@ -97,10 +97,33 @@ index 6f8144b0954..8a8195e9b66 100644
  
  BUILD_TARGETS.forEach(buildTarget => {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index e1507e0424f..80ed8d91a41 100644
+index 3b1aeafd080..8363dae382c 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -429,6 +429,8 @@ const BUILD_TARGETS = [
+@@ -339,11 +339,21 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 			all = es.merge(all, shortcut);
+ 		}
+ 
++		const electronOverride = {};
++		if (process.env.VSCODE_ELECTRON_REPO) {
++			// electron doesn't support riscv64 and ppc64le, override the repo with `VSCODE_ELECTRON_REPO`.
++			electronOverride.repo = process.env.VSCODE_ELECTRON_REPO;
++		}
++
++		if (process.env.VSCODE_ELECTRON_TAG) {
++			electronOverride.tag = process.env.VSCODE_ELECTRON_TAG;
++		}
++
+ 		let result = all
+ 			.pipe(util.skipDirectories())
+ 			.pipe(util.fixWin32DirectoryPermissions())
+ 			.pipe(filter(['**', '!**/.github/**'], { dot: true })) // https://github.com/microsoft/vscode/issues/116523
+-			.pipe(electron({ ...config, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
++			.pipe(electron({ ...config, ...electronOverride, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
+ 			.pipe(filter(['**', '!LICENSE', '!version'], { dot: true }));
+ 
+ 		if (platform === 'linux') {
+@@ -432,6 +442,8 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'x64' },
  	{ platform: 'linux', arch: 'armhf' },
  	{ platform: 'linux', arch: 'arm64' },
@@ -181,10 +204,10 @@ index 92f8065f262..b86b4dba2b8 100644
  	cmd.push(`-l${chromiumSysroot}/usr/lib`);
  	cmd.push(`-L${vscodeSysroot}/debian/libxkbfile1/DEBIAN/shlibs`);
 diff --git a/build/linux/debian/dep-lists.js b/build/linux/debian/dep-lists.js
-index bdb265b6fec..4695f335416 100644
+index d843c090063..3b869cbbe6d 100644
 --- a/build/linux/debian/dep-lists.js
 +++ b/build/linux/debian/dep-lists.js
-@@ -140,6 +140,85 @@ exports.referenceGeneratedDepsByArch = {
+@@ -139,6 +139,85 @@ exports.referenceGeneratedDepsByArch = {
          'libxkbfile1 (>= 1:1.1.0)',
          'libxrandr2',
          'xdg-utils (>= 1.0.2)'
@@ -272,10 +295,10 @@ index bdb265b6fec..4695f335416 100644
  //# sourceMappingURL=dep-lists.js.map
 \ No newline at end of file
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index 3d6c2eba6e9..b8987ea7579 100644
+index 4028370cd02..ff4df2f08cb 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
-@@ -140,5 +140,84 @@ export const referenceGeneratedDepsByArch = {
+@@ -139,5 +139,84 @@ export const referenceGeneratedDepsByArch = {
  		'libxkbfile1 (>= 1:1.1.0)',
  		'libxrandr2',
  		'xdg-utils (>= 1.0.2)'
@@ -401,7 +424,7 @@ index feca7d3fa9d..f075ebcba75 100644
      console.log(`Fetching ${expectedName} for ${triple}`);
      const checksumSha256 = getVSCodeSysrootChecksum(expectedName);
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index aa417dcc722..02b1cc4e057 100644
+index aa417dcc722..58f0eeefeff 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
 @@ -82,7 +82,10 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
@@ -409,10 +432,10 @@ index aa417dcc722..02b1cc4e057 100644
  		const version = '20240129-253798';
  		try {
 -			const response = await fetch(`https://api.github.com/repos/Microsoft/vscode-linux-build-agent/releases/tags/v${version}`, {
-+				// if VSCODE_SYSROOT_REPO and VSCODE_SYSROOT_VERSION are set, use those instead
-+				const repo = process.env['VSCODE_SYSROOT_REPO'] ?? 'Microsoft/vscode-linux-build-agent';
-+				const actualVersion = process.env['VSCODE_SYSROOT_VERSION'] ?? version;
-+				const response = await fetch(`https://api.github.com/repos/${repo}/releases/tags/v${actualVersion}`, {
++			// if VSCODE_SYSROOT_REPO and VSCODE_SYSROOT_VERSION are set, use those instead
++			const repo = process.env['VSCODE_SYSROOT_REPO'] ?? 'Microsoft/vscode-linux-build-agent';
++			const actualVersion = process.env['VSCODE_SYSROOT_VERSION'] ?? version;
++			const response = await fetch(`https://api.github.com/repos/${repo}/releases/tags/v${actualVersion}`, {
  				headers: ghApiHeaders,
  				signal: controller.signal as any /* Typings issue with lib.dom.d.ts */
  			});
@@ -469,10 +492,10 @@ index e97485ef128..24fe452f7fe 100644
 +	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'riscv64'].includes(s);
  }
 diff --git a/build/linux/rpm/dep-lists.js b/build/linux/rpm/dep-lists.js
-index bd84fc146dc..50b195e1a98 100644
+index 8be477290bb..5841d4769de 100644
 --- a/build/linux/rpm/dep-lists.js
 +++ b/build/linux/rpm/dep-lists.js
-@@ -310,6 +310,106 @@ exports.referenceGeneratedDepsByArch = {
+@@ -314,6 +314,106 @@ exports.referenceGeneratedDepsByArch = {
          'rpmlib(FileDigests) <= 4.6.0-1',
          'rtld(GNU_HASH)',
          'xdg-utils'
@@ -581,10 +604,10 @@ index bd84fc146dc..50b195e1a98 100644
  //# sourceMappingURL=dep-lists.js.map
 \ No newline at end of file
 diff --git a/build/linux/rpm/dep-lists.ts b/build/linux/rpm/dep-lists.ts
-index 82a4fe7698d..1ba4c5848e3 100644
+index 24b18d504c8..924e62666f9 100644
 --- a/build/linux/rpm/dep-lists.ts
 +++ b/build/linux/rpm/dep-lists.ts
-@@ -309,5 +309,105 @@ export const referenceGeneratedDepsByArch = {
+@@ -313,5 +313,105 @@ export const referenceGeneratedDepsByArch = {
  		'rpmlib(FileDigests) <= 4.6.0-1',
  		'rtld(GNU_HASH)',
  		'xdg-utils'
@@ -820,10 +843,10 @@ index 079557869e3..c057746b870 100644
  
  if [ "$OS_ID" != "alpine" ]; then
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index 665ea2e18df..d23ba6c8a76 100644
+index 183f2582871..e13fe72513c 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-@@ -33,6 +33,8 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+@@ -39,6 +39,8 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
  		case TargetPlatform.LINUX_X64: return 'Linux 64 bit';
  		case TargetPlatform.LINUX_ARM64: return 'Linux ARM 64';
  		case TargetPlatform.LINUX_ARMHF: return 'Linux ARM';
@@ -832,7 +855,7 @@ index 665ea2e18df..d23ba6c8a76 100644
  
  		case TargetPlatform.ALPINE_X64: return 'Alpine Linux 64 bit';
  		case TargetPlatform.ALPINE_ARM64: return 'Alpine ARM 64';
-@@ -56,6 +58,8 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+@@ -62,6 +64,8 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
  		case TargetPlatform.LINUX_X64: return TargetPlatform.LINUX_X64;
  		case TargetPlatform.LINUX_ARM64: return TargetPlatform.LINUX_ARM64;
  		case TargetPlatform.LINUX_ARMHF: return TargetPlatform.LINUX_ARMHF;
@@ -841,7 +864,7 @@ index 665ea2e18df..d23ba6c8a76 100644
  
  		case TargetPlatform.ALPINE_X64: return TargetPlatform.ALPINE_X64;
  		case TargetPlatform.ALPINE_ARM64: return TargetPlatform.ALPINE_ARM64;
-@@ -91,6 +95,12 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+@@ -97,6 +101,12 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
  			if (arch === 'arm') {
  				return TargetPlatform.LINUX_ARMHF;
  			}
