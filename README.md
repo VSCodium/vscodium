@@ -116,7 +116,7 @@ VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Re
 If you want to save disk space by having VSCodium use the Electron system-wide, you also have [vscodium-electron](https://aur.archlinux.org/packages/vscodium-electron),
 maintained by [@m00nw4tch3r](https://aur.archlinux.org/account/m00nw4tch3r).
 
-An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/), maintained by [@cedricroijakkers](https://github.com/cedricroijakkers), is also available should you wish to compile from source yourself.
+An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/), maintained by [@cedricroijakkers](https://github.com/cedricroijakkers), is also available if you wish to compile from source yourself.
 
 #### <a id="flatpak"></a>Flatpak Option (GNU/Linux)
 
