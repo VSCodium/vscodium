@@ -11,8 +11,13 @@ tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+GLIBC_VERSION="2.17"
+if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+  GLIBC_VERSION="2.28"
+fi
+
 export VSCODE_PLATFORM='linux'
-export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
+export VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
 
 VSCODE_HOST_MOUNT="$( pwd )"
 
@@ -45,7 +50,11 @@ for i in {1..5}; do # try 5 times
   echo "Yarn failed $i, trying again..."
 done
 
-./build/azure-pipelines/linux/setup-env.sh --only-remote
+if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+  source ./build/azure-pipelines/linux/setup-env.sh
+else
+  ./build/azure-pipelines/linux/setup-env.sh --only-remote
+fi
 
 for i in {1..5}; do # try 5 times
   yarn --frozen-lockfile --check-files && break
@@ -56,11 +65,11 @@ for i in {1..5}; do # try 5 times
   echo "Yarn failed $i, trying again..."
 done
 
-EXPECTED_GLIBC_VERSION="2.17" EXPECTED_GLIBCXX_VERSION="3.4.22" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="3.4.22" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
 node build/azure-pipelines/distro/mixin-npm
 
-export VSCODE_NODE_GLIBC='-glibc-2.17'
+export VSCODE_NODE_GLIBC="-glibc-${GLIBC_VERSION}"
 
 yarn gulp minify-vscode-reh
 yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
