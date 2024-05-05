@@ -1,14 +1,14 @@
 diff --git a/src/vs/code/electron-sandbox/issue/issueReporterModel.ts b/src/vs/code/electron-sandbox/issue/issueReporterModel.ts
-index 74f9939..341ef06 100644
+index 1541f98..ea3af1b 100644
 --- a/src/vs/code/electron-sandbox/issue/issueReporterModel.ts
 +++ b/src/vs/code/electron-sandbox/issue/issueReporterModel.ts
-@@ -79,3 +79,3 @@ ${this._data.issueDescription}
+@@ -80,3 +80,3 @@ ${this._data.issueDescription}
  ${this.getExtensionVersion()}
 -VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
 +VSCodium version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
  OS version: ${this._data.versionInfo && this._data.versionInfo.os}
 diff --git a/src/vs/code/electron-sandbox/issue/issueReporterPage.ts b/src/vs/code/electron-sandbox/issue/issueReporterPage.ts
-index 96ec5f7..5c091d9 100644
+index 7cf3337..cd9eb84 100644
 --- a/src/vs/code/electron-sandbox/issue/issueReporterPage.ts
 +++ b/src/vs/code/electron-sandbox/issue/issueReporterPage.ts
 @@ -18,3 +18,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
@@ -22,10 +22,10 @@ index 96ec5f7..5c091d9 100644
 +	'Before you report an issue here please <a href="https://github.com/VSCodium/vscodium/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
  );
 diff --git a/src/vs/code/electron-sandbox/issue/issueReporterService.ts b/src/vs/code/electron-sandbox/issue/issueReporterService.ts
-index d7f98f6..ed54042 100644
+index 6edb382..914f15a 100644
 --- a/src/vs/code/electron-sandbox/issue/issueReporterService.ts
 +++ b/src/vs/code/electron-sandbox/issue/issueReporterService.ts
-@@ -517,5 +517,5 @@ export class IssueReporter extends Disposable {
+@@ -552,5 +552,5 @@ export class IssueReporter extends Disposable {
  
 -	private searchVSCodeIssues(title: string, issueDescription?: string): void {
 +	private searchVSCodeIssues(title: string, _issueDescription?: string): void {
@@ -33,7 +33,7 @@ index d7f98f6..ed54042 100644
 -			this.searchDuplicates(title, issueDescription);
 +			this.searchGitHub('VSCodium/vscodium', title);
  		} else {
-@@ -611,33 +611,2 @@ export class IssueReporter extends Disposable {
+@@ -646,33 +646,2 @@ export class IssueReporter extends Disposable {
  
 -	@debounce(300)
 -	private searchDuplicates(title: string, body?: string): void {
@@ -67,11 +67,18 @@ index d7f98f6..ed54042 100644
 -	}
 -
  	private displaySearchResults(results: SearchResult[]) {
-@@ -729,3 +698,3 @@ export class IssueReporter extends Disposable {
+@@ -768,4 +737,4 @@ export class IssueReporter extends Disposable {
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
--		sourceSelect.append(this.makeOption('vscode', localize('vscode', "Visual Studio Code"), false));
-+		sourceSelect.append(this.makeOption('vscode', localize('vscode', "VSCodium"), false));
- 		sourceSelect.append(this.makeOption('extension', localize('extension', "An extension"), false));
+-		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Visual Studio Code"), false));
+-		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
++		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscodium', "VSCodium"), false));
++		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VSCodium extension"), false));
+ 		if (this.configuration.product.reportMarketplaceIssueUrl) {
+@@ -829,3 +798,3 @@ export class IssueReporter extends Disposable {
+ 			hide(descriptionTextArea);
+-			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
++			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VSCodium"));
+ 			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
 diff --git a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
 index 87839a6..49727fc 100644
 --- a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
