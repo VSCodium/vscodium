@@ -31,13 +31,13 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     security set-keychain-settings -lut 21600 "${KEYCHAIN}"
     security unlock-keychain -p mysecretpassword "${KEYCHAIN}"
     security list-keychains -s "$(security list-keychains | xargs)" "${KEYCHAIN}"
-    # security list-keychains -d user
-    # security show-keychain-info ${KEYCHAIN}
+    security list-keychains -d user
+    security show-keychain-info "${KEYCHAIN}"
 
     echo "+ import certificate to keychain"
     security import "${CERTIFICATE_P12}" -k "${KEYCHAIN}" -P "${CERTIFICATE_OSX_PASSWORD}" -T /usr/bin/codesign
     security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k mysecretpassword "${KEYCHAIN}" > /dev/null
-    # security find-identity "${KEYCHAIN}"
+    security find-identity "${KEYCHAIN}"
 
     echo "+ signing"
     if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
