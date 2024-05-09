@@ -41,9 +41,9 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 
     echo "+ signing"
     if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-      codesign --deep --force --verbose --sign "${CERTIFICATE_OSX_ID}" "${APP_NAME} - Insiders.app"
+      codesign --deep --force --verbose=4 --sign "${CERTIFICATE_OSX_ID}" "${APP_NAME} - Insiders.app"
     else
-      codesign --deep --force --verbose --sign "${CERTIFICATE_OSX_ID}" "${APP_NAME}.app"
+      codesign --deep --force --verbose=4 --sign "${CERTIFICATE_OSX_ID}" "${APP_NAME}.app"
     fi
 
     cd ..
