@@ -16,6 +16,12 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
+if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+  export VSCODE_SYSROOT_REPO='VSCodium/vscode-linux-build-agent'
+  export VSCODE_SYSROOT_VERSION='20240129-253798'
+  export VSCODE_SYSROOT_PREFIX='-glibc-2.28'
+fi
+
 if [[ -d "../patches/${OS_NAME}/client/" ]]; then
   for file in "../patches/${OS_NAME}/client/"*.patch; do
     if [[ -f "${file}" ]]; then
@@ -37,7 +43,11 @@ for i in {1..5}; do # try 5 times
   echo "Yarn failed $i, trying again..."
 done
 
-./build/azure-pipelines/linux/setup-env.sh
+if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+  source ./build/azure-pipelines/linux/setup-env.sh
+else
+  ./build/azure-pipelines/linux/setup-env.sh
+fi
 
 for i in {1..5}; do # try 5 times
   yarn --check-files && break
