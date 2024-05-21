@@ -23,19 +23,27 @@
 
 ## Table of Contents
 
-- [Download/Install](#download-install)
-  - [Install with Brew](#install-with-brew)
-  - [Install with Windows Package Manager (WinGet)](#install-with-winget)
-  - [Install with Chocolatey](#install-with-choco)
-  - [Install with Scoop](#install-with-scoop)
-  - [Install with snap](#install-with-snap)
-  - [Install with Package Manager](#install-with-package-manager)
-  - [Install on Arch Linux](#install-on-arch-linux)
-  - [Flatpak Option](#flatpak)
+- [Table of Contents](#table-of-contents)
+- [Download/Install](#downloadinstall)
+    - [Install with Brew (Mac)](#install-with-brew-mac)
+    - [Install with Windows Package Manager (WinGet)](#install-with-windows-package-manager-winget)
+    - [Install with Chocolatey (Windows)](#install-with-chocolatey-windows)
+    - [Install with Scoop (Windows)](#install-with-scoop-windows)
+    - [Install with snap (GNU/Linux)](#install-with-snap-gnulinux)
+    - [Install with Package Manager (GNU/Linux)](#install-with-package-manager-gnulinux)
+    - [Install on Arch Linux](#install-on-arch-linux)
+    - [Flatpak Option (GNU/Linux)](#flatpak-option-gnulinux)
 - [Build](#build)
-- [Why Does This Exist](#why)
+- [Why Does This Exist](#why-does-this-exist)
 - [More Info](#more-info)
+  - [Documentation](#documentation)
+  - [Troubleshooting](#troubleshooting)
+  - [Extensions and the Marketplace](#extensions-and-the-marketplace)
+  - [How are the VSCodium binaries built?](#how-are-the-vscodium-binaries-built)
 - [Supported Platforms](#supported-platforms)
+- [Donate](#donate)
+- [Special thanks](#special-thanks)
+- [License](#license)
 
 ## <a id="download-install"></a>Download/Install
 
@@ -213,4 +221,6 @@ If you would like to support the development of VSCodium, feel free to send BTC 
 
 ## <a id="license"></a>License
 
-[MIT](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
+VSCodium license: [MIT](https://github.com/VSCodium/vscodium/blob/master/LICENSE)
+
+Codex license: [MIT](https://github.com/BiblioNexus-Foundation/codex/blob/master/LICENSE)
