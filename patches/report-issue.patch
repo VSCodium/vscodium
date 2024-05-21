@@ -5,7 +5,7 @@ index 74f9939..341ef06 100644
 @@ -79,3 +79,3 @@ ${this._data.issueDescription}
  ${this.getExtensionVersion()}
 -VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
-+VSCodium version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
++Codex version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
  OS version: ${this._data.versionInfo && this._data.versionInfo.os}
 diff --git a/src/vs/code/electron-sandbox/issue/issueReporterPage.ts b/src/vs/code/electron-sandbox/issue/issueReporterPage.ts
 index 96ec5f7..5c091d9 100644
@@ -14,12 +14,12 @@ index 96ec5f7..5c091d9 100644
 @@ -18,3 +18,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
  		comment: [
 -			'{Locked="<a href=\"https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
-+			'{Locked="<a href=\"https://github.com/VSCodium/vscodium/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
++			'{Locked="<a href=\"https://github.com/BiblioNexus-Foundation/codex/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
  			'{Locked="</a>"}'
 @@ -22,3 +22,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
  	},
 -	'Before you report an issue here please <a href="https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
-+	'Before you report an issue here please <a href="https://github.com/VSCodium/vscodium/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
++	'Before you report an issue here please <a href="https://github.com/BiblioNexus-Foundation/codex/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
  );
 diff --git a/src/vs/code/electron-sandbox/issue/issueReporterService.ts b/src/vs/code/electron-sandbox/issue/issueReporterService.ts
 index d7f98f6..ed54042 100644
@@ -31,7 +31,7 @@ index d7f98f6..ed54042 100644
 +	private searchVSCodeIssues(title: string, _issueDescription?: string): void {
  		if (title) {
 -			this.searchDuplicates(title, issueDescription);
-+			this.searchGitHub('VSCodium/vscodium', title);
++			this.searchGitHub('BiblioNexus-Foundation/codex', title);
  		} else {
 @@ -611,33 +611,2 @@ export class IssueReporter extends Disposable {
  
@@ -70,7 +70,7 @@ index d7f98f6..ed54042 100644
 @@ -729,3 +698,3 @@ export class IssueReporter extends Disposable {
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
 -		sourceSelect.append(this.makeOption('vscode', localize('vscode', "Visual Studio Code"), false));
-+		sourceSelect.append(this.makeOption('vscode', localize('vscode', "VSCodium"), false));
++		sourceSelect.append(this.makeOption('vscode', localize('vscode', "Codex"), false));
  		sourceSelect.append(this.makeOption('extension', localize('extension', "An extension"), false));
 diff --git a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
 index 87839a6..49727fc 100644
@@ -79,5 +79,5 @@ index 87839a6..49727fc 100644
 @@ -153,3 +153,3 @@ class ReportExtensionSlowAction extends Action {
  - OS Version: \`${osVersion}\`
 -- VS Code version: \`${this._productService.version}\`\n\n${message}`);
-+- VSCodium version: \`${this._productService.version}\`\n\n${message}`);
++- Codex version: \`${this._productService.version}\`\n\n${message}`);
  
