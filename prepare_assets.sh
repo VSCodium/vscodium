@@ -25,7 +25,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     echo "AGENT_TEMPDIRECTORY: ${AGENT_TEMPDIRECTORY}"
     echo "RUNNER_TEMP: ${RUNNER_TEMP}"
 
-    echo "${CERTIFICATE_OSX_P12_FILE}" | base64 --decode > "${CERTIFICATE_P12}"
+    echo "${CERTIFICATE_OSX_P12_DATA}" | base64 --decode > "${CERTIFICATE_P12}"
 
     echo "+ create temporary keychain"
     security create-keychain -p pwd "${KEYCHAIN}"
@@ -37,7 +37,6 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     security import "${CERTIFICATE_P12}" -k "${KEYCHAIN}" -P "${CERTIFICATE_OSX_P12_PASSWORD}" -T /usr/bin/codesign
 
     CODESIGN_IDENTITY="$( security find-identity -v -p codesigning "${KEYCHAIN}" | grep -oEi "([0-9A-F]{40})" | head -n 1 )"
-    echo "CODESIGN_IDENTITY: ${CODESIGN_IDENTITY}"
     export CODESIGN_IDENTITY
 
     security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k pwd "${KEYCHAIN}" > /dev/null
