@@ -1,5 +1,44 @@
+diff --git a/build/darwin/sign.js b/build/darwin/sign.js
+index f5913b7..c861e3e 100644
+--- a/build/darwin/sign.js
++++ b/build/darwin/sign.js
+@@ -37,3 +37,3 @@ async function main(buildDir) {
+     const defaultOpts = {
+-        app: path.join(appRoot, appName),
++        app: `"${path.join(appRoot, appName)}"`,
+         platform: 'darwin',
+@@ -60,3 +60,3 @@ async function main(buildDir) {
+         ...defaultOpts,
+-        app: path.join(appFrameworkPath, gpuHelperAppName),
++        app: `"${path.join(appFrameworkPath, gpuHelperAppName)}"`,
+         entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-gpu-entitlements.plist'),
+@@ -66,3 +66,3 @@ async function main(buildDir) {
+         ...defaultOpts,
+-        app: path.join(appFrameworkPath, rendererHelperAppName),
++        app: `"${path.join(appFrameworkPath, rendererHelperAppName)}"`,
+         entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-renderer-entitlements.plist'),
+@@ -72,3 +72,3 @@ async function main(buildDir) {
+         ...defaultOpts,
+-        app: path.join(appFrameworkPath, pluginHelperAppName),
++        app: `"${path.join(appFrameworkPath, pluginHelperAppName)}"`,
+         entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-plugin-entitlements.plist'),
+@@ -83,3 +83,3 @@ async function main(buildDir) {
+             '-string',
+-            'An application in Visual Studio Code wants to use AppleScript.',
++            'An application in VSCodium wants to use AppleScript.',
+             `${infoPlistPath}`
+@@ -90,3 +90,3 @@ async function main(buildDir) {
+             '-string',
+-            'An application in Visual Studio Code wants to use the Microphone.',
++            'An application in VSCodium wants to use the Microphone.',
+             `${infoPlistPath}`
+@@ -97,3 +97,3 @@ async function main(buildDir) {
+             '-string',
+-            'An application in Visual Studio Code wants to use the Camera.',
++            'An application in VSCodium wants to use the Camera.',
+             `${infoPlistPath}`
 diff --git a/build/darwin/sign.ts b/build/darwin/sign.ts
-index 01e9ebf..5f24ad0 100644
+index 01e9ebf..0a88189 100644
 --- a/build/darwin/sign.ts
 +++ b/build/darwin/sign.ts
 @@ -43,3 +43,3 @@ async function main(buildDir?: string): Promise<void> {
@@ -22,3 +61,18 @@ index 01e9ebf..5f24ad0 100644
 -		app: path.join(appFrameworkPath, pluginHelperAppName),
 +		app: `"${path.join(appFrameworkPath, pluginHelperAppName)}"`,
  		entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-plugin-entitlements.plist'),
+@@ -94,3 +94,3 @@ async function main(buildDir?: string): Promise<void> {
+ 			'-string',
+-			'An application in Visual Studio Code wants to use AppleScript.',
++			'An application in VSCodium wants to use AppleScript.',
+ 			`${infoPlistPath}`
+@@ -101,3 +101,3 @@ async function main(buildDir?: string): Promise<void> {
+ 			'-string',
+-			'An application in Visual Studio Code wants to use the Microphone.',
++			'An application in VSCodium wants to use the Microphone.',
+ 			`${infoPlistPath}`
+@@ -108,3 +108,3 @@ async function main(buildDir?: string): Promise<void> {
+ 			'-string',
+-			'An application in Visual Studio Code wants to use the Camera.',
++			'An application in VSCodium wants to use the Camera.',
+ 			`${infoPlistPath}`
