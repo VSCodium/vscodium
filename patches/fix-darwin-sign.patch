@@ -1,0 +1,24 @@
+diff --git a/build/darwin/sign.ts b/build/darwin/sign.ts
+index 01e9ebf..5f24ad0 100644
+--- a/build/darwin/sign.ts
++++ b/build/darwin/sign.ts
+@@ -43,3 +43,3 @@ async function main(buildDir?: string): Promise<void> {
+ 	const defaultOpts: codesign.SignOptions = {
+-		app: path.join(appRoot, appName),
++		app: `"${path.join(appRoot, appName)}"`,
+ 		platform: 'darwin',
+@@ -68,3 +68,3 @@ async function main(buildDir?: string): Promise<void> {
+ 		...defaultOpts,
+-		app: path.join(appFrameworkPath, gpuHelperAppName),
++		app: `"${path.join(appFrameworkPath, gpuHelperAppName)}"`,
+ 		entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-gpu-entitlements.plist'),
+@@ -75,3 +75,3 @@ async function main(buildDir?: string): Promise<void> {
+ 		...defaultOpts,
+-		app: path.join(appFrameworkPath, rendererHelperAppName),
++		app: `"${path.join(appFrameworkPath, rendererHelperAppName)}"`,
+ 		entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-renderer-entitlements.plist'),
+@@ -82,3 +82,3 @@ async function main(buildDir?: string): Promise<void> {
+ 		...defaultOpts,
+-		app: path.join(appFrameworkPath, pluginHelperAppName),
++		app: `"${path.join(appFrameworkPath, pluginHelperAppName)}"`,
+ 		entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-plugin-entitlements.plist'),
