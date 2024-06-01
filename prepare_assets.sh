@@ -21,9 +21,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
   if [[ "${CI_BUILD}" != "no" ]]; then
     CERTIFICATE_P12="${APP_NAME}.p12"
     KEYCHAIN="${RUNNER_TEMP}/buildagent.keychain"
-
-    echo "AGENT_TEMPDIRECTORY: ${AGENT_TEMPDIRECTORY}"
-    echo "RUNNER_TEMP: ${RUNNER_TEMP}"
+    AGENT_TEMPDIRECTORY="${RUNNER_TEMP}"
 
     echo "${CERTIFICATE_OSX_P12_DATA}" | base64 --decode > "${CERTIFICATE_P12}"
 
@@ -35,14 +33,14 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 
     echo "+ import certificate to keychain"
     security import "${CERTIFICATE_P12}" -k "${KEYCHAIN}" -P "${CERTIFICATE_OSX_P12_PASSWORD}" -T /usr/bin/codesign
-
-    CODESIGN_IDENTITY="$( security find-identity -v -p codesigning "${KEYCHAIN}" | grep -oEi "([0-9A-F]{40})" | head -n 1 )"
-    export CODESIGN_IDENTITY
-
     security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k pwd "${KEYCHAIN}" > /dev/null
     security find-identity "${KEYCHAIN}"
 
+    CODESIGN_IDENTITY="$( security find-identity -v -p codesigning "${KEYCHAIN}" | grep -oEi "([0-9A-F]{40})" | head -n 1 )"
+
     echo "+ signing"
+    export CODESIGN_IDENTITY AGENT_TEMPDIRECTORY
+
     DEBUG="electron-osx-sign*" node vscode/build/darwin/sign.js "$( pwd )"
 
     echo "+ notarize"
