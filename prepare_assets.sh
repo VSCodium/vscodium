@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1091
+# shellcheck disable=SC1091,2016
 
 set -e
 
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+
+. ./utils.sh
 
 npm install -g checksum
 
@@ -19,6 +21,9 @@ mkdir -p assets
 
 if [[ "${OS_NAME}" == "osx" ]]; then
   if [[ "${CI_BUILD}" != "no" ]]; then
+    # By default, electron-osx-sign don't support app name with spaces ("VSCodium - Insiders")
+    replace 's|opts.app|"${opts.app}"|' vscode/build/node_modules/electron-osx-sign/sign.js
+
     CERTIFICATE_P12="${APP_NAME}.p12"
     KEYCHAIN="${RUNNER_TEMP}/buildagent.keychain"
     AGENT_TEMPDIRECTORY="${RUNNER_TEMP}"
