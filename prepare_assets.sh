@@ -20,12 +20,18 @@ sum_file() {
 mkdir -p assets
 
 if [[ "${OS_NAME}" == "osx" ]]; then
-  if [[ "${CI_BUILD}" != "no" ]]; then
+  if [[ -n "${CERTIFICATE_OSX_P12_DATA}" ]]; then
+    if [[ "${CI_BUILD}" == "no" ]]; then
+      RUNNER_TEMP="${TMPDIR}"
+    fi
+
     CERTIFICATE_P12="${APP_NAME}.p12"
     KEYCHAIN="${RUNNER_TEMP}/buildagent.keychain"
     AGENT_TEMPDIRECTORY="${RUNNER_TEMP}"
     # shellcheck disable=SC2006
     KEYCHAINS=`security list-keychains | xargs`
+
+    rm -f "${KEYCHAIN}"
 
     echo "${CERTIFICATE_OSX_P12_DATA}" | base64 --decode > "${CERTIFICATE_P12}"
 
@@ -48,6 +54,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     export CODESIGN_IDENTITY AGENT_TEMPDIRECTORY
 
     DEBUG="electron-osx-sign*" node vscode/build/darwin/sign.js "$( pwd )"
+    # codesign --display --entitlements :- ""
 
     echo "+ notarize"
 
@@ -57,6 +64,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     zip -r -X -y "${ZIP_FILE}" ./*.app
 
     xcrun notarytool store-credentials "${APP_NAME}" --apple-id "${CERTIFICATE_OSX_ID}" --team-id "${CERTIFICATE_OSX_TEAM_ID}" --password "${CERTIFICATE_OSX_APP_PASSWORD}" --keychain "${KEYCHAIN}"
+    # xcrun notarytool history --keychain-profile "${APP_NAME}" --keychain "${KEYCHAIN}"
     xcrun notarytool submit "${ZIP_FILE}" --keychain-profile "${APP_NAME}" --wait --keychain "${KEYCHAIN}"
 
     echo "+ attach staple"
