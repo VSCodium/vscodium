@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1091,2016
+# shellcheck disable=SC1091
 
 set -e
 
@@ -21,12 +21,11 @@ mkdir -p assets
 
 if [[ "${OS_NAME}" == "osx" ]]; then
   if [[ "${CI_BUILD}" != "no" ]]; then
-    # By default, electron-osx-sign don't support app name with spaces ("VSCodium - Insiders")
-    replace 's|opts.app|"${opts.app}"|' vscode/build/node_modules/electron-osx-sign/sign.js
-
     CERTIFICATE_P12="${APP_NAME}.p12"
     KEYCHAIN="${RUNNER_TEMP}/buildagent.keychain"
     AGENT_TEMPDIRECTORY="${RUNNER_TEMP}"
+    # shellcheck disable=SC2006
+    KEYCHAINS=`security list-keychains | xargs`
 
     echo "${CERTIFICATE_OSX_P12_DATA}" | base64 --decode > "${CERTIFICATE_P12}"
 
@@ -34,12 +33,14 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     security create-keychain -p pwd "${KEYCHAIN}"
     security set-keychain-settings -lut 21600 "${KEYCHAIN}"
     security unlock-keychain -p pwd "${KEYCHAIN}"
-    security show-keychain-info "${KEYCHAIN}"
+    # shellcheck disable=SC2086
+    security list-keychains -s $KEYCHAINS "${KEYCHAIN}"
+    # security show-keychain-info "${KEYCHAIN}"
 
     echo "+ import certificate to keychain"
     security import "${CERTIFICATE_P12}" -k "${KEYCHAIN}" -P "${CERTIFICATE_OSX_P12_PASSWORD}" -T /usr/bin/codesign
     security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k pwd "${KEYCHAIN}" > /dev/null
-    security find-identity "${KEYCHAIN}"
+    # security find-identity "${KEYCHAIN}"
 
     CODESIGN_IDENTITY="$( security find-identity -v -p codesigning "${KEYCHAIN}" | grep -oEi "([0-9A-F]{40})" | head -n 1 )"
 
@@ -55,12 +56,18 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 
     zip -r -X -y "${ZIP_FILE}" ./*.app
 
-    xcrun notarytool store-credentials "notarytool-profile" --apple-id "${CERTIFICATE_OSX_ID}" --password "${CERTIFICATE_OSX_APP_PASSWORD}"
-    xcrun notarytool submit "${ZIP_FILE}" ---keychain-profile "notarytool-profile"  --wait
+    xcrun notarytool store-credentials "${APP_NAME}" --apple-id "${CERTIFICATE_OSX_ID}" --team-id "${CERTIFICATE_OSX_TEAM_ID}" --password "${CERTIFICATE_OSX_APP_PASSWORD}" --keychain "${KEYCHAIN}"
+    xcrun notarytool submit "${ZIP_FILE}" --keychain-profile "${APP_NAME}" --wait --keychain "${KEYCHAIN}"
 
     echo "+ attach staple"
     xcrun stapler staple ./*.app
+    # spctl --assess -vv --type install ./*.app
 
+    echo "+ clean"
+
+    security delete-keychain "${KEYCHAIN}"
+    # shellcheck disable=SC2086
+    security list-keychains -s $KEYCHAINS
     rm "${ZIP_FILE}"
 
     cd ..
