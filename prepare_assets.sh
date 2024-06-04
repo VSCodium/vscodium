@@ -71,11 +71,6 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     xcrun stapler staple ./*.app
     # spctl --assess -vv --type install ./*.app
 
-    echo "+ clean"
-
-    security delete-keychain "${KEYCHAIN}"
-    # shellcheck disable=SC2086
-    security list-keychains -s $KEYCHAINS
     rm "${ZIP_FILE}"
 
     cd ..
@@ -91,14 +86,21 @@ if [[ "${OS_NAME}" == "osx" ]]; then
   if [[ "${SHOULD_BUILD_DMG}" != "no" ]]; then
     echo "Building and moving DMG"
     pushd "VSCode-darwin-${VSCODE_ARCH}"
-    npx create-dmg ./*.app ..
-    mv ../*.dmg "../assets/${APP_NAME}.${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"
+    npx create-dmg ./*.app .
+    mv ./*.dmg "../assets/${APP_NAME}.${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"
     popd
   fi
 
   if [[ "${SHOULD_BUILD_SRC}" == "yes" ]]; then
     git archive --format tar.gz --output="./assets/${APP_NAME}-${RELEASE_VERSION}-src.tar.gz" HEAD
     git archive --format zip --output="./assets/${APP_NAME}-${RELEASE_VERSION}-src.zip" HEAD
+  fi
+
+  if [[ -n "${CERTIFICATE_OSX_P12_DATA}" ]]; then
+    echo "+ clean"
+    security delete-keychain "${KEYCHAIN}"
+    # shellcheck disable=SC2086
+    security list-keychains -s $KEYCHAINS
   fi
 
   VSCODE_PLATFORM="darwin"
