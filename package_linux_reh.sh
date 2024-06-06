@@ -17,6 +17,7 @@ if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
 fi
 
 export VSCODE_PLATFORM='linux'
+export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
 
 VSCODE_HOST_MOUNT="$( pwd )"
