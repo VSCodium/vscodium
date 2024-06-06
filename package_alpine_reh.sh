@@ -12,14 +12,12 @@ tar -xzf ./vscode.tar.gz
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 export VSCODE_PLATFORM='alpine'
+export VSCODE_SKIP_NODE_VERSION_CHECK=1
 
 VSCODE_HOST_MOUNT="$( pwd )"
-
-export VSCODE_HOST_MOUNT
-
 VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:alpine-${VSCODE_ARCH}"
 
-export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
+export VSCODE_HOST_MOUNT VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
 for i in {1..5}; do # try 5 times
   yarn --frozen-lockfile --check-files && break
