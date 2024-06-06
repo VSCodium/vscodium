@@ -120,5 +120,11 @@ if [[ "${SKIP_ASSETS}" == "no" ]]; then
     rm -rf build/windows/msi/releasedir
   fi
 
+  if [[ "${OS_NAME}" == "osx" && -f "./macos-codesign.env" ]]; then
+    . macos-codesign.env
+
+    echo "CERTIFICATE_OSX_ID: ${CERTIFICATE_OSX_ID}"
+  fi
+
   . prepare_assets.sh
 fi
