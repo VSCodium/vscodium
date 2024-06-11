@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ -z "${GITHUB_TOKEN}" ]]; then
+if [[ -z "${GH_TOKEN}" ]] && [[ -z "${GITHUB_TOKEN}" ]] && [[ -z "${GH_ENTERPRISE_TOKEN}" ]] && [[ -z "${GITHUB_ENTERPRISE_TOKEN}" ]]; then
   echo "Will not release because no GITHUB_TOKEN defined"
   exit
 fi
