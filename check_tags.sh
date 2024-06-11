@@ -3,17 +3,22 @@
 
 set -e
 
-if [[ -z "${GITHUB_TOKEN}" ]]; then
+if [[ -z "${GH_TOKEN}" ]] && [[ -z "${GITHUB_TOKEN}" ]] && [[ -z "${GH_ENTERPRISE_TOKEN}" ]] && [[ -z "${GITHUB_ENTERPRISE_TOKEN}" ]]; then
   echo "Will not build because no GITHUB_TOKEN defined"
   exit 0
+else
+  GITHUB_TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-${GH_ENTERPRISE_TOKEN:-${GITHUB_ENTERPRISE_TOKEN}}}}"
 fi
+
+# Support for GitHub Enterprise
+GH_HOST="${GH_HOST:-github.com}"
 
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
 if [[ "${SHOULD_DEPLOY}" == "no" ]]; then
   ASSETS="null"
 else
-  GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases/latest" )
+  GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.${GH_HOST}/repos/${ASSETS_REPOSITORY}/releases/latest" )
   LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
   RECHECK_ASSETS="${SHOULD_BUILD}"
 
