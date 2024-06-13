@@ -415,6 +415,7 @@ jobs:
       - build
     runs-on: ubuntu-latest
     env:
+      DISABLE_SNAP: ${{ secrets.DISABLE_SNAP }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
       SNAP_NAME: codium
     strategy:
@@ -423,7 +424,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && secrets.DISABLE_SNAP != 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && env.DISABLE_SNAP != 'yes'
 
     steps:
       - uses: actions/checkout@v3
