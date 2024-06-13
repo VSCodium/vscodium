@@ -423,7 +423,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && secrets.DISABLE_SNAP != 'yes'
 
     steps:
       - uses: actions/checkout@v3
