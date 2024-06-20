@@ -464,7 +464,7 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         with:
           snap: ${{ steps.build.outputs.snap }}
-          release: stable
+          release: ${{ vars.SNAP_STORE_CHANNEL }}
         if: env.SHOULD_DEPLOY_TO_STORE == 'yes'
 
   deb-rpm-repo-hook:
