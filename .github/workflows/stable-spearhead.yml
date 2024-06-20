@@ -19,7 +19,7 @@ jobs:
   build:
     runs-on: macos-14
     env:
-      APP_NAME: VSCodium
+      APP_NAME: Codex
       ASSETS_REPOSITORY: ${{ github.repository }}
       VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
       OS_NAME: osx
@@ -38,7 +38,7 @@ jobs:
       - name: Clone VSCode repo
         run: . get_repo.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing Codex tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_RELEASE: ${{ github.event.inputs.new_release }}

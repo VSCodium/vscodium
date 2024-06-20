@@ -24,9 +24,9 @@ on:
     - '**/*.md'
 
 env:
-  APP_NAME: VSCodium
+  APP_NAME: Codex
   ASSETS_REPOSITORY: ${{ github.repository }}
-  BINARY_NAME: codium
+  BINARY_NAME: codex
   DISABLE_UPDATE: 'yes'
   OS_NAME: linux
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
@@ -57,7 +57,7 @@ jobs:
           GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
         run: ./check_cron_or_pr.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing Codex tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ALL: 'yes'
@@ -176,7 +176,7 @@ jobs:
         run: ./install_gh.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing Codex tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_REH: 'no'
@@ -280,7 +280,7 @@ jobs:
         run: ./install_gh.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing Codex tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
@@ -346,7 +346,7 @@ jobs:
         run: ./install_gh.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing Codex tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
@@ -393,9 +393,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - package_name: vscodium
+        - package_name: codex
           package_type: stable
-        - package_name: vscodium-git
+        - package_name: codex-git
           package_type: rolling
     if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
@@ -416,7 +416,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SNAP_NAME: codium
+      SNAP_NAME: codex
     strategy:
       fail-fast: false
       matrix:
