@@ -170,6 +170,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+        env:
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install GH
