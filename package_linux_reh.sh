@@ -45,6 +45,18 @@ fi
 
 export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
+if [[ -d "../patches/${OS_NAME}/reh/" ]]; then
+  for file in "../patches/${OS_NAME}/reh/"*.patch; do
+    if [[ -f "${file}" ]]; then
+      echo applying patch: "${file}";
+      if ! git apply --ignore-whitespace "${file}"; then
+        echo failed to apply patch "${file}" >&2
+        exit 1
+      fi
+    fi
+  done
+fi
+
 for i in {1..5}; do # try 5 times
   yarn --cwd build --frozen-lockfile --check-files && break
   if [[ $i == 3 ]]; then
