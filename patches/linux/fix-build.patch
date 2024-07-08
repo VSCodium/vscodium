@@ -1,19 +1,19 @@
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index 8c2b62f..843e8d4 100644
+index 28ddfb0..0fd18a1 100644
 --- a/build/gulpfile.vscode.linux.js
 +++ b/build/gulpfile.vscode.linux.js
-@@ -187,2 +187,3 @@ function prepareRpmPackage(arch) {
+@@ -192,2 +192,3 @@ function prepareRpmPackage(arch) {
  		const spec = code.pipe(es.through(
 +			null,
  			async function () {
-@@ -302,4 +303,3 @@ BUILD_TARGETS.forEach(({ arch }) => {
- 	const prepareDebTask = task.define(`vscode-linux-${arch}-prepare-deb`, task.series(util.rimraf(`.build/linux/deb/${debArch}`), prepareDebPackage(arch)));
+@@ -306,4 +307,3 @@ BUILD_TARGETS.forEach(({ arch }) => {
+ 	const prepareDebTask = task.define(`vscode-linux-${arch}-prepare-deb`, task.series(rimraf(`.build/linux/deb/${debArch}`), prepareDebPackage(arch)));
 -	gulp.task(prepareDebTask);
 -	const buildDebTask = task.define(`vscode-linux-${arch}-build-deb`, buildDebPackage(arch));
 +	const buildDebTask = task.define(`vscode-linux-${arch}-build-deb`, task.series(prepareDebTask, buildDebPackage(arch)));
  	gulp.task(buildDebTask);
-@@ -308,4 +308,3 @@ BUILD_TARGETS.forEach(({ arch }) => {
- 	const prepareRpmTask = task.define(`vscode-linux-${arch}-prepare-rpm`, task.series(util.rimraf(`.build/linux/rpm/${rpmArch}`), prepareRpmPackage(arch)));
+@@ -312,4 +312,3 @@ BUILD_TARGETS.forEach(({ arch }) => {
+ 	const prepareRpmTask = task.define(`vscode-linux-${arch}-prepare-rpm`, task.series(rimraf(`.build/linux/rpm/${rpmArch}`), prepareRpmPackage(arch)));
 -	gulp.task(prepareRpmTask);
 -	const buildRpmTask = task.define(`vscode-linux-${arch}-build-rpm`, buildRpmPackage(arch));
 +	const buildRpmTask = task.define(`vscode-linux-${arch}-build-rpm`, task.series(prepareRpmTask, buildRpmPackage(arch)));
