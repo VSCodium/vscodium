@@ -30,7 +30,7 @@ if [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   # Look for releases here if electron version used by vscode changed
   # https://github.com/riscv-forks/electron-riscv-releases/releases
   export VSCODE_ELECTRON_TAG="${ELECTRON_VERSION}.riscv2"
-  echo "7244465fe0c1a6ac6e34fe765a9d90fe0017b1a6d3406fd6b8dd9f5d2c8c9df5 *electron-v29.4.0-linux-riscv64.zip" >> build/checksums/electron.txt 
+  echo "7244465fe0c1a6ac6e34fe765a9d90fe0017b1a6d3406fd6b8dd9f5d2c8c9df5 *electron-v29.4.0-linux-riscv64.zip" >> build/checksums/electron.txt
 fi
 
 if [[ -d "../patches/${OS_NAME}/client/" ]]; then
