@@ -12,6 +12,7 @@ tar -xzf ./vscode.tar.gz
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 GLIBC_VERSION="2.17"
+GLIBCXX_VERSION="3.4.26"
 if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   GLIBC_VERSION="2.28"
 fi
@@ -68,7 +69,7 @@ for i in {1..5}; do # try 5 times
   echo "Yarn failed $i, trying again..."
 done
 
-EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="3.4.22" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
 node build/azure-pipelines/distro/mixin-npm
 
