@@ -12,7 +12,7 @@ tar -xzf ./vscode.tar.gz
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 GLIBC_VERSION="2.17"
-GLIBCXX_VERSION="3.4.26"
+GLIBCXX_VERSION="3.4.22"
 NODE_VERSION="16.20.2"
 
 if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
