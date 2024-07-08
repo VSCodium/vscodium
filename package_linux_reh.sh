@@ -13,8 +13,13 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 GLIBC_VERSION="2.17"
 GLIBCXX_VERSION="3.4.26"
+NODE_VERSION="16.20.2"
+
 if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   GLIBC_VERSION="2.28"
+elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
+  # Unofficial RISC-V nodejs builds doesn't provide v16.x
+  NODE_VERSION="18.18.1"
 fi
 
 export VSCODE_PLATFORM='linux'
@@ -39,14 +44,20 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-  # Unofficial RISC-V nodejs builds doesn't provide v16.x
-  sed -i '/target/s/"16.*"/"18.18.1"/' remote/.yarnrc
 fi
 
 export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
-if [[ -d "../patches/${OS_NAME}/reh/" ]]; then
-  for file in "../patches/${OS_NAME}/reh/"*.patch; do
+sed -i "/target/s/\"20.*\"/\"${NODE_VERSION}\"/" remote/.yarnrc
+
+if [[ "${NODE_VERSION}" != 16* ]]; then
+  if [[ -f "../patches/linux/reh/node16.patch" ]]; then
+    mv "../patches/linux/reh/node16.patch" "../patches/linux/reh/node16.patch.no"
+  fi
+fi
+
+if [[ -d "../patches/linux/reh/" ]]; then
+  for file in "../patches/linux/reh/"*.patch; do
     if [[ -f "${file}" ]]; then
       echo applying patch: "${file}";
       if ! git apply --ignore-whitespace "${file}"; then

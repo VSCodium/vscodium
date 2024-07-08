@@ -33,8 +33,8 @@ if [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   echo "7244465fe0c1a6ac6e34fe765a9d90fe0017b1a6d3406fd6b8dd9f5d2c8c9df5 *electron-v29.4.0-linux-riscv64.zip" >> build/checksums/electron.txt
 fi
 
-if [[ -d "../patches/${OS_NAME}/client/" ]]; then
-  for file in "../patches/${OS_NAME}/client/"*.patch; do
+if [[ -d "../patches/linux/client/" ]]; then
+  for file in "../patches/linux/client/"*.patch; do
     if [[ -f "${file}" ]]; then
       echo applying patch: "${file}";
       if ! git apply --ignore-whitespace "${file}"; then
