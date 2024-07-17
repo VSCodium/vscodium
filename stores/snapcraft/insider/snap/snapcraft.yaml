@@ -1,5 +1,5 @@
-name: codium-insiders
-adopt-info: codium-insiders
+name: codex-insiders
+adopt-info: codex-insiders
 summary: Code editing. Redefined.
 description: |
   Binary releases of Visual Studio Code - Insiders without branding/telemetry/licensing
@@ -10,12 +10,12 @@ confinement: classic
 compression: lzo
 
 parts:
-  codium-insiders:
+  codex-insiders:
     plugin: nil
     override-build: |
       set -eu
       # Get .deb url
-      wget --quiet https://api.github.com/repos/VSCodium/vscodium-insiders/releases -O latest.json
+      wget --quiet https://api.github.com/repos/andrewhertog/codex-insiders/releases -O latest.json
       VERSION=$( jq -r 'sort_by(.tag_name)|last.tag_name' latest.json )
       DEB_URL=$( jq -r 'map(select(.tag_name == "'"${VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${SNAPCRAFT_TARGET_ARCH}.deb"'"))' latest.json )
       DEB_NAME=$( basename "${DEB_URL}" )
@@ -30,12 +30,12 @@ parts:
       snapcraftctl set-version "${VERSION/-*/}"
       # Prepare GUI
       mkdir -p "${SNAPCRAFT_PART_INSTALL}/meta/gui"
-      cp "${SNAPCRAFT_PART_INSTALL}/usr/share/codium-insiders/resources/app/resources/linux/code.png" "${SNAPCRAFT_PART_INSTALL}/meta/gui/codium-insiders.png"
+      cp "${SNAPCRAFT_PART_INSTALL}/usr/share/codex-insiders/resources/app/resources/linux/code.png" "${SNAPCRAFT_PART_INSTALL}/meta/gui/codex-insiders.png"
       # Update paths
-      sed -i 's|Exec=/usr/share/codium/codium-insiders|Exec=codium-insiders --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders.desktop"
-      sed -i 's|Exec=/usr/share/codium/codium-insiders|Exec=codium-insiders --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders-url-handler.desktop"
-      sed -i 's|Icon=vscodium-insiders|Icon=${SNAP}/meta/gui/codium-insiders.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders.desktop"
-      sed -i 's|Icon=vscodium-insiders|Icon=${SNAP}/meta/gui/codium-insiders.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders-url-handler.desktop"
+      sed -i 's|Exec=/usr/share/codex/codex-insiders|Exec=codex-insiders --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codex-insiders.desktop"
+      sed -i 's|Exec=/usr/share/codex/codex-insiders|Exec=codex-insiders --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codex-insiders-url-handler.desktop"
+      sed -i 's|Icon=codex-insiders|Icon=${SNAP}/meta/gui/codex-insiders.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codex-insiders.desktop"
+      sed -i 's|Icon=codex-insiders|Icon=${SNAP}/meta/gui/codex-insiders.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codex-insiders-url-handler.desktop"
     build-packages:
       - wget
       - jq
@@ -75,7 +75,7 @@ parts:
       - -usr/share/icons
       - -usr/share/lintian
       - -usr/share/man
-      - -usr/share/codium/chrome-sandbox
+      - -usr/share/codex/chrome-sandbox
     build-attributes:
       - enable-patchelf
     override-prime: |
@@ -88,7 +88,7 @@ parts:
 
   electron-launch:
     after:
-      - codium-insiders
+      - codex-insiders
     plugin: dump
     source: snap/local/bin
 
@@ -113,13 +113,13 @@ parts:
       - usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
 
 apps:
-  codium:
-    command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --no-sandbox
-    desktop: usr/share/applications/codium-insiders.desktop
-    common-id: codium-insiders.desktop
+  codex:
+    command: electron-launch $SNAP/usr/share/codex-insiders/bin/codex-insiders --no-sandbox
+    desktop: usr/share/applications/codex-insiders.desktop
+    common-id: codex-insiders.desktop
     environment:
       LIBGL_DRIVERS_PATH: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
 
   url-handler:
-    command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --open-url --no-sandbox
-    desktop: usr/share/applications/codium-insiders-url-handler.desktop
+    command: electron-launch $SNAP/usr/share/codex-insiders/bin/codex-insiders --open-url --no-sandbox
+    desktop: usr/share/applications/codex-insiders-url-handler.desktop

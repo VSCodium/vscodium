@@ -8,7 +8,7 @@ index c581ac0..f11c0f0 100644
 +			scope: ConfigurationScope.MACHINE,
 +			type: 'boolean',
 +			default: true,
-+			description: localize('workbench.welcomePage.extraAnnouncements', "When enabled, the get started page loads additional announcements from VSCodium's repository.")
++			description: localize('workbench.welcomePage.extraAnnouncements', "When enabled, the get started page loads additional announcements from Codex's repository.")
 +		},
  		'workbench.startupEditor': {
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
@@ -62,7 +62,7 @@ index 664c55b..43f9e2e 100644
 +		if (this.announcementList) { this.announcementList.dispose(); }
 +
 +		const announcementList = this.announcementList = new GettingStartedIndexList({
-+			title: localize('announcements', "VSCodium Announcements"),
++			title: localize('announcements', "Codex Announcements"),
 +			klass: 'announcements',
 +			limit: 5,
 +			empty: $('.empty-recent', {}, localize('noAnnouncements', "There are no current announcements.")),
@@ -75,7 +75,7 @@ index 664c55b..43f9e2e 100644
 +
 +			if (showExtras) {
 +				const branch = this.productService.quality === 'insider' ? 'insider' : 'master';
-+				await fetch(`https://raw.githubusercontent.com/VSCodium/vscodium/${branch}/announcements-extra.json`)
++				await fetch(`https://raw.githubusercontent.com/andrewhertog/codex/${branch}/announcements-extra.json`)
 +					.then(async res => {
 +						if (res.ok) {
 +							var extraAnnouncements = await res.json() as AnnouncementEntry[];

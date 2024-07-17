@@ -8,11 +8,11 @@
 ## Incompatibility
 
 - [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
-> It's officially unsupported: https://github.com/James-Yu/LaTeX-Workshop/wiki/FAQ#vscodium-is-not-officially-supported
+> It's officially unsupported: https://github.com/James-Yu/LaTeX-Workshop/wiki/FAQ#codex-is-not-officially-supported
 
 ## Incompatibility due to licensing
 
-The following extensions are not compatible with VSCodium due to their licensing:
+The following extensions are not compatible with Codex due to their licensing:
 
 - [Live Share](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare)
 - [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
