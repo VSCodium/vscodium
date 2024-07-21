@@ -34,8 +34,8 @@ if [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
     echo "Electron RISC-V binary version doesn't match target electron version!"
     exit 1
   fi
-  export VSCODE_ELECTRON_TAG="v${ELECTRON_VERSION}.riscv2"
-  echo "7244465fe0c1a6ac6e34fe765a9d90fe0017b1a6d3406fd6b8dd9f5d2c8c9df5 *electron-v29.4.0-linux-riscv64.zip" >> build/checksums/electron.txt
+  export VSCODE_ELECTRON_TAG="v${ELECTRON_VERSION}.riscv3"
+  echo "c2b55b6fee59dd2f29138b0052536d5c254c04c29bc322bd3e877bb457799fca *electron-v29.4.0-linux-riscv64.zip" >> build/checksums/electron.txt
 fi
 
 if [[ -d "../patches/linux/client/" ]]; then
