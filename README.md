@@ -190,10 +190,6 @@ The minimal version is limited by the core component Electron, you may want to c
 - [x] Windows 10 / Server 2012 R2 or newer x64
 - [x] Windows 10 / Server 2012 R2 or newer arm64
 
-## <a id="donate"></a>Donate
-
-If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N` (<a href="https://github.com/stripedpajamas" target="_blank">@stripedpajamas</a>).
-
 ## <a id="thanks"></a>Special thanks
 
 <table>
@@ -208,6 +204,10 @@ If you would like to support the development of VSCodium, feel free to send BTC 
   <tr>
     <td><a href="https://www.macstadium.com" target="_blank"><img src="https://images.prismic.io/macstadium/66fbce64-707e-41f3-b547-241908884716_MacStadium_Logo.png?w=128&q=75" width="128" height="49" alt="MacStadium logo" /></a></td>
     <td>for providing a Mac mini M1</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/daiyam" target="_blank">@daiyam</a></td>
+    <td>for macOS certificate</td>
   </tr>
 </table>
 

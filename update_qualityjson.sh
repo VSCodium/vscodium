@@ -7,7 +7,7 @@ if [[ "${SHOULD_BUILD}" != "yes" ]]; then
   exit 0
 fi
 
-if [[ -z "${GITHUB_TOKEN}" ]]; then
+if [[ -z "${GH_TOKEN}" ]] && [[ -z "${GITHUB_TOKEN}" ]] && [[ -z "${GH_ENTERPRISE_TOKEN}" ]] && [[ -z "${GITHUB_ENTERPRISE_TOKEN}" ]]; then
   echo "Will not update ${VSCODE_QUALITY}.json because no GITHUB_TOKEN defined"
   exit 0
 fi
