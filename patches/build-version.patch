@@ -1,60 +1,62 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 595d0ce..99bfe30 100644
+index 7d58861..38d7f34 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -290,4 +290,5 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -295,2 +295,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const name = product.nameShort;
 +		const release = packageJson.release;
+ 
+@@ -298,3 +299,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const packageJsonStream = gulp.src(['remote/package.json'], { base: 'remote' })
--			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined }));
-+			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined }));
- 
-@@ -296,3 +297,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+-			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined }))
++			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined }))
+ 			.pipe(es.through(function (file) {
+@@ -306,3 +307,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
--			.pipe(json({ commit, date, version }));
-+			.pipe(json({ commit, date, version, release }));
- 
+-			.pipe(json({ commit, date: readISODate('out-build'), version }))
++			.pipe(json({ commit, date: readISODate('out-build'), version, release }))
+ 			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index e1507e0..9a12a12 100644
+index 4af4067..21146e8 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -233,3 +233,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -236,3 +236,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  
 -		let version = packageJson.version;
 +		let version = packageJson.version
  		const quality = product.quality;
-@@ -241,3 +241,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -244,3 +244,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const name = product.nameShort;
 -		const packageJsonUpdates = { name, version };
 +		const release = packageJson.release;
 +		const packageJsonUpdates = { name, version, release };
  
-@@ -252,3 +253,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
- 		const date = new Date().toISOString();
--		const productJsonUpdate = { commit, date, checksums, version };
-+		const productJsonUpdate = { commit, date, checksums, version, release };
- 
+@@ -261,3 +262,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 		const productJsonStream = gulp.src(['product.json'], { base: '.' })
+-			.pipe(json({ commit, date: readISODate('out-build'), checksums, version }))
++			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release }))
+ 			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index 8c2b62f..303fb16 100644
+index 28ddfb0..718b8c1 100644
 --- a/build/gulpfile.vscode.linux.js
 +++ b/build/gulpfile.vscode.linux.js
-@@ -24,4 +24,2 @@ const commit = getVersion(root);
+@@ -27,4 +27,2 @@ const commit = getVersion(root);
  
 -const linuxPackageRevision = Math.floor(new Date().getTime() / 1000);
 -
  /**
-@@ -86,3 +84,3 @@ function prepareDebPackage(arch) {
+@@ -89,3 +87,3 @@ function prepareDebPackage(arch) {
  					.pipe(replace('@@NAME@@', product.applicationName))
 -					.pipe(replace('@@VERSION@@', packageJson.version + '-' + linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  					.pipe(replace('@@ARCHITECTURE@@', debArch))
-@@ -194,4 +192,3 @@ function prepareRpmPackage(arch) {
+@@ -199,4 +197,3 @@ function prepareRpmPackage(arch) {
  					.pipe(replace('@@ICON@@', product.linuxIconName))
 -					.pipe(replace('@@VERSION@@', packageJson.version))
 -					.pipe(replace('@@RELEASE@@', linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  					.pipe(replace('@@ARCHITECTURE@@', rpmArch))
-@@ -270,3 +267,3 @@ function prepareSnapPackage(arch) {
+@@ -275,3 +272,3 @@ function prepareSnapPackage(arch) {
  			.pipe(replace('@@NAME@@', product.applicationName))
 -			.pipe(replace('@@VERSION@@', commit.substr(0, 8)))
 +			.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
@@ -71,7 +73,7 @@ index 5adfdfb..d6ddead 100644
 +			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 3a57612..d26a55b 100644
+index e30cf08..38d1884 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
 @@ -58,2 +58,3 @@ export interface IProductConfiguration {
@@ -79,16 +81,16 @@ index 3a57612..d26a55b 100644
 +	readonly release: string;
  	readonly date?: string;
 diff --git a/src/vs/platform/diagnostics/node/diagnosticsService.ts b/src/vs/platform/diagnostics/node/diagnosticsService.ts
-index 0be311f..d6c4a18 100644
+index 7e0bc11..1fa5310 100644
 --- a/src/vs/platform/diagnostics/node/diagnosticsService.ts
 +++ b/src/vs/platform/diagnostics/node/diagnosticsService.ts
-@@ -224,3 +224,3 @@ export class DiagnosticsService implements IDiagnosticsService {
+@@ -231,3 +231,3 @@ export class DiagnosticsService implements IDiagnosticsService {
  		const output: string[] = [];
 -		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
 +		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} ${this.productService.release || 'Release unknown'} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
  		output.push(`OS Version:       ${osLib.type()} ${osLib.arch()} ${osLib.release()}`);
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 467e11c..8e7d474 100644
+index 58278d9..956cdff 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -43,6 +43,7 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {

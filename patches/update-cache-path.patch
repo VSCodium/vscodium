@@ -1,9 +1,9 @@
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index d45291e..74d4080 100644
+index a2561be..a50958e 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
-@@ -55,3 +55,3 @@ export class Win32UpdateService extends AbstractUpdateService {
+@@ -56,3 +56,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  	get cachePath(): Promise<string> {
 -		const result = path.join(tmpdir(), `vscode-${this.productService.quality}-${this.productService.target}-${process.arch}`);
 +		const result = path.join(tmpdir(), `${this.productService.applicationName}-${this.productService.quality}-${this.productService.target}-${process.arch}`);
- 		return pfs.Promises.mkdir(result, { recursive: true }).then(() => result);
+ 		return fs.promises.mkdir(result, { recursive: true }).then(() => result);
