@@ -6,6 +6,7 @@
   - [Fonts showing up as rectangles](#linux-fonts-rectangle)
   - [Global menu workaround for KDE](#linux-kde-global-menu)
   - [Flatpak most common issues](#linux-flatpak-most-common-issues)
+  - [Remote SSH doesn't work](#linux-remote-ssh)
 - [macOS](#macos)
   - [App can't be opened because Apple cannot check it for malicious software](#macos-unidentified-developer)
   - ["VSCodium.app" is damaged and can’t be opened. You should move it to the Bin](#macos-quarantine)
@@ -54,6 +55,14 @@ Credits: [Gerson](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/
   see [this](https://github.com/flathub/com.vscodium.codium?tab=readme-ov-file#sdks)
 
 - If you have any other problems with the flatpak package try to look on the [FAQ](https://github.com/flathub/com.vscodium.codium?tab=readme-ov-file#faq) maybe the solution is already there or open an [issue](https://github.com/flathub/com.vscodium.codium/issues).
+
+##### <a id="linux-remote-ssh"></a>*Remote SSH doesn't work*
+
+Use the VSCodium's compatible extension [Open Remote - SSH](https://open-vsx.org/extension/jeanp413/open-remote-ssh).
+
+On the server, in the `sshd` config, `AllowTcpForwarding` need to be set to `yes`.
+
+It might requires additional dependeincies due to the OS/distro (alpine).
 
 ## <a id="macos"></a>macOS
 
