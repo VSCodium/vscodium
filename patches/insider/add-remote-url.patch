@@ -1,18 +1,18 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 2a0c236..0f10f17 100644
+index 7d58861..cefb8ad 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -256,3 +256,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -306,3 +306,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
--			.pipe(json({ commit, date, version, release }));
-+			.pipe(json({ commit, date, version, release, serverDownloadUrlTemplate: 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }));
- 
+-			.pipe(json({ commit, date: readISODate('out-build'), version, release }))
++			.pipe(json({ commit, date: readISODate('out-build'), version, release, serverDownloadUrlTemplate: 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }))
+ 			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 0ca2cfd..9bf83a7 100644
+index 4af4067..1bac2cc 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -244,3 +244,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
- 		const date = new Date().toISOString();
--		const productJsonUpdate = { commit, date, checksums, version, release };
-+		const productJsonUpdate = { commit, date, checksums, version, release, serverDownloadUrlTemplate: 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' };
- 
+@@ -261,3 +261,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 		const productJsonStream = gulp.src(['product.json'], { base: '.' })
+-			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release }))
++			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release, serverDownloadUrlTemplate: 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }))
+ 			.pipe(es.through(function (file) {
