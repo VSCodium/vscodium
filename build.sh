@@ -21,10 +21,9 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   yarn gulp compile-extension-media
   yarn gulp compile-extensions-build
 
-  . ../get-extensions.sh
-
   yarn gulp minify-vscode
 
+  . ../get-extensions.sh
 
   if [[ "${OS_NAME}" == "osx" ]]; then
     yarn gulp "vscode-darwin-${VSCODE_ARCH}-min-ci"
