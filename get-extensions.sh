@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 jsonfile=../extensions.json
-extensions_dir=./extensions
+extensions_dir=./.build/extensions
 base_dir=$(pwd)
 
 count=$(jq -r '. | length' ${jsonfile})
@@ -19,4 +19,3 @@ for i in $(seq $count); do
   rm "$name".zip
 done
 
-ls ./extensions
