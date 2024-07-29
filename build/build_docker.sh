@@ -20,7 +20,11 @@ while getopts ":ilp" opt; do
       export VSCODE_LATEST="yes"
       ;;
     p)
+<<<<<<< HEAD
       export SKIP_ASSETS="no" 
+=======
+      export SKIP_ASSETS="no"
+>>>>>>> f1f09ccc112c37e3e9134eef3db964ada7ecb951
       ;;
     *)
       ;;

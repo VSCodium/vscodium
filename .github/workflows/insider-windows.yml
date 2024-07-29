@@ -1,4 +1,4 @@
-name: stable-windows
+name: insider-windows
 
 on:
   workflow_dispatch:
@@ -13,22 +13,23 @@ on:
         type: string
         description: Checkout PR
   repository_dispatch:
-    types: [stable]
+    types: [insider]
   push:
-    branches: [ master ]
+    branches: [ insider ]
     paths-ignore:
     - '**/*.md'
   pull_request:
-    branches: [ master ]
+    branches: [ insider ]
     paths-ignore:
     - '**/*.md'
 
 env:
   APP_NAME: Codex
-  ASSETS_REPOSITORY: ${{ github.repository }}
+  ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+  GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'insider' }}
   OS_NAME: windows
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
-  VSCODE_QUALITY: stable
+  VSCODE_QUALITY: insider
 
 jobs:
   build:
@@ -51,11 +52,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.12'
+          node-version: '18.17'
 
       - name: Install Yarn
         run: npm install -g yarn
@@ -84,7 +87,6 @@ jobs:
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository_owner }}
           npm_config_arch: ${{ matrix.vscode_arch }}
           npm_config_target_arch: ${{ matrix.vscode_arch }}
         run: ./build.sh
@@ -96,7 +98,8 @@ jobs:
 
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
@@ -106,7 +109,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
         uses: actions/upload-artifact@v4
@@ -115,3 +118,35 @@ jobs:
           path: assets/
           retention-days: 3
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+
+  winget:
+    needs: build
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      APP_IDENTIFIER: Codex.Codex.Insiders
+      ASSETS_REPOSITORY: vscodium-insiders
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Check version
+        run: ./stores/winget/check_version.sh
+        env:
+          RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+
+      - name: Release to WinGet
+        uses: vedantmgoyal2009/winget-releaser@v2
+        with:
+          identifier: ${{ env.APP_IDENTIFIER }}
+          version: ${{ env.RELEASE_VERSION }}
+          release-repository: ${{ env.ASSETS_REPOSITORY }}
+          release-tag: ${{ env.RELEASE_VERSION }}-insider
+          installers-regex: '\.exe$' # only .exe files
+          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+        if: env.SHOULD_DEPLOY == 'yes'

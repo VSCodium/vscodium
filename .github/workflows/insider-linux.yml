@@ -1,4 +1,4 @@
-name: stable-linux
+name: insider-linux
 
 on:
   workflow_dispatch:
@@ -13,25 +13,25 @@ on:
         type: string
         description: Checkout PR
   repository_dispatch:
-    types: [stable]
+    types: [insider]
   push:
-    branches: [ master ]
+    branches: [ insider ]
     paths-ignore:
     - '**/*.md'
   pull_request:
-    branches: [ master ]
+    branches: [ insider ]
     paths-ignore:
     - '**/*.md'
 
 env:
-  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
   APP_NAME: Codex
-  ASSETS_REPOSITORY: ${{ github.repository }}
-  BINARY_NAME: codex
+  ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+  BINARY_NAME: codium-insiders
   DISABLE_UPDATE: 'yes'
+  GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'insider' }}
   OS_NAME: linux
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
-  VSCODE_QUALITY: stable
+  VSCODE_QUALITY: insider
 
 jobs:
   check:
@@ -140,15 +140,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - vscode_arch: x64
-            npm_arch: x64
-            image: vscodium/vscodium-linux-build-agent:bionic-x64
-          - vscode_arch: arm64
-            npm_arch: arm64
-            image: vscodium/vscodium-linux-build-agent:bionic-arm64
-          - vscode_arch: armhf
-            npm_arch: arm
-            image: vscodium/vscodium-linux-build-agent:bionic-armhf
+        - vscode_arch: x64
+          npm_arch: x64
+          image: vscodium/vscodium-linux-build-agent:bionic-x64
+        - vscode_arch: arm64
+          npm_arch: arm64
+          image: vscodium/vscodium-linux-build-agent:bionic-arm64
+        - vscode_arch: armhf
+          npm_arch: arm
+          image: vscodium/vscodium-linux-build-agent:bionic-armhf
     container:
       image: ${{ matrix.image }}
     env:
@@ -159,7 +159,6 @@ jobs:
       SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
       SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     outputs:
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
@@ -237,16 +236,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - vscode_arch: x64
-            npm_arch: x64
-          - vscode_arch: arm64
-            npm_arch: arm64
-          - vscode_arch: armhf
-            npm_arch: arm
-          - vscode_arch: ppc64le
-            npm_arch: ppc64
-          - vscode_arch: riscv64
-            npm_arch: riscv64
+        - vscode_arch: x64
+          npm_arch: x64
+        - vscode_arch: arm64
+          npm_arch: arm64
+        - vscode_arch: armhf
+          npm_arch: arm
+        - vscode_arch: ppc64le
+          npm_arch: ppc64
+        - vscode_arch: riscv64
+          npm_arch: riscv64
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
@@ -322,10 +321,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - vscode_arch: x64
-            npm_arch: x64
-          - vscode_arch: arm64
-            npm_arch: arm64
+        - vscode_arch: x64
+          npm_arch: x64
+        - vscode_arch: arm64
+          npm_arch: arm64
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
@@ -383,3 +382,69 @@ jobs:
           retention-days: 3
         if: env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
+  aur:
+    needs:
+      - check
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - package_name: vscodium-insiders-bin
+        - package_name: vscodium-insiders
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
+
+    steps:
+      - name: Get version
+        env:
+          RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+        run: echo "PACKAGE_VERSION=${RELEASE_VERSION/-*/}" >> "${GITHUB_ENV}"
+
+      - name: Publish ${{ matrix.package_name }}
+        uses: zokugun/github-actions-aur-releaser@v1
+        with:
+          package_name: ${{ matrix.package_name }}
+          package_version: ${{ env.PACKAGE_VERSION }}
+          aur_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
+          aur_username: ${{ secrets.AUR_USERNAME }}
+          aur_email: ${{ secrets.AUR_EMAIL }}
+
+  snap:
+    needs:
+      - check
+      - build
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SNAP_NAME: codium-insiders
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - amd64
+        - arm64
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: diddlesnaps/snapcraft-multiarch-action@v1
+        with:
+          path: stores/snapcraft/insider
+          architecture: ${{ matrix.platform }}
+        id: build
+
+      - uses: diddlesnaps/snapcraft-review-action@v1
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          isClassic: 'true'
+
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_name: ${{ env.ASSETS_REPOSITORY }}
+          repo_token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          file: ${{ steps.build.outputs.snap }}
+          tag: ${{ env.RELEASE_VERSION }}
