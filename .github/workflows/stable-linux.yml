@@ -179,8 +179,9 @@ jobs:
 
       - name: Check existing VSCodium tags/releases
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_REH: 'no'
+          DISABLE_APPIMAGE: ${{ vars.DISABLE_APPIMAGE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.SHOULD_BUILD == 'yes'
 
