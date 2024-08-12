@@ -402,6 +402,39 @@ elif [[ "${ASSETS}" != "null" ]]; then
         fi
       fi
     fi
+
+  elif [[ "${OS_NAME}" == "alpine" ]]; then
+
+    if [[ "${CHECK_ONLY_REH}" == "yes" ]]; then
+      if [[ -z $( contains "${APP_NAME_LC}-reh-alpine-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+        echo "Building on Alpine ${VSCODE_ARCH} because we have no REH archive"
+        export SHOULD_BUILD="yes"
+      else
+        echo "Already have the Alpine REH ${VSCODE_ARCH} archive"
+        export SHOULD_BUILD_REH="no"
+      fi
+    else
+
+      # alpine-arm64
+      if [[ "${VSCODE_ARCH}" == "arm64" || "${CHECK_ALL}" == "yes" ]]; then
+        if [[ "${CHECK_REH}" != "no" && -z $( contains "${APP_NAME_LC}-reh-alpine-arm64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Alpine arm64 because we have no REH archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH="no"
+        fi
+      fi
+
+      # alpine-x64
+      if [[ "${VSCODE_ARCH}" == "x64" || "${CHECK_ALL}" == "yes" ]]; then
+        if [[ "${CHECK_REH}" != "no" && -z $( contains "${APP_NAME_LC}-reh-alpine-x64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Alpine x64 because we have no REH archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH="no"
+        fi
+      fi
+    fi
   fi
 else
   if [[ "${IS_SPEARHEAD}" == "yes" ]]; then
