@@ -180,8 +180,9 @@ jobs:
 
       - name: Check existing VSCodium tags/releases
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_REH: 'no'
+          DISABLE_APPIMAGE: ${{ vars.DISABLE_INSIDER_APPIMAGE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.SHOULD_BUILD == 'yes'
 
@@ -428,7 +429,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && vars.DISABLE_SNAP != 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && vars.DISABLE_INSIDER_SNAP != 'yes'
 
     steps:
       - uses: actions/checkout@v3
