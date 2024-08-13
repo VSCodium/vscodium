@@ -346,6 +346,8 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
+      - uses: docker/setup-qemu-action@v3
+
       - name: Install GH
         run: ./install_gh.sh
         if: env.SHOULD_DEPLOY == 'yes'
