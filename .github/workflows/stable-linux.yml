@@ -180,7 +180,7 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           CHECK_REH: 'no'
-          DISABLE_APPIMAGE: ${{ vars.DISABLE_APPIMAGE }}
+          DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.SHOULD_BUILD == 'yes'
@@ -333,6 +333,7 @@ jobs:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      OS_NAME: alpine
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
       SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
@@ -425,7 +426,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && vars.DISABLE_SNAP != 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && vars.DISABLE_STABLE_SNAP != 'yes'
 
     steps:
       - uses: actions/checkout@v3
