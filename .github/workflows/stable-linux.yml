@@ -149,9 +149,9 @@ jobs:
         - vscode_arch: armhf
           npm_arch: arm
           image: vscodium/vscodium-linux-build-agent:bionic-armhf
-        - vscode_arch: riscv64
-          npm_arch: riscv64
-          image: vscodium/vscodium-linux-build-agent:focal-riscv64
+        # - vscode_arch: riscv64
+        #   npm_arch: riscv64
+        #   image: vscodium/vscodium-linux-build-agent:focal-riscv64
     container:
       image: ${{ matrix.image }}
     env:
@@ -180,7 +180,7 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           CHECK_REH: 'no'
-          DISABLE_APPIMAGE: ${{ vars.DISABLE_APPIMAGE }}
+          DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.SHOULD_BUILD == 'yes'
@@ -425,7 +425,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && vars.DISABLE_SNAP != 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && vars.DISABLE_STABLE_SNAP != 'yes'
 
     steps:
       - uses: actions/checkout@v3
