@@ -140,18 +140,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - vscode_arch: x64
-          npm_arch: x64
-          image: vscodium/vscodium-linux-build-agent:bionic-x64
-        - vscode_arch: arm64
-          npm_arch: arm64
-          image: vscodium/vscodium-linux-build-agent:bionic-arm64
-        - vscode_arch: armhf
-          npm_arch: arm
-          image: vscodium/vscodium-linux-build-agent:bionic-armhf
-        - vscode_arch: riscv64
-          npm_arch: riscv64
-          image: vscodium/vscodium-linux-build-agent:focal-riscv64
+          - vscode_arch: x64
+            npm_arch: x64
+            image: vscodium/vscodium-linux-build-agent:bionic-x64
+          - vscode_arch: arm64
+            npm_arch: arm64
+            image: vscodium/vscodium-linux-build-agent:bionic-arm64
+          - vscode_arch: armhf
+            npm_arch: arm
+            image: vscodium/vscodium-linux-build-agent:bionic-armhf
     container:
       image: ${{ matrix.image }}
     env:
@@ -241,16 +238,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - vscode_arch: x64
-          npm_arch: x64
-        - vscode_arch: arm64
-          npm_arch: arm64
-        - vscode_arch: armhf
-          npm_arch: arm
-        - vscode_arch: ppc64le
-          npm_arch: ppc64
-        - vscode_arch: riscv64
-          npm_arch: riscv64
+          - vscode_arch: x64
+            npm_arch: x64
+          - vscode_arch: arm64
+            npm_arch: arm64
+          - vscode_arch: armhf
+            npm_arch: arm
+          - vscode_arch: ppc64le
+            npm_arch: ppc64
+          - vscode_arch: riscv64
+            npm_arch: riscv64
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
@@ -326,10 +323,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - vscode_arch: x64
-          npm_arch: x64
-        - vscode_arch: arm64
-          npm_arch: arm64
+          - vscode_arch: x64
+            npm_arch: x64
+          - vscode_arch: arm64
+            npm_arch: arm64
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}

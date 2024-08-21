@@ -338,7 +338,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_DEB="no"
         export SHOULD_BUILD_RPM="no"
         export SHOULD_BUILD_APPIMAGE="no"
-      
+
         if [[ -z $( contains "${APP_NAME}-linux-riscv64-${RELEASE_VERSION}.tar.gz" ) ]]; then
           echo "Building on Linux RISC-V 64 because we have no TAR"
           export SHOULD_BUILD="yes"
