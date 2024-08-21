@@ -6,7 +6,6 @@ index 87839a6..49727fc 100644
  - OS Version: \`${osVersion}\`
 -- VS Code version: \`${this._productService.version}\`\n\n${message}`);
 +- Codex version: \`${this._productService.version}\`\n\n${message}`);
-+- Codex version: \`${this._productService.version}\`\n\n${message}`);
  
 diff --git a/src/vs/workbench/contrib/issue/browser/issue.ts b/src/vs/workbench/contrib/issue/browser/issue.ts
 index 79e4485..33f09a4 100644
@@ -60,13 +59,10 @@ index 79e4485..33f09a4 100644
 -		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Codex"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A Codex extension"), false));
-+		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Codex"), false));
-+		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A Codex extension"), false));
  		if (this.product.reportMarketplaceIssueUrl) {
 @@ -728,3 +697,3 @@ export class BaseIssueReporterService extends Disposable {
  			hide(descriptionTextArea);
 -			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
-+			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of Codex"));
 +			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of Codex"));
  			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
@@ -76,7 +72,6 @@ index f8274d9..15fcc8b 100644
 @@ -92,3 +92,3 @@ ${this._data.issueDescription}
  ${this.getExtensionVersion()}
 -VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
-+Codex version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
 +Codex version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
  OS version: ${this._data.versionInfo && this._data.versionInfo.os}
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts b/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
