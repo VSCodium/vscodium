@@ -1,4 +1,4 @@
-# How to build VSCodium
+# How to build Codex
 
 ## Table of Contents
 
@@ -78,22 +78,22 @@ The script `build/build.sh` provides several flags:
 
 ## <a id="build-docker"></a>Build in Docker
 
-To build for Linux, you can alternatively build VSCodium in docker
+To build for Linux, you can alternatively build Codex in docker
 
 ### <a id="build-docker-x64"></a>X64
 
 Firstly, create the container with:
 ```
-docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-x64 bash
+docker run -ti --volume=<local codex source>:/root/codex --name=codex-build-agent vscodium/vscodium-linux-build-agent:bionic-x64 bash
 ```
 like
 ```
-docker run -ti --volume=$(pwd):/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-x64 bash
+docker run -ti --volume=$(pwd):/root/codex --name=codex-build-agent vscodium/vscodium-linux-build-agent:bionic-x64 bash
 ```
 
 When inside the container, you can use the following commands to build:
 ```
-cd /root/vscodium
+cd /root/codex
 
 ./build/build.sh
 ```
@@ -102,11 +102,11 @@ cd /root/vscodium
 
 Firstly, create the container with:
 ```
-docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-armhf bash
+docker run -ti --volume=<local codex source>:/root/codex --name=codex-build-agent vscodium/vscodium-linux-build-agent:bionic-armhf bash
 ```
 like
 ```
-docker run -ti --volume=$(pwd):/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-armhf bash
+docker run -ti --volume=$(pwd):/root/codex --name=codex-build-agent vscodium/vscodium-linux-build-agent:bionic-armhf bash
 ```
 
 When inside the container, you can use the following commands to build:
@@ -114,7 +114,7 @@ When inside the container, you can use the following commands to build:
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get install -y nodejs desktop-file-utils
 
-cd /root/vscodium
+cd /root/codex
 
 ./build/build.sh
 ```
@@ -132,7 +132,7 @@ cd ./stores/snapcraft/insider
 snapcraft --use-lxd
 
 # verify the snap
-review-tools.snap-review --allow-classic codium*.snap
+review-tools.snap-review --allow-classic codex*.snap
 ```
 
 ## <a id="patch-update-process"></a>Patch Update Process
@@ -141,7 +141,7 @@ review-tools.snap-review --allow-classic codium*.snap
 
 - run `./build/build_<os>.sh`, if a patch is failing then,
 - run `./build/update_patches.sh`
-- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
+- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **Codex**
 - fix all the `*.rej` files
 - run `yarn watch`
 - run `./script/code.sh` until everything is ok
@@ -150,7 +150,7 @@ review-tools.snap-review --allow-classic codium*.snap
 ## <a id="patch-update-process-manual"></a>Manual
 
 - run `./build/build_<os>.sh`, if a patch is failing then,
-- open `vscode` directory in **VSCodium**
+- open `vscode` directory in **Codex**
 - revert all changes
 - run `git apply --reject ../patches/<name>.patch`
 - fix all the `*.rej` files

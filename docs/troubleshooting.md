@@ -8,7 +8,7 @@
   - [Flatpak most common issues](#linux-flatpak-most-common-issues)
 - [macOS](#macos)
   - [App can't be opened because Apple cannot check it for malicious software](#macos-unidentified-developer)
-  - ["VSCodium.app" is damaged and can’t be opened. You should move it to the Bin](#macos-quarantine)
+  - ["Codex.app" is damaged and can’t be opened. You should move it to the Bin](#macos-quarantine)
 
 
 ## <a id="linux"></a>Linux
@@ -19,7 +19,7 @@ The following command should help:
 
 ```
 rm -rf ~/.cache/fontconfig
-rm -rf ~/snap/codium/common/.cache
+rm -rf ~/snap/codex/common/.cache
 fc-cache -r
 ```
 
@@ -33,13 +33,13 @@ Install these packages on Fedora:
 
 On Ubuntu this package is called `libdbusmenu-glib4`.
 
-Credits: [Gerson](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/91)
+Credits: [Gerson](https://gitlab.com/paulcarroty/codex-deb-rpm-repo/-/issues/91)
 
 #### <a id="linux-flatpak-most-common-issues"></a>*Flatpak most common issues*
 
 - blurry screen with HiDPI on wayland run:
   ```bash
-  flatpak override --user --nosocket=wayland com.vscodium.codium
+  flatpak override --user --nosocket=wayland com.codex.codex
   ```
 - To execute commands on the host system, run inside the sandbox
   ```bash
@@ -51,9 +51,9 @@ Credits: [Gerson](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/
   TL;DR: use https://open-vsx.org/extension/zokugun/vsix-manager
 
 - SDKs
-  see [this](https://github.com/flathub/com.vscodium.codium?tab=readme-ov-file#sdks)
+  see [this](https://github.com/flathub/com.codex.codex?tab=readme-ov-file#sdks)
 
-- If you have any other problems with the flatpak package try to look on the [FAQ](https://github.com/flathub/com.vscodium.codium?tab=readme-ov-file#faq) maybe the solution is already there or open an [issue](https://github.com/flathub/com.vscodium.codium/issues).
+- If you have any other problems with the flatpak package try to look on the [FAQ](https://github.com/flathub/com.codex.codex?tab=readme-ov-file#faq) maybe the solution is already there or open an [issue](https://github.com/flathub/com.codex.codex/issues).
 
 ## <a id="macos"></a>macOS
 
@@ -63,10 +63,10 @@ Since the App is signed with a self-signed certificate, on the first launch, you
 
 You can right-click the App and choose `Open`.
 
-#### <a id="macos-quarantine"></a>*"VSCodium.app" is damaged and can’t be opened. You should move it to the Bin.*
+#### <a id="macos-quarantine"></a>*"Codex.app" is damaged and can’t be opened. You should move it to the Bin.*
 
 The following command will remove the quarantine attribute.
 
 ```
-xattr -r -d com.apple.quarantine /Applications/VSCodium.app
+xattr -r -d com.apple.quarantine /Applications/Codex.app
 ```
