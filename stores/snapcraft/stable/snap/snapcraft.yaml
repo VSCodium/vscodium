@@ -1,5 +1,5 @@
-name: codium
-adopt-info: codium
+name: codex
+adopt-info: codex
 summary: Code editing. Redefined.
 description: |
   Binary releases of Visual Studio Code without branding/telemetry/licensing
@@ -10,12 +10,12 @@ confinement: classic
 compression: lzo
 
 parts:
-  codium:
+  codex:
     plugin: nil
     override-build: |
       set -eu
       # Get .deb url
-      wget --quiet https://api.github.com/repos/VSCodium/vscodium/releases -O latest.json
+      wget --quiet https://api.github.com/repos/andrewhertog/codex/releases -O latest.json
       VERSION=$( jq -r 'sort_by(.tag_name)|last.tag_name' latest.json )
       DEB_URL=$( jq -r 'map(select(.tag_name == "'"${VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${SNAPCRAFT_TARGET_ARCH}.deb"'"))' latest.json )
       DEB_NAME=$( basename "${DEB_URL}" )
@@ -30,12 +30,12 @@ parts:
       snapcraftctl set-version "${VERSION}"
       # Prepare GUI
       mkdir -p "${SNAPCRAFT_PART_INSTALL}/meta/gui"
-      cp "${SNAPCRAFT_PART_INSTALL}/usr/share/codium/resources/app/resources/linux/code.png" "${SNAPCRAFT_PART_INSTALL}/meta/gui/codium.png"
+      cp "${SNAPCRAFT_PART_INSTALL}/usr/share/codex/resources/app/resources/linux/code.png" "${SNAPCRAFT_PART_INSTALL}/meta/gui/codex.png"
       # Update paths
-      sed -i 's|Exec=/usr/share/codium/codium|Exec=codium --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop"
-      sed -i 's|Exec=/usr/share/codium/codium|Exec=codium --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-url-handler.desktop"
-      sed -i 's|Icon=vscodium|Icon=${SNAP}/meta/gui/codium.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium.desktop"
-      sed -i 's|Icon=vscodium|Icon=${SNAP}/meta/gui/codium.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-url-handler.desktop"
+      sed -i 's|Exec=/usr/share/codex/codex|Exec=codex --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codex.desktop"
+      sed -i 's|Exec=/usr/share/codex/codex|Exec=codex --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codex-url-handler.desktop"
+      sed -i 's|Icon=codex|Icon=${SNAP}/meta/gui/codex.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codex.desktop"
+      sed -i 's|Icon=codex|Icon=${SNAP}/meta/gui/codex.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codex-url-handler.desktop"
     build-packages:
       - wget
       - jq
@@ -75,7 +75,7 @@ parts:
       - -usr/share/icons
       - -usr/share/lintian
       - -usr/share/man
-      - -usr/share/codium/chrome-sandbox
+      - -usr/share/codex/chrome-sandbox
     build-attributes:
       - enable-patchelf
     override-prime: |
@@ -88,16 +88,16 @@ parts:
 
   electron-launch:
     after:
-      - codium
+      - codex
     plugin: dump
     source: snap/local/bin
 
 apps:
-  codium:
-    command: electron-launch $SNAP/usr/share/codium/bin/codium --no-sandbox
-    desktop: usr/share/applications/codium.desktop
-    common-id: codium.desktop
+  codex:
+    command: electron-launch $SNAP/usr/share/codex/bin/codex --no-sandbox
+    desktop: usr/share/applications/codex.desktop
+    common-id: codex.desktop
 
   url-handler:
-    command: electron-launch $SNAP/usr/share/codium/bin/codium --open-url --no-sandbox
-    desktop: usr/share/applications/codium-url-handler.desktop
+    command: electron-launch $SNAP/usr/share/codex/bin/codex --open-url --no-sandbox
+    desktop: usr/share/applications/codex-url-handler.desktop
