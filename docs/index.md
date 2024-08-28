@@ -61,7 +61,6 @@ By default, the `product.json` file is set up to use [open-vsx.org](https://open
 ### <a id="howto-openvsx-marketplace"></a>How to use the Open VSX Registry
 
 As noted above, the [Open VSX Registry](https://open-vsx.org/) is the pre-set extension gallery in Codex. Using the extension view in Codex will therefore by default use it.
-As noted above, the [Open VSX Registry](https://open-vsx.org/) is the pre-set extension gallery in Codex. Using the extension view in Codex will therefore by default use it.
 See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on the motivation behind Open VSX.
 
 ### <a id="howto-switch-marketplace"></a>How to use a different extension gallery
