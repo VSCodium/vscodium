@@ -6,7 +6,10 @@
   - [Fonts showing up as rectangles](#linux-fonts-rectangle)
   - [Global menu workaround for KDE](#linux-kde-global-menu)
   - [Flatpak most common issues](#linux-flatpak-most-common-issues)
+<<<<<<< HEAD
   - [Remote SSH doesn't work](#linux-remote-ssh)
+=======
+>>>>>>> e7fd12ed78911b9f7e12bf5c5bf04af45d65144b
 - [macOS](#macos)
   - [App can't be opened because Apple cannot check it for malicious software](#macos-unidentified-developer)
   - ["Codex.app" is damaged and can’t be opened. You should move it to the Bin](#macos-quarantine)
