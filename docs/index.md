@@ -10,18 +10,18 @@
   - [How to self host your own VS Code Marketplace](#howto-selfhost-marketplace)
   - [Proprietary Debugging Tools](#proprietary-debugging-tools)
   - [Proprietary Extensions](#proprietary-extensions)
-- [Extensions compatibility](https://github.com/andrewhertog/codex/blob/master/docs/extensions-compatibility.md)
+- [Extensions compatibility](https://github.com/BiblioNexus-Foundation/codex/blob/master/docs/extensions-compatibility.md)
 - [Migrating from Visual Studio Code to Codex](#migrating)
 - [Sign in with GitHub](#signin-github)
-- [Accounts authentication](https://github.com/andrewhertog/codex/blob/master/docs/accounts-authentication.md)
+- [Accounts authentication](https://github.com/BiblioNexus-Foundation/codex/blob/master/docs/accounts-authentication.md)
 - [How do I run Codex in portable mode?](#portable)
 - [How do I fix the default file manager?](#file-manager)
 - [How do I press and hold a key and have it repeat in Codex?](#press-and-hold)
 - [How do I open Codex from the terminal?](#terminal-support)
   - [From Linux .tar.gz](#from-linux-targz)
-- [Troubleshooting](https://github.com/andrewhertog/codex/blob/master/docs/troubleshooting.md)
-- [Contributing](https://github.com/andrewhertog/codex/blob/master/CONTRIBUTING.md)
-- [How to build Codex](https://github.com/andrewhertog/codex/blob/master/docs/howto-build.md)
+- [Troubleshooting](https://github.com/BiblioNexus-Foundation/codex/blob/master/docs/troubleshooting.md)
+- [Contributing](https://github.com/BiblioNexus-Foundation/codex/blob/master/CONTRIBUTING.md)
+- [How to build Codex](https://github.com/BiblioNexus-Foundation/codex/blob/master/docs/howto-build.md)
 
 ## <a id="disable-telemetry"></a>Getting all the Telemetry Out
 
@@ -43,9 +43,9 @@ __Please note that some extensions send telemetry data to Microsoft as well. We 
 
 ### <a id="replacement-online-services"></a>Replacements to Microsoft Online Services
 
-When searching the `@tag:usesOnlineServices` filter, note that while the "Update: Mode" setting description still says "The updates are fetched from a Microsoft online service", Codex's build script [sets the `updateUrl` field](https://github.com/andrewhertog/codex/blob/master/prepare_vscode.sh#L36) in `product.json` to that of Codex's own small [update server](https://github.com/Codex/update-api), so enabling that setting won't actually result in any calls to Microsoft servers.
+When searching the `@tag:usesOnlineServices` filter, note that while the "Update: Mode" setting description still says "The updates are fetched from a Microsoft online service", Codex's build script [sets the `updateUrl` field](https://github.com/BiblioNexus-Foundation/codex/blob/master/prepare_vscode.sh#L36) in `product.json` to that of Codex's own small [update server](https://github.com/Codex/update-api), so enabling that setting won't actually result in any calls to Microsoft servers.
 
-Likewise, while the descriptions for "Extensions: Auto Check Updates" and "Extensions: Auto Update" include the same phrase, Codex [replaces](https://github.com/andrewhertog/codex/blob/master/prepare_vscode.sh#L42) the Visual Studio Marketplace with Open VSX, so these settings won't call Microsoft, either.
+Likewise, while the descriptions for "Extensions: Auto Check Updates" and "Extensions: Auto Update" include the same phrase, Codex [replaces](https://github.com/BiblioNexus-Foundation/codex/blob/master/prepare_vscode.sh#L42) the Visual Studio Marketplace with Open VSX, so these settings won't call Microsoft, either.
 
 ## <a id="extensions-marketplace"></a>Extensions + Marketplace
 
@@ -121,7 +121,7 @@ The endpoint URLs are given in the [example above](#howto-switch-marketplace).
 
 The debugger provided with Microsoft's [C# extension](https://github.com/OmniSharp/omnisharp-vscode) as well as the (Windows) debugger provided with their [C++ extension](https://github.com/Microsoft/vscode-cpptools) are very restrictively licensed to only work with the official Visual Studio Code build. See [this comment in the C# extension repo](https://github.com/OmniSharp/omnisharp-vscode/issues/2491#issuecomment-418811364) and [this comment in the C++ extension repo](https://github.com/Microsoft/vscode-cpptools/issues/21#issuecomment-248349017).
 
-A workaround exists to get debugging working in C# projects, by using Samsung's opensource [netcoredbg](https://github.com/Samsung/netcoredbg) package. See [this comment](https://github.com/andrewhertog/codex/issues/82#issue-409806641) for instructions on how to set that up.
+A workaround exists to get debugging working in C# projects, by using Samsung's opensource [netcoredbg](https://github.com/Samsung/netcoredbg) package. See [this comment](https://github.com/VSCodium/vscodium/issues/82#issue-409806641) for instructions on how to set that up.
 
 ### <a id="proprietary-extensions"></a>Proprietary Extensions
 

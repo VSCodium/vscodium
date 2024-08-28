@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091
 
-set -e
+# set -e
 
 # DEBUG
-# set -o xtrace
+set -o xtrace
 
 QUALITY="stable"
 COLOR="blue1"
@@ -77,7 +77,7 @@ build_darwin_types() { # {{{
 
 build_linux_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" ]]; then
-    wget "https://raw.githubusercontent.com/Codex/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
+    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
   fi
 
   mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/linux/rpm"
@@ -96,7 +96,7 @@ build_media() { # {{{
 
 build_windows_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico" ]]; then
-    wget "https://raw.githubusercontent.com/Codex/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
+    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
   fi
 } # }}}
 
@@ -134,11 +134,11 @@ build_windows_types() { # {{{
       if [[ "${name}" != 'code' ]] && [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/${name}.ico" ]]; then
         icotool -x -w 256 "${file}"
 
-        composite -geometry +150+185 "code_logo.png" "${name}_9_256x256x32.png" "${name}.png"
+        composite -geometry +150+185 "code_logo.png" "${name}_1_256x256x32.png" "${name}.png"
 
         convert "${name}.png" -define icon:auto-resize=256,128,96,64,48,32,24,20,16 "${SRC_PREFIX}src/${QUALITY}/resources/win32/${name}.ico"
 
-        rm "${name}_9_256x256x32.png" "${name}.png"
+        rm "${name}_1_256x256x32.png" "${name}.png"
       fi
     fi
   done
