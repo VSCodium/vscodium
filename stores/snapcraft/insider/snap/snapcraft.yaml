@@ -11,11 +11,12 @@ compression: lzo
 
 parts:
   codex-insiders:
+  codex-insiders:
     plugin: nil
     override-build: |
       set -eu
       # Get .deb url
-      wget --quiet https://api.github.com/repos/andrewhertog/codex-insiders/releases -O latest.json
+      wget --quiet https://api.github.com/repos/BiblioNexus-Foundation/codex-insiders/releases -O latest.json
       VERSION=$( jq -r 'sort_by(.tag_name)|last.tag_name' latest.json )
       DEB_URL=$( jq -r 'map(select(.tag_name == "'"${VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${SNAPCRAFT_TARGET_ARCH}.deb"'"))' latest.json )
       DEB_NAME=$( basename "${DEB_URL}" )
