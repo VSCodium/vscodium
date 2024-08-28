@@ -1,17 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091
 
-<<<<<<< HEAD
 set -e
 
 # DEBUG
 # set -o xtrace
-=======
-# set -e
-
-# DEBUG
-set -o xtrace
->>>>>>> e7fd12ed78911b9f7e12bf5c5bf04af45d65144b
 
 QUALITY="stable"
 COLOR="blue1"
@@ -84,11 +77,7 @@ build_darwin_types() { # {{{
 
 build_linux_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" ]]; then
-<<<<<<< HEAD
-    wget "https://raw.githubusercontent.com/Codex/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
-=======
     wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
->>>>>>> e7fd12ed78911b9f7e12bf5c5bf04af45d65144b
   fi
 
   mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/linux/rpm"
