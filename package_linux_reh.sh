@@ -12,11 +12,18 @@ tar -xzf ./vscode.tar.gz
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 GLIBC_VERSION="2.17"
+GLIBCXX_VERSION="3.4.22"
+NODE_VERSION="16.20.2"
+
 if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   GLIBC_VERSION="2.28"
+elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
+  # Unofficial RISC-V nodejs builds doesn't provide v16.x
+  NODE_VERSION="18.18.1"
 fi
 
 export VSCODE_PLATFORM='linux'
+export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
 
 VSCODE_HOST_MOUNT="$( pwd )"
@@ -31,15 +38,35 @@ elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-ppc64le"
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SYSROOT_REPO='VSCodium/vscode-linux-build-agent'
+  export VSCODE_SYSROOT_VERSION='20240129-253798'
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-  # Unofficial RISC-V nodejs builds doesn't provide v16.x
-  sed -i '/target/s/"16.*"/"18.18.1"/' remote/.yarnrc
 fi
 
 export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
+
+sed -i "/target/s/\"20.*\"/\"${NODE_VERSION}\"/" remote/.yarnrc
+
+if [[ "${NODE_VERSION}" != 16* ]]; then
+  if [[ -f "../patches/linux/reh/node16.patch" ]]; then
+    mv "../patches/linux/reh/node16.patch" "../patches/linux/reh/node16.patch.no"
+  fi
+fi
+
+if [[ -d "../patches/linux/reh/" ]]; then
+  for file in "../patches/linux/reh/"*.patch; do
+    if [[ -f "${file}" ]]; then
+      echo applying patch: "${file}";
+      if ! git apply --ignore-whitespace "${file}"; then
+        echo failed to apply patch "${file}" >&2
+        exit 1
+      fi
+    fi
+  done
+fi
 
 for i in {1..5}; do # try 5 times
   yarn --cwd build --frozen-lockfile --check-files && break
@@ -65,14 +92,14 @@ for i in {1..5}; do # try 5 times
   echo "Yarn failed $i, trying again..."
 done
 
-EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="3.4.22" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
-
 node build/azure-pipelines/distro/mixin-npm
 
 export VSCODE_NODE_GLIBC="-glibc-${GLIBC_VERSION}"
 
 yarn gulp minify-vscode-reh
 yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+
+EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
 cd ..
 

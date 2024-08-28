@@ -7,10 +7,13 @@ export SHOULD_BUILD="no"
 export SHOULD_DEPLOY_TO_RELEASE="no"
 export SHOULD_DEPLOY_TO_STORE="no"
 
+# Support for GitHub Enterprise
+GH_HOST="${GH_HOST:-github.com}"
+
 if [[ "${GENERATE_ASSETS}" == "true" ]]; then
   export SHOULD_BUILD="yes"
 else
-  wget --quiet "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases" -O gh_latest.json
+  wget --quiet "https://api.${GH_HOST}/repos/${ASSETS_REPOSITORY}/releases" -O gh_latest.json
   SNAP_URL=$( jq -r 'map(select(.tag_name == "'"${RELEASE_VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${ARCHITECTURE}.snap"'"))' gh_latest.json )
 
   if [[ -z "${SNAP_URL}" ]]; then

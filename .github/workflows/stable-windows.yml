@@ -15,13 +15,13 @@ on:
   repository_dispatch:
     types: [stable]
   push:
-    branches: [release]
+    branches: [ master ]
     paths-ignore:
-      - "**/*.md"
+    - '**/*.md'
   pull_request:
-    branches: [release]
+    branches: [ master ]
     paths-ignore:
-      - "**/*.md"
+    - '**/*.md'
 
 env:
   APP_NAME: Codex
@@ -29,8 +29,6 @@ env:
   OS_NAME: windows
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
   VSCODE_QUALITY: stable
-  SHOULD_DEPLOY: "yes"
-  SHOULD_BUILD: "yes"
 
 jobs:
   build:
@@ -57,7 +55,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: "18.17"
+          node-version: '20.12'
 
       - name: Install Yarn
         run: npm install -g yarn
@@ -65,7 +63,7 @@ jobs:
       - name: Setup Python 3
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Clone VSCode repo
         env:
@@ -117,31 +115,3 @@ jobs:
           path: assets/
           retention-days: 3
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
-
-  # winget:
-  #   needs: build
-  #   runs-on: windows-latest
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   env:
-  #     APP_IDENTIFIER: Codex.Codex
-  #   if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
-
-  #   steps:
-  #     - uses: actions/checkout@v4
-
-  #     - name: Check version
-  #       run: ./stores/winget/check_version.sh
-  #       env:
-  #         RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
-
-  #     - name: Release to WinGet
-  #       uses: vedantmgoyal2009/winget-releaser@v2
-  #       with:
-  #         identifier: ${{ env.APP_IDENTIFIER }}
-  #         version: ${{ env.RELEASE_VERSION }}
-  #         release-tag: ${{ env.RELEASE_VERSION }}
-  #         installers-regex: '\.exe$' # only .exe files
-  #         token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-  #       if: env.SHOULD_DEPLOY == 'yes'

@@ -3,17 +3,22 @@
 
 set -e
 
-if [[ -z "${GITHUB_TOKEN}" ]]; then
+if [[ -z "${GH_TOKEN}" ]] && [[ -z "${GITHUB_TOKEN}" ]] && [[ -z "${GH_ENTERPRISE_TOKEN}" ]] && [[ -z "${GITHUB_ENTERPRISE_TOKEN}" ]]; then
   echo "Will not build because no GITHUB_TOKEN defined"
   exit 0
+else
+  GITHUB_TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-${GH_ENTERPRISE_TOKEN:-${GITHUB_ENTERPRISE_TOKEN}}}}"
 fi
+
+# Support for GitHub Enterprise
+GH_HOST="${GH_HOST:-github.com}"
 
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
 if [[ "${SHOULD_DEPLOY}" == "no" ]]; then
   ASSETS="null"
 else
-  GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${ASSETS_REPOSITORY}/releases/latest" )
+  GITHUB_RESPONSE=$( curl -s -H "Authorization: token ${GITHUB_TOKEN}" "https://api.${GH_HOST}/repos/${ASSETS_REPOSITORY}/releases/latest" )
   LATEST_VERSION=$( echo "${GITHUB_RESPONSE}" | jq -c -r '.tag_name' )
   RECHECK_ASSETS="${SHOULD_BUILD}"
 
@@ -330,20 +335,26 @@ elif [[ "${ASSETS}" != "null" ]]; then
 
       # linux-riscv64
       if [[ "${VSCODE_ARCH}" == "riscv64" || "${CHECK_ALL}" == "yes" ]]; then
-        SHOULD_BUILD_APPIMAGE="no"
-        SHOULD_BUILD_DEB="no"
-        SHOULD_BUILD_RPM="no"
-        SHOULD_BUILD_TAR="no"
+        export SHOULD_BUILD_DEB="no"
+        export SHOULD_BUILD_RPM="no"
+        export SHOULD_BUILD_APPIMAGE="no"
+
+        if [[ -z $( contains "${APP_NAME}-linux-riscv64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux RISC-V 64 because we have no TAR"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_TAR="no"
+        fi
 
         if [[ -z $( contains "${APP_NAME_LC}-reh-linux-riscv64-${RELEASE_VERSION}.tar.gz" ) ]]; then
-          echo "Building on Linux RISC-V64 because we have no REH archive"
+          echo "Building on Linux RISC-V 64 because we have no REH archive"
           export SHOULD_BUILD="yes"
         else
           export SHOULD_BUILD_REH="no"
         fi
 
         if [[ "${SHOULD_BUILD}" != "yes" ]]; then
-          echo "Already have all the Linux PowerPC64LE builds"
+          echo "Already have all the Linux riscv64 builds"
         fi
       fi
 
@@ -394,10 +405,13 @@ else
   if [[ "${IS_SPEARHEAD}" == "yes" ]]; then
     export SHOULD_BUILD_SRC="yes"
   elif [[ "${OS_NAME}" == "linux" ]]; then
-    if [[ "${VSCODE_ARCH}" == "ppc64le" || "${VSCODE_ARCH}" == "riscv64" ]]; then
+    if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
       SHOULD_BUILD_TAR="no"
+    elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
+      SHOULD_BUILD_DEB="no"
+      SHOULD_BUILD_RPM="no"
     fi
     if [[ "${VSCODE_ARCH}" != "x64" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
