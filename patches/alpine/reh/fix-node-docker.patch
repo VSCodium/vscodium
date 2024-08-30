@@ -1,8 +1,8 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index e12a33e..846c1f1 100644
+index e12a33e..9300d62 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -188,5 +188,18 @@ function getNodeChecksum(expectedName) {
+@@ -188,5 +188,16 @@ function getNodeChecksum(expectedName) {
  function extractAlpinefromDocker(nodeVersion, platform, arch) {
 -	const imageName = arch === 'arm64' ? 'arm64v8/node' : 'node';
 +	let imageName = 'node';
@@ -12,11 +12,9 @@ index e12a33e..846c1f1 100644
 +		imageName = 'arm64v8/node';
 +
 +		const architecture = cp.execSync(`docker info --format '{{json .Architecture}}'`, { encoding: 'utf8' }).trim();
-+		log(`Docker architecture: ${architecture}`);
 +		if (architecture != '"aarch64"') {
 +			dockerPlatform = '--platform=linux/arm64';
 +		}
-+		log(`Docker platform: ${platform}`);
 +	}
 +
  	log(`Downloading node.js ${nodeVersion} ${platform} ${arch} from docker image ${imageName}`);
