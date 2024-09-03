@@ -190,7 +190,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: vscode
         if: env.SHOULD_BUILD == 'yes'
@@ -289,7 +289,7 @@ jobs:
         run: ./check_tags.sh
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: vscode
         if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
@@ -359,7 +359,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: vscode
         if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
