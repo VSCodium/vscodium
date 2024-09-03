@@ -174,6 +174,7 @@ else
   setpath "product" "nameShort" "Codex"
   setpath "product" "nameLong" "Codex"
   setpath "product" "applicationName" "codex"
+  setpath "product" "dataFolderName" ".codex"
   setpath "product" "linuxIconName" "codex"
   setpath "product" "quality" "stable"
   setpath "product" "urlProtocol" "codex"
