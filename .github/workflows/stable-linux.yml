@@ -112,6 +112,7 @@ jobs:
       - name: Build
         env:
           SHOULD_BUILD_REH: 'no'
+          SHOULD_BUILD_REH_WEB: 'no'
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
@@ -205,6 +206,7 @@ jobs:
       - name: Prepare assets
         env:
           SHOULD_BUILD_REH: 'no'
+          SHOULD_BUILD_REH_WEB: 'no'
         run: ./prepare_assets.sh
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
@@ -292,21 +294,21 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: vscode
-        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true'
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./package_linux_reh.sh
-        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true'
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_BUILD_REH != 'no' && env.SHOULD_DEPLOY == 'yes'
+        if: (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no') && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
         uses: actions/upload-artifact@v4
@@ -333,6 +335,7 @@ jobs:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      OS_NAME: alpine
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
       SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
