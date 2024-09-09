@@ -1,10 +1,8 @@
 diff --git a/build/npm/postinstall.js b/build/npm/postinstall.js
-index 72dd74f..94d4957 100644
+index 9ca239e..b0b2929 100644
 --- a/build/npm/postinstall.js
 +++ b/build/npm/postinstall.js
-@@ -86,4 +86,3 @@ for (let dir of dirs) {
- 
--	if (/^(.build\/distro\/npm\/)?remote/.test(dir) && process.platform === 'win32' && (process.arch === 'arm64' || process.env['npm_config_arch'] === 'arm64')) {
--		// windows arm: do not execute `yarn` on remote folder
-+	if (/^(.build\/distro\/npm\/)?remote/.test(dir)) {
- 		continue;
+@@ -118,2 +118,3 @@ for (let dir of dirs) {
+ 		opts = { env };
++		continue;
+ 	} else if (/^extensions\//.test(dir)) {

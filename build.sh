@@ -35,6 +35,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
     if [[ "${VSCODE_ARCH}" != "ia32" && "${VSCODE_ARCH}" != "x64" ]]; then
       SHOULD_BUILD_REH="no"
+      SHOULD_BUILD_REH_WEB="no"
     fi
 
     VSCODE_PLATFORM="win32"
@@ -50,12 +51,13 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   fi
 
   if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
-    if [[ "${OS_NAME}" == "linux" ]]; then
-      export VSCODE_NODE_GLIBC='-glibc-2.17'
-    fi
-
     yarn gulp minify-vscode-reh
     yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+  fi
+
+  if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
+    yarn gulp minify-vscode-reh-web
+    yarn gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
   fi
 
   cd ..
