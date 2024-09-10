@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091
 
-# set -e
+set -e
 
 # DEBUG
-set -o xtrace
+# set -o xtrace
 
 QUALITY="stable"
 COLOR="blue1"
