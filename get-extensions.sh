@@ -25,4 +25,3 @@ for i in $(seq $count); do
   fi
   rm "$name".zip
 done
-
