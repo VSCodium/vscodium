@@ -171,8 +171,8 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "win32x64UserAppId" "{{20F79D0D-A9AC-4220-9A81-CE675FFB6B41}"
   setpath "product" "win32arm64UserAppId" "{{2E362F92-14EA-455A-9ABD-3E656BBBFE71}"
 else
-  setpath "product" "nameShort" "VSCodium"
-  setpath "product" "nameLong" "VSCodium"
+  setpath "product" "nameShort" "autocoder"
+  setpath "product" "nameLong" "AutoCoder"
   setpath "product" "applicationName" "codium"
   setpath "product" "linuxIconName" "vscodium"
   setpath "product" "quality" "stable"

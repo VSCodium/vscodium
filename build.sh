@@ -52,12 +52,12 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
   if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
     yarn gulp minify-vscode-reh
-    yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+    #yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
   fi
 
   if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
     yarn gulp minify-vscode-reh-web
-    yarn gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+    #yarn gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
   fi
 
   cd ..
