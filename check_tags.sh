@@ -381,7 +381,9 @@ elif [[ "${ASSETS}" != "null" ]]; then
           export SHOULD_BUILD_TAR="no"
         fi
 
-        if [[ -z $( contains "x86_64.AppImage" ) ]]; then
+        if [[ "${DISABLE_APPIMAGE}" == "yes" ]]; then
+          export SHOULD_BUILD_APPIMAGE="no"
+        elif [[ -z $( contains "x86_64.AppImage" ) ]]; then
           echo "Building on Linux x64 because we have no AppImage"
           export SHOULD_BUILD="yes"
         else

@@ -100,7 +100,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install libkrb5-dev
-        run: sudo apt-get install -y libkrb5-dev
+        run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Clone VSCode repo
@@ -177,13 +177,14 @@ jobs:
 
       - name: Check existing Codex tags/releases
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_REH: 'no'
+          DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install libkrb5-dev
-        run: sudo apt-get install -y libkrb5-dev
+        run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
@@ -274,7 +275,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install libkrb5-dev
-        run: sudo apt-get install -y libkrb5-dev
+        run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
 
       - name: Install GH
         run: ./install_gh.sh
@@ -353,7 +354,7 @@ jobs:
         run: ./check_tags.sh
 
       - name: Install libkrb5-dev
-        run: sudo apt-get install -y libkrb5-dev
+        run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
@@ -383,4 +384,3 @@ jobs:
           path: assets/
           retention-days: 3
         if: env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
-

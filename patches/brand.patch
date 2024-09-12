@@ -253,10 +253,10 @@ index f36ecf3..9545ba2 100644
 +	"html.trace.server.desc": "Traces the communication between Codex and the HTML language server.",
  	"html.validate.scripts": "Controls whether the built-in HTML language support validates embedded scripts.",
 diff --git a/extensions/html-language-features/schemas/package.schema.json b/extensions/html-language-features/schemas/package.schema.json
-index ef717db..c0856e7 100644
+index 205143c..5a069c6 100644
 --- a/extensions/html-language-features/schemas/package.schema.json
 +++ b/extensions/html-language-features/schemas/package.schema.json
-@@ -10,3 +10,3 @@
+@@ -9,3 +9,3 @@
  					"type": "array",
 -					"markdownDescription": "A list of relative file paths pointing to JSON files following the [custom data format](https://github.com/microsoft/vscode-html-languageservice/blob/master/docs/customData.md).\n\nVS Code loads custom data on startup to enhance its HTML support for the custom HTML tags, attributes and attribute values you specify in the JSON files.\n\nThe file paths are relative to workspace and only workspace folder settings are considered.",
 +					"markdownDescription": "A list of relative file paths pointing to JSON files following the [custom data format](https://github.com/microsoft/vscode-html-languageservice/blob/master/docs/customData.md).\n\nCodex loads custom data on startup to enhance its HTML support for the custom HTML tags, attributes and attribute values you specify in the JSON files.\n\nThe file paths are relative to workspace and only workspace folder settings are considered.",
@@ -345,7 +345,7 @@ index ff8581b..6774e97 100644
 +	"displayName": "NPM support for Codex",
  	"workspaceTrust": "This extension executes tasks, which require trust to run.",
 diff --git a/extensions/swift/syntaxes/swift.tmLanguage.json b/extensions/swift/syntaxes/swift.tmLanguage.json
-index 6259b15..385797a 100644
+index b18b340..ca2eb2d 100644
 --- a/extensions/swift/syntaxes/swift.tmLanguage.json
 +++ b/extensions/swift/syntaxes/swift.tmLanguage.json
 @@ -260,3 +260,3 @@
@@ -354,7 +354,7 @@ index 6259b15..385797a 100644
 +					"comment": "The simpler (?<=\\bProcess\\.|\\bCommandLine\\.) breaks Codex / Atom, see https://github.com/textmate/swift.tmbundle/issues/29",
  					"name": "support.variable.swift",
 diff --git a/extensions/typescript-language-features/package.nls.json b/extensions/typescript-language-features/package.nls.json
-index cba2400..f2dbf28 100644
+index cba2400..039d20d 100644
 --- a/extensions/typescript-language-features/package.nls.json
 +++ b/extensions/typescript-language-features/package.nls.json
 @@ -75,4 +75,4 @@
@@ -377,6 +377,15 @@ index cba2400..f2dbf28 100644
 -	"configuration.tsserver.useVsCodeWatcher": "Use VS Code's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
 +	"configuration.tsserver.useVsCodeWatcher": "Use Codex's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
  	"configuration.tsserver.watchOptions": "Configure which watching strategies should be used to keep track of files and directories.",
+@@ -218,6 +218,6 @@
+ 	"configuration.suggest.objectLiteralMethodSnippets.enabled": "Enable/disable snippet completions for methods in object literals.",
+-	"configuration.tsserver.web.projectWideIntellisense.enabled": "Enable/disable project-wide IntelliSense on web. Requires that VS Code is running in a trusted context.",
++	"configuration.tsserver.web.projectWideIntellisense.enabled": "Enable/disable project-wide IntelliSense on web. Requires that Codex is running in a trusted context.",
+ 	"configuration.tsserver.web.projectWideIntellisense.suppressSemanticErrors": "Suppresses semantic errors on web even when project wide IntelliSense is enabled. This is always on when project wide IntelliSense is not enabled or available. See `#typescript.tsserver.web.projectWideIntellisense.enabled#`",
+ 	"configuration.tsserver.web.typeAcquisition.enabled": "Enable/disable package acquisition on the web. This enables IntelliSense for imported packages. Requires `#typescript.tsserver.web.projectWideIntellisense.enabled#`. Currently not supported for Safari.",
+-	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want VS Code to detect a Node installation.",
++	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want Codex to detect a Node installation.",
+ 	"configuration.updateImportsOnPaste": "Automatically update imports when pasting code. Requires TypeScript 5.6+.",
 @@ -232,6 +232,6 @@
  	"walkthroughs.nodejsWelcome.debugJsFile.title": "Run and Debug your JavaScript",
 -	"walkthroughs.nodejsWelcome.debugJsFile.description": "Once you've installed Node.js, you can run JavaScript programs at a terminal by entering ``node your-file-name.js``\nAnother easy way to run Node.js programs is by using VS Code's debugger which lets you run your code, pause at different points, and help you understand what's going on step-by-step.\n[Start Debugging](command:javascript-walkthrough.commands.debugJsFile)",
@@ -386,22 +395,6 @@ index cba2400..f2dbf28 100644
 -	"walkthroughs.nodejsWelcome.learnMoreAboutJs.description": "Want to get more comfortable with JavaScript, Node.js, and VS Code? Be sure to check out our docs!\nWe've got lots of resources for learning [JavaScript](https://code.visualstudio.com/docs/nodejs/working-with-javascript) and [Node.js](https://code.visualstudio.com/docs/nodejs/nodejs-tutorial).\n\n[Learn More](https://code.visualstudio.com/docs/nodejs/nodejs-tutorial)",
 +	"walkthroughs.nodejsWelcome.learnMoreAboutJs.description": "Want to get more comfortable with JavaScript, Node.js, and Codex? Be sure to check out our docs!\nWe've got lots of resources for learning [JavaScript](https://code.visualstudio.com/docs/nodejs/working-with-javascript) and [Node.js](https://code.visualstudio.com/docs/nodejs/nodejs-tutorial).\n\n[Learn More](https://code.visualstudio.com/docs/nodejs/nodejs-tutorial)",
  	"walkthroughs.nodejsWelcome.learnMoreAboutJs.altText": "Learn more about JavaScript and Node.js in Visual Studio Code."
-diff --git a/extensions/typescript-language-features/package.nls.json.rej b/extensions/typescript-language-features/package.nls.json.rej
-new file mode 100644
-index 0000000..e9b89de
---- /dev/null
-+++ b/extensions/typescript-language-features/package.nls.json.rej
-@@ -0,0 +1,10 @@
-+diff a/extensions/typescript-language-features/package.nls.json b/extensions/typescript-language-features/package.nls.json	(rejected hunks)
-+@@ -217,6 +217,6 @@
-+ 	"configuration.suggest.objectLiteralMethodSnippets.enabled": "Enable/disable snippet completions for methods in object literals.",
-+-	"configuration.tsserver.web.projectWideIntellisense.enabled": "Enable/disable project-wide IntelliSense on web. Requires that VS Code is running in a trusted context.",
-++	"configuration.tsserver.web.projectWideIntellisense.enabled": "Enable/disable project-wide IntelliSense on web. Requires that Codex is running in a trusted context.",
-+ 	"configuration.tsserver.web.projectWideIntellisense.suppressSemanticErrors": "Suppresses semantic errors on web even when project wide IntelliSense is enabled. This is always on when project wide IntelliSense is not enabled or available. See `#typescript.tsserver.web.projectWideIntellisense.enabled#`",
-+ 	"configuration.tsserver.web.typeAcquisition.enabled": "Enable/disable package acquisition on the web. This enables IntelliSense for imported packages. Requires `#typescript.tsserver.web.projectWideIntellisense.enabled#`. Currently not supported for Safari.",
-+-	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want VS Code to detect a Node installation.",
-++	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want Codex to detect a Node installation.",
-+ 	"configuration.updateImportsOnPaste": "Automatically update imports when pasting code. Requires TypeScript 5.5+.",
 diff --git a/extensions/typescript-language-features/src/tsServer/versionManager.ts b/extensions/typescript-language-features/src/tsServer/versionManager.ts
 index 43a2413..277a089 100644
 --- a/extensions/typescript-language-features/src/tsServer/versionManager.ts
@@ -430,7 +423,7 @@ index 04f08a1..2b2b1bb 100644
 +			vscode.l10n.t("Please open a folder in Codex to use a TypeScript or JavaScript project"));
  		return;
 diff --git a/extensions/typescript-language-features/src/typescriptServiceClient.ts b/extensions/typescript-language-features/src/typescriptServiceClient.ts
-index da6408b..6b11126 100644
+index b61153b..660fa7d 100644
 --- a/extensions/typescript-language-features/src/typescriptServiceClient.ts
 +++ b/extensions/typescript-language-features/src/typescriptServiceClient.ts
 @@ -640,3 +640,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
@@ -445,11 +438,11 @@ index da6408b..6b11126 100644
  						} else {
 @@ -675,3 +675,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  						prompt = vscode.window.showWarningMessage<vscode.MessageItem>(
--							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList), reportIssueItem);
-+							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against Codex.", pluginExtensionList), reportIssueItem);
+-							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
++							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against Codex.", pluginExtensionList));
  					} else {
 diff --git a/extensions/vscode-api-tests/package.json b/extensions/vscode-api-tests/package.json
-index 7e8b968..baf5f0e 100644
+index 61828a7..1757d01 100644
 --- a/extensions/vscode-api-tests/package.json
 +++ b/extensions/vscode-api-tests/package.json
 @@ -2,3 +2,3 @@
@@ -527,10 +520,10 @@ index fa001b5..13abac2 100644
 +			throw Error(`Failed to download and unzip Codex ${quality} - ${commit}`);
  		}
 diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
-index 1c4a565..123576b 100644
+index ca405dd..42d1f6b 100644
 --- a/src/vs/code/electron-main/app.ts
 +++ b/src/vs/code/electron-main/app.ts
-@@ -571,3 +571,3 @@ export class CodeApplication extends Disposable {
+@@ -532,3 +532,3 @@ export class CodeApplication extends Disposable {
  	async startup(): Promise<void> {
 -		this.logService.debug('Starting VS Code');
 +		this.logService.debug('Starting Codex');
@@ -554,31 +547,31 @@ index 296245b..cf03674 100644
 +export const ProductQualityContext = new RawContextKey<string>('productQualityType', '', localize('productQualityType', "Quality type of Codex"));
  
 diff --git a/src/vs/platform/extensionManagement/node/extensionManagementService.ts b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-index 29613db..ccb82fb 100644
+index 75ab2ba..8c06c7e 100644
 --- a/src/vs/platform/extensionManagement/node/extensionManagementService.ts
 +++ b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-@@ -149,3 +149,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+@@ -144,3 +144,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
  			if (manifest.engines && manifest.engines.vscode && !isEngineValid(manifest.engines.vscode, this.productService.version, this.productService.date)) {
 -				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VS Code '{1}'.", extensionId, this.productService.version));
 +				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with Codex '{1}'.", extensionId, this.productService.version));
  			}
-@@ -226,3 +226,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+@@ -221,3 +221,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
  		} catch (e) {
 -			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start VS Code before trying again.", toErrorMessage(e)));
 +			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start Codex before trying again.", toErrorMessage(e)));
  		}
-@@ -970,3 +970,3 @@ class InstallExtensionInProfileTask extends AbstractExtensionTask<ILocalExtensio
+@@ -966,3 +966,3 @@ class InstallExtensionInProfileTask extends AbstractExtensionTask<ILocalExtensio
  					} catch (e) {
 -						throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
 +						throw new Error(nls.localize('restartCode', "Please restart Codex before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
  					}
-@@ -981,3 +981,3 @@ class InstallExtensionInProfileTask extends AbstractExtensionTask<ILocalExtensio
+@@ -977,3 +977,3 @@ class InstallExtensionInProfileTask extends AbstractExtensionTask<ILocalExtensio
  				} catch (e) {
 -					throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
 +					throw new Error(nls.localize('restartCode', "Please restart Codex before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
  				}
 diff --git a/src/vs/platform/externalTerminal/node/externalTerminalService.ts b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
-index 5086c95..2e424b7 100644
+index 9f85b14..57d913c 100644
 --- a/src/vs/platform/externalTerminal/node/externalTerminalService.ts
 +++ b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
 @@ -17,3 +17,3 @@ import { ITerminalEnvironment } from 'vs/platform/terminal/common/terminal';
@@ -630,10 +623,10 @@ index 183c69d..2da152d 100644
 +			comment: 'This is used to know how often Codex has successfully downloaded the update.';
  		};
 diff --git a/src/vs/server/node/server.cli.ts b/src/vs/server/node/server.cli.ts
-index 2eed66f..4b30c61 100644
+index fc0f7c2..1e7bbe9 100644
 --- a/src/vs/server/node/server.cli.ts
 +++ b/src/vs/server/node/server.cli.ts
-@@ -456,3 +456,3 @@ function asExtensionIdOrVSIX(inputs: string[] | undefined) {
+@@ -455,3 +455,3 @@ function asExtensionIdOrVSIX(inputs: string[] | undefined) {
  function fatal(message: string, err: any): void {
 -	console.error('Unable to connect to VS Code server: ' + message);
 +	console.error('Unable to connect to Codex server: ' + message);
@@ -675,10 +668,10 @@ index 49a2f01..e39520d 100644
 +	test('Opening a notebook results in Codex firing the event onDidChangeActiveNotebookEditor twice #118470', function () {
  		let count = 0;
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index ae4d22c..a909a0a 100644
+index d83ac06..4387b88 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -646,3 +646,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -652,3 +652,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  		localize('profileName', "`${profileName}`: name of the profile in which the workspace is opened (e.g. Data Science (Profile)). Ignored if default profile is used."),
 -		localize('appName', "`${appName}`: e.g. VS Code."),
 +		localize('appName', "`${appName}`: e.g. Codex."),
@@ -693,36 +686,36 @@ index 4233162..9bd6599 100644
 +						description: nls.localize('debugServer', "For debug extension development only: if a port is specified Codex tries to connect to a debug adapter running in server mode"),
  						default: 4711
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-index 33f961f..97d5060 100644
+index 60aa8d8..ed2fe8f 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-@@ -301,3 +301,3 @@ CommandsRegistry.registerCommand({
+@@ -299,3 +299,3 @@ CommandsRegistry.registerCommand({
  				description: '(optional) Options for installing the extension. Object with the following properties: ' +
 -					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
 +					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, Codex installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
  				isOptional: true,
-@@ -308,3 +308,3 @@ CommandsRegistry.registerCommand({
+@@ -306,3 +306,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
 +							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, Codex installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
  							default: false
-@@ -313,3 +313,3 @@ CommandsRegistry.registerCommand({
+@@ -311,3 +311,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, VS Code installs the pre-release version of the extension if available."),
 +							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, Codex installs the pre-release version of the extension if available."),
  							default: false
-@@ -318,3 +318,3 @@ CommandsRegistry.registerCommand({
+@@ -316,3 +316,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, VS Code do not sync this extension when Settings Sync is on."),
 +							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, Codex do not sync this extension when Settings Sync is on."),
  							default: false
-@@ -875,3 +875,3 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
+@@ -836,3 +836,3 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
  						Severity.Info,
 -						localize('InstallVSIXAction.successReload', "Completed installing extension from VSIX. Please reload Visual Studio Code to enable it."),
 +						localize('InstallVSIXAction.successReload', "Completed installing extension from VSIX. Please reload Codex to enable it."),
  						[{
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
-index fccbb36..473bc79 100644
+index 5a58533..9536088 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 @@ -105,3 +105,3 @@ export class PromptExtensionInstallFailureAction extends Action {
@@ -740,31 +733,31 @@ index fccbb36..473bc79 100644
 -			alert(localize('uninstallExtensionComplete', "Please reload Visual Studio Code to complete the uninstallation of the extension {0}.", this.extension.displayName));
 +			alert(localize('uninstallExtensionComplete', "Please reload Codex to complete the uninstallation of the extension {0}.", this.extension.displayName));
  		} catch (error) {
-@@ -2466,3 +2466,3 @@ export class ExtensionStatusAction extends ExtensionAction {
+@@ -2489,3 +2489,3 @@ export class ExtensionStatusAction extends ExtensionAction {
  				const link = `[${localize('settings', "settings")}](${URI.parse(`command:workbench.action.openSettings?${encodeURIComponent(JSON.stringify([this.extension.deprecationInfo.settings.map(setting => `@id:${setting}`).join(' ')]))}`)})`;
 -				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to VS Code. Configure these {0} to use this functionality.", link)) }, true);
 +				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to Codex. Configure these {0} to use this functionality.", link)) }, true);
  			} else {
-@@ -2490,3 +2490,3 @@ export class ExtensionStatusAction extends ExtensionAction {
+@@ -2530,3 +2530,3 @@ export class ExtensionStatusAction extends ExtensionAction {
  			if (this.extensionManagementServerService.webExtensionManagementServer) {
 -				const productName = localize('VS Code for Web', "{0} for the Web", this.productService.nameLong);
 +				const productName = localize('Codex for Web', "{0} for the Web", this.productService.nameLong);
  				const message = new MarkdownString(`${localize('not web tooltip', "The '{0}' extension is not available in {1}.", this.extension.displayName || this.extension.identifier.id, productName)} [${localize('learn why', "Learn Why")}](https://aka.ms/vscode-web-extensions-guide)`);
-@@ -2766,3 +2766,3 @@ export class ReinstallAction extends Action {
+@@ -2825,3 +2825,3 @@ export class ReinstallAction extends Action {
  						const requireReload = !(extension.local && this.extensionService.canAddExtension(toExtensionDescription(extension.local)));
 -						const message = requireReload ? localize('ReinstallAction.successReload', "Please reload Visual Studio Code to complete reinstalling the extension {0}.", extension.identifier.id)
 +						const message = requireReload ? localize('ReinstallAction.successReload', "Please reload Codex to complete reinstalling the extension {0}.", extension.identifier.id)
  							: localize('ReinstallAction.success', "Reinstalling the extension {0} is completed.", extension.identifier.id);
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index 826da44..9b74912 100644
+index d691d2b..2dfdc1e 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-@@ -409,3 +409,3 @@ export class Extension implements IExtension {
+@@ -436,3 +436,3 @@ export class Extension implements IExtension {
  			return Promise.resolve(`# ${this.displayName || this.name}
 -**Notice:** This extension is bundled with Visual Studio Code. It can be disabled but not uninstalled.
 +**Notice:** This extension is bundled with Codex. It can be disabled but not uninstalled.
  ## Features
-@@ -447,3 +447,3 @@ ${this.description}
+@@ -474,3 +474,3 @@ ${this.description}
  		if (this.type === ExtensionType.System) {
 -			return Promise.resolve(`Please check the [VS Code Release Notes](command:${ShowCurrentReleaseNotesActionId}) for changes to the built-in extensions.`);
 +			return Promise.resolve(`Please check the [Codex Release Notes](command:${ShowCurrentReleaseNotesActionId}) for changes to the built-in extensions.`);
@@ -889,59 +882,59 @@ index 9efbc2a..18c7aec 100644
 +							message: nls.localize('TaskSystem.noProcess', 'The launched task doesn\'t exist anymore. If the task spawned background processes exiting Codex might result in orphaned processes. To avoid this start the last background process with a wait flag.'),
  							primaryButton: nls.localize({ key: 'TaskSystem.exitAnyways', comment: ['&& denotes a mnemonic'] }, "&&Exit Anyways"),
 diff --git a/src/vs/workbench/contrib/terminal/browser/terminalView.ts b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
-index 3cf3c28..f284ee4 100644
+index d774d65..0040ea1 100644
 --- a/src/vs/workbench/contrib/terminal/browser/terminalView.ts
 +++ b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
-@@ -201,3 +201,3 @@ export class TerminalViewPane extends ViewPane {
+@@ -202,3 +202,3 @@ export class TerminalViewPane extends ViewPane {
  					}];
 -					this._notificationService.prompt(Severity.Warning, nls.localize('terminal.monospaceOnly', "The terminal only supports monospace fonts. Be sure to restart VS Code if this is a newly installed font."), choices);
 +					this._notificationService.prompt(Severity.Warning, nls.localize('terminal.monospaceOnly', "The terminal only supports monospace fonts. Be sure to restart Codex if this is a newly installed font."), choices);
  				}
 diff --git a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
-index 7704e72..1ce33b4 100644
+index c44b2c3..2c02c9c 100644
 --- a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 +++ b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
-@@ -294,3 +294,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -295,3 +295,3 @@ const terminalConfiguration: IConfigurationNode = {
  		[TerminalSettingId.DetectLocale]: {
 -			markdownDescription: localize('terminal.integrated.detectLocale', "Controls whether to detect and set the `$LANG` environment variable to a UTF-8 compliant option since VS Code's terminal only supports UTF-8 encoded data coming from the shell."),
 +			markdownDescription: localize('terminal.integrated.detectLocale', "Controls whether to detect and set the `$LANG` environment variable to a UTF-8 compliant option since Codex's terminal only supports UTF-8 encoded data coming from the shell."),
  			type: 'string',
-@@ -308,3 +308,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -309,3 +309,3 @@ const terminalConfiguration: IConfigurationNode = {
  			markdownEnumDescriptions: [
 -				localize('terminal.integrated.gpuAcceleration.auto', "Let VS Code detect which renderer will give the best experience."),
 +				localize('terminal.integrated.gpuAcceleration.auto', "Let Codex detect which renderer will give the best experience."),
  				localize('terminal.integrated.gpuAcceleration.on', "Enable GPU acceleration within the terminal."),
-@@ -396,3 +396,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -397,3 +397,3 @@ const terminalConfiguration: IConfigurationNode = {
  				'terminal.integrated.commandsToSkipShell',
 -				"A set of command IDs whose keybindings will not be sent to the shell but instead always be handled by VS Code. This allows keybindings that would normally be consumed by the shell to act instead the same as when the terminal is not focused, for example `Ctrl+P` to launch Quick Open.\n\n&nbsp;\n\nMany commands are skipped by default. To override a default and pass that command's keybinding to the shell instead, add the command prefixed with the `-` character. For example add `-workbench.action.quickOpen` to allow `Ctrl+P` to reach the shell.\n\n&nbsp;\n\nThe following list of default skipped commands is truncated when viewed in Settings Editor. To see the full list, {1} and search for the first command from the list below.\n\n&nbsp;\n\nDefault Skipped Commands:\n\n{0}",
 +				"A set of command IDs whose keybindings will not be sent to the shell but instead always be handled by Codex. This allows keybindings that would normally be consumed by the shell to act instead the same as when the terminal is not focused, for example `Ctrl+P` to launch Quick Open.\n\n&nbsp;\n\nMany commands are skipped by default. To override a default and pass that command's keybinding to the shell instead, add the command prefixed with the `-` character. For example add `-workbench.action.quickOpen` to allow `Ctrl+P` to reach the shell.\n\n&nbsp;\n\nThe following list of default skipped commands is truncated when viewed in Settings Editor. To see the full list, {1} and search for the first command from the list below.\n\n&nbsp;\n\nDefault Skipped Commands:\n\n{0}",
  				DEFAULT_COMMANDS_TO_SKIP_SHELL.sort().map(command => `- ${command}`).join('\n'),
-@@ -408,3 +408,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -409,3 +409,3 @@ const terminalConfiguration: IConfigurationNode = {
  		[TerminalSettingId.AllowChords]: {
 -			markdownDescription: localize('terminal.integrated.allowChords', "Whether or not to allow chord keybindings in the terminal. Note that when this is true and the keystroke results in a chord it will bypass {0}, setting this to false is particularly useful when you want ctrl+k to go to your shell (not VS Code).", '`#terminal.integrated.commandsToSkipShell#`'),
 +			markdownDescription: localize('terminal.integrated.allowChords', "Whether or not to allow chord keybindings in the terminal. Note that when this is true and the keystroke results in a chord it will bypass {0}, setting this to false is particularly useful when you want ctrl+k to go to your shell (not Codex).", '`#terminal.integrated.commandsToSkipShell#`'),
  			type: 'boolean',
-@@ -419,3 +419,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -420,3 +420,3 @@ const terminalConfiguration: IConfigurationNode = {
  			restricted: true,
 -			markdownDescription: localize('terminal.integrated.env.osx', "Object with environment variables that will be added to the VS Code process to be used by the terminal on macOS. Set to `null` to delete the environment variable."),
 +			markdownDescription: localize('terminal.integrated.env.osx', "Object with environment variables that will be added to the Codex process to be used by the terminal on macOS. Set to `null` to delete the environment variable."),
  			type: 'object',
-@@ -428,3 +428,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -429,3 +429,3 @@ const terminalConfiguration: IConfigurationNode = {
  			restricted: true,
 -			markdownDescription: localize('terminal.integrated.env.linux', "Object with environment variables that will be added to the VS Code process to be used by the terminal on Linux. Set to `null` to delete the environment variable."),
 +			markdownDescription: localize('terminal.integrated.env.linux', "Object with environment variables that will be added to the Codex process to be used by the terminal on Linux. Set to `null` to delete the environment variable."),
  			type: 'object',
-@@ -437,3 +437,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -438,3 +438,3 @@ const terminalConfiguration: IConfigurationNode = {
  			restricted: true,
 -			markdownDescription: localize('terminal.integrated.env.windows', "Object with environment variables that will be added to the VS Code process to be used by the terminal on Windows. Set to `null` to delete the environment variable."),
 +			markdownDescription: localize('terminal.integrated.env.windows', "Object with environment variables that will be added to the Codex process to be used by the terminal on Windows. Set to `null` to delete the environment variable."),
  			type: 'object',
-@@ -561,3 +561,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -562,3 +562,3 @@ const terminalConfiguration: IConfigurationNode = {
  		[TerminalSettingId.AutoReplies]: {
 -			markdownDescription: localize('terminal.integrated.autoReplies', "A set of messages that, when encountered in the terminal, will be automatically responded to. Provided the message is specific enough, this can help automate away common responses.\n\nRemarks:\n\n- Use {0} to automatically respond to the terminate batch job prompt on Windows.\n- The message includes escape sequences so the reply might not happen with styled text.\n- Each reply can only happen once every second.\n- Use {1} in the reply to mean the enter key.\n- To unset a default key, set the value to null.\n- Restart VS Code if new don't apply.", '`"Terminate batch job (Y/N)": "Y\\r"`', '`"\\r"`'),
 +			markdownDescription: localize('terminal.integrated.autoReplies', "A set of messages that, when encountered in the terminal, will be automatically responded to. Provided the message is specific enough, this can help automate away common responses.\n\nRemarks:\n\n- Use {0} to automatically respond to the terminate batch job prompt on Windows.\n- The message includes escape sequences so the reply might not happen with styled text.\n- Each reply can only happen once every second.\n- Use {1} in the reply to mean the enter key.\n- To unset a default key, set the value to null.\n- Restart Codex if new don't apply.", '`"Terminate batch job (Y/N)": "Y\\r"`', '`"\\r"`'),
  			type: 'object',
-@@ -574,3 +574,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -575,3 +575,3 @@ const terminalConfiguration: IConfigurationNode = {
  			restricted: true,
 -			markdownDescription: localize('terminal.integrated.shellIntegration.enabled', "Determines whether or not shell integration is auto-injected to support features like enhanced command tracking and current working directory detection. \n\nShell integration works by injecting the shell with a startup script. The script gives VS Code insight into what is happening within the terminal.\n\nSupported shells:\n\n- Linux/macOS: bash, fish, pwsh, zsh\n - Windows: pwsh, git bash\n\nThis setting applies only when terminals are created, so you will need to restart your terminals for it to take effect.\n\n Note that the script injection may not work if you have custom arguments defined in the terminal profile, have enabled {1}, have a [complex bash `PROMPT_COMMAND`](https://code.visualstudio.com/docs/editor/integrated-terminal#_complex-bash-promptcommand), or other unsupported setup. To disable decorations, see {0}", '`#terminal.integrated.shellIntegrations.decorationsEnabled#`', '`#editor.accessibilitySupport#`'),
 +			markdownDescription: localize('terminal.integrated.shellIntegration.enabled', "Determines whether or not shell integration is auto-injected to support features like enhanced command tracking and current working directory detection. \n\nShell integration works by injecting the shell with a startup script. The script gives Codex insight into what is happening within the terminal.\n\nSupported shells:\n\n- Linux/macOS: bash, fish, pwsh, zsh\n - Windows: pwsh, git bash\n\nThis setting applies only when terminals are created, so you will need to restart your terminals for it to take effect.\n\n Note that the script injection may not work if you have custom arguments defined in the terminal profile, have enabled {1}, have a [complex bash `PROMPT_COMMAND`](https://code.visualstudio.com/docs/editor/integrated-terminal#_complex-bash-promptcommand), or other unsupported setup. To disable decorations, see {0}", '`#terminal.integrated.shellIntegrations.decorationsEnabled#`', '`#editor.accessibilitySupport#`'),
@@ -1130,10 +1123,10 @@ index 4ae3a9f..0e45baa 100644
 +				description: localize('argv.useInMemorySecretStorage', "Ensures that an in-memory store will be used for secret storage instead of using the OS's credential store. This is often used when running Codex extension tests or when you're experiencing difficulties with the credential store.")
  			}
 diff --git a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-index 68d30c4..79363b4 100644
+index 9cd7253..14cbeed 100644
 --- a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
 +++ b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-@@ -721,3 +721,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
+@@ -735,3 +735,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
  
 -		const productName = localize('VS Code for Web', "{0} for the Web", this.productService.nameLong);
 +		const productName = localize('Codex for Web', "{0} for the Web", this.productService.nameLong);

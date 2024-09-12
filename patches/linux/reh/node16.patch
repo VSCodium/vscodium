@@ -1,8 +1,8 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index c2b81d0..2e94d99 100644
+index 7d58861..87f2632 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -375,16 +375,2 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -389,16 +389,2 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  
 -		if (platform === 'linux' && process.env['VSCODE_NODE_GLIBC'] === '-glibc-2.17') {
 -			result = es.merge(result,
@@ -18,9 +18,9 @@ index c2b81d0..2e94d99 100644
 -			);
 -		}
 -
- 		return result.pipe(vfs.dest(destination));
+ 		result = inlineMeta(result, {
 diff --git a/remote/package.json b/remote/package.json
-index b84f513..42d8e41 100644
+index 48b849c..2df37e4 100644
 --- a/remote/package.json
 +++ b/remote/package.json
 @@ -31,3 +31,3 @@
@@ -29,10 +29,10 @@ index b84f513..42d8e41 100644
 +    "node-pty": "1.1.0-beta4",
      "tas-client-umd": "0.2.0",
 diff --git a/remote/yarn.lock b/remote/yarn.lock
-index 4241bf0..5ce4431 100644
+index 38f916a..d116ac9 100644
 --- a/remote/yarn.lock
 +++ b/remote/yarn.lock
-@@ -412,2 +412,7 @@ ms@2.1.2:
+@@ -439,2 +439,7 @@ ms@2.1.2:
  
 +nan@^2.17.0:
 +  version "2.18.0"
@@ -40,12 +40,12 @@ index 4241bf0..5ce4431 100644
 +  integrity sha512-W7tfG7vMOGtD30sHoZSSc/JVYiyDPEyQVso/Zz+/uQd0B0L46gtC+pHha5FFMRpil6fm/AoEcRWyOVi4+E/f8w==
 +
  napi-build-utils@^1.0.1:
-@@ -429,3 +434,3 @@ node-abi@^3.3.0:
+@@ -456,3 +461,3 @@ node-abi@^3.3.0:
  
 -node-addon-api@7.1.0, node-addon-api@^7.1.0:
 +node-addon-api@7.1.0:
    version "7.1.0"
-@@ -454,8 +459,8 @@ node-gyp-build@4.8.1, node-gyp-build@^4.3.0:
+@@ -481,8 +486,8 @@ node-gyp-build@4.8.1, node-gyp-build@^4.3.0:
  
 -node-pty@1.1.0-beta11:
 -  version "1.1.0-beta11"
