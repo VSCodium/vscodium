@@ -26,7 +26,7 @@ if [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export VSCODE_ELECTRON_REPO='riscv-forks/electron-riscv-releases'
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-  ELECTRON_VERSION="30.3.1"
+  ELECTRON_VERSION="30.4.0"
   if [[ "${ELECTRON_VERSION}" != "$(yarn config get target)" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
     # Look for releases here if electron version used by vscode changed:
@@ -35,7 +35,7 @@ if [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
     exit 1
   fi
   export VSCODE_ELECTRON_TAG="v${ELECTRON_VERSION}.riscv1"
-  echo "ad36c48a8b0e061fbdeda91ff2a4c9a2f39d016c8ba23c7b4ed1394c37b1503b *electron-v${ELECTRON_VERSION}-linux-riscv64.zip" >> build/checksums/electron.txt
+  echo "b391bd6e063c34c31b1048615994fca0a5922d5a6b21d6cee6c4335850791516 *electron-v${ELECTRON_VERSION}-linux-riscv64.zip" >> build/checksums/electron.txt
 fi
 
 if [[ -d "../patches/linux/client/" ]]; then
