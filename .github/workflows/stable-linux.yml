@@ -93,6 +93,12 @@ jobs:
         run: npm install -g yarn
         if: env.SHOULD_BUILD == 'yes'
 
+      - name: Install unzip
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+        if: env.SHOULD_BUILD == 'yes'
+
       - name: Setup Python 3
         uses: actions/setup-python@v5
         with:
