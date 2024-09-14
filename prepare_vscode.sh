@@ -185,7 +185,7 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
 else
   setpath "product" "nameShort" "autocoder"
   setpath "product" "nameLong" "AutoCoder"
-  setpath "product" "applicationName" "autocoder"
+  setpath "product" "applicationName" "codium"
   setpath "product" "linuxIconName" "vscodium"
   setpath "product" "quality" "stable"
   setpath "product" "urlProtocol" "vscodium"
