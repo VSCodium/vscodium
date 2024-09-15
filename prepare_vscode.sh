@@ -29,7 +29,12 @@ mkdir -p "${AC_TMP}"
 echo "bein unzip autocoder extension..."
 unzip -q "${AC_PACKAGE}" -d "${AC_TMP}"
 mv "${AC_TMP}/extension" "${AC_TARGET}"
+echo "install autocoder"
+cd "${AC_TARGET}"
+npm install
+cd ../../
 echo "finish autocoder extension"
+pwd
 
 ../update_settings.sh
 
