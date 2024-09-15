@@ -18,14 +18,17 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 echo "begin downloading autocoder extension..."
 # AC_URL="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/allwefantasy/vsextensions/auto-coder-copilot/0.0.9/vspackage"
-AC_PACKAGE="../plugin/allwefantasy.auto-coder-copilot-0.0.9.vsix"
+AC_PACKAGE="../allwefantasy.auto-coder-copilot-0.0.9.vsix"
+AC_TMP="tmp"
 AC_TARGET="extensions/allwefantasy.auto-coder-copilot"
+rm -rf "${AC_TMP}"
 rm -rf "${AC_TARGET}"
 # wget "${AC_URL}" -O "${AC_PACKAGE}" 
-mkdir -p "${AC_TARGET}"
+mkdir -p "${AC_TMP}"
+# mkdir -p "${AC_TARGET}"
 echo "bein unzip autocoder extension..."
-unzip -q "${AC_PACKAGE}" 'extension/*' -d "${AC_TARGET}"
-# rm "${AC_PACKAGE}"
+unzip -q "${AC_PACKAGE}" -d "${AC_TMP}"
+mv "${AC_TMP}/extension" "${AC_TARGET}"
 echo "finish autocoder extension"
 
 ../update_settings.sh
