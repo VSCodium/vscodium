@@ -18,7 +18,7 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 echo "begin downloading autocoder extension..."
 # AC_URL="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/allwefantasy/vsextensions/auto-coder-copilot/0.0.9/vspackage"
-AC_PACKAGE="../allwefantasy.auto-coder-copilot-0.0.9.vsix"
+AC_PACKAGE="../plugin/allwefantasy.auto-coder-copilot-0.0.9.vsix"
 AC_TMP="tmp"
 AC_TARGET="extensions/allwefantasy.auto-coder-copilot"
 rm -rf "${AC_TMP}"
