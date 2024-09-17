@@ -7,19 +7,16 @@ index 87839a6..49727fc 100644
 -- VS Code version: \`${this._productService.version}\`\n\n${message}`);
 +- Codex version: \`${this._productService.version}\`\n\n${message}`);
  
-diff --git a/src/vs/workbench/contrib/issue/browser/issue.ts b/src/vs/workbench/contrib/issue/browser/issue.ts
-index 79e4485..33f09a4 100644
---- a/src/vs/workbench/contrib/issue/browser/issue.ts
-+++ b/src/vs/workbench/contrib/issue/browser/issue.ts
-@@ -451,5 +451,5 @@ export class BaseIssueReporterService extends Disposable {
- 
--	public searchVSCodeIssues(title: string, issueDescription?: string): void {
-+	public searchVSCodeIssues(title: string, _issueDescription?: string): void {
+diff --git a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
+index ec21ac3..89fabe0 100644
+--- a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
++++ b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
+@@ -630,3 +630,3 @@ export class BaseIssueReporterService extends Disposable {
  		if (title) {
 -			this.searchDuplicates(title, issueDescription);
 +			this.searchGitHub('BiblioNexus-Foundation/codex', title);
  		} else {
-@@ -545,33 +545,2 @@ export class BaseIssueReporterService extends Disposable {
+@@ -722,33 +722,2 @@ export class BaseIssueReporterService extends Disposable {
  
 -	@debounce(300)
 -	private searchDuplicates(title: string, body?: string): void {
@@ -53,23 +50,23 @@ index 79e4485..33f09a4 100644
 -	}
 -
  	private displaySearchResults(results: SearchResult[]) {
-@@ -667,4 +636,4 @@ export class BaseIssueReporterService extends Disposable {
+@@ -844,4 +813,4 @@ export class BaseIssueReporterService extends Disposable {
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
 -		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Visual Studio Code"), false));
 -		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Codex"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A Codex extension"), false));
  		if (this.product.reportMarketplaceIssueUrl) {
-@@ -728,3 +697,3 @@ export class BaseIssueReporterService extends Disposable {
+@@ -905,3 +874,3 @@ export class BaseIssueReporterService extends Disposable {
  			hide(descriptionTextArea);
 -			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
 +			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of Codex"));
  			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
-index f8274d9..15fcc8b 100644
+index 4394874..a9c3f57 100644
 --- a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
 +++ b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
-@@ -92,3 +92,3 @@ ${this._data.issueDescription}
+@@ -93,3 +93,3 @@ ${this._data.issueDescription}
  ${this.getExtensionVersion()}
 -VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
 +Codex version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
@@ -88,3 +85,58 @@ index 195857e..68163c0 100644
 -	'Before you report an issue here please <a href="https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
 +	'Before you report an issue here please <a href="https://github.com/BiblioNexus-Foundation/codex/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
  );
+diff --git a/src/vs/workbench/contrib/issue/electron-sandbox/issueReporterService.ts b/src/vs/workbench/contrib/issue/electron-sandbox/issueReporterService.ts
+index b923388..043a8ac 100644
+--- a/src/vs/workbench/contrib/issue/electron-sandbox/issueReporterService.ts
++++ b/src/vs/workbench/contrib/issue/electron-sandbox/issueReporterService.ts
+@@ -555,3 +555,3 @@ export class IssueReporter extends Disposable {
+ 		if (title) {
+-			this.searchDuplicates(title, issueDescription);
++			this.searchGitHub('BiblioNexus-Foundation/codex', title);
+ 		} else {
+@@ -647,33 +647,2 @@ export class IssueReporter extends Disposable {
+ 
+-	@debounce(300)
+-	private searchDuplicates(title: string, body?: string): void {
+-		const url = 'https://vscode-probot.westus.cloudapp.azure.com:7890/duplicate_candidates';
+-		const init = {
+-			method: 'POST',
+-			body: JSON.stringify({
+-				title,
+-				body
+-			}),
+-			headers: new Headers({
+-				'Content-Type': 'application/json'
+-			})
+-		};
+-
+-		fetch(url, init).then((response) => {
+-			response.json().then(result => {
+-				this.clearSearchResults();
+-
+-				if (result && result.candidates) {
+-					this.displaySearchResults(result.candidates);
+-				} else {
+-					throw new Error('Unexpected response, no candidates property');
+-				}
+-			}).catch(_ => {
+-				// Ignore
+-			});
+-		}).catch(_ => {
+-			// Ignore
+-		});
+-	}
+-
+ 	private displaySearchResults(results: SearchResult[]) {
+@@ -769,4 +738,4 @@ export class IssueReporter extends Disposable {
+ 		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
+-		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Visual Studio Code"), false));
+-		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
++		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Codex"), false));
++		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A Codex extension"), false));
+ 		if (this.configuration.product.reportMarketplaceIssueUrl) {
+@@ -830,3 +799,3 @@ export class IssueReporter extends Disposable {
+ 			hide(descriptionTextArea);
+-			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
++			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of Codex"));
+ 			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
