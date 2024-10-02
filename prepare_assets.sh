@@ -219,6 +219,13 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   cd ..
 fi
 
+if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
+  echo "Building and moving REH-web"
+  cd "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+  tar czf "../assets/${APP_NAME_LC}-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+  cd ..
+fi
+
 cd assets
 
 for FILE in *; do

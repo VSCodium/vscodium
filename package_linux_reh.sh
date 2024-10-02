@@ -7,6 +7,10 @@ if [[ "${CI_BUILD}" == "no" ]]; then
   exit 1
 fi
 
+APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+
+mkdir -p assets
+
 tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
@@ -96,20 +100,32 @@ node build/azure-pipelines/distro/mixin-npm
 
 export VSCODE_NODE_GLIBC="-glibc-${GLIBC_VERSION}"
 
-yarn gulp minify-vscode-reh
-yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
+  echo "Building REH"
+  yarn gulp minify-vscode-reh
+  yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
-EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+  EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-cd ..
+  echo "Archiving REH"
+  pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+  tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+  popd
+fi
 
-APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
+  echo "Building REH-web"
+  yarn gulp minify-vscode-reh-web
+  yarn gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
-mkdir -p assets
+  EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-echo "Building and moving REH"
-cd "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
-tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+  echo "Archiving REH-web"
+  pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+  tar czf "../assets/${APP_NAME_LC}-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+  popd
+fi
+
 cd ..
 
 npm install -g checksum
