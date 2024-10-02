@@ -53,7 +53,7 @@ esac
 
 UNAME_ARCH=$( uname -m )
 
-if [[ "${UNAME_ARCH}" == "arm64" ]]; then
+if [[ "${UNAME_ARCH}" == "aarch64" || "${UNAME_ARCH}" == "arm64" ]]; then
   export VSCODE_ARCH="arm64"
 elif [[ "${UNAME_ARCH}" == "ppc64le" ]]; then
   export VSCODE_ARCH="ppc64le"
