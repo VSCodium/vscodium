@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-jsonfile=$(curl https://raw.githubusercontent.com/andrewhertog/extension-sideloader/refs/heads/main/extensions.json)
-extensions_dir=./vscode/extensions
+jsonfile=$(curl -s https://raw.githubusercontent.com/andrewhertog/extension-sideloader/refs/heads/main/extensions.json)
+extensions_dir=./.build/extensions
 base_dir=$(pwd)
 
-count=$(jq -r '.builtin | length' ${jsonfile})
+count=$(jq -r '.builtin | length' <<< ${jsonfile})
 for i in $(seq $count); do
-  url=$(jq -r ".builtin[$i-1].url" ${jsonfile})
-  name=$(jq -r ".builtin[$i-1].name" ${jsonfile})
+  url=$( jq -r ".builtin[$i-1].url" <<< ${jsonfile})
+  name=$( jq -r ".builtin[$i-1].name"  <<< ${jsonfile})
   echo $name $url
   if [[ -d ${extensions_dir}/"$name" ]]; then
     rm -rf ${extensions_dir}/"$name"
