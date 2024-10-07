@@ -27,7 +27,7 @@ if [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
-  source ./electron.riscv64.sh
+  source ../electron.riscv64.sh
 
   if [[ "${ELECTRON_VERSION}" != "$(yarn config get target)" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.

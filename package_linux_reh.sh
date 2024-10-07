@@ -52,6 +52,8 @@ fi
 
 export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
+sed -i "/target/s/\"20.*\"/\"${NODE_VERSION}\"/" remote/.npmrc
+
 if [[ "${NODE_VERSION}" != 16* ]]; then
   if [[ -f "../patches/linux/reh/node16.patch" ]]; then
     mv "../patches/linux/reh/node16.patch" "../patches/linux/reh/node16.patch.no"
