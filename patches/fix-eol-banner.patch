@@ -1,15 +1,15 @@
 diff --git a/src/vs/workbench/browser/parts/banner/bannerPart.ts b/src/vs/workbench/browser/parts/banner/bannerPart.ts
-index dda7c88..e01f09e 100644
+index 1f329c4..3e36bff 100644
 --- a/src/vs/workbench/browser/parts/banner/bannerPart.ts
 +++ b/src/vs/workbench/browser/parts/banner/bannerPart.ts
-@@ -11,3 +11,3 @@ import { InstantiationType, registerSingleton } from 'vs/platform/instantiation/
- import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
--import { IStorageService } from 'vs/platform/storage/common/storage';
-+import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
- import { IThemeService } from 'vs/platform/theme/common/themeService';
-@@ -30,2 +30,3 @@ import { widgetClose } from 'vs/platform/theme/common/iconRegistry';
- import { BannerFocused } from 'vs/workbench/common/contextkeys';
-+import { INeverShowAgainOptions, NeverShowAgainScope } from 'vs/platform/notification/common/notification';
+@@ -11,3 +11,3 @@ import { InstantiationType, registerSingleton } from '../../../../platform/insta
+ import { IInstantiationService, ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
+-import { IStorageService } from '../../../../platform/storage/common/storage.js';
++import { IStorageService, StorageScope } from '../../../../platform/storage/common/storage.js';
+ import { IThemeService } from '../../../../platform/theme/common/themeService.js';
+@@ -30,2 +30,3 @@ import { widgetClose } from '../../../../platform/theme/common/iconRegistry.js';
+ import { BannerFocused } from '../../../common/contextkeys.js';
++import { INeverShowAgainOptions, NeverShowAgainScope } from '../../../../platform/notification/common/notification';
  
 @@ -67,3 +68,3 @@ export class BannerPart extends Part implements IBannerService {
  		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
@@ -48,12 +48,12 @@ index dda7c88..e01f09e 100644
 +
  	toJSON(): object {
 diff --git a/src/vs/workbench/services/banner/browser/bannerService.ts b/src/vs/workbench/services/banner/browser/bannerService.ts
-index 9c1ab0d..688b1dc 100644
+index 2db0fa4..d179055 100644
 --- a/src/vs/workbench/services/banner/browser/bannerService.ts
 +++ b/src/vs/workbench/services/banner/browser/bannerService.ts
-@@ -10,2 +10,3 @@ import { ILinkDescriptor } from 'vs/platform/opener/browser/link';
- import { ThemeIcon } from 'vs/base/common/themables';
-+import { INeverShowAgainOptions } from 'vs/platform/notification/common/notification';
+@@ -10,2 +10,3 @@ import { ILinkDescriptor } from '../../../../platform/opener/browser/link.js';
+ import { ThemeIcon } from '../../../../base/common/themables.js';
++import { INeverShowAgainOptions } from '../../../../platform/notification/common/notification';
  
 @@ -18,2 +19,3 @@ export interface IBannerItem {
  	readonly onClose?: () => void;

@@ -1,23 +1,23 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 85b9b2e..dc33fbc 100644
+index e314794..fce8d15 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -342,2 +342,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -343,2 +343,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const name = product.nameShort;
 +		const release = packageJson.release;
  
-@@ -345,3 +346,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -346,3 +347,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const packageJsonStream = gulp.src(['remote/package.json'], { base: 'remote' })
--			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined, ...(isESM(`Setting 'type: module' in top level package.json`) ? { type: 'module' } : {}) })) // TODO@esm this should be configured in the top level package.json
-+			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined, ...(isESM(`Setting 'type: module' in top level package.json`) ? { type: 'module' } : {}) })) // TODO@esm this should be configured in the top level package.json
+-			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined, ...(!isAMD() ? { type: 'module' } : {}) })) // TODO@esm this should be configured in the top level package.json
++			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined, ...(!isAMD() ? { type: 'module' } : {}) })) // TODO@esm this should be configured in the top level package.json
  			.pipe(es.through(function (file) {
-@@ -353,3 +354,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -354,3 +355,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
 -			.pipe(json({ commit, date: readISODate('out-build'), version }))
 +			.pipe(json({ commit, date: readISODate('out-build'), version, release }))
  			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 8d15015..dc50d78 100644
+index 9dfb6a3..a4277ff 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
 @@ -320,3 +320,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
@@ -25,19 +25,19 @@ index 8d15015..dc50d78 100644
 -		let version = packageJson.version;
 +		let version = packageJson.version
  		const quality = product.quality;
-@@ -333,3 +333,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -328,3 +328,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const name = product.nameShort;
--		const packageJsonUpdates = { name, version, ...(isESM(`Setting 'type: module' and 'main: out/main.js' in top level package.json`) ? { type: 'module', main: 'out/main.js' } : {}) }; // TODO@esm this should be configured in the top level package.json
+-		const packageJsonUpdates = { name, version, ...(!isAMD() ? { type: 'module', main: 'out/main.js' } : {}) }; // TODO@esm this should be configured in the top level package.json
 +		const release = packageJson.release;
-+		const packageJsonUpdates = { name, version, release, ...(isESM(`Setting 'type: module' and 'main: out/main.js' in top level package.json`) ? { type: 'module', main: 'out/main.js' } : {}) }; // TODO@esm this should be configured in the top level package.json
++		const packageJsonUpdates = { name, version, release, ...(!isAMD() ? { type: 'module', main: 'out/main.js' } : {}) }; // TODO@esm this should be configured in the top level package.json
  
-@@ -350,3 +351,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -345,3 +346,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
 -			.pipe(json({ commit, date: readISODate('out-build'), checksums, version }))
 +			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release }))
  			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index 7959454..4bceb17 100644
+index 5fa5a5d..b08e376 100644
 --- a/build/gulpfile.vscode.linux.js
 +++ b/build/gulpfile.vscode.linux.js
 @@ -27,4 +27,2 @@ const commit = getVersion(root);
@@ -50,22 +50,22 @@ index 7959454..4bceb17 100644
 -					.pipe(replace('@@VERSION@@', packageJson.version + '-' + linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  					.pipe(replace('@@ARCHITECTURE@@', debArch))
-@@ -203,4 +201,3 @@ function prepareRpmPackage(arch) {
+@@ -204,4 +202,3 @@ function prepareRpmPackage(arch) {
  					.pipe(replace('@@ICON@@', product.linuxIconName))
 -					.pipe(replace('@@VERSION@@', packageJson.version))
 -					.pipe(replace('@@RELEASE@@', linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  					.pipe(replace('@@ARCHITECTURE@@', rpmArch))
-@@ -279,3 +276,3 @@ function prepareSnapPackage(arch) {
+@@ -281,3 +278,3 @@ function prepareSnapPackage(arch) {
  			.pipe(replace('@@NAME@@', product.applicationName))
 -			.pipe(replace('@@VERSION@@', commit.substr(0, 8)))
 +			.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  			// Possible run-on values https://snapcraft.io/docs/architectures
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
-index 5adfdfb..d6ddead 100644
+index 98175f5..afacbe3 100644
 --- a/build/gulpfile.vscode.win32.js
 +++ b/build/gulpfile.vscode.win32.js
-@@ -90,4 +90,4 @@ function buildWin32Setup(arch, target) {
+@@ -89,4 +89,4 @@ function buildWin32Setup(arch, target) {
  			DirName: product.win32DirName,
 -			Version: pkg.version,
 -			RawVersion: pkg.version.replace(/-\w+$/, ''),
@@ -73,7 +73,7 @@ index 5adfdfb..d6ddead 100644
 +			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 022d2e6..1523754 100644
+index c397b1a..ccf7911 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
 @@ -58,2 +58,3 @@ export interface IProductConfiguration {
@@ -81,16 +81,16 @@ index 022d2e6..1523754 100644
 +	readonly release: string;
  	readonly date?: string;
 diff --git a/src/vs/platform/diagnostics/node/diagnosticsService.ts b/src/vs/platform/diagnostics/node/diagnosticsService.ts
-index 7e0bc11..1fa5310 100644
+index 5f6efd5..da3c54d 100644
 --- a/src/vs/platform/diagnostics/node/diagnosticsService.ts
 +++ b/src/vs/platform/diagnostics/node/diagnosticsService.ts
-@@ -231,3 +231,3 @@ export class DiagnosticsService implements IDiagnosticsService {
+@@ -232,3 +232,3 @@ export class DiagnosticsService implements IDiagnosticsService {
  		const output: string[] = [];
 -		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
 +		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} ${this.productService.release || 'Release unknown'} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
  		output.push(`OS Version:       ${osLib.type()} ${osLib.arch()} ${osLib.release()}`);
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 58278d9..956cdff 100644
+index a98043f..b54a78f 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -43,6 +43,7 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
@@ -104,12 +104,12 @@ index 58278d9..956cdff 100644
 +			release: pkg.release
  		});
 diff --git a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-index c064ebc..72a9fa9 100644
+index 21f62b6..98edd0e 100644
 --- a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 @@ -22,2 +22,3 @@ import { defaultButtonStyles, defaultCheckboxStyles, defaultDialogStyles, defaul
- import { ResultKind } from 'vs/platform/keybinding/common/keybindingResolver';
-+import { getReleaseString } from 'vs/workbench/common/release';
+ import { ResultKind } from '../../../../platform/keybinding/common/keybindingResolver.js';
++import { getReleaseString } from '../../../../workbench/common/release';
  
 @@ -79,2 +80,4 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
  		const detailString = (useAgo: boolean): string => {
@@ -142,13 +142,13 @@ index 0000000..2a8ea57
 +	return LABELS[language] ?? DEFAULT_LABEL;
 +}
 diff --git a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-index f2cc82a..700d81a 100644
+index 6c61a59..e76a188 100644
 --- a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-@@ -14,2 +14,3 @@ import { IProductService } from 'vs/platform/product/common/productService';
- import { process } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-+import { getReleaseString } from 'vs/workbench/common/release';
- import { getActiveWindow } from 'vs/base/browser/dom';
+@@ -15,2 +15,3 @@ import { process } from '../../../../base/parts/sandbox/electron-sandbox/globals
+ import { getActiveWindow } from '../../../../base/browser/dom.js';
++import { getReleaseString } from '../../../../workbench/common/release';
+ 
 @@ -80,2 +81,3 @@ export class NativeDialogHandler extends AbstractDialogHandler {
  		const osProps = await this.nativeHostService.getOSProperties();
 +		const releaseString = getReleaseString();

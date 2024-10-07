@@ -1,8 +1,8 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 560bdc1..9208fa0 100644
+index e314794..8248247 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -392,16 +392,2 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -437,16 +437,2 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  
 -		if (platform === 'linux' && process.env['VSCODE_NODE_GLIBC'] === '-glibc-2.17') {
 -			result = es.merge(result,
@@ -19,8 +19,48 @@ index 560bdc1..9208fa0 100644
 -		}
 -
  		result = inlineMeta(result, {
+diff --git a/remote/package-lock.json b/remote/package-lock.json
+index 5872575..a559230 100644
+--- a/remote/package-lock.json
++++ b/remote/package-lock.json
+@@ -37,3 +37,3 @@
+         "native-watchdog": "^1.4.1",
+-        "node-pty": "1.1.0-beta21",
++        "node-pty": "1.1.0-beta4",
+         "tas-client-umd": "0.2.0",
+@@ -712,2 +712,8 @@
+     },
++    "node_modules/nan": {
++      "version": "2.20.0",
++      "resolved": "https://registry.npmjs.org/nan/-/nan-2.20.0.tgz",
++      "integrity": "sha512-bk3gXBZDGILuuo/6sKtr0DQmSThYHLtNCdSdXk9YkxD/jK6X2vmCyyXBBxyqZ4XcnzTyYEAThfX3DCEnLf6igw==",
++      "license": "MIT"
++    },
+     "node_modules/napi-build-utils": {
+@@ -750,16 +756,9 @@
+     "node_modules/node-pty": {
+-      "version": "1.1.0-beta21",
+-      "resolved": "https://registry.npmjs.org/node-pty/-/node-pty-1.1.0-beta21.tgz",
+-      "integrity": "sha512-FYpnY9g8qMQLTpqyeY9NVli6YfCWwvG6v6gmaDBbPjlc1VMp/+Zivq0SStDrRr1aciGnFCZzpL0BzdMnmbDnAw==",
++      "version": "1.1.0-beta4",
++      "resolved": "https://registry.npmjs.org/node-pty/-/node-pty-1.1.0-beta4.tgz",
++      "integrity": "sha512-CgffN9AxVtH4g7vDxtanm2qaR7jw3oet9r+ArzziGiFvmds9SdR3gXkZF0fqZWSxhTHZusJWvsuKvRv+5O2K8A==",
+       "hasInstallScript": true,
++      "license": "MIT",
+       "dependencies": {
+-        "node-addon-api": "^7.1.0"
+-      }
+-    },
+-    "node_modules/node-pty/node_modules/node-addon-api": {
+-      "version": "7.1.0",
+-      "resolved": "https://registry.npmjs.org/node-addon-api/-/node-addon-api-7.1.0.tgz",
+-      "integrity": "sha512-mNcltoe1R8o7STTegSOHdnJNN7s5EUvhoS7ShnTHDyOSd+8H+UdWODq6qSv67PjC8Zc5JRT8+oLAMCr0SIXw7g==",
+-      "engines": {
+-        "node": "^16 || ^18 || >= 20"
++        "nan": "^2.17.0"
+       }
 diff --git a/remote/package.json b/remote/package.json
-index aa24bf8..63a94bf 100644
+index c107b04..112501b 100644
 --- a/remote/package.json
 +++ b/remote/package.json
 @@ -32,3 +32,3 @@
@@ -28,34 +68,3 @@ index aa24bf8..63a94bf 100644
 -    "node-pty": "1.1.0-beta21",
 +    "node-pty": "1.1.0-beta4",
      "tas-client-umd": "0.2.0",
-diff --git a/remote/yarn.lock b/remote/yarn.lock
-index 2478846..32d0456 100644
---- a/remote/yarn.lock
-+++ b/remote/yarn.lock
-@@ -444,2 +444,7 @@ ms@2.1.2:
- 
-+nan@^2.17.0:
-+  version "2.18.0"
-+  resolved "https://registry.npmjs.org/nan/-/nan-2.18.0.tgz#26a6faae7ffbeb293a39660e88a76b82e30b7554"
-+  integrity sha512-W7tfG7vMOGtD30sHoZSSc/JVYiyDPEyQVso/Zz+/uQd0B0L46gtC+pHha5FFMRpil6fm/AoEcRWyOVi4+E/f8w==
-+
- napi-build-utils@^1.0.1:
-@@ -461,3 +466,3 @@ node-abi@^3.3.0:
- 
--node-addon-api@7.1.0, node-addon-api@^7.1.0:
-+node-addon-api@7.1.0:
-   version "7.1.0"
-@@ -486,8 +491,8 @@ node-gyp-build@4.8.1, node-gyp-build@^4.3.0:
- 
--node-pty@1.1.0-beta21:
--  version "1.1.0-beta21"
--  resolved "https://registry.yarnpkg.com/node-pty/-/node-pty-1.1.0-beta21.tgz#d75c1dfe4ff2c173459c974df72e91a4eae6dc52"
--  integrity sha512-FYpnY9g8qMQLTpqyeY9NVli6YfCWwvG6v6gmaDBbPjlc1VMp/+Zivq0SStDrRr1aciGnFCZzpL0BzdMnmbDnAw==
-+node-pty@1.1.0-beta4:
-+  version "1.1.0-beta4"
-+  resolved "https://registry.npmjs.org/node-pty/-/node-pty-1.1.0-beta4.tgz#ee74d909c9f422ffc7f675e1092529673f8906ec"
-+  integrity sha512-CgffN9AxVtH4g7vDxtanm2qaR7jw3oet9r+ArzziGiFvmds9SdR3gXkZF0fqZWSxhTHZusJWvsuKvRv+5O2K8A==
-   dependencies:
--    node-addon-api "^7.1.0"
-+    nan "^2.17.0"
- 
