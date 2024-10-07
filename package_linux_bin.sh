@@ -51,12 +51,12 @@ if [[ -d "../patches/linux/client/" ]]; then
 fi
 
 for i in {1..5}; do # try 5 times
-  yarn --cwd build --frozen-lockfile --check-files && break
+  npm ci --prefix build && break
   if [[ $i == 3 ]]; then
-    echo "Yarn failed too many times" >&2
+    echo "Npm install failed too many times" >&2
     exit 1
   fi
-  echo "Yarn failed $i, trying again..."
+  echo "Npm install failed $i, trying again..."
 done
 
 if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then

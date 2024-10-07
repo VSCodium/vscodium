@@ -77,13 +77,7 @@ if [[ "${OS_NAME}" == "linux" ]]; then
    if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7
   fi
-
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
-elif [[ "${OS_NAME}" == "osx" ]]; then
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
-
-  yarn postinstall
-else
+elif [[ "${OS_NAME}" == "windows" ]]; then
   # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
   # gets merged.
   rm -rf .build/node-gyp
@@ -104,9 +98,9 @@ else
   if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7
   fi
-
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
 fi
+
+npm ci
 
 setpath() {
   local jsonTmp
