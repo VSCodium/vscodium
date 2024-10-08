@@ -10,7 +10,7 @@ index 9c8daf5..297e106 100644
 @@ -23,3 +23,3 @@ import * as performance from './vs/base/common/performance.js';
  /** @ts-ignore */
 -const require = createRequire(import.meta.url);
-+const require = nodeModule.createRequire(import.meta.url);
++const require = Module.createRequire(import.meta.url);
  /** @type any */
 @@ -29,3 +29,4 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  // Install a hook to module resolution to map 'fs' to 'original-fs'
