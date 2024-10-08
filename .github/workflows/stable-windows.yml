@@ -52,6 +52,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
@@ -67,8 +74,6 @@ jobs:
           python-version: '3.11'
 
       - name: Clone VSCode repo
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
       - name: Check PR or cron
@@ -85,7 +90,6 @@ jobs:
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository_owner }}
           npm_config_arch: ${{ matrix.vscode_arch }}
           npm_config_target_arch: ${{ matrix.vscode_arch }}
         run: ./build.sh
@@ -129,6 +133,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Check version
         run: ./stores/winget/check_version.sh
