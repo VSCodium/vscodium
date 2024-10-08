@@ -2,6 +2,11 @@
 
 set -e
 
+# git workaround
+if [[ "${CI_BUILD}" != "no" ]]; then
+  git config --global --add safe.directory "/__w/$( echo "${GITHUB_REPOSITORY}" | awk '{print tolower($0)}' )"
+fi
+
 if [[ -n "${PULL_REQUEST_ID}" ]]; then
   BRANCH_NAME=$( git rev-parse --abbrev-ref HEAD )
 
