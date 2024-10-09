@@ -51,6 +51,11 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: . get_pr.sh
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
@@ -63,8 +68,6 @@ jobs:
         if: env.VSCODE_ARCH == 'x64'
 
       - name: Clone VSCode repo
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: . get_repo.sh
 
       - name: Check PR or cron

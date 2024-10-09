@@ -48,9 +48,12 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
-      - name: Clone VSCode repo
+      - name: Switch to relevant branch
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+
+      - name: Clone VSCode repo
         run: ./get_repo.sh
 
       - name: Check PR or cron
@@ -83,6 +86,11 @@ jobs:
           ref: ${{ env.GITHUB_BRANCH }}
         if: env.SHOULD_BUILD == 'yes'
 
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
@@ -104,8 +112,6 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Clone VSCode repo
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
         if: env.SHOULD_BUILD == 'yes'
 
@@ -173,6 +179,11 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
         if: env.SHOULD_BUILD == 'yes'
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
 
       - name: Install GH
         run: ./install_gh.sh
@@ -267,6 +278,11 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
@@ -346,6 +362,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
 
       - name: Install GH
         run: ./install_gh.sh
@@ -432,6 +453,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
 
       - name: Check version
         env:

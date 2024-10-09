@@ -1,12 +1,8 @@
 diff --git a/src/main.js b/src/main.js
-index 041d9d6..295dbcb 100644
+index 10bd503..4048782 100644
 --- a/src/main.js
 +++ b/src/main.js
-@@ -15,2 +15,3 @@
- const path = require('path');
-+const { fileURLToPath } = require('url');
- const fs = require('original-fs');
-@@ -136,2 +137,14 @@ registerListeners();
+@@ -132,2 +132,14 @@ registerListeners();
  
 +function resolveUserProduct() {
 +	const userDataPath = getUserDataPath({}, product.nameShort ?? 'code-oss-dev');
@@ -21,12 +17,12 @@ index 041d9d6..295dbcb 100644
 +}
 +
  /**
-@@ -212,2 +225,3 @@ function startup(codeCachePath, nlsConfig) {
+@@ -208,2 +220,3 @@ function startup(codeCachePath, nlsConfig) {
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
 +	resolveUserProduct();
  
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 58278d9..3bd78c9 100644
+index a98043f..204ce1b 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -29,2 +29,36 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {

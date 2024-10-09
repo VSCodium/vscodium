@@ -537,7 +537,7 @@ else
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
     fi
-    if [[ "${VSCODE_ARCH}" != "x64" ]]; then
+    if [[ "${VSCODE_ARCH}" != "x64" || "${DISABLE_APPIMAGE}" == "yes" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
     fi
   elif [[ "${OS_NAME}" == "windows" ]]; then
