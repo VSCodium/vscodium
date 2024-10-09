@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-jsonfile=../extensions.json
+jsonfile=$(curl -s https://raw.githubusercontent.com/andrewhertog/extension-sideloader/refs/heads/main/extensions.json)
 extensions_dir=./.build/extensions
 base_dir=$(pwd)
 
-count=$(jq -r '. | length' ${jsonfile})
+count=$(jq -r '.builtin | length' <<< ${jsonfile})
 for i in $(seq $count); do
-  url=$(jq -r ".[$i-1].url" ${jsonfile})
-  name=$(jq -r ".[$i-1].name" ${jsonfile})
+  url=$( jq -r ".builtin[$i-1].url" <<< ${jsonfile})
+  name=$( jq -r ".builtin[$i-1].name"  <<< ${jsonfile})
   echo $name $url
   if [[ -d ${extensions_dir}/"$name" ]]; then
     rm -rf ${extensions_dir}/"$name"
@@ -16,12 +16,11 @@ for i in $(seq $count); do
   curl -Lso "$name".zip "$url"
   unzip -q "$name".zip -d ${extensions_dir}/"$name"
   mv ${extensions_dir}/"$name"/extension/* ${extensions_dir}/"$name"/
-  if [[ "${name}" == "codex-scripture-viewer" ]]; then
-    cd ${extensions_dir}/"$name"
-    npm prune --omit=dev
-    cd ./webviews/codex-webviews
-    npm prune --omit=dev
-    cd ${base_dir}
-  fi
   rm "$name".zip
 done
+
+# name="test"
+# cp -r /Users/andrew.denhertog/Documents/Projects/andrewhertog/test-extension/test-extension-0.0.1.vsix ./ext.zip
+# unzip -q ext.zip -d ${extensions_dir}/"$name"
+# mv ${extensions_dir}/"$name"/extension/* ${extensions_dir}/"$name"/
+# rm ext.zip
