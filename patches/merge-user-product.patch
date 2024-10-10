@@ -1,28 +1,35 @@
-diff --git a/src/main.js b/src/main.js
-index 10bd503..4048782 100644
---- a/src/main.js
-+++ b/src/main.js
-@@ -132,2 +132,14 @@ registerListeners();
+diff --git a/src/main.ts b/src/main.ts
+index 62ddd5f..90c6cfd 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -8,2 +8,3 @@ import * as fs from 'original-fs';
+ import * as os from 'os';
++import { createRequire } from 'node:module';
+ import { configurePortable } from './bootstrap-node.js';
+@@ -23,2 +24,3 @@ import { NativeParsedArgs } from './vs/platform/environment/common/argv.js';
+ const __dirname = path.dirname(fileURLToPath(import.meta.url));
++const require = createRequire(import.meta.url);
+ 
+@@ -103,2 +105,13 @@ registerListeners();
  
 +function resolveUserProduct() {
-+	const userDataPath = getUserDataPath({}, product.nameShort ?? 'code-oss-dev');
 +	const userProductPath = `file:///${userDataPath}/product.json`;
 +
 +	try {
 +		// Assign the product configuration to the global scope
 +		const productPath = require(fileURLToPath(userProductPath));
-+		global["_VSCODE_USER_PRODUCT_JSON"] = productPath;
++		globalThis._VSCODE_PRODUCT_JSON = productPath;
 +	} catch (ex) {
 +	}
 +}
 +
  /**
-@@ -208,2 +220,3 @@ function startup(codeCachePath, nlsConfig) {
+@@ -174,2 +188,3 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
 +	resolveUserProduct();
  
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index a98043f..204ce1b 100644
+index 1a2a619..9bf5ac0 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -29,2 +29,36 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
