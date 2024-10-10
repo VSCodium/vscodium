@@ -1,26 +1,24 @@
-diff --git a/src/bootstrap-amd.js b/src/bootstrap-amd.js
-index 9c8daf5..297e106 100644
---- a/src/bootstrap-amd.js
-+++ b/src/bootstrap-amd.js
-@@ -17,3 +17,3 @@ import * as fs from 'fs';
+diff --git a/src/bootstrap-esm.ts b/src/bootstrap-esm.ts
+index f2cf101..6e9d9b9 100644
+--- a/src/bootstrap-esm.ts
++++ b/src/bootstrap-esm.ts
+@@ -8,3 +8,3 @@ import * as fs from 'fs';
  import { fileURLToPath } from 'url';
 -import { createRequire, register } from 'node:module';
 +import * as Module from 'node:module';
  import { product, pkg } from './bootstrap-meta.js';
-@@ -23,3 +23,3 @@ import * as performance from './vs/base/common/performance.js';
- /** @ts-ignore */
+@@ -14,3 +14,3 @@ import { INLSConfiguration } from './vs/nls.js';
+ 
 -const require = createRequire(import.meta.url);
 +const require = Module.createRequire(import.meta.url);
- /** @type any */
-@@ -29,3 +29,4 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
+ const __dirname = path.dirname(fileURLToPath(import.meta.url));
+@@ -18,3 +18,3 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  // Install a hook to module resolution to map 'fs' to 'original-fs'
 -if (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron']) {
-+// @ts-ignore
 +if (Module.register && (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron'])) {
  	const jsCode = `
-@@ -44,3 +45,4 @@ if (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron']) {
+@@ -33,3 +33,3 @@ if (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron']) {
  	}`;
 -	register(`data:text/javascript;base64,${Buffer.from(jsCode).toString('base64')}`, import.meta.url);
-+	// @ts-ignore
 +	Module.register(`data:text/javascript;base64,${Buffer.from(jsCode).toString('base64')}`, import.meta.url);
  }
