@@ -1,8 +1,15 @@
 diff --git a/src/main.js b/src/main.js
-index 10bd503..4048782 100644
+index 10bd503..4d55178 100644
 --- a/src/main.js
 +++ b/src/main.js
-@@ -132,2 +132,14 @@ registerListeners();
+@@ -42,2 +42,6 @@ import { resolveNLSConfiguration } from './vs/base/node/nls.js';
+ import { getUNCHost, addUNCHostToAllowlist } from './vs/base/node/unc.js';
++import { createRequire } from 'node:module'
++
++/** @ts-ignore */
++const require = createRequire(import.meta.url)
+ 
+@@ -132,2 +136,14 @@ registerListeners();
  
 +function resolveUserProduct() {
 +	const userDataPath = getUserDataPath({}, product.nameShort ?? 'code-oss-dev');
@@ -17,7 +24,7 @@ index 10bd503..4048782 100644
 +}
 +
  /**
-@@ -208,2 +220,3 @@ function startup(codeCachePath, nlsConfig) {
+@@ -208,2 +224,3 @@ function startup(codeCachePath, nlsConfig) {
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
 +	resolveUserProduct();
  
