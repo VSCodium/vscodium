@@ -65,6 +65,8 @@ else
   ./build/azure-pipelines/linux/setup-env.sh
 fi
 
+rm -rf remote
+
 for i in {1..5}; do # try 5 times
   npm ci && break
   if [[ $i -eq 3 ]]; then
