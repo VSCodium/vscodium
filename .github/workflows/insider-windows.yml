@@ -99,6 +99,26 @@ jobs:
         run: ./prepare_assets.sh
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
+      - name: Upload unsigned artifacts
+        id: upload-unsigned-artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: assets/*.exe
+          retention-days: 1
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
+      - name: Signing
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+          organization-id: '${{ secrets.SIGNPATH_ORG_ID }}'
+          project-slug: '${{ secrets.SIGNPATH_PROJECT_ID }}'
+          signing-policy-slug: '${{ secrets.SIGNPATH_POLICY_SLUG }}'
+          github-artifact-id: '${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}'
+          wait-for-completion: true
+          output-artifact-directory: assets/
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
