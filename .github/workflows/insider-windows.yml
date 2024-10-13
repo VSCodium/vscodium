@@ -100,23 +100,23 @@ jobs:
         run: ./prepare_assets.sh
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
-      - name: Upload unsigned artifacts
-        id: upload-unsigned-artifacts
+      - name: Upload unsigned user artifact
+        id: upload-unsigned-user-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: unsigned-${{ matrix.vscode_arch }}
-          path: assets/*.exe
+          name: unsigned-user-${{ matrix.vscode_arch }}
+          path: assets/VSCodiumUserSetup-*.exe
           retention-days: 1
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
-      - name: Signing
+      - name: Signing user
         uses: signpath/github-action-submit-signing-request@v1
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
-          organization-id: '${{ secrets.SIGNPATH_ORG_ID }}'
-          project-slug: '${{ secrets.SIGNPATH_PROJECT_ID }}'
+          organization-id: '${{ secrets.SIGNPATH_ORGANIZATION_ID }}'
+          project-slug: '${{ secrets.SIGNPATH_PROJECT_SLUG }}'
           signing-policy-slug: '${{ secrets.SIGNPATH_POLICY_SLUG }}'
-          github-artifact-id: '${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}'
+          github-artifact-id: '${{ steps.upload-unsigned-user-artifact.outputs.artifact-id }}'
           wait-for-completion: true
           output-artifact-directory: assets/
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
