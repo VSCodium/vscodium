@@ -83,6 +83,7 @@ jobs:
 
       - name: Check existing VSCodium tags/releases
         env:
+          DISABLE_MSI: ${{ vars.DISABLE_INSIDER_MSI }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true'
@@ -103,6 +104,7 @@ jobs:
         id: upload-unsigned-artifacts
         uses: actions/upload-artifact@v4
         with:
+          name: unsigned-${{ matrix.vscode_arch }}
           path: assets/*.exe
           retention-days: 1
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
