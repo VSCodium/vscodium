@@ -1,43 +1,43 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index e314794..fce8d15 100644
+index 53ef6f3..411da6b 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -343,2 +343,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -307,2 +307,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const name = product.nameShort;
 +		const release = packageJson.release;
  
-@@ -346,3 +347,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -310,3 +311,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const packageJsonStream = gulp.src(['remote/package.json'], { base: 'remote' })
--			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined, ...(!isAMD() ? { type: 'module' } : {}) })) // TODO@esm this should be configured in the top level package.json
-+			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined, ...(!isAMD() ? { type: 'module' } : {}) })) // TODO@esm this should be configured in the top level package.json
+-			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined, type: 'module' }))
++			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined, type: 'module' }))
  			.pipe(es.through(function (file) {
-@@ -354,3 +355,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -318,3 +319,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
 -			.pipe(json({ commit, date: readISODate('out-build'), version }))
 +			.pipe(json({ commit, date: readISODate('out-build'), version, release }))
  			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 9dfb6a3..a4277ff 100644
+index d59b42d..61670c0 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -320,3 +320,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -268,3 +268,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  
 -		let version = packageJson.version;
 +		let version = packageJson.version
  		const quality = product.quality;
-@@ -328,3 +328,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -276,3 +276,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const name = product.nameShort;
--		const packageJsonUpdates = { name, version, ...(!isAMD() ? { type: 'module', main: 'out/main.js' } : {}) }; // TODO@esm this should be configured in the top level package.json
+-		const packageJsonUpdates = { name, version };
 +		const release = packageJson.release;
-+		const packageJsonUpdates = { name, version, release, ...(!isAMD() ? { type: 'module', main: 'out/main.js' } : {}) }; // TODO@esm this should be configured in the top level package.json
++		const packageJsonUpdates = { name, version, release };
  
-@@ -345,3 +346,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -293,3 +294,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
 -			.pipe(json({ commit, date: readISODate('out-build'), checksums, version }))
 +			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release }))
  			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index 5fa5a5d..b08e376 100644
+index fb0e5a4..170c60b 100644
 --- a/build/gulpfile.vscode.linux.js
 +++ b/build/gulpfile.vscode.linux.js
 @@ -27,4 +27,2 @@ const commit = getVersion(root);
@@ -73,7 +73,7 @@ index 98175f5..afacbe3 100644
 +			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index c397b1a..ccf7911 100644
+index 1f58ce0..1555ae2 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
 @@ -58,2 +58,3 @@ export interface IProductConfiguration {
@@ -90,7 +90,7 @@ index 5f6efd5..da3c54d 100644
 +		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} ${this.productService.release || 'Release unknown'} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
  		output.push(`OS Version:       ${osLib.type()} ${osLib.arch()} ${osLib.release()}`);
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index a98043f..b54a78f 100644
+index 1a2a619..2a8d683 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -43,6 +43,7 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {

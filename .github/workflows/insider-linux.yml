@@ -92,10 +92,16 @@ jobs:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
 
+      - name: Setup GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '18.17'
+          node-version: '20.17'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install Yarn
@@ -260,8 +266,8 @@ jobs:
           npm_arch: arm64
         - vscode_arch: armhf
           npm_arch: arm
-        - vscode_arch: ppc64le
-          npm_arch: ppc64
+        # - vscode_arch: ppc64le
+        #   npm_arch: ppc64
         - vscode_arch: riscv64
           npm_arch: riscv64
     env:
@@ -284,10 +290,16 @@ jobs:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
 
+      - name: Setup GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '18.17'
+          node-version: '20.17'
 
       - name: Setup Python 3
         uses: actions/setup-python@v5
@@ -368,6 +380,12 @@ jobs:
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
+
+      - name: Setup GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
 
       - name: Install GH
         run: ./install_gh.sh

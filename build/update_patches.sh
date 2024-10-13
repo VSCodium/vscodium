@@ -47,6 +47,12 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   done
 fi
 
-for FILE in ../patches/linux/*/*.patch; do
-  check_file "${FILE}"
+for ARCH in alpine linux osx windows; do
+  for FILE in "../patches/${ARCH}/"*.patch; do
+    check_file "${FILE}"
+  done
+
+  for FILE in "../patches/${ARCH}/"*/*.patch; do
+    check_file "${FILE}"
+  done
 done
