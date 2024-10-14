@@ -114,12 +114,12 @@ jobs:
       - name: Signing
         uses: signpath/github-action-submit-signing-request@v1
         with:
-          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
-          organization-id: '${{ secrets.SIGNPATH_ORGANIZATION_ID }}'
-          project-slug: '${{ secrets.SIGNPATH_PROJECT_SLUG }}'
-          signing-policy-slug: '${{ secrets.SIGNPATH_POLICY_SLUG }}'
-          github-artifact-id: '${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}'
-          artifact-configuration-slug: '${{ matrix.vscode_arch }}'
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ secrets.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ secrets.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}
+          artifact-configuration-slug: ${{ matrix.vscode_arch }}
           wait-for-completion: true
           output-artifact-directory: assets/
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
