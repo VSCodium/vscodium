@@ -277,6 +277,7 @@ jobs:
           npm_arch: riscv64
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      DISABLED: ${{ vars[format('DISABLE_INSIDER_LINUX_REH_{0}', matrix.slug)] }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
@@ -286,75 +287,70 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
-      - name: Check if can run
-        run: |
-          echo "ABORT=yes" >> $GITHUB_ENV
-        if: vars[format('DISABLE_INSIDER_LINUX_REH_{0}', matrix.slug)] == 'yes'
-
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-        if: env.ABORT != 'yes'
+        if: env.DISABLED != 'yes'
 
       - name: Switch to relevant branch
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
-        if: env.ABORT != 'yes'
+        if: env.DISABLED != 'yes'
 
       - name: Setup GCC
         uses: egor-tensin/setup-gcc@v1
         with:
           version: 10
           platform: x64
-        if: env.ABORT != 'yes'
+        if: env.DISABLED != 'yes'
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
           node-version: '20.17'
-        if: env.ABORT != 'yes'
+        if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-        if: env.ABORT != 'yes'
+        if: env.DISABLED != 'yes'
 
       - name: Install libkrb5-dev
         run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
-        if: env.ABORT != 'yes'
+        if: env.DISABLED != 'yes'
 
       - name: Install GH
         run: ./install_gh.sh
-        if: env.ABORT != 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
         run: ./check_tags.sh
-        if: env.ABORT != 'yes'
+        if: env.DISABLED != 'yes'
 
       - name: Download vscode artifact
         uses: actions/download-artifact@v3
         with:
           name: vscode
-        if: env.ABORT != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./package_linux_reh.sh
-        if: env.ABORT != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.ABORT != 'yes' && env.SHOULD_DEPLOY == 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
+        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Upload assets
         uses: actions/upload-artifact@v4
@@ -362,7 +358,7 @@ jobs:
           name: reh-linux-${{ matrix.vscode_arch }}
           path: assets/
           retention-days: 3
-        if: env.ABORT != 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   reh_alpine:
     needs:
