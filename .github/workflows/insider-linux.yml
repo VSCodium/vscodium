@@ -289,7 +289,7 @@ jobs:
       - name: Check if can run
         run: |
           echo "ABORT=yes" >> $GITHUB_ENV
-        if: vars[format('DISABLE_INSIDER_LINUX_REH_{0}', matrix.slug)] != 'yes'
+        if: vars[format('DISABLE_INSIDER_LINUX_REH_{0}', matrix.slug)] == 'yes'
 
       - uses: actions/checkout@v3
         with:
