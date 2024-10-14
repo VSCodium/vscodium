@@ -1,57 +1,24 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index 949b5f3..30093d6 100755
+index 03e5b49..ae9b834 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
 @@ -9,2 +9,6 @@ fi
  
-+if [ "$npm_config_arch" == "riscv64" ]; then
++if [[ "$npm_config_arch" == "riscv64" || "$npm_config_arch" == "ppc64le" ]]; then
 +  exit 0
 +fi
 +
  export VSCODE_SYSROOT_DIR=$PWD/.build/sysroots
-@@ -67,2 +71,16 @@ elif [ "$npm_config_arch" == "arm" ]; then
-   export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot -L$VSCODE_SYSROOT_DIR/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf -L$VSCODE_SYSROOT_DIR/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot/lib/arm-linux-gnueabihf"
-+elif [ "$npm_config_arch" == "ppc64" ]; then
-+  if [ "$(echo "$@" | grep -c -- "--only-remote")" -eq 0 ]; then
-+    # Set compiler toolchain for client native modules
-+    export CC=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/bin/powerpc64le-linux-gnu-gcc
-+    export CXX=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/bin/powerpc64le-linux-gnu-g++
-+    export CXXFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot"
-+    export LDFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/usr/lib/powerpc64le-linux-gnu -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/lib/powerpc64le-linux-gnu"
-+
-+    # Set compiler toolchain for remote server
-+    export VSCODE_REMOTE_CC=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/bin/powerpc64le-linux-gnu-gcc
-+    export VSCODE_REMOTE_CXX=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/bin/powerpc64le-linux-gnu-g++
-+    export VSCODE_REMOTE_CXXFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot"
-+    export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/usr/lib/powerpc64le-linux-gnu -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/lib/powerpc64le-linux-gnu"
-+  fi
- fi
-diff --git a/build/azure-pipelines/linux/verify-glibc-requirements.sh b/build/azure-pipelines/linux/verify-glibc-requirements.sh
-index 19482c2..f49d910 100755
---- a/build/azure-pipelines/linux/verify-glibc-requirements.sh
-+++ b/build/azure-pipelines/linux/verify-glibc-requirements.sh
-@@ -9,2 +9,4 @@ elif [ "$VSCODE_ARCH" == "armhf" ]; then
-   TRIPLE="arm-rpi-linux-gnueabihf"
-+elif [ "$VSCODE_ARCH" == "ppc64le" ]; then
-+  TRIPLE="powerpc64le-linux-gnu"
- fi
-diff --git a/build/checksums/vscode-sysroot.txt b/build/checksums/vscode-sysroot.txt
-index 0b5f38c..9f3b02b 100644
---- a/build/checksums/vscode-sysroot.txt
-+++ b/build/checksums/vscode-sysroot.txt
-@@ -6 +6,2 @@
- dbb927408393041664a020661f2641c9785741be3d29b050b9dac58980967784  x86_64-linux-gnu-glibc-2.28.tar.gz
-+fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 7d58861..f14984f 100644
+index 53ef6f3..c3d32a3 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -48,2 +48,4 @@ const BUILD_TARGETS = [
+@@ -50,2 +50,4 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'arm64' },
 +	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  	{ platform: 'alpine', arch: 'arm64' },
-@@ -217,2 +219,10 @@ function nodejs(platform, arch) {
+@@ -229,2 +231,10 @@ function nodejs(platform, arch) {
  		case 'linux':
 +			if (arch === 'riscv64') {
 +				return fetchUrls(`/download/release/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz`,
@@ -63,7 +30,7 @@ index 7d58861..f14984f 100644
 +			}
  			return (product.nodejsRepository !== 'https://nodejs.org' ?
 diff --git a/build/gulpfile.scan.js b/build/gulpfile.scan.js
-index 6f8144b..8a8195e 100644
+index cbcdddb..0eafadc 100644
 --- a/build/gulpfile.scan.js
 +++ b/build/gulpfile.scan.js
 @@ -26,2 +26,4 @@ const BUILD_TARGETS = [
@@ -72,10 +39,10 @@ index 6f8144b..8a8195e 100644
 +	{ platform: 'linux', arch: 'riscv64' },
  ];
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 4af4067..1f99344 100644
+index d59b42d..23d5dcf 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -350,2 +350,12 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -386,2 +386,12 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  
 +		const electronOverride = {};
 +		if (process.env.VSCODE_ELECTRON_REPO) {
@@ -88,18 +55,18 @@ index 4af4067..1f99344 100644
 +		}
 +
  		let result = all
-@@ -354,3 +364,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -390,3 +400,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  			.pipe(filter(['**', '!**/.github/**'], { dot: true })) // https://github.com/microsoft/vscode/issues/116523
 -			.pipe(electron({ ...config, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
 +			.pipe(electron({ ...config, ...electronOverride, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
  			.pipe(filter(['**', '!LICENSE', '!version'], { dot: true }));
-@@ -449,2 +459,4 @@ const BUILD_TARGETS = [
+@@ -485,2 +495,4 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'arm64' },
 +	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  ];
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index 28ddfb0..cb3169c 100644
+index fb0e5a4..37575e1 100644
 --- a/build/gulpfile.vscode.linux.js
 +++ b/build/gulpfile.vscode.linux.js
 @@ -33,3 +33,3 @@ const linuxPackageRevision = Math.floor(new Date().getTime() / 1000);
@@ -107,12 +74,12 @@ index 28ddfb0..cb3169c 100644
 -	return { x64: 'amd64', armhf: 'armhf', arm64: 'arm64' }[arch];
 +	return { x64: 'amd64', armhf: 'armhf', arm64: 'arm64', ppc64le: 'ppc64el', riscv64: 'riscv64' }[arch];
  }
-@@ -141,3 +141,3 @@ function getRpmBuildPath(rpmArch) {
+@@ -145,3 +145,3 @@ function getRpmBuildPath(rpmArch) {
  function getRpmPackageArch(arch) {
 -	return { x64: 'x86_64', armhf: 'armv7hl', arm64: 'aarch64' }[arch];
 +	return { x64: 'x86_64', armhf: 'armv7hl', arm64: 'aarch64', ppc64le: 'ppc64le', riscv64: 'riscv64' }[arch];
  }
-@@ -301,2 +301,4 @@ const BUILD_TARGETS = [
+@@ -307,2 +307,4 @@ const BUILD_TARGETS = [
  	{ arch: 'arm64' },
 +	{ arch: 'ppc64le' },
 +	{ arch: 'riscv64' },
@@ -150,10 +117,10 @@ index 92f8065..b86b4db 100644
 +			break;
  	}
 diff --git a/build/linux/debian/dep-lists.js b/build/linux/debian/dep-lists.js
-index 3a642a7..91daf09 100644
+index 3bb58fb..f6a1a7f 100644
 --- a/build/linux/debian/dep-lists.js
 +++ b/build/linux/debian/dep-lists.js
-@@ -144,2 +144,81 @@ exports.referenceGeneratedDepsByArch = {
+@@ -138,2 +138,81 @@ exports.referenceGeneratedDepsByArch = {
          'xdg-utils (>= 1.0.2)'
 +    ],
 +	'ppc64el': [
@@ -236,10 +203,10 @@ index 3a642a7..91daf09 100644
 +        'xdg-utils (>= 1.0.2)'
      ]
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index 86d1de1..ab0e268 100644
+index e3d78d1..0859d44 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
-@@ -144,2 +144,81 @@ export const referenceGeneratedDepsByArch = {
+@@ -138,2 +138,81 @@ export const referenceGeneratedDepsByArch = {
  		'xdg-utils (>= 1.0.2)'
 +	],
 +	'ppc64el': [
@@ -322,10 +289,10 @@ index 86d1de1..ab0e268 100644
 +		'xdg-utils (>= 1.0.2)'
  	]
 diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
-index feca7d3..f075ebc 100644
+index 354c67a..b64fdf3 100644
 --- a/build/linux/debian/install-sysroot.js
 +++ b/build/linux/debian/install-sysroot.js
-@@ -72,3 +72,6 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
+@@ -71,3 +71,6 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
          try {
 -            const response = await fetch(`https://api.github.com/repos/Microsoft/vscode-linux-build-agent/releases/tags/v${version}`, {
 +            // if VSCODE_SYSROOT_REPO and VSCODE_SYSROOT_VERSION are set, use those instead
@@ -333,12 +300,12 @@ index feca7d3..f075ebc 100644
 +            const actualVersion = process.env['VSCODE_SYSROOT_VERSION'] ?? version;
 +            const response = await fetch(`https://api.github.com/repos/${repo}/releases/tags/v${actualVersion}`, {
                  headers: ghApiHeaders,
-@@ -81,3 +84,3 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
+@@ -80,3 +83,3 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
                  if (!asset) {
 -                    throw new Error(`Could not find asset in release of Microsoft/vscode-linux-build-agent @ ${version}`);
 +                    throw new Error(`Could not find asset in release of ${repo} @ ${actualVersion}`);
                  }
-@@ -136,2 +139,10 @@ async function getVSCodeSysroot(arch) {
+@@ -135,2 +138,10 @@ async function getVSCodeSysroot(arch) {
              break;
 +	    case 'ppc64le':
 +	             expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
@@ -350,10 +317,10 @@ index feca7d3..f075ebc 100644
 +	             break;
      }
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index aa417dc..58f0eee 100644
+index 8ea43a5..f99db99 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -84,3 +84,6 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
+@@ -83,3 +83,6 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
  		try {
 -			const response = await fetch(`https://api.github.com/repos/Microsoft/vscode-linux-build-agent/releases/tags/v${version}`, {
 +			// if VSCODE_SYSROOT_REPO and VSCODE_SYSROOT_VERSION are set, use those instead
@@ -361,12 +328,12 @@ index aa417dc..58f0eee 100644
 +			const actualVersion = process.env['VSCODE_SYSROOT_VERSION'] ?? version;
 +			const response = await fetch(`https://api.github.com/repos/${repo}/releases/tags/v${actualVersion}`, {
  				headers: ghApiHeaders,
-@@ -93,3 +96,3 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
+@@ -92,3 +95,3 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
  				if (!asset) {
 -					throw new Error(`Could not find asset in release of Microsoft/vscode-linux-build-agent @ ${version}`);
 +					throw new Error(`Could not find asset in release of ${repo} @ ${actualVersion}`);
  				}
-@@ -153,2 +156,10 @@ export async function getVSCodeSysroot(arch: DebianArchString): Promise<string>
+@@ -152,2 +155,10 @@ export async function getVSCodeSysroot(arch: DebianArchString): Promise<string>
  			break;
 +		case 'ppc64el':
 +			expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
@@ -400,10 +367,10 @@ index e97485e..24fe452 100644
 +	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'riscv64'].includes(s);
  }
 diff --git a/build/linux/rpm/dep-lists.js b/build/linux/rpm/dep-lists.js
-index 9798451..bd246e7 100644
+index 6857f6b..5914ad4 100644
 --- a/build/linux/rpm/dep-lists.js
 +++ b/build/linux/rpm/dep-lists.js
-@@ -321,2 +321,102 @@ exports.referenceGeneratedDepsByArch = {
+@@ -307,2 +307,102 @@ exports.referenceGeneratedDepsByArch = {
          'xdg-utils'
 +    ],
 +    "ppc64le": [
@@ -507,10 +474,10 @@ index 9798451..bd246e7 100644
 +        'xdg-utils'
      ]
 diff --git a/build/linux/rpm/dep-lists.ts b/build/linux/rpm/dep-lists.ts
-index b798127..c3f5308 100644
+index 8fd025e..937244b 100644
 --- a/build/linux/rpm/dep-lists.ts
 +++ b/build/linux/rpm/dep-lists.ts
-@@ -320,2 +320,102 @@ export const referenceGeneratedDepsByArch = {
+@@ -306,2 +306,102 @@ export const referenceGeneratedDepsByArch = {
  		'xdg-utils'
 +	],
 +	"ppc64le": [
@@ -636,47 +603,47 @@ index c6a01da..d94537e 100644
 +	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le', 'riscv64'].includes(s);
  }
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 4bec13d..3debda1 100644
+index 9033914..29228cb 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
-@@ -216,2 +216,5 @@ pub enum Platform {
+@@ -217,2 +217,5 @@ pub enum Platform {
  	LinuxARM32Legacy,
 +	LinuxPPC64LE,
 +	LinuxPPC64LELegacy,
 +	LinuxRISCV64,
  	DarwinX64,
-@@ -229,2 +232,4 @@ impl Platform {
+@@ -230,2 +233,4 @@ impl Platform {
  			Platform::LinuxARM32 => Some("linux-armhf".to_owned()),
 +			Platform::LinuxPPC64LE => Some("linux-ppc64le".to_owned()),
 +			Platform::LinuxRISCV64 => Some("linux-riscv64".to_owned()),
  			Platform::DarwinX64 => Some("darwin".to_owned()),
-@@ -247,2 +252,5 @@ impl Platform {
+@@ -248,2 +253,5 @@ impl Platform {
  			Platform::LinuxARM32Legacy => "server-linux-legacy-armhf",
 +			Platform::LinuxPPC64LE => "server-linux-ppc64le",
 +			Platform::LinuxPPC64LELegacy => "server-linux-legacy-ppc64le",
 +			Platform::LinuxRISCV64 => "server-linux-riscv64",
  			Platform::DarwinX64 => "server-darwin",
-@@ -266,2 +274,5 @@ impl Platform {
+@@ -267,2 +275,5 @@ impl Platform {
  			Platform::LinuxARM32Legacy => "cli-linux-armhf",
 +			Platform::LinuxPPC64LE => "cli-linux-ppc64le",
 +			Platform::LinuxPPC64LELegacy => "cli-linux-ppc64le",
 +			Platform::LinuxRISCV64 => "cli-linux-riscv64",
  			Platform::DarwinX64 => "cli-darwin-x64",
-@@ -298,2 +309,6 @@ impl Platform {
+@@ -299,2 +310,6 @@ impl Platform {
  			Some(Platform::LinuxARM64)
 +		} else if cfg!(all(target_os = "linux", target_arch = "ppc64le")) {
 +			Some(Platform::LinuxPPC64LE)
 +		} else if cfg!(all(target_os = "linux", target_arch = "riscv64")) {
 +			Some(Platform::LinuxRISCV64)
  		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
-@@ -325,2 +340,5 @@ impl fmt::Display for Platform {
+@@ -326,2 +341,5 @@ impl fmt::Display for Platform {
  			Platform::LinuxARM32Legacy => "LinuxARM32Legacy",
 +			Platform::LinuxPPC64LE => "LinuxPPC64LE",
 +			Platform::LinuxPPC64LELegacy => "LinuxPPC64LELegacy",
 +			Platform::LinuxRISCV64 => "LinuxRISCV64",
  			Platform::DarwinX64 => "DarwinX64",
 diff --git a/cli/src/util/prereqs.rs b/cli/src/util/prereqs.rs
-index 0f49ab2..d873a49 100644
+index 0f49ab2..5cdf92c 100644
 --- a/cli/src/util/prereqs.rs
 +++ b/cli/src/util/prereqs.rs
 @@ -86,2 +86,6 @@ impl PreReqChecker {
@@ -686,13 +653,8 @@ index 0f49ab2..d873a49 100644
 +				} else if cfg!(target_arch = "riscv64") {
 +					Platform::LinuxRISCV64
  				} else {
-@@ -95,2 +99,4 @@ impl PreReqChecker {
- 					Platform::LinuxARM32Legacy
-+				} else if cfg!(target_arch = "ppc64le") {
-+					Platform::LinuxPPC64LELegacy
- 				} else {
 diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
-index 31a618f..dc457e0 100644
+index 8ef07a2..7ea8c47 100644
 --- a/resources/server/bin/helpers/check-requirements-linux.sh
 +++ b/resources/server/bin/helpers/check-requirements-linux.sh
 @@ -56,2 +56,4 @@ case $ARCH in
@@ -701,7 +663,7 @@ index 31a618f..dc457e0 100644
 +    riscv64) LDCONFIG_ARCH="RISC-V";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index 1dcc4c7..54a7f36 100644
+index ea7b30d..fb2acc7 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
 @@ -41,2 +41,4 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
@@ -724,7 +686,7 @@ index 1dcc4c7..54a7f36 100644
 +			}
  			return TargetPlatform.UNKNOWN;
 diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
-index 822260b..fc11650 100644
+index 5973d4d..a7aa2bb 100644
 --- a/src/vs/platform/extensions/common/extensions.ts
 +++ b/src/vs/platform/extensions/common/extensions.ts
 @@ -294,2 +294,4 @@ export const enum TargetPlatform {
