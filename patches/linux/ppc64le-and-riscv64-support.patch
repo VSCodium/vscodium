@@ -1,10 +1,10 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index 03e5b49..ae9b834 100755
+index 03e5b49..1bc0b6e 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
 @@ -9,2 +9,6 @@ fi
  
-+if [[ "$npm_config_arch" == "riscv64" || "$npm_config_arch" == "ppc64le" ]]; then
++if [[ "$npm_config_arch" == "riscv64" || "$npm_config_arch" == "ppc64" ]]; then
 +  exit 0
 +fi
 +
@@ -289,7 +289,7 @@ index e3d78d1..0859d44 100644
 +		'xdg-utils (>= 1.0.2)'
  	]
 diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
-index 354c67a..b64fdf3 100644
+index 354c67a..41970ec 100644
 --- a/build/linux/debian/install-sysroot.js
 +++ b/build/linux/debian/install-sysroot.js
 @@ -71,3 +71,6 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
@@ -305,17 +305,19 @@ index 354c67a..b64fdf3 100644
 -                    throw new Error(`Could not find asset in release of Microsoft/vscode-linux-build-agent @ ${version}`);
 +                    throw new Error(`Could not find asset in release of ${repo} @ ${actualVersion}`);
                  }
-@@ -135,2 +138,10 @@ async function getVSCodeSysroot(arch) {
+@@ -135,3 +138,11 @@ async function getVSCodeSysroot(arch) {
              break;
+-    }
 +	    case 'ppc64le':
-+	             expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
-+	             triple = `powerpc64le-linux-gnu`;
-+	             break;
++			expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
++			triple = `powerpc64le-linux-gnu`;
++			break;
 +	    case 'riscv64':
-+	             expectedName = `riscv64-linux-gnu${prefix}.tar.gz`;
-+	             triple = 'riscv64-linux-gnu';
-+	             break;
-     }
++			expectedName = `riscv64-linux-gnu${prefix}.tar.gz`;
++			triple = 'riscv64-linux-gnu';
++			break;
++   	}
+     console.log(`Fetching ${expectedName} for ${triple}`);
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
 index 8ea43a5..f99db99 100644
 --- a/build/linux/debian/install-sysroot.ts
