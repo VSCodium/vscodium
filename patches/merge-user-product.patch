@@ -1,5 +1,5 @@
 diff --git a/src/main.ts b/src/main.ts
-index 62ddd5f..90c6cfd 100644
+index 62ddd5f..7c21b8f 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -8,2 +8,3 @@ import * as fs from 'original-fs';
@@ -10,15 +10,16 @@ index 62ddd5f..90c6cfd 100644
  const __dirname = path.dirname(fileURLToPath(import.meta.url));
 +const require = createRequire(import.meta.url);
  
-@@ -103,2 +105,13 @@ registerListeners();
+@@ -103,2 +105,14 @@ registerListeners();
  
 +function resolveUserProduct() {
-+	const userProductPath = `file:///${userDataPath}/product.json`;
++	const userProductPath = path.join(userDataPath, 'product.json');
 +
 +	try {
 +		// Assign the product configuration to the global scope
-+		const productPath = require(fileURLToPath(userProductPath));
-+		globalThis._VSCODE_PRODUCT_JSON = productPath;
++		const productJson = require(userProductPath);
++		// @ts-expect-error
++		globalThis._VSCODE_USER_PRODUCT_JSON = productJson;
 +	} catch (ex) {
 +	}
 +}
