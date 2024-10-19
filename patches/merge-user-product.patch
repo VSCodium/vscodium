@@ -1,16 +1,16 @@
 diff --git a/src/main.ts b/src/main.ts
-index 62ddd5f..7c21b8f 100644
+index ff9a5e8..2135d00 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -8,2 +8,3 @@ import * as fs from 'original-fs';
  import * as os from 'os';
 +import { createRequire } from 'node:module';
- import { configurePortable } from './bootstrap-node.js';
-@@ -23,2 +24,3 @@ import { NativeParsedArgs } from './vs/platform/environment/common/argv.js';
+ import { performance } from 'perf_hooks';
+@@ -24,2 +25,3 @@ import { NativeParsedArgs } from './vs/platform/environment/common/argv.js';
  const __dirname = path.dirname(fileURLToPath(import.meta.url));
 +const require = createRequire(import.meta.url);
  
-@@ -103,2 +105,14 @@ registerListeners();
+@@ -112,2 +114,14 @@ registerListeners();
  
 +function resolveUserProduct() {
 +	const userProductPath = path.join(userDataPath, 'product.json');
@@ -25,7 +25,7 @@ index 62ddd5f..7c21b8f 100644
 +}
 +
  /**
-@@ -174,2 +188,3 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
+@@ -183,2 +197,3 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
 +	resolveUserProduct();
  
