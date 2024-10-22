@@ -205,6 +205,10 @@ The minimal version is limited by the core component Electron, you may want to c
     <td><a href="https://www.macstadium.com" target="_blank"><img src="https://images.prismic.io/macstadium/66fbce64-707e-41f3-b547-241908884716_MacStadium_Logo.png?w=128&q=75" width="128" height="49" alt="MacStadium logo" /></a></td>
     <td>for providing a Mac mini M1</td>
   </tr>
+   <tr>
+    <td><a href="https://signpath.org/" target="_blank"><img src="https://about.signpath.io/assets/signpath-logo.svg" width="128" height="26" alt="SignPath logo" /></a></td>
+    <td>for Windows certificate</td>
+  </tr>
   <tr>
     <td><a href="https://github.com/daiyam" target="_blank">@daiyam</a></td>
     <td>for macOS certificate</td>
