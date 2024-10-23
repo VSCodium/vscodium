@@ -19,21 +19,21 @@ index fb0e5a4..412a6cc 100644
 +	const buildRpmTask = task.define(`vscode-linux-${arch}-build-rpm`, task.series(prepareRpmTask, buildRpmPackage(arch)));
  	gulp.task(buildRpmTask);
 diff --git a/build/linux/dependencies-generator.js b/build/linux/dependencies-generator.js
-index 374c9b6..da5ef4d 100644
+index 80b11b3..0a0ca71 100644
 --- a/build/linux/dependencies-generator.js
 +++ b/build/linux/dependencies-generator.js
 @@ -24,3 +24,3 @@ const product = require("../../product.json");
  // are valid, are in dep-lists.ts
 -const FAIL_BUILD_FOR_NEW_DEPENDENCIES = true;
 +const FAIL_BUILD_FOR_NEW_DEPENDENCIES = false;
- // Based on https://source.chromium.org/chromium/chromium/src/+/refs/tags/128.0.6613.162:chrome/installer/linux/BUILD.gn;l=64-80
+ // Based on https://source.chromium.org/chromium/chromium/src/+/refs/tags/128.0.6613.186:chrome/installer/linux/BUILD.gn;l=64-80
 @@ -57,3 +57,3 @@ async function getDependencies(packageType, buildDir, applicationName, arch) {
      // Add the tunnel binary.
 -    files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
 +    // files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
      // Add the main executable.
 diff --git a/build/linux/dependencies-generator.ts b/build/linux/dependencies-generator.ts
-index 3c7f6f5..cd33e87 100644
+index 3163aee..dca1845 100644
 --- a/build/linux/dependencies-generator.ts
 +++ b/build/linux/dependencies-generator.ts
 @@ -25,3 +25,3 @@ import product = require('../../product.json');
@@ -47,9 +47,14 @@ index 3c7f6f5..cd33e87 100644
 +	// files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
  	// Add the main executable.
 diff --git a/resources/linux/rpm/code.spec.template b/resources/linux/rpm/code.spec.template
-index a73bc02..340b94e 100644
+index a73bc02..242bab0 100644
 --- a/resources/linux/rpm/code.spec.template
 +++ b/resources/linux/rpm/code.spec.template
+@@ -2,3 +2,3 @@ Name:     @@NAME@@
+ Version:  @@VERSION@@
+-Release:  @@RELEASE@@.el8
++Release:  @@RELEASE@@.el9
+ Summary:  Code editing. Redefined.
 @@ -88 +88,3 @@ update-mime-database %{_datadir}/mime &> /dev/null || :
  %{_datadir}/zsh/site-functions/_%{name}
 +
