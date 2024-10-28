@@ -2,7 +2,7 @@
 
 set -ex
 
-export ELECTRON_VERSION="32.1.2"
+export ELECTRON_VERSION="32.2.1"
 export VSCODE_ELECTRON_TAG="v${ELECTRON_VERSION}.riscv1"
 
-echo "1893e6e8831ddd9c30111db02ad7edbaad8ebbf43d69054657f7221fb6086819 *electron-v${ELECTRON_VERSION}-linux-riscv64.zip" >> build/checksums/electron.txt
+echo "03b1b478ab7b9d40da5c47edef0bbeeb528a8bed5335018ff38e513b7df43c7f *electron-v${ELECTRON_VERSION}-linux-riscv64.zip" >> build/checksums/electron.txt
