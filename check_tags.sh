@@ -163,14 +163,18 @@ elif [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_ZIP="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ "${DISABLE_MSI}" == "yes" ]]; then
+          export SHOULD_BUILD_MSI="no"
+      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows ia32 because we have no msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ "${DISABLE_MSI}" == "yes" ]]; then
+          export SHOULD_BUILD_MSI_NOUP="no"
+      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows ia32 because we have no updates-disabled msi"
         export SHOULD_BUILD="yes"
       else
@@ -218,14 +222,18 @@ elif [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_ZIP="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ "${DISABLE_MSI}" == "yes" ]]; then
+          export SHOULD_BUILD_MSI="no"
+      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows x64 because we have no msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ "${DISABLE_MSI}" == "yes" ]]; then
+          export SHOULD_BUILD_MSI_NOUP="no"
+      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows x64 because we have no updates-disabled msi"
         export SHOULD_BUILD="yes"
       else
@@ -544,6 +552,10 @@ else
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
       export SHOULD_BUILD_REH="no"
       export SHOULD_BUILD_REH_WEB="no"
+    fi
+    if [[ "${DISABLE_MSI}" == "yes" ]]; then
+      export SHOULD_BUILD_MSI="no"
+      export SHOULD_BUILD_MSI_NOUP="no"
     fi
   fi
 

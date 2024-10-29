@@ -209,6 +209,10 @@ The minimal version is limited by the core component Electron, you may want to c
     <td><a href="https://github.com/daiyam" target="_blank">@daiyam</a></td>
     <td>for macOS certificate</td>
   </tr>
+  <tr>
+    <td><a href="https://signpath.org/" target="_blank"><img src="https://avatars.githubusercontent.com/u/34448643" height="30" alt="SignPath logo" /></a></td>
+    <td>free code signing on Windows provided by <a href="https://signpath.io/" target="_blank">SignPath.io</a>, certificate by <a href="https://signpath.org/" target="_blank">SignPath Foundation</a></td>
+  </tr>
 </table>
 
 ## <a id="license"></a>License

@@ -31,9 +31,8 @@ if [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
 
   if [[ "${ELECTRON_VERSION}" != "$(yarn config get target)" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
-    # Look for releases here if electron version used by vscode changed:
-    # https://github.com/riscv-forks/electron-riscv-releases/releases
     echo "Electron RISC-V binary version doesn't match target electron version!"
+    echo "Releases available at: https://github.com/${VSCODE_ELECTRON_REPO}/releases"
     exit 1
   fi
 fi
