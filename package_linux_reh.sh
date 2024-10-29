@@ -72,6 +72,28 @@ if [[ -d "../patches/linux/reh/" ]]; then
   done
 fi
 
+if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+  INCLUDES=$(cat <<EOF
+{
+  "target_defaults": {
+    "conditions": [
+      ["OS=='linux'", {
+        'cflags_cc!': [ '-std=gnu++20' ],
+        'cflags_cc': [ '-std=gnu++2a' ],
+      }]
+    ]
+  }
+}
+EOF
+)
+
+  if [ ! -d "$HOME/.gyp" ]; then
+    mkdir -p "$HOME/.gyp"
+  fi
+
+  echo "${INCLUDES}" > "$HOME/.gyp/include.gypi"
+fi
+
 for i in {1..5}; do # try 5 times
   npm ci --prefix build && break
   if [[ $i == 3 ]]; then
