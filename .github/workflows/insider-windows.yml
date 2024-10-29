@@ -108,7 +108,7 @@ jobs:
             assets/*.exe
             assets/*.msi
           retention-days: 1
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes' && vars.DISABLE_INSIDER_WINDOWS_SIGNING != 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Signing
         uses: signpath/github-action-submit-signing-request@v1
@@ -123,7 +123,7 @@ jobs:
           # 3h to manually approve the request
           wait-for-completion-timeout-in-seconds: 10800
           output-artifact-directory: assets/
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes' && vars.DISABLE_INSIDER_WINDOWS_SIGNING != 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Prepare checksums
         run: ./prepare_checksums.sh
