@@ -86,7 +86,7 @@ if [[ "${SKIP_SOURCE}" == "no" ]]; then
   echo "BUILD_SOURCEVERSION=\"${BUILD_SOURCEVERSION}\"" >> build.env
 else
   if [[ "${SKIP_ASSETS}" != "no" ]]; then
-    rm -rf VSCode*
+    rm -rf vscode-* VSCode-*
   fi
 
   . build.env
@@ -103,6 +103,8 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
 
     git add .
     git reset -q --hard HEAD
+
+    rm -rf .build out*
 
     cd ..
   fi
