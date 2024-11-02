@@ -9,8 +9,6 @@ fi
 
 tar -xzf ./vscode.tar.gz
 
-chown -R root:root vscode
-
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 for i in {1..5}; do # try 5 times
