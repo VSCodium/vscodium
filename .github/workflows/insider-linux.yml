@@ -101,7 +101,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.17'
+          node-version: '20.18'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install Yarn
@@ -191,6 +191,7 @@ jobs:
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Install GH
         run: ./install_gh.sh
@@ -308,7 +309,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.17'
+          node-version: '20.18'
         if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
