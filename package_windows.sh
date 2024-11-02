@@ -7,6 +7,8 @@ if [[ "${CI_BUILD}" == "no" ]]; then
   exit 1
 fi
 
+APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+
 tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
