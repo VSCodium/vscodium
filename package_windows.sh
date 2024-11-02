@@ -24,28 +24,32 @@ done
 
 node build/azure-pipelines/distro/mixin-npm
 
-yarn gulp "vscode-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+. ../build/windows/rtf/make.sh
 
-if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
-  echo "Building REH"
-  yarn gulp minify-vscode-reh
-  yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+yarn gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
 
-  echo "Archiving REH"
-  pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
-  tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
-  popd
-fi
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
+    echo "Building REH"
+    yarn gulp minify-vscode-reh
+    yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
-if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
-  echo "Building REH-web"
-  yarn gulp minify-vscode-reh-web
-  yarn gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+    echo "Archiving REH"
+    pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+    tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+    popd
+  fi
 
-  echo "Archiving REH-web"
-  pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
-  tar czf "../assets/${APP_NAME_LC}-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
-  popd
+  if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
+    echo "Building REH-web"
+    yarn gulp minify-vscode-reh-web
+    yarn gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+
+    echo "Archiving REH-web"
+    pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+    tar czf "../assets/${APP_NAME_LC}-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+    popd
+  fi
 fi
 
 cd ..
