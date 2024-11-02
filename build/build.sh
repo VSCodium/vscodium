@@ -5,8 +5,8 @@
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
 ###
 
-export APP_NAME="VSCodium"
-export BINARY_NAME="codium"
+export APP_NAME="Codex"
+export BINARY_NAME="codex"
 export CI_BUILD="no"
 export SHOULD_BUILD="yes"
 export SKIP_ASSETS="yes"
@@ -19,7 +19,7 @@ export VSCODE_SKIP_NODE_VERSION_CHECK="yes"
 while getopts ":ilops" opt; do
   case "$opt" in
     i)
-      export BINARY_NAME="codium-insiders"
+      export BINARY_NAME="codex-insiders"
       export VSCODE_QUALITY="insider"
       ;;
     l)

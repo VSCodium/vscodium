@@ -5,7 +5,7 @@ index 87839a6..49727fc 100644
 @@ -153,3 +153,3 @@ class ReportExtensionSlowAction extends Action {
  - OS Version: \`${osVersion}\`
 -- VS Code version: \`${this._productService.version}\`\n\n${message}`);
-+- VSCodium version: \`${this._productService.version}\`\n\n${message}`);
++- Codex version: \`${this._productService.version}\`\n\n${message}`);
  
 diff --git a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
 index ec21ac3..89fabe0 100644
@@ -14,7 +14,7 @@ index ec21ac3..89fabe0 100644
 @@ -630,3 +630,3 @@ export class BaseIssueReporterService extends Disposable {
  		if (title) {
 -			this.searchDuplicates(title, issueDescription);
-+			this.searchGitHub('VSCodium/vscodium', title);
++			this.searchGitHub('BiblioNexus-Foundation/codex', title);
  		} else {
 @@ -722,33 +722,2 @@ export class BaseIssueReporterService extends Disposable {
  
@@ -54,13 +54,13 @@ index ec21ac3..89fabe0 100644
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
 -		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Visual Studio Code"), false));
 -		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
-+		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "VSCodium"), false));
-+		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VSCodium extension"), false));
++		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Codex"), false));
++		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A Codex extension"), false));
  		if (this.product.reportMarketplaceIssueUrl) {
 @@ -905,3 +874,3 @@ export class BaseIssueReporterService extends Disposable {
  			hide(descriptionTextArea);
 -			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
-+			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VSCodium"));
++			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of Codex"));
  			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
 index 4394874..a9c3f57 100644
@@ -69,7 +69,7 @@ index 4394874..a9c3f57 100644
 @@ -93,3 +93,3 @@ ${this._data.issueDescription}
  ${this.getExtensionVersion()}
 -VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
-+VSCodium version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
++Codex version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
  OS version: ${this._data.versionInfo && this._data.versionInfo.os}
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts b/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
 index 195857e..68163c0 100644
@@ -78,12 +78,12 @@ index 195857e..68163c0 100644
 @@ -18,3 +18,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
  		comment: [
 -			'{Locked="<a href=\"https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
-+			'{Locked="<a href=\"https://github.com/VSCodium/vscodium/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
++			'{Locked="<a href=\"https://github.com/BiblioNexus-Foundation/codex/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
  			'{Locked="</a>"}'
 @@ -22,3 +22,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
  	},
 -	'Before you report an issue here please <a href="https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
-+	'Before you report an issue here please <a href="https://github.com/VSCodium/vscodium/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
++	'Before you report an issue here please <a href="https://github.com/BiblioNexus-Foundation/codex/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
  );
 diff --git a/src/vs/workbench/contrib/issue/electron-sandbox/issueReporterService.ts b/src/vs/workbench/contrib/issue/electron-sandbox/issueReporterService.ts
 index b923388..043a8ac 100644
@@ -92,7 +92,7 @@ index b923388..043a8ac 100644
 @@ -555,3 +555,3 @@ export class IssueReporter extends Disposable {
  		if (title) {
 -			this.searchDuplicates(title, issueDescription);
-+			this.searchGitHub('VSCodium/vscodium', title);
++			this.searchGitHub('BiblioNexus-Foundation/codex', title);
  		} else {
 @@ -647,33 +647,2 @@ export class IssueReporter extends Disposable {
  
@@ -132,11 +132,11 @@ index b923388..043a8ac 100644
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
 -		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Visual Studio Code"), false));
 -		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
-+		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "VSCodium"), false));
-+		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VSCodium extension"), false));
++		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Codex"), false));
++		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A Codex extension"), false));
  		if (this.configuration.product.reportMarketplaceIssueUrl) {
 @@ -830,3 +799,3 @@ export class IssueReporter extends Disposable {
  			hide(descriptionTextArea);
 -			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
-+			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VSCodium"));
++			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of Codex"));
  			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
