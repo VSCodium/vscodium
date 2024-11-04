@@ -9,15 +9,13 @@ if [[ "${CI_BUILD}" != "no" ]]; then
 fi
 
 if [[ -z "${RELEASE_VERSION}" ]]; then
-  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    if [[ "${VSCODE_LATEST}" == "yes" ]] || [[ ! -f "insider.json" ]]; then
-      UPDATE_INFO=$( curl --silent --fail https://update.code.visualstudio.com/api/update/darwin/insider/0000000000000000000000000000000000000000 )
-    else
-      MS_COMMIT=$( jq -r '.commit' insider.json )
-      MS_TAG=$( jq -r '.tag' insider.json )
-    fi
+  if [[ "${VSCODE_LATEST}" == "yes" ]] || [[ ! -f "${VSCODE_QUALITY}.json" ]]; then
+    echo "Retrieve lastest version"
+    UPDATE_INFO=$( curl --silent --fail "https://update.code.visualstudio.com/api/update/darwin/${VSCODE_QUALITY}/0000000000000000000000000000000000000000" )
   else
-    UPDATE_INFO=$( curl --silent --fail https://update.code.visualstudio.com/api/update/darwin/stable/0000000000000000000000000000000000000000 )
+    echo "Get version from ${VSCODE_QUALITY}.json"
+    MS_COMMIT=$( jq -r '.commit' "${VSCODE_QUALITY}.json" )
+    MS_TAG=$( jq -r '.tag' "${VSCODE_QUALITY}.json" )
   fi
 
   if [[ -z "${MS_COMMIT}" ]]; then
@@ -45,13 +43,6 @@ else
       echo "Error: Bad RELEASE_VERSION: ${RELEASE_VERSION}"
       exit 1
     fi
-
-    if [[ "${MS_TAG}" == "$( jq -r '.tag' insider.json )" ]]; then
-      MS_COMMIT=$( jq -r '.commit' insider.json )
-    else
-      echo "Error: No MS_COMMIT for ${RELEASE_VERSION}"
-      exit 1
-    fi
   else
     if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+$ ]];
     then
@@ -60,6 +51,13 @@ else
       echo "Error: Bad RELEASE_VERSION: ${RELEASE_VERSION}"
       exit 1
     fi
+  fi
+
+  if [[ "${MS_TAG}" == "$( jq -r '.tag' "${VSCODE_QUALITY}".json )" ]]; then
+    MS_COMMIT=$( jq -r '.commit' "${VSCODE_QUALITY}".json )
+  else
+    echo "Error: No MS_COMMIT for ${RELEASE_VERSION}"
+    exit 1
   fi
 fi
 
@@ -73,11 +71,7 @@ git remote add origin https://github.com/Microsoft/vscode.git
 
 # figure out latest tag by calling MS update API
 if [[ -z "${MS_TAG}" ]]; then
-  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    UPDATE_INFO=$( curl --silent --fail https://update.code.visualstudio.com/api/update/darwin/insider/0000000000000000000000000000000000000000 )
-  else
-    UPDATE_INFO=$( curl --silent --fail https://update.code.visualstudio.com/api/update/darwin/stable/0000000000000000000000000000000000000000 )
-  fi
+  UPDATE_INFO=$( curl --silent --fail "https://update.code.visualstudio.com/api/update/darwin/${VSCODE_QUALITY}/0000000000000000000000000000000000000000" )
   MS_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
   MS_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
 elif [[ -z "${MS_COMMIT}" ]]; then

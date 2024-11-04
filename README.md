@@ -19,7 +19,7 @@
 
 </div>
 
-**This is not a fork. This is a repository of scripts to automatically build Microsoft's `vscode` repository into freely-licensed binaries with a community-driven default configuration.**
+**This is not a fork. This is a repository of scripts to automatically build [Microsoft's `vscode` repository](https://github.com/microsoft/vscode) into freely-licensed binaries with a community-driven default configuration.**
 
 ## Table of Contents
 
@@ -45,7 +45,7 @@ Download latest release here:
 [insiders](https://github.com/VSCodium/vscodium-insiders/releases)
 :tada: :tada:
 
-[More info / helpful tips are here.](https://github.com/VSCodium/vscodium/blob/master/DOCS.md)
+[More info / helpful tips are here.](https://github.com/VSCodium/vscodium/blob/master/docs/index.md)
 
 
 #### <a id="install-with-brew"></a>Install with Brew (Mac)
@@ -60,7 +60,7 @@ brew tap homebrew/cask-versions
 brew install --cask vscodium-insiders
 ```
 
-*Note for macOS users: if you can't open the App, please read [the following troubleshooting](https://github.com/VSCodium/vscodium/wiki/Troubleshooting#macos).*
+*Note for macOS users: if you can't open the App, please read [the following troubleshooting](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md#macos).*
 
 #### <a id="install-with-winget"></a>Install with Windows Package Manager (WinGet)
 
@@ -94,45 +94,35 @@ scoop install vscodium
 
 #### <a id="install-with-snap"></a>Install with snap (GNU/Linux)
 
-VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium),
-thanks to the help of the [Snapcrafters](https://github.com/snapcrafters/codium) community.  
+VSCodium is available in the [Snap Store](https://snapcraft.io/) as [Codium](https://snapcraft.io/codium), thanks to the help of the [Snapcrafters](https://github.com/snapcrafters/codium) community.
 If your GNU/Linux distribution has support for [snaps](https://snapcraft.io/docs/installing-snapd):
+
 ```bash
 snap install codium --classic
 ```
 
 #### <a id="install-with-package-manager"></a>Install with Package Manager (GNU/Linux)
 
-You can always install using the downloads (deb, rpm, tar) on the releases page for
-[stable](https://github.com/VSCodium/vscodium/releases) or
-[insiders](https://github.com/VSCodium/vscodium-insiders/releases), but you can also
-install using your favorite package manager and get automatic updates.
+You can always install using the downloads (deb, rpm, tar) on the releases page for [stable](https://github.com/VSCodium/vscodium/releases) or [insiders](https://github.com/VSCodium/vscodium-insiders/releases), but you can also install using your favorite package manager and get automatic updates.
 
-[@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions
-for `apt`, `dnf` and `zypper` [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo).  
+[@paulcarroty](https://github.com/paulcarroty) has set up a repository with instructions for `apt`, `dnf` and `zypper` [here](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo).
 
 Any issues installing VSCodium using your package manager should be directed to that repository's issue tracker.
 
 #### <a id="install-on-arch-linux"></a>Install on Arch Linux
 
-VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository),
-maintained by [@binex-dsk](https://github.com/binex-dsk)
-as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/) (stable) and
-as [vscodium-insiders-bin](https://aur.archlinux.org/packages/vscodium-insiders-bin).  
+VSCodium is available in [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository), maintained by [@binex-dsk](https://github.com/binex-dsk) as package [vscodium-bin](https://aur.archlinux.org/packages/vscodium-bin/) (stable) and as [vscodium-insiders-bin](https://aur.archlinux.org/packages/vscodium-insiders-bin).
 
-If you want to save disk space by having VSCodium use the Electron system-wide, you also have
-[vscodium-electron](https://aur.archlinux.org/packages/vscodium-electron),
-maintained by [@m00nw4tch3r](https://aur.archlinux.org/account/m00nw4tch3r).  
+If you want to save disk space by having VSCodium use the Electron system-wide, you also have [vscodium-electron](https://aur.archlinux.org/packages/vscodium-electron),
+maintained by [@m00nw4tch3r](https://aur.archlinux.org/account/m00nw4tch3r).
 
-An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/),
-maintained by [@cedricroijakkers](https://github.com/cedricroijakkers),
-is also available should you wish to compile from source yourself.
+An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/), maintained by [@cedricroijakkers](https://github.com/cedricroijakkers), is also available should you wish to compile from source yourself.
 
 #### <a id="flatpak"></a>Flatpak Option (GNU/Linux)
 
-VSCodium is (unofficially) available as a Flatpak app [here](https://flathub.org/apps/details/com.vscodium.codium)
-and the build repo is [here](https://github.com/flathub/com.vscodium.codium). 
+VSCodium is available as a Flatpak app [here](https://flathub.org/apps/details/com.vscodium.codium) and the build repo is [here](https://github.com/flathub/com.vscodium.codium).
 If your distribution has support for [flatpak](https://flathub.org), and you have enabled the [flathub repo](https://flatpak.org/setup/):
+
 ```bash
 flatpak install flathub com.vscodium.codium
 flatpak run com.vscodium.codium
@@ -140,7 +130,7 @@ flatpak run com.vscodium.codium
 
 ## <a id="build"></a>Build
 
-Build instructions can be found [here](https://github.com/VSCodium/vscodium/blob/master/docs/build.md)
+Build instructions can be found [here](https://github.com/VSCodium/vscodium/blob/master/docs/howto-build.md)
 
 ## <a id="why"></a>Why Does This Exist
 
@@ -170,13 +160,17 @@ Microsoft's build process (which we are running to build the binaries) does down
 
 ### Documentation
 
-For more information on getting all the telemetry disabled and tips for migrating from Visual Studio Code to VSCodium, have a look at this [Docs](https://github.com/VSCodium/vscodium/blob/master/DOCS.md) page.
+For more information on getting all the telemetry disabled, tips for migrating from Visual Studio Code to VSCodium and more, have a look at [the Docs page](https://github.com/VSCodium/vscodium/blob/master/docs/index.md) page.
+
+### Troubleshooting
+
+If you have any issue, please check [the Troubleshooting page](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md) or the existing issues.
 
 ### Extensions and the Marketplace
 
-According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace-ToU), _you may only install and use Marketplace Offerings with Visual Studio Products and Services._ For this reason, VSCodium uses [open-vsx.org](https://open-vsx.org/), an open source registry for VS Code extensions. See the [Extensions + Marketplace](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#extensions-marketplace) section on the Docs page for more details.
+According to the VS Code Marketplace [Terms of Use](https://aka.ms/vsmarketplace-ToU), _you may only install and use Marketplace Offerings with Visual Studio Products and Services._ For this reason, VSCodium uses [open-vsx.org](https://open-vsx.org/), an open source registry for VS Code extensions. See the [Extensions + Marketplace](https://github.com/VSCodium/vscodium/blob/master/docs/index.md#extensions-marketplace) section on the Docs page for more details.
 
-Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
+Please note that some Visual Studio Code extensions have licenses that restrict their use to the official Visual Studio Code builds and therefore do not work with VSCodium. See [this note](https://github.com/VSCodium/vscodium/blob/master/docs/index.md#proprietary-debugging-tools) on the Docs page for what's been found so far and possible workarounds.
 
 ### How are the VSCodium binaries built?
 
@@ -187,22 +181,16 @@ The builds are run every day, but exit early if there isn't a new release from M
 ## <a id="supported-platforms"></a>Supported Platforms
 
 The minimal version is limited by the core component Electron, you may want to check its [platform prerequisites](https://www.electronjs.org/docs/latest/development/build-instructions-gn#platform-prerequisites).
-- [x] macOS (`zip`, `dmg`) OS X 10.10 or newer x64
+
+- [x] macOS (`zip`, `dmg`) macOS 10.15 or newer x64
 - [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64
-- [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `tar.gz`)
-- [x] GNU/Linux x86 (`deb`, `rpm`, `tar.gz`) ([up to v1.35.1](https://code.visualstudio.com/updates/v1_36#_linux-32bit-support-ends))
-- [x] GNU/Linux arm64 (`deb`, `tar.gz`)
-- [x] GNU/Linux armhf (`deb`, `tar.gz`)
+- [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `snap`, `tar.gz`)
+- [x] GNU/Linux arm64 (`deb`, `rpm`, `snap`, `tar.gz`)
+- [x] GNU/Linux armhf (`deb`, `rpm`, `tar.gz`)
 - [x] Windows 10 / Server 2012 R2 or newer x64
-- [x] Windows 10 / Server 2012 R2 or newer x86
 - [x] Windows 10 / Server 2012 R2 or newer arm64
 
-
-## <a id="donate"></a>Donate
-
-If you would like to support the development of VSCodium, feel free to send BTC to `3PgjE95yzBDTrSPxPiqoxSgZFuKPPAix1N`.
-
-Special thanks to:
+## <a id="thanks"></a>Special thanks
 
 <table>
   <tr>
@@ -216,6 +204,14 @@ Special thanks to:
   <tr>
     <td><a href="https://www.macstadium.com" target="_blank"><img src="https://images.prismic.io/macstadium/66fbce64-707e-41f3-b547-241908884716_MacStadium_Logo.png?w=128&q=75" width="128" height="49" alt="MacStadium logo" /></a></td>
     <td>for providing a Mac mini M1</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/daiyam" target="_blank">@daiyam</a></td>
+    <td>for macOS certificate</td>
+  </tr>
+  <tr>
+    <td><a href="https://signpath.org/" target="_blank"><img src="https://avatars.githubusercontent.com/u/34448643" height="30" alt="SignPath logo" /></a></td>
+    <td>free code signing on Windows provided by <a href="https://signpath.io/" target="_blank">SignPath.io</a>, certificate by <a href="https://signpath.org/" target="_blank">SignPath Foundation</a></td>
   </tr>
 </table>
 

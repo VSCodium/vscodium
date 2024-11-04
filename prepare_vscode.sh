@@ -24,6 +24,7 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 for file in ../patches/*.patch; do
   if [[ -f "${file}" ]]; then
     echo applying patch: "${file}";
+    # grep '^+++' "${file}"  | sed -e 's#+++ [ab]/#./vscode/#' | while read line; do shasum -a 256 "${line}"; done
     if ! git apply --ignore-whitespace "${file}"; then
       echo failed to apply patch "${file}" >&2
       exit 1
@@ -53,6 +54,18 @@ for file in ../patches/user/*.patch; do
   fi
 done
 
+if [[ -d "../patches/${OS_NAME}/" ]]; then
+  for file in "../patches/${OS_NAME}/"*.patch; do
+    if [[ -f "${file}" ]]; then
+      echo applying patch: "${file}";
+      if ! git apply --ignore-whitespace "${file}"; then
+        echo failed to apply patch "${file}" >&2
+        exit 1
+      fi
+    fi
+  done
+fi
+
 set -x
 
 export ELECTRON_SKIP_BINARY_DOWNLOAD=1
@@ -60,39 +73,26 @@ export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 if [[ "${OS_NAME}" == "linux" ]]; then
   export VSCODE_SKIP_NODE_VERSION_CHECK=1
-fi
 
-if [[ "${OS_NAME}" == "osx" ]]; then
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --network-timeout 180000
-
-  yarn postinstall
-else
-  if [[ "${OS_NAME}" == "windows" ]]; then
-    # TODO: Should be replaced with upstream URL once https://github.com/nodejs/node-gyp/pull/2825
-    # gets merged.
-    rm -rf .build/node-gyp
-    mkdir -p .build/node-gyp
-    cd .build/node-gyp
-
-    git config --global user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
-    git config --global user.name "${GITHUB_USERNAME} CI"
-    git clone https://github.com/nodejs/node-gyp.git .
-    git checkout v9.4.0
-    git am --3way --whitespace=fix ../../build/npm/gyp/patches/gyp_spectre_mitigation_support.patch
-    npm install
-
-    npm_config_node_gyp="$( pwd )/bin/node-gyp.js"
-    export npm_config_node_gyp
-
-    cd ../..
+   if [[ "${npm_config_arch}" == "arm" ]]; then
+    export npm_config_arm_version=7
   fi
-
+elif [[ "${OS_NAME}" == "windows" ]]; then
   if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7
   fi
-
-  CHILD_CONCURRENCY=1 yarn --frozen-lockfile --check-files --network-timeout 180000
 fi
+
+for i in {1..5}; do # try 5 times
+  npm ci && break
+  if [[ $i == 3 ]]; then
+    echo "Npm install failed too many times" >&2
+    exit 1
+  fi
+  echo "Npm install failed $i, trying again..."
+
+  sleep $(( 15 * (i + 1)))
+done
 
 setpath() {
   local jsonTmp

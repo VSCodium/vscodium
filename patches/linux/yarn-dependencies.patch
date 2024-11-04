@@ -1,0 +1,9 @@
+diff --git a/build/npm/postinstall.js b/build/npm/postinstall.js
+index d45d5bc..81a6449 100644
+--- a/build/npm/postinstall.js
++++ b/build/npm/postinstall.js
+@@ -56,3 +56,3 @@ function yarnInstall(dir, opts) {
+ 		opts.cwd = root;
+-		if (process.env['npm_config_arch'] === 'arm64') {
++		if (process.env['npm_config_arch'] === 'arm64' || process.env['npm_config_arch'] === 'arm' || process.env['npm_config_arch'] === 'ppc64' || process.env['npm_config_arch'] === 'riscv64') {
+ 			run('sudo', ['docker', 'run', '--rm', '--privileged', 'multiarch/qemu-user-static', '--reset', '-p', 'yes'], opts);

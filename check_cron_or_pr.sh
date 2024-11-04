@@ -6,7 +6,7 @@ set -e
 if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
 	echo "It's a PR"
 
-	export SHOULD_BUILD="yes"
+  export SHOULD_BUILD="yes"
 	export SHOULD_DEPLOY="no"
 elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
 	echo "It's a Push"
@@ -14,8 +14,8 @@ elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
 	export SHOULD_BUILD="yes"
 	export SHOULD_DEPLOY="no"
 elif [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-  if [[ "${TEST_ASSET_BUILDER}" == "true" ]]; then
-    echo "It's testing the assets builder"
+  if [[ "${GENERATE_ASSETS}" == "true" ]]; then
+    echo "It will generate the assets"
 
     export SHOULD_BUILD="yes"
     export SHOULD_DEPLOY="no"

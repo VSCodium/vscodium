@@ -3,10 +3,6 @@
 
 set -ex
 
-if [[ -f  "./remote-dependencies.tar" ]]; then
-  tar -xf ./remote-dependencies.tar ./vscode/remote/node_modules
-fi
-
 . version.sh
 
 if [[ "${SHOULD_BUILD}" == "yes" ]]; then
@@ -15,6 +11,8 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   . prepare_vscode.sh
 
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
+
+  export NODE_OPTIONS="--max-old-space-size=8192"
 
   yarn monaco-compile-check
   yarn valid-layers-check
@@ -31,21 +29,26 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
     VSCODE_PLATFORM="darwin"
   elif [[ "${OS_NAME}" == "windows" ]]; then
-    . ../build/windows/rtf/make.sh
+    # in CI, packaging will be done by a different job
+    if [[ "${CI_BUILD}" == "no" ]]; then
+      . ../build/windows/rtf/make.sh
 
-    yarn gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+      yarn gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
 
-    if [[ "${VSCODE_ARCH}" != "ia32" && "${VSCODE_ARCH}" != "x64" ]]; then
-      SHOULD_BUILD_REH="no"
+      if [[ "${VSCODE_ARCH}" != "x64" ]]; then
+        SHOULD_BUILD_REH="no"
+        SHOULD_BUILD_REH_WEB="no"
+      fi
     fi
 
     VSCODE_PLATFORM="win32"
-  elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then # linux-ppc64le
-    VSCODE_PLATFORM="linux"
   else # linux
-    yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
+    # in CI, packaging will be done by a different job
+    if [[ "${CI_BUILD}" == "no" ]]; then
+      yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
-    find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
+      find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
+    fi
 
     VSCODE_PLATFORM="linux"
   fi
@@ -53,6 +56,11 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
     yarn gulp minify-vscode-reh
     yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+  fi
+
+  if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
+    yarn gulp minify-vscode-reh-web
+    yarn gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
   fi
 
   cd ..

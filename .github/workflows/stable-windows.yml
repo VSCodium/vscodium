@@ -3,17 +3,17 @@ name: stable-windows
 on:
   workflow_dispatch:
     inputs:
-      new_release:
-        type: boolean
-        description: Force new Release
       force_version:
         type: boolean
         description: Force update version
-      test_asset_builder:
+      generate_assets:
         type: boolean
-        description: Test the assets builder
-  schedule:
-    - cron: '0 18 * * *'
+        description: Generate assets
+      checkout_pr:
+        type: string
+        description: Checkout PR
+  repository_dispatch:
+    types: [stable]
   push:
     branches: [ master ]
     paths-ignore:
@@ -30,69 +30,225 @@ env:
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
   VSCODE_QUALITY: stable
 
-
 jobs:
-  build:
-    runs-on: windows-2019
-    defaults:
-      run:
-        shell: bash
-    env:
-      VSCODE_ARCH: ${{ matrix.vscode_arch }}
-    strategy:
-      fail-fast: false
-      matrix:
-        vscode_arch:
-          - x64
-          - ia32
-          - arm64
+  check:
+    runs-on: ubuntu-latest
     outputs:
+      MS_COMMIT: ${{ env.MS_COMMIT }}
+      MS_TAG: ${{ env.MS_TAG }}
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
         with:
-          node-version: '18.17'
+          ref: ${{ env.GITHUB_BRANCH }}
 
-      - name: Install Yarn
-        run: npm install -g yarn
-
-      - name: Setup Python 3
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
       - name: Check PR or cron
         env:
-          TEST_ASSET_BUILDER: ${{ github.event.inputs.test_asset_builder }}
+          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
         run: ./check_cron_or_pr.sh
 
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_RELEASE: ${{ github.event.inputs.new_release }}
+          CHECK_ALL: 'yes'
         run: ./check_tags.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+
+  compile:
+    needs:
+      - check
+    runs-on: ubuntu-20.04
+    env:
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
+      VSCODE_ARCH: 'x64'
+    outputs:
+      BUILD_SOURCEVERSION: ${{ env.BUILD_SOURCEVERSION }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+
+      - name: Setup GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18'
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Install Yarn
+        run: npm install -g yarn
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Install libkrb5-dev
+        run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Clone VSCode repo
+        run: ./get_repo.sh
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Build
+        env:
+          SHOULD_BUILD_REH: 'no'
+          SHOULD_BUILD_REH_WEB: 'no'
+        run: ./build.sh
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Compress vscode artifact
+        run: |
+          find vscode -type f -not -path "*/node_modules/*" -not -path "vscode/.build/node/*" -not -path "vscode/.git/*" > vscode.txt
+          echo "vscode/.build/extensions/node_modules" >> vscode.txt
+          echo "vscode/.git" >> vscode.txt
+          tar -czf vscode.tar.gz -T vscode.txt
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Upload vscode artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode
+          path: ./vscode.tar.gz
+          retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
+        if: env.SHOULD_BUILD == 'yes'
+
+  build:
+    needs:
+      - check
+      - compile
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        vscode_arch:
+          - x64
+          - arm64
+    defaults:
+      run:
+        shell: bash
+    env:
+      BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
+      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
+    outputs:
+      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18'
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Install Yarn
+        run: npm install -g yarn
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Check existing VSCodium tags/releases
+        env:
+          DISABLE_MSI: ${{ vars.DISABLE_STABLE_MSI }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./check_tags.sh
+        if: env.SHOULD_BUILD == 'yes'
+
+      - name: Download vscode artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vscode
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository_owner }}
           npm_config_arch: ${{ matrix.vscode_arch }}
           npm_config_target_arch: ${{ matrix.vscode_arch }}
-        run: ./build.sh
+        run: ./package_windows.sh
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Prepare assets
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.test_asset_builder == 'true')
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
+      - name: Upload unsigned artifacts
+        id: upload-unsigned-artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-${{ matrix.vscode_arch }}
+          path: |
+            assets/*.exe
+            assets/*.msi
+          retention-days: 1
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
+      - name: Signing
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ secrets.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ secrets.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}
+          artifact-configuration-slug: ${{ matrix.vscode_arch }}
+          wait-for-completion: true
+          # 3h to manually approve the request
+          wait-for-completion-timeout-in-seconds: 10800
+          output-artifact-directory: assets/
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
+      - name: Prepare checksums
+        run: ./prepare_checksums.sh
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Release
         env:
@@ -106,7 +262,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+
+      - name: Upload assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: bin-${{ matrix.vscode_arch }}
+          path: assets/
+          retention-days: 3
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   winget:
     needs: build
@@ -120,6 +284,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
 
       - name: Check version
         run: ./stores/winget/check_version.sh
@@ -127,7 +293,7 @@ jobs:
           RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
 
       - name: Release to WinGet
-        uses: vedantmgoyal2009/winget-releaser@v2
+        uses: vedantmgoyal9/winget-releaser@main
         with:
           identifier: ${{ env.APP_IDENTIFIER }}
           version: ${{ env.RELEASE_VERSION }}

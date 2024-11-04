@@ -1,0 +1,22 @@
+diff --git a/extensions/git/src/ipc/ipcServer.ts b/extensions/git/src/ipc/ipcServer.ts
+index a7142fe..526ca17 100644
+--- a/extensions/git/src/ipc/ipcServer.ts
++++ b/extensions/git/src/ipc/ipcServer.ts
+@@ -20,3 +20,7 @@ function getIPCHandlePath(id: string): string {
+ 	if (process.platform !== 'darwin' && process.env['XDG_RUNTIME_DIR']) {
+-		return path.join(process.env['XDG_RUNTIME_DIR'] as string, `vscode-git-${id}.sock`);
++		if (!!process.env.FLATPAK_ID) {
++			return path.join(process.env['XDG_RUNTIME_DIR'] as string, 'app', process.env.FLATPAK_ID, `vscode-git-${id}.sock`);
++		} else {
++			return path.join(process.env['XDG_RUNTIME_DIR'] as string, `vscode-git-${id}.sock`);
++		}
+ 	}
+diff --git a/src/vs/base/parts/ipc/node/ipc.net.ts b/src/vs/base/parts/ipc/node/ipc.net.ts
+index 629f2c4..ec1acba 100644
+--- a/src/vs/base/parts/ipc/node/ipc.net.ts
++++ b/src/vs/base/parts/ipc/node/ipc.net.ts
+@@ -774,3 +774,3 @@ function unmask(buffer: VSBuffer, mask: number): void {
+ // Related to https://github.com/microsoft/vscode/issues/30624
+-export const XDG_RUNTIME_DIR = <string | undefined>process.env['XDG_RUNTIME_DIR'];
++export const XDG_RUNTIME_DIR = <string | undefined>(!!process.env.FLATPAK_ID ? join(process.env['XDG_RUNTIME_DIR'] as string, 'app', process.env.FLATPAK_ID) : process.env['XDG_RUNTIME_DIR']);
+ 

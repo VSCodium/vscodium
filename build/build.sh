@@ -6,6 +6,7 @@
 ###
 
 export APP_NAME="VSCodium"
+export BINARY_NAME="codium"
 export CI_BUILD="no"
 export SHOULD_BUILD="yes"
 export SKIP_ASSETS="yes"
@@ -13,10 +14,12 @@ export SKIP_BUILD="no"
 export SKIP_SOURCE="no"
 export VSCODE_LATEST="no"
 export VSCODE_QUALITY="stable"
+export VSCODE_SKIP_NODE_VERSION_CHECK="yes"
 
 while getopts ":ilops" opt; do
   case "$opt" in
     i)
+      export BINARY_NAME="codium-insiders"
       export VSCODE_QUALITY="insider"
       ;;
     l)
@@ -50,13 +53,17 @@ esac
 
 UNAME_ARCH=$( uname -m )
 
-if [[ "${UNAME_ARCH}" == "arm64" ]]; then
+if [[ "${UNAME_ARCH}" == "aarch64" || "${UNAME_ARCH}" == "arm64" ]]; then
   export VSCODE_ARCH="arm64"
 elif [[ "${UNAME_ARCH}" == "ppc64le" ]]; then
   export VSCODE_ARCH="ppc64le"
+elif [[ "${UNAME_ARCH}" == "riscv64" ]]; then
+  export VSCODE_ARCH="riscv64"
 else
   export VSCODE_ARCH="x64"
 fi
+
+export NODE_OPTIONS="--max-old-space-size=8192"
 
 echo "OS_NAME=\"${OS_NAME}\""
 echo "SKIP_SOURCE=\"${SKIP_SOURCE}\""
@@ -79,7 +86,7 @@ if [[ "${SKIP_SOURCE}" == "no" ]]; then
   echo "BUILD_SOURCEVERSION=\"${BUILD_SOURCEVERSION}\"" >> build.env
 else
   if [[ "${SKIP_ASSETS}" != "no" ]]; then
-    rm -rf VSCode*
+    rm -rf vscode-* VSCode-*
   fi
 
   . build.env
@@ -97,20 +104,28 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
     git add .
     git reset -q --hard HEAD
 
+    rm -rf .build out*
+
     cd ..
   fi
 
   . build.sh
 
-  if [[ "${VSCODE_QUALITY}" == "insider" && "${VSCODE_LATEST}" == "yes" ]]; then
-    jsonTmp=$( cat "insider.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
-    echo "${jsonTmp}" > "insider.json" && unset jsonTmp
+  if [[ "${VSCODE_LATEST}" == "yes" ]]; then
+    jsonTmp=$( cat "${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
+    echo "${jsonTmp}" > "${VSCODE_QUALITY}.json" && unset jsonTmp
   fi
 fi
 
 if [[ "${SKIP_ASSETS}" == "no" ]]; then
   if [[ "${OS_NAME}" == "windows" ]]; then
     rm -rf build/windows/msi/releasedir
+  fi
+
+  if [[ "${OS_NAME}" == "osx" && -f "./macos-codesign.env" ]]; then
+    . macos-codesign.env
+
+    echo "CERTIFICATE_OSX_ID: ${CERTIFICATE_OSX_ID}"
   fi
 
   . prepare_assets.sh

@@ -1,0 +1,14 @@
+diff --git a/src/vs/platform/extensionManagement/node/extensionManagementService.ts b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
+index 680e0dd..0b04279 100644
+--- a/src/vs/platform/extensionManagement/node/extensionManagementService.ts
++++ b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
+@@ -86,2 +86,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ 		@IFileService private readonly fileService: IFileService,
++		// @ts-expect-error no-unused-variable
+ 		@IConfigurationService private readonly configurationService: IConfigurationService,
+@@ -347,4 +348,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ 		if (verifySignature) {
+-			const value = this.configurationService.getValue('extensions.verifySignature');
+-			verifySignature = isBoolean(value) ? value : true;
++			verifySignature = false;
+ 		}
