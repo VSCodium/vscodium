@@ -3,7 +3,6 @@
 ## Table of Contents
 
 - [Getting all the Telemetry Out](#disable-telemetry)
-  - [Enabling and Customizing the built-in Crashpad](#customize-crashpad)
   - [Replacements to Microsoft Online Services](#replacement-online-services)
 - [Extensions + Marketplace](#extensions-marketplace)
   - [How to use the OpenVSX Marketplace](#howto-openvsx-marketplace)
@@ -28,13 +27,9 @@
 
 Even though we do not pass the telemetry build flags (and go out of our way to cripple the baked-in telemetry), Microsoft will still track usage by default.
 
-We do however set the default `telemetry.enableCrashReporter` and `telemetry.enableTelemetry` values to false. You can see those by viewing your VSCodium settings.json and searching for `telemetry`.
+We do however set the `telemetry.enableTelemetry` setting's default value to `false`. You can see those by viewing your VSCodium `settings.json` and searching for `telemetry`.
 
-+ Note: since [VS Code v1.49](https://code.visualstudio.com/updates/v1_49#_disabling-crash-reporter), the actual switch that enables/disables Electron's crash reporter has been migrated (from `telemetry.enableCrashReporter` in `settings.json`) to `enable-crash-reporter` in `argv.json`.
-
-+ The instructions [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting) and [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-crash-reporting) help with explaining and toggling telemetry.
-
-+ For details about Electron's built-in crash reporter (based on Crashpad), check their [docs](https://www.electronjs.org/docs/latest/api/crash-reporter).
+The instructions [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting) help with explaining and toggling telemetry.
 
 It is also highly recommended that you review all the settings that "use online services" by following [these instructions](https://code.visualstudio.com/docs/getstarted/telemetry#_managing-online-services). The `@tag:usesOnlineServices` filter on the settings page will show that by default:
 
@@ -45,12 +40,6 @@ It is also highly recommended that you review all the settings that "use online 
 These can all be disabled.
 
 __Please note that some extensions send telemetry data to Microsoft as well. We have no control over this and can only recommend removing the extension.__ _(For example, the C# extension `ms-vscode.csharp` sends tracking data to Microsoft.)_
-
-### <a id="customize-crashpad"></a>Enabling and Customizing the built-in Crashpad
-
-As [implemented by VS Code](https://github.com/microsoft/vscode/wiki/Native-Crash-Issues), the directory where Electron places its crash minidumps can be customized, if one launches VSCodium with the `--crash-reporter-directory <absolute-path>` cli option.
-
-Note that when launched with this cli option, Crashpad will always be enabled, but never telemetered, regardless of the enable-crash-reporter configurations in `settings.json` and `argv.json`. The minidumps will be stored in your specified `<absolute-path>` and never uploaded.
 
 ### <a id="replacement-online-services"></a>Replacements to Microsoft Online Services
 
