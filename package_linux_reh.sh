@@ -52,6 +52,15 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
   # part of the url before '/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz'
   export VSCODE_NODEJS_URLROOT='/download/release'
+elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
+  NODE_VERSION="20.16.0"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:trixie-devtoolset-loong64"
+
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SKIP_SETUPENV=1
+  export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
+  export VSCODE_NODEJS_URLROOT='/download/release'
 fi
 
 export VSCODE_PLATFORM='linux'
@@ -141,9 +150,13 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
   EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+  
+  pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+  if [ "${VSCODE_ARCH}" == "loong64" ]; then
+    ../ripgrep.loong64.sh
+  fi
 
   echo "Archiving REH"
-  pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
   tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
   popd
 fi
@@ -155,8 +168,12 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  echo "Archiving REH-web"
   pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+  if [ "${VSCODE_ARCH}" == "loong64" ]; then
+    ../ripgrep.loong64.sh
+  fi
+
+  echo "Archiving REH-web"
   tar czf "../assets/${APP_NAME_LC}-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
   popd
 fi
