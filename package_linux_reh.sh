@@ -150,14 +150,16 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
   EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
-  
+
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
-  if [ "${VSCODE_ARCH}" == "loong64" ]; then
-    ../ripgrep.loong64.sh
+
+  if [[ -f "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" ]]; then
+    exec "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh"
   fi
 
   echo "Archiving REH"
   tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+
   popd
 fi
 
@@ -169,12 +171,14 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
   pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
-  if [ "${VSCODE_ARCH}" == "loong64" ]; then
-    ../ripgrep.loong64.sh
+
+  if [[ -f "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" ]]; then
+    exec "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh"
   fi
 
   echo "Archiving REH-web"
   tar czf "../assets/${APP_NAME_LC}-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+
   popd
 fi
 

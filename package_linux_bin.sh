@@ -29,12 +29,15 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SKIP_SETUPENV=1
+fi
 
-  source ../electron.riscv64.sh
+if [[ -f "../electron_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" ]]; then
+  # shellcheck disable=SC1090
+  source "../electron_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh"
 
-  if [[ "${ELECTRON_VERSION}" != "$(yarn config get target)" ]]; then
+  if [[ "${ELECTRON_VERSION}" != "$( yarn config get target )" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
-    echo "Electron RISC-V binary version doesn't match target electron version!"
+    echo "Electron ${VSCODE_ARCH} binary version doesn't match target electron version!"
     echo "Releases available at: https://github.com/${VSCODE_ELECTRON_REPOSITORY}/releases"
     exit 1
   fi
