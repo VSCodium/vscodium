@@ -1,69 +1,71 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 595d0ce..99bfe30 100644
+index 53ef6f3..411da6b 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -290,4 +290,5 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -307,2 +307,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const name = product.nameShort;
 +		const release = packageJson.release;
+ 
+@@ -310,3 +311,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const packageJsonStream = gulp.src(['remote/package.json'], { base: 'remote' })
--			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined }));
-+			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined }));
- 
-@@ -296,3 +297,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+-			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined, type: 'module' }))
++			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined, type: 'module' }))
+ 			.pipe(es.through(function (file) {
+@@ -318,3 +319,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
--			.pipe(json({ commit, date, version }));
-+			.pipe(json({ commit, date, version, release }));
- 
+-			.pipe(json({ commit, date: readISODate('out-build'), version }))
++			.pipe(json({ commit, date: readISODate('out-build'), version, release }))
+ 			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index e1507e0..9a12a12 100644
+index d59b42d..61670c0 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -233,3 +233,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -268,3 +268,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  
 -		let version = packageJson.version;
 +		let version = packageJson.version
  		const quality = product.quality;
-@@ -241,3 +241,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -276,3 +276,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const name = product.nameShort;
 -		const packageJsonUpdates = { name, version };
 +		const release = packageJson.release;
 +		const packageJsonUpdates = { name, version, release };
  
-@@ -252,3 +253,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
- 		const date = new Date().toISOString();
--		const productJsonUpdate = { commit, date, checksums, version };
-+		const productJsonUpdate = { commit, date, checksums, version, release };
- 
+@@ -293,3 +294,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 		const productJsonStream = gulp.src(['product.json'], { base: '.' })
+-			.pipe(json({ commit, date: readISODate('out-build'), checksums, version }))
++			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release }))
+ 			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index 8c2b62f..303fb16 100644
+index fb0e5a4..170c60b 100644
 --- a/build/gulpfile.vscode.linux.js
 +++ b/build/gulpfile.vscode.linux.js
-@@ -24,4 +24,2 @@ const commit = getVersion(root);
+@@ -27,4 +27,2 @@ const commit = getVersion(root);
  
 -const linuxPackageRevision = Math.floor(new Date().getTime() / 1000);
 -
  /**
-@@ -86,3 +84,3 @@ function prepareDebPackage(arch) {
+@@ -89,3 +87,3 @@ function prepareDebPackage(arch) {
  					.pipe(replace('@@NAME@@', product.applicationName))
 -					.pipe(replace('@@VERSION@@', packageJson.version + '-' + linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  					.pipe(replace('@@ARCHITECTURE@@', debArch))
-@@ -194,4 +192,3 @@ function prepareRpmPackage(arch) {
+@@ -204,4 +202,3 @@ function prepareRpmPackage(arch) {
  					.pipe(replace('@@ICON@@', product.linuxIconName))
 -					.pipe(replace('@@VERSION@@', packageJson.version))
 -					.pipe(replace('@@RELEASE@@', linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  					.pipe(replace('@@ARCHITECTURE@@', rpmArch))
-@@ -270,3 +267,3 @@ function prepareSnapPackage(arch) {
+@@ -281,3 +278,3 @@ function prepareSnapPackage(arch) {
  			.pipe(replace('@@NAME@@', product.applicationName))
 -			.pipe(replace('@@VERSION@@', commit.substr(0, 8)))
 +			.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  			// Possible run-on values https://snapcraft.io/docs/architectures
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
-index 5adfdfb..d6ddead 100644
+index 98175f5..afacbe3 100644
 --- a/build/gulpfile.vscode.win32.js
 +++ b/build/gulpfile.vscode.win32.js
-@@ -90,4 +90,4 @@ function buildWin32Setup(arch, target) {
+@@ -89,4 +89,4 @@ function buildWin32Setup(arch, target) {
  			DirName: product.win32DirName,
 -			Version: pkg.version,
 -			RawVersion: pkg.version.replace(/-\w+$/, ''),
@@ -71,7 +73,7 @@ index 5adfdfb..d6ddead 100644
 +			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 3a57612..d26a55b 100644
+index 1f58ce0..1555ae2 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
 @@ -58,2 +58,3 @@ export interface IProductConfiguration {
@@ -79,16 +81,16 @@ index 3a57612..d26a55b 100644
 +	readonly release: string;
  	readonly date?: string;
 diff --git a/src/vs/platform/diagnostics/node/diagnosticsService.ts b/src/vs/platform/diagnostics/node/diagnosticsService.ts
-index 0be311f..d6c4a18 100644
+index 5f6efd5..da3c54d 100644
 --- a/src/vs/platform/diagnostics/node/diagnosticsService.ts
 +++ b/src/vs/platform/diagnostics/node/diagnosticsService.ts
-@@ -224,3 +224,3 @@ export class DiagnosticsService implements IDiagnosticsService {
+@@ -232,3 +232,3 @@ export class DiagnosticsService implements IDiagnosticsService {
  		const output: string[] = [];
 -		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
 +		output.push(`Version:          ${this.productService.nameShort} ${this.productService.version} ${this.productService.release || 'Release unknown'} (${this.productService.commit || 'Commit unknown'}, ${this.productService.date || 'Date unknown'})`);
  		output.push(`OS Version:       ${osLib.type()} ${osLib.arch()} ${osLib.release()}`);
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 467e11c..8e7d474 100644
+index 1a2a619..2a8d683 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -43,6 +43,7 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
@@ -102,12 +104,12 @@ index 467e11c..8e7d474 100644
 +			release: pkg.release
  		});
 diff --git a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-index c064ebc..72a9fa9 100644
+index 21f62b6..98edd0e 100644
 --- a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 @@ -22,2 +22,3 @@ import { defaultButtonStyles, defaultCheckboxStyles, defaultDialogStyles, defaul
- import { ResultKind } from 'vs/platform/keybinding/common/keybindingResolver';
-+import { getReleaseString } from 'vs/workbench/common/release';
+ import { ResultKind } from '../../../../platform/keybinding/common/keybindingResolver.js';
++import { getReleaseString } from '../../../../workbench/common/release';
  
 @@ -79,2 +80,4 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
  		const detailString = (useAgo: boolean): string => {
@@ -140,13 +142,13 @@ index 0000000..2a8ea57
 +	return LABELS[language] ?? DEFAULT_LABEL;
 +}
 diff --git a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-index f2cc82a..700d81a 100644
+index 6c61a59..e76a188 100644
 --- a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-@@ -14,2 +14,3 @@ import { IProductService } from 'vs/platform/product/common/productService';
- import { process } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-+import { getReleaseString } from 'vs/workbench/common/release';
- import { getActiveWindow } from 'vs/base/browser/dom';
+@@ -15,2 +15,3 @@ import { process } from '../../../../base/parts/sandbox/electron-sandbox/globals
+ import { getActiveWindow } from '../../../../base/browser/dom.js';
++import { getReleaseString } from '../../../../workbench/common/release';
+ 
 @@ -80,2 +81,3 @@ export class NativeDialogHandler extends AbstractDialogHandler {
  		const osProps = await this.nativeHostService.getOSProperties();
 +		const releaseString = getReleaseString();

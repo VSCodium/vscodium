@@ -7,9 +7,6 @@
   - [MacOS](#dependencies-macos)
   - [Windows](#dependencies-windows)
 - [Build Scripts](#build-scripts)
-- [Build in Docker](#build-docker)
-  - [X64](#build-docker-x64)
-  - [ARM 32bits](#build-docker-arm32)
 - [Build Snap](#build-snap)
 - [Patch Update Process](#patch-update-process)
   - [Semi-Automated](#patch-update-process-semiauto)
@@ -17,7 +14,7 @@
 
 ## <a id="dependencies"></a>Dependencies
 
-- node 18.15
+- node 20.14
 - yarn
 - jq
 - git
@@ -75,49 +72,6 @@ The script `build/build.sh` provides several flags:
 - `-o`: skip the build step
 - `-p`: generate the packages/assets/installers
 - `-s`: do not retrieve the source code of Visual Studio Code, it won't delete the existing build
-
-## <a id="build-docker"></a>Build in Docker
-
-To build for Linux, you can alternatively build VSCodium in docker
-
-### <a id="build-docker-x64"></a>X64
-
-Firstly, create the container with:
-```
-docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-x64 bash
-```
-like
-```
-docker run -ti --volume=$(pwd):/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-x64 bash
-```
-
-When inside the container, you can use the following commands to build:
-```
-cd /root/vscodium
-
-./build/build.sh
-```
-
-### <a id="build-docker-arm32"></a>ARM 32bits
-
-Firstly, create the container with:
-```
-docker run -ti --volume=<local vscodium source>:/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-armhf bash
-```
-like
-```
-docker run -ti --volume=$(pwd):/root/vscodium --name=vscodium-build-agent vscodium/vscodium-linux-build-agent:bionic-armhf bash
-```
-
-When inside the container, you can use the following commands to build:
-```
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-sudo apt-get install -y nodejs desktop-file-utils
-
-cd /root/vscodium
-
-./build/build.sh
-```
 
 ## <a id="build-snap"></a>Build Snap
 

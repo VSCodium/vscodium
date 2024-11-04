@@ -1,10 +1,14 @@
-diff --git a/build/npm/postinstall.js b/build/npm/postinstall.js
-index 72dd74f..94d4957 100644
---- a/build/npm/postinstall.js
-+++ b/build/npm/postinstall.js
-@@ -86,4 +86,3 @@ for (let dir of dirs) {
- 
--	if (/^(.build\/distro\/npm\/)?remote/.test(dir) && process.platform === 'win32' && (process.arch === 'arm64' || process.env['npm_config_arch'] === 'arm64')) {
--		// windows arm: do not execute `yarn` on remote folder
-+	if (/^(.build\/distro\/npm\/)?remote/.test(dir)) {
- 		continue;
+diff --git a/build/npm/dirs.js b/build/npm/dirs.js
+index b9645e6..22f3450 100644
+--- a/build/npm/dirs.js
++++ b/build/npm/dirs.js
+@@ -47,4 +47,2 @@ const dirs = [
+ 	'extensions/vscode-test-resolver',
+-	'remote',
+-	'remote/web',
+ 	'test/automation',
+@@ -59,4 +57,2 @@ if (fs.existsSync(`${__dirname}/../../.build/distro/npm`)) {
+ 	dirs.push('.build/distro/npm');
+-	dirs.push('.build/distro/npm/remote');
+-	dirs.push('.build/distro/npm/remote/web');
+ }

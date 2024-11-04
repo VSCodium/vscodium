@@ -1,22 +1,22 @@
 diff --git a/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts b/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts
-index 00914aa..d5cfc18 100644
+index 18b5815..51a5d50 100644
 --- a/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts
 +++ b/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts
-@@ -7,3 +7,3 @@ import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
- import { localize } from 'vs/nls';
--import { Action2, MenuId, MenuRegistry, registerAction2 } from 'vs/platform/actions/common/actions';
-+import { Action2, MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
- import { ContextKeyExpr, IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
+@@ -7,3 +7,3 @@ import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.j
+ import { localize } from '../../../../nls.js';
+-import { Action2, MenuId, MenuRegistry, registerAction2 } from '../../../../platform/actions/common/actions.js';
++import { Action2, MenuId, registerAction2 } from '../../../../platform/actions/common/actions.js';
+ import { ContextKeyExpr, IContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
 @@ -17,3 +17,3 @@ import { AuthenticationSession, AuthenticationSessionsChangeEvent, IAuthenticati
- import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
--import { EDIT_SESSIONS_SIGNED_IN, EditSession, EDIT_SESSION_SYNC_CATEGORY, IEditSessionsStorageService, EDIT_SESSIONS_SIGNED_IN_KEY, IEditSessionsLogService, SyncResource, EDIT_SESSIONS_PENDING_KEY } from 'vs/workbench/contrib/editSessions/common/editSessions';
-+import { EDIT_SESSIONS_SIGNED_IN, EditSession, EDIT_SESSION_SYNC_CATEGORY, IEditSessionsStorageService, EDIT_SESSIONS_SIGNED_IN_KEY, IEditSessionsLogService, SyncResource } from 'vs/workbench/contrib/editSessions/common/editSessions';
- import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
+ import { IExtensionService } from '../../../services/extensions/common/extensions.js';
+-import { EDIT_SESSIONS_SIGNED_IN, EditSession, EDIT_SESSION_SYNC_CATEGORY, IEditSessionsStorageService, EDIT_SESSIONS_SIGNED_IN_KEY, IEditSessionsLogService, SyncResource, EDIT_SESSIONS_PENDING_KEY } from '../common/editSessions.js';
++import { EDIT_SESSIONS_SIGNED_IN, EditSession, EDIT_SESSION_SYNC_CATEGORY, IEditSessionsStorageService, EDIT_SESSIONS_SIGNED_IN_KEY, IEditSessionsLogService, SyncResource } from '../common/editSessions.js';
+ import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
 @@ -93,3 +93,2 @@ export class EditSessionsWorkbenchService extends Disposable implements IEditSes
  
 -		this.registerSignInAction();
  		this.registerResetAuthenticationAction();
-@@ -455,39 +454,2 @@ export class EditSessionsWorkbenchService extends Disposable implements IEditSes
+@@ -456,39 +455,2 @@ export class EditSessionsWorkbenchService extends Disposable implements IEditSes
  
 -	private registerSignInAction() {
 -		const that = this;

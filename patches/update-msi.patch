@@ -1,9 +1,0 @@
-diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index 99bf807..b5b4333 100644
---- a/src/vs/platform/update/electron-main/updateService.win32.ts
-+++ b/src/vs/platform/update/electron-main/updateService.win32.ts
-@@ -156,3 +156,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
- 					}).then(packagePath => {
--						const fastUpdatesEnabled = this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
-+						const fastUpdatesEnabled = getUpdateType() == UpdateType.Setup && this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
- 

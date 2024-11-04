@@ -1,0 +1,553 @@
+diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
+index d836fb7..540890f 100755
+--- a/build/azure-pipelines/linux/setup-env.sh
++++ b/build/azure-pipelines/linux/setup-env.sh
+@@ -74,2 +74,14 @@ elif [ "$npm_config_arch" == "arm" ]; then
+   export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot -L$VSCODE_SYSROOT_DIR/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot/usr/lib/arm-linux-gnueabihf -L$VSCODE_SYSROOT_DIR/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot/lib/arm-linux-gnueabihf"
++elif [ "$npm_config_arch" == "ppc64" ]; then
++	# Set compiler toolchain for client native modules
++	export CC=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/bin/powerpc64le-linux-gnu-gcc
++	export CXX=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/bin/powerpc64le-linux-gnu-g++
++	export CXXFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot"
++	export LDFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/usr/lib/powerpc64le-linux-gnu -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/lib/powerpc64le-linux-gnu"
++
++	# Set compiler toolchain for remote server
++	export VSCODE_REMOTE_CC=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/bin/powerpc64le-linux-gnu-gcc
++	export VSCODE_REMOTE_CXX=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/bin/powerpc64le-linux-gnu-g++
++	export VSCODE_REMOTE_CXXFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot"
++	export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/usr/lib/powerpc64le-linux-gnu -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/lib/powerpc64le-linux-gnu"
+ fi
+diff --git a/build/azure-pipelines/linux/verify-glibc-requirements.sh b/build/azure-pipelines/linux/verify-glibc-requirements.sh
+index c655ce7..c7150f2 100755
+--- a/build/azure-pipelines/linux/verify-glibc-requirements.sh
++++ b/build/azure-pipelines/linux/verify-glibc-requirements.sh
+@@ -9,2 +9,4 @@ elif [ "$VSCODE_ARCH" == "armhf" ]; then
+   TRIPLE="arm-rpi-linux-gnueabihf"
++elif [ "$VSCODE_ARCH" == "ppc64le" ]; then
++  TRIPLE="powerpc64le-linux-gnu"
+ fi
+diff --git a/build/checksums/vscode-sysroot.txt b/build/checksums/vscode-sysroot.txt
+index 0b5f38c..9f3b02b 100644
+--- a/build/checksums/vscode-sysroot.txt
++++ b/build/checksums/vscode-sysroot.txt
+@@ -6 +6,2 @@
+ dbb927408393041664a020661f2641c9785741be3d29b050b9dac58980967784  x86_64-linux-gnu-glibc-2.28.tar.gz
++fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
+diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
+index d0770d6..8c83c13 100644
+--- a/build/gulpfile.reh.js
++++ b/build/gulpfile.reh.js
+@@ -50,2 +50,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'arm64' },
++	{ platform: 'linux', arch: 'ppc64le' },
+ 	{ platform: 'alpine', arch: 'arm64' },
+diff --git a/build/gulpfile.scan.js b/build/gulpfile.scan.js
+index cbcdddb..274d889 100644
+--- a/build/gulpfile.scan.js
++++ b/build/gulpfile.scan.js
+@@ -26,2 +26,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'arm64' },
++	{ platform: 'linux', arch: 'ppc64le' },
+ ];
+diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
+index 95f2cf0..7395ba4 100644
+--- a/build/gulpfile.vscode.js
++++ b/build/gulpfile.vscode.js
+@@ -494,2 +494,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'arm64' },
++	{ platform: 'linux', arch: 'ppc64le' },
+ ];
+diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
+index fb0e5a4..264cec1 100644
+--- a/build/gulpfile.vscode.linux.js
++++ b/build/gulpfile.vscode.linux.js
+@@ -33,3 +33,3 @@ const linuxPackageRevision = Math.floor(new Date().getTime() / 1000);
+ function getDebPackageArch(arch) {
+-	return { x64: 'amd64', armhf: 'armhf', arm64: 'arm64' }[arch];
++	return { x64: 'amd64', armhf: 'armhf', arm64: 'arm64', ppc64le: 'ppc64el' }[arch];
+ }
+@@ -145,3 +145,3 @@ function getRpmBuildPath(rpmArch) {
+ function getRpmPackageArch(arch) {
+-	return { x64: 'x86_64', armhf: 'armv7hl', arm64: 'aarch64' }[arch];
++	return { x64: 'x86_64', armhf: 'armv7hl', arm64: 'aarch64', ppc64le: 'ppc64le' }[arch];
+ }
+@@ -307,2 +307,3 @@ const BUILD_TARGETS = [
+ 	{ arch: 'arm64' },
++	{ arch: 'ppc64le' },
+ ];
+diff --git a/build/linux/debian/calculate-deps.js b/build/linux/debian/calculate-deps.js
+index 57934e6..b97d275 100644
+--- a/build/linux/debian/calculate-deps.js
++++ b/build/linux/debian/calculate-deps.js
+@@ -51,2 +51,5 @@ function calculatePackageDeps(binaryPath, arch, chromiumSysroot, vscodeSysroot)
+             break;
++		case 'ppc64el':
++			cmd.push(`-l${chromiumSysroot}/usr/lib/powerpc64le-linux-gnu`, `-l${chromiumSysroot}/lib/powerpc64le-linux-gnu`, `-l${vscodeSysroot}/usr/lib/powerpc64le-linux-gnu`, `-l${vscodeSysroot}/lib/powerpc64le-linux-gnu`);
++			break;
+     }
+diff --git a/build/linux/debian/calculate-deps.ts b/build/linux/debian/calculate-deps.ts
+index c44e241..5a6e9b4 100644
+--- a/build/linux/debian/calculate-deps.ts
++++ b/build/linux/debian/calculate-deps.ts
+@@ -61,2 +61,8 @@ function calculatePackageDeps(binaryPath: string, arch: DebianArchString, chromi
+ 			break;
++		case 'ppc64el':
++			cmd.push(`-l${chromiumSysroot}/usr/lib/powerpc64le-linux-gnu`,
++				`-l${chromiumSysroot}/lib/powerpc64le-linux-gnu`,
++				`-l${vscodeSysroot}/usr/lib/powerpc64le-linux-gnu`,
++				`-l${vscodeSysroot}/lib/powerpc64le-linux-gnu`);
++			break;
+ 	}
+diff --git a/build/linux/debian/dep-lists.js b/build/linux/debian/dep-lists.js
+index 306d91e..64377e3 100644
+--- a/build/linux/debian/dep-lists.js
++++ b/build/linux/debian/dep-lists.js
+@@ -139,2 +139,41 @@ exports.referenceGeneratedDepsByArch = {
+     ],
++	'ppc64el': [
++        'ca-certificates',
++        'libasound2 (>= 1.0.17)',
++        'libatk-bridge2.0-0 (>= 2.5.3)',
++        'libatk1.0-0 (>= 2.2.0)',
++        'libatspi2.0-0 (>= 2.9.90)',
++        'libc6 (>= 2.17)',
++        'libc6 (>= 2.28)',
++        'libcairo2 (>= 1.6.0)',
++        'libcurl3-gnutls | libcurl3-nss | libcurl4 | libcurl3',
++        'libdbus-1-3 (>= 1.9.14)',
++        'libdrm2 (>= 2.4.75)',
++        'libexpat1 (>= 2.1~beta3)',
++        'libgbm1 (>= 17.1.0~rc2)',
++        'libglib2.0-0 (>= 2.37.3)',
++        'libgssapi-krb5-2 (>= 1.17)',
++        'libgtk-3-0 (>= 3.9.10)',
++        'libgtk-3-0 (>= 3.9.10) | libgtk-4-1',
++        'libkrb5-3 (>= 1.6.dfsg.2)',
++        'libnspr4 (>= 2:4.9-2~)',
++        'libnss3 (>= 2:3.30)',
++        'libnss3 (>= 3.26)',
++        'libpango-1.0-0 (>= 1.14.0)',
++        'libstdc++6 (>= 4.1.1)',
++        'libstdc++6 (>= 5)',
++        'libstdc++6 (>= 5.2)',
++        'libstdc++6 (>= 6)',
++        'libx11-6',
++        'libx11-6 (>= 2:1.4.99.1)',
++        'libxcb1 (>= 1.9.2)',
++        'libxcomposite1 (>= 1:0.4.4-1)',
++        'libxdamage1 (>= 1:1.1)',
++        'libxext6',
++        'libxfixes3',
++        'libxkbcommon0 (>= 0.5.0)',
++        'libxkbfile1 (>= 1:1.1.0)',
++        'libxrandr2',
++        'xdg-utils (>= 1.0.2)'
++    ],
+ };
+diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
+index 9f29943..aa769ad 100644
+--- a/build/linux/debian/dep-lists.ts
++++ b/build/linux/debian/dep-lists.ts
+@@ -139,2 +139,41 @@ export const referenceGeneratedDepsByArch = {
+ 	],
++	'ppc64el': [
++		'ca-certificates',
++		'libasound2 (>= 1.0.17)',
++		'libatk-bridge2.0-0 (>= 2.5.3)',
++		'libatk1.0-0 (>= 2.2.0)',
++		'libatspi2.0-0 (>= 2.9.90)',
++		'libc6 (>= 2.17)',
++		'libc6 (>= 2.28)',
++		'libcairo2 (>= 1.6.0)',
++		'libcurl3-gnutls | libcurl3-nss | libcurl4 | libcurl3',
++		'libdbus-1-3 (>= 1.9.14)',
++		'libdrm2 (>= 2.4.75)',
++		'libexpat1 (>= 2.1~beta3)',
++		'libgbm1 (>= 17.1.0~rc2)',
++		'libglib2.0-0 (>= 2.37.3)',
++		'libgssapi-krb5-2 (>= 1.17)',
++		'libgtk-3-0 (>= 3.9.10)',
++		'libgtk-3-0 (>= 3.9.10) | libgtk-4-1',
++		'libkrb5-3 (>= 1.6.dfsg.2)',
++		'libnspr4 (>= 2:4.9-2~)',
++		'libnss3 (>= 2:3.30)',
++		'libnss3 (>= 3.26)',
++		'libpango-1.0-0 (>= 1.14.0)',
++		'libstdc++6 (>= 4.1.1)',
++		'libstdc++6 (>= 5)',
++		'libstdc++6 (>= 5.2)',
++		'libstdc++6 (>= 6)',
++		'libx11-6',
++		'libx11-6 (>= 2:1.4.99.1)',
++		'libxcb1 (>= 1.9.2)',
++		'libxcomposite1 (>= 1:0.4.4-1)',
++		'libxdamage1 (>= 1:1.1)',
++		'libxext6',
++		'libxfixes3',
++		'libxkbcommon0 (>= 0.5.0)',
++		'libxkbfile1 (>= 1:1.1.0)',
++		'libxrandr2',
++		'xdg-utils (>= 1.0.2)'
++	],
+ };
+diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
+index 2cd8f2d..3dcd5c1 100644
+--- a/build/linux/debian/install-sysroot.js
++++ b/build/linux/debian/install-sysroot.js
+@@ -137,2 +137,6 @@ async function getVSCodeSysroot(arch) {
+             break;
++		case 'ppc64le':
++            expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
++            triple = `powerpc64le-linux-gnu`;
++            break;
+     }
+diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
+index d8de38e..52b3422 100644
+--- a/build/linux/debian/install-sysroot.ts
++++ b/build/linux/debian/install-sysroot.ts
+@@ -154,2 +154,6 @@ export async function getVSCodeSysroot(arch: DebianArchString): Promise<string>
+ 			break;
++		case 'ppc64le':
++			expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
++			triple = `powerpc64le-linux-gnu`;
++			break;
+ 	}
+diff --git a/build/linux/debian/types.js b/build/linux/debian/types.js
+index ce21d50..2c56b9c 100644
+--- a/build/linux/debian/types.js
++++ b/build/linux/debian/types.js
+@@ -8,3 +8,3 @@ exports.isDebianArchString = isDebianArchString;
+ function isDebianArchString(s) {
+-    return ['amd64', 'armhf', 'arm64'].includes(s);
++    return ['amd64', 'armhf', 'arm64', 'ppc64el'].includes(s);
+ }
+diff --git a/build/linux/debian/types.ts b/build/linux/debian/types.ts
+index e97485e..43f2434 100644
+--- a/build/linux/debian/types.ts
++++ b/build/linux/debian/types.ts
+@@ -5,6 +5,6 @@
+ 
+-export type DebianArchString = 'amd64' | 'armhf' | 'arm64';
++export type DebianArchString = 'amd64' | 'armhf' | 'arm64' | 'ppc64el';
+ 
+ export function isDebianArchString(s: string): s is DebianArchString {
+-	return ['amd64', 'armhf', 'arm64'].includes(s);
++	return ['amd64', 'armhf', 'arm64', 'ppc64el'].includes(s);
+ }
+diff --git a/build/linux/rpm/dep-lists.js b/build/linux/rpm/dep-lists.js
+index 04abee1..779dd69 100644
+--- a/build/linux/rpm/dep-lists.js
++++ b/build/linux/rpm/dep-lists.js
+@@ -310,2 +310,102 @@ exports.referenceGeneratedDepsByArch = {
+         'xdg-utils'
++    ],
++    "ppc64le": [
++        'ca-certificates',
++        'ld-linux-x86-64.so.2()(64bit)',
++        'ld-linux-x86-64.so.2(GLIBC_2.3)(64bit)',
++        'ld64.so.2()(64bit)',
++        'ld64.so.2(GLIBC_2.17)(64bit)',
++        'libX11.so.6()(64bit)',
++        'libXcomposite.so.1()(64bit)',
++        'libXdamage.so.1()(64bit)',
++        'libXext.so.6()(64bit)',
++        'libXfixes.so.3()(64bit)',
++        'libXrandr.so.2()(64bit)',
++        'libasound.so.2()(64bit)',
++        'libasound.so.2(ALSA_0.9)(64bit)',
++        'libasound.so.2(ALSA_0.9.0rc4)(64bit)',
++        'libatk-1.0.so.0()(64bit)',
++        'libatk-bridge-2.0.so.0()(64bit)',
++        'libatspi.so.0()(64bit)',
++        'libc.so.6()(64bit)',
++        'libc.so.6(GLIBC_2.14)(64bit)',
++        'libc.so.6(GLIBC_2.17)(64bit)',
++        'libc.so.6(GLIBC_2.2.5)(64bit)',
++        'libc.so.6(GLIBC_2.28)(64bit)',
++        'libc.so.6(GLIBC_2.4)(64bit)',
++        'libc.so.6(GLIBC_2.9)(64bit)',
++        'libcairo.so.2()(64bit)',
++        'libcups.so.2()(64bit)',
++        'libcurl.so.4()(64bit)',
++        'libdbus-1.so.3()(64bit)',
++        'libdbus-1.so.3(LIBDBUS_1_3)(64bit)',
++        'libdl.so.2()(64bit)',
++        'libdl.so.2(GLIBC_2.17)(64bit)',
++        'libdrm.so.2()(64bit)',
++        'libexpat.so.1()(64bit)',
++        'libgbm.so.1()(64bit)',
++        'libgcc_s.so.1()(64bit)',
++        'libgcc_s.so.1(GCC_3.0)(64bit)',
++        'libgcc_s.so.1(GCC_3.4.4)(64bit)',
++        'libgio-2.0.so.0()(64bit)',
++        'libglib-2.0.so.0()(64bit)',
++        'libgobject-2.0.so.0()(64bit)',
++        'libgssapi_krb5.so.2()(64bit)',
++        'libgssapi_krb5.so.2(gssapi_krb5_2_MIT)(64bit)',
++        'libgtk-3.so.0()(64bit)',
++        'libkrb5.so.3()(64bit)',
++        'libkrb5.so.3(krb5_3_MIT)(64bit)',
++        'libm.so.6()(64bit)',
++        'libm.so.6(GLIBC_2.17)(64bit)',
++        'libm.so.6(GLIBC_2.2.5)(64bit)',
++        'libm.so.6(GLIBC_2.27)(64bit)',
++        'libnspr4.so()(64bit)',
++        'libnss3.so()(64bit)',
++        'libnss3.so(NSS_3.11)(64bit)',
++        'libnss3.so(NSS_3.12)(64bit)',
++        'libnss3.so(NSS_3.12.1)(64bit)',
++        'libnss3.so(NSS_3.2)(64bit)',
++        'libnss3.so(NSS_3.22)(64bit)',
++        'libnss3.so(NSS_3.3)(64bit)',
++        'libnss3.so(NSS_3.30)(64bit)',
++        'libnss3.so(NSS_3.4)(64bit)',
++        'libnss3.so(NSS_3.5)(64bit)',
++        'libnss3.so(NSS_3.9.2)(64bit)',
++        'libnssutil3.so()(64bit)',
++        'libnssutil3.so(NSSUTIL_3.12.3)(64bit)',
++        'libpango-1.0.so.0()(64bit)',
++        'libpthread.so.0()(64bit)',
++        'libpthread.so.0(GLIBC_2.17)(64bit)',
++        'libpthread.so.0(GLIBC_2.2.5)(64bit)',
++        'libpthread.so.0(GLIBC_2.3.2)(64bit)',
++        'libpthread.so.0(GLIBC_2.3.3)(64bit)',
++        'libsmime3.so()(64bit)',
++        'libsmime3.so(NSS_3.10)(64bit)',
++        'libsmime3.so(NSS_3.2)(64bit)',
++        'libssl3.so(NSS_3.28)(64bit)',
++        'libstdc++.so.6()(64bit)',
++        'libstdc++.so.6(CXXABI_1.3)(64bit)',
++        'libstdc++.so.6(CXXABI_1.3.5)(64bit)',
++        'libstdc++.so.6(CXXABI_1.3.8)(64bit)',
++        'libstdc++.so.6(CXXABI_1.3.9)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.11)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.14)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.15)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.18)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.19)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.20)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.21)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.22)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.5)(64bit)',
++        'libstdc++.so.6(GLIBCXX_3.4.9)(64bit)',
++        'libutil.so.1()(64bit)',
++        'libutil.so.1(GLIBC_2.2.5)(64bit)',
++        'libxcb.so.1()(64bit)',
++        'libxkbcommon.so.0()(64bit)',
++        'libxkbcommon.so.0(V_0.5.0)(64bit)',
++        'libxkbfile.so.1()(64bit)',
++        'rpmlib(FileDigests) <= 4.6.0-1',
++        'rtld(GNU_HASH)',
++        'xdg-utils'
+     ]
+diff --git a/build/linux/rpm/dep-lists.ts b/build/linux/rpm/dep-lists.ts
+index 8761e40..1885210 100644
+--- a/build/linux/rpm/dep-lists.ts
++++ b/build/linux/rpm/dep-lists.ts
+@@ -309,2 +309,102 @@ export const referenceGeneratedDepsByArch = {
+ 		'xdg-utils'
++	],
++	"ppc64le": [
++		'ca-certificates',
++		'ld-linux-x86-64.so.2()(64bit)',
++		'ld-linux-x86-64.so.2(GLIBC_2.3)(64bit)',
++		'ld64.so.2()(64bit)',
++		'ld64.so.2(GLIBC_2.17)(64bit)',
++		'libX11.so.6()(64bit)',
++		'libXcomposite.so.1()(64bit)',
++		'libXdamage.so.1()(64bit)',
++		'libXext.so.6()(64bit)',
++		'libXfixes.so.3()(64bit)',
++		'libXrandr.so.2()(64bit)',
++		'libasound.so.2()(64bit)',
++		'libasound.so.2(ALSA_0.9)(64bit)',
++		'libasound.so.2(ALSA_0.9.0rc4)(64bit)',
++		'libatk-1.0.so.0()(64bit)',
++		'libatk-bridge-2.0.so.0()(64bit)',
++		'libatspi.so.0()(64bit)',
++		'libc.so.6()(64bit)',
++		'libc.so.6(GLIBC_2.14)(64bit)',
++		'libc.so.6(GLIBC_2.17)(64bit)',
++		'libc.so.6(GLIBC_2.2.5)(64bit)',
++		'libc.so.6(GLIBC_2.28)(64bit)',
++		'libc.so.6(GLIBC_2.4)(64bit)',
++		'libc.so.6(GLIBC_2.9)(64bit)',
++		'libcairo.so.2()(64bit)',
++		'libcups.so.2()(64bit)',
++		'libcurl.so.4()(64bit)',
++		'libdbus-1.so.3()(64bit)',
++		'libdbus-1.so.3(LIBDBUS_1_3)(64bit)',
++		'libdl.so.2()(64bit)',
++		'libdl.so.2(GLIBC_2.17)(64bit)',
++		'libdrm.so.2()(64bit)',
++		'libexpat.so.1()(64bit)',
++		'libgbm.so.1()(64bit)',
++		'libgcc_s.so.1()(64bit)',
++		'libgcc_s.so.1(GCC_3.0)(64bit)',
++		'libgcc_s.so.1(GCC_3.4.4)(64bit)',
++		'libgio-2.0.so.0()(64bit)',
++		'libglib-2.0.so.0()(64bit)',
++		'libgobject-2.0.so.0()(64bit)',
++		'libgssapi_krb5.so.2()(64bit)',
++		'libgssapi_krb5.so.2(gssapi_krb5_2_MIT)(64bit)',
++		'libgtk-3.so.0()(64bit)',
++		'libkrb5.so.3()(64bit)',
++		'libkrb5.so.3(krb5_3_MIT)(64bit)',
++		'libm.so.6()(64bit)',
++		'libm.so.6(GLIBC_2.17)(64bit)',
++		'libm.so.6(GLIBC_2.2.5)(64bit)',
++		'libm.so.6(GLIBC_2.27)(64bit)',
++		'libnspr4.so()(64bit)',
++		'libnss3.so()(64bit)',
++		'libnss3.so(NSS_3.11)(64bit)',
++		'libnss3.so(NSS_3.12)(64bit)',
++		'libnss3.so(NSS_3.12.1)(64bit)',
++		'libnss3.so(NSS_3.2)(64bit)',
++		'libnss3.so(NSS_3.22)(64bit)',
++		'libnss3.so(NSS_3.3)(64bit)',
++		'libnss3.so(NSS_3.30)(64bit)',
++		'libnss3.so(NSS_3.4)(64bit)',
++		'libnss3.so(NSS_3.5)(64bit)',
++		'libnss3.so(NSS_3.9.2)(64bit)',
++		'libnssutil3.so()(64bit)',
++		'libnssutil3.so(NSSUTIL_3.12.3)(64bit)',
++		'libpango-1.0.so.0()(64bit)',
++		'libpthread.so.0()(64bit)',
++		'libpthread.so.0(GLIBC_2.17)(64bit)',
++		'libpthread.so.0(GLIBC_2.2.5)(64bit)',
++		'libpthread.so.0(GLIBC_2.3.2)(64bit)',
++		'libpthread.so.0(GLIBC_2.3.3)(64bit)',
++		'libsmime3.so()(64bit)',
++		'libsmime3.so(NSS_3.10)(64bit)',
++		'libsmime3.so(NSS_3.2)(64bit)',
++		'libssl3.so(NSS_3.28)(64bit)',
++		'libstdc++.so.6()(64bit)',
++		'libstdc++.so.6(CXXABI_1.3)(64bit)',
++		'libstdc++.so.6(CXXABI_1.3.5)(64bit)',
++		'libstdc++.so.6(CXXABI_1.3.8)(64bit)',
++		'libstdc++.so.6(CXXABI_1.3.9)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.11)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.14)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.15)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.18)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.19)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.20)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.21)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.22)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.5)(64bit)',
++		'libstdc++.so.6(GLIBCXX_3.4.9)(64bit)',
++		'libutil.so.1()(64bit)',
++		'libutil.so.1(GLIBC_2.2.5)(64bit)',
++		'libxcb.so.1()(64bit)',
++		'libxkbcommon.so.0()(64bit)',
++		'libxkbcommon.so.0(V_0.5.0)(64bit)',
++		'libxkbfile.so.1()(64bit)',
++		'rpmlib(FileDigests) <= 4.6.0-1',
++		'rtld(GNU_HASH)',
++		'xdg-utils'
+ 	]
+diff --git a/build/linux/rpm/types.js b/build/linux/rpm/types.js
+index a20b9c2..7b58961 100644
+--- a/build/linux/rpm/types.js
++++ b/build/linux/rpm/types.js
+@@ -8,3 +8,3 @@ exports.isRpmArchString = isRpmArchString;
+ function isRpmArchString(s) {
+-    return ['x86_64', 'armv7hl', 'aarch64'].includes(s);
++    return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le'].includes(s);
+ }
+diff --git a/build/linux/rpm/types.ts b/build/linux/rpm/types.ts
+index c6a01da..3f3c3f5 100644
+--- a/build/linux/rpm/types.ts
++++ b/build/linux/rpm/types.ts
+@@ -5,6 +5,6 @@
+ 
+-export type RpmArchString = 'x86_64' | 'armv7hl' | 'aarch64';
++export type RpmArchString = 'x86_64' | 'armv7hl' | 'aarch64' | 'ppc64le';
+ 
+ export function isRpmArchString(s: string): s is RpmArchString {
+-	return ['x86_64', 'armv7hl', 'aarch64'].includes(s);
++	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le'].includes(s);
+ }
+diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
+index 9033914..bcab676 100644
+--- a/cli/src/update_service.rs
++++ b/cli/src/update_service.rs
+@@ -217,2 +217,4 @@ pub enum Platform {
+ 	LinuxARM32Legacy,
++	LinuxPPC64LE,
++	LinuxPPC64LELegacy,
+ 	DarwinX64,
+@@ -230,2 +232,3 @@ impl Platform {
+ 			Platform::LinuxARM32 => Some("linux-armhf".to_owned()),
++			Platform::LinuxPPC64LE => Some("linux-ppc64le".to_owned()),
+ 			Platform::DarwinX64 => Some("darwin".to_owned()),
+@@ -248,2 +251,4 @@ impl Platform {
+ 			Platform::LinuxARM32Legacy => "server-linux-legacy-armhf",
++			Platform::LinuxPPC64LE => "server-linux-ppc64le",
++			Platform::LinuxPPC64LELegacy => "server-linux-legacy-ppc64le",
+ 			Platform::DarwinX64 => "server-darwin",
+@@ -267,2 +272,4 @@ impl Platform {
+ 			Platform::LinuxARM32Legacy => "cli-linux-armhf",
++			Platform::LinuxPPC64LE => "cli-linux-ppc64le",
++			Platform::LinuxPPC64LELegacy => "cli-linux-ppc64le",
+ 			Platform::DarwinX64 => "cli-darwin-x64",
+@@ -299,2 +306,4 @@ impl Platform {
+ 			Some(Platform::LinuxARM64)
++		} else if cfg!(all(target_os = "linux", target_arch = "ppc64le")) {
++			Some(Platform::LinuxPPC64LE)
+ 		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
+@@ -326,2 +335,4 @@ impl fmt::Display for Platform {
+ 			Platform::LinuxARM32Legacy => "LinuxARM32Legacy",
++			Platform::LinuxPPC64LE => "LinuxPPC64LE",
++			Platform::LinuxPPC64LELegacy => "LinuxPPC64LELegacy",
+ 			Platform::DarwinX64 => "DarwinX64",
+diff --git a/cli/src/util/prereqs.rs b/cli/src/util/prereqs.rs
+index e0fba27..4827a47 100644
+--- a/cli/src/util/prereqs.rs
++++ b/cli/src/util/prereqs.rs
+@@ -86,2 +86,4 @@ impl PreReqChecker {
+ 					Platform::LinuxARM32
++				} else if cfg!(target_arch = "ppc64le") {
++					Platform::LinuxPPC64LE
+ 				} else {
+@@ -95,2 +97,4 @@ impl PreReqChecker {
+ 					Platform::LinuxARM32Legacy
++				} else if cfg!(target_arch = "ppc64le") {
++					Platform::LinuxPPC64LELegacy
+ 				} else {
+diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
+index 8ef07a2..00dd3e2 100644
+--- a/resources/server/bin/helpers/check-requirements-linux.sh
++++ b/resources/server/bin/helpers/check-requirements-linux.sh
+@@ -56,2 +56,3 @@ case $ARCH in
+ 		;;
++    ppc64el) LDCONFIG_ARCH="64bit";;
+ esac
+diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
+index ea7b30d..004df84 100644
+--- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
++++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
+@@ -41,2 +41,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+ 		case TargetPlatform.LINUX_ARMHF: return 'Linux ARM';
++		case TargetPlatform.LINUX_PPC64LE: return 'Linux PowerPC64';
+ 
+@@ -64,2 +65,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+ 		case TargetPlatform.LINUX_ARMHF: return TargetPlatform.LINUX_ARMHF;
++		case TargetPlatform.LINUX_PPC64LE: return TargetPlatform.LINUX_PPC64LE;
+ 
+@@ -99,2 +101,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+ 			}
++			if (arch === 'ppc64le') {
++				return TargetPlatform.LINUX_PPC64LE;
++			}
+ 			return TargetPlatform.UNKNOWN;
+diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
+index 5973d4d..a7d6298 100644
+--- a/src/vs/platform/extensions/common/extensions.ts
++++ b/src/vs/platform/extensions/common/extensions.ts
+@@ -294,2 +294,3 @@ export const enum TargetPlatform {
+ 	LINUX_ARMHF = 'linux-armhf',
++	LINUX_PPC64LE = 'linux-ppc64le',
+ 
