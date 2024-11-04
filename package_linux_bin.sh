@@ -57,7 +57,7 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
+if [[ -z "${VSCODE_SKIP_SYSROOT}" ]]; then
   ./build/azure-pipelines/linux/setup-env.sh
 fi
 

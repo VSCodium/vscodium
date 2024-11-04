@@ -44,7 +44,7 @@ elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
 
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-  export VSCODE_SYSROOT_REPO='VSCodium/vscode-linux-build-agent'
+  export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
@@ -110,7 +110,7 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
+if [[ -z "${VSCODE_SKIP_SYSROOT}" ]]; then
   ./build/azure-pipelines/linux/setup-env.sh --only-remote
 fi
 
