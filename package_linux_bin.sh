@@ -17,22 +17,21 @@ export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
 if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  export VSCODE_SYSROOT_REPO='VSCodium/vscode-linux-build-agent'
+  export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
   export VSCODE_SYSROOT_PREFIX='-glibc-2.28'
-fi
-
-if [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
-  export VSCODE_ELECTRON_REPO='riscv-forks/electron-riscv-releases'
+elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
+  export VSCODE_ELECTRON_REPOSITORY='riscv-forks/electron-riscv-releases'
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SKIP_SYSROOT=1
 
   source ../electron.riscv64.sh
 
   if [[ "${ELECTRON_VERSION}" != "$(yarn config get target)" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
     echo "Electron RISC-V binary version doesn't match target electron version!"
-    echo "Releases available at: https://github.com/${VSCODE_ELECTRON_REPO}/releases"
+    echo "Releases available at: https://github.com/${VSCODE_ELECTRON_REPOSITORY}/releases"
     exit 1
   fi
 fi
@@ -58,9 +57,7 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  source ./build/azure-pipelines/linux/setup-env.sh
-else
+if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
   ./build/azure-pipelines/linux/setup-env.sh
 fi
 

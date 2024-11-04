@@ -41,14 +41,20 @@ elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-arm32v7"
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-ppc64le"
+
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SYSROOT_REPO='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
+
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SKIP_SYSROOT=1
+  export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
+  # part of the url before '/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz'
+  export VSCODE_NODEJS_URLROOT='/download/release'
 fi
 
 export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
@@ -104,9 +110,7 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  source ./build/azure-pipelines/linux/setup-env.sh
-else
+if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
   ./build/azure-pipelines/linux/setup-env.sh --only-remote
 fi
 
