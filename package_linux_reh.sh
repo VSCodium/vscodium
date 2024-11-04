@@ -111,7 +111,7 @@ for i in {1..5}; do # try 5 times
 done
 
 if [[ -z "${VSCODE_SKIP_SYSROOT}" ]]; then
-  ./build/azure-pipelines/linux/setup-env.sh --only-remote
+  source ./build/azure-pipelines/linux/setup-env.sh
 fi
 
 for i in {1..5}; do # try 5 times
