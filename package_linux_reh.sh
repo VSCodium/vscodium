@@ -86,7 +86,7 @@ if [[ -d "../patches/linux/reh/" ]]; then
   done
 fi
 
-if [[ -z "${USE_CPP2A}" ]]; then
+if [[ -n "${USE_CPP2A}" ]]; then
   INCLUDES=$(cat <<EOF
 {
   "target_defaults": {
