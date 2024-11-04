@@ -31,9 +31,9 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export VSCODE_SKIP_SETUPENV=1
 fi
 
-if [[ -f "../electron_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" ]]; then
+if [[ -f "../electron_linux_${VSCODE_ARCH}.sh" ]]; then
   # shellcheck disable=SC1090
-  source "../electron_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh"
+  source "../electron_linux_${VSCODE_ARCH}.sh"
 
   if [[ "${ELECTRON_VERSION}" != "$( yarn config get target )" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
