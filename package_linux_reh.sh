@@ -35,10 +35,16 @@ VSCODE_HOST_MOUNT="$( pwd )"
 
 export VSCODE_HOST_MOUNT
 
-if [[ "${VSCODE_ARCH}" == "x64" || "${VSCODE_ARCH}" == "arm64" ]]; then
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
+elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
+
+  export USE_CPP2A=1
 elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-arm32v7"
+
+  export USE_CPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-ppc64le"
 
@@ -46,6 +52,7 @@ elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
+  export USE_CPP2A=1
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
 
@@ -79,7 +86,7 @@ if [[ -d "../patches/linux/reh/" ]]; then
   done
 fi
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+if [[ -z "${USE_CPP2A}" ]]; then
   INCLUDES=$(cat <<EOF
 {
   "target_defaults": {
@@ -111,7 +118,7 @@ for i in {1..5}; do # try 5 times
 done
 
 if [[ -z "${VSCODE_SKIP_SYSROOT}" ]]; then
-  . build/azure-pipelines/linux/setup-env.sh
+  source ./build/azure-pipelines/linux/setup-env.sh
 fi
 
 for i in {1..5}; do # try 5 times
