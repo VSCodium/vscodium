@@ -17,17 +17,18 @@ export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
 if [[ "${VSCODE_ARCH}" == "arm64" || "${VSCODE_ARCH}" == "armhf" ]]; then
-  export USE_CPP2A=1
+  export VSCODE_SKIP_SYSROOT=1
+  export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
   export VSCODE_SYSROOT_PREFIX='-glibc-2.28'
-  export USE_CPP2A=1
+  export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export VSCODE_ELECTRON_REPOSITORY='riscv-forks/electron-riscv-releases'
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-  export VSCODE_SKIP_SYSROOT=1
+  export VSCODE_SKIP_SETUPENV=1
 
   source ../electron.riscv64.sh
 
@@ -51,7 +52,7 @@ if [[ -d "../patches/linux/client/" ]]; then
   done
 fi
 
-if [[ -n "${USE_CPP2A}" ]]; then
+if [[ -n "${USE_GNUPP2A}" ]]; then
   INCLUDES=$(cat <<EOF
 {
   "target_defaults": {
@@ -82,8 +83,12 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-if [[ -z "${VSCODE_SKIP_SYSROOT}" ]]; then
-  source ./build/azure-pipelines/linux/setup-env.sh
+if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
+  if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
+    source ./build/azure-pipelines/linux/setup-env.sh --skip-sysroot
+  else
+    source ./build/azure-pipelines/linux/setup-env.sh
+  fi
 fi
 
 for i in {1..5}; do # try 5 times
