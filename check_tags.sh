@@ -426,6 +426,32 @@ elif [[ "${ASSETS}" != "null" ]]; then
         fi
       fi
 
+      # linux-loong64
+      if [[ "${VSCODE_ARCH}" == "loong64" || "${CHECK_ALL}" == "yes" ]]; then
+        export SHOULD_BUILD_DEB="no"
+        export SHOULD_BUILD_RPM="no"
+        export SHOULD_BUILD_APPIMAGE="no"
+        export SHOULD_BUILD_TAR="no"
+
+        if [[ -z $( contains "${APP_NAME_LC}-reh-linux-loong64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux Loong64 because we have no REH archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH="no"
+        fi
+
+        if [[ -z $( contains "${APP_NAME_LC}-reh-web-linux-loong64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux Loong64 because we have no REH-web archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH_WEB="no"
+        fi
+
+        if [[ "${SHOULD_BUILD}" != "yes" ]]; then
+          echo "Already have all the Linux Loong64 builds"
+        fi
+      fi
+
       # linux-x64
       if [[ "${VSCODE_ARCH}" == "x64" || "${CHECK_ALL}" == "yes" ]]; then
         if [[ -z $( contains "amd64.deb" ) ]]; then
@@ -544,6 +570,10 @@ else
     elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
+    elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
+      SHOULD_BUILD_DEB="no"
+      SHOULD_BUILD_RPM="no"
+      SHOULD_BUILD_TAR="no"
     fi
     if [[ "${VSCODE_ARCH}" != "x64" || "${DISABLE_APPIMAGE}" == "yes" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
