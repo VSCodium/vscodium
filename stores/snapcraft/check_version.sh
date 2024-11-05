@@ -22,11 +22,13 @@ else
   fi
 
   if [[ "${VSCODE_QUALITY}" == "stable" ]]; then
+    CHANNEL="${SNAPCRAFT_STORE_CHANNEL:-stable}"
+
     sudo snap install --channel stable --classic snapcraft
 
     echo "Architecture: ${ARCHITECTURE}"
 
-    SNAP_VERSION=$( snapcraft list-revisions "${SNAP_NAME}" | grep -F "stable*" | grep "${ARCHITECTURE}" | tr -s ' ' | cut -d ' ' -f 4 )
+    SNAP_VERSION=$( snapcraft list-revisions "${SNAP_NAME}" | grep -F "${CHANNEL}*" | grep "${ARCHITECTURE}" | tr -s ' ' | cut -d ' ' -f 4 )
     echo "Snap version: ${SNAP_VERSION}"
 
     if [[ -n "${SNAP_VERSION}" && "${SNAP_VERSION}" != "${RELEASE_VERSION}" ]]; then
