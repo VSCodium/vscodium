@@ -19,12 +19,48 @@ GLIBC_VERSION="2.17"
 GLIBCXX_VERSION="3.4.22"
 NODE_VERSION="16.20.2"
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
+elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
+
+  export VSCODE_SKIP_SYSROOT=1
+  export USE_GNUPP2A=1
+elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-arm32v7"
+
+  export VSCODE_SKIP_SYSROOT=1
+  export USE_GNUPP2A=1
+elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   GLIBC_VERSION="2.28"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-ppc64le"
+
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
+  export VSCODE_SYSROOT_VERSION='20240129-253798'
+  export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   # Unofficial RISC-V nodejs builds doesn't provide v16.x
   # Node 18 is buggy so use 20 here for now: https://github.com/VSCodium/vscodium/issues/2060
   NODE_VERSION="20.16.0"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
+
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SKIP_SETUPENV=1
+  export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
+  # part of the url before '/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz'
+  export VSCODE_NODEJS_URLROOT='/download/release'
+elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
+  NODE_VERSION="20.16.0"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:trixie-devtoolset-loong64"
+
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SKIP_SETUPENV=1
+  export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
+  export VSCODE_NODEJS_URLROOT='/download/release'
 fi
 
 export VSCODE_PLATFORM='linux'
@@ -34,23 +70,6 @@ export VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
 VSCODE_HOST_MOUNT="$( pwd )"
 
 export VSCODE_HOST_MOUNT
-
-if [[ "${VSCODE_ARCH}" == "x64" || "${VSCODE_ARCH}" == "arm64" ]]; then
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
-elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-arm32v7"
-elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-ppc64le"
-  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
-  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-  export VSCODE_SYSROOT_REPO='VSCodium/vscode-linux-build-agent'
-  export VSCODE_SYSROOT_VERSION='20240129-253798'
-elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
-  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
-  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-fi
-
 export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
 sed -i "/target/s/\"20.*\"/\"${NODE_VERSION}\"/" remote/.npmrc
@@ -73,7 +92,7 @@ if [[ -d "../patches/linux/reh/" ]]; then
   done
 fi
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+if [[ -n "${USE_GNUPP2A}" ]]; then
   INCLUDES=$(cat <<EOF
 {
   "target_defaults": {
@@ -104,10 +123,12 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  source ./build/azure-pipelines/linux/setup-env.sh
-else
-  ./build/azure-pipelines/linux/setup-env.sh --only-remote
+if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
+  if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
+    source ./build/azure-pipelines/linux/setup-env.sh --skip-sysroot
+  else
+    source ./build/azure-pipelines/linux/setup-env.sh
+  fi
 fi
 
 for i in {1..5}; do # try 5 times
@@ -130,9 +151,15 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  echo "Archiving REH"
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+
+  if [[ -f "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" ]]; then
+    exec "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh"
+  fi
+
+  echo "Archiving REH"
   tar czf "../assets/${APP_NAME_LC}-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+
   popd
 fi
 
@@ -143,9 +170,15 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  echo "Archiving REH-web"
   pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
+
+  if [[ -f "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" ]]; then
+    exec "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh"
+  fi
+
+  echo "Archiving REH-web"
   tar czf "../assets/${APP_NAME_LC}-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+
   popd
 fi
 

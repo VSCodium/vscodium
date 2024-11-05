@@ -1,0 +1,116 @@
+diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
+index d836fb7..fbe67b0 100755
+--- a/build/azure-pipelines/linux/setup-env.sh
++++ b/build/azure-pipelines/linux/setup-env.sh
+@@ -2,3 +2,3 @@
+ 
+-set -e
++set -ex
+ 
+diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
+index 53ef6f3..d0770d6 100644
+--- a/build/gulpfile.reh.js
++++ b/build/gulpfile.reh.js
+@@ -229,9 +229,23 @@ function nodejs(platform, arch) {
+ 		case 'linux':
+-			return (product.nodejsRepository !== 'https://nodejs.org' ?
+-				fetchGithub(product.nodejsRepository, { version: `${nodeVersion}-${internalNodeVersion}`, name: expectedName, checksumSha256 }) :
+-				fetchUrls(`/dist/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz`, { base: 'https://nodejs.org', checksumSha256 })
+-			).pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
+-				.pipe(filter('**/node'))
+-				.pipe(util.setExecutableBit('**'))
+-				.pipe(rename('node'));
++			if (process.env.VSCODE_NODEJS_SITE && process.env.VSCODE_NODEJS_URLROOT) {
++				return fetchUrls(`${process.env.VSCODE_NODEJS_URLROOT}/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz`, { base: process.env.VSCODE_NODEJS_SITE, checksumSha256 })
++					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
++					.pipe(filter('**/node'))
++					.pipe(util.setExecutableBit('**'))
++					.pipe(rename('node'));
++			}
++			if (product.nodejsRepository !== 'https://nodejs.org') {
++				return fetchGithub(product.nodejsRepository, { version: `${nodeVersion}-${internalNodeVersion}`, name: expectedName, checksumSha256 })
++					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
++					.pipe(filter('**/node'))
++					.pipe(util.setExecutableBit('**'))
++					.pipe(rename('node'));
++			}
++			else {
++				return fetchUrls(`/dist/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz`, { base: 'https://nodejs.org', checksumSha256 })
++					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
++					.pipe(filter('**/node'))
++					.pipe(util.setExecutableBit('**'))
++					.pipe(rename('node'));
++			}
+ 		case 'alpine':
+diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
+index da753e9..95f2cf0 100644
+--- a/build/gulpfile.vscode.js
++++ b/build/gulpfile.vscode.js
+@@ -385,2 +385,12 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 
++		const electronOverride = {};
++		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
++			// official electron doesn't support all arch, override the repo with `VSCODE_ELECTRON_REPOSITORY`.
++			electronOverride.repo = process.env.VSCODE_ELECTRON_REPOSITORY;
++		}
++
++		if (process.env.VSCODE_ELECTRON_TAG) {
++			electronOverride.tag = process.env.VSCODE_ELECTRON_TAG;
++		}
++
+ 		let result = all
+@@ -389,3 +399,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+ 			.pipe(filter(['**', '!**/.github/**'], { dot: true })) // https://github.com/microsoft/vscode/issues/116523
+-			.pipe(electron({ ...config, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
++			.pipe(electron({ ...config, ...electronOverride, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
+ 			.pipe(filter(['**', '!LICENSE', '!version'], { dot: true }));
+diff --git a/build/linux/debian/dep-lists.js b/build/linux/debian/dep-lists.js
+index 3bb58fb..306d91e 100644
+--- a/build/linux/debian/dep-lists.js
++++ b/build/linux/debian/dep-lists.js
+@@ -138,3 +138,3 @@ exports.referenceGeneratedDepsByArch = {
+         'xdg-utils (>= 1.0.2)'
+-    ]
++    ],
+ };
+diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
+index e3d78d1..9f29943 100644
+--- a/build/linux/debian/dep-lists.ts
++++ b/build/linux/debian/dep-lists.ts
+@@ -138,3 +138,3 @@ export const referenceGeneratedDepsByArch = {
+ 		'xdg-utils (>= 1.0.2)'
+-	]
++	],
+ };
+diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
+index 354c67a..2cd8f2d 100644
+--- a/build/linux/debian/install-sysroot.js
++++ b/build/linux/debian/install-sysroot.js
+@@ -71,3 +71,5 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
+         try {
+-            const response = await fetch(`https://api.github.com/repos/Microsoft/vscode-linux-build-agent/releases/tags/v${version}`, {
++            const repository = process.env['VSCODE_SYSROOT_REPOSITORY'] ?? 'Microsoft/vscode-linux-build-agent';
++            const actualVersion = process.env['VSCODE_SYSROOT_VERSION'] ?? version;
++            const response = await fetch(`https://api.github.com/repos/${repository}/releases/tags/v${actualVersion}`, {
+                 headers: ghApiHeaders,
+@@ -80,3 +82,3 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
+                 if (!asset) {
+-                    throw new Error(`Could not find asset in release of Microsoft/vscode-linux-build-agent @ ${version}`);
++                    throw new Error(`Could not find asset in release of ${repository} @ ${actualVersion}`);
+                 }
+diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
+index 8ea43a5..d8de38e 100644
+--- a/build/linux/debian/install-sysroot.ts
++++ b/build/linux/debian/install-sysroot.ts
+@@ -83,3 +83,5 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
+ 		try {
+-			const response = await fetch(`https://api.github.com/repos/Microsoft/vscode-linux-build-agent/releases/tags/v${version}`, {
++			const repository = process.env['VSCODE_SYSROOT_REPOSITORY'] ?? 'Microsoft/vscode-linux-build-agent';
++			const actualVersion = process.env['VSCODE_SYSROOT_VERSION'] ?? version;
++			const response = await fetch(`https://api.github.com/repos/${repository}/releases/tags/v${actualVersion}`, {
+ 				headers: ghApiHeaders,
+@@ -92,3 +94,3 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
+ 				if (!asset) {
+-					throw new Error(`Could not find asset in release of Microsoft/vscode-linux-build-agent @ ${version}`);
++					throw new Error(`Could not find asset in release of ${repository} @ ${actualVersion}`);
+ 				}
