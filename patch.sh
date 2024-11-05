@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 echo "$#"
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
@@ -27,7 +29,7 @@ while [ $# -gt 1 ]; do
 done
 
 git add .
-git commit -q -m "VSCODIUM HELPER"
+git commit -q -m "VSCODIUM HELPER" --no-verify
 
 if [[ "${1}" == *patch ]]; then
   FILE="../patches/${1}"
