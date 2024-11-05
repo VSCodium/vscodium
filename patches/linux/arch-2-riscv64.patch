@@ -270,7 +270,7 @@ index 00dd3e2..91c9d20 100644
 +	riscv64) LDCONFIG_ARCH="RISC-V";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index 004df84..9eea6e2 100644
+index 004df84..fb2acc7 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
 @@ -42,2 +42,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
@@ -281,11 +281,8 @@ index 004df84..9eea6e2 100644
  		case TargetPlatform.LINUX_PPC64LE: return TargetPlatform.LINUX_PPC64LE;
 +		case TargetPlatform.LINUX_RISCV64: return TargetPlatform.LINUX_RISCV64;
  
-@@ -104,2 +106,8 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+@@ -104,2 +106,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
  			}
-+			if (arch === 'ppc64le') {
-+				return TargetPlatform.LINUX_PPC64LE;
-+			}
 +			if (arch === 'riscv64') {
 +				return TargetPlatform.LINUX_RISCV64;
 +			}
