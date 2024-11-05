@@ -359,7 +359,7 @@ index b18b340..ca2eb2d 100644
 +					"comment": "The simpler (?<=\\bProcess\\.|\\bCommandLine\\.) breaks VSCodium / Atom, see https://github.com/textmate/swift.tmbundle/issues/29",
  					"name": "support.variable.swift",
 diff --git a/extensions/typescript-language-features/package.nls.json b/extensions/typescript-language-features/package.nls.json
-index adf2fe3..7ec986f 100644
+index 22fa2fc..a9f134c 100644
 --- a/extensions/typescript-language-features/package.nls.json
 +++ b/extensions/typescript-language-features/package.nls.json
 @@ -75,4 +75,4 @@
@@ -394,7 +394,7 @@ index adf2fe3..7ec986f 100644
  	"configuration.tsserver.web.typeAcquisition.enabled": "Enable/disable package acquisition on the web. This enables IntelliSense for imported packages. Requires `#typescript.tsserver.web.projectWideIntellisense.enabled#`. Currently not supported for Safari.",
 -	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want VS Code to detect a Node installation.",
 +	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want VSCodium to detect a Node installation.",
- 	"configuration.updateImportsOnPaste": "Automatically update imports when pasting code. Requires TypeScript 5.7+.",
+ 	"configuration.updateImportsOnPaste": "Enable updating imports when pasting code. Requires TypeScript 5.7+.\n\nBy default this shows a option to update imports after pasting. You can use the `#editor.pasteAs.preferences#` setting to update imports automatically when pasting: `\"editor.pasteAs.preferences\": [{ \"kind\": \"text.jsts.pasteWithImports\" }]`.",
 @@ -229,3 +229,3 @@
  	"walkthroughs.nodejsWelcome.title": "Get started with JavaScript and Node.js",
 -	"walkthroughs.nodejsWelcome.description": "Make the most of Visual Studio Code's first-class JavaScript experience.",
@@ -537,10 +537,10 @@ index a351aa7..32bfdb6 100644
 +			throw Error(`Failed to download and unzip VSCodium ${quality} - ${commit}`);
  		}
 diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
-index f334f01..2416a2f 100644
+index d8880a9..80a4436 100644
 --- a/src/vs/code/electron-main/app.ts
 +++ b/src/vs/code/electron-main/app.ts
-@@ -541,3 +541,3 @@ export class CodeApplication extends Disposable {
+@@ -540,3 +540,3 @@ export class CodeApplication extends Disposable {
  	async startup(): Promise<void> {
 -		this.logService.debug('Starting VS Code');
 +		this.logService.debug('Starting VSCodium');
@@ -879,7 +879,7 @@ index b716bcd..07b107b 100644
 +								"You can now access this machine anywhere via the secure tunnel [{0}](command:{4}). To connect via a different machine, use the generated [{1}]({2}) link or use the [{6}]({7}) extension in the desktop or web. You can [configure](command:{3}) or [turn off](command:{5}) this access via the VSCodium Accounts menu.",
  								connectionInfo.tunnelName, connectionInfo.domain, linkToOpenForMarkdown, RemoteTunnelCommandIds.manage, RemoteTunnelCommandIds.configure, RemoteTunnelCommandIds.turnOff, remoteExtension.friendlyName, 'https://code.visualstudio.com/docs/remote/tunnels'
 diff --git a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
-index ae2035c..89f7fca 100644
+index 8879209..79644c1 100644
 --- a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
 +++ b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
 @@ -3197,3 +3197,3 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
@@ -929,7 +929,7 @@ index 903d561..34a247c 100644
 +					this._notificationService.prompt(Severity.Warning, nls.localize('terminal.monospaceOnly', "The terminal only supports monospace fonts. Be sure to restart VSCodium if this is a newly installed font."), choices);
  				}
 diff --git a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
-index 33ca655..353692a 100644
+index 8c1aae8..1b1fc21 100644
 --- a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 +++ b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 @@ -287,3 +287,3 @@ const terminalConfiguration: IConfigurationNode = {
