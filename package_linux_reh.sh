@@ -92,6 +92,18 @@ if [[ -d "../patches/linux/reh/" ]]; then
   done
 fi
 
+if [[ -d "../patches/linux/reh/${VSCODE_ARCH}/" ]]; then
+  for file in "../patches/linux/reh/${VSCODE_ARCH}/"*.patch; do
+    if [[ -f "${file}" ]]; then
+      echo applying patch: "${file}";
+      if ! git apply --ignore-whitespace "${file}"; then
+        echo failed to apply patch "${file}" >&2
+        exit 1
+      fi
+    fi
+  done
+fi
+
 if [[ -n "${USE_GNUPP2A}" ]]; then
   INCLUDES=$(cat <<EOF
 {
