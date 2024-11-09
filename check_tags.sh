@@ -452,6 +452,32 @@ elif [[ "${ASSETS}" != "null" ]]; then
         fi
       fi
 
+      # linux-s390x
+      if [[ "${VSCODE_ARCH}" == "s390x" || "${CHECK_ALL}" == "yes" ]]; then
+        SHOULD_BUILD_APPIMAGE="no"
+        SHOULD_BUILD_DEB="no"
+        SHOULD_BUILD_RPM="no"
+        SHOULD_BUILD_TAR="no"
+
+        if [[ -z $( contains "${APP_NAME_LC}-reh-linux-s390x-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux s390x because we have no REH archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH="no"
+        fi
+
+        if [[ -z $( contains "${APP_NAME_LC}-reh-web-linux-s390x-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux s390x because we have no REH-web archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH_WEB="no"
+        fi
+
+        if [[ "${SHOULD_BUILD}" != "yes" ]]; then
+          echo "Already have all the Linux s390x builds"
+        fi
+      fi
+
       # linux-x64
       if [[ "${VSCODE_ARCH}" == "x64" || "${CHECK_ALL}" == "yes" ]]; then
         if [[ -z $( contains "amd64.deb" ) ]]; then

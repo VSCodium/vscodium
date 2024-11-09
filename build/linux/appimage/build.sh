@@ -37,6 +37,8 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
     sed -i 's|@@ICON@@|vscodium|g' recipe.yml
   fi
 
+  # workaround that enforces x86 ARCH for pkg2appimage having /__w/vscodium/vscodium/build/linux/appimage/VSCodium/VSCodium.AppDir/usr/share/codium/resources/app/node_modules/rc/index.js is of architecture armhf
+  export ARCH=x86_64
   bash -ex pkg2appimage.AppDir/AppRun recipe.yml
 
   rm -f pkg2appimage-*.AppImage
