@@ -61,6 +61,14 @@ elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
   export VSCODE_NODEJS_URLROOT='/download/release'
+elif [[ "${VSCODE_ARCH}" == "s390x" ]]; then
+  GLIBC_VERSION="2.28"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-s390x"
+
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
+  export VSCODE_SYSROOT_VERSION='20241108'
 fi
 
 export VSCODE_PLATFORM='linux'
