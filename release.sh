@@ -29,7 +29,7 @@ if [[ $( gh release view --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" 2>&1
 
     replace "s|MS_TAG_SHORT|$( echo "${MS_TAG//./_}" | cut -d'_' -f 1,2 )|" release_notes.txt
     replace "s|MS_TAG|${MS_TAG}|" release_notes.txt
-    replace "s|RELEASE_VERSION|${RELEASE_VERSION}|" release_notes.txt
+    replace "s|RELEASE_VERSION|${RELEASE_VERSION}|g" release_notes.txt
     replace "s|RELEASE_NOTES|${RELEASE_NOTES//$'\n'/\\n}|" release_notes.txt
 
     gh release edit "${RELEASE_VERSION}" --notes-file release_notes.txt
