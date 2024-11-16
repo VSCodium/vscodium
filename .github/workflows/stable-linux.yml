@@ -153,22 +153,27 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - vscode_arch: x64
+        - slug: X64
+          vscode_arch: x64
           npm_arch: x64
           image: vscodium/vscodium-linux-build-agent:focal-x64
-        - vscode_arch: arm64
+        - slug: ARM64
+          vscode_arch: arm64
           npm_arch: arm64
           image: vscodium/vscodium-linux-build-agent:focal-arm64
-        - vscode_arch: armhf
+        - slug: ARM32
+          vscode_arch: armhf
           npm_arch: arm
           image: vscodium/vscodium-linux-build-agent:focal-armhf
-        - vscode_arch: riscv64
+        - slug: RISCV64
+          vscode_arch: riscv64
           npm_arch: riscv64
           image: vscodium/vscodium-linux-build-agent:focal-riscv64
     container:
       image: ${{ matrix.image }}
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      DISABLED: ${{ vars[format('DISABLE_STABLE_LINUX_APP_{0}', matrix.slug)] }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
@@ -184,7 +189,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Switch to relevant branch
         env:
@@ -193,7 +198,7 @@ jobs:
 
       - name: Install GH
         run: ./install_gh.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
         env:
@@ -201,38 +206,38 @@ jobs:
           DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Install libkrb5-dev
         run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
         uses: actions/download-artifact@v4
         with:
           name: vscode
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./package_linux_bin.sh
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Prepare assets
         env:
           SHOULD_BUILD_REH: 'no'
           SHOULD_BUILD_REH_WEB: 'no'
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
         env:
@@ -240,7 +245,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
         uses: actions/upload-artifact@v4
@@ -248,7 +253,7 @@ jobs:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/
           retention-days: 3
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   reh_linux:
     needs:
@@ -265,7 +270,7 @@ jobs:
         - slug: ARM64
           vscode_arch: arm64
           npm_arch: arm64
-        - slug: ARM
+        - slug: ARM32
           vscode_arch: armhf
           npm_arch: arm
         - slug: PPC64
