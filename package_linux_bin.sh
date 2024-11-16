@@ -32,6 +32,13 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
 fi
 
 if [[ -f "../electron_linux_${VSCODE_ARCH}.sh" ]]; then
+  # add newline at the end of the file
+  echo "" >> build/checksums/electron.txt
+
+  if [[ -f "../electron_linux_${VSCODE_ARCH}.sha256sums" ]]; then
+    cat "../electron_linux_${VSCODE_ARCH}.sha256sums" >> build/checksums/electron.txt
+  fi
+
   # shellcheck disable=SC1090
   source "../electron_linux_${VSCODE_ARCH}.sh"
 
