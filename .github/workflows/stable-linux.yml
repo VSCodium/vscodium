@@ -195,6 +195,7 @@ jobs:
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
+        if: env.DISABLED != 'yes'
 
       - name: Install GH
         run: ./install_gh.sh
