@@ -431,7 +431,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_DEB="no"
         export SHOULD_BUILD_RPM="no"
         export SHOULD_BUILD_APPIMAGE="no"
-        export SHOULD_BUILD_TAR="no"
+
+        if [[ -z $( contains "${APP_NAME}-linux-loong64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux Loong64 because we have no TAR"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_TAR="no"
+        fi
 
         if [[ -z $( contains "${APP_NAME_LC}-reh-linux-loong64-${RELEASE_VERSION}.tar.gz" ) ]]; then
           echo "Building on Linux Loong64 because we have no REH archive"
@@ -599,7 +605,6 @@ else
     elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
-      SHOULD_BUILD_TAR="no"
     fi
     if [[ "${VSCODE_ARCH}" != "x64" || "${DISABLE_APPIMAGE}" == "yes" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
