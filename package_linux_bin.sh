@@ -13,6 +13,7 @@ chown -R root:root vscode
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+export VSCODE_PLATFORM='linux'
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
@@ -26,6 +27,11 @@ elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export VSCODE_ELECTRON_REPOSITORY='riscv-forks/electron-riscv-releases'
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SKIP_SETUPENV=1
+elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
+  export VSCODE_ELECTRON_REPOSITORY='darkyzhou/electron-loong64'
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SKIP_SETUPENV=1
@@ -113,6 +119,10 @@ done
 node build/azure-pipelines/distro/mixin-npm
 
 yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
+
+if [[ -f "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" ]]; then
+  bash "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" "../VSCode-linux-${VSCODE_ARCH}/resources/app/node_modules"
+fi
 
 find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
 
