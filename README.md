@@ -187,6 +187,8 @@ The minimal version is limited by the core component Electron, you may want to c
 - [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `snap`, `tar.gz`)
 - [x] GNU/Linux arm64 (`deb`, `rpm`, `snap`, `tar.gz`)
 - [x] GNU/Linux armhf (`deb`, `rpm`, `tar.gz`)
+- [x] GNU/Linux riscv64 (`tar.gz`)
+- [x] GNU/Linux loong64 (`tar.gz`)
 - [x] Windows 10 / Server 2012 R2 or newer x64
 - [x] Windows 10 / Server 2012 R2 or newer arm64
 
