@@ -127,11 +127,11 @@ if [[ -n "${USE_GNUPP2A}" ]]; then
 EOF
 )
 
-  if [ ! -d "$HOME/.gyp" ]; then
-    mkdir -p "$HOME/.gyp"
+  if [ ! -d "${HOME}/.gyp" ]; then
+    mkdir -p "${HOME}/.gyp"
   fi
 
-  echo "${INCLUDES}" > "$HOME/.gyp/include.gypi"
+  echo "${INCLUDES}" > "${HOME}/.gyp/include.gypi"
 fi
 
 for i in {1..5}; do # try 5 times
