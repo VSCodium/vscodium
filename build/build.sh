@@ -113,7 +113,25 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
     cd ..
   fi
 
+  if [[ -f "./include_${OS_NAME}.gypi" ]]; then
+    echo "Installing custom ~/.gyp/include.gypi"
+
+    mkdir -p ~/.gyp
+
+    if [[ -f "${HOME}/.gyp/include.gypi" ]]; then
+      mv ~/.gyp/include.gypi ~/.gyp/include.gypi.pre-vscodium
+    else
+      echo "{}" > ~/.gyp/include.gypi.pre-vscodium
+    fi
+
+    cp ./include_osx.gypi ~/.gyp/include.gypi
+  fi
+
   . build.sh
+
+  if [[ -f "./include_${OS_NAME}.gypi" ]]; then
+    mv ~/.gyp/include.gypi.pre-vscodium ~/.gyp/include.gypi
+  fi
 
   if [[ "${VSCODE_LATEST}" == "yes" ]]; then
     jsonTmp=$( cat "${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
