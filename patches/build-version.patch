@@ -1,5 +1,5 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 53ef6f3..411da6b 100644
+index 4f00317..e5d08e5 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
 @@ -307,2 +307,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
@@ -17,21 +17,21 @@ index 53ef6f3..411da6b 100644
 +			.pipe(json({ commit, date: readISODate('out-build'), version, release }))
  			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index d59b42d..61670c0 100644
+index 030c39a..51772c9 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -268,3 +268,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -261,3 +261,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  
 -		let version = packageJson.version;
 +		let version = packageJson.version
  		const quality = product.quality;
-@@ -276,3 +276,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -269,3 +269,4 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const name = product.nameShort;
 -		const packageJsonUpdates = { name, version };
 +		const release = packageJson.release;
 +		const packageJsonUpdates = { name, version, release };
  
-@@ -293,3 +294,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -285,3 +286,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
 -			.pipe(json({ commit, date: readISODate('out-build'), checksums, version }))
 +			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release }))
@@ -73,7 +73,7 @@ index 98175f5..afacbe3 100644
 +			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 1f58ce0..1555ae2 100644
+index ac7c552..8cfc209 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
 @@ -58,2 +58,3 @@ export interface IProductConfiguration {
@@ -104,19 +104,19 @@ index 1a2a619..2a8d683 100644
 +			release: pkg.release
  		});
 diff --git a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-index 21f62b6..98edd0e 100644
+index 039233d..c8ced77 100644
 --- a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-@@ -22,2 +22,3 @@ import { defaultButtonStyles, defaultCheckboxStyles, defaultDialogStyles, defaul
- import { ResultKind } from '../../../../platform/keybinding/common/keybindingResolver.js';
-+import { getReleaseString } from '../../../../workbench/common/release';
+@@ -23,2 +23,3 @@ import { ResultKind } from '../../../../platform/keybinding/common/keybindingRes
+ import { CancellationToken } from '../../../../base/common/cancellation.js';
++import { getReleaseString } from '../../../../workbench/common/release.js';
  
-@@ -79,2 +80,4 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
+@@ -80,2 +81,4 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
  		const detailString = (useAgo: boolean): string => {
 +			const releaseString = getReleaseString();
 +
  			return localize('aboutDetail',
-@@ -85,3 +88,3 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
+@@ -86,3 +89,3 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
  				navigator.userAgent
 -			);
 +			).replace('\n', `\n${releaseString} ${this.productService.release || 'Unknown'}\n`);
