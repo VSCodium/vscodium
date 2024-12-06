@@ -189,6 +189,7 @@ The minimal version is limited by the core component Electron, you may want to c
 - [x] GNU/Linux armhf (`deb`, `rpm`, `tar.gz`)
 - [x] GNU/Linux riscv64 (`tar.gz`)
 - [x] GNU/Linux loong64 (`tar.gz`)
+- [x] GNU/Linux ppc64le (`tar.gz`)
 - [x] Windows 10 / Server 2012 R2 or newer x64
 - [x] Windows 10 / Server 2012 R2 or newer arm64
 

@@ -373,7 +373,14 @@ elif [[ "${ASSETS}" != "null" ]]; then
         SHOULD_BUILD_APPIMAGE="no"
         SHOULD_BUILD_DEB="no"
         SHOULD_BUILD_RPM="no"
-        SHOULD_BUILD_TAR="no"
+
+        if [[ -z $( contains "${APP_NAME}-linux-ppc64le-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux PowerPC64LE because we have no TAR"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_TAR="no"
+        fi
+
 
         if [[ -z $( contains "${APP_NAME_LC}-reh-linux-ppc64le-${RELEASE_VERSION}.tar.gz" ) ]]; then
           echo "Building on Linux PowerPC64LE because we have no REH archive"
