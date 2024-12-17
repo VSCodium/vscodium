@@ -16,11 +16,12 @@ tar -xzf ./vscode.tar.gz
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 GLIBC_VERSION="2.28"
-GLIBCXX_VERSION="3.4.22"
+GLIBCXX_VERSION="3.4.26"
 NODE_VERSION="20.18.1"
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   GLIBC_VERSION="2.17"
+  GLIBCXX_VERSION="3.4.22"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
 
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'

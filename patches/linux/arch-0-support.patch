@@ -21,7 +21,7 @@ index 53ef6f3..d0770d6 100644
 -				.pipe(util.setExecutableBit('**'))
 -				.pipe(rename('node'));
 +			if (process.env.VSCODE_NODEJS_SITE && process.env.VSCODE_NODEJS_URLROOT) {
-+				return fetchUrls(`${process.env.VSCODE_NODEJS_URLROOT}/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}${VSCODE_NODEJS_URLSUFFIX}.tar.gz`, { base: process.env.VSCODE_NODEJS_SITE, checksumSha256 })
++				return fetchUrls(`${process.env.VSCODE_NODEJS_URLROOT}/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}${process.env.VSCODE_NODEJS_URLSUFFIX}.tar.gz`, { base: process.env.VSCODE_NODEJS_SITE, checksumSha256 })
 +					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
 +					.pipe(filter('**/node'))
 +					.pipe(util.setExecutableBit('**'))
