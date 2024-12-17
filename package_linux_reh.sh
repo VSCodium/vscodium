@@ -15,12 +15,17 @@ tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-GLIBC_VERSION="2.17"
+GLIBC_VERSION="2.28"
 GLIBCXX_VERSION="3.4.22"
-NODE_VERSION="16.20.2"
+NODE_VERSION="20.18.1"
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  GLIBC_VERSION="2.17"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
+
+  export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
+  export VSCODE_NODEJS_URLROOT='/download/release'
+  export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
 
@@ -32,7 +37,6 @@ elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
   export VSCODE_SKIP_SYSROOT=1
   export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  GLIBC_VERSION="2.28"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:bionic-devtoolset-ppc64le"
 
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
@@ -41,8 +45,6 @@ elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   export VSCODE_SYSROOT_VERSION='20240129-253798'
   export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
-  # Unofficial RISC-V nodejs builds doesn't provide v16.x
-  # Node 18 is buggy so use 20 here for now: https://github.com/VSCodium/vscodium/issues/2060
   NODE_VERSION="20.16.0"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
 
@@ -50,7 +52,6 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
-  # part of the url before '/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz'
   export VSCODE_NODEJS_URLROOT='/download/release'
 elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   NODE_VERSION="20.16.0"
@@ -62,7 +63,6 @@ elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
   export VSCODE_NODEJS_URLROOT='/download/release'
 elif [[ "${VSCODE_ARCH}" == "s390x" ]]; then
-  GLIBC_VERSION="2.28"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-s390x"
 
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
@@ -81,12 +81,6 @@ export VSCODE_HOST_MOUNT
 export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
 sed -i "/target/s/\"20.*\"/\"${NODE_VERSION}\"/" remote/.npmrc
-
-if [[ "${NODE_VERSION}" != 16* ]]; then
-  if [[ -f "../patches/linux/reh/node16.patch" ]]; then
-    mv "../patches/linux/reh/node16.patch" "../patches/linux/reh/node16.patch.no"
-  fi
-fi
 
 if [[ -d "../patches/linux/reh/" ]]; then
   for file in "../patches/linux/reh/"*.patch; do
