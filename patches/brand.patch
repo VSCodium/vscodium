@@ -19,7 +19,7 @@ index 6135df5..484721e 100644
 +		completions.push(this.newSimpleCompletionItem(getText('appName'), range, vscode.l10n.t("e.g. VSCodium")));
  		completions.push(this.newSimpleCompletionItem(getText('remoteName'), range, vscode.l10n.t("e.g. SSH")));
 diff --git a/extensions/css-language-features/package.nls.json b/extensions/css-language-features/package.nls.json
-index d6e25a5..7888614 100644
+index 057ec21..45cd969 100644
 --- a/extensions/css-language-features/package.nls.json
 +++ b/extensions/css-language-features/package.nls.json
 @@ -4,4 +4,4 @@
@@ -359,7 +359,7 @@ index b18b340..ca2eb2d 100644
 +					"comment": "The simpler (?<=\\bProcess\\.|\\bCommandLine\\.) breaks VSCodium / Atom, see https://github.com/textmate/swift.tmbundle/issues/29",
  					"name": "support.variable.swift",
 diff --git a/extensions/typescript-language-features/package.nls.json b/extensions/typescript-language-features/package.nls.json
-index 1e5ca17..ef1e18d 100644
+index 6a7dc26..8a1bc75 100644
 --- a/extensions/typescript-language-features/package.nls.json
 +++ b/extensions/typescript-language-features/package.nls.json
 @@ -75,4 +75,4 @@
@@ -440,20 +440,20 @@ index e85c715..9059335 100644
 +			vscode.l10n.t("Please open a folder in VSCodium to use a TypeScript or JavaScript project"));
  		return;
 diff --git a/extensions/typescript-language-features/src/typescriptServiceClient.ts b/extensions/typescript-language-features/src/typescriptServiceClient.ts
-index 7e18022..1243c69 100644
+index d9f47c1..684cffc 100644
 --- a/extensions/typescript-language-features/src/typescriptServiceClient.ts
 +++ b/extensions/typescript-language-features/src/typescriptServiceClient.ts
-@@ -665,3 +665,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+@@ -653,3 +653,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  						prompt = vscode.window.showErrorMessage<vscode.MessageItem>(
 -							vscode.l10n.t("The JS/TS language service immediately crashed 5 times. The service will not be restarted.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
 +							vscode.l10n.t("The JS/TS language service immediately crashed 5 times. The service will not be restarted.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
  					} else {
-@@ -686,3 +686,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+@@ -674,3 +674,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  							prompt = vscode.window.showWarningMessage<vscode.MessageItem>(
 -								vscode.l10n.t("The JS/TS language service crashed 5 times in the last 5 Minutes.\nThis may be caused by a plugin contributed by one of these extensions: {0}\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
 +								vscode.l10n.t("The JS/TS language service crashed 5 times in the last 5 Minutes.\nThis may be caused by a plugin contributed by one of these extensions: {0}\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
  						} else {
-@@ -700,3 +700,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+@@ -688,3 +688,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  						prompt = vscode.window.showWarningMessage<vscode.MessageItem>(
 -							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
 +							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VSCodium.", pluginExtensionList));
@@ -564,25 +564,20 @@ index c256dba..0ae2e47 100644
 +export const ProductQualityContext = new RawContextKey<string>('productQualityType', '', localize('productQualityType', "Quality type of VSCodium"));
  
 diff --git a/src/vs/platform/extensionManagement/node/extensionManagementService.ts b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-index a55978c..4194925 100644
+index 92405ee..d85fcfb 100644
 --- a/src/vs/platform/extensionManagement/node/extensionManagementService.ts
 +++ b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-@@ -151,3 +151,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+@@ -150,3 +150,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
  			if (manifest.engines && manifest.engines.vscode && !isEngineValid(manifest.engines.vscode, this.productService.version, this.productService.date)) {
 -				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VS Code '{1}'.", extensionId, this.productService.version));
 +				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VSCodium '{1}'.", extensionId, this.productService.version));
  			}
-@@ -233,3 +233,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
- 		} catch (e) {
--			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start VS Code before trying again.", toErrorMessage(e)));
-+			throw new Error(nls.localize('removeError', "Error while removing the extension: {0}. Please Quit and Start VSCodium before trying again.", toErrorMessage(e)));
- 		}
-@@ -1047,3 +1047,3 @@ class InstallExtensionInProfileTask extends AbstractExtensionTask<ILocalExtensio
+@@ -1025,3 +1025,3 @@ class InstallExtensionInProfileTask extends AbstractExtensionTask<ILocalExtensio
  					} catch (e) {
 -						throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
 +						throw new Error(nls.localize('restartCode', "Please restart VSCodium before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
  					}
-@@ -1058,3 +1058,3 @@ class InstallExtensionInProfileTask extends AbstractExtensionTask<ILocalExtensio
+@@ -1036,3 +1036,3 @@ class InstallExtensionInProfileTask extends AbstractExtensionTask<ILocalExtensio
  				} catch (e) {
 -					throw new Error(nls.localize('restartCode', "Please restart VS Code before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
 +					throw new Error(nls.localize('restartCode', "Please restart VSCodium before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
@@ -600,7 +595,7 @@ index 87a9288..d2b5f3f 100644
 +				notices.push(nls.localize('apiProposalMismatch2', "This extension is using the API proposals {0} and '{1}' that are not compatible with the current version of VSCodium.",
  					incompatibleProposals.slice(0, incompatibleProposals.length - 1).map(p => `'${p}'`).join(', '),
 diff --git a/src/vs/platform/externalTerminal/node/externalTerminalService.ts b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
-index 47c1271..b159ac3 100644
+index ca6c82b..346647c 100644
 --- a/src/vs/platform/externalTerminal/node/externalTerminalService.ts
 +++ b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
 @@ -17,3 +17,3 @@ import { ITerminalEnvironment } from '../../terminal/common/terminal.js';
@@ -652,10 +647,10 @@ index d3f27d3..6a7e37a 100644
 +			comment: 'This is used to know how often VSCodium has successfully downloaded the update.';
  		};
 diff --git a/src/vs/server/node/server.cli.ts b/src/vs/server/node/server.cli.ts
-index eb68e8a..55fd45f 100644
+index 7f20588..b72a8ea 100644
 --- a/src/vs/server/node/server.cli.ts
 +++ b/src/vs/server/node/server.cli.ts
-@@ -456,3 +456,3 @@ function asExtensionIdOrVSIX(inputs: string[] | undefined) {
+@@ -468,3 +468,3 @@ function asExtensionIdOrVSIX(inputs: string[] | undefined) {
  function fatal(message: string, err: any): void {
 -	console.error('Unable to connect to VS Code server: ' + message);
 +	console.error('Unable to connect to VSCodium server: ' + message);
@@ -707,15 +702,6 @@ index 7b8a2f9..d489ddb 100644
 -		localize('appName', "`${appName}`: e.g. VS Code."),
 +		localize('appName', "`${appName}`: e.g. VSCodium."),
  		localize('remoteName', "`${remoteName}`: e.g. SSH"),
-diff --git a/src/vs/workbench/contrib/accessibility/browser/accessibilityStatus.ts b/src/vs/workbench/contrib/accessibility/browser/accessibilityStatus.ts
-index 50ae856..de6bb10 100644
---- a/src/vs/workbench/contrib/accessibility/browser/accessibilityStatus.ts
-+++ b/src/vs/workbench/contrib/accessibility/browser/accessibilityStatus.ts
-@@ -52,3 +52,3 @@ export class AccessibilityStatus extends Disposable implements IWorkbenchContrib
- 			Severity.Info,
--			localize('screenReaderDetectedExplanation.question', "Are you using a screen reader to operate VS Code?"),
-+			localize('screenReaderDetectedExplanation.question', "Are you using a screen reader to operate VSCodium?"),
- 			[{
 diff --git a/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts b/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts
 index 0a13063..c62db65 100644
 --- a/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts
@@ -726,7 +712,7 @@ index 0a13063..c62db65 100644
 +						description: nls.localize('debugServer', "For debug extension development only: if a port is specified VSCodium tries to connect to a debug adapter running in server mode"),
  						default: 4711
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-index 4a2b68d..9ad4aea 100644
+index 4a55c93..b991b70 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 @@ -378,3 +378,3 @@ CommandsRegistry.registerCommand({
@@ -755,7 +741,7 @@ index 4a2b68d..9ad4aea 100644
 +						localize('InstallVSIXAction.successReload', "Completed installing extension from VSIX. Please reload VSCodium to enable it."),
  						[{
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
-index a932e4f..3e08d9a 100644
+index 052e140..54659f8 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 @@ -105,3 +105,3 @@ export class PromptExtensionInstallFailureAction extends Action {
@@ -778,13 +764,8 @@ index a932e4f..3e08d9a 100644
 -				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to VS Code. Configure these {0} to use this functionality.", link)) }, true);
 +				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to VSCodium. Configure these {0} to use this functionality.", link)) }, true);
  			} else {
-@@ -2894,3 +2894,3 @@ export class ReinstallAction extends Action {
- 						const requireReload = !(extension.local && this.extensionService.canAddExtension(toExtensionDescription(extension.local)));
--						const message = requireReload ? localize('ReinstallAction.successReload', "Please reload Visual Studio Code to complete reinstalling the extension {0}.", extension.identifier.id)
-+						const message = requireReload ? localize('ReinstallAction.successReload', "Please reload VSCodium to complete reinstalling the extension {0}.", extension.identifier.id)
- 							: localize('ReinstallAction.success', "Reinstalling the extension {0} is completed.", extension.identifier.id);
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index 1a86249..2230763 100644
+index 1a28f00..7798b16 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 @@ -457,3 +457,3 @@ export class Extension implements IExtension {
@@ -926,7 +907,7 @@ index b71064b..d558dae 100644
 +					this._notificationService.prompt(Severity.Warning, nls.localize('terminal.monospaceOnly', "The terminal only supports monospace fonts. Be sure to restart VSCodium if this is a newly installed font."), choices);
  				}
 diff --git a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
-index 752b9e8..5d27d5e 100644
+index beea866..2f46568 100644
 --- a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 +++ b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 @@ -290,3 +290,3 @@ const terminalConfiguration: IConfigurationNode = {
@@ -966,8 +947,8 @@ index 752b9e8..5d27d5e 100644
  			type: 'object',
 @@ -462,3 +462,3 @@ const terminalConfiguration: IConfigurationNode = {
  		[TerminalSettingId.ExperimentalWindowsUseConptyDll]: {
--			markdownDescription: localize('terminal.integrated.experimentalWindowsUseConptyDll', "Whether to use the experimental conpty.dll shipped with VS Code, instead of the one bundled with Windows."),
-+			markdownDescription: localize('terminal.integrated.experimentalWindowsUseConptyDll', "Whether to use the experimental conpty.dll shipped with VSCodium, instead of the one bundled with Windows."),
+-			markdownDescription: localize('terminal.integrated.experimentalWindowsUseConptyDll', "Whether to use the experimental conpty.dll (v1.20.240626001) shipped with VS Code, instead of the one bundled with Windows."),
++			markdownDescription: localize('terminal.integrated.experimentalWindowsUseConptyDll', "Whether to use the experimental conpty.dll (v1.20.240626001) shipped with VSCodium, instead of the one bundled with Windows."),
  			type: 'boolean',
 @@ -563,3 +563,3 @@ const terminalConfiguration: IConfigurationNode = {
  			restricted: true,
@@ -983,32 +964,18 @@ index 860bb28..05f4eba 100644
 -				description: localize('suggest.builtinCompletions.pwshCode', 'Custom PowerShell argument completers will be registered for VS Code\'s `code` and `code-insiders` CLIs. This is currently very basic and always suggests flags and subcommands without checking context.'),
 +				description: localize('suggest.builtinCompletions.pwshCode', 'Custom PowerShell argument completers will be registered for VSCodium\'s `codium` and `codium-insiders` CLIs. This is currently very basic and always suggests flags and subcommands without checking context.'),
  				type: 'boolean'
-diff --git a/src/vs/workbench/contrib/themes/browser/themes.contribution.ts b/src/vs/workbench/contrib/themes/browser/themes.contribution.ts
-index 9a7b334..7a9aee9 100644
---- a/src/vs/workbench/contrib/themes/browser/themes.contribution.ts
-+++ b/src/vs/workbench/contrib/themes/browser/themes.contribution.ts
-@@ -914,3 +914,3 @@ class DefaultThemeUpdatedNotificationContribution implements IWorkbenchContribut
- 				Severity.Info,
--				localize({ key: 'themeUpdatedNotification', comment: ['{0} is the name of the new default theme'] }, "Visual Studio Code now ships with a new default theme '{0}'. If you prefer, you can switch back to the old theme or try one of the many other color themes available.", newTheme.label),
-+				localize({ key: 'themeUpdatedNotification', comment: ['{0} is the name of the new default theme'] }, "VSCodium now ships with a new default theme '{0}'. If you prefer, you can switch back to the old theme or try one of the many other color themes available.", newTheme.label),
- 				choices,
-@@ -942,3 +942,3 @@ class DefaultThemeUpdatedNotificationContribution implements IWorkbenchContribut
- 				Severity.Info,
--				localize({ key: 'newThemeNotification', comment: ['{0} is the name of the new default theme'] }, "Visual Studio Code now ships with a new default theme '{0}'. Do you want to give it a try?", theme.label),
-+				localize({ key: 'newThemeNotification', comment: ['{0} is the name of the new default theme'] }, "VSCodium now ships with a new default theme '{0}'. Do you want to give it a try?", theme.label),
- 				choices,
 diff --git a/src/vs/workbench/contrib/update/browser/update.ts b/src/vs/workbench/contrib/update/browser/update.ts
-index 2ff75f4..3f20d41 100644
+index fd3452f..a2c0b45 100644
 --- a/src/vs/workbench/contrib/update/browser/update.ts
 +++ b/src/vs/workbench/contrib/update/browser/update.ts
-@@ -579,4 +579,4 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
+@@ -575,4 +575,4 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
  							detail: newQuality === 'insider' ?
 -								nls.localize('relaunchDetailInsiders', "Press the reload button to switch to the Insiders version of VS Code.") :
 -								nls.localize('relaunchDetailStable', "Press the reload button to switch to the Stable version of VS Code."),
 +								nls.localize('relaunchDetailInsiders', "Press the reload button to switch to the Insiders version of VSCodium.") :
 +								nls.localize('relaunchDetailStable', "Press the reload button to switch to the Stable version of VSCodium."),
  							primaryButton: nls.localize({ key: 'reload', comment: ['&& denotes a mnemonic'] }, "&&Reload")
-@@ -615,3 +615,3 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
+@@ -611,3 +611,3 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
  						message: nls.localize('selectSyncService.message', "Choose the settings sync service to use after changing the version"),
 -						detail: nls.localize('selectSyncService.detail', "The Insiders version of VS Code will synchronize your settings, keybindings, extensions, snippets and UI State using separate insiders settings sync service by default."),
 +						detail: nls.localize('selectSyncService.detail', "The Insiders version of VSCodium will synchronize your settings, keybindings, extensions, snippets and UI State using separate insiders settings sync service by default."),
@@ -1051,20 +1018,20 @@ index 3f1c098..3b2a175 100644
 +											description: localize('walkthroughs.steps.completionEvents.onCommand', 'Check off step when a given command is executed anywhere in VSCodium.'),
  											body: 'onCommand:${1:commandId}'
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-index 02350e7..03a5f85 100644
+index 303905c..453428b 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-@@ -240,3 +240,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -238,3 +238,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		id: 'Setup',
 -		title: localize('gettingStarted.setup.title', "Get Started with VS Code"),
 +		title: localize('gettingStarted.setup.title', "Get Started with VSCodium"),
  		description: localize('gettingStarted.setup.description', "Customize your editor, learn the basics, and start coding"),
-@@ -245,3 +245,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -243,3 +243,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		when: '!isWeb',
 -		walkthroughPageTitle: localize('gettingStarted.setup.walkthroughPageTitle', 'Setup VS Code'),
 +		walkthroughPageTitle: localize('gettingStarted.setup.walkthroughPageTitle', 'Setup VSCodium'),
  		next: 'Beginner',
-@@ -266,6 +266,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -264,6 +264,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
 -					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VS Code's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VSCodium's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1073,7 +1040,7 @@ index 02350e7..03a5f85 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions-web.svg'
 +						type: 'svg', altText: 'VSCodium extension marketplace with featured language extensions', path: 'extensions-web.svg'
  					},
-@@ -284,6 +284,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -282,6 +282,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.settings.title', "Tune your settings"),
 -					description: localize('gettingStarted.settings.description.interpolated', "Customize every aspect of VS Code and your extensions to your liking. Commonly used settings are listed first to get you started.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
 +					description: localize('gettingStarted.settings.description.interpolated', "Customize every aspect of VSCodium and your extensions to your liking. Commonly used settings are listed first to get you started.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
@@ -1082,49 +1049,49 @@ index 02350e7..03a5f85 100644
 -						type: 'svg', altText: 'VS Code Settings', path: 'settings.svg'
 +						type: 'svg', altText: 'VSCodium Settings', path: 'settings.svg'
  					},
-@@ -303,3 +303,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -301,3 +301,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.settings.title', "Tune your settings"),
 -					description: localize('gettingStarted.settingsAndSync.description.interpolated', "Customize every aspect of VS Code and your extensions to your liking. [Back up and sync](command:workbench.userDataSync.actions.turnOn) your essential customizations across all your devices.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
 +					description: localize('gettingStarted.settingsAndSync.description.interpolated', "Customize every aspect of VSCodium and your extensions to your liking. [Back up and sync](command:workbench.userDataSync.actions.turnOn) your essential customizations across all your devices.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
  					when: 'config.chat.experimental.offerSetup && syncStatus != uninitialized',
-@@ -307,3 +307,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -305,3 +305,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					media: {
 -						type: 'svg', altText: 'VS Code Settings', path: 'settings.svg'
 +						type: 'svg', altText: 'VSCodium Settings', path: 'settings.svg'
  					},
-@@ -313,3 +313,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -311,3 +311,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPalette.title', "Unlock productivity with the Command Palette "),
 -					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VSCodium.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'svg', altText: 'Command Palette overlay for searching and executing commands.', path: 'commandPalette.svg' },
-@@ -319,3 +319,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -317,3 +317,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -					description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VS Code.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFileFolder')),
 +					description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VSCodium.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFileFolder')),
  					when: '!config.chat.experimental.offerSetup && isMac && workspaceFolderCount == 0',
-@@ -328,3 +328,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -326,3 +326,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -					description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VS Code.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFolder')),
 +					description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VSCodium.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFolder')),
  					when: '!config.chat.experimental.offerSetup && !isMac && workspaceFolderCount == 0',
-@@ -346,4 +346,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -344,4 +344,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.videoTutorial.title', "Watch video tutorials"),
 -					description: localize('gettingStarted.videoTutorial.description.interpolated', "Watch the first in a series of short & practical video tutorials for VS Code's key features.\n{0}", Button(localize('watch', "Watch Tutorial"), 'https://aka.ms/vscode-getting-started-video')),
 -					media: { type: 'svg', altText: 'VS Code Settings', path: 'learn.svg' },
 +					description: localize('gettingStarted.videoTutorial.description.interpolated', "Watch the first in a series of short & practical video tutorials for VSCodium's key features.\n{0}", Button(localize('watch', "Watch Tutorial"), 'https://aka.ms/vscode-getting-started-video')),
 +					media: { type: 'svg', altText: 'VSCodium Settings', path: 'learn.svg' },
  				}
-@@ -355,3 +355,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -353,3 +353,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		id: 'SetupWeb',
 -		title: localize('gettingStarted.setupWeb.title', "Get Started with VS Code for the Web"),
 +		title: localize('gettingStarted.setupWeb.title', "Get Started with VSCodium for the Web"),
  		description: localize('gettingStarted.setupWeb.description', "Customize your editor, learn the basics, and start coding"),
-@@ -361,3 +361,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -359,3 +359,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		next: 'Beginner',
 -		walkthroughPageTitle: localize('gettingStarted.setupWeb.walkthroughPageTitle', 'Setup VS Code Web'),
 +		walkthroughPageTitle: localize('gettingStarted.setupWeb.walkthroughPageTitle', 'Setup VSCodium Web'),
  		content: {
-@@ -387,6 +387,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -385,6 +385,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
 -					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VS Code's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VSCodium's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1133,32 +1100,32 @@ index 02350e7..03a5f85 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions-web.svg'
 +						type: 'svg', altText: 'VSCodium extension marketplace with featured language extensions', path: 'extensions-web.svg'
  					},
-@@ -415,3 +415,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -413,3 +413,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPalette.title', "Unlock productivity with the Command Palette "),
 -					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VSCodium.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'svg', altText: 'Command Palette overlay for searching and executing commands.', path: 'commandPalette.svg' },
-@@ -421,3 +421,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -419,3 +419,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into VS Code.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
 +					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into VSCodium.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
  					when: 'workspaceFolderCount == 0',
-@@ -442,3 +442,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -440,3 +440,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		title: localize('gettingStarted.setupAccessibility.title', "Get Started with Accessibility Features"),
 -		description: localize('gettingStarted.setupAccessibility.description', "Learn the tools and shortcuts that make VS Code accessible. Note that some actions are not actionable from within the context of the walkthrough."),
 +		description: localize('gettingStarted.setupAccessibility.description', "Learn the tools and shortcuts that make VSCodium accessible. Note that some actions are not actionable from within the context of the walkthrough."),
  		isFeatured: true,
-@@ -447,3 +447,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -445,3 +445,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		next: 'Setup',
 -		walkthroughPageTitle: localize('gettingStarted.setupAccessibility.walkthroughPageTitle', 'Setup VS Code Accessibility'),
 +		walkthroughPageTitle: localize('gettingStarted.setupAccessibility.walkthroughPageTitle', 'Setup VSCodium Accessibility'),
  		content: {
-@@ -478,3 +478,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -476,3 +476,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPaletteAccessibility.title', "Unlock productivity with the Command Palette "),
 -					description: localize('gettingStarted.commandPaletteAccessibility.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPaletteAccessibility.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VSCodium.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'markdown', path: 'empty' },
-@@ -551,6 +551,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -549,6 +549,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
 -					description: localize('gettingStarted.extensions.description.interpolated', "Extensions are VS Code's power-ups. They range from handy productivity hacks, expanding out-of-the-box features, to adding completely new capabilities.\n{0}", Button(localize('browsePopular', "Browse Popular Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensions.description.interpolated', "Extensions are VSCodium's power-ups. They range from handy productivity hacks, expanding out-of-the-box features, to adding completely new capabilities.\n{0}", Button(localize('browsePopular', "Browse Popular Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1220,10 +1187,10 @@ index 19a8cf1..9a8ea92 100644
 +				description: localize('argv.useInMemorySecretStorage', "Ensures that an in-memory store will be used for secret storage instead of using the OS's credential store. This is often used when running VSCodium extension tests or when you're experiencing difficulties with the credential store.")
  			}
 diff --git a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-index 6312b05..935307a 100644
+index d823682..db41e24 100644
 --- a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
 +++ b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-@@ -771,3 +771,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
+@@ -762,3 +762,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
  
 -		const productName = localize('VS Code for Web', "{0} for the Web", this.productService.nameLong);
 +		const productName = localize('VSCodium for Web', "{0} for the Web", this.productService.nameLong);
