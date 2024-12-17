@@ -19,13 +19,15 @@ GLIBC_VERSION="2.28"
 GLIBCXX_VERSION="3.4.26"
 NODE_VERSION="20.18.1"
 
+export VSCODE_NODEJS_URLROOT='/download/release'
+export VSCODE_NODEJS_URLSUFFIX=''
+
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   GLIBC_VERSION="2.17"
   GLIBCXX_VERSION="3.4.22"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
 
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
-  export VSCODE_NODEJS_URLROOT='/download/release'
   export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:centos7-devtoolset8-${VSCODE_ARCH}"
@@ -53,7 +55,6 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
-  export VSCODE_NODEJS_URLROOT='/download/release'
 elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   NODE_VERSION="20.16.0"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:trixie-devtoolset-loong64"
@@ -62,7 +63,6 @@ elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
-  export VSCODE_NODEJS_URLROOT='/download/release'
 elif [[ "${VSCODE_ARCH}" == "s390x" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-s390x"
 
