@@ -232,7 +232,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
-        run: ./package_linux_bin.sh
+        run: ./build/linux/package_bin.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Prepare assets
@@ -362,7 +362,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
-        run: ./package_linux_reh.sh
+        run: ./build/linux/package_reh.sh
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
 
       - name: Release
@@ -444,7 +444,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
-        run: ./package_alpine_reh.sh
+        run: ./build/alpine/package_reh.sh
         if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
 
       - name: Release

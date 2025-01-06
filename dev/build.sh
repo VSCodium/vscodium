@@ -2,7 +2,7 @@
 # shellcheck disable=SC1091,SC2129
 
 ### Windows
-# to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
+# to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./dev/build.sh
 ###
 
 export APP_NAME="VSCodium"
@@ -124,7 +124,7 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
       echo "{}" > ~/.gyp/include.gypi.pre-vscodium
     fi
 
-    cp ./include_osx.gypi ~/.gyp/include.gypi
+    cp ./build/osx/include.gypi ~/.gyp/include.gypi
   fi
 
   . build.sh
@@ -134,8 +134,8 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
   fi
 
   if [[ "${VSCODE_LATEST}" == "yes" ]]; then
-    jsonTmp=$( cat "${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
-    echo "${jsonTmp}" > "${VSCODE_QUALITY}.json" && unset jsonTmp
+    jsonTmp=$( cat "./upstream/${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
+    echo "${jsonTmp}" > "./upstream/${VSCODE_QUALITY}.json" && unset jsonTmp
   fi
 fi
 

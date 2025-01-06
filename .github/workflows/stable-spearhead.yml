@@ -51,8 +51,8 @@ jobs:
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Update <quality>.json
-        run: ./update_qualityjson.sh
+      - name: Update upstream version
+        run: ./update_upstream.sh
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
