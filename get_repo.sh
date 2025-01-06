@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2129
 
-set -e
+set -ex
+
+echo "${GITHUB_REPOSITORY}"
+pwd
 
 # git workaround
 if [[ "${CI_BUILD}" != "no" ]]; then
