@@ -51,21 +51,21 @@ see [the common dependencies](#dependencies)
 
 ## <a id="build-scripts"></a>Build Scripts
 
-A build helper script can be found at `build/build.sh`.
+A build helper script can be found at `dev/build.sh`.
 
-- Linux: `./build/build.sh`
-- MacOS: `./build/build.sh`
-- Windows: `powershell -ExecutionPolicy ByPass -File .\build\build.ps1` or `"C:\Program Files\Git\bin\bash.exe" ./build/build.sh`
+- Linux: `./dev/build.sh`
+- MacOS: `./dev/build.sh`
+- Windows: `powershell -ExecutionPolicy ByPass -File .\dev\build.ps1` or `"C:\Program Files\Git\bin\bash.exe" ./dev/build.sh`
 
 ### Insider
 
-The `insider` version can be built with `./build/build.sh -i` on the `insider` branch.
+The `insider` version can be built with `./dev/build.sh -i` on the `insider` branch.
 
-You can try the latest version with the command `./build/build.sh -il` but the patches might not be up to date.
+You can try the latest version with the command `./dev/build.sh -il` but the patches might not be up to date.
 
 ### Flags
 
-The script `build/build.sh` provides several flags:
+The script `dev/build.sh` provides several flags:
 
 - `-i`: build the Insiders version
 - `-l`: build with latest version of Visual Studio Code
@@ -93,8 +93,8 @@ review-tools.snap-review --allow-classic codium*.snap
 
 ## <a id="patch-update-process-semiauto"></a>Semi-Automated
 
-- run `./build/build_<os>.sh`, if a patch is failing then,
-- run `./build/update_patches.sh`
+- run `./dev/build.sh`, if a patch is failing then,
+- run `./dev/update_patches.sh`
 - when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
 - fix all the `*.rej` files
 - run `yarn watch`
@@ -103,7 +103,7 @@ review-tools.snap-review --allow-classic codium*.snap
 
 ## <a id="patch-update-process-manual"></a>Manual
 
-- run `./build/build_<os>.sh`, if a patch is failing then,
+- run `./dev/build.sh`, if a patch is failing then,
 - open `vscode` directory in **VSCodium**
 - revert all changes
 - run `git apply --reject ../patches/<name>.patch`
