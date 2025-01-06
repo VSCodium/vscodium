@@ -53,10 +53,17 @@ jobs:
 
       - name: Update upstream version
         run: ./update_upstream.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository_owner }}
         if: env.SHOULD_BUILD == 'yes' && github.event.inputs.dont_update != 'true'
+
+      - name: Commit changes
+        uses: iarekylew00t/verified-bot-commit@v1
+        with:
+          ref: env.COMMIT_REF
+          message: env.COMMIT_MESSAGE
+          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          files: |
+            upstream/*.json
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_COMMIT == 'yes'
 
       - name: Prepare source
         run: ./prepare_src.sh

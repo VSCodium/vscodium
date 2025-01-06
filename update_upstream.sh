@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2129
 
 set -e
 
@@ -15,19 +16,17 @@ fi
 jsonTmp=$( cat "./upstream/${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
 echo "${jsonTmp}" > "./upstream/${VSCODE_QUALITY}.json" && unset jsonTmp
 
-git config user.email "$( echo "${GITHUB_USERNAME}" | awk '{print tolower($0)}' )-ci@not-real.com"
-git config user.name "${GITHUB_USERNAME} CI"
 git add .
 
 CHANGES=$( git status --porcelain )
 
 if [[ -n "${CHANGES}" ]]; then
-  git commit -m "build(${VSCODE_QUALITY}): update to commit ${MS_COMMIT:0:7}"
+  COMMIT_MESSAGE="build(${VSCODE_QUALITY}): update to commit ${MS_COMMIT:0:7}"
+  COMMIT_REF=$( git rev-parse --abbrev-ref HEAD )
 
-  BRANCH_NAME=$( git rev-parse --abbrev-ref HEAD )
-
-  if ! git push origin "${BRANCH_NAME}" --quiet; then
-    git pull origin "${BRANCH_NAME}"
-    git push origin "${BRANCH_NAME}" --quiet
+  if [[ "${GITHUB_ENV}" ]]; then
+    echo "SHOULD_COMMIT=yes" >> "${GITHUB_ENV}"
+    echo "COMMIT_MESSAGE=${COMMIT_MESSAGE}" >> "${GITHUB_ENV}"
+    echo "COMMIT_REF=${COMMIT_REF}" >> "${GITHUB_ENV}"
   fi
 fi
