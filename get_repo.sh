@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2129
 
-set -ex
-
-echo "${GITHUB_REPOSITORY}"
-pwd
+set -e
 
 # git workaround
 if [[ "${CI_BUILD}" != "no" ]]; then
@@ -56,8 +53,8 @@ else
     fi
   fi
 
-  if [[ "${MS_TAG}" == "$( jq -r '.tag' "${VSCODE_QUALITY}".json )" ]]; then
-    MS_COMMIT=$( jq -r '.commit' "${VSCODE_QUALITY}".json )
+  if [[ "${MS_TAG}" == "$( jq -r '.tag' "./upstream/${VSCODE_QUALITY}.json" )" ]]; then
+    MS_COMMIT=$( jq -r '.commit' "./upstream/${VSCODE_QUALITY}.json" )
   else
     echo "Error: No MS_COMMIT for ${RELEASE_VERSION}"
     exit 1
