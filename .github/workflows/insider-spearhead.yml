@@ -63,8 +63,8 @@ jobs:
       - name: Commit changes
         uses: iarekylew00t/verified-bot-commit@v1
         with:
-          ref: env.COMMIT_REF
-          message: env.COMMIT_MESSAGE
+          ref: ${{ env.COMMIT_REF }}
+          message: ${{ env.COMMIT_MESSAGE }}
           token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           files: |
             upstream/*.json

@@ -17,7 +17,7 @@ CHANGES=$( git status --porcelain )
 
 if [[ -n "${CHANGES}" ]]; then
   COMMIT_MESSAGE="build(${VSCODE_QUALITY}): update to commit ${MS_COMMIT:0:7}"
-  COMMIT_REF=$( git rev-parse HEAD )
+  COMMIT_REF=$( git rev-parse --abbrev-ref HEAD )
 
   if [[ "${GITHUB_ENV}" ]]; then
     echo "SHOULD_COMMIT=yes" >> "${GITHUB_ENV}"
