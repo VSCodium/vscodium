@@ -16,12 +16,20 @@ git add .
 CHANGES=$( git status --porcelain )
 
 if [[ -n "${CHANGES}" ]]; then
-  COMMIT_MESSAGE="build(${VSCODE_QUALITY}): update to commit ${MS_COMMIT:0:7}"
-  COMMIT_REF=$( git rev-parse --abbrev-ref HEAD )
+  # COMMIT_MESSAGE="build(${VSCODE_QUALITY}): update to commit ${MS_COMMIT:0:7}"
+  # COMMIT_REF=$( git rev-parse --abbrev-ref HEAD )
 
-  if [[ "${GITHUB_ENV}" ]]; then
-    echo "SHOULD_COMMIT=yes" >> "${GITHUB_ENV}"
-    echo "COMMIT_MESSAGE=${COMMIT_MESSAGE}" >> "${GITHUB_ENV}"
-    echo "COMMIT_REF=${COMMIT_REF}" >> "${GITHUB_ENV}"
+  # if [[ "${GITHUB_ENV}" ]]; then
+  #   echo "SHOULD_COMMIT=yes" >> "${GITHUB_ENV}"
+  #   echo "COMMIT_MESSAGE=${COMMIT_MESSAGE}" >> "${GITHUB_ENV}"
+  #   echo "COMMIT_REF=${COMMIT_REF}" >> "${GITHUB_ENV}"
+  # fi
+  git commit -S -m "build(${VSCODE_QUALITY}): update to commit ${MS_COMMIT:0:7}"
+
+  BRANCH_NAME=$( git rev-parse --abbrev-ref HEAD )
+
+  if ! git push origin "${BRANCH_NAME}" --quiet; then
+    git pull origin "${BRANCH_NAME}"
+    git push origin "${BRANCH_NAME}" --quiet
   fi
 fi
