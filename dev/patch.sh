@@ -29,7 +29,7 @@ while [ $# -gt 1 ]; do
 done
 
 git add .
-git commit -q -m "VSCODIUM HELPER" --no-verify
+git commit --no-verify -q -m "VSCODIUM HELPER"
 
 if [[ "${1}" == *patch ]]; then
   FILE="../patches/${1}"
@@ -46,7 +46,5 @@ read -rp "Press any key when the conflict have been resolved..." -n1 -s
 git add .
 git diff --staged -U1 > "${FILE}"
 git reset -q --hard HEAD~
-
-cd ..
 
 echo "The patch has been generated."
