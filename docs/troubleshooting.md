@@ -27,10 +27,10 @@ fc-cache -r
 
 #### <a id="linux-rendering-glitches"></a>*Text and/or the entire interface not appearing*
 
-You have likely encountered [a bug in Chromium and Electron](microsoft/vscode#190437) when compiling Mesa shaders, which has affected all Visual Studio Code and VSCodium versions for Linux distributions since 1.82.  The current workaround (see microsoft/vscode#190437) is to delete the GPU cache as follows:
+You have likely encountered [a bug in Chromium and Electron](microsoft/vscode#190437) when compiling Mesa shaders, which has affected all Visual Studio Code and Codex versions for Linux distributions since 1.82.  The current workaround (see microsoft/vscode#190437) is to delete the GPU cache as follows:
 
 ```bash
-rm -rf ~/.config/VSCodium/GPUCache
+rm -rf ~/.config/Codex/GPUCache
 ```
 
 #### <a id="linux-kde-global-menu"></a>*Global menu workaround for KDE*
