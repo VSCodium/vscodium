@@ -3,7 +3,7 @@
 
 exists() { type -t "$1" &> /dev/null; }
 
-export APP_NAME="VSCodium"
+export APP_NAME="Codex"
 export CI_BUILD="no"
 export OS_NAME="linux"
 export SHOULD_BUILD="yes"
@@ -20,7 +20,7 @@ while getopts ":ilp" opt; do
       export VSCODE_LATEST="yes"
       ;;
     p)
-      export SKIP_ASSETS="no" 
+      export SKIP_ASSETS="no"
       ;;
     *)
       ;;

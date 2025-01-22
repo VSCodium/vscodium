@@ -261,7 +261,6 @@ elif [[ "${ASSETS}" != "null" ]]; then
   elif [[ "${OS_NAME}" == "linux" ]]; then
 
     if [[ "${CHECK_ONLY_REH}" == "yes" ]]; then
-
       if [[ -z $( contains "${APP_NAME_LC}-reh-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
         echo "Building on Linux ${VSCODE_ARCH} because we have no REH archive"
         export SHOULD_BUILD="yes"
