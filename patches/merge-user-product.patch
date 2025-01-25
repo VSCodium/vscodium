@@ -1,5 +1,5 @@
 diff --git a/src/main.ts b/src/main.ts
-index ff9a5e8..2135d00 100644
+index 1504375..6bba7b8 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -8,2 +8,3 @@ import * as fs from 'original-fs';
@@ -30,12 +30,12 @@ index ff9a5e8..2135d00 100644
 +	resolveUserProduct();
  
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 1a2a619..9bf5ac0 100644
+index 1a2a619..e0da4ea 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -29,2 +29,36 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+@@ -29,2 +29,38 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
  
-+	const { serviceUrl, searchUrl, itemUrl, controlUrl } = product.extensionsGallery || {};
++	const { serviceUrl, searchUrl, itemUrl, controlUrl, extensionUrlTemplate, resourceUrlTemplate } = product.extensionsGallery || {};
 +
 +	Object.assign(product, {
 +		extensionsGallery: {
@@ -43,6 +43,8 @@ index 1a2a619..9bf5ac0 100644
 +			searchUrl: env['VSCODE_GALLERY_SEARCH_URL'] || searchUrl,
 +			itemUrl: env['VSCODE_GALLERY_ITEM_URL'] || itemUrl,
 +			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
++			extensionUrlTemplate: env['VSCODE_GALLERY_EXTENSION_URL_TEMPLATE'] || extensionUrlTemplate,
++			resourceUrlTemplate: env['VSCODE_GALLERY_RESOURCE_URL_TEMPLATE'] || resourceUrlTemplate,
 +		}
 +	});
 +
