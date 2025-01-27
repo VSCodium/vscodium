@@ -390,12 +390,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - vscode_arch: x64
+        - slug: X64
+          vscode_arch: x64
           npm_arch: x64
-        - vscode_arch: arm64
+        - slug: ARM64
+          vscode_arch: arm64
           npm_arch: arm64
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      DISABLED: ${{ vars[format('DISABLE_INSIDER_ALPINE_REH_{0}', matrix.slug)] }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       OS_NAME: alpine
@@ -439,21 +442,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vscode
-        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./build/alpine/package_reh.sh
-        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_BUILD_REH != 'no' && env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Upload assets
         uses: actions/upload-artifact@v4
@@ -461,7 +464,7 @@ jobs:
           name: reh-alpine-${{ matrix.vscode_arch }}
           path: assets/
           retention-days: 3
-        if: env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   aur:
     needs:
