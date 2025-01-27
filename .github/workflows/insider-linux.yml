@@ -438,21 +438,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: vscode
-        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
+        if: github.event.inputs.generate_assets == 'true' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./package_alpine_reh.sh
-        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
+        if: github.event.inputs.generate_assets == 'true' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_BUILD_REH != 'no' && env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_DEPLOY == 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Upload assets
         uses: actions/upload-artifact@v4
