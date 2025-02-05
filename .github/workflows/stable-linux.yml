@@ -165,18 +165,18 @@ jobs:
           vscode_arch: armhf
           npm_arch: arm
           image: vscodium/vscodium-linux-build-agent:focal-armhf
-        - slug: RISCV64
-          vscode_arch: riscv64
-          npm_arch: riscv64
-          image: vscodium/vscodium-linux-build-agent:focal-riscv64
-        - slug: LOONG64
-          vscode_arch: loong64
-          npm_arch: loong64
-          image: vscodium/vscodium-linux-build-agent:trixie-loong64
-        - slug: PPC64
-          vscode_arch: ppc64le
-          npm_arch: ppc64
-          image: vscodium/vscodium-linux-build-agent:focal-ppc64le
+        # - slug: RISCV64
+        #   vscode_arch: riscv64
+        #   npm_arch: riscv64
+        #   image: vscodium/vscodium-linux-build-agent:focal-riscv64
+        # - slug: LOONG64
+        #   vscode_arch: loong64
+        #   npm_arch: loong64
+        #   image: vscodium/vscodium-linux-build-agent:trixie-loong64
+        # - slug: PPC64
+        #   vscode_arch: ppc64le
+        #   npm_arch: ppc64
+        #   image: vscodium/vscodium-linux-build-agent:focal-ppc64le
     container:
       image: ${{ matrix.image }}
     env:
@@ -283,18 +283,18 @@ jobs:
         - slug: ARM32
           vscode_arch: armhf
           npm_arch: arm
-        - slug: PPC64
-          vscode_arch: ppc64le
-          npm_arch: ppc64
-        - slug: RISCV64
-          vscode_arch: riscv64
-          npm_arch: riscv64
-        - slug: LOONG64
-          vscode_arch: loong64
-          npm_arch: loong64
-        - slug: S390X
-          vscode_arch: s390x
-          npm_arch: s390x
+        # - slug: PPC64
+        #   vscode_arch: ppc64le
+        #   npm_arch: ppc64
+        # - slug: RISCV64
+        #   vscode_arch: riscv64
+        #   npm_arch: riscv64
+        # - slug: LOONG64
+        #   vscode_arch: loong64
+        #   npm_arch: loong64
+        # - slug: S390X
+        #   vscode_arch: s390x
+        #   npm_arch: s390x
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
       DISABLED: ${{ vars[format('DISABLE_STABLE_LINUX_REH_{0}', matrix.slug)] }}
