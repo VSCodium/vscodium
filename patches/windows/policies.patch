@@ -22,21 +22,21 @@ index 01541e8..5b67f2b 100644
 +!@vscodium/policy-watcher/build/Release/vscode-policy-watcher.node
  
 diff --git a/build/lib/policies.js b/build/lib/policies.js
-index 1560dc7..07c7348 100644
+index d52015c..39a4001 100644
 --- a/build/lib/policies.js
 +++ b/build/lib/policies.js
-@@ -61,3 +61,3 @@ class BasePolicy {
+@@ -64,3 +64,3 @@ class BasePolicy {
          return [
 -            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
 +            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\VSCodium\\${regKey}" presentation="$(presentation.${this.name})">`,
              `	<parentCategory ref="${this.category.name.nlsKey}" />`,
-@@ -373,3 +373,3 @@ function renderADMX(regKey, versions, categories, policies) {
+@@ -376,3 +376,3 @@ function renderADMX(regKey, versions, categories, policies) {
  	<policyNamespaces>
 -		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
 +		<target prefix="${regKey}" namespace="VSCodium.Policies.${regKey}" />
  	</policyNamespaces>
 diff --git a/build/lib/policies.ts b/build/lib/policies.ts
-index f602c8a..11919c9 100644
+index 57941d8..50c1843 100644
 --- a/build/lib/policies.ts
 +++ b/build/lib/policies.ts
 @@ -80,3 +80,3 @@ abstract class BasePolicy implements Policy {
@@ -59,18 +59,18 @@ index f9f120a..db61adc 100644
 +						'@vscodium/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
-index 99a6c49..0997218 100644
+index 4963a5e..f297c0b 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -18,3 +18,2 @@
          "@vscode/iconv-lite-umd": "0.7.0",
 -        "@vscode/policy-watcher": "^1.1.8",
-         "@vscode/proxy-agent": "^0.30.0",
+         "@vscode/proxy-agent": "^0.31.0",
 @@ -29,2 +28,3 @@
          "@vscode/windows-registry": "^1.1.0",
 +        "@vscodium/policy-watcher": "^1.1.8-2501211616",
          "@xterm/addon-clipboard": "^0.2.0-beta.79",
-@@ -2830,22 +2830,2 @@
+@@ -2831,22 +2831,2 @@
      },
 -    "node_modules/@vscode/policy-watcher": {
 -      "version": "1.1.8",
@@ -93,7 +93,7 @@ index 99a6c49..0997218 100644
 -      }
 -    },
      "node_modules/@vscode/proxy-agent": {
-@@ -3264,2 +3244,22 @@
+@@ -3247,2 +3227,22 @@
      },
 +    "node_modules/@vscodium/policy-watcher": {
 +      "version": "1.1.8-2501211616",
@@ -117,14 +117,14 @@ index 99a6c49..0997218 100644
 +    },
      "node_modules/@webassemblyjs/ast": {
 diff --git a/package.json b/package.json
-index 2a79290..a924360 100644
+index 53c9113..f92420a 100644
 --- a/package.json
 +++ b/package.json
 @@ -76,3 +76,3 @@
      "@vscode/iconv-lite-umd": "0.7.0",
 -    "@vscode/policy-watcher": "^1.1.8",
 +    "@vscodium/policy-watcher": "^1.1.8-2501211616",
-     "@vscode/proxy-agent": "^0.30.0",
+     "@vscode/proxy-agent": "^0.31.0",
 diff --git a/src/vs/base/test/node/uri.perf.data.txt b/src/vs/base/test/node/uri.perf.data.txt
 index ee0a24b..881ce36 100644
 --- a/src/vs/base/test/node/uri.perf.data.txt

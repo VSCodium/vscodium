@@ -1,23 +1,23 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 4f00317..e5d08e5 100644
+index e0df76f..04354d8 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -307,2 +307,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -310,2 +310,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const name = product.nameShort;
 +		const release = packageJson.release;
  
-@@ -310,3 +311,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -313,3 +314,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const packageJsonStream = gulp.src(['remote/package.json'], { base: 'remote' })
 -			.pipe(json({ name, version, dependencies: undefined, optionalDependencies: undefined, type: 'module' }))
 +			.pipe(json({ name, version, release, dependencies: undefined, optionalDependencies: undefined, type: 'module' }))
  			.pipe(es.through(function (file) {
-@@ -318,3 +319,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -321,3 +322,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
 -			.pipe(json({ commit, date: readISODate('out-build'), version }))
 +			.pipe(json({ commit, date: readISODate('out-build'), version, release }))
  			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 030c39a..51772c9 100644
+index a63f693..62e0080 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
 @@ -261,3 +261,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
@@ -73,7 +73,7 @@ index 98175f5..afacbe3 100644
 +			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index ac7c552..8cfc209 100644
+index ebd9e43..d9a0ca6 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
 @@ -58,2 +58,3 @@ export interface IProductConfiguration {
@@ -104,26 +104,26 @@ index 1a2a619..2a8d683 100644
 +			release: pkg.release
  		});
 diff --git a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-index 039233d..c8ced77 100644
+index b809503..21601c0 100644
 --- a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-@@ -23,2 +23,3 @@ import { ResultKind } from '../../../../platform/keybinding/common/keybindingRes
- import { CancellationToken } from '../../../../base/common/cancellation.js';
+@@ -22,2 +22,3 @@ import { defaultButtonStyles, defaultCheckboxStyles, defaultDialogStyles, defaul
+ import { ResultKind } from '../../../../platform/keybinding/common/keybindingResolver.js';
 +import { getReleaseString } from '../../../../workbench/common/release.js';
  
-@@ -80,2 +81,4 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
+@@ -79,2 +80,4 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
  		const detailString = (useAgo: boolean): string => {
 +			const releaseString = getReleaseString();
 +
  			return localize('aboutDetail',
-@@ -86,3 +89,3 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
+@@ -85,3 +88,3 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
  				navigator.userAgent
 -			);
 +			).replace('\n', `\n${releaseString} ${this.productService.release || 'Unknown'}\n`);
  		};
 diff --git a/src/vs/workbench/common/release.ts b/src/vs/workbench/common/release.ts
 new file mode 100644
-index 0000000..2a8ea57
+index 0000000..82dbe6a
 --- /dev/null
 +++ b/src/vs/workbench/common/release.ts
 @@ -0,0 +1,14 @@
@@ -142,7 +142,7 @@ index 0000000..2a8ea57
 +	return LABELS[language] ?? DEFAULT_LABEL;
 +}
 diff --git a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
-index 6c61a59..e76a188 100644
+index 6c61a59..d58f8fc 100644
 --- a/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/electron-sandbox/parts/dialogs/dialogHandler.ts
 @@ -15,2 +15,3 @@ import { process } from '../../../../base/parts/sandbox/electron-sandbox/globals
