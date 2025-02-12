@@ -77,7 +77,7 @@ build_darwin_types() { # {{{
 
 build_linux_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" ]]; then
-    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
+    wget "https://raw.githubusercontent.com/Codex/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
   fi
 
   mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/linux/rpm"
@@ -96,7 +96,7 @@ build_media() { # {{{
 
 build_windows_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico" ]]; then
-    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
+    wget "https://raw.githubusercontent.com/Codex/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
   fi
 } # }}}
 

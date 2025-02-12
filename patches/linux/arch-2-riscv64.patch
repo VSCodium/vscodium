@@ -1,0 +1,297 @@
+diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
+index 8c83c13..b996472 100644
+--- a/build/gulpfile.reh.js
++++ b/build/gulpfile.reh.js
+@@ -51,2 +51,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'ppc64le' },
++	{ platform: 'linux', arch: 'riscv64' },
+ 	{ platform: 'alpine', arch: 'arm64' },
+diff --git a/build/gulpfile.scan.js b/build/gulpfile.scan.js
+index 274d889..0eafadc 100644
+--- a/build/gulpfile.scan.js
++++ b/build/gulpfile.scan.js
+@@ -27,2 +27,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'ppc64le' },
++	{ platform: 'linux', arch: 'riscv64' },
+ ];
+diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
+index 7395ba4..66bf180 100644
+--- a/build/gulpfile.vscode.js
++++ b/build/gulpfile.vscode.js
+@@ -495,2 +495,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'ppc64le' },
++	{ platform: 'linux', arch: 'riscv64' },
+ ];
+diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
+index 264cec1..37575e1 100644
+--- a/build/gulpfile.vscode.linux.js
++++ b/build/gulpfile.vscode.linux.js
+@@ -33,3 +33,3 @@ const linuxPackageRevision = Math.floor(new Date().getTime() / 1000);
+ function getDebPackageArch(arch) {
+-	return { x64: 'amd64', armhf: 'armhf', arm64: 'arm64', ppc64le: 'ppc64el' }[arch];
++	return { x64: 'amd64', armhf: 'armhf', arm64: 'arm64', ppc64le: 'ppc64el', riscv64: 'riscv64' }[arch];
+ }
+@@ -145,3 +145,3 @@ function getRpmBuildPath(rpmArch) {
+ function getRpmPackageArch(arch) {
+-	return { x64: 'x86_64', armhf: 'armv7hl', arm64: 'aarch64', ppc64le: 'ppc64le' }[arch];
++	return { x64: 'x86_64', armhf: 'armv7hl', arm64: 'aarch64', ppc64le: 'ppc64le', riscv64: 'riscv64' }[arch];
+ }
+@@ -308,2 +308,3 @@ const BUILD_TARGETS = [
+ 	{ arch: 'ppc64le' },
++	{ arch: 'riscv64' },
+ ];
+diff --git a/build/linux/debian/calculate-deps.js b/build/linux/debian/calculate-deps.js
+index b97d275..37a5835 100644
+--- a/build/linux/debian/calculate-deps.js
++++ b/build/linux/debian/calculate-deps.js
+@@ -54,2 +54,5 @@ function calculatePackageDeps(binaryPath, arch, chromiumSysroot, vscodeSysroot)
+ 			break;
++		case 'riscv64':
++			cmd.push(`-l${chromiumSysroot}/usr/lib/riscv64-linux-gnu`, `-l${chromiumSysroot}/lib/riscv64-linux-gnu`, `-l${vscodeSysroot}/usr/lib/riscv64-linux-gnu`, `-l${vscodeSysroot}/lib/riscv64-linux-gnu`);
++			break;
+     }
+diff --git a/build/linux/debian/calculate-deps.ts b/build/linux/debian/calculate-deps.ts
+index 5a6e9b4..903375f 100644
+--- a/build/linux/debian/calculate-deps.ts
++++ b/build/linux/debian/calculate-deps.ts
+@@ -67,2 +67,8 @@ function calculatePackageDeps(binaryPath: string, arch: DebianArchString, chromi
+ 			break;
++		case 'riscv64':
++			cmd.push(`-l${chromiumSysroot}/usr/lib/riscv64-linux-gnu`,
++				`-l${chromiumSysroot}/lib/riscv64-linux-gnu`,
++				`-l${vscodeSysroot}/usr/lib/riscv64-linux-gnu`,
++				`-l${vscodeSysroot}/lib/riscv64-linux-gnu`);
++			break;
+ 	}
+diff --git a/build/linux/debian/dep-lists.js b/build/linux/debian/dep-lists.js
+index 64377e3..5fb20f8 100644
+--- a/build/linux/debian/dep-lists.js
++++ b/build/linux/debian/dep-lists.js
+@@ -178,2 +178,42 @@ exports.referenceGeneratedDepsByArch = {
+     ],
++	'riscv64': [
++        'ca-certificates',
++        'libatomic1',
++        'libasound2 (>= 1.0.17)',
++        'libatk-bridge2.0-0 (>= 2.5.3)',
++        'libatk1.0-0 (>= 2.2.0)',
++        'libatspi2.0-0 (>= 2.9.90)',
++        'libc6 (>= 2.17)',
++        'libc6 (>= 2.28)',
++        'libcairo2 (>= 1.6.0)',
++        'libcurl3-gnutls | libcurl3-nss | libcurl4 | libcurl3',
++        'libdbus-1-3 (>= 1.0.2)',
++        'libdrm2 (>= 2.4.60)',
++        'libexpat1 (>= 2.0.1)',
++        'libgbm1 (>= 17.1.0~rc2)',
++        'libglib2.0-0 (>= 2.16.0)',
++        'libglib2.0-0 (>= 2.39.4)',
++        'libgtk-3-0 (>= 3.9.10)',
++        'libgtk-3-0 (>= 3.9.10) | libgtk-4-1',
++        'libnspr4 (>= 2:4.9-2~)',
++        'libnss3 (>= 2:3.22)',
++        'libnss3 (>= 3.26)',
++        'libpango-1.0-0 (>= 1.14.0)',
++        'libsecret-1-0 (>= 0.18)',
++        'libstdc++6 (>= 4.1.1)',
++        'libstdc++6 (>= 5)',
++        'libstdc++6 (>= 5.2)',
++        'libstdc++6 (>= 6)',
++        'libx11-6',
++        'libx11-6 (>= 2:1.4.99.1)',
++        'libxcb1 (>= 1.9.2)',
++        'libxcomposite1 (>= 1:0.4.4-1)',
++        'libxdamage1 (>= 1:1.1)',
++        'libxext6',
++        'libxfixes3',
++        'libxkbcommon0 (>= 0.4.1)',
++        'libxkbfile1',
++        'libxrandr2',
++        'xdg-utils (>= 1.0.2)'
++    ],
+ };
+diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
+index aa769ad..5534874 100644
+--- a/build/linux/debian/dep-lists.ts
++++ b/build/linux/debian/dep-lists.ts
+@@ -178,2 +178,42 @@ export const referenceGeneratedDepsByArch = {
+ 	],
++	'riscv64': [
++		'ca-certificates',
++		'libatomic1',
++		'libasound2 (>= 1.0.17)',
++		'libatk-bridge2.0-0 (>= 2.5.3)',
++		'libatk1.0-0 (>= 2.2.0)',
++		'libatspi2.0-0 (>= 2.9.90)',
++		'libc6 (>= 2.17)',
++		'libc6 (>= 2.28)',
++		'libcairo2 (>= 1.6.0)',
++		'libcurl3-gnutls | libcurl3-nss | libcurl4 | libcurl3',
++		'libdbus-1-3 (>= 1.0.2)',
++		'libdrm2 (>= 2.4.60)',
++		'libexpat1 (>= 2.0.1)',
++		'libgbm1 (>= 17.1.0~rc2)',
++		'libglib2.0-0 (>= 2.16.0)',
++		'libglib2.0-0 (>= 2.39.4)',
++		'libgtk-3-0 (>= 3.9.10)',
++		'libgtk-3-0 (>= 3.9.10) | libgtk-4-1',
++		'libnspr4 (>= 2:4.9-2~)',
++		'libnss3 (>= 2:3.22)',
++		'libnss3 (>= 3.26)',
++		'libpango-1.0-0 (>= 1.14.0)',
++		'libsecret-1-0 (>= 0.18)',
++		'libstdc++6 (>= 4.1.1)',
++		'libstdc++6 (>= 5)',
++		'libstdc++6 (>= 5.2)',
++		'libstdc++6 (>= 6)',
++		'libx11-6',
++		'libx11-6 (>= 2:1.4.99.1)',
++		'libxcb1 (>= 1.9.2)',
++		'libxcomposite1 (>= 1:0.4.4-1)',
++		'libxdamage1 (>= 1:1.1)',
++		'libxext6',
++		'libxfixes3',
++		'libxkbcommon0 (>= 0.4.1)',
++		'libxkbfile1',
++		'libxrandr2',
++		'xdg-utils (>= 1.0.2)'
++	],
+ };
+diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
+index 3dcd5c1..b4e3542 100644
+--- a/build/linux/debian/install-sysroot.js
++++ b/build/linux/debian/install-sysroot.js
+@@ -141,2 +141,6 @@ async function getVSCodeSysroot(arch) {
+             break;
++	    case 'riscv64':
++	             expectedName = `riscv64-linux-gnu${prefix}.tar.gz`;
++	             triple = 'riscv64-linux-gnu';
++	             break;
+     }
+diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
+index 52b3422..11d54b1 100644
+--- a/build/linux/debian/install-sysroot.ts
++++ b/build/linux/debian/install-sysroot.ts
+@@ -158,2 +158,6 @@ export async function getVSCodeSysroot(arch: DebianArchString): Promise<string>
+ 			break;
++		case 'riscv64':
++			expectedName = `riscv64-linux-gnu${prefix}.tar.gz`;
++			triple = 'riscv64-linux-gnu';
++			break;
+ 	}
+diff --git a/build/linux/debian/types.js b/build/linux/debian/types.js
+index 2c56b9c..cadefc2 100644
+--- a/build/linux/debian/types.js
++++ b/build/linux/debian/types.js
+@@ -8,3 +8,3 @@ exports.isDebianArchString = isDebianArchString;
+ function isDebianArchString(s) {
+-    return ['amd64', 'armhf', 'arm64', 'ppc64el'].includes(s);
++    return ['amd64', 'armhf', 'arm64', 'ppc64el', 'riscv64'].includes(s);
+ }
+diff --git a/build/linux/debian/types.ts b/build/linux/debian/types.ts
+index 43f2434..24fe452 100644
+--- a/build/linux/debian/types.ts
++++ b/build/linux/debian/types.ts
+@@ -5,6 +5,6 @@
+ 
+-export type DebianArchString = 'amd64' | 'armhf' | 'arm64' | 'ppc64el';
++export type DebianArchString = 'amd64' | 'armhf' | 'arm64' | 'ppc64el' | 'riscv64';
+ 
+ export function isDebianArchString(s: string): s is DebianArchString {
+-	return ['amd64', 'armhf', 'arm64', 'ppc64el'].includes(s);
++	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'riscv64'].includes(s);
+ }
+diff --git a/build/linux/rpm/types.js b/build/linux/rpm/types.js
+index 7b58961..99a8cff 100644
+--- a/build/linux/rpm/types.js
++++ b/build/linux/rpm/types.js
+@@ -8,3 +8,3 @@ exports.isRpmArchString = isRpmArchString;
+ function isRpmArchString(s) {
+-    return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le'].includes(s);
++    return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le', 'riscv64'].includes(s);
+ }
+diff --git a/build/linux/rpm/types.ts b/build/linux/rpm/types.ts
+index 3f3c3f5..d94537e 100644
+--- a/build/linux/rpm/types.ts
++++ b/build/linux/rpm/types.ts
+@@ -5,6 +5,6 @@
+ 
+-export type RpmArchString = 'x86_64' | 'armv7hl' | 'aarch64' | 'ppc64le';
++export type RpmArchString = 'x86_64' | 'armv7hl' | 'aarch64' | 'ppc64le' | 'riscv64';
+ 
+ export function isRpmArchString(s: string): s is RpmArchString {
+-	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le'].includes(s);
++	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le', 'riscv64'].includes(s);
+ }
+diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
+index bcab676..29228cb 100644
+--- a/cli/src/update_service.rs
++++ b/cli/src/update_service.rs
+@@ -219,2 +219,3 @@ pub enum Platform {
+ 	LinuxPPC64LELegacy,
++	LinuxRISCV64,
+ 	DarwinX64,
+@@ -233,2 +234,3 @@ impl Platform {
+ 			Platform::LinuxPPC64LE => Some("linux-ppc64le".to_owned()),
++			Platform::LinuxRISCV64 => Some("linux-riscv64".to_owned()),
+ 			Platform::DarwinX64 => Some("darwin".to_owned()),
+@@ -253,2 +255,3 @@ impl Platform {
+ 			Platform::LinuxPPC64LELegacy => "server-linux-legacy-ppc64le",
++			Platform::LinuxRISCV64 => "server-linux-riscv64",
+ 			Platform::DarwinX64 => "server-darwin",
+@@ -274,2 +277,3 @@ impl Platform {
+ 			Platform::LinuxPPC64LELegacy => "cli-linux-ppc64le",
++			Platform::LinuxRISCV64 => "cli-linux-riscv64",
+ 			Platform::DarwinX64 => "cli-darwin-x64",
+@@ -308,2 +312,4 @@ impl Platform {
+ 			Some(Platform::LinuxPPC64LE)
++		} else if cfg!(all(target_os = "linux", target_arch = "riscv64")) {
++			Some(Platform::LinuxRISCV64)
+ 		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
+@@ -337,2 +343,3 @@ impl fmt::Display for Platform {
+ 			Platform::LinuxPPC64LELegacy => "LinuxPPC64LELegacy",
++			Platform::LinuxRISCV64 => "LinuxRISCV64",
+ 			Platform::DarwinX64 => "DarwinX64",
+diff --git a/cli/src/util/prereqs.rs b/cli/src/util/prereqs.rs
+index 4827a47..137a257 100644
+--- a/cli/src/util/prereqs.rs
++++ b/cli/src/util/prereqs.rs
+@@ -88,2 +88,4 @@ impl PreReqChecker {
+ 					Platform::LinuxPPC64LE
++				} else if cfg!(target_arch = "riscv64") {
++					Platform::LinuxRISCV64
+ 				} else {
+diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
+index 00dd3e2..91c9d20 100644
+--- a/resources/server/bin/helpers/check-requirements-linux.sh
++++ b/resources/server/bin/helpers/check-requirements-linux.sh
+@@ -57,2 +57,3 @@ case $ARCH in
+     ppc64el) LDCONFIG_ARCH="64bit";;
++	riscv64) LDCONFIG_ARCH="RISC-V";;
+ esac
+diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
+index 004df84..fb2acc7 100644
+--- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
++++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
+@@ -42,2 +42,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+ 		case TargetPlatform.LINUX_PPC64LE: return 'Linux PowerPC64';
++		case TargetPlatform.LINUX_RISCV64: return 'Linux RISC-V 64';
+ 
+@@ -66,2 +67,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+ 		case TargetPlatform.LINUX_PPC64LE: return TargetPlatform.LINUX_PPC64LE;
++		case TargetPlatform.LINUX_RISCV64: return TargetPlatform.LINUX_RISCV64;
+ 
+@@ -104,2 +106,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+ 			}
++			if (arch === 'riscv64') {
++				return TargetPlatform.LINUX_RISCV64;
++			}
+ 			return TargetPlatform.UNKNOWN;
+diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
+index a7d6298..a7aa2bb 100644
+--- a/src/vs/platform/extensions/common/extensions.ts
++++ b/src/vs/platform/extensions/common/extensions.ts
+@@ -295,2 +295,3 @@ export const enum TargetPlatform {
+ 	LINUX_PPC64LE = 'linux-ppc64le',
++	LINUX_RISCV64 = 'linux-riscv64',
+ 

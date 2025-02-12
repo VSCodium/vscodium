@@ -5,18 +5,6 @@ set -e
 
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
-. ./utils.sh
-
-npm install -g checksum
-
-sum_file() {
-  if [[ -f "${1}" ]]; then
-    echo "Calculating checksum for ${1}"
-    checksum -a sha256 "${1}" > "${1}".sha256
-    checksum "${1}" > "${1}".sha1
-  fi
-}
-
 mkdir -p assets
 
 if [[ "${OS_NAME}" == "osx" ]]; then
@@ -226,12 +214,6 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   cd ..
 fi
 
-cd assets
-
-for FILE in *; do
-  if [[ -f "${FILE}" ]]; then
-    sum_file "${FILE}"
-  fi
-done
-
-cd ..
+if [[ "${OS_NAME}" != "windows" ]]; then
+  ./prepare_checksums.sh
+fi

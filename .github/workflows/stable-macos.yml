@@ -39,18 +39,25 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runner: macos-12
+          - runner: macos-13
             vscode_arch: x64
           - runner: macos-14
             vscode_arch: arm64
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: . get_pr.sh
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.12'
+          node-version: '20.18'
 
       - name: Setup Python 3
         uses: actions/setup-python@v5
@@ -59,8 +66,6 @@ jobs:
         if: env.VSCODE_ARCH == 'x64'
 
       - name: Clone VSCode repo
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: . get_repo.sh
 
       - name: Check PR or cron

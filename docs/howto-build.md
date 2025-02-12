@@ -14,7 +14,7 @@
 
 ## <a id="dependencies"></a>Dependencies
 
-- node 18.15
+- node 20.14
 - yarn
 - jq
 - git

@@ -163,14 +163,18 @@ elif [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_ZIP="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ "${DISABLE_MSI}" == "yes" ]]; then
+          export SHOULD_BUILD_MSI="no"
+      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows ia32 because we have no msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ "${DISABLE_MSI}" == "yes" ]]; then
+          export SHOULD_BUILD_MSI_NOUP="no"
+      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows ia32 because we have no updates-disabled msi"
         export SHOULD_BUILD="yes"
       else
@@ -218,14 +222,18 @@ elif [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_ZIP="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ "${DISABLE_MSI}" == "yes" ]]; then
+          export SHOULD_BUILD_MSI="no"
+      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows x64 because we have no msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI="no"
       fi
 
-      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ "${DISABLE_MSI}" == "yes" ]]; then
+          export SHOULD_BUILD_MSI_NOUP="no"
+      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows x64 because we have no updates-disabled msi"
         export SHOULD_BUILD="yes"
       else
@@ -364,7 +372,14 @@ elif [[ "${ASSETS}" != "null" ]]; then
         SHOULD_BUILD_APPIMAGE="no"
         SHOULD_BUILD_DEB="no"
         SHOULD_BUILD_RPM="no"
-        SHOULD_BUILD_TAR="no"
+
+        if [[ -z $( contains "${APP_NAME}-linux-ppc64le-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux PowerPC64LE because we have no TAR"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_TAR="no"
+        fi
+
 
         if [[ -z $( contains "${APP_NAME_LC}-reh-linux-ppc64le-${RELEASE_VERSION}.tar.gz" ) ]]; then
           echo "Building on Linux PowerPC64LE because we have no REH archive"
@@ -414,6 +429,64 @@ elif [[ "${ASSETS}" != "null" ]]; then
 
         if [[ "${SHOULD_BUILD}" != "yes" ]]; then
           echo "Already have all the Linux riscv64 builds"
+        fi
+      fi
+
+      # linux-loong64
+      if [[ "${VSCODE_ARCH}" == "loong64" || "${CHECK_ALL}" == "yes" ]]; then
+        export SHOULD_BUILD_DEB="no"
+        export SHOULD_BUILD_RPM="no"
+        export SHOULD_BUILD_APPIMAGE="no"
+
+        if [[ -z $( contains "${APP_NAME}-linux-loong64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux Loong64 because we have no TAR"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_TAR="no"
+        fi
+
+        if [[ -z $( contains "${APP_NAME_LC}-reh-linux-loong64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux Loong64 because we have no REH archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH="no"
+        fi
+
+        if [[ -z $( contains "${APP_NAME_LC}-reh-web-linux-loong64-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux Loong64 because we have no REH-web archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH_WEB="no"
+        fi
+
+        if [[ "${SHOULD_BUILD}" != "yes" ]]; then
+          echo "Already have all the Linux Loong64 builds"
+        fi
+      fi
+
+      # linux-s390x
+      if [[ "${VSCODE_ARCH}" == "s390x" || "${CHECK_ALL}" == "yes" ]]; then
+        SHOULD_BUILD_APPIMAGE="no"
+        SHOULD_BUILD_DEB="no"
+        SHOULD_BUILD_RPM="no"
+        SHOULD_BUILD_TAR="no"
+
+        if [[ -z $( contains "${APP_NAME_LC}-reh-linux-s390x-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux s390x because we have no REH archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH="no"
+        fi
+
+        if [[ -z $( contains "${APP_NAME_LC}-reh-web-linux-s390x-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux s390x because we have no REH-web archive"
+          export SHOULD_BUILD="yes"
+        else
+          export SHOULD_BUILD_REH_WEB="no"
+        fi
+
+        if [[ "${SHOULD_BUILD}" != "yes" ]]; then
+          echo "Already have all the Linux s390x builds"
         fi
       fi
 
@@ -535,14 +608,21 @@ else
     elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
+    elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
+      SHOULD_BUILD_DEB="no"
+      SHOULD_BUILD_RPM="no"
     fi
-    if [[ "${VSCODE_ARCH}" != "x64" ]]; then
+    if [[ "${VSCODE_ARCH}" != "x64" || "${DISABLE_APPIMAGE}" == "yes" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
     fi
   elif [[ "${OS_NAME}" == "windows" ]]; then
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
       export SHOULD_BUILD_REH="no"
       export SHOULD_BUILD_REH_WEB="no"
+    fi
+    if [[ "${DISABLE_MSI}" == "yes" ]]; then
+      export SHOULD_BUILD_MSI="no"
+      export SHOULD_BUILD_MSI_NOUP="no"
     fi
   fi
 

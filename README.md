@@ -187,6 +187,9 @@ The minimal version is limited by the core component Electron, you may want to c
 - [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `snap`, `tar.gz`)
 - [x] GNU/Linux arm64 (`deb`, `rpm`, `snap`, `tar.gz`)
 - [x] GNU/Linux armhf (`deb`, `rpm`, `tar.gz`)
+- [x] GNU/Linux riscv64 (`tar.gz`)
+- [x] GNU/Linux loong64 (`tar.gz`)
+- [x] GNU/Linux ppc64le (`tar.gz`)
 - [x] Windows 10 / Server 2012 R2 or newer x64
 - [x] Windows 10 / Server 2012 R2 or newer arm64
 
@@ -208,6 +211,10 @@ The minimal version is limited by the core component Electron, you may want to c
   <tr>
     <td><a href="https://github.com/daiyam" target="_blank">@daiyam</a></td>
     <td>for macOS certificate</td>
+  </tr>
+  <tr>
+    <td><a href="https://signpath.org/" target="_blank"><img src="https://avatars.githubusercontent.com/u/34448643" height="30" alt="SignPath logo" /></a></td>
+    <td>free code signing on Windows provided by <a href="https://signpath.io/" target="_blank">SignPath.io</a>, certificate by <a href="https://signpath.org/" target="_blank">SignPath Foundation</a></td>
   </tr>
 </table>
 
