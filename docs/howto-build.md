@@ -1,4 +1,4 @@
-# How to build VSCodium
+# How to build Codex
 
 ## Table of Contents
 
@@ -86,16 +86,16 @@ cd ./stores/snapcraft/insider
 snapcraft --use-lxd
 
 # verify the snap
-review-tools.snap-review --allow-classic codium*.snap
+review-tools.snap-review --allow-classic codex*.snap
 ```
 
 ## <a id="patch-update-process"></a>Patch Update Process
 
 ## <a id="patch-update-process-semiauto"></a>Semi-Automated
 
-- run `./dev/build.sh`, if a patch is failing then,
-- run `./dev/update_patches.sh`
-- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
+- run `./build/build_<os>.sh`, if a patch is failing then,
+- run `./build/update_patches.sh`
+- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **Codex**
 - fix all the `*.rej` files
 - run `yarn watch`
 - run `./script/code.sh` until everything is ok
@@ -103,8 +103,8 @@ review-tools.snap-review --allow-classic codium*.snap
 
 ## <a id="patch-update-process-manual"></a>Manual
 
-- run `./dev/build.sh`, if a patch is failing then,
-- open `vscode` directory in **VSCodium**
+- run `./build/build_<os>.sh`, if a patch is failing then,
+- open `vscode` directory in **Codex**
 - revert all changes
 - run `git apply --reject ../patches/<name>.patch`
 - fix all the `*.rej` files

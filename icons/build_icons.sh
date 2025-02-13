@@ -38,7 +38,7 @@ VSCODE_PREFIX=""
 
 build_darwin_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/darwin/code.icns" ]]; then
-    rsvg-convert -w 655 -h 655 "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
+    rsvg-convert -w 655 -h 655 "icons/${QUALITY}/codex_cnl.svg" -o "code_logo.png"
     composite "code_logo.png" -gravity center "icons/template_macos.png" "code_1024.png"
     convert "code_1024.png" -resize 512x512 code_512.png
     convert "code_1024.png" -resize 256x256 code_256.png
@@ -51,7 +51,7 @@ build_darwin_main() { # {{{
 } # }}}
 
 build_darwin_types() { # {{{
-  rsvg-convert -w 128 -h 128 "icons/${QUALITY}/codium_cnl_w80_b8.svg" -o "code_logo.png"
+  rsvg-convert -w 128 -h 128 "icons/${QUALITY}/codex_cnl_w80_b8.svg" -o "code_logo.png"
 
   for file in "${VSCODE_PREFIX}"vscode/resources/darwin/*; do
     if [[ -f "${file}" ]]; then
@@ -77,7 +77,7 @@ build_darwin_types() { # {{{
 
 build_linux_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" ]]; then
-    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
+    wget "https://raw.githubusercontent.com/Codex/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png"
   fi
 
   mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/linux/rpm"
@@ -89,14 +89,14 @@ build_linux_main() { # {{{
 
 build_media() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/src/vs/workbench/browser/media/code-icon.svg" ]]; then
-    cp "icons/${QUALITY}/codium_clt.svg" "${SRC_PREFIX}src/${QUALITY}/src/vs/workbench/browser/media/code-icon.svg"
+    cp "icons/${QUALITY}/codex_clt.svg" "${SRC_PREFIX}src/${QUALITY}/src/vs/workbench/browser/media/code-icon.svg"
     gsed -i 's|width="100" height="100"|width="1024" height="1024"|' "${SRC_PREFIX}src/${QUALITY}/src/vs/workbench/browser/media/code-icon.svg"
   fi
 } # }}}
 
 build_windows_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico" ]]; then
-    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
+    wget "https://raw.githubusercontent.com/Codex/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
   fi
 } # }}}
 
@@ -116,7 +116,7 @@ build_windows_type() {
       convert -size "${IMG_SIZE}" "${IMG_BG_COLOR}" "${FILE_PATH}"
     fi
 
-    rsvg-convert -w "${LOGO_SIZE}" -h "${LOGO_SIZE}" "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
+    rsvg-convert -w "${LOGO_SIZE}" -h "${LOGO_SIZE}" "icons/${QUALITY}/codex_cnl.svg" -o "code_logo.png"
 
     composite -gravity "${GRAVITY}" "code_logo.png" "${FILE_PATH}" "${FILE_PATH}"
   fi
@@ -125,7 +125,7 @@ build_windows_type() {
 build_windows_types() { # {{{
   mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/win32"
 
-  rsvg-convert -b "#F5F6F7" -w 64 -h 64 "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
+  rsvg-convert -b "#F5F6F7" -w 64 -h 64 "icons/${QUALITY}/codex_cnl.svg" -o "code_logo.png"
 
   for file in "${VSCODE_PREFIX}"vscode/resources/win32/*.ico; do
     if [[ -f "${file}" ]]; then
@@ -134,11 +134,11 @@ build_windows_types() { # {{{
       if [[ "${name}" != 'code' ]] && [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/${name}.ico" ]]; then
         icotool -x -w 256 "${file}"
 
-        composite -geometry +150+185 "code_logo.png" "${name}_9_256x256x32.png" "${name}.png"
+        composite -geometry +150+185 "code_logo.png" "${name}_1_256x256x32.png" "${name}.png"
 
         convert "${name}.png" -define icon:auto-resize=256,128,96,64,48,32,24,20,16 "${SRC_PREFIX}src/${QUALITY}/resources/win32/${name}.ico"
 
-        rm "${name}_9_256x256x32.png" "${name}.png"
+        rm "${name}_1_256x256x32.png" "${name}.png"
       fi
     fi
   done
