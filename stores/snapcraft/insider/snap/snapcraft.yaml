@@ -11,8 +11,6 @@ compression: lzo
 
 parts:
   codium-insiders:
-    plugin:
-      - audio-playback
     override-build: |
       set -eu
       # Get .deb url
@@ -120,6 +118,8 @@ apps:
     common-id: codium-insiders.desktop
     environment:
       LIBGL_DRIVERS_PATH: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
+    plugs:
+      - audio-playback
 
   url-handler:
     command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --open-url --no-sandbox
