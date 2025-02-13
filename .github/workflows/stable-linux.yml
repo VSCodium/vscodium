@@ -91,12 +91,14 @@ jobs:
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup GCC
         uses: egor-tensin/setup-gcc@v1
         with:
           version: 10
           platform: x64
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
@@ -504,7 +506,7 @@ jobs:
         platform:
         - amd64
         - arm64
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && vars.DISABLE_STABLE_SNAP != 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && needs.check.outputs.SHOULD_BUILD_SNAP != 'no' && vars.DISABLE_STABLE_SNAP != 'yes'
 
     steps:
       - uses: actions/checkout@v4

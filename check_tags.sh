@@ -303,6 +303,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_TAR="no"
           fi
 
+          if [[ -z $( contains "arm64.snap" ) ]]; then
+            echo "Building on Linux arm64 because we have no SNAP"
+            export SHOULD_BUILD="yes"
+          else
+            export SHOULD_BUILD_SNAP="no"
+          fi
+
           if [[ "${CHECK_REH}" != "no" && -z $( contains "${APP_NAME_LC}-reh-linux-arm64-${RELEASE_VERSION}.tar.gz" ) ]]; then
             echo "Building on Linux arm64 because we have no REH archive"
             export SHOULD_BUILD="yes"
@@ -523,6 +530,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_APPIMAGE="no"
           fi
 
+          if [[ -z $( contains "amd64.snap" ) ]]; then
+            echo "Building on Linux x64 because we have no SNAP"
+            export SHOULD_BUILD="yes"
+          else
+            export SHOULD_BUILD_SNAP="no"
+          fi
+
           if [[ "${CHECK_REH}" != "no" && -z $( contains "${APP_NAME_LC}-reh-linux-x64-${RELEASE_VERSION}.tar.gz" ) ]]; then
             echo "Building on Linux x64 because we have no REH archive"
             export SHOULD_BUILD="yes"
@@ -645,6 +659,7 @@ echo "SHOULD_BUILD_MSI_NOUP=${SHOULD_BUILD_MSI_NOUP}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_REH=${SHOULD_BUILD_REH}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_REH_WEB=${SHOULD_BUILD_REH_WEB}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_RPM=${SHOULD_BUILD_RPM}" >> "${GITHUB_ENV}"
+echo "SHOULD_BUILD_SNAP=${SHOULD_BUILD_SNAP}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_TAR=${SHOULD_BUILD_TAR}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_ZIP=${SHOULD_BUILD_ZIP}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_SRC=${SHOULD_BUILD_SRC}" >> "${GITHUB_ENV}"
