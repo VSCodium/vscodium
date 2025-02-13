@@ -48,9 +48,12 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
-      - name: Clone VSCode repo
+      - name: Switch to relevant branch
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+
+      - name: Clone VSCode repo
         run: ./get_repo.sh
 
       - name: Check PR or cron
@@ -83,10 +86,21 @@ jobs:
           ref: ${{ env.GITHUB_BRANCH }}
         if: env.SHOULD_BUILD == 'yes'
 
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+
+      - name: Setup GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '18.17'
+          node-version: '20.18'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install Yarn
@@ -104,8 +118,6 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Clone VSCode repo
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
         if: env.SHOULD_BUILD == 'yes'
 
@@ -125,7 +137,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload vscode artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vscode
           path: ./vscode.tar.gz
@@ -141,22 +153,35 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - vscode_arch: x64
+        - slug: X64
+          vscode_arch: x64
           npm_arch: x64
           image: vscodium/vscodium-linux-build-agent:focal-x64
-        - vscode_arch: arm64
+        - slug: ARM64
+          vscode_arch: arm64
           npm_arch: arm64
           image: vscodium/vscodium-linux-build-agent:focal-arm64
-        - vscode_arch: armhf
+        - slug: ARM32
+          vscode_arch: armhf
           npm_arch: arm
           image: vscodium/vscodium-linux-build-agent:focal-armhf
-        - vscode_arch: riscv64
-          npm_arch: riscv64
-          image: vscodium/vscodium-linux-build-agent:focal-riscv64
+        # - slug: RISCV64
+        #   vscode_arch: riscv64
+        #   npm_arch: riscv64
+        #   image: vscodium/vscodium-linux-build-agent:focal-riscv64
+        # - slug: LOONG64
+        #   vscode_arch: loong64
+        #   npm_arch: loong64
+        #   image: vscodium/vscodium-linux-build-agent:trixie-loong64
+        # - slug: PPC64
+        #   vscode_arch: ppc64le
+        #   npm_arch: ppc64
+        #   image: vscodium/vscodium-linux-build-agent:focal-ppc64le
     container:
       image: ${{ matrix.image }}
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      DISABLED: ${{ vars[format('DISABLE_STABLE_LINUX_APP_{0}', matrix.slug)] }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
@@ -170,14 +195,20 @@ jobs:
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+        if: env.DISABLED != 'yes'
 
       - name: Install GH
         run: ./install_gh.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing Codex tags/releases
         env:
@@ -185,38 +216,38 @@ jobs:
           DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Install libkrb5-dev
         run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: vscode
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./package_linux_bin.sh
-        if: env.SHOULD_BUILD == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Prepare assets
         env:
           SHOULD_BUILD_REH: 'no'
           SHOULD_BUILD_REH_WEB: 'no'
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Update versions repo
         env:
@@ -224,15 +255,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/
           retention-days: 3
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   reh_linux:
     needs:
@@ -243,18 +274,30 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - vscode_arch: x64
+        - slug: X64
+          vscode_arch: x64
           npm_arch: x64
-        - vscode_arch: arm64
+        - slug: ARM64
+          vscode_arch: arm64
           npm_arch: arm64
-        - vscode_arch: armhf
+        - slug: ARM32
+          vscode_arch: armhf
           npm_arch: arm
-        - vscode_arch: ppc64le
-          npm_arch: ppc64
-        - vscode_arch: riscv64
-          npm_arch: riscv64
+        # - slug: PPC64
+        #   vscode_arch: ppc64le
+        #   npm_arch: ppc64
+        # - slug: RISCV64
+        #   vscode_arch: riscv64
+        #   npm_arch: riscv64
+        # - slug: LOONG64
+        #   vscode_arch: loong64
+        #   npm_arch: loong64
+        # - slug: S390X
+        #   vscode_arch: s390x
+        #   npm_arch: s390x
     env:
       BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      DISABLED: ${{ vars[format('DISABLE_STABLE_LINUX_REH_{0}', matrix.slug)] }}
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
@@ -264,52 +307,70 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+        if: env.DISABLED != 'yes'
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+        if: env.DISABLED != 'yes'
+
+      - name: Setup GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
+        if: env.DISABLED != 'yes'
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '18.17'
+          node-version: '20.18'
+        if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+        if: env.DISABLED != 'yes'
 
       - name: Install libkrb5-dev
         run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
+        if: env.DISABLED != 'yes'
 
       - name: Install GH
         run: ./install_gh.sh
-        if: env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing Codex tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
         run: ./check_tags.sh
+        if: env.DISABLED != 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: vscode
-        if: env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true'
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./package_linux_reh.sh
-        if: env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true'
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no') && env.SHOULD_DEPLOY == 'yes'
+        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Upload assets
         uses: actions/upload-artifact@v4
@@ -317,7 +378,7 @@ jobs:
           name: reh-linux-${{ matrix.vscode_arch }}
           path: assets/
           retention-days: 3
-        if: env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   reh_alpine:
     needs:
@@ -344,9 +405,20 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+
+      - name: Setup GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
 
       - name: Install GH
         run: ./install_gh.sh
@@ -363,7 +435,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: vscode
         if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'

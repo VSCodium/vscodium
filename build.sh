@@ -31,13 +31,16 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
     VSCODE_PLATFORM="darwin"
   elif [[ "${OS_NAME}" == "windows" ]]; then
-    . ../build/windows/rtf/make.sh
+    # in CI, packaging will be done by a different job
+    if [[ "${CI_BUILD}" == "no" ]]; then
+      . ../build/windows/rtf/make.sh
 
-    yarn gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+      yarn gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
 
-    if [[ "${VSCODE_ARCH}" != "ia32" && "${VSCODE_ARCH}" != "x64" ]]; then
-      SHOULD_BUILD_REH="no"
-      SHOULD_BUILD_REH_WEB="no"
+      if [[ "${VSCODE_ARCH}" != "x64" ]]; then
+        SHOULD_BUILD_REH="no"
+        SHOULD_BUILD_REH_WEB="no"
+      fi
     fi
 
     VSCODE_PLATFORM="win32"

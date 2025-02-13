@@ -59,6 +59,10 @@ elif [[ "${UNAME_ARCH}" == "ppc64le" ]]; then
   export VSCODE_ARCH="ppc64le"
 elif [[ "${UNAME_ARCH}" == "riscv64" ]]; then
   export VSCODE_ARCH="riscv64"
+elif [[ "${UNAME_ARCH}" == "loongarch64" ]]; then
+  export VSCODE_ARCH="loong64"
+elif [[ "${UNAME_ARCH}" == "s390x" ]]; then
+  export VSCODE_ARCH="s390x"
 else
   export VSCODE_ARCH="x64"
 fi
@@ -86,7 +90,7 @@ if [[ "${SKIP_SOURCE}" == "no" ]]; then
   echo "BUILD_SOURCEVERSION=\"${BUILD_SOURCEVERSION}\"" >> build.env
 else
   if [[ "${SKIP_ASSETS}" != "no" ]]; then
-    rm -rf VSCode*
+    rm -rf vscode-* VSCode-*
   fi
 
   . build.env
@@ -104,10 +108,30 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
     git add .
     git reset -q --hard HEAD
 
+    rm -rf .build out*
+
     cd ..
   fi
 
+  if [[ -f "./include_${OS_NAME}.gypi" ]]; then
+    echo "Installing custom ~/.gyp/include.gypi"
+
+    mkdir -p ~/.gyp
+
+    if [[ -f "${HOME}/.gyp/include.gypi" ]]; then
+      mv ~/.gyp/include.gypi ~/.gyp/include.gypi.pre-codex
+    else
+      echo "{}" > ~/.gyp/include.gypi.pre-codex
+    fi
+
+    cp ./include_osx.gypi ~/.gyp/include.gypi
+  fi
+
   . build.sh
+
+  if [[ -f "./include_${OS_NAME}.gypi" ]]; then
+    mv ~/.gyp/include.gypi.pre-codex ~/.gyp/include.gypi
+  fi
 
   if [[ "${VSCODE_LATEST}" == "yes" ]]; then
     jsonTmp=$( cat "${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )

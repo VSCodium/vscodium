@@ -1,18 +1,14 @@
-diff --git a/src/vs/platform/extensionManagement/node/extensionDownloader.ts b/src/vs/platform/extensionManagement/node/extensionDownloader.ts
-index 0ddae28..2e3c9b2 100644
---- a/src/vs/platform/extensionManagement/node/extensionDownloader.ts
-+++ b/src/vs/platform/extensionManagement/node/extensionDownloader.ts
-@@ -11,3 +11,2 @@ import { joinPath } from 'vs/base/common/resources';
- import * as semver from 'vs/base/common/semver/semver';
--import { isBoolean } from 'vs/base/common/types';
- import { URI } from 'vs/base/common/uri';
-@@ -51,2 +50,3 @@ export class ExtensionsDownloader extends Disposable {
- 		@IExtensionGalleryService private readonly extensionGalleryService: IExtensionGalleryService,
+diff --git a/src/vs/platform/extensionManagement/node/extensionManagementService.ts b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
+index 680e0dd..0b04279 100644
+--- a/src/vs/platform/extensionManagement/node/extensionManagementService.ts
++++ b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
+@@ -86,2 +86,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ 		@IFileService private readonly fileService: IFileService,
 +		// @ts-expect-error no-unused-variable
  		@IConfigurationService private readonly configurationService: IConfigurationService,
-@@ -116,4 +116,3 @@ export class ExtensionsDownloader extends Disposable {
- 
--		const value = this.configurationService.getValue('extensions.verifySignature');
--		return isBoolean(value) ? value : true;
-+		return false;
- 	}
+@@ -347,4 +348,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ 		if (verifySignature) {
+-			const value = this.configurationService.getValue('extensions.verifySignature');
+-			verifySignature = isBoolean(value) ? value : true;
++			verifySignature = false;
+ 		}

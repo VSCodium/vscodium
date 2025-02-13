@@ -1,0 +1,96 @@
+diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
+index df4fda0c898..ce8f21bbc0e 100644
+--- a/build/gulpfile.reh.js
++++ b/build/gulpfile.reh.js
+@@ -52,2 +52,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'riscv64' },
++	{ platform: 'linux', arch: 'loong64' },
+ 	{ platform: 'alpine', arch: 'arm64' },
+diff --git a/build/gulpfile.scan.js b/build/gulpfile.scan.js
+index 0eafadc1fff..3c1d6fb5bfc 100644
+--- a/build/gulpfile.scan.js
++++ b/build/gulpfile.scan.js
+@@ -28,2 +28,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'riscv64' },
++	{ platform: 'linux', arch: 'loong64' },
+ ];
+diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
+index b208d700f2c..4be8f93f704 100644
+--- a/build/gulpfile.vscode.js
++++ b/build/gulpfile.vscode.js
+@@ -489,2 +489,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'riscv64' },
++	{ platform: 'linux', arch: 'loong64' },
+ ];
+diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
+index 29228cb4235..c1163029377 100644
+--- a/cli/src/update_service.rs
++++ b/cli/src/update_service.rs
+@@ -220,2 +220,3 @@ pub enum Platform {
+ 	LinuxRISCV64,
++	LinuxLoong64,
+ 	DarwinX64,
+@@ -235,2 +236,3 @@ impl Platform {
+ 			Platform::LinuxRISCV64 => Some("linux-riscv64".to_owned()),
++			Platform::LinuxLoong64 => Some("linux-loong64".to_owned()),
+ 			Platform::DarwinX64 => Some("darwin".to_owned()),
+@@ -256,2 +258,3 @@ impl Platform {
+ 			Platform::LinuxRISCV64 => "server-linux-riscv64",
++			Platform::LinuxLoong64 => "server-linux-loong64",
+ 			Platform::DarwinX64 => "server-darwin",
+@@ -278,2 +281,3 @@ impl Platform {
+ 			Platform::LinuxRISCV64 => "cli-linux-riscv64",
++			Platform::LinuxLoong64 => "cli-linux-loong64",
+ 			Platform::DarwinX64 => "cli-darwin-x64",
+@@ -314,2 +318,4 @@ impl Platform {
+ 			Some(Platform::LinuxRISCV64)
++		} else if cfg!(all(target_os = "linux", target_arch = "loongarch64")) {
++			Some(Platform::LinuxLoong64)
+ 		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
+@@ -344,2 +350,3 @@ impl fmt::Display for Platform {
+ 			Platform::LinuxRISCV64 => "LinuxRISCV64",
++			Platform::LinuxLoong64 => "LinuxLoong64",
+ 			Platform::DarwinX64 => "DarwinX64",
+diff --git a/cli/src/util/prereqs.rs b/cli/src/util/prereqs.rs
+index 137a2570130..8f1e20c2aa9 100644
+--- a/cli/src/util/prereqs.rs
++++ b/cli/src/util/prereqs.rs
+@@ -90,2 +90,4 @@ impl PreReqChecker {
+ 					Platform::LinuxRISCV64
++				} else if cfg!(target_arch = "loongarch64") {
++					Platform::LinuxLoong64
+ 				} else {
+diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
+index 91c9d203387..7776dbcbc24 100644
+--- a/resources/server/bin/helpers/check-requirements-linux.sh
++++ b/resources/server/bin/helpers/check-requirements-linux.sh
+@@ -58,2 +58,3 @@ case $ARCH in
+ 	riscv64) LDCONFIG_ARCH="RISC-V";;
++    loongarch64) LDCONFIG_ARCH="double-float";;
+ esac
+diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
+index 03e78ca3116..8e59218d7ad 100644
+--- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
++++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
+@@ -44,2 +44,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+ 		case TargetPlatform.LINUX_RISCV64: return 'Linux RISC-V 64';
++		case TargetPlatform.LINUX_LOONG64: return 'Linux Loong64';
+ 
+@@ -69,2 +70,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+ 		case TargetPlatform.LINUX_RISCV64: return TargetPlatform.LINUX_RISCV64;
++		case TargetPlatform.LINUX_LOONG64: return TargetPlatform.LINUX_LOONG64;
+ 
+@@ -113,2 +115,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+ 			}
++			if (arch === 'loong64') {
++				return TargetPlatform.LINUX_LOONG64;
++			}
+ 			return TargetPlatform.UNKNOWN;
+diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
+index a7aa2bb23bf..a4d076ce596 100644
+--- a/src/vs/platform/extensions/common/extensions.ts
++++ b/src/vs/platform/extensions/common/extensions.ts
+@@ -296,2 +296,3 @@ export const enum TargetPlatform {
+ 	LINUX_RISCV64 = 'linux-riscv64',
++	LINUX_LOONG64 = 'linux-loong64',
+ 

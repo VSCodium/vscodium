@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091
 
-set -e
+set -ex
 
 if [[ -z "${GH_TOKEN}" ]] && [[ -z "${GITHUB_TOKEN}" ]] && [[ -z "${GH_ENTERPRISE_TOKEN}" ]] && [[ -z "${GITHUB_ENTERPRISE_TOKEN}" ]]; then
   echo "Will not release because no GITHUB_TOKEN defined"
@@ -17,13 +18,22 @@ if [[ $( gh release view --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" 2>&1
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     NOTES="update vscode to [${MS_COMMIT}](https://github.com/microsoft/vscode/tree/${MS_COMMIT})"
-    CREATE_OPTIONS=""
-  else
-    NOTES="update vscode to [${MS_TAG}](https://code.visualstudio.com/updates/v$( echo "${MS_TAG//./_}" | cut -d'_' -f 1,2 ))"
-    CREATE_OPTIONS="--generate-notes"
-  fi
 
-  gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --title "${RELEASE_VERSION}" --notes "${NOTES}" ${CREATE_OPTIONS}
+    gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --title "${RELEASE_VERSION}" --notes "${NOTES}"
+  else
+    gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --title "${RELEASE_VERSION}" --generate-notes
+
+    . ./utils.sh
+
+    RELEASE_NOTES=$( gh release view "${RELEASE_VERSION}" --json "body" --jq ".body" )
+
+    replace "s|MS_TAG_SHORT|$( echo "${MS_TAG//./_}" | cut -d'_' -f 1,2 )|" release_notes.txt
+    replace "s|MS_TAG|${MS_TAG}|" release_notes.txt
+    replace "s|RELEASE_VERSION|${RELEASE_VERSION}|g" release_notes.txt
+    replace "s|RELEASE_NOTES|${RELEASE_NOTES//$'\n'/\\n}|" release_notes.txt
+
+    gh release edit "${RELEASE_VERSION}" --notes-file release_notes.txt
+  fi
 fi
 
 cd assets

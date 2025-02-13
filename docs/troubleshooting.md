@@ -4,6 +4,7 @@
 
 - [Linux](#linux)
   - [Fonts showing up as rectangles](#linux-fonts-rectangle)
+  - [Text and/or the entire interface not appearing](#linux-rendering-glitches)
   - [Global menu workaround for KDE](#linux-kde-global-menu)
   - [Flatpak most common issues](#linux-flatpak-most-common-issues)
   - [Remote SSH doesn't work](#linux-remote-ssh)
@@ -22,6 +23,14 @@ The following command should help:
 rm -rf ~/.cache/fontconfig
 rm -rf ~/snap/codex/common/.cache
 fc-cache -r
+```
+
+#### <a id="linux-rendering-glitches"></a>*Text and/or the entire interface not appearing*
+
+You have likely encountered [a bug in Chromium and Electron](microsoft/vscode#190437) when compiling Mesa shaders, which has affected all Visual Studio Code and Codex versions for Linux distributions since 1.82.  The current workaround (see microsoft/vscode#190437) is to delete the GPU cache as follows:
+
+```bash
+rm -rf ~/.config/Codex/GPUCache
 ```
 
 #### <a id="linux-kde-global-menu"></a>*Global menu workaround for KDE*

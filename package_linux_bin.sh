@@ -13,29 +13,51 @@ chown -R root:root vscode
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+export VSCODE_PLATFORM='linux'
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.17'
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  export VSCODE_SYSROOT_REPO='VSCodium/vscode-linux-build-agent'
+if [[ "${VSCODE_ARCH}" == "arm64" || "${VSCODE_ARCH}" == "armhf" ]]; then
+  export VSCODE_SKIP_SYSROOT=1
+  export USE_GNUPP2A=1
+elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+  export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
   export VSCODE_SYSROOT_PREFIX='-glibc-2.28'
-fi
-
-if [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
-  export VSCODE_ELECTRON_REPO='riscv-forks/electron-riscv-releases'
+  export USE_GNUPP2A=1
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-  ELECTRON_VERSION="30.4.0"
-  if [[ "${ELECTRON_VERSION}" != "$(yarn config get target)" ]]; then
+  export VSCODE_SKIP_SETUPENV=1
+  export VSCODE_ELECTRON_REPOSITORY='lex-ibm/electron-ppc64le-build-scripts'
+elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
+  export VSCODE_ELECTRON_REPOSITORY='riscv-forks/electron-riscv-releases'
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SKIP_SETUPENV=1
+elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
+  export VSCODE_ELECTRON_REPOSITORY='darkyzhou/electron-loong64'
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  export VSCODE_SKIP_SETUPENV=1
+fi
+
+if [[ -f "../electron_linux_${VSCODE_ARCH}.sh" ]]; then
+  # add newline at the end of the file
+  echo "" >> build/checksums/electron.txt
+
+  if [[ -f "../electron_linux_${VSCODE_ARCH}.sha256sums" ]]; then
+    cat "../electron_linux_${VSCODE_ARCH}.sha256sums" >> build/checksums/electron.txt
+  fi
+
+  # shellcheck disable=SC1090
+  source "../electron_linux_${VSCODE_ARCH}.sh"
+
+  if [[ "${ELECTRON_VERSION}" != "$( yarn config get target )" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
-    # Look for releases here if electron version used by vscode changed:
-    # https://github.com/riscv-forks/electron-riscv-releases/releases
-    echo "Electron RISC-V binary version doesn't match target electron version!"
+    echo "Electron ${VSCODE_ARCH} binary version doesn't match target electron version!"
+    echo "Releases available at: https://github.com/${VSCODE_ELECTRON_REPOSITORY}/releases"
     exit 1
   fi
-  export VSCODE_ELECTRON_TAG="v${ELECTRON_VERSION}.riscv1"
-  echo "b391bd6e063c34c31b1048615994fca0a5922d5a6b21d6cee6c4335850791516 *electron-v${ELECTRON_VERSION}-linux-riscv64.zip" >> build/checksums/electron.txt
 fi
 
 if [[ -d "../patches/linux/client/" ]]; then
@@ -50,33 +72,61 @@ if [[ -d "../patches/linux/client/" ]]; then
   done
 fi
 
-for i in {1..5}; do # try 5 times
-  yarn --cwd build --frozen-lockfile --check-files && break
-  if [[ $i == 3 ]]; then
-    echo "Yarn failed too many times" >&2
-    exit 1
-  fi
-  echo "Yarn failed $i, trying again..."
-done
+if [[ -n "${USE_GNUPP2A}" ]]; then
+  INCLUDES=$(cat <<EOF
+{
+  "target_defaults": {
+    "conditions": [
+      ["OS=='linux'", {
+        'cflags_cc!': [ '-std=gnu++20' ],
+        'cflags_cc': [ '-std=gnu++2a' ],
+      }]
+    ]
+  }
+}
+EOF
+)
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  source ./build/azure-pipelines/linux/setup-env.sh
-else
-  ./build/azure-pipelines/linux/setup-env.sh
+  if [ ! -d "$HOME/.gyp" ]; then
+    mkdir -p "$HOME/.gyp"
+  fi
+
+  echo "${INCLUDES}" > "$HOME/.gyp/include.gypi"
 fi
 
 for i in {1..5}; do # try 5 times
-  yarn --check-files && break
-  if [ $i -eq 3 ]; then
-    echo "Yarn failed too many times" >&2
+  npm ci --prefix build && break
+  if [[ $i == 3 ]]; then
+    echo "Npm install failed too many times" >&2
     exit 1
   fi
-  echo "Yarn failed $i, trying again..."
+  echo "Npm install failed $i, trying again..."
+done
+
+if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
+  if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
+    source ./build/azure-pipelines/linux/setup-env.sh --skip-sysroot
+  else
+    source ./build/azure-pipelines/linux/setup-env.sh
+  fi
+fi
+
+for i in {1..5}; do # try 5 times
+  npm ci && break
+  if [[ $i -eq 3 ]]; then
+    echo "Npm install failed too many times" >&2
+    exit 1
+  fi
+  echo "Npm install failed $i, trying again..."
 done
 
 node build/azure-pipelines/distro/mixin-npm
 
 yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
+
+if [[ -f "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" ]]; then
+  bash "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" "../VSCode-linux-${VSCODE_ARCH}/resources/app/node_modules"
+fi
 
 find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
 

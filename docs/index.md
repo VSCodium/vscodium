@@ -6,8 +6,9 @@
   - [Replacements to Microsoft Online Services](#replacement-online-services)
 - [Extensions + Marketplace](#extensions-marketplace)
   - [How to use the OpenVSX Marketplace](#howto-openvsx-marketplace)
-  - [How to use the VS Code Marketplace](#howto-vscode-marketplace)
+  - [How to use a different extension gallery](#howto-switch-marketplace)
   - [How to self host your own VS Code Marketplace](#howto-selfhost-marketplace)
+  - [Visual Studio Marketplace](#visual-studio-marketplace)
   - [Proprietary Debugging Tools](#proprietary-debugging-tools)
   - [Proprietary Extensions](#proprietary-extensions)
 - [Extensions compatibility](https://github.com/BiblioNexus-Foundation/codex/blob/master/docs/extensions-compatibility.md)
@@ -29,7 +30,7 @@ Even though we do not pass the telemetry build flags (and go out of our way to c
 
 We do however set the default `telemetry.enableCrashReporter` and `telemetry.enableTelemetry` values to false. You can see those by viewing your Codex settings.json and searching for `telemetry`.
 
-The instructions [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting) and [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-crash-reporting) help with explaining and toggling telemetry.
+The instructions [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting) help with explaining and toggling telemetry.
 
 It is also highly recommended that you review all the settings that "use online services" by following [these instructions](https://code.visualstudio.com/docs/getstarted/telemetry#_managing-online-services). The `@tag:usesOnlineServices` filter on the settings page will show that by default:
 
@@ -66,29 +67,26 @@ See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on
 ### <a id="howto-switch-marketplace"></a>How to use a different extension gallery
 
 You can switch from the pre-set Open VSX Registry by configuring the endpoints using the following solutions.
-These examples use the URLs for Microsoft's VS Code Marketplace, see [below](#howto-vscode-marketplace) for more information on that.
 
-With the following environment variables:
-- `VSCODE_GALLERY_SERVICE_URL='https://marketplace.visualstudio.com/_apis/public/gallery'`
-- `VSCODE_GALLERY_ITEM_URL='https://marketplace.visualstudio.com/items'`
-- `VSCODE_GALLERY_CACHE_URL='https://vscode.blob.core.windows.net/gallery/index'`
-- `VSCODE_GALLERY_CONTROL_URL=''`
+You can either use the following environment variables:
+- `VSCODE_GALLERY_SERVICE_URL`
+- `VSCODE_GALLERY_ITEM_URL`
+- `VSCODE_GALLERY_CACHE_URL`
+- `VSCODE_GALLERY_CONTROL_URL`
 
 Or by creating a custom `product.json` at the following location (replace `Codex` by `Codex - Insiders` if you use that):
 - Windows: `%APPDATA%\Codex` or `%USERPROFILE%\AppData\Roaming\Codex`
 - macOS: `~/Library/Application Support/Codex`
 - Linux: `$XDG_CONFIG_HOME/Codex` or `~/.config/Codex`
 
-with the content:
-
-- Note: set `cacheUrl` to empty string for every other extension gallery
+with the content like:
 
 ```jsonc
 {
   "extensionsGallery": {
-    "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
-    "itemUrl": "https://marketplace.visualstudio.com/items",
-    "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
+    "serviceUrl": "",
+    "itemUrl": "",
+    "cacheUrl": "",
     "controlUrl": ""
   }
 }
@@ -96,7 +94,7 @@ with the content:
 
 ### <a id="howto-selfhost-marketplace"></a>How to self-host your own extension gallery
 
-Individual developers and enterprise companies in regulated or security-conscious industries can self-host their own extension gallery. In all of these cases, you'd enter its endpoint URLs as noted above, replacing `marketplace.visualstudio.com` with `your-self-hosted-marketplace-address.example.com` (or IP address), setting `cacheUrl` / `VSCODE_GALLERY_CACHE_URL` to an empty string.
+Individual developers and enterprise companies in regulated or security-conscious industries can self-host their own extension gallery.
 
 There are likely other options, but the following were reported to work:
 
@@ -109,13 +107,14 @@ There are likely other options, but the following were reported to work:
 
     > `code-marketplace` is a self-contained go binary that does not have a frontend or any mechanisms for extension authors to add or update extensions in the marketplace. It simply reads extensions from file storage and provides an API for VSCode compatible editors to consume.
 
-### <a id="howto-vscode-marketplace"></a>How to use the VS Code Marketplace
+### <a id="visual-studio-marketplace"></a>Visual Studio Marketplace
 
-As with any online service, ensure you've understood [its terms of use](https://aka.ms/vsmarketplace-ToU).
+As with any online service, ensure you've understood [its terms of use](https://aka.ms/vsmarketplace-ToU) which include:
+> Marketplace Offerings are intended for use only with Visual Studio Products and Services and you may only install and use Marketplace Offerings with Visual Studio Products and Services.
+
+So, we can't provide any help if you intend to infringe their terms of use.
+
 Also note that this extension gallery hosts multiple extensions that are non-free and have license-agreements that explicitly forbid using them in non-Microsoft products, along with using telemetry.
-
-The endpoint URLs are given in the [example above](#howto-switch-marketplace).
-
 
 ### <a id="proprietary-debugging-tools"></a>Proprietary Debugging Tools
 
