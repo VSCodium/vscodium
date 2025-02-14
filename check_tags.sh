@@ -262,10 +262,22 @@ elif [[ "${ASSETS}" != "null" ]]; then
     if [[ "${OS_NAME}" == "linux" ]]; then
       if [[ "${CHECK_ONLY_REH}" == "yes" ]]; then
 
-    if [[ "${CHECK_ONLY_REH}" == "yes" ]]; then
-      if [[ -z $( contains "${APP_NAME_LC}-reh-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
-        echo "Building on Linux ${VSCODE_ARCH} because we have no REH archive"
-        export SHOULD_BUILD="yes"
+        if [[ -z $( contains "${APP_NAME_LC}-reh-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux ${VSCODE_ARCH} because we have no REH archive"
+          export SHOULD_BUILD="yes"
+        else
+          echo "Already have the Linux REH ${VSCODE_ARCH} archive"
+          export SHOULD_BUILD_REH="no"
+        fi
+
+        if [[ -z $( contains "${APP_NAME_LC}-reh-web-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          echo "Building on Linux ${VSCODE_ARCH} because we have no REH-web archive"
+          export SHOULD_BUILD="yes"
+        else
+          echo "Already have the Linux REH-web ${VSCODE_ARCH} archive"
+          export SHOULD_BUILD_REH_WEB="no"
+        fi
+
       else
 
         # linux-arm64
