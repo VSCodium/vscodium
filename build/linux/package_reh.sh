@@ -153,6 +153,9 @@ for i in {1..5}; do # try 5 times
     exit 1
   fi
   echo "Npm install failed $i, trying again..."
+
+  # remove dependencies that fail during cleanup
+  rm -rf node_modules/@vscode node_modules/node-pty
 done
 
 node build/azure-pipelines/distro/mixin-npm
