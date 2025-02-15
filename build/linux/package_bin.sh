@@ -41,16 +41,16 @@ elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   export VSCODE_SKIP_SETUPENV=1
 fi
 
-if [[ -f "../electron_linux_${VSCODE_ARCH}.sh" ]]; then
+if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
   # add newline at the end of the file
   echo "" >> build/checksums/electron.txt
 
-  if [[ -f "../electron_linux_${VSCODE_ARCH}.sha256sums" ]]; then
-    cat "../electron_linux_${VSCODE_ARCH}.sha256sums" >> build/checksums/electron.txt
+  if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sha256sums" ]]; then
+    cat "../build/linux/${VSCODE_ARCH}/electron.sha256sums" >> build/checksums/electron.txt
   fi
 
   # shellcheck disable=SC1090
-  source "../electron_linux_${VSCODE_ARCH}.sh"
+  source "../build/linux/${VSCODE_ARCH}/electron.sh"
 
   if [[ "${ELECTRON_VERSION}" != "$( yarn config get target )" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
@@ -124,8 +124,8 @@ node build/azure-pipelines/distro/mixin-npm
 
 yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
-if [[ -f "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" ]]; then
-  bash "../ripgrep_${VSCODE_PLATFORM}_${VSCODE_ARCH}.sh" "../VSCode-linux-${VSCODE_ARCH}/resources/app/node_modules"
+if [[ -f "../build/linux/${VSCODE_ARCH}/ripgrep.sh" ]]; then
+  bash "../build/linux/${VSCODE_ARCH}/ripgrep.sh" "../VSCode-linux-${VSCODE_ARCH}/resources/app/node_modules"
 fi
 
 find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c

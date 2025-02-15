@@ -18,6 +18,7 @@ on:
     branches: [ master ]
     paths-ignore:
     - '**/*.md'
+    - 'upstream/*.json'
   pull_request:
     branches: [ master ]
     paths-ignore:
@@ -97,7 +98,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.18'
+          node-version: '20.18.1'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install Yarn
@@ -182,7 +183,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.18'
+          node-version: '20.18.1'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install Yarn
@@ -213,7 +214,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.vscode_arch }}
           npm_config_target_arch: ${{ matrix.vscode_arch }}
-        run: ./package_windows.sh
+        run: ./build/windows/package.sh
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Prepare assets
