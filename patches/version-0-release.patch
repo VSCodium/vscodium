@@ -73,7 +73,7 @@ index 98175f5..afacbe3 100644
 +			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index ebd9e43..d9a0ca6 100644
+index 52c4c94..00fc9f8 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
 @@ -58,2 +58,3 @@ export interface IProductConfiguration {
@@ -104,19 +104,19 @@ index 1a2a619..2a8d683 100644
 +			release: pkg.release
  		});
 diff --git a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-index b809503..21601c0 100644
+index 7563b30..0873839 100644
 --- a/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
 +++ b/src/vs/workbench/browser/parts/dialogs/dialogHandler.ts
-@@ -22,2 +22,3 @@ import { defaultButtonStyles, defaultCheckboxStyles, defaultDialogStyles, defaul
- import { ResultKind } from '../../../../platform/keybinding/common/keybindingResolver.js';
+@@ -23,2 +23,3 @@ import { ResultKind } from '../../../../platform/keybinding/common/keybindingRes
+ import { IOpenerService } from '../../../../platform/opener/common/opener.js';
 +import { getReleaseString } from '../../../../workbench/common/release.js';
  
-@@ -79,2 +80,4 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
+@@ -81,2 +82,4 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
  		const detailString = (useAgo: boolean): string => {
 +			const releaseString = getReleaseString();
 +
  			return localize('aboutDetail',
-@@ -85,3 +88,3 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
+@@ -87,3 +90,3 @@ export class BrowserDialogHandler extends AbstractDialogHandler {
  				navigator.userAgent
 -			);
 +			).replace('\n', `\n${releaseString} ${this.productService.release || 'Unknown'}\n`);

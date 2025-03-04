@@ -49,7 +49,7 @@ index 199f433..a6cbb10 100644
 +	| "user";
 \ No newline at end of file
 diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-index 48638aa..8f738e7 100644
+index a1ec3fe..f954720 100644
 --- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
 +++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
 @@ -14,6 +14,10 @@ import { IProductService } from '../../product/common/productService.js';
@@ -67,7 +67,7 @@ index 48638aa..8f738e7 100644
 +	}
  }
 diff --git a/src/vs/platform/update/electron-main/updateService.darwin.ts b/src/vs/platform/update/electron-main/updateService.darwin.ts
-index d3f27d3..8454ff3 100644
+index 57398fb..8e36930 100644
 --- a/src/vs/platform/update/electron-main/updateService.darwin.ts
 +++ b/src/vs/platform/update/electron-main/updateService.darwin.ts
 @@ -15,3 +15,3 @@ import { ILogService } from '../../log/common/log.js';
@@ -76,7 +76,7 @@ index d3f27d3..8454ff3 100644
 +import { IRequestService, asJson } from '../../request/common/request.js';
  import { ITelemetryService } from '../../telemetry/common/telemetry.js';
 @@ -19,2 +19,4 @@ import { IUpdate, State, StateType, UpdateType } from '../common/update.js';
- import { AbstractUpdateService, createUpdateURL, UpdateErrorClassification, UpdateNotAvailableClassification } from './abstractUpdateService.js';
+ import { AbstractUpdateService, createUpdateURL, UpdateErrorClassification } from './abstractUpdateService.js';
 +import { CancellationToken } from '../../../base/common/cancellation.js';
 +import * as semver from 'semver';
  
@@ -123,16 +123,16 @@ index d3f27d3..8454ff3 100644
 +			})
  	}
 diff --git a/src/vs/platform/update/electron-main/updateService.linux.ts b/src/vs/platform/update/electron-main/updateService.linux.ts
-index 6e076c7..81556b6 100644
+index dd18900..920dc10 100644
 --- a/src/vs/platform/update/electron-main/updateService.linux.ts
 +++ b/src/vs/platform/update/electron-main/updateService.linux.ts
-@@ -33,3 +33,3 @@ export class LinuxUpdateService extends AbstractUpdateService {
+@@ -31,3 +31,3 @@ export class LinuxUpdateService extends AbstractUpdateService {
  	protected buildUpdateFeedUrl(quality: string): string {
 -		return createUpdateURL(`linux-${process.arch}`, quality, this.productService);
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch);
  	}
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index 61109e5..06981b3 100644
+index db92de2..06981b3 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
 @@ -11,3 +11,2 @@ import { CancellationToken } from '../../../base/common/cancellation.js';
@@ -142,7 +142,7 @@ index 61109e5..06981b3 100644
 @@ -25,4 +24,5 @@ import { asJson, IRequestService } from '../../request/common/request.js';
  import { ITelemetryService } from '../../telemetry/common/telemetry.js';
 -import { AvailableForDownload, DisablementReason, IUpdate, State, StateType, UpdateType } from '../common/update.js';
--import { AbstractUpdateService, createUpdateURL, UpdateErrorClassification, UpdateNotAvailableClassification } from './abstractUpdateService.js';
+-import { AbstractUpdateService, createUpdateURL, UpdateErrorClassification } from './abstractUpdateService.js';
 +import { AvailableForDownload, DisablementReason, IUpdate, State, StateType, Target, UpdateType } from '../common/update.js';
 +import { AbstractUpdateService, createUpdateURL} from './abstractUpdateService.js';
 +import * as semver from 'semver';
@@ -193,28 +193,27 @@ index 61109e5..06981b3 100644
 -		return createUpdateURL(platform, quality, this.productService);
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch, target);
  	}
-@@ -126,4 +141,10 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
- 				if (!update || !update.url || !update.version || !update.productVersion) {
--					this.telemetryService.publicLog2<{ explicit: boolean }, UpdateNotAvailableClassification>('update:notAvailable', { explicit: !!context });
+@@ -130,2 +145,10 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+ 
++				const fetchedVersion = update.productVersion.replace(/(\d+\.\d+\.\d+)(?:\.(\d+))(\-\w+)?/, '$1$3+$2');
++				const currentVersion = `${this.productService.version}+${this.productService.release}`;
++
++				if(semver.compareBuild(currentVersion, fetchedVersion) >= 0) {
 +					this.setState(State.Idle(updateType));
 +					return Promise.resolve(null);
 +				}
 +
-+				const fetchedVersion = update.productVersion.replace(/(\d+\.\d+\.\d+)(?:\.(\d+))(\-\w+)?/, '$1$3+$2');
-+				const currentVersion = `${this.productService.version}+${this.productService.release}`;
- 
-+				if(semver.compareBuild(currentVersion, fetchedVersion) >= 0) {
- 					this.setState(State.Idle(updateType));
-@@ -158,3 +179,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+ 				if (updateType === UpdateType.Archive) {
+@@ -156,3 +179,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -						const fastUpdatesEnabled = this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
 +						const fastUpdatesEnabled = getUpdateType() == UpdateType.Setup && this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
  						if (fastUpdatesEnabled) {
-@@ -170,3 +191,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -168,3 +191,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  			.then(undefined, err => {
 -				this.telemetryService.publicLog2<{ messageHash: string }, UpdateErrorClassification>('update:error', { messageHash: String(hash(String(err))) });
  				this.logService.error(err);
-@@ -254,6 +274,14 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -252,6 +274,14 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  		} else {
 -			spawn(this.availableUpdate.packagePath, ['/silent', '/log', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
 -				detached: true,
