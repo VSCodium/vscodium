@@ -83,6 +83,9 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   fi
 fi
 
+mv .npmrc .npmrc.bak
+cp ../npmrc .npmrc
+
 for i in {1..5}; do # try 5 times
   npm ci && break
   if [[ $i == 3 ]]; then
@@ -93,6 +96,8 @@ for i in {1..5}; do # try 5 times
 
   sleep $(( 15 * (i + 1)))
 done
+
+mv .npmrc.bak .npmrc
 
 setpath() {
   local jsonTmp
