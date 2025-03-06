@@ -161,6 +161,8 @@ for i in {1..5}; do # try 5 times
   rm -rf node_modules/@vscode node_modules/node-pty
 done
 
+mv .npmrc.bak .npmrc
+
 node build/azure-pipelines/distro/mixin-npm
 
 export VSCODE_NODE_GLIBC="-glibc-${GLIBC_VERSION}"
