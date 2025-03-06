@@ -15,7 +15,7 @@ tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-GLIBC_VERSION="2.30"
+GLIBC_VERSION="2.28"
 GLIBCXX_VERSION="3.4.26"
 NODE_VERSION="20.18.2"
 
@@ -23,12 +23,12 @@ export VSCODE_NODEJS_URLROOT='/download/release'
 export VSCODE_NODEJS_URLSUFFIX=''
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  GLIBC_VERSION="2.17"
-  GLIBCXX_VERSION="3.4.22"
+  # GLIBC_VERSION="2.17"
+  # GLIBCXX_VERSION="3.4.22"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-x64"
 
-  export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
-  export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
+  # export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
+  # export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
   export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-arm64"
@@ -173,7 +173,7 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   yarn gulp minify-vscode-reh
   yarn gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
-  EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+  EXPECTED_GLIBC_VERSION="2.30" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
@@ -192,7 +192,7 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   yarn gulp minify-vscode-reh-web
   yarn gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
-  EXPECTED_GLIBC_VERSION="${GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+  EXPECTED_GLIBC_VERSION="2.30" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
   pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
