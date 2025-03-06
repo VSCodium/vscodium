@@ -129,9 +129,6 @@ EOF
   echo "${INCLUDES}" > "${HOME}/.gyp/include.gypi"
 fi
 
-mv .npmrc .npmrc.bak
-cp ../npmrc .npmrc
-
 for i in {1..5}; do # try 5 times
   npm ci --prefix build && break
   if [[ $i == 3 ]]; then
@@ -148,6 +145,9 @@ if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
     source ./build/azure-pipelines/linux/setup-env.sh
   fi
 fi
+
+mv .npmrc .npmrc.bak
+cp ../npmrc .npmrc
 
 for i in {1..5}; do # try 5 times
   npm ci && break
