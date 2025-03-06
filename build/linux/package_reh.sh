@@ -17,7 +17,7 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 GLIBC_VERSION="2.28"
 GLIBCXX_VERSION="3.4.26"
-NODE_VERSION="20.18.1"
+NODE_VERSION="20.18.2"
 
 export VSCODE_NODEJS_URLROOT='/download/release'
 export VSCODE_NODEJS_URLSUFFIX=''
@@ -128,6 +128,9 @@ EOF
 
   echo "${INCLUDES}" > "${HOME}/.gyp/include.gypi"
 fi
+
+mv .npmrc .npmrc.bak
+cp ../npmrc .npmrc
 
 for i in {1..5}; do # try 5 times
   npm ci --prefix build && break
