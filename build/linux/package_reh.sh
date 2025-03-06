@@ -15,7 +15,7 @@ tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-GLIBC_VERSION="2.28"
+GLIBC_VERSION="2.30"
 GLIBCXX_VERSION="3.4.26"
 NODE_VERSION="20.18.2"
 
@@ -29,6 +29,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
 
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
   export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
+  export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-arm64"
 
@@ -129,6 +130,9 @@ EOF
   echo "${INCLUDES}" > "${HOME}/.gyp/include.gypi"
 fi
 
+mv .npmrc .npmrc.bak
+cp ../npmrc .npmrc
+
 for i in {1..5}; do # try 5 times
   npm ci --prefix build && break
   if [[ $i == 3 ]]; then
@@ -145,9 +149,6 @@ if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
     source ./build/azure-pipelines/linux/setup-env.sh
   fi
 fi
-
-mv .npmrc .npmrc.bak
-cp ../npmrc .npmrc
 
 for i in {1..5}; do # try 5 times
   npm ci && break
