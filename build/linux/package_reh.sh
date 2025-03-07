@@ -143,6 +143,16 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
+gcc --version
+g++ --version
+echo "AS: $AS"
+echo "AR: $AR"
+echo "CC: $CC"
+echo "CPP: $CPP"
+echo "CXX: $CXX"
+echo "LD: $LD"
+echo "PKG_CONFIG_PATH: $PKG_CONFIG_PATH"
+
 if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
   if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
     source ./build/azure-pipelines/linux/setup-env.sh --skip-sysroot
