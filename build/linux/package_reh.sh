@@ -29,8 +29,8 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
 
   # export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
   # export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
-  export VSCODE_SKIP_SYSROOT=1
-  export USE_GNUPP2A=1
+  # export VSCODE_SKIP_SYSROOT=1
+  # export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-arm64"
 
@@ -142,16 +142,6 @@ for i in {1..5}; do # try 5 times
   fi
   echo "Npm install failed $i, trying again..."
 done
-
-gcc --version
-g++ --version
-echo "AS: $AS"
-echo "AR: $AR"
-echo "CC: $CC"
-echo "CPP: $CPP"
-echo "CXX: $CXX"
-echo "LD: $LD"
-echo "PKG_CONFIG_PATH: $PKG_CONFIG_PATH"
 
 if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
   if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
