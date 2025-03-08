@@ -1,5 +1,5 @@
 diff --git a/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts b/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts
-index 18b5815..51a5d50 100644
+index 1bb5eb3..70f1b37 100644
 --- a/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts
 +++ b/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts
 @@ -7,3 +7,3 @@ import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.j
@@ -16,9 +16,12 @@ index 18b5815..51a5d50 100644
  
 -		this.registerSignInAction();
  		this.registerResetAuthenticationAction();
-@@ -456,39 +455,2 @@ export class EditSessionsWorkbenchService extends Disposable implements IEditSes
+@@ -456,42 +455,2 @@ export class EditSessionsWorkbenchService extends Disposable implements IEditSes
  
 -	private registerSignInAction() {
+-		if (!this.serverConfiguration?.url) {
+-			return;
+-		}
 -		const that = this;
 -		const id = 'workbench.editSessions.actions.signIn';
 -		const when = ContextKeyExpr.and(ContextKeyExpr.equals(EDIT_SESSIONS_PENDING_KEY, false), ContextKeyExpr.equals(EDIT_SESSIONS_SIGNED_IN_KEY, false));

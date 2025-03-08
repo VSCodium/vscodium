@@ -69,10 +69,12 @@ See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on
 You can switch from the pre-set Open VSX Registry by configuring the endpoints using the following solutions.
 
 You can either use the following environment variables:
-- `VSCODE_GALLERY_SERVICE_URL`
-- `VSCODE_GALLERY_ITEM_URL`
+- `VSCODE_GALLERY_SERVICE_URL` ***(required)***
+- `VSCODE_GALLERY_ITEM_URL` ***(required)***
 - `VSCODE_GALLERY_CACHE_URL`
 - `VSCODE_GALLERY_CONTROL_URL`
+- `VSCODE_GALLERY_EXTENSION_URL_TEMPLATE` ***(required)***
+- `VSCODE_GALLERY_RESOURCE_URL_TEMPLATE`
 
 Or by creating a custom `product.json` at the following location (replace `Codex` by `Codex - Insiders` if you use that):
 - Windows: `%APPDATA%\Codex` or `%USERPROFILE%\AppData\Roaming\Codex`
@@ -84,10 +86,12 @@ with the content like:
 ```jsonc
 {
   "extensionsGallery": {
-    "serviceUrl": "",
-    "itemUrl": "",
+    "serviceUrl": "", // required
+    "itemUrl": "", // required
     "cacheUrl": "",
-    "controlUrl": ""
+    "controlUrl": "",
+    "extensionUrlTemplate": "", // required
+    "resourceUrlTemplate": "",
   }
 }
 ```

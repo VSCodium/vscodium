@@ -1,15 +1,15 @@
 diff --git a/build/darwin/sign.js b/build/darwin/sign.js
-index f5913b7..100b950 100644
+index dff30fd..df48bee 100644
 --- a/build/darwin/sign.js
 +++ b/build/darwin/sign.js
-@@ -53,5 +53,7 @@ async function main(buildDir) {
+@@ -56,5 +56,7 @@ async function main(buildDir) {
          ignore: (filePath) => {
-+						const ext = path.extname(filePath);
++            const ext = path_1.default.extname(filePath);
              return filePath.includes(gpuHelperAppName) ||
                  filePath.includes(rendererHelperAppName) ||
 -                filePath.includes(pluginHelperAppName);
 +                filePath.includes(pluginHelperAppName) ||
-+								ext == '.asar' || ext == '.dat' || ext == '.gif' || ext == '.icns' || ext == '.ico' || ext == '.json' || ext == '.mp3' || ext == '.nib' || ext == '.pak' || ext == '.png' || ext == '.scpt' || ext == '.ttf' || ext == '.wasm' || ext == '.woff' || ext == '.woff2';
++                ext == '.asar' || ext == '.dat' || ext == '.gif' || ext == '.icns' || ext == '.ico' || ext == '.json' || ext == '.mp3' || ext == '.nib' || ext == '.pak' || ext == '.png' || ext == '.scpt' || ext == '.ttf' || ext == '.wasm' || ext == '.woff' || ext == '.woff2';
          }
 @@ -83,3 +85,3 @@ async function main(buildDir) {
              '-string',

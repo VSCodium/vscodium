@@ -2,7 +2,7 @@
 # shellcheck disable=SC1091,SC2129
 
 ### Windows
-# to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./build/build.sh
+# to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./dev/build.sh
 ###
 
 export APP_NAME="Codex"
@@ -84,16 +84,16 @@ if [[ "${SKIP_SOURCE}" == "no" ]]; then
   . version.sh
 
   # save variables for later
-  echo "MS_TAG=\"${MS_TAG}\"" > build.env
-  echo "MS_COMMIT=\"${MS_COMMIT}\"" >> build.env
-  echo "RELEASE_VERSION=\"${RELEASE_VERSION}\"" >> build.env
-  echo "BUILD_SOURCEVERSION=\"${BUILD_SOURCEVERSION}\"" >> build.env
+  echo "MS_TAG=\"${MS_TAG}\"" > dev/build.env
+  echo "MS_COMMIT=\"${MS_COMMIT}\"" >> dev/build.env
+  echo "RELEASE_VERSION=\"${RELEASE_VERSION}\"" >> dev/build.env
+  echo "BUILD_SOURCEVERSION=\"${BUILD_SOURCEVERSION}\"" >> dev/build.env
 else
   if [[ "${SKIP_ASSETS}" != "no" ]]; then
     rm -rf vscode-* VSCode-*
   fi
 
-  . build.env
+  . dev/build.env
 
   echo "MS_TAG=\"${MS_TAG}\""
   echo "MS_COMMIT=\"${MS_COMMIT}\""
@@ -124,7 +124,7 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
       echo "{}" > ~/.gyp/include.gypi.pre-codex
     fi
 
-    cp ./include_osx.gypi ~/.gyp/include.gypi
+    cp ./build/osx/include.gypi ~/.gyp/include.gypi
   fi
 
   . build.sh
@@ -134,8 +134,8 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
   fi
 
   if [[ "${VSCODE_LATEST}" == "yes" ]]; then
-    jsonTmp=$( cat "${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
-    echo "${jsonTmp}" > "${VSCODE_QUALITY}.json" && unset jsonTmp
+    jsonTmp=$( cat "./upstream/${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
+    echo "${jsonTmp}" > "./upstream/${VSCODE_QUALITY}.json" && unset jsonTmp
   fi
 fi
 
@@ -144,8 +144,8 @@ if [[ "${SKIP_ASSETS}" == "no" ]]; then
     rm -rf build/windows/msi/releasedir
   fi
 
-  if [[ "${OS_NAME}" == "osx" && -f "./macos-codesign.env" ]]; then
-    . macos-codesign.env
+  if [[ "${OS_NAME}" == "osx" && -f "dev/osx/codesign.env" ]]; then
+    . dev/osx/macos-codesign.env
 
     echo "CERTIFICATE_OSX_ID: ${CERTIFICATE_OSX_ID}"
   fi
