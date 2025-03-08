@@ -1,8 +1,8 @@
 diff --git a/build/.moduleignore b/build/.moduleignore
-index 01541e8..5b67f2b 100644
+index 6b7f365..2211e6e 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
-@@ -120,9 +120,11 @@ vsda/**
+@@ -125,9 +125,11 @@ vsda/**
  
 -@vscode/policy-watcher/build/**
 -@vscode/policy-watcher/.husky/**
@@ -22,7 +22,7 @@ index 01541e8..5b67f2b 100644
 +!@vscodium/policy-watcher/build/Release/vscode-policy-watcher.node
  
 diff --git a/build/lib/policies.js b/build/lib/policies.js
-index d52015c..39a4001 100644
+index b76d9ff..a84f490 100644
 --- a/build/lib/policies.js
 +++ b/build/lib/policies.js
 @@ -64,3 +64,3 @@ class BasePolicy {
@@ -36,7 +36,7 @@ index d52015c..39a4001 100644
 +		<target prefix="${regKey}" namespace="VSCodium.Policies.${regKey}" />
  	</policyNamespaces>
 diff --git a/build/lib/policies.ts b/build/lib/policies.ts
-index 57941d8..50c1843 100644
+index 2488920..8b268ce 100644
 --- a/build/lib/policies.ts
 +++ b/build/lib/policies.ts
 @@ -80,3 +80,3 @@ abstract class BasePolicy implements Policy {
@@ -50,42 +50,32 @@ index 57941d8..50c1843 100644
 +		<target prefix="${regKey}" namespace="VSCodium.Policies.${regKey}" />
  	</policyNamespaces>
 diff --git a/eslint.config.js b/eslint.config.js
-index f9f120a..db61adc 100644
+index 8e3d288..1fa7cc3 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
-@@ -798,3 +798,3 @@ export default tseslint.config(
+@@ -793,3 +793,3 @@ export default tseslint.config(
  						'@vscode/iconv-lite-umd',
 -						'@vscode/policy-watcher',
 +						'@vscodium/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
-index 652a389..b5103dd 100644
+index d4bc1fb..195cbe1 100644
 --- a/package-lock.json
 +++ b/package-lock.json
-@@ -2,3 +2,3 @@
-   "name": "code-oss-dev",
--  "version": "1.97.0",
-+  "version": "1.97.2",
-   "lockfileVersion": 3,
-@@ -8,3 +8,3 @@
-       "name": "code-oss-dev",
--      "version": "1.97.0",
-+      "version": "1.97.2",
-       "hasInstallScript": true,
 @@ -18,3 +18,2 @@
          "@vscode/iconv-lite-umd": "0.7.0",
--        "@vscode/policy-watcher": "^1.1.8",
-         "@vscode/proxy-agent": "^0.31.0",
+-        "@vscode/policy-watcher": "^1.1.10",
+         "@vscode/proxy-agent": "^0.32.0",
 @@ -29,2 +28,3 @@
          "@vscode/windows-registry": "^1.1.0",
-+        "@vscodium/policy-watcher": "^1.1.8-2501211616",
-         "@xterm/addon-clipboard": "^0.2.0-beta.80",
++        "@vscodium/policy-watcher": "^1.1.10-2503041159",
+         "@xterm/addon-clipboard": "^0.2.0-beta.81",
 @@ -2831,22 +2831,2 @@
      },
 -    "node_modules/@vscode/policy-watcher": {
--      "version": "1.1.8",
--      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.1.8.tgz",
--      "integrity": "sha512-IFT3eIPLIcjjgyOUBvbxfKlqTjSDJU+ZJrTlrgdjZrwS3HRLexAMTCfmBqIgZ+vS5N9QWtQW0yp8vX8UJv8JFg==",
+-      "version": "1.1.10",
+-      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.1.10.tgz",
+-      "integrity": "sha512-erRJiryjhP//MnRZo+j0LxjVSFa4eZMR9HeAGxIuxlZCQrnvrIG5nv/4qBxiMH0+uE4Z74YY/Ct0wus6l9U/xg==",
 -      "hasInstallScript": true,
 -      "license": "MIT",
 -      "dependencies": {
@@ -106,9 +96,9 @@ index 652a389..b5103dd 100644
 @@ -3247,2 +3227,22 @@
      },
 +    "node_modules/@vscodium/policy-watcher": {
-+      "version": "1.1.8-2501211616",
-+      "resolved": "https://registry.npmjs.org/@vscodium/policy-watcher/-/policy-watcher-1.1.8-2501211616.tgz",
-+      "integrity": "sha512-zrMcMkvh4D7Kicwz/Z/6Nm4FsCLrDIhjLZswzBMlZhTH1vP4XhEBYsic7j/RSgeCPCUxkBQx7c9io3yVovy2HA==",
++      "version": "1.1.10-2503041159",
++      "resolved": "https://registry.npmjs.org/@vscodium/policy-watcher/-/policy-watcher-1.1.10-2503041159.tgz",
++      "integrity": "sha512-Jz8MKbNIB4nJPnr3l3xmyp1VvrkFhOlcjZDoUzQAoVuAfkovedhvPkoZkiB21ygGb4ZxU0ApJXHfzanee0ltWA==",
 +      "hasInstallScript": true,
 +      "license": "MIT",
 +      "dependencies": {
@@ -127,14 +117,14 @@ index 652a389..b5103dd 100644
 +    },
      "node_modules/@webassemblyjs/ast": {
 diff --git a/package.json b/package.json
-index 1b0f83e..6438b79 100644
+index 925462f..c4b6304 100644
 --- a/package.json
 +++ b/package.json
 @@ -76,3 +76,3 @@
      "@vscode/iconv-lite-umd": "0.7.0",
--    "@vscode/policy-watcher": "^1.1.8",
-+    "@vscodium/policy-watcher": "^1.1.8-2501211616",
-     "@vscode/proxy-agent": "^0.31.0",
+-    "@vscode/policy-watcher": "^1.1.10",
++    "@vscodium/policy-watcher": "^1.1.10-2503041159",
+     "@vscode/proxy-agent": "^0.32.0",
 diff --git a/src/vs/base/test/node/uri.perf.data.txt b/src/vs/base/test/node/uri.perf.data.txt
 index ee0a24b..881ce36 100644
 --- a/src/vs/base/test/node/uri.perf.data.txt
