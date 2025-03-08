@@ -129,7 +129,7 @@ setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=85
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
 
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
-  setpath "product" "updateUrl" "https://raw.githubusercontent.com/Codex/versions/refs/heads/master"
+  setpath "product" "updateUrl" "https://codex-update-api-steel.vercel.app"
   setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex/releases"
 fi
 
@@ -160,6 +160,7 @@ else
   setpath "product" "nameShort" "Codex"
   setpath "product" "nameLong" "Codex"
   setpath "product" "applicationName" "codex"
+  setpath "product" "dataFolderName" ".codex"
   setpath "product" "linuxIconName" "codex"
   setpath "product" "quality" "stable"
   setpath "product" "urlProtocol" "codex"
