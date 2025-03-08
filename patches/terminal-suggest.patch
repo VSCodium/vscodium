@@ -1,0 +1,84 @@
+diff --git a/extensions/terminal-suggest/src/completions/codium-insiders.ts b/extensions/terminal-suggest/src/completions/codium-insiders.ts
+new file mode 100644
+index 00000000000..a5769b1a575
+--- /dev/null
++++ b/extensions/terminal-suggest/src/completions/codium-insiders.ts
+@@ -0,0 +1,9 @@
++import code from './code';
++
++const codiumInsidersCompletionSpec: Fig.Spec = {
++	...code,
++	name: 'codium-insiders',
++	description: 'VSCodium Insiders',
++};
++
++export default codiumInsidersCompletionSpec;
+diff --git a/extensions/terminal-suggest/src/completions/codium.ts b/extensions/terminal-suggest/src/completions/codium.ts
+new file mode 100644
+index 00000000000..b1fa81231fd
+--- /dev/null
++++ b/extensions/terminal-suggest/src/completions/codium.ts
+@@ -0,0 +1,9 @@
++import code from './code';
++
++const codiumCompletionSpec: Fig.Spec = {
++	...code,
++	name: 'codium',
++	description: 'VSCodium',
++};
++
++export default codiumCompletionSpec;
+diff --git a/extensions/terminal-suggest/src/terminalSuggestMain.ts b/extensions/terminal-suggest/src/terminalSuggestMain.ts
+index 3cd5854ca74..e0b7596b0b7 100644
+--- a/extensions/terminal-suggest/src/terminalSuggestMain.ts
++++ b/extensions/terminal-suggest/src/terminalSuggestMain.ts
+@@ -10,6 +10,8 @@ import { upstreamSpecs } from './constants';
+ import codeCompletionSpec from './completions/code';
+ import cdSpec from './completions/cd';
+ import codeInsidersCompletionSpec from './completions/code-insiders';
++import codiumCompletionSpec from './completions/codium';
++import codiumInsidersCompletionSpec from './completions/codium-insiders';
+ import { osIsWindows } from './helpers/os';
+ import { isExecutable } from './helpers/executable';
+ 
+@@ -28,6 +30,8 @@ export const availableSpecs: Fig.Spec[] = [
+ 	cdSpec,
+ 	codeInsidersCompletionSpec,
+ 	codeCompletionSpec,
++	codiumInsidersCompletionSpec,
++	codiumCompletionSpec,
+ ];
+ for (const spec of upstreamSpecs) {
+ 	availableSpecs.push(require(`./completions/upstream/${spec}`).default);
+diff --git a/extensions/terminal-suggest/src/test/terminalSuggestMain.test.ts b/extensions/terminal-suggest/src/test/terminalSuggestMain.test.ts
+index d72996b8f70..7c5fb26f925 100644
+--- a/extensions/terminal-suggest/src/test/terminalSuggestMain.test.ts
++++ b/extensions/terminal-suggest/src/test/terminalSuggestMain.test.ts
+@@ -10,6 +10,8 @@ import { asArray, getCompletionItemsFromSpecs } from '../terminalSuggestMain';
+ import cdSpec from '../completions/cd';
+ import codeCompletionSpec from '../completions/code';
+ import codeInsidersCompletionSpec from '../completions/code-insiders';
++import codiumCompletionSpec from '../completions/codium';
++import codiumInsidersCompletionSpec from '../completions/codium-insiders';
+ import type { Uri } from 'vscode';
+ import { basename } from 'path';
+ 
+@@ -128,6 +130,18 @@ const testSpecs2: ISuiteSpec[] = [
+ 		completionSpecs: codeInsidersCompletionSpec,
+ 		availableCommands: 'code-insiders',
+ 		testSpecs: createCodeTestSpecs('code-insiders')
++	},
++	{
++		name: 'codium',
++		completionSpecs: codiumCompletionSpec,
++		availableCommands: 'codium',
++		testSpecs: createCodeTestSpecs('codium')
++	},
++	{
++		name: 'codium-insiders',
++		completionSpecs: codiumInsidersCompletionSpec,
++		availableCommands: 'codium-insiders',
++		testSpecs: createCodeTestSpecs('codium-insiders')
+ 	}
+ ];
+ 
