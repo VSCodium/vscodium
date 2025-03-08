@@ -32,8 +32,8 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   # export VSCODE_SKIP_SYSROOT=1
   # export USE_GNUPP2A=1
 
-  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
-  export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+  # export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+  # export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-arm64"
@@ -50,9 +50,10 @@ elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
 
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-  export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
-  export VSCODE_SYSROOT_VERSION='20240129-253798'
-  export USE_GNUPP2A=1
+  # export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
+  # export VSCODE_SYSROOT_VERSION='20240129-253798'
+  # export USE_GNUPP2A=1
+  export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   NODE_VERSION="20.16.0"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
