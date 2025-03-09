@@ -60,7 +60,7 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
 elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   NODE_VERSION="20.16.0"
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:trixie-devtoolset-loong64"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:beige-devtoolset-loong64"
 
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
