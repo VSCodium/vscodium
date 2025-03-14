@@ -6,7 +6,7 @@
       {
         "label": "Download latest stable-linux vscode artifact",
         "type": "shell",
-        "command": "gh run list --workflow stable-linux --branch master --limit 1 | awk '{print $7}' | xargs -I {} gh run download {} -n vscode && sudo tar -xvzf vscode.tar.gz && sudo chown -R vscode:vscode ./vscode/",
+        "command": "set -a && source .env || true && set +a && gh run list --workflow stable-linux --branch master --limit 1 | awk '{print $7}' | xargs -I {} gh run download {} -n vscode && sudo tar -xvzf vscode.tar.gz && sudo chown -R vscode:vscode ./vscode/",
         "group": {
           "kind": "none"
         },
@@ -24,7 +24,7 @@
       {
         "label": "Build Linux REH",
         "type": "shell",
-        "command": "VSCODE_ARCH=\"${_VSCODE_ARCH}\" ./build/linux/package_reh.sh",
+        "command": "set -a && source .env || true && set +a && ./build/linux/package_reh.sh",
         "group": {
           "kind": "build",
           "isDefault": false

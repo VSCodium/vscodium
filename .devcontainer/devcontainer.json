@@ -27,22 +27,18 @@
         "ghcr.io/devcontainers/features/github-cli:1": {},
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
             "dockerDashComposeVersion": "none"
-        }
+        },
+        "ghcr.io/devcontainers-extra/features/shfmt:1": {}
     },
     // Uncomment if you have `sed` issues due to VirtFs
     // "mounts": [
     //     "type=volume,source=vscode-src,target=${containerWorkspaceFolder}/vscode"
     // ],
-    // These are better placed in the .env file
-    // "containerEnv": {
-    //     "npm_config_arch": "ppc64",
-    //     "_VSCODE_ARCH": "ppc64le"
-    // },
     "runArgs": [
         "--security-opt",
         "label=disable",
         "--env-file",
-        ".env" // a place to put your GH_TOKEN
+        "${localWorkspaceFolder}/.env"
     ],
     "capAdd": [
         "CAP_AUDIT_WRITE"
@@ -57,12 +53,19 @@
         // Configure properties specific to VS Code.
         "vscode": {
             // Set *default* container specific settings.json values on container create.
-            "settings": {},
+            "settings": {
+                "shellformat.path": "/usr/local/bin/shfmt",
+                "shellcheck.executablePath": "/usr/bin/shellcheck"
+            },
             // Add the IDs of extensions you want installed when the container is created.
             "extensions": [
                 "dbaeumer.vscode-eslint",
                 "ms-azuretools.vscode-docker",
-                "github.vscode-github-actions"
+                "github.vscode-github-actions",
+                "foxundermoon.shell-format",
+                "rogalmic.bash-debug",
+                "mads-hartmann.bash-ide-vscode",
+                "timonwong.shellcheck"
             ]
         }
     },
