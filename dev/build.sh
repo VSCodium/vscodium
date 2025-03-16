@@ -8,6 +8,8 @@
 export APP_NAME="VSCodium"
 export BINARY_NAME="codium"
 export CI_BUILD="no"
+export GH_REPO_PATH="VSCodium/vscodium"
+export ORG_NAME="VSCodium"
 export SHOULD_BUILD="yes"
 export SKIP_ASSETS="yes"
 export SKIP_BUILD="no"

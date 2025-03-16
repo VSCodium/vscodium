@@ -7,6 +7,9 @@ if [[ "${CI_BUILD}" == "no" ]]; then
   exit 1
 fi
 
+# include common functions
+. ./utils.sh
+
 tar -xzf ./vscode.tar.gz
 
 chown -R root:root vscode
@@ -63,11 +66,7 @@ fi
 if [[ -d "../patches/linux/client/" ]]; then
   for file in "../patches/linux/client/"*.patch; do
     if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
-      fi
+      apply_patch "${file}"
     fi
   done
 fi

@@ -5,7 +5,7 @@ index 7d58861..cefb8ad 100644
 @@ -306,3 +306,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
 -			.pipe(json({ commit, date: readISODate('out-build'), version, release }))
-+			.pipe(json({ commit, date: readISODate('out-build'), version, release, serverDownloadUrlTemplate: 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }))
++			.pipe(json({ commit, date: readISODate('out-build'), version, release, serverDownloadUrlTemplate: 'https://github.com/!!GH_REPO_PATH!!-insiders/releases/download/${version}.${release}-insider/!!APP_NAME_LC!!-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }))
  			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
 index 4af4067..1bac2cc 100644
@@ -14,5 +14,5 @@ index 4af4067..1bac2cc 100644
 @@ -261,3 +261,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
 -			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release }))
-+			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release, serverDownloadUrlTemplate: 'https://github.com/VSCodium/vscodium-insiders/releases/download/${version}.${release}-insider/vscodium-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }))
++			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release, serverDownloadUrlTemplate: 'https://github.com/!!GH_REPO_PATH!!-insiders/releases/download/${version}.${release}-insider/!!APP_NAME_LC!!-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }))
  			.pipe(es.through(function (file) {
