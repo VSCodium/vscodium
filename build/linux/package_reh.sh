@@ -7,7 +7,8 @@ if [[ "${CI_BUILD}" == "no" ]]; then
   exit 1
 fi
 
-APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+# include common functions
+. ./utils.sh
 
 mkdir -p assets
 
@@ -88,11 +89,7 @@ sed -i "/target/s/\"20.*\"/\"${NODE_VERSION}\"/" remote/.npmrc
 if [[ -d "../patches/linux/reh/" ]]; then
   for file in "../patches/linux/reh/"*.patch; do
     if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
-      fi
+      apply_patch "${file}"
     fi
   done
 fi
@@ -100,11 +97,7 @@ fi
 if [[ -d "../patches/linux/reh/${VSCODE_ARCH}/" ]]; then
   for file in "../patches/linux/reh/${VSCODE_ARCH}/"*.patch; do
     if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
-      fi
+      apply_patch "${file}"
     fi
   done
 fi

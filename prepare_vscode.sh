@@ -23,45 +23,28 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 for file in ../patches/*.patch; do
   if [[ -f "${file}" ]]; then
-    echo applying patch: "${file}";
-    # grep '^+++' "${file}"  | sed -e 's#+++ [ab]/#./vscode/#' | while read line; do shasum -a 256 "${line}"; done
-    if ! git apply --ignore-whitespace "${file}"; then
-      echo failed to apply patch "${file}" >&2
-      exit 1
-    fi
+    apply_patch "${file}"
   fi
 done
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   for file in ../patches/insider/*.patch; do
     if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
-      fi
+      apply_patch "${file}"
     fi
   done
 fi
 
 for file in ../patches/user/*.patch; do
   if [[ -f "${file}" ]]; then
-    echo applying user patch: "${file}";
-    if ! git apply --ignore-whitespace "${file}"; then
-      echo failed to apply patch "${file}" >&2
-      exit 1
-    fi
+    apply_patch "${file}"
   fi
 done
 
 if [[ -d "../patches/${OS_NAME}/" ]]; then
   for file in "../patches/${OS_NAME}/"*.patch; do
     if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
-      fi
+      apply_patch "${file}"
     fi
   done
 fi

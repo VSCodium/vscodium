@@ -28,12 +28,12 @@ index b76d9ff..a84f490 100644
 @@ -64,3 +64,3 @@ class BasePolicy {
          return [
 -            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
-+            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\VSCodium\\${regKey}" presentation="$(presentation.${this.name})">`,
++            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\!!ORG_NAME!!\\${regKey}" presentation="$(presentation.${this.name})">`,
              `	<parentCategory ref="${this.category.name.nlsKey}" />`,
 @@ -376,3 +376,3 @@ function renderADMX(regKey, versions, categories, policies) {
  	<policyNamespaces>
 -		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
-+		<target prefix="${regKey}" namespace="VSCodium.Policies.${regKey}" />
++		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
  	</policyNamespaces>
 diff --git a/build/lib/policies.ts b/build/lib/policies.ts
 index 2488920..8b268ce 100644
@@ -42,12 +42,12 @@ index 2488920..8b268ce 100644
 @@ -80,3 +80,3 @@ abstract class BasePolicy implements Policy {
  		return [
 -			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
-+			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\VSCodium\\${regKey}" presentation="$(presentation.${this.name})">`,
++			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\!!ORG_NAME!!\\${regKey}" presentation="$(presentation.${this.name})">`,
  			`	<parentCategory ref="${this.category.name.nlsKey}" />`,
 @@ -553,3 +553,3 @@ function renderADMX(regKey: string, versions: string[], categories: Category[],
  	<policyNamespaces>
 -		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
-+		<target prefix="${regKey}" namespace="VSCodium.Policies.${regKey}" />
++		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
  	</policyNamespaces>
 diff --git a/eslint.config.js b/eslint.config.js
 index 8e3d288..1fa7cc3 100644
@@ -254,5 +254,5 @@ index 67f7892..5b8859c 100644
 @@ -31,3 +31,3 @@ export class NativePolicyService extends AbstractPolicyService implements IPolic
  			try {
 -				this.watcher.value = createWatcher(this.productName, policyDefinitions, update => {
-+				this.watcher.value = createWatcher('VSCodium', this.productName, policyDefinitions, update => {
++				this.watcher.value = createWatcher('!!ORG_NAME!!', this.productName, policyDefinitions, update => {
  					this._onDidPolicyChange(update);
