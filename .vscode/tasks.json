@@ -1,0 +1,34 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Download latest stable-linux vscode artifact",
+        "type": "shell",
+        "command": "gh run list --workflow stable-linux --branch master --limit 1 | awk '{print $7}' | xargs -I {} gh run download {} -n vscode && sudo tar -xvzf vscode.tar.gz && sudo chown -R vscode:vscode ./vscode/",
+        "group": {
+          "kind": "none"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Extract vscode.tar.gz",
+        "type": "shell",
+        "command": "sudo tar -xvzf vscode.tar.gz && sudo chown -R vscode:vscode ./vscode/",
+        "group": {
+          "kind": "none"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Build Linux REH",
+        "type": "shell",
+        "command": "VSCODE_ARCH=\"${_VSCODE_ARCH}\" ./build/linux/package_reh.sh",
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        }
+      }
+    ]
+  }
