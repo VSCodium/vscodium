@@ -9,7 +9,9 @@ ORG_NAME="${ORG_NAME:-VSCodium}"
 # All common functions can be added to this file
 
 apply_patch() {
-  echo applying patch: "$1";
+  if [[ -z "$2" ]]; then
+    echo applying patch: "$1";
+  fi
   # grep '^+++' "$1"  | sed -e 's#+++ [ab]/#./vscode/#' | while read line; do shasum -a 256 "${line}"; done
 
   replace "s|!!APP_NAME!!|${APP_NAME}|g" "$1"
