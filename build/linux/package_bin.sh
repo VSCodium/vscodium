@@ -55,11 +55,19 @@ if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
   # shellcheck disable=SC1090
   source "../build/linux/${VSCODE_ARCH}/electron.sh"
 
-  if [[ "${ELECTRON_VERSION}" != "$( yarn config get target )" ]]; then
+  TARGET=$( yarn config get target )
+
+  # Only fails at different major versions
+  if [[ "${ELECTRON_VERSION%%.*}" != "${TARGET%%.*}" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
     echo "Electron ${VSCODE_ARCH} binary version doesn't match target electron version!"
     echo "Releases available at: https://github.com/${VSCODE_ELECTRON_REPOSITORY}/releases"
     exit 1
+  fi
+
+  if [[ "${ELECTRON_VERSION}" != "${TARGET}" ]]; then
+    # Force version
+    replace "s|target=\"${TARGET}\"|target=\"${ELECTRON_VERSION}\"|" .npmrc
   fi
 fi
 
