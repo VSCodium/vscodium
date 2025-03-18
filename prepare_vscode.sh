@@ -21,6 +21,12 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 # apply patches
 { set +x; } 2>/dev/null
 
+echo "APP_NAME=\"${APP_NAME}\""
+echo "APP_NAME_LC=\"${APP_NAME_LC}\""
+echo "BINARY_NAME=\"${BINARY_NAME}\""
+echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
+echo "ORG_NAME=\"${ORG_NAME}\""
+
 for file in ../patches/*.patch; do
   if [[ -f "${file}" ]]; then
     apply_patch "${file}"
