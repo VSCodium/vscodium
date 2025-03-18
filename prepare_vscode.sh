@@ -35,12 +35,6 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   done
 fi
 
-for file in ../patches/user/*.patch; do
-  if [[ -f "${file}" ]]; then
-    apply_patch "${file}"
-  fi
-done
-
 if [[ -d "../patches/${OS_NAME}/" ]]; then
   for file in "../patches/${OS_NAME}/"*.patch; do
     if [[ -f "${file}" ]]; then
@@ -48,6 +42,12 @@ if [[ -d "../patches/${OS_NAME}/" ]]; then
     fi
   done
 fi
+
+for file in ../patches/user/*.patch; do
+  if [[ -f "${file}" ]]; then
+    apply_patch "${file}"
+  fi
+done
 
 set -x
 
