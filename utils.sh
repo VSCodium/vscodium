@@ -11,13 +11,13 @@ ORG_NAME="${ORG_NAME:-VSCodium}"
 apply_patch() {
   echo applying patch: "$1";
   # grep '^+++' "$1"  | sed -e 's#+++ [ab]/#./vscode/#' | while read line; do shasum -a 256 "${line}"; done
-  
-  replace "s|!!APP_NAME!!|${APP_NAME}|" "$1"
-  replace "s|!!APP_NAME_LC!!|${APP_NAME_LC}|" "$1"
-  replace "s|!!BINARY_NAME!!|${BINARY_NAME}|" "$1"
-  replace "s|!!GH_REPO_PATH!!|${GH_REPO_PATH}|" "$1"
-  replace "s|!!ORG_NAME!!|${ORG_NAME}|" "$1"
-  
+
+  replace "s|!!APP_NAME!!|${APP_NAME}|g" "$1"
+  replace "s|!!APP_NAME_LC!!|${APP_NAME_LC}|g" "$1"
+  replace "s|!!BINARY_NAME!!|${BINARY_NAME}|g" "$1"
+  replace "s|!!GH_REPO_PATH!!|${GH_REPO_PATH}|g" "$1"
+  replace "s|!!ORG_NAME!!|${ORG_NAME}|g" "$1"
+
   if ! git apply --ignore-whitespace "$1"; then
     echo failed to apply patch "$1" >&2
     exit 1
@@ -26,12 +26,11 @@ apply_patch() {
 
 exists() { type -t "$1" &> /dev/null; }
 
-is_gnu_sed () {
+is_gnu_sed() {
   sed --version &> /dev/null
 }
 
-replace () {
-  # echo "${1}"
+replace() {
   if is_gnu_sed; then
     sed -i -E "${1}" "${2}"
   else
