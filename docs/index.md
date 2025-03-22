@@ -28,7 +28,7 @@
 
 Even though we do not pass the telemetry build flags (and go out of our way to cripple the baked-in telemetry), Microsoft will still track usage by default.
 
-We do however set the default `telemetry.enableCrashReporter` and `telemetry.enableTelemetry` values to false. You can see those by viewing your Codex settings.json and searching for `telemetry`.
+We do however set the `telemetry.enableTelemetry` setting's default value to `false`. You can see those by viewing your Codex `settings.json` and searching for `telemetry`.
 
 The instructions [here](https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting) help with explaining and toggling telemetry.
 

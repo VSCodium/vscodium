@@ -1,22 +1,19 @@
 diff --git a/build/lib/builtInExtensions.js b/build/lib/builtInExtensions.js
-index 400ca68..f37060a 100644
+index 249777c..129af8a 100644
 --- a/build/lib/builtInExtensions.js
 +++ b/build/lib/builtInExtensions.js
-@@ -83,5 +83,3 @@ function isUpToDate(extension) {
- function getExtensionDownloadStream(extension) {
--    const galleryServiceUrl = productjson.extensionsGallery?.serviceUrl;
--    return (galleryServiceUrl ? ext.fromMarketplace(galleryServiceUrl, extension) : ext.fromGithub(extension))
--        .pipe((0, gulp_rename_1.default)(p => p.dirname = `${extension.name}/${p.dirname}`));
-+	return ext.fromGithub(extension).pipe((0, gulp_rename_1.default)(p => p.dirname = `${extension.name}/${p.dirname}`));
- }
+@@ -87,5 +87,2 @@ function getExtensionDownloadStream(extension) {
+     }
+-    else if (productjson.extensionsGallery?.serviceUrl) {
+-        input = ext.fromMarketplace(productjson.extensionsGallery.serviceUrl, extension);
+-    }
+     else {
 diff --git a/build/lib/builtInExtensions.ts b/build/lib/builtInExtensions.ts
-index 9b1ec73..1cb3301 100644
+index e9a1180..b8348e3 100644
 --- a/build/lib/builtInExtensions.ts
 +++ b/build/lib/builtInExtensions.ts
-@@ -70,5 +70,3 @@ function isUpToDate(extension: IExtensionDefinition): boolean {
- function getExtensionDownloadStream(extension: IExtensionDefinition) {
--	const galleryServiceUrl = productjson.extensionsGallery?.serviceUrl;
--	return (galleryServiceUrl ? ext.fromMarketplace(galleryServiceUrl, extension) : ext.fromGithub(extension))
--		.pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
-+	return ext.fromGithub(extension).pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`));
- }
+@@ -75,4 +75,2 @@ function getExtensionDownloadStream(extension: IExtensionDefinition) {
+ 		input = ext.fromVsix(path.join(root, extension.vsix), extension);
+-	} else if (productjson.extensionsGallery?.serviceUrl) {
+-		input = ext.fromMarketplace(productjson.extensionsGallery.serviceUrl, extension);
+ 	} else {
