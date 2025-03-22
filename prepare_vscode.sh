@@ -224,16 +224,16 @@ if [[ "${OS_NAME}" == "linux" ]]; then
 
   # control.template
   sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|Codex Team https://github.com/BiblioNexus-Foundation/codex/graphs/contributors|'  resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/debian/control.template
   sed -i 's|Visual Studio Code|Codex|g' resources/linux/debian/control.template
   sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/BiblioNexus-Foundation/codex#download-install|' resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/debian/control.template
 
   # code.spec.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/BiblioNexus-Foundation/codex#download-install|' resources/linux/rpm/code.spec.template
   sed -i 's|Microsoft Corporation|Codex Team|' resources/linux/rpm/code.spec.template
   sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|Codex Team https://github.com/BiblioNexus-Foundation/codex/graphs/contributors|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/rpm/code.spec.template
   sed -i 's|Visual Studio Code|Codex|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/BiblioNexus-Foundation/codex#download-install|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/rpm/code.spec.template
 
   # snapcraft.yaml
   sed -i 's|Visual Studio Code|Codex|'  resources/linux/rpm/code.spec.template

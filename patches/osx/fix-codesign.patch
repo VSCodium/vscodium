@@ -11,18 +11,20 @@ index dff30fd..df48bee 100644
 +                filePath.includes(pluginHelperAppName) ||
 +                ext == '.asar' || ext == '.dat' || ext == '.gif' || ext == '.icns' || ext == '.ico' || ext == '.json' || ext == '.mp3' || ext == '.nib' || ext == '.pak' || ext == '.png' || ext == '.scpt' || ext == '.ttf' || ext == '.wasm' || ext == '.woff' || ext == '.woff2';
          }
-@@ -83,3 +85,3 @@ async function main(buildDir) {
-             '-string',
--            'An application in Visual Studio Code wants to use AppleScript.',
-+            'An application in Codex wants to use AppleScript.',
-             `${infoPlistPath}`
-@@ -90,3 +92,3 @@ async function main(buildDir) {
-             '-string',
--            'An application in Visual Studio Code wants to use the Microphone.',
-+            'An application in Codex wants to use the Microphone.',
-             `${infoPlistPath}`
-@@ -97,3 +99,3 @@ async function main(buildDir) {
-             '-string',
--            'An application in Visual Studio Code wants to use the Camera.',
-+            'An application in Codex wants to use the Camera.',
-             `${infoPlistPath}`
+diff --git a/build/darwin/sign.ts b/build/darwin/sign.ts
+index ecf1627..a414032 100644
+--- a/build/darwin/sign.ts
++++ b/build/darwin/sign.ts
+@@ -60,6 +60,9 @@ async function main(buildDir?: string): Promise<void> {
+ 		ignore: (filePath: string) => {
+-			return filePath.includes(gpuHelperAppName) ||
+-				filePath.includes(rendererHelperAppName) ||
+-				filePath.includes(pluginHelperAppName);
++			const ext = path.extname(filePath);
++            return filePath.includes(gpuHelperAppName) ||
++                filePath.includes(rendererHelperAppName) ||
++                filePath.includes(pluginHelperAppName) ||
++				ext == '.asar' || ext == '.dat' || ext == '.gif' || ext == '.icns' || ext == '.ico' || ext == '.json' || ext == '.mp3' || ext == '.nib' || ext == '.pak' || ext == '.png' || ext == '.scpt' || ext == '.ttf' || ext == '.wasm' || ext == '.woff' || ext == '.woff2';
+ 		}
++
+ 	};
