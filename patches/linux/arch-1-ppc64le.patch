@@ -1,5 +1,5 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index 9410564..2da5cf9 100755
+index c1736f0..2da5cf9 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
 @@ -68,2 +68,14 @@ elif [ "$npm_config_arch" == "arm" ]; then
@@ -34,44 +34,13 @@ index 67182b0..db63d02 100644
  dbb927408393041664a020661f2641c9785741be3d29b050b9dac58980967784  x86_64-linux-gnu-glibc-2.28.tar.gz
 +fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index c1d64c0..cd04bdf 100644
+index 5ac9f95..cd04bdf 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
 @@ -50,2 +50,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'arm64' },
 +	{ platform: 'linux', arch: 'ppc64le' },
  	{ platform: 'alpine', arch: 'arm64' },
-@@ -232,9 +233,23 @@ function nodejs(platform, arch) {
- 		case 'linux':
--			return (product.nodejsRepository !== 'https://nodejs.org' ?
--				fetchGithub(product.nodejsRepository, { version: `${nodeVersion}-${internalNodeVersion}`, name: expectedName, checksumSha256 }) :
--				fetchUrls(`/dist/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz`, { base: 'https://nodejs.org', checksumSha256 })
--			).pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
--				.pipe(filter('**/node'))
--				.pipe(util.setExecutableBit('**'))
--				.pipe(rename('node'));
-+			if (process.env.VSCODE_NODEJS_SITE && process.env.VSCODE_NODEJS_URLROOT) {
-+				return fetchUrls(`${process.env.VSCODE_NODEJS_URLROOT}/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}${process.env.VSCODE_NODEJS_URLSUFFIX}.tar.gz`, { base: process.env.VSCODE_NODEJS_SITE, checksumSha256 })
-+					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
-+					.pipe(filter('**/node'))
-+					.pipe(util.setExecutableBit('**'))
-+					.pipe(rename('node'));
-+			}
-+			if (product.nodejsRepository !== 'https://nodejs.org') {
-+				return fetchGithub(product.nodejsRepository, { version: `${nodeVersion}-${internalNodeVersion}`, name: expectedName, checksumSha256 })
-+					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
-+					.pipe(filter('**/node'))
-+					.pipe(util.setExecutableBit('**'))
-+					.pipe(rename('node'));
-+			}
-+			else {
-+				return fetchUrls(`/dist/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz`, { base: 'https://nodejs.org', checksumSha256 })
-+					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
-+					.pipe(filter('**/node'))
-+					.pipe(util.setExecutableBit('**'))
-+					.pipe(rename('node'));
-+			}
- 		case 'alpine':
 diff --git a/build/gulpfile.scan.js b/build/gulpfile.scan.js
 index cbcdddb..274d889 100644
 --- a/build/gulpfile.scan.js
@@ -81,28 +50,10 @@ index cbcdddb..274d889 100644
 +	{ platform: 'linux', arch: 'ppc64le' },
  ];
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 7046ee0..3ed2182 100644
+index 67cb99a..3ed2182 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -382,2 +382,12 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
- 
-+		const electronOverride = {};
-+		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
-+			// official electron doesn't support all arch, override the repo with `VSCODE_ELECTRON_REPOSITORY`.
-+			electronOverride.repo = process.env.VSCODE_ELECTRON_REPOSITORY;
-+		}
-+
-+		if (process.env.VSCODE_ELECTRON_TAG) {
-+			electronOverride.tag = process.env.VSCODE_ELECTRON_TAG;
-+		}
-+
- 		let result = all
-@@ -386,3 +396,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
- 			.pipe(filter(['**', '!**/.github/**'], { dot: true })) // https://github.com/microsoft/vscode/issues/116523
--			.pipe(electron({ ...config, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
-+			.pipe(electron({ ...config, ...electronOverride, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
- 			.pipe(filter(['**', '!LICENSE', '!version'], { dot: true }));
-@@ -481,2 +491,3 @@ const BUILD_TARGETS = [
+@@ -491,2 +491,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'arm64' },
 +	{ platform: 'linux', arch: 'ppc64le' },
  ];
@@ -148,13 +99,11 @@ index addc386..423c415 100644
 +			break;
  	}
 diff --git a/build/linux/debian/dep-lists.js b/build/linux/debian/dep-lists.js
-index 8ac57b9..a85352e 100644
+index 8580d79..a85352e 100644
 --- a/build/linux/debian/dep-lists.js
 +++ b/build/linux/debian/dep-lists.js
-@@ -138,3 +138,42 @@ exports.referenceGeneratedDepsByArch = {
-         'xdg-utils (>= 1.0.2)'
--    ]
-+    ],
+@@ -139,2 +139,41 @@ exports.referenceGeneratedDepsByArch = {
+     ],
 +	'ppc64el': [
 +        'ca-certificates',
 +        'libasound2 (>= 1.0.17)',
@@ -196,13 +145,11 @@ index 8ac57b9..a85352e 100644
 +    ],
  };
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index df119e8..0d0f11b 100644
+index 91b0ebc..0d0f11b 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
-@@ -138,3 +138,42 @@ export const referenceGeneratedDepsByArch = {
- 		'xdg-utils (>= 1.0.2)'
--	]
-+	],
+@@ -139,2 +139,41 @@ export const referenceGeneratedDepsByArch = {
+ 	],
 +	'ppc64el': [
 +		'ca-certificates',
 +		'libasound2 (>= 1.0.17)',
@@ -244,22 +191,10 @@ index df119e8..0d0f11b 100644
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
-index 16d8d01..ab6b826 100644
+index 532e3d5..ab6b826 100644
 --- a/build/linux/debian/install-sysroot.js
 +++ b/build/linux/debian/install-sysroot.js
-@@ -74,3 +74,5 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
-         try {
--            const response = await fetch(`https://api.github.com/repos/Microsoft/vscode-linux-build-agent/releases/tags/v${version}`, {
-+            const repository = process.env['VSCODE_SYSROOT_REPOSITORY'] ?? 'Microsoft/vscode-linux-build-agent';
-+            const actualVersion = process.env['VSCODE_SYSROOT_VERSION'] ?? version;
-+            const response = await fetch(`https://api.github.com/repos/${repository}/releases/tags/v${actualVersion}`, {
-                 headers: ghApiHeaders,
-@@ -83,3 +85,3 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
-                 if (!asset) {
--                    throw new Error(`Could not find asset in release of Microsoft/vscode-linux-build-agent @ ${version}`);
-+                    throw new Error(`Could not find asset in release of ${repository} @ ${actualVersion}`);
-                 }
-@@ -138,2 +140,6 @@ async function getVSCodeSysroot(arch) {
+@@ -140,2 +140,6 @@ async function getVSCodeSysroot(arch) {
              break;
 +		case 'ppc64le':
 +            expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
@@ -267,22 +202,10 @@ index 16d8d01..ab6b826 100644
 +            break;
      }
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index aa10e39..c23db0f 100644
+index 6543b49..c23db0f 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -83,3 +83,5 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
- 		try {
--			const response = await fetch(`https://api.github.com/repos/Microsoft/vscode-linux-build-agent/releases/tags/v${version}`, {
-+			const repository = process.env['VSCODE_SYSROOT_REPOSITORY'] ?? 'Microsoft/vscode-linux-build-agent';
-+			const actualVersion = process.env['VSCODE_SYSROOT_VERSION'] ?? version;
-+			const response = await fetch(`https://api.github.com/repos/${repository}/releases/tags/v${actualVersion}`, {
- 				headers: ghApiHeaders,
-@@ -92,3 +94,3 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
- 				if (!asset) {
--					throw new Error(`Could not find asset in release of Microsoft/vscode-linux-build-agent @ ${version}`);
-+					throw new Error(`Could not find asset in release of ${repository} @ ${actualVersion}`);
- 				}
-@@ -152,2 +154,6 @@ export async function getVSCodeSysroot(arch: DebianArchString): Promise<string>
+@@ -154,2 +154,6 @@ export async function getVSCodeSysroot(arch: DebianArchString): Promise<string>
  			break;
 +		case 'ppc64le':
 +			expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
