@@ -70,6 +70,11 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7
   fi
+else
+  if [[ "${CI_BUILD}" != "no" ]]; then
+    clang++ --version
+    port select --list clang
+  fi
 fi
 
 mv .npmrc .npmrc.bak
