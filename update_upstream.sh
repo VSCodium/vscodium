@@ -11,7 +11,11 @@ fi
 jsonTmp=$( cat "./upstream/${VSCODE_QUALITY}.json" | jq --arg 'tag' "${MS_TAG/\-insider/}" --arg 'commit' "${MS_COMMIT}" '. | .tag=$tag | .commit=$commit' )
 echo "${jsonTmp}" > "./upstream/${VSCODE_QUALITY}.json" && unset jsonTmp
 
-git add .
+# stage notary files
+git add upstream/*
+
+# discard changed files
+git restore .
 
 CHANGES=$( git status --porcelain )
 

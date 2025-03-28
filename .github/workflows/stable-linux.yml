@@ -30,6 +30,8 @@ env:
   ASSETS_REPOSITORY: ${{ github.repository }}
   BINARY_NAME: codium
   DISABLE_UPDATE: 'yes'
+  GH_REPO_PATH: ${{ github.repository_owner }}/${{ github.repository }}
+  ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: linux
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
   VSCODE_QUALITY: stable
@@ -175,7 +177,7 @@ jobs:
         - slug: LOONG64
           vscode_arch: loong64
           npm_arch: loong64
-          image: vscodium/vscodium-linux-build-agent:trixie-loong64
+          image: vscodium/vscodium-linux-build-agent:beige-loong64
         - slug: PPC64
           vscode_arch: ppc64le
           npm_arch: ppc64

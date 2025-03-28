@@ -1,0 +1,44 @@
+diff --git a/extensions/terminal-suggest/src/completions/codium-insiders.ts b/extensions/terminal-suggest/src/completions/codium-insiders.ts
+new file mode 100644
+index 0000000..f3c0f9d
+--- /dev/null
++++ b/extensions/terminal-suggest/src/completions/codium-insiders.ts
+@@ -0,0 +1,9 @@
++import code from './code';
++
++const codiumInsidersCompletionSpec: Fig.Spec = {
++	...code,
++	name: '!!BINARY_NAME!!-insiders',
++	description: '!!APP_NAME!! Insiders',
++};
++
++export default codiumInsidersCompletionSpec;
+diff --git a/extensions/terminal-suggest/src/completions/codium.ts b/extensions/terminal-suggest/src/completions/codium.ts
+new file mode 100644
+index 0000000..1daa1fe
+--- /dev/null
++++ b/extensions/terminal-suggest/src/completions/codium.ts
+@@ -0,0 +1,9 @@
++import code from './code';
++
++const codiumCompletionSpec: Fig.Spec = {
++	...code,
++	name: '!!BINARY_NAME!!',
++	description: '!!APP_NAME!!',
++};
++
++export default codiumCompletionSpec;
+diff --git a/extensions/terminal-suggest/src/terminalSuggestMain.ts b/extensions/terminal-suggest/src/terminalSuggestMain.ts
+index 863cd21..a33e440 100644
+--- a/extensions/terminal-suggest/src/terminalSuggestMain.ts
++++ b/extensions/terminal-suggest/src/terminalSuggestMain.ts
+@@ -30,2 +30,4 @@ import codeTunnelCompletionSpec from './completions/code-tunnel';
+ import codeTunnelInsidersCompletionSpec from './completions/code-tunnel-insiders';
++import codiumCompletionSpec from './completions/codium';
++import codiumInsidersCompletionSpec from './completions/codium-insiders';
+ 
+@@ -50,2 +52,4 @@ export const availableSpecs: Fig.Spec[] = [
+ 	npxCompletionSpec,
++	codiumInsidersCompletionSpec,
++	codiumCompletionSpec,
+ 	setLocationSpec,

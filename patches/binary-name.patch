@@ -1,35 +1,23 @@
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 2686509..4fedec2 100644
+index 7046ee0..faca888 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -289,7 +289,7 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
- 		} else if (platform === 'darwin') {
- 			const shortcut = gulp.src('resources/darwin/bin/code.sh')
+@@ -376,3 +376,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  				.pipe(replace('@@APPNAME@@', product.applicationName))
 -				.pipe(rename('bin/code'));
 +				.pipe(rename('bin/' + product.applicationName));
- 
- 			all = es.merge(all, shortcut);
- 		}
+ 			const policyDest = gulp.src('.build/policies/darwin/**', { base: '.build/policies/darwin' })
 diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-index f7bd477..a489ae4 100644
+index 6324e98..3d2fba3 100644
 --- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
 +++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-@@ -351,7 +351,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
- 	}
- 
+@@ -445,3 +445,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  	private async getShellCommandLink(): Promise<{ readonly source: string; readonly target: string }> {
 -		const target = resolve(this.environmentMainService.appRoot, 'bin', 'code');
 +		const target = resolve(this.environmentMainService.appRoot, 'bin', this.productService.applicationName);
  		const source = `/usr/local/bin/${this.productService.applicationName}`;
- 
- 		// Ensure source exists
-@@ -545,7 +545,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
- 
- 		// macOS
+@@ -680,3 +680,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  		if (this.environmentMainService.isBuilt) {
 -			return join(this.environmentMainService.appRoot, 'bin', 'code');
 +			return join(this.environmentMainService.appRoot, 'bin', `${this.productService.applicationName}`);
  		}
- 
- 		return join(this.environmentMainService.appRoot, 'scripts', 'code-cli.sh');

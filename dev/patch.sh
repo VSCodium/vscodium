@@ -38,7 +38,7 @@ else
 fi
 
 if [[ -f "${FILE}" ]]; then
-  git apply --reject "${FILE}"
+  git apply --reject "${FILE}" || true
 fi
 
 read -rp "Press any key when the conflict have been resolved..." -n1 -s
