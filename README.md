@@ -56,8 +56,7 @@ If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
 brew install --cask vscodium
 
 # insiders
-brew tap homebrew/cask-versions
-brew install --cask vscodium-insiders
+brew install --cask vscodium@insiders
 ```
 
 *Note for macOS users: if you can't open the App, please read [the following troubleshooting](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md#macos).*
