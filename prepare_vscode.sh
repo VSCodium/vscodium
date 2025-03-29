@@ -73,7 +73,6 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
 else
   if [[ "${CI_BUILD}" != "no" ]]; then
     clang++ --version
-    port select --list clang
   fi
 fi
 
@@ -81,7 +80,12 @@ mv .npmrc .npmrc.bak
 cp ../npmrc .npmrc
 
 for i in {1..5}; do # try 5 times
-  npm ci && break
+  if [[ "${CI_BUILD}" != "no" && "${OS_NAME}" == "osx" ]]; then
+    CXX=clang++ npm ci && break
+  else
+    npm ci && break
+  fi
+
   if [[ $i == 3 ]]; then
     echo "Npm install failed too many times" >&2
     exit 1
