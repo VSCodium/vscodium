@@ -1,5 +1,5 @@
 diff --git a/build/.moduleignore b/build/.moduleignore
-index 3e654cf..4f258dc 100644
+index 3e654cf..d9ee9f5 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
 @@ -126,9 +126,11 @@ vsda/**
@@ -19,10 +19,10 @@ index 3e654cf..4f258dc 100644
 +@vscodium/policy-watcher/binding.gyp
 +@vscodium/policy-watcher/README.md
 +@vscodium/policy-watcher/index.d.ts
-+!@vscodium/policy-watcher/build/Release/vscode-policy-watcher.node
++!@vscodium/policy-watcher/build/Release/vscodium-policy-watcher.node
  
 diff --git a/build/lib/policies.js b/build/lib/policies.js
-index bb7e45c..a0c6041 100644
+index ac69762..db1fd3d 100644
 --- a/build/lib/policies.js
 +++ b/build/lib/policies.js
 @@ -81,3 +81,3 @@ class BasePolicy {
@@ -30,13 +30,13 @@ index bb7e45c..a0c6041 100644
 -            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
 +            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\!!ORG_NAME!!\\${regKey}" presentation="$(presentation.${this.name})">`,
              `	<parentCategory ref="${this.category.name.nlsKey}" />`,
-@@ -491,3 +491,3 @@ function renderADMX(regKey, versions, categories, policies) {
+@@ -501,3 +501,3 @@ function renderADMX(regKey, versions, categories, policies) {
  	<policyNamespaces>
 -		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
 +		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
  	</policyNamespaces>
 diff --git a/build/lib/policies.ts b/build/lib/policies.ts
-index cf16ca2..bfb754e 100644
+index 34d20e9..8404cdf 100644
 --- a/build/lib/policies.ts
 +++ b/build/lib/policies.ts
 @@ -107,3 +107,3 @@ abstract class BasePolicy implements Policy {
@@ -44,7 +44,7 @@ index cf16ca2..bfb754e 100644
 -			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
 +			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\!!ORG_NAME!!\\${regKey}" presentation="$(presentation.${this.name})">`,
  			`	<parentCategory ref="${this.category.name.nlsKey}" />`,
-@@ -693,3 +693,3 @@ function renderADMX(regKey: string, versions: string[], categories: Category[],
+@@ -703,3 +703,3 @@ function renderADMX(regKey: string, versions: string[], categories: Category[],
  	<policyNamespaces>
 -		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
 +		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
@@ -59,7 +59,7 @@ index 822da54..6236bf0 100644
 +						'@vscodium/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
-index 076828e..1f69e07 100644
+index 8112caf..682b56a 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -19,3 +19,2 @@
@@ -117,7 +117,7 @@ index 076828e..1f69e07 100644
 +    },
      "node_modules/@webassemblyjs/ast": {
 diff --git a/package.json b/package.json
-index 6c3dfb9..10e7263 100644
+index add0c27..2e5b5f1 100644
 --- a/package.json
 +++ b/package.json
 @@ -78,3 +78,3 @@
