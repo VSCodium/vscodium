@@ -21,8 +21,11 @@ jobs:
     env:
       APP_NAME: VSCodium
       ASSETS_REPOSITORY: ${{ github.repository }}
-      VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+      BINARY_NAME: codium
+      GH_REPO_PATH: ${{ github.repository_owner }}/${{ github.repository }}
+      ORG_NAME: ${{ github.repository_owner }}
       OS_NAME: osx
+      VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
       VSCODE_ARCH: arm64
       VSCODE_LATEST: ${{ github.event.inputs.dont_update == 'true' && 'no' || 'yes' }}
       VSCODE_QUALITY: stable

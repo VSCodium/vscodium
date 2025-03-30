@@ -13,7 +13,7 @@ REPOSITORY_NAME="${ASSETS_REPOSITORY/*\//}"
 
 npm install -g github-release-cli
 
-if [[ $( gh release view --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" 2>&1 ) =~ "release not found" ]]; then
+if [[ $( gh release view "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" 2>&1 ) =~ "release not found" ]]; then
   echo "Creating release '${RELEASE_VERSION}'"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
@@ -25,14 +25,14 @@ if [[ $( gh release view --repo "${ASSETS_REPOSITORY}" "${RELEASE_VERSION}" 2>&1
 
     . ./utils.sh
 
-    RELEASE_NOTES=$( gh release view "${RELEASE_VERSION}" --json "body" --jq ".body" )
+    RELEASE_NOTES=$( gh release view "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --json "body" --jq ".body" )
 
     replace "s|MS_TAG_SHORT|$( echo "${MS_TAG//./_}" | cut -d'_' -f 1,2 )|" release_notes.txt
     replace "s|MS_TAG|${MS_TAG}|" release_notes.txt
     replace "s|RELEASE_VERSION|${RELEASE_VERSION}|g" release_notes.txt
     replace "s|RELEASE_NOTES|${RELEASE_NOTES//$'\n'/\\n}|" release_notes.txt
 
-    gh release edit "${RELEASE_VERSION}" --notes-file release_notes.txt
+    gh release edit "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --notes-file release_notes.txt
   fi
 fi
 
