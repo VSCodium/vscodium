@@ -1,19 +1,3 @@
-diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index cd8610d..0d94563 100644
---- a/build/gulpfile.vscode.linux.js
-+++ b/build/gulpfile.vscode.linux.js
-@@ -309,4 +309,3 @@ BUILD_TARGETS.forEach(({ arch }) => {
- 	const prepareDebTask = task.define(`vscode-linux-${arch}-prepare-deb`, task.series(rimraf(`.build/linux/deb/${debArch}`), prepareDebPackage(arch)));
--	gulp.task(prepareDebTask);
--	const buildDebTask = task.define(`vscode-linux-${arch}-build-deb`, buildDebPackage(arch));
-+	const buildDebTask = task.define(`vscode-linux-${arch}-build-deb`, task.series(prepareDebTask, buildDebPackage(arch)));
- 	gulp.task(buildDebTask);
-@@ -315,4 +314,3 @@ BUILD_TARGETS.forEach(({ arch }) => {
- 	const prepareRpmTask = task.define(`vscode-linux-${arch}-prepare-rpm`, task.series(rimraf(`.build/linux/rpm/${rpmArch}`), prepareRpmPackage(arch)));
--	gulp.task(prepareRpmTask);
--	const buildRpmTask = task.define(`vscode-linux-${arch}-build-rpm`, buildRpmPackage(arch));
-+	const buildRpmTask = task.define(`vscode-linux-${arch}-build-rpm`, task.series(prepareRpmTask, buildRpmPackage(arch)));
- 	gulp.task(buildRpmTask);
 diff --git a/build/linux/dependencies-generator.js b/build/linux/dependencies-generator.js
 index 448ab38..ffc71f9 100644
 --- a/build/linux/dependencies-generator.js

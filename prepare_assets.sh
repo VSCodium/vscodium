@@ -152,10 +152,12 @@ else
   fi
 
   if [[ "${SHOULD_BUILD_DEB}" != "no" || "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
+    yarn gulp "vscode-linux-${VSCODE_ARCH}-prepare-deb"
     yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
   fi
 
   if [[ "${SHOULD_BUILD_RPM}" != "no" ]]; then
+    yarn gulp "vscode-linux-${VSCODE_ARCH}-prepare-rpm"
     yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
   fi
 
