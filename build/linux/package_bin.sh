@@ -54,7 +54,7 @@ if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
   # shellcheck disable=SC1090
   source "../build/linux/${VSCODE_ARCH}/electron.sh"
 
-  TARGET=$( yarn config get target )
+  TARGET=$( npm config get target )
 
   # Only fails at different major versions
   if [[ "${ELECTRON_VERSION%%.*}" != "${TARGET%%.*}" ]]; then
@@ -128,7 +128,7 @@ done
 
 node build/azure-pipelines/distro/mixin-npm
 
-yarn gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
+npm run gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
 if [[ -f "../build/linux/${VSCODE_ARCH}/ripgrep.sh" ]]; then
   bash "../build/linux/${VSCODE_ARCH}/ripgrep.sh" "../VSCode-linux-${VSCODE_ARCH}/resources/app/node_modules"
