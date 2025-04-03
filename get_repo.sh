@@ -80,7 +80,7 @@ elif [[ -z "${MS_COMMIT}" ]]; then
   if [[ -z "${REFERENCE}" ]]; then
     echo "Error: The following tag can't be found: ${MS_TAG}"
     exit 1
-  elif [[ "${REFERENCE}" =~ ^([[:alnum:]]+)[[:space:]]+refs\/tags\/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+  elif [[ "${REFERENCE}" =~ ^([[:alnum:]]+)[[:space:]]+refs\/tags\/([0-9]+\.[0-9]+\.[0-5])$ ]]; then
     MS_COMMIT="${BASH_REMATCH[1]}"
     MS_TAG="${BASH_REMATCH[2]}"
   else
