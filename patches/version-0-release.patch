@@ -37,7 +37,7 @@ index 7046ee0..6500cb9 100644
 +			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release }))
  			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index cd8610d..fc8b5e2 100644
+index cd8610d..0fd7083 100644
 --- a/build/gulpfile.vscode.linux.js
 +++ b/build/gulpfile.vscode.linux.js
 @@ -27,4 +27,2 @@ const commit = getVersion(root);
@@ -50,24 +50,17 @@ index cd8610d..fc8b5e2 100644
 -					.pipe(replace('@@VERSION@@', packageJson.version + '-' + linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  					.pipe(replace('@@ARCHITECTURE@@', debArch))
-@@ -278,3 +276,3 @@ function prepareSnapPackage(arch) {
+@@ -203,4 +201,3 @@ function prepareRpmPackage(arch) {
+ 			.pipe(replace('@@ICON@@', product.linuxIconName))
+-			.pipe(replace('@@VERSION@@', packageJson.version))
+-			.pipe(replace('@@RELEASE@@', linuxPackageRevision))
++			.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
+ 			.pipe(replace('@@ARCHITECTURE@@', rpmArch))
+@@ -278,3 +275,3 @@ function prepareSnapPackage(arch) {
  			.pipe(replace('@@NAME@@', product.applicationName))
 -			.pipe(replace('@@VERSION@@', commit.substr(0, 8)))
 +			.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
  			// Possible run-on values https://snapcraft.io/docs/architectures
-diff --git a/build/gulpfile.vscode.linux.js.rej b/build/gulpfile.vscode.linux.js.rej
-new file mode 100644
-index 0000000..5198d59
---- /dev/null
-+++ b/build/gulpfile.vscode.linux.js.rej
-@@ -0,0 +1,7 @@
-+diff a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js	(rejected hunks)
-+@@ -204,4 +202,3 @@ function prepareRpmPackage(arch) {
-+ 					.pipe(replace('@@ICON@@', product.linuxIconName))
-+-					.pipe(replace('@@VERSION@@', packageJson.version))
-+-					.pipe(replace('@@RELEASE@@', linuxPackageRevision))
-++					.pipe(replace('@@VERSION@@', `${packageJson.version}.${packageJson.release}`))
-+ 					.pipe(replace('@@ARCHITECTURE@@', rpmArch))
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
 index 98175f5..afacbe3 100644
 --- a/build/gulpfile.vscode.win32.js
@@ -80,10 +73,10 @@ index 98175f5..afacbe3 100644
 +			RawVersion: `${pkg.version.replace(/-\w+$/, '')}.${pkg.release}`,
  			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index cd8d2fd..0051989 100644
+index d700431..076cc84 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
-@@ -58,2 +58,3 @@ export interface IProductConfiguration {
+@@ -59,2 +59,3 @@ export interface IProductConfiguration {
  	readonly version: string;
 +	readonly release: string;
  	readonly date?: string;
