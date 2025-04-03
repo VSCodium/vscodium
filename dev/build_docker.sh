@@ -20,19 +20,12 @@ while getopts ":ilp" opt; do
       export VSCODE_LATEST="yes"
       ;;
     p)
-      export SKIP_ASSETS="no" 
+      export SKIP_ASSETS="no"
       ;;
     *)
       ;;
   esac
 done
-
-if ! exists yarn; then
-  curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-  sudo apt-get install -y nodejs desktop-file-utils
-
-  npm install -g yarn
-fi
 
 UNAME_ARCH=$( uname -m )
 
