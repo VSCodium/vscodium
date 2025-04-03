@@ -95,20 +95,19 @@ generateJson() {
 }
 
 transformVersion() {
-    local version
+  local version
 
-    version="$1"
+  version="$1"
 
-    # Check if the version ends with -insider
-    if [[ "${version}" == *-insider ]]; then
-        # Remove -insider suffix, add .0 before it
-        echo "${version%-insider}.0-insider"
-    else
-        # Just add .0 at the end
-        echo "${version}.0"
-    fi
+  # Check if the version ends with -insider
+  if [[ "${version}" == *-insider ]]; then
+    # Remove -insider suffix, add .0 before it
+    echo "${version%-insider}.0-insider"
+  else
+    # Just add .0 at the end
+    echo "${version}.0"
+  fi
 }
-
 
 updateLatestVersion() {
   echo "Updating ${VERSION_PATH}/latest.json"
