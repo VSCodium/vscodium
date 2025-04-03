@@ -537,3 +537,17 @@ jobs:
           repo_token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           file: ${{ steps.build.outputs.snap }}
           tag: ${{ env.RELEASE_VERSION }}
+
+  deploy-repo-dev:
+    needs:
+      - check
+      - build
+    runs-on: ubuntu-latest
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
+
+    steps:
+      - name: Trigger repository rebuild
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          repository: VSCodium/repositories-linux
+          event-type: deploy

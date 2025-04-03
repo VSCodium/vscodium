@@ -86,5 +86,5 @@ jobs:
       - name: Dispatch builds
         uses: peter-evans/repository-dispatch@v3
         with:
-          event-type: 'insider'
+          event-type: insider
         if: github.event.inputs.dont_dispatch != 'true' && (env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true')

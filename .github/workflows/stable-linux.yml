@@ -556,15 +556,29 @@ jobs:
           release: ${{ vars.SNAP_STORE_CHANNEL }}
         if: env.SHOULD_DEPLOY_TO_STORE == 'yes'
 
-  deb-rpm-repo-hook:
+  deploy-repo-rudy:
     needs:
       - check
       - build
     runs-on: ubuntu-latest
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
 
     steps:
       - name: Trigger repository rebuild
         env:
           GL_PAGES_TOKEN: ${{ secrets.GL_PAGES_TOKEN }}
         run: curl -X POST --fail -F token="${GL_PAGES_TOKEN}" -F ref=master https://gitlab.com/api/v4/projects/8762263/trigger/pipeline
+
+  deploy-repo-dev:
+    needs:
+      - check
+      - build
+    runs-on: ubuntu-latest
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
+
+    steps:
+      - name: Trigger repository rebuild
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          repository: VSCodium/repositories-linux
+          event-type: deploy
