@@ -29,7 +29,7 @@ env:
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
   BINARY_NAME: codium-insiders
   GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'insider' }}
-  GH_REPO_PATH: ${{ github.repository_owner }}/${{ github.repository }}
+  GH_REPO_PATH: ${{ github.repository }}
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: windows
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
@@ -103,10 +103,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.18.2'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Install Yarn
-        run: npm install -g yarn
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
@@ -188,10 +184,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.18.2'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Install Yarn
-        run: npm install -g yarn
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3

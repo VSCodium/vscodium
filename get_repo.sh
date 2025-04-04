@@ -27,16 +27,16 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
     fi
   fi
 
-  date=$( date +%Y%j )
+  TIME_PATCH=$( printf "%04d" $(($(date +%-j) * 24 + $(date +%-H))) )
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    RELEASE_VERSION="${MS_TAG}.${date: -5}-insider"
+    RELEASE_VERSION="${MS_TAG}${TIME_PATCH}-insider"
   else
-    RELEASE_VERSION="${MS_TAG}.${date: -5}"
+    RELEASE_VERSION="${MS_TAG}${TIME_PATCH}"
   fi
 else
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+-insider$ ]];
+    if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-5])[0-9]+-insider$ ]];
     then
       MS_TAG="${BASH_REMATCH[1]}"
     else
@@ -44,7 +44,7 @@ else
       exit 1
     fi
   else
-    if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)\.[0-9]+$ ]];
+    if [[ "${RELEASE_VERSION}" =~ ^([0-9]+\.[0-9]+\.[0-5])[0-9]+$ ]];
     then
       MS_TAG="${BASH_REMATCH[1]}"
     else
@@ -80,7 +80,7 @@ elif [[ -z "${MS_COMMIT}" ]]; then
   if [[ -z "${REFERENCE}" ]]; then
     echo "Error: The following tag can't be found: ${MS_TAG}"
     exit 1
-  elif [[ "${REFERENCE}" =~ ^([[:alnum:]]+)[[:space:]]+refs\/tags\/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+  elif [[ "${REFERENCE}" =~ ^([[:alnum:]]+)[[:space:]]+refs\/tags\/([0-9]+\.[0-9]+\.[0-5])$ ]]; then
     MS_COMMIT="${BASH_REMATCH[1]}"
     MS_TAG="${BASH_REMATCH[2]}"
   else

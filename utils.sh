@@ -14,6 +14,8 @@ apply_patch() {
   fi
   # grep '^+++' "$1"  | sed -e 's#+++ [ab]/#./vscode/#' | while read line; do shasum -a 256 "${line}"; done
 
+  cp $1{,.bak}
+
   replace "s|!!APP_NAME!!|${APP_NAME}|g" "$1"
   replace "s|!!APP_NAME_LC!!|${APP_NAME_LC}|g" "$1"
   replace "s|!!BINARY_NAME!!|${BINARY_NAME}|g" "$1"
@@ -24,6 +26,8 @@ apply_patch() {
     echo failed to apply patch "$1" >&2
     exit 1
   fi
+
+  mv -f $1{.bak,}
 }
 
 exists() { type -t "$1" &> /dev/null; }

@@ -30,7 +30,7 @@ env:
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
   BINARY_NAME: codium-insiders
   DISABLE_UPDATE: 'yes'
-  GH_REPO_PATH: ${{ github.repository_owner }}/${{ github.repository }}
+  GH_REPO_PATH: ${{ github.repository }}
   GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'insider' }}
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: linux
@@ -105,10 +105,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.18.2'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Install Yarn
-        run: npm install -g yarn
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
@@ -541,3 +537,18 @@ jobs:
           repo_token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           file: ${{ steps.build.outputs.snap }}
           tag: ${{ env.RELEASE_VERSION }}
+
+  deploy-repo-dev:
+    needs:
+      - check
+      - build
+    runs-on: ubuntu-latest
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
+
+    steps:
+      - name: Trigger repository rebuild
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          repository: VSCodium/repositories-linux
+          event-type: deploy

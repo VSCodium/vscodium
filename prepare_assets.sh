@@ -95,18 +95,18 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 elif [[ "${OS_NAME}" == "windows" ]]; then
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-  yarn gulp "vscode-win32-${VSCODE_ARCH}-inno-updater"
+  npm run gulp "vscode-win32-${VSCODE_ARCH}-inno-updater"
 
   if [[ "${SHOULD_BUILD_ZIP}" != "no" ]]; then
     7z.exe a -tzip "../assets/${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip" -x!CodeSignSummary*.md -x!tools "../VSCode-win32-${VSCODE_ARCH}/*" -r
   fi
 
   if [[ "${SHOULD_BUILD_EXE_SYS}" != "no" ]]; then
-    yarn gulp "vscode-win32-${VSCODE_ARCH}-system-setup"
+    npm run gulp "vscode-win32-${VSCODE_ARCH}-system-setup"
   fi
 
   if [[ "${SHOULD_BUILD_EXE_USR}" != "no" ]]; then
-    yarn gulp "vscode-win32-${VSCODE_ARCH}-user-setup"
+    npm run gulp "vscode-win32-${VSCODE_ARCH}-user-setup"
   fi
 
   if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
@@ -152,11 +152,13 @@ else
   fi
 
   if [[ "${SHOULD_BUILD_DEB}" != "no" || "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
-    yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
+    npm run gulp "vscode-linux-${VSCODE_ARCH}-prepare-deb"
+    npm run gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
   fi
 
   if [[ "${SHOULD_BUILD_RPM}" != "no" ]]; then
-    yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
+    npm run gulp "vscode-linux-${VSCODE_ARCH}-prepare-rpm"
+    npm run gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
   fi
 
   if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then

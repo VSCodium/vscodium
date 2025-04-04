@@ -1,18 +1,18 @@
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 7d58861..cefb8ad 100644
+index 2606eed..3e60e80 100644
 --- a/build/gulpfile.reh.js
 +++ b/build/gulpfile.reh.js
-@@ -306,3 +306,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
+@@ -321,3 +321,3 @@ function packageTask(type, platform, arch, sourceFolderName, destinationFolderNa
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
--			.pipe(json({ commit, date: readISODate('out-build'), version, release }))
-+			.pipe(json({ commit, date: readISODate('out-build'), version, release, serverDownloadUrlTemplate: 'https://github.com/!!GH_REPO_PATH!!-insiders/releases/download/${version}.${release}-insider/!!APP_NAME_LC!!-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }))
+-			.pipe(json({ commit, date: readISODate('out-build'), version, serverDownloadUrlTemplate: 'https://github.com/!!GH_REPO_PATH!!/releases/download/${version/!!APP_NAME_LC!!-reh-${os}-${arch}-${version}.tar.gz' }))
++			.pipe(json({ commit, date: readISODate('out-build'), version, serverDownloadUrlTemplate: 'https://github.com/!!GH_REPO_PATH!!-insiders/releases/download/${version}-insider/!!APP_NAME_LC!!-reh-${os}-${arch}-${version}-insider.tar.gz' }))
  			.pipe(es.through(function (file) {
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 4af4067..1bac2cc 100644
+index b975c64..9aa7bb0 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -261,3 +261,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -288,3 +288,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  		const productJsonStream = gulp.src(['product.json'], { base: '.' })
--			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release }))
-+			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, release, serverDownloadUrlTemplate: 'https://github.com/!!GH_REPO_PATH!!-insiders/releases/download/${version}.${release}-insider/!!APP_NAME_LC!!-reh-${os}-${arch}-${version}.${release}-insider.tar.gz' }))
+-			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, serverDownloadUrlTemplate: 'https://github.com/!!GH_REPO_PATH!!/releases/download/${version}/!!APP_NAME_LC!!-reh-${os}-${arch}-${version}.tar.gz' }))
++			.pipe(json({ commit, date: readISODate('out-build'), checksums, version, serverDownloadUrlTemplate: 'https://github.com/!!GH_REPO_PATH!!-insiders/releases/download/${version}-insider/!!APP_NAME_LC!!-reh-${os}-${arch}-${version}-insider.tar.gz' }))
  			.pipe(es.through(function (file) {

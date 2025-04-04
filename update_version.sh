@@ -62,7 +62,7 @@ generateJson() {
   url="${URL_BASE}/${ASSET_NAME}"
   name="${RELEASE_VERSION}"
   version="${BUILD_SOURCEVERSION}"
-  productVersion="${RELEASE_VERSION}"
+  productVersion="$( transformVersion "${RELEASE_VERSION}" )"
   timestamp=$( node -e 'console.log(Date.now())' )
 
   if [[ ! -f "assets/${ASSET_NAME}" ]]; then
@@ -92,6 +92,25 @@ generateJson() {
     --arg sha256hash      "${sha256hash}" \
     '. | .url=$url | .name=$name | .version=$version | .productVersion=$productVersion | .hash=$hash | .timestamp=$timestamp | .sha256hash=$sha256hash' \
     <<<'{}' )
+}
+
+transformVersion() {
+  local version parts
+
+  version="${1%-insider}"
+
+  IFS='.' read -r -a parts <<< "${version}"
+
+  # Remove leading zeros from third part
+  parts[2]="$((10#${parts[2]}))"
+
+  version="${parts[0]}.${parts[1]}.${parts[2]}.0"
+
+  if [[ "${1}" == *-insider ]]; then
+    version="${version}-insider"
+  fi
+
+  echo "${version}"
 }
 
 updateLatestVersion() {

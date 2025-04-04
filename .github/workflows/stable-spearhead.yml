@@ -22,7 +22,7 @@ jobs:
       APP_NAME: VSCodium
       ASSETS_REPOSITORY: ${{ github.repository }}
       BINARY_NAME: codium
-      GH_REPO_PATH: ${{ github.repository_owner }}/${{ github.repository }}
+      GH_REPO_PATH: ${{ github.repository }}
       ORG_NAME: ${{ github.repository_owner }}
       OS_NAME: osx
       VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
@@ -81,5 +81,5 @@ jobs:
       - name: Dispatch builds
         uses: peter-evans/repository-dispatch@v3
         with:
-          event-type: 'stable'
+          event-type: stable
         if: env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true'
