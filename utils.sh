@@ -27,7 +27,7 @@ apply_patch() {
     exit 1
   fi
 
-  mv -f "$1.bak" $1
+  mv -f $1{.bak,}
 }
 
 exists() { type -t "$1" &> /dev/null; }

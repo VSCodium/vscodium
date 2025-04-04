@@ -27,7 +27,7 @@ if [[ -z "${RELEASE_VERSION}" ]]; then
     fi
   fi
 
-  TIME_PATCH=$(($(date +%-j) * 24 + $(date +%-H)))
+  TIME_PATCH=$( printf "%04d" $(($(date +%-j) * 24 + $(date +%-H))) )
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     RELEASE_VERSION="${MS_TAG}${TIME_PATCH}-insider"

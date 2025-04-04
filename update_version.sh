@@ -95,18 +95,22 @@ generateJson() {
 }
 
 transformVersion() {
-  local version
+  local version parts
 
-  version="$1"
+  version="${1%-insider}"
 
-  # Check if the version ends with -insider
-  if [[ "${version}" == *-insider ]]; then
-    # Remove -insider suffix, add .0 before it
-    echo "${version%-insider}.0-insider"
-  else
-    # Just add .0 at the end
-    echo "${version}.0"
+  IFS='.' read -r -a parts <<< "${version}"
+
+  # Remove leading zeros from third part
+  parts[2]="$((10#${parts[2]}))"
+
+  version="${parts[0]}.${parts[1]}.${parts[2]}.0"
+
+  if [[ "${1}" == *-insider ]]; then
+    version="${version}-insider"
   fi
+
+  echo "${version}"
 }
 
 updateLatestVersion() {

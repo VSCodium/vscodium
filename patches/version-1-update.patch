@@ -67,7 +67,7 @@ index a1ec3fe..f954720 100644
 +	}
  }
 diff --git a/src/vs/platform/update/electron-main/updateService.darwin.ts b/src/vs/platform/update/electron-main/updateService.darwin.ts
-index 57398fb..fb6db8b 100644
+index 57398fb..b30ef50 100644
 --- a/src/vs/platform/update/electron-main/updateService.darwin.ts
 +++ b/src/vs/platform/update/electron-main/updateService.darwin.ts
 @@ -15,3 +15,3 @@ import { ILogService } from '../../log/common/log.js';
@@ -91,7 +91,7 @@ index 57398fb..fb6db8b 100644
 -		const url = createUpdateURL(assetID, quality, this.productService);
 +		const url = createUpdateURL(this.productService, quality, process.platform, process.arch);
  		try {
-@@ -94,4 +90,28 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+@@ -94,4 +90,29 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
  	protected doCheckForUpdates(context: any): void {
 +		if (!this.url) {
 +			return;
@@ -109,9 +109,10 @@ index 57398fb..fb6db8b 100644
 +					return Promise.resolve(null);
 +				}
 +
-+				const fetchedVersion = /\d+\.\d+\.\d+\.\d+/.test(update.productVersion) ? update.productVersion.replace(/(\d+\.\d+\.\d+)\.\d+(\-\w+)?/, '$1$2') : update.productVersion
++				const fetchedVersion = /\d+\.\d+\.\d+\.\d+/.test(update.productVersion) ? update.productVersion.replace(/(\d+\.\d+\.\d+)\.\d+(\-\w+)?/, '$1$2') : update.productVersion.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
++				const currentVersion = this.productService.version.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
 +
-+				if(semver.compareBuild(this.productService.version, fetchedVersion) >= 0) {
++				if(semver.compareBuild(currentVersion, fetchedVersion) >= 0) {
 +					this.setState(State.Idle(UpdateType.Setup));
 +				}
 +				else {
@@ -131,7 +132,7 @@ index dd18900..920dc10 100644
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch);
  	}
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index db92de2..896a301 100644
+index db92de2..2bbdad9 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
 @@ -11,3 +11,2 @@ import { CancellationToken } from '../../../base/common/cancellation.js';
@@ -192,26 +193,27 @@ index db92de2..896a301 100644
 -		return createUpdateURL(platform, quality, this.productService);
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch, target);
  	}
-@@ -130,2 +145,9 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -130,2 +145,10 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
-+				const fetchedVersion = /\d+\.\d+\.\d+\.\d+/.test(update.productVersion) ? update.productVersion.replace(/(\d+\.\d+\.\d+)\.\d+(\-\w+)?/, '$1$2') : update.productVersion
++				const fetchedVersion = /\d+\.\d+\.\d+\.\d+/.test(update.productVersion) ? update.productVersion.replace(/(\d+\.\d+\.\d+)\.\d+(\-\w+)?/, '$1$2') : update.productVersion.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
++				const currentVersion = this.productService.version.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
 +
-+				if(semver.compareBuild(this.productService.version, fetchedVersion) >= 0) {
++				if(semver.compareBuild(currentVersion, fetchedVersion) >= 0) {
 +					this.setState(State.Idle(updateType));
 +					return Promise.resolve(null);
 +				}
 +
  				if (updateType === UpdateType.Archive) {
-@@ -156,3 +178,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -156,3 +179,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -						const fastUpdatesEnabled = this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
 +						const fastUpdatesEnabled = getUpdateType() == UpdateType.Setup && this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
  						if (fastUpdatesEnabled) {
-@@ -168,3 +190,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -168,3 +191,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  			.then(undefined, err => {
 -				this.telemetryService.publicLog2<{ messageHash: string }, UpdateErrorClassification>('update:error', { messageHash: String(hash(String(err))) });
  				this.logService.error(err);
-@@ -252,6 +273,14 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -252,6 +274,14 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  		} else {
 -			spawn(this.availableUpdate.packagePath, ['/silent', '/log', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
 -				detached: true,
