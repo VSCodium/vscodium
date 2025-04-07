@@ -69,5 +69,25 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     npm run gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
   fi
 
+  cd cli
+
+  export CARGO_NET_GIT_FETCH_WITH_CLI="true"
+  export VSCODE_CLI_APP_NAME="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+  export VSCODE_CLI_BINARY_NAME="$( node -p "require(\"../product.json\").serverApplicationName" )"
+  # export VSCODE_CLI_QUALITY="${VSCODE_QUALITY}"
+
+  if [[ "${OS_NAME}" == "osx" ]]; then
+    VSCODE_CLI_TARGET="aarch64-apple-darwin"
+
+    cargo build --release --target "${VSCODE_CLI_TARGET}" --bin=code
+
+    TUNNEL_APPLICATION_NAME="$( node -p "require(\"../product.json\").tunnelApplicationName" )"
+    NAME_SHORT="$( node -p "require(\"../product.json\").nameShort" )"
+
+    cp "target/${VSCODE_CLI_TARGET}/release/code" "../../VSCode-darwin-${VSCODE_ARCH}/${NAME_SHORT}.app/Contents/Resources/app/bin/${TUNNEL_APPLICATION_NAME}"
+  fi
+
+  cd ..
+
   cd ..
 fi

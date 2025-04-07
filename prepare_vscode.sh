@@ -133,7 +133,12 @@ setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
 
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
   setpath "product" "updateUrl" "https://raw.githubusercontent.com/VSCodium/versions/refs/heads/master"
-  setpath "product" "downloadUrl" "https://github.com/VSCodium/vscodium/releases"
+
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+    setpath "product" "downloadUrl" "https://github.com/VSCodium/vscodium-insiders/releases"
+  else
+    setpath "product" "downloadUrl" "https://github.com/VSCodium/vscodium/releases"
+  fi
 fi
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
@@ -159,6 +164,9 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "win32UserAppId" "{{ED2E5618-3E7E-4888-BF3C-A6CCC84F586F}"
   setpath "product" "win32x64UserAppId" "{{20F79D0D-A9AC-4220-9A81-CE675FFB6B41}"
   setpath "product" "win32arm64UserAppId" "{{2E362F92-14EA-455A-9ABD-3E656BBBFE71}"
+  setpath "product" "tunnelApplicationName" "codium-tunnel-insiders"
+  setpath "product" "win32TunnelServiceMutex" "vscodiuminsiders-tunnelservice"
+  setpath "product" "win32TunnelMutex" "vscodiuminsiders-tunnel"
 else
   setpath "product" "nameShort" "VSCodium"
   setpath "product" "nameLong" "VSCodium"
@@ -181,6 +189,9 @@ else
   setpath "product" "win32UserAppId" "{{0FD05EB4-651E-4E78-A062-515204B47A3A}"
   setpath "product" "win32x64UserAppId" "{{2E1F05D1-C245-4562-81EE-28188DB6FD17}"
   setpath "product" "win32arm64UserAppId" "{{57FD70A5-1B8D-4875-9F40-C5553F094828}"
+  setpath "product" "tunnelApplicationName" "codium-tunnel"
+  setpath "product" "win32TunnelServiceMutex" "vscodium-tunnelservice"
+  setpath "product" "win32TunnelMutex" "vscodium-tunnel"
 fi
 
 jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
