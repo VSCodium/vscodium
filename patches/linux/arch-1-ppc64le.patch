@@ -42,7 +42,7 @@ index 5ac9f95..cd04bdf 100644
 +	{ platform: 'linux', arch: 'ppc64le' },
  	{ platform: 'alpine', arch: 'arm64' },
 diff --git a/build/gulpfile.scan.js b/build/gulpfile.scan.js
-index cbcdddb..274d889 100644
+index aafc64e..484d5f4 100644
 --- a/build/gulpfile.scan.js
 +++ b/build/gulpfile.scan.js
 @@ -26,2 +26,3 @@ const BUILD_TARGETS = [
@@ -471,45 +471,37 @@ index c6a01da..3f3c3f5 100644
 +	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le'].includes(s);
  }
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 9033914..bcab676 100644
+index a39bbf7..84d3efe 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
-@@ -217,2 +217,4 @@ pub enum Platform {
+@@ -176,2 +176,3 @@ pub enum Platform {
  	LinuxARM32Legacy,
 +	LinuxPPC64LE,
-+	LinuxPPC64LELegacy,
  	DarwinX64,
-@@ -230,2 +232,3 @@ impl Platform {
- 			Platform::LinuxARM32 => Some("linux-armhf".to_owned()),
-+			Platform::LinuxPPC64LE => Some("linux-ppc64le".to_owned()),
- 			Platform::DarwinX64 => Some("darwin".to_owned()),
-@@ -248,2 +251,4 @@ impl Platform {
- 			Platform::LinuxARM32Legacy => "server-linux-legacy-armhf",
-+			Platform::LinuxPPC64LE => "server-linux-ppc64le",
-+			Platform::LinuxPPC64LELegacy => "server-linux-legacy-ppc64le",
- 			Platform::DarwinX64 => "server-darwin",
-@@ -267,2 +272,4 @@ impl Platform {
- 			Platform::LinuxARM32Legacy => "cli-linux-armhf",
-+			Platform::LinuxPPC64LE => "cli-linux-ppc64le",
-+			Platform::LinuxPPC64LELegacy => "cli-linux-ppc64le",
- 			Platform::DarwinX64 => "cli-darwin-x64",
-@@ -299,2 +306,4 @@ impl Platform {
+@@ -194,2 +195,3 @@ impl Platform {
+ 			Platform::LinuxARM32Legacy => "armhf",
++			Platform::LinuxPPC64LE => "ppc64le",
+ 			Platform::DarwinX64 => "x64",
+@@ -213,2 +215,3 @@ impl Platform {
+ 			Platform::LinuxARM32Legacy => "linux",
++			Platform::LinuxPPC64LE => "linux",
+ 			Platform::DarwinX64 => "darwin",
+@@ -241,2 +244,4 @@ impl Platform {
  			Some(Platform::LinuxARM64)
-+		} else if cfg!(all(target_os = "linux", target_arch = "ppc64le")) {
++		} else if cfg!(all(target_os = "linux", target_arch = "powerpc64")) {
 +			Some(Platform::LinuxPPC64LE)
  		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
-@@ -326,2 +335,4 @@ impl fmt::Display for Platform {
+@@ -268,2 +273,3 @@ impl fmt::Display for Platform {
  			Platform::LinuxARM32Legacy => "LinuxARM32Legacy",
 +			Platform::LinuxPPC64LE => "LinuxPPC64LE",
-+			Platform::LinuxPPC64LELegacy => "LinuxPPC64LELegacy",
  			Platform::DarwinX64 => "DarwinX64",
 diff --git a/cli/src/util/prereqs.rs b/cli/src/util/prereqs.rs
-index 44c8597..d89b384 100644
+index 44c8597..679aacb 100644
 --- a/cli/src/util/prereqs.rs
 +++ b/cli/src/util/prereqs.rs
 @@ -82,2 +82,4 @@ impl PreReqChecker {
  					Platform::LinuxARM32
-+				} else if cfg!(target_arch = "ppc64le") {
++				} else if cfg!(target_arch = "powerpc64") {
 +					Platform::LinuxPPC64LE
  				} else {
 diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
@@ -521,7 +513,7 @@ index 8ea4c0b..b9d3b47 100644
 +    ppc64el) LDCONFIG_ARCH="64bit";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index 72de79b..3614b7f 100644
+index b7f8325..5400065 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
 @@ -44,2 +44,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
@@ -539,10 +531,10 @@ index 72de79b..3614b7f 100644
 +			}
  			return TargetPlatform.UNKNOWN;
 diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
-index b38ba82..2faea35 100644
+index 8e68cbe..23f1bea 100644
 --- a/src/vs/platform/extensions/common/extensions.ts
 +++ b/src/vs/platform/extensions/common/extensions.ts
-@@ -318,2 +318,3 @@ export const enum TargetPlatform {
+@@ -319,2 +319,3 @@ export const enum TargetPlatform {
  	LINUX_ARMHF = 'linux-armhf',
 +	LINUX_PPC64LE = 'linux-ppc64le',
  
