@@ -195,6 +195,16 @@ setpath "package" "version" "${RELEASE_VERSION%-insider}"
 
 replace 's|Microsoft Corporation|VSCodium|' package.json
 
+cp resources/server/manifest.json{,.bak}
+
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  setpath "resources/server/manifest" "name" "VSCodium - Insiders"
+  setpath "resources/server/manifest" "short_name" "VSCodium - Insiders"
+else
+  setpath "resources/server/manifest" "name" "VSCodium"
+  setpath "resources/server/manifest" "short_name" "VSCodium"
+fi
+
 # announcements
 replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( tr -d '\n' < ../announcements-builtin.json )|" src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 
