@@ -74,7 +74,7 @@ index 3d7d718..98529bc 100644
 +					.join(self.quality.server_entrypoint().unwrap())
  			},
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 9033914..fa45a8d 100644
+index 9033914..a39bbf7 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
 @@ -10,3 +10,3 @@ use serde::{Deserialize, Serialize};
@@ -214,13 +214,7 @@ index 9033914..fa45a8d 100644
 -}
 -
  #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
-@@ -217,2 +176,5 @@ pub enum Platform {
- 	LinuxARM32Legacy,
-+	LinuxLoong64,
-+	LinuxPPC64,
-+	LinuxRiscV64,
- 	DarwinX64,
-@@ -225,30 +187,20 @@ pub enum Platform {
+@@ -225,30 +184,17 @@ pub enum Platform {
  impl Platform {
 -	pub fn archive(&self) -> Option<String> {
 -		match self {
@@ -259,16 +253,13 @@ index 9033914..fa45a8d 100644
 +			Platform::LinuxARM64Legacy => "arm64",
 +			Platform::LinuxARM32 => "armhf",
 +			Platform::LinuxARM32Legacy => "armhf",
-+			Platform::LinuxLoong64 => "loong64",
-+			Platform::LinuxPPC64 => "ppc64le",
-+			Platform::LinuxRiscV64 => "riscv64",
 +			Platform::DarwinX64 => "x64",
 +			Platform::DarwinARM64 => "arm64",
 +			Platform::WindowsX64 => "x64",
 +			Platform::WindowsX86 => "ia42",
 +			Platform::WindowsARM64 => "arm64",
  		}
-@@ -257,17 +209,20 @@ impl Platform {
+@@ -257,17 +203,17 @@ impl Platform {
  
 -	pub fn cli(&self) -> String {
 +	pub fn os(&self) -> String {
@@ -294,34 +285,16 @@ index 9033914..fa45a8d 100644
 +			Platform::LinuxARM64Legacy => "linux",
 +			Platform::LinuxARM32 => "linux",
 +			Platform::LinuxARM32Legacy => "linux",
-+			Platform::LinuxLoong64 => "linux",
-+			Platform::LinuxPPC64 => "linux",
-+			Platform::LinuxRiscV64 => "linux",
 +			Platform::DarwinX64 => "darwin",
 +			Platform::DarwinARM64 => "darwin",
 +			Platform::WindowsX64 => "win32",
 +			Platform::WindowsX86 => "win32",
 +			Platform::WindowsARM64 => "win32",
  		}
-@@ -276,6 +231,2 @@ impl Platform {
+@@ -276,6 +222,2 @@ impl Platform {
  
 -	pub fn web(&self) -> String {
 -		format!("{}-web", self.headless())
 -	}
 -
  	pub fn env_default() -> Option<Platform> {
-@@ -299,2 +250,8 @@ impl Platform {
- 			Some(Platform::LinuxARM64)
-+		} else if cfg!(all(target_os = "linux", target_arch = "loongarch64")) {
-+			Some(Platform::LinuxLoong64)
-+		} else if cfg!(all(target_os = "linux", target_arch = "powerpc64")) {
-+			Some(Platform::LinuxPPC64)
-+		} else if cfg!(all(target_os = "linux", target_arch = "riscv64")) {
-+			Some(Platform::LinuxRiscV64)
- 		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
-@@ -326,2 +283,5 @@ impl fmt::Display for Platform {
- 			Platform::LinuxARM32Legacy => "LinuxARM32Legacy",
-+			Platform::LinuxLoong64 => "LinuxLoong64",
-+			Platform::LinuxPPC64 => "LinuxPPC64",
-+			Platform::LinuxRiscV64 => "LinuxRiscV64",
- 			Platform::DarwinX64 => "DarwinX64",
