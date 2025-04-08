@@ -221,6 +221,9 @@ jobs:
         run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
+
       - name: Download vscode artifact
         uses: actions/download-artifact@v4
         with:
