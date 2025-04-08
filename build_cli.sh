@@ -67,6 +67,8 @@ else
   fi
 
   if [[ -n "${VSCODE_CLI_TARGET}" ]]; then
+    source $HOME/.cargo/env
+
     cargo build --release --target "${VSCODE_CLI_TARGET}" --bin=code
 
     cp "target/${VSCODE_CLI_TARGET}/release/code" "../../VSCode-linux-${VSCODE_ARCH}/bin/${TUNNEL_APPLICATION_NAME}"
