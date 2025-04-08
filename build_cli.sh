@@ -66,8 +66,7 @@ else
     export CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
     export PKG_CONFIG_ALLOW_CROSS=1
 
-    sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-    sudo apt-get install -y crossbuild-essential-arm64
+    sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu crossbuild-essential-arm64
   elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
     VSCODE_CLI_TARGET="armv7-unknown-linux-gnueabihf"
 
@@ -86,8 +85,7 @@ else
     export CXX_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-g++
     export PKG_CONFIG_ALLOW_CROSS=1
 
-    sudo apt-get install -y gcc-arm-linux-gnu g++-arm-linux-gnu
-    sudo apt-get install -y crossbuild-essential-arm
+    sudo apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf crossbuild-essential-armhf
   elif [[ "${VSCODE_ARCH}" == "x64" ]]; then
     VSCODE_CLI_TARGET="x86_64-unknown-linux-gnu"
 
