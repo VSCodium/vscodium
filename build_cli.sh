@@ -67,6 +67,8 @@ else
   fi
 
   if [[ -n "${VSCODE_CLI_TARGET}" ]]; then
+    rustup target add "${VSCODE_CLI_TARGET}"
+
     cargo build --release --target "${VSCODE_CLI_TARGET}" --bin=code
 
     cp "target/${VSCODE_CLI_TARGET}/release/code" "../../VSCode-linux-${VSCODE_ARCH}/bin/${TUNNEL_APPLICATION_NAME}"
