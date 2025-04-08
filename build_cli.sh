@@ -41,7 +41,7 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   export OPENSSL_LIB_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-windows-static/lib"
   export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-windows-static/include"
 
-  rustup target "${VSCODE_CLI_TARGET}"
+  rustup target add "${VSCODE_CLI_TARGET}"
 
   cargo build --release --target "${VSCODE_CLI_TARGET}" --bin=code
 
