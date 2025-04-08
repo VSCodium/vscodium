@@ -36,12 +36,12 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
     VSCODE_CLI_TARGET="x86_64-pc-windows-msvc"
     export VSCODE_CLI_RUSTFLAGS="-Ctarget-feature=+crt-static -Clink-args=/guard:cf -Clink-args=/CETCOMPAT"
   fi
+
   export VSCODE_CLI_CFLAGS="/guard:cf /Qspectre"
-
-  rustup target add x86_64-pc-windows-msvc
-
   export OPENSSL_LIB_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-windows-static/lib"
   export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-windows-static/include"
+
+  rustup target "${VSCODE_CLI_TARGET}"
 
   cargo build --release --target "${VSCODE_CLI_TARGET}" --bin=code
 
