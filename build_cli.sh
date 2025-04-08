@@ -49,24 +49,43 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
 else
   export OPENSSL_LIB_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-linux/lib"
   export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-linux/include"
+  export VSCODE_SYSROOT_DIR="../.build/sysroots"
 
   if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
     VSCODE_CLI_TARGET="aarch64-unknown-linux-gnu"
+
+    export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER="${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc"
+    export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS="-C link-arg=--sysroot=${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/sysroot"
+    export CC_aarch64_unknown_linux_gnu="${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc --sysroot=${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/sysroot"
+    export PKG_CONFIG_LIBDIR_aarch64_unknown_linux_gnu="${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/sysroot/usr/lib/aarch64-linux-gnu/pkgconfig:${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/sysroot/usr/share/pkgconfig"
+    export PKG_CONFIG_SYSROOT_DIR_aarch64_unknown_linux_gnu="${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/sysroot"
+    export OBJDUMP="${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/bin/objdump"
   elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
     VSCODE_CLI_TARGET="armv7-unknown-linux-gnueabihf"
+
     export OPENSSL_LIB_DIR="$( pwd )/openssl/out/arm-linux/lib"
     export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/arm-linux/include"
+
+    export CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER="${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/bin/arm-rpi-linux-gnueabihf-gcc"
+    export CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_RUSTFLAGS="-C link-arg=--sysroot=${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot"
+    export CC_armv7_unknown_linux_gnueabihf="${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/bin/arm-rpi-linux-gnueabihf-gcc --sysroot=${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot"
+    export PKG_CONFIG_LIBDIR_armv7_unknown_linux_gnueabihf="${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot/usr/lib/arm-rpi-linux-gnueabihf/pkgconfig:${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot/usr/share/pkgconfig"
+    export PKG_CONFIG_SYSROOT_DIR_armv7_unknown_linux_gnueabihf="${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot"
+    export OBJDUMP="${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/bin/objdump"
   elif [[ "${VSCODE_ARCH}" == "x64" ]]; then
     VSCODE_CLI_TARGET="x86_64-unknown-linux-gnu"
-  # elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  #   VSCODE_CLI_TARGET="powerpc64-unknown-linux-gnu"
-  # elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
-  #   VSCODE_CLI_TARGET="riscv64-unknown-linux-gnu"
-  # elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
-  #   VSCODE_CLI_TARGET="loongarch64-unknown-linux-gnu"
+
+    export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER="${VSCODE_SYSROOT_DIR}/x86_64-linux-gnu/bin/x86_64-linux-gnu-gcc"
+    export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS="-C link-arg=--sysroot=${VSCODE_SYSROOT_DIR}/x86_64-linux-gnu/x86_64-linux-gnu/sysroot -C link-arg=-L${VSCODE_SYSROOT_DIR}/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/usr/lib/x86_64-linux-gnu"
+    export CC_x86_64_unknown_linux_gnu="${VSCODE_SYSROOT_DIR}/x86_64-linux-gnu/bin/x86_64-linux-gnu-gcc --sysroot=${VSCODE_SYSROOT_DIR}/x86_64-linux-gnu/x86_64-linux-gnu/sysroot"
+    export PKG_CONFIG_LIBDIR_x86_64_unknown_linux_gnu="${VSCODE_SYSROOT_DIR}/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/usr/lib/x86_64-linux-gnu/pkgconfig:${VSCODE_SYSROOT_DIR}/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/usr/share/pkgconfig"
+    export PKG_CONFIG_SYSROOT_DIR_x86_64_unknown_linux_gnu="${VSCODE_SYSROOT_DIR}/x86_64-linux-gnu/x86_64-linux-gnu/sysroot"
+    export OBJDUMP="${VSCODE_SYSROOT_DIR}/x86_64-linux-gnu/x86_64-linux-gnu/bin/objdump"
   fi
 
   if [[ -n "${VSCODE_CLI_TARGET}" ]]; then
+    node -e '(async () => { const { getVSCodeSysroot } = require("../build/linux/debian/install-sysroot.js"); await getVSCodeSysroot(process.env["VSCODE_ARCH"]); })()'
+
     rustup target add "${VSCODE_CLI_TARGET}"
 
     cargo build --release --target "${VSCODE_CLI_TARGET}" --bin=code
