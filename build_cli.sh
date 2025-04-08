@@ -60,9 +60,14 @@ else
     # export PKG_CONFIG_LIBDIR_aarch64_unknown_linux_gnu="${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/sysroot/usr/lib/aarch64-linux-gnu/pkgconfig:${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/sysroot/usr/share/pkgconfig"
     # export PKG_CONFIG_SYSROOT_DIR_aarch64_unknown_linux_gnu="${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/sysroot"
     # export OBJDUMP="${VSCODE_SYSROOT_DIR}/aarch64-linux-gnu/aarch64-linux-gnu/bin/objdump"
+
     export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
     export CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc
     export CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
+    export PKG_CONFIG_ALLOW_CROSS=1
+
+    sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+    sudo apt-get install -y crossbuild-essential-arm64
   elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
     VSCODE_CLI_TARGET="armv7-unknown-linux-gnueabihf"
 
@@ -75,9 +80,14 @@ else
     # export PKG_CONFIG_LIBDIR_armv7_unknown_linux_gnueabihf="${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot/usr/lib/arm-rpi-linux-gnueabihf/pkgconfig:${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot/usr/share/pkgconfig"
     # export PKG_CONFIG_SYSROOT_DIR_armv7_unknown_linux_gnueabihf="${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/sysroot"
     # export OBJDUMP="${VSCODE_SYSROOT_DIR}/arm-rpi-linux-gnueabihf/arm-rpi-linux-gnueabihf/bin/objdump"
+
     export CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER=arm-linux-gnueabihf-gcc
     export CC_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-gcc
     export CXX_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-g++
+    export PKG_CONFIG_ALLOW_CROSS=1
+
+    sudo apt-get install -y gcc-arm-linux-gnu g++-arm-linux-gnu
+    sudo apt-get install -y crossbuild-essential-arm
   elif [[ "${VSCODE_ARCH}" == "x64" ]]; then
     VSCODE_CLI_TARGET="x86_64-unknown-linux-gnu"
 
