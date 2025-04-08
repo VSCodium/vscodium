@@ -136,4 +136,6 @@ fi
 
 find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
 
+. ../build_cli.sh
+
 cd ..
