@@ -217,8 +217,8 @@ jobs:
         run: ./check_tags.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - name: Install libkrb5-dev
-        run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
+      - name: Install dependencies
+        run: ./build/linux/deps.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - uses: actions-rust-lang/setup-rust-toolchain@v1
