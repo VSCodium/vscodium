@@ -61,19 +61,24 @@ else
   if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
     VSCODE_CLI_TARGET="aarch64-unknown-linux-gnu"
 
-    export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
-    export CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc
-    export CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
-    export PKG_CONFIG_ALLOW_CROSS=1
+    if [[ "${CI_BUILD}" != "no" ]]; then
+      export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
+      export CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc
+      export CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
+      export PKG_CONFIG_ALLOW_CROSS=1
+    fi
   elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
     VSCODE_CLI_TARGET="armv7-unknown-linux-gnueabihf"
 
     export OPENSSL_LIB_DIR="$( pwd )/openssl/out/arm-linux/lib"
     export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/arm-linux/include"
-    export CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER=arm-linux-gnueabihf-gcc
-    export CC_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-gcc
-    export CXX_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-g++
-    export PKG_CONFIG_ALLOW_CROSS=1
+
+    if [[ "${CI_BUILD}" != "no" ]]; then
+      export CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER=arm-linux-gnueabihf-gcc
+      export CC_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-gcc
+      export CXX_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-g++
+      export PKG_CONFIG_ALLOW_CROSS=1
+    fi
   elif [[ "${VSCODE_ARCH}" == "x64" ]]; then
     VSCODE_CLI_TARGET="x86_64-unknown-linux-gnu"
   fi
