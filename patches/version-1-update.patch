@@ -67,7 +67,7 @@ index a1ec3fe..f954720 100644
 +	}
  }
 diff --git a/src/vs/platform/update/electron-main/updateService.darwin.ts b/src/vs/platform/update/electron-main/updateService.darwin.ts
-index 57398fb..b30ef50 100644
+index 57398fb..a65965e 100644
 --- a/src/vs/platform/update/electron-main/updateService.darwin.ts
 +++ b/src/vs/platform/update/electron-main/updateService.darwin.ts
 @@ -15,3 +15,3 @@ import { ILogService } from '../../log/common/log.js';
@@ -91,7 +91,7 @@ index 57398fb..b30ef50 100644
 -		const url = createUpdateURL(assetID, quality, this.productService);
 +		const url = createUpdateURL(this.productService, quality, process.platform, process.arch);
  		try {
-@@ -94,4 +90,29 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+@@ -94,4 +90,35 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
  	protected doCheckForUpdates(context: any): void {
 +		if (!this.url) {
 +			return;
@@ -121,16 +121,49 @@ index 57398fb..b30ef50 100644
 +
 +				return Promise.resolve(null);
 +			})
++			.then(undefined, err => {
++				this.logService.error(err);
++				// only show message when explicitly checking for updates
++				const message: string | undefined = !!context ? (err.message || err) : undefined;
++				this.setState(State.Idle(UpdateType.Setup, message));
++			});
  	}
 diff --git a/src/vs/platform/update/electron-main/updateService.linux.ts b/src/vs/platform/update/electron-main/updateService.linux.ts
-index dd18900..920dc10 100644
+index dd18900..33ef8e5 100644
 --- a/src/vs/platform/update/electron-main/updateService.linux.ts
 +++ b/src/vs/platform/update/electron-main/updateService.linux.ts
-@@ -31,3 +31,3 @@ export class LinuxUpdateService extends AbstractUpdateService {
+@@ -15,2 +15,3 @@ import { AvailableForDownload, IUpdate, State, UpdateType } from '../common/upda
+ import { AbstractUpdateService, createUpdateURL } from './abstractUpdateService.js';
++import * as semver from 'semver';
+ 
+@@ -31,3 +32,3 @@ export class LinuxUpdateService extends AbstractUpdateService {
  	protected buildUpdateFeedUrl(quality: string): string {
 -		return createUpdateURL(`linux-${process.arch}`, quality, this.productService);
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch);
  	}
+@@ -40,2 +41,3 @@ export class LinuxUpdateService extends AbstractUpdateService {
+ 		this.setState(State.CheckingForUpdates(context));
++
+ 		this.requestService.request({ url: this.url }, CancellationToken.None)
+@@ -45,5 +47,17 @@ export class LinuxUpdateService extends AbstractUpdateService {
+ 					this.setState(State.Idle(UpdateType.Archive));
+-				} else {
++
++					return Promise.resolve(null);
++				}
++
++				const fetchedVersion = /\d+\.\d+\.\d+\.\d+/.test(update.productVersion) ? update.productVersion.replace(/(\d+\.\d+\.\d+)\.\d+(\-\w+)?/, '$1$2') : update.productVersion.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
++				const currentVersion = this.productService.version.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
++
++				if(semver.compareBuild(currentVersion, fetchedVersion) >= 0) {
++					this.setState(State.Idle(UpdateType.Archive));
++				}
++				else {
+ 					this.setState(State.AvailableForDownload(update));
+ 				}
++
++				return Promise.resolve(null);
+ 			})
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
 index db92de2..2bbdad9 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
