@@ -49,6 +49,7 @@ elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
   export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-ppc64le"
+  VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
 
   export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
@@ -67,6 +68,7 @@ elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
 elif [[ "${VSCODE_ARCH}" == "s390x" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-s390x"
+  VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
 
   export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20241108'
@@ -76,7 +78,12 @@ export ELECTRON_SKIP_BINARY_DOWNLOAD=1
 export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 export VSCODE_PLATFORM='linux'
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
-export VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
+
+if [[ -z "${VSCODE_SYSROOT_PREFIX}" ]]; then
+  export VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}-gcc-10.5.0"
+else
+  export VSCODE_SYSROOT_PREFIX
+fi
 
 EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION:=GLIBC_VERSION}"
 VSCODE_HOST_MOUNT="$( pwd )"
