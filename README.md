@@ -56,7 +56,8 @@ If you are on a Mac and have [Homebrew](https://brew.sh/) installed:
 brew install --cask codex
 
 # insiders
-brew install --cask codex@insiders
+brew tap homebrew/cask-versions
+brew install --cask codex-insiders
 ```
 
 *Note for macOS users: if you can't open the App, please read [the following troubleshooting](https://github.com/BiblioNexus-Foundation/codex/blob/master/docs/troubleshooting.md#macos).*

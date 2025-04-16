@@ -5,7 +5,11 @@ index 447f4c9..1118f18 100644
 @@ -153,3 +153,3 @@ class ReportExtensionSlowAction extends Action {
  - OS Version: \`${osVersion}\`
 -- VS Code version: \`${this._productService.version}\`\n\n${message}`);
+<<<<<<< HEAD
 +- !!APP_NAME!! version: \`${this._productService.version}\`\n\n${message}`);
+=======
++- Codex version: \`${this._productService.version}\`\n\n${message}`);
+>>>>>>> 4bfc4c65b5b12871efd7e5f43a6115701e167163
  
 diff --git a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
 index c5074ca..5fb3fa4 100644
@@ -14,7 +18,11 @@ index c5074ca..5fb3fa4 100644
 @@ -663,3 +663,3 @@ export class BaseIssueReporterService extends Disposable {
  		if (title) {
 -			this.searchDuplicates(title, issueDescription);
+<<<<<<< HEAD
 +			this.searchGitHub('!!GH_REPO_PATH!!', title);
+=======
++			this.searchGitHub('BiblioNexus-Foundation/codex', title);
+>>>>>>> 4bfc4c65b5b12871efd7e5f43a6115701e167163
  		} else {
 @@ -755,33 +755,2 @@ export class BaseIssueReporterService extends Disposable {
  
@@ -61,11 +69,7 @@ index c5074ca..5fb3fa4 100644
  			hide(descriptionTextArea);
 -			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
 +			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of !!APP_NAME!!"));
- 			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
-index 0bbd8ac..3f35022 100644
---- a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
-+++ b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
 @@ -92,3 +92,3 @@ ${this._data.issueDescription}
  ${this.getExtensionVersion()}
 -VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}

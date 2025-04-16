@@ -22,6 +22,8 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   npm run gulp compile-extensions-build
   npm run gulp minify-vscode
 
+  . ../get-extensions.sh
+
   if [[ "${OS_NAME}" == "osx" ]]; then
     # generate Group Policy definitions
     node build/lib/policies darwin

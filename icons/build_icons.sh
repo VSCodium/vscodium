@@ -148,11 +148,11 @@ build_windows_types() { # {{{
       if [[ "${name}" != 'code' ]] && [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/${name}.ico" ]]; then
         icotool -x -w 256 "${file}"
 
-        composite -geometry +150+185 "code_logo.png" "${name}_9_256x256x32.png" "${name}.png"
+        composite -geometry +150+185 "code_logo.png" "${name}_1_256x256x32.png" "${name}.png"
 
         convert "${name}.png" -define icon:auto-resize=256,128,96,64,48,32,24,20,16 "${SRC_PREFIX}src/${QUALITY}/resources/win32/${name}.ico"
 
-        rm "${name}_9_256x256x32.png" "${name}.png"
+        rm "${name}_1_256x256x32.png" "${name}.png"
       fi
     fi
   done
