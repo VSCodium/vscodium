@@ -11,15 +11,15 @@ index 3e654cf..d9ee9f5 100644
 -@vscode/policy-watcher/README.md
 -@vscode/policy-watcher/index.d.ts
 -!@vscode/policy-watcher/build/Release/vscode-policy-watcher.node
-+@vscodium/policy-watcher/.github/**
-+@vscodium/policy-watcher/.husky/**
-+@vscodium/policy-watcher/build/**
-+@vscodium/policy-watcher/src/**
-+@vscodium/policy-watcher/.release-it.yml
-+@vscodium/policy-watcher/binding.gyp
-+@vscodium/policy-watcher/README.md
-+@vscodium/policy-watcher/index.d.ts
-+!@vscodium/policy-watcher/build/Release/vscodium-policy-watcher.node
++@codex/policy-watcher/.github/**
++@codex/policy-watcher/.husky/**
++@codex/policy-watcher/build/**
++@codex/policy-watcher/src/**
++@codex/policy-watcher/.release-it.yml
++@codex/policy-watcher/binding.gyp
++@codex/policy-watcher/README.md
++@codex/policy-watcher/index.d.ts
++!@codex/policy-watcher/build/Release/codex-policy-watcher.node
  
 diff --git a/build/lib/policies.js b/build/lib/policies.js
 index ac69762..db1fd3d 100644
@@ -56,7 +56,7 @@ index 822da54..6236bf0 100644
 @@ -796,3 +796,3 @@ export default tseslint.config(
  						'@vscode/iconv-lite-umd',
 -						'@vscode/policy-watcher',
-+						'@vscodium/policy-watcher',
++						'@codex/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
 index 8112caf..682b56a 100644
@@ -68,7 +68,7 @@ index 8112caf..682b56a 100644
          "@vscode/proxy-agent": "^0.32.0",
 @@ -30,2 +29,3 @@
          "@vscode/windows-registry": "^1.1.0",
-+        "@vscodium/policy-watcher": "^1.3.0-2503300035",
++        "@codex/policy-watcher": "^1.3.0-2503300035",
          "@xterm/addon-clipboard": "^0.2.0-beta.82",
 @@ -2844,22 +2844,2 @@
      },
@@ -95,9 +95,9 @@ index 8112caf..682b56a 100644
      "node_modules/@vscode/proxy-agent": {
 @@ -3260,2 +3240,22 @@
      },
-+    "node_modules/@vscodium/policy-watcher": {
++    "node_modules/@codex/policy-watcher": {
 +      "version": "1.3.0-2503300035",
-+      "resolved": "https://registry.npmjs.org/@vscodium/policy-watcher/-/policy-watcher-1.3.0-2503300035.tgz",
++      "resolved": "https://registry.npmjs.org/@codex/policy-watcher/-/policy-watcher-1.3.0-2503300035.tgz",
 +      "integrity": "sha512-Vf83Z2uKkq+SL2Kr+DHlE7Ezb+HBnspn5iMazUele1Mj/7WQv0Zq/fTQ3LFKKVC6hV5+G95BXwOc7oSAU0gWUw==",
 +      "hasInstallScript": true,
 +      "license": "MIT",
@@ -106,7 +106,7 @@ index 8112caf..682b56a 100644
 +        "node-addon-api": "^8.2.0"
 +      }
 +    },
-+    "node_modules/@vscodium/policy-watcher/node_modules/node-addon-api": {
++    "node_modules/@codex/policy-watcher/node_modules/node-addon-api": {
 +      "version": "8.3.0",
 +      "resolved": "https://registry.npmjs.org/node-addon-api/-/node-addon-api-8.3.0.tgz",
 +      "integrity": "sha512-8VOpLHFrOQlAH+qA0ZzuGRlALRA6/LVh8QJldbrC4DY0hXoMP0l4Acq8TzFC018HztWiRqyCEj2aTWY2UvnJUg==",
@@ -123,7 +123,7 @@ index add0c27..2e5b5f1 100644
 @@ -78,3 +78,3 @@
      "@vscode/iconv-lite-umd": "0.7.0",
 -    "@vscode/policy-watcher": "^1.3.0",
-+    "@vscodium/policy-watcher": "^1.3.0-2503300035",
++    "@codex/policy-watcher": "^1.3.0-2503300035",
      "@vscode/proxy-agent": "^0.32.0",
 diff --git a/src/vs/base/test/node/uri.perf.data.txt b/src/vs/base/test/node/uri.perf.data.txt
 index ee0a24b..881ce36 100644
@@ -177,52 +177,52 @@ index ee0a24b..881ce36 100644
 -/Users/example/node_modules/@vscode/policy-watcher/src/windows/StringPolicy.hh
 -/Users/example/node_modules/@vscode/policy-watcher/src/windows/StringPolicy.cc
 -/Users/example/node_modules/@vscode/policy-watcher/src/windows/NumberPolicy.hh
-+/Users/example/node_modules/@vscodium/policy-watcher/LICENSE
-+/Users/example/node_modules/@vscodium/policy-watcher/binding.gyp
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/LICENSE.md
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/tools/conversion.js
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/tools/eslint-format.js
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/tools/clang-format.js
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/tools/README.md
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/tools/check-napi.js
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/except.gypi
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/napi-inl.deprecated.h
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/index.js
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/README.md
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/napi-inl.h
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/node_api.gyp
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/napi.h
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/package.json
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/noexcept.gypi
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/common.gypi
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/nothing.c
-+/Users/example/node_modules/@vscodium/policy-watcher/node_modules/node-addon-api/package-support.json
-+/Users/example/node_modules/@vscodium/policy-watcher/index.js
-+/Users/example/node_modules/@vscodium/policy-watcher/README.md
-+/Users/example/node_modules/@vscodium/policy-watcher/package.json
-+/Users/example/node_modules/@vscodium/policy-watcher/build/vscode-policy-watcher.target.mk
-+/Users/example/node_modules/@vscodium/policy-watcher/build/gyp-mac-tool
-+/Users/example/node_modules/@vscodium/policy-watcher/build/Makefile
-+/Users/example/node_modules/@vscodium/policy-watcher/build/Release/obj.target/vscode-policy-watcher/src/main.o
-+/Users/example/node_modules/@vscodium/policy-watcher/build/Release/obj.target/vscode-policy-watcher/src/macos/PolicyWatcher.o
-+/Users/example/node_modules/@vscodium/policy-watcher/build/Release/vscode-policy-watcher.node
-+/Users/example/node_modules/@vscodium/policy-watcher/build/Release/.deps/Release/vscode-policy-watcher.node.d
-+/Users/example/node_modules/@vscodium/policy-watcher/build/Release/.deps/Release/obj.target/vscode-policy-watcher/src/macos/PolicyWatcher.o.d
-+/Users/example/node_modules/@vscodium/policy-watcher/build/Release/.deps/Release/obj.target/vscode-policy-watcher/src/main.o.d
-+/Users/example/node_modules/@vscodium/policy-watcher/build/config.gypi
-+/Users/example/node_modules/@vscodium/policy-watcher/build/binding.Makefile
-+/Users/example/node_modules/@vscodium/policy-watcher/index.d.ts
-+/Users/example/node_modules/@vscodium/policy-watcher/src/main.cc
-+/Users/example/node_modules/@vscodium/policy-watcher/src/macos/PolicyWatcher.cc
-+/Users/example/node_modules/@vscodium/policy-watcher/src/PolicyWatcher.hh
-+/Users/example/node_modules/@vscodium/policy-watcher/src/linux/PolicyWatcher.cc
-+/Users/example/node_modules/@vscodium/policy-watcher/src/Policy.hh
-+/Users/example/node_modules/@vscodium/policy-watcher/src/windows/RegistryPolicy.hh
-+/Users/example/node_modules/@vscodium/policy-watcher/src/windows/PolicyWatcher.cc
-+/Users/example/node_modules/@vscodium/policy-watcher/src/windows/NumberPolicy.cc
-+/Users/example/node_modules/@vscodium/policy-watcher/src/windows/StringPolicy.hh
-+/Users/example/node_modules/@vscodium/policy-watcher/src/windows/StringPolicy.cc
-+/Users/example/node_modules/@vscodium/policy-watcher/src/windows/NumberPolicy.hh
++/Users/example/node_modules/@codex/policy-watcher/LICENSE
++/Users/example/node_modules/@codex/policy-watcher/binding.gyp
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/LICENSE.md
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/tools/conversion.js
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/tools/eslint-format.js
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/tools/clang-format.js
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/tools/README.md
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/tools/check-napi.js
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/except.gypi
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/napi-inl.deprecated.h
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/index.js
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/README.md
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/napi-inl.h
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/node_api.gyp
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/napi.h
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/package.json
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/noexcept.gypi
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/common.gypi
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/nothing.c
++/Users/example/node_modules/@codex/policy-watcher/node_modules/node-addon-api/package-support.json
++/Users/example/node_modules/@codex/policy-watcher/index.js
++/Users/example/node_modules/@codex/policy-watcher/README.md
++/Users/example/node_modules/@codex/policy-watcher/package.json
++/Users/example/node_modules/@codex/policy-watcher/build/vscode-policy-watcher.target.mk
++/Users/example/node_modules/@codex/policy-watcher/build/gyp-mac-tool
++/Users/example/node_modules/@codex/policy-watcher/build/Makefile
++/Users/example/node_modules/@codex/policy-watcher/build/Release/obj.target/vscode-policy-watcher/src/main.o
++/Users/example/node_modules/@codex/policy-watcher/build/Release/obj.target/vscode-policy-watcher/src/macos/PolicyWatcher.o
++/Users/example/node_modules/@codex/policy-watcher/build/Release/vscode-policy-watcher.node
++/Users/example/node_modules/@codex/policy-watcher/build/Release/.deps/Release/vscode-policy-watcher.node.d
++/Users/example/node_modules/@codex/policy-watcher/build/Release/.deps/Release/obj.target/vscode-policy-watcher/src/macos/PolicyWatcher.o.d
++/Users/example/node_modules/@codex/policy-watcher/build/Release/.deps/Release/obj.target/vscode-policy-watcher/src/main.o.d
++/Users/example/node_modules/@codex/policy-watcher/build/config.gypi
++/Users/example/node_modules/@codex/policy-watcher/build/binding.Makefile
++/Users/example/node_modules/@codex/policy-watcher/index.d.ts
++/Users/example/node_modules/@codex/policy-watcher/src/main.cc
++/Users/example/node_modules/@codex/policy-watcher/src/macos/PolicyWatcher.cc
++/Users/example/node_modules/@codex/policy-watcher/src/PolicyWatcher.hh
++/Users/example/node_modules/@codex/policy-watcher/src/linux/PolicyWatcher.cc
++/Users/example/node_modules/@codex/policy-watcher/src/Policy.hh
++/Users/example/node_modules/@codex/policy-watcher/src/windows/RegistryPolicy.hh
++/Users/example/node_modules/@codex/policy-watcher/src/windows/PolicyWatcher.cc
++/Users/example/node_modules/@codex/policy-watcher/src/windows/NumberPolicy.cc
++/Users/example/node_modules/@codex/policy-watcher/src/windows/StringPolicy.hh
++/Users/example/node_modules/@codex/policy-watcher/src/windows/StringPolicy.cc
++/Users/example/node_modules/@codex/policy-watcher/src/windows/NumberPolicy.hh
  /Users/example/node_modules/@vscode/vscode-languagedetection/CODE_OF_CONDUCT.md
 diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 index e0b99f3..f3af586 100644
@@ -233,9 +233,9 @@ index e0b99f3..f3af586 100644
 -	test('@vscode/policy-watcher', async () => {
 -		const watcher = await import('@vscode/policy-watcher');
 -		assert.ok(typeof watcher.createWatcher === 'function', testErrorMessage('@vscode/policy-watcher'));
-+	test('@vscodium/policy-watcher', async () => {
-+		const watcher = await import('@vscodium/policy-watcher');
-+		assert.ok(typeof watcher.createWatcher === 'function', testErrorMessage('@vscodium/policy-watcher'));
++	test('@codex/policy-watcher', async () => {
++		const watcher = await import('@codex/policy-watcher');
++		assert.ok(typeof watcher.createWatcher === 'function', testErrorMessage('@codex/policy-watcher'));
  	});
 diff --git a/src/vs/platform/policy/node/nativePolicyService.ts b/src/vs/platform/policy/node/nativePolicyService.ts
 index 67f7892..840d655 100644
@@ -244,12 +244,12 @@ index 67f7892..840d655 100644
 @@ -8,3 +8,3 @@ import { IStringDictionary } from '../../../base/common/collections.js';
  import { Throttler } from '../../../base/common/async.js';
 -import type { PolicyUpdate, Watcher } from '@vscode/policy-watcher';
-+import type { PolicyUpdate, Watcher } from '@vscodium/policy-watcher';
++import type { PolicyUpdate, Watcher } from '@codex/policy-watcher';
  import { MutableDisposable } from '../../../base/common/lifecycle.js';
 @@ -27,3 +27,3 @@ export class NativePolicyService extends AbstractPolicyService implements IPolic
  
 -		const { createWatcher } = await import('@vscode/policy-watcher');
-+		const { createWatcher } = await import('@vscodium/policy-watcher');
++		const { createWatcher } = await import('@codex/policy-watcher');
  
 @@ -31,3 +31,3 @@ export class NativePolicyService extends AbstractPolicyService implements IPolic
  			try {
