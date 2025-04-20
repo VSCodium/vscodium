@@ -22,11 +22,15 @@ index cd8610d..2d928b1 100644
 +			.pipe(replace('@@VERSION@@', packageJson.version))
  			// Possible run-on values https://snapcraft.io/docs/architectures
 diff --git a/src/vs/workbench/api/common/extHost.api.impl.ts b/src/vs/workbench/api/common/extHost.api.impl.ts
-index f13affa..60f0ccb 100644
+index 0db2369..5cac67b 100644
 --- a/src/vs/workbench/api/common/extHost.api.impl.ts
 +++ b/src/vs/workbench/api/common/extHost.api.impl.ts
-@@ -1548,3 +1548,3 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
+@@ -1537,5 +1537,7 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
+ 
++		const version = initData.version.replace(/^([0-9]+\.[0-9]+\.[0-5]).*$/, '$1');
++
+ 		// eslint-disable-next-line local/code-no-dangerous-type-assertions
  		return <typeof vscode>{
 -			version: initData.version,
-+			version: initData.version.replace(/\.0+/g, '.'),
++			version,
  			// namespaces
