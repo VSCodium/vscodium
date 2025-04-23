@@ -27,6 +27,9 @@ on:
 env:
   APP_NAME: Codex
   ASSETS_REPOSITORY: ${{ github.repository }}
+  BINARY_NAME: codium
+  GH_REPO_PATH: ${{ github.repository }}
+  ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: windows
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
   VSCODE_QUALITY: stable
@@ -68,7 +71,7 @@ jobs:
   compile:
     needs:
       - check
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
@@ -98,11 +101,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.18.1'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Install Yarn
-        run: npm install -g yarn
+          node-version: '20.18.2'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
@@ -183,11 +182,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.18.1'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Install Yarn
-        run: npm install -g yarn
+          node-version: '20.18.2'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3

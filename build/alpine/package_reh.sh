@@ -7,7 +7,8 @@ if [[ "${CI_BUILD}" == "no" ]]; then
   exit 1
 fi
 
-APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+# include common functions
+. ./utils.sh
 
 mkdir -p assets
 
@@ -26,11 +27,7 @@ export VSCODE_HOST_MOUNT VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 if [[ -d "../patches/alpine/reh/" ]]; then
   for file in "../patches/alpine/reh/"*.patch; do
     if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
-      fi
+      apply_patch "${file}"
     fi
   done
 fi
@@ -54,8 +51,8 @@ fi
 
 if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   echo "Building REH"
-  yarn gulp minify-vscode-reh
-  yarn gulp "vscode-reh-${PA_NAME}-min-ci"
+  npm run gulp minify-vscode-reh
+  npm run gulp "vscode-reh-${PA_NAME}-min-ci"
 
   pushd "../vscode-reh-${PA_NAME}"
 
@@ -67,8 +64,8 @@ fi
 
 if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   echo "Building REH-web"
-  yarn gulp minify-vscode-reh-web
-  yarn gulp "vscode-reh-web-${PA_NAME}-min-ci"
+  npm run gulp minify-vscode-reh-web
+  npm run gulp "vscode-reh-web-${PA_NAME}-min-ci"
 
   pushd "../vscode-reh-web-${PA_NAME}"
 

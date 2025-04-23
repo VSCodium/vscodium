@@ -1,5 +1,5 @@
 diff --git a/src/main.ts b/src/main.ts
-index 1504375..6bba7b8 100644
+index fdc424e..46b014b 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -8,2 +8,3 @@ import * as fs from 'original-fs';
@@ -25,23 +25,21 @@ index 1504375..6bba7b8 100644
 +}
 +
  /**
-@@ -183,2 +197,3 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
+@@ -208,2 +222,3 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
 +	resolveUserProduct();
  
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 1a2a619..e0da4ea 100644
+index d27cdce..d758c5e 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -29,2 +29,38 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+@@ -31,2 +31,36 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
  
-+	const { serviceUrl, searchUrl, itemUrl, controlUrl, extensionUrlTemplate, resourceUrlTemplate } = product.extensionsGallery || {};
++	const { serviceUrl, controlUrl, extensionUrlTemplate, resourceUrlTemplate } = product.extensionsGallery || {};
 +
 +	Object.assign(product, {
 +		extensionsGallery: {
 +			serviceUrl: env['VSCODE_GALLERY_SERVICE_URL'] || serviceUrl,
-+			searchUrl: env['VSCODE_GALLERY_SEARCH_URL'] || searchUrl,
-+			itemUrl: env['VSCODE_GALLERY_ITEM_URL'] || itemUrl,
 +			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
 +			extensionUrlTemplate: env['VSCODE_GALLERY_EXTENSION_URL_TEMPLATE'] || extensionUrlTemplate,
 +			resourceUrlTemplate: env['VSCODE_GALLERY_RESOURCE_URL_TEMPLATE'] || resourceUrlTemplate,

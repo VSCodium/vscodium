@@ -27,6 +27,9 @@ on:
 env:
   APP_NAME: Codex
   ASSETS_REPOSITORY: ${{ github.repository }}
+  BINARY_NAME: codium
+  GH_REPO_PATH: ${{ github.repository }}
+  ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: osx
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
   VSCODE_QUALITY: stable
@@ -58,7 +61,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.18.1'
+          node-version: '20.18.2'
 
       - name: Setup Python 3
         uses: actions/setup-python@v5

@@ -8,6 +8,8 @@
 export APP_NAME="Codex"
 export BINARY_NAME="codex"
 export CI_BUILD="no"
+export GH_REPO_PATH="BiblioNexus-Foundation/codex"
+export ORG_NAME="Codex"
 export SHOULD_BUILD="yes"
 export SKIP_ASSETS="yes"
 export SKIP_BUILD="no"

@@ -94,13 +94,27 @@ build_media() { # {{{
   fi
 } # }}}
 
+build_server() { # {{{
+  if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/server/favicon.ico" ]]; then
+    wget "https://raw.githubusercontent.com/Codex/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "${SRC_PREFIX}src/${QUALITY}/resources/server/favicon.ico"
+  fi
+
+  if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/server/code-192.png" ]]; then
+    convert -size "192x192" "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" "${SRC_PREFIX}src/${QUALITY}/resources/server/code-192.png"
+  fi
+
+  if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/server/code-512.png" ]]; then
+    convert -size "512x512" "${SRC_PREFIX}src/${QUALITY}/resources/linux/code.png" "${SRC_PREFIX}src/${QUALITY}/resources/server/code-512.png"
+  fi
+} # }}}
+
 build_windows_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico" ]]; then
     wget "https://raw.githubusercontent.com/Codex/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "${SRC_PREFIX}src/${QUALITY}/resources/win32/code.ico"
   fi
 } # }}}
 
-build_windows_type() {
+build_windows_type() { # {{{
   local FILE_PATH IMG_SIZE IMG_BG_COLOR LOGO_SIZE GRAVITY
 
   FILE_PATH="$1"
@@ -120,7 +134,7 @@ build_windows_type() {
 
     composite -gravity "${GRAVITY}" "code_logo.png" "${FILE_PATH}" "${FILE_PATH}"
   fi
-}
+} # }}}
 
 build_windows_types() { # {{{
   mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/win32"
@@ -174,4 +188,5 @@ if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then
   build_windows_types
 
   build_media
+  build_server
 fi

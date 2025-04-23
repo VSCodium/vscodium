@@ -36,7 +36,7 @@ If you want to update the existing patches, please follow the section [`Patch Up
 - first, you need to build Codex
 - then use the command `./dev/patch.sh <your patch name>`, to initiate a new patch
 - when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **Codex**
-- run `yarn watch`
+- run `npm run watch`
 - run `./script/code.sh`
 - make your changes
 - press any key to continue the script `patch.sh`

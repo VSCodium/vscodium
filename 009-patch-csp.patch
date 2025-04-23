@@ -1,0 +1,36 @@
+
+diff --git a/src/vs/workbench/contrib/webview/browser/pre/index-no-csp.html b/src/vs/workbench/contrib/webview/browser/pre/index-no-csp.html
+index ae571f8..25b484d 100644
+--- a/src/vs/workbench/contrib/webview/browser/pre/index-no-csp.html
++++ b/src/vs/workbench/contrib/webview/browser/pre/index-no-csp.html
+@@ -848,7 +848,7 @@
+                        // Strip out unsupported http-equiv tags
+                        for (const metaElement of Array.from(newDocument.querySelectorAll('meta'))) {
+                                const httpEquiv = metaElement.getAttribute('http-equiv');
+-                               if (httpEquiv && !/^(content-security-policy|default-style|content-type)$/i.test(httpEquiv)) {
++                               if (httpEquiv && !/^(content-security-policy|default-style|content-type|permission-policy)$/i.test(httpEquiv)) {
+                                        console.warn(`Removing unsupported meta http-equiv: ${httpEquiv}`);
+                                        metaElement.remove();
+                                }
+diff --git a/src/vs/workbench/contrib/webview/browser/pre/index.html b/src/vs/workbench/contrib/webview/browser/pre/index.html
+index 6a1f3d4..088cabd 100644
+--- a/src/vs/workbench/contrib/webview/browser/pre/index.html
++++ b/src/vs/workbench/contrib/webview/browser/pre/index.html
+@@ -5,7 +5,7 @@
+        <meta charset="UTF-8">
+
+        <meta http-equiv="Content-Security-Policy"
+-               content="default-src 'none'; script-src 'sha256-DXeP32g8BdMsVuVabYTmznoTH59F7M7UtV0vXemEFqc=' 'self'; frame-src 'self'; style-src 'unsafe-inline';">
++               content="default-src 'none'; script-src 'sha256-TpNq85wOefXSbWypxz8qJ5s7Q5u343KpXkyQ371KtgQ=' 'self'; frame-src 'self'; style-src 'unsafe-inline';">
+
+
+        <!-- Disable pinch zooming -->
+@@ -880,7 +880,7 @@
+                        // Strip out unsupported http-equiv tags
+                        for (const metaElement of Array.from(newDocument.querySelectorAll('meta'))) {
+                                const httpEquiv = metaElement.getAttribute('http-equiv');
+-                               if (httpEquiv && !/^(content-security-policy|default-style|content-type)$/i.test(httpEquiv)) {
++                               if (httpEquiv && !/^(content-security-policy|default-style|content-type|permission-policy)$/i.test(httpEquiv)) {
+                                        console.warn(`Removing unsupported meta http-equiv: ${httpEquiv}`);
+                                        metaElement.remove();
+                                }

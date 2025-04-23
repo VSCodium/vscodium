@@ -21,50 +21,39 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 # apply patches
 { set +x; } 2>/dev/null
 
+echo "APP_NAME=\"${APP_NAME}\""
+echo "APP_NAME_LC=\"${APP_NAME_LC}\""
+echo "BINARY_NAME=\"${BINARY_NAME}\""
+echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
+echo "ORG_NAME=\"${ORG_NAME}\""
+
 for file in ../patches/*.patch; do
   if [[ -f "${file}" ]]; then
-    echo applying patch: "${file}";
-    # grep '^+++' "${file}"  | sed -e 's#+++ [ab]/#./vscode/#' | while read line; do shasum -a 256 "${line}"; done
-    if ! git apply --ignore-whitespace "${file}"; then
-      echo failed to apply patch "${file}" >&2
-      exit 1
-    fi
+    apply_patch "${file}"
   fi
 done
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   for file in ../patches/insider/*.patch; do
     if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
-      fi
+      apply_patch "${file}"
+    fi
+  done
+fi
+
+if [[ -d "../patches/${OS_NAME}/" ]]; then
+  for file in "../patches/${OS_NAME}/"*.patch; do
+    if [[ -f "${file}" ]]; then
+      apply_patch "${file}"
     fi
   done
 fi
 
 for file in ../patches/user/*.patch; do
   if [[ -f "${file}" ]]; then
-    echo applying user patch: "${file}";
-    if ! git apply --ignore-whitespace "${file}"; then
-      echo failed to apply patch "${file}" >&2
-      exit 1
-    fi
+    apply_patch "${file}"
   fi
 done
-
-if [[ -d "../patches/${OS_NAME}/" ]]; then
-  for file in "../patches/${OS_NAME}/"*.patch; do
-    if [[ -f "${file}" ]]; then
-      echo applying patch: "${file}";
-      if ! git apply --ignore-whitespace "${file}"; then
-        echo failed to apply patch "${file}" >&2
-        exit 1
-      fi
-    fi
-  done
-fi
 
 set -x
 
@@ -81,10 +70,22 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7
   fi
+else
+  if [[ "${CI_BUILD}" != "no" ]]; then
+    clang++ --version
+  fi
 fi
 
+mv .npmrc .npmrc.bak
+cp ../npmrc .npmrc
+
 for i in {1..5}; do # try 5 times
-  npm ci && break
+  if [[ "${CI_BUILD}" != "no" && "${OS_NAME}" == "osx" ]]; then
+    CXX=clang++ npm ci && break
+  else
+    npm ci && break
+  fi
+
   if [[ $i == 3 ]]; then
     echo "Npm install failed too many times" >&2
     exit 1
@@ -93,6 +94,8 @@ for i in {1..5}; do # try 5 times
 
   sleep $(( 15 * (i + 1)))
 done
+
+mv .npmrc.bak .npmrc
 
 setpath() {
   local jsonTmp
@@ -115,7 +118,7 @@ cp product.json{,.bak}
 
 setpath "product" "checksumFailMoreInfoUrl" "https://go.microsoft.com/fwlink/?LinkId=828886"
 setpath "product" "documentationUrl" "https://go.microsoft.com/fwlink/?LinkID=533484#vscode"
-setpath_json "product" "extensionsGallery" '{"serviceUrl": "https://open-vsx.org/vscode/gallery", "itemUrl": "https://open-vsx.org/vscode/item", "extensionUrlTemplate": "https://open-vsx.org/vscode/gallery/{publisher}/{name}/latest"}'
+setpath_json "product" "extensionsGallery" '{"serviceUrl": "https://open-vsx.org/vscode/gallery", "itemUrl": "https://open-vsx.org/vscode/item", "extensionUrlTemplate": "https://open-vsx.org/vscode/gallery/{publisher}/{name}/latest", "controlUrl": "https://raw.githubusercontent.com/EclipseFdn/publish-extensions/refs/heads/master/extension-control/extensions.json"}'
 setpath "product" "introductoryVideosUrl" "https://go.microsoft.com/fwlink/?linkid=832146"
 setpath "product" "keyboardShortcutsUrlLinux" "https://go.microsoft.com/fwlink/?linkid=832144"
 setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?linkid=832143"
@@ -129,8 +132,13 @@ setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=85
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
 
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
-  setpath "product" "updateUrl" "https://codex-update-api-steel.vercel.app"
-  setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex/releases"
+  setpath "product" "updateUrl" "https://raw.githubusercontent.com/Codex/versions/refs/heads/master"
+
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+    setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex-insiders/releases"
+  else
+    setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex/releases"
+  fi
 fi
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
@@ -156,6 +164,9 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "win32UserAppId" "{{ED2E5618-3E7E-4888-BF3C-A6CCC84F586F}"
   setpath "product" "win32x64UserAppId" "{{20F79D0D-A9AC-4220-9A81-CE675FFB6B41}"
   setpath "product" "win32arm64UserAppId" "{{2E362F92-14EA-455A-9ABD-3E656BBBFE71}"
+  setpath "product" "tunnelApplicationName" "codex-tunnel-insiders"
+  setpath "product" "win32TunnelServiceMutex" "codexinsiders-tunnelservice"
+  setpath "product" "win32TunnelMutex" "codexinsiders-tunnel"
 else
   setpath "product" "nameShort" "Codex"
   setpath "product" "nameLong" "Codex"
@@ -179,6 +190,9 @@ else
   setpath "product" "win32UserAppId" "{{0FD05EB4-651E-4E78-A062-515204B47A3A}"
   setpath "product" "win32x64UserAppId" "{{2E1F05D1-C245-4562-81EE-28188DB6FD17}"
   setpath "product" "win32arm64UserAppId" "{{57FD70A5-1B8D-4875-9F40-C5553F094828}"
+  setpath "product" "tunnelApplicationName" "codex-tunnel"
+  setpath "product" "win32TunnelServiceMutex" "codex-tunnelservice"
+  setpath "product" "win32TunnelMutex" "codex-tunnel"
 fi
 
 jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
@@ -189,10 +203,19 @@ cat product.json
 # package.json
 cp package.json{,.bak}
 
-setpath "package" "version" "$( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\1/p" )"
-setpath "package" "release" "$( echo "${RELEASE_VERSION}" | sed -n -E "s/^(.*)\.([0-9]+)(-insider)?$/\2/p" )"
+setpath "package" "version" "${RELEASE_VERSION%-insider}"
 
 replace 's|Microsoft Corporation|Codex|' package.json
+
+cp resources/server/manifest.json{,.bak}
+
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  setpath "resources/server/manifest" "name" "Codex - Insiders"
+  setpath "resources/server/manifest" "short_name" "Codex - Insiders"
+else
+  setpath "resources/server/manifest" "name" "Codex"
+  setpath "resources/server/manifest" "short_name" "Codex"
+fi
 
 # announcements
 replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( tr -d '\n' < ../announcements-builtin.json )|" src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
