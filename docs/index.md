@@ -20,6 +20,7 @@
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
   - [From Linux .tar.gz](#from-linux-targz)
+- [What are reh and reh-web archives?](#reh)
 - [Troubleshooting](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md)
 - [Contributing](https://github.com/VSCodium/vscodium/blob/master/CONTRIBUTING.md)
 - [How to build VSCodium](https://github.com/VSCodium/vscodium/blob/master/docs/howto-build.md)
@@ -225,3 +226,8 @@ On Linux, when installed with a package manager, `codium` has been installed in 
 ### <a id="from-linux-targz"></a>From Linux .tar.gz
 
 When the archive `VSCodium-linux-<arch>-<version>.tar.gz` is extracted, the main entry point for VSCodium is `./bin/codium`.
+
+## <a id="reh"></a>What are reh and reh-web archives?
+
+- Remote Host (`reh`) is the server component for remote ssh/wsl which runs it on a "remote" computer and makes that remote computer accessible via VSCodium.
+- Web Host (`reh-web`) is the server component of the command `codium serve-web` which runs it locally and makes VSCodium accessible via a browser.
