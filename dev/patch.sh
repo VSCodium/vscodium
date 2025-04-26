@@ -38,6 +38,10 @@ else
 fi
 
 if [[ -f "${FILE}" ]]; then
+  if [[ -f "${FILE}.bak" ]]; then
+    mv -f $FILE{.bak,}
+  fi
+
   git apply --reject "${FILE}" || true
 fi
 

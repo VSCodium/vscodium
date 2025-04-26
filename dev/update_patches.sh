@@ -19,6 +19,10 @@ check_file() {
     shift
   done
 
+  if [[ -f "${1}.bak" ]]; then
+    mv -f $1{.bak,}
+  fi
+
   if [[ -f "${1}" ]]; then
     echo applying patch: "${1}"
     if ! git apply --ignore-whitespace "${1}"; then
