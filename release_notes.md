@@ -6,7 +6,7 @@ RELEASE_NOTES
 
 <table>
   <tr>
-    <td rowspan="7">Windows</td>
+    <td rowspan="8">Windows</td>
     <td>User Installer</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/VSCodiumUserSetup-x64-RELEASE_VERSION.exe">VSCodiumUserSetup-x64-RELEASE_VERSION.exe</a></td>
   </tr>
@@ -35,7 +35,11 @@ RELEASE_NOTES
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-win32-x64-RELEASE_VERSION.tar.gz">vscodium-reh-web-win32-x64-RELEASE_VERSION.tar.gz</a></td>
   </tr>
   <tr>
-    <td rowspan="4">macOS</td>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-win32-x64-RELEASE_VERSION.tar.gz">vscodium-cli-win32-x64-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
+  <tr>
+    <td rowspan="5">macOS</td>
     <td>.dmg</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/VSCodium.x64.RELEASE_VERSION.dmg">VSCodium.x64.RELEASE_VERSION.dmg</a></td>
   </tr>
@@ -52,7 +56,11 @@ RELEASE_NOTES
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-darwin-x64-RELEASE_VERSION.tar.gz">vscodium-reh-web-darwin-x64-RELEASE_VERSION.tar.gz</a></td>
   </tr>
   <tr>
-  <td rowspan="7">Linux</td>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-darwin-x64-RELEASE_VERSION.tar.gz">vscodium-cli-darwin-x64-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
+  <tr>
+  <td rowspan="8">Linux</td>
     <td>.deb</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/codium_RELEASE_VERSION_amd64.deb">codium_RELEASE_VERSION_amd64.deb</a></td>
   </tr>
@@ -84,6 +92,10 @@ RELEASE_NOTES
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-linux-x64-RELEASE_VERSION.tar.gz">vscodium-reh-web-linux-x64-RELEASE_VERSION.tar.gz</a></td>
   </tr>
   <tr>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-linux-x64-RELEASE_VERSION.tar.gz">vscodium-cli-linux-x64-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
+  <tr>
     <td rowspan="2">Alpine</td>
     <td>Remote Host</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-alpine-x64-RELEASE_VERSION.tar.gz">vscodium-reh-alpine-x64-RELEASE_VERSION.tar.gz</a></td>
@@ -98,7 +110,7 @@ RELEASE_NOTES
 
 <table>
   <tr>
-    <td rowspan="3">Windows</td>
+    <td rowspan="4">Windows</td>
     <td>User Installer</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/VSCodiumUserSetup-arm64-RELEASE_VERSION.exe">VSCodiumUserSetup-arm64-RELEASE_VERSION.exe</a></td>
   </tr>
@@ -111,7 +123,11 @@ RELEASE_NOTES
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/VSCodium-win32-arm64-RELEASE_VERSION.zip">VSCodium-win32-arm64-RELEASE_VERSION.zip</a></td>
   </tr>
   <tr>
-    <td rowspan="4">macOS</td>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-win32-arm64-RELEASE_VERSION.tar.gz">vscodium-cli-win32-arm64-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
+  <tr>
+    <td rowspan="5">macOS</td>
     <td>.dmg</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/VSCodium.arm64.RELEASE_VERSION.dmg">VSCodium.arm64.RELEASE_VERSION.dmg</a></td>
   </tr>
@@ -128,7 +144,11 @@ RELEASE_NOTES
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-darwin-arm64-RELEASE_VERSION.tar.gz">vscodium-reh-web-darwin-arm64-RELEASE_VERSION.tar.gz</a></td>
   </tr>
   <tr>
-    <td rowspan="6">Linux</td>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-darwin-arm64-RELEASE_VERSION.tar.gz">vscodium-cli-darwin-arm64-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
+  <tr>
+    <td rowspan="7">Linux</td>
     <td>.deb</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/codium_RELEASE_VERSION_arm64.deb">codium_RELEASE_VERSION_arm64.deb</a></td>
   </tr>
@@ -153,6 +173,10 @@ RELEASE_NOTES
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-linux-arm64-RELEASE_VERSION.tar.gz">vscodium-reh-web-linux-arm64-RELEASE_VERSION.tar.gz</a></td>
   </tr>
   <tr>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-linux-arm64-RELEASE_VERSION.tar.gz">vscodium-cli-linux-arm64-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
+  <tr>
     <td rowspan="2">Alpine</td>
     <td>Remote Host</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-alpine-arm64-RELEASE_VERSION.tar.gz">vscodium-reh-alpine-arm64-RELEASE_VERSION.tar.gz</a></td>
@@ -167,7 +191,7 @@ RELEASE_NOTES
 
 <table>
   <tr>
-    <td rowspan="5">Linux</td>
+    <td rowspan="6">Linux</td>
     <td>.deb</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/codium_RELEASE_VERSION_armhf.deb">codium_RELEASE_VERSION_armhf.deb</a></td>
   </tr>
@@ -187,13 +211,17 @@ RELEASE_NOTES
     <td>Web Host</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-linux-armhf-RELEASE_VERSION.tar.gz">vscodium-reh-web-linux-armhf-RELEASE_VERSION.tar.gz</a></td>
   </tr>
+  <tr>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-linux-armhf-RELEASE_VERSION.tar.gz">vscodium-cli-linux-armhf-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
 </table>
 
 ## PPC 64bits
 
 <table>
   <tr>
-    <td rowspan="3">Linux</td>
+    <td rowspan="4">Linux</td>
     <td>.tar.gz</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/VSCodium-linux-ppc64le-RELEASE_VERSION.tar.gz">VSCodium-linux-ppc64le-RELEASE_VERSION.tar.gz</a></td>
   </tr>
@@ -205,13 +233,17 @@ RELEASE_NOTES
     <td>Web Host</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-linux-ppc64le-RELEASE_VERSION.tar.gz">vscodium-reh-web-linux-ppc64le-RELEASE_VERSION.tar.gz</a></td>
   </tr>
+  <tr>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-linux-ppc64le-RELEASE_VERSION.tar.gz">vscodium-cli-linux-ppc64le-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
 </table>
 
 ## RISC-V 64bits
 
 <table>
   <tr>
-    <td rowspan="3">Linux</td>
+    <td rowspan="4">Linux</td>
     <td>.tar.gz</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/VSCodium-linux-riscv64-RELEASE_VERSION.tar.gz">VSCodium-linux-riscv64-RELEASE_VERSION.tar.gz</a></td>
   </tr>
@@ -223,13 +255,17 @@ RELEASE_NOTES
     <td>Web Host</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-linux-riscv64-RELEASE_VERSION.tar.gz">vscodium-reh-web-linux-riscv64-RELEASE_VERSION.tar.gz</a></td>
   </tr>
+  <tr>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-linux-riscv64-RELEASE_VERSION.tar.gz">vscodium-cli-linux-riscv64-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
 </table>
 
 ## Loong 64bits
 
 <table>
   <tr>
-    <td rowspan="3">Linux</td>
+    <td rowspan="4">Linux</td>
     <td>.tar.gz</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/VSCodium-linux-loong64-RELEASE_VERSION.tar.gz">VSCodium-linux-loong64-RELEASE_VERSION.tar.gz</a></td>
   </tr>
@@ -241,18 +277,26 @@ RELEASE_NOTES
     <td>Web Host</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-linux-loong64-RELEASE_VERSION.tar.gz">vscodium-reh-web-linux-loong64-RELEASE_VERSION.tar.gz</a></td>
   </tr>
+  <tr>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-linux-loong64-RELEASE_VERSION.tar.gz">vscodium-cli-linux-loong64-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
 </table>
 
 ## s390x
 
 <table>
   <tr>
-    <td rowspan="2">Linux</td>
+    <td rowspan="3">Linux</td>
     <td>Remote Host</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-linux-s390x-RELEASE_VERSION.tar.gz">vscodium-reh-linux-s390x-RELEASE_VERSION.tar.gz</a></td>
   </tr>
   <tr>
     <td>Web Host</td>
     <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-reh-web-linux-s390x-RELEASE_VERSION.tar.gz">vscodium-reh-web-linux-s390x-RELEASE_VERSION.tar.gz</a></td>
+  </tr>
+  <tr>
+    <td>CLI</td>
+    <td><a href="https://github.com/VSCodium/vscodium/releases/download/RELEASE_VERSION/vscodium-cli-linux-s390x-RELEASE_VERSION.tar.gz">vscodium-cli-linux-s390x-RELEASE_VERSION.tar.gz</a></td>
   </tr>
 </table>

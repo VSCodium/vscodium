@@ -105,6 +105,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
       export SHOULD_BUILD_REH_WEB="no"
     fi
 
+    if [[ -z $( contains "${APP_NAME_LC}-cli-darwin-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+      echo "Building on MacOS because we have no CLI archive"
+      export SHOULD_BUILD="yes"
+    else
+      export SHOULD_BUILD_CLI="no"
+    fi
+
     if [[ "${SHOULD_BUILD}" != "yes" ]]; then
       echo "Already have all the MacOS builds"
     fi
@@ -136,67 +143,15 @@ elif [[ "${ASSETS}" != "null" ]]; then
       export SHOULD_BUILD_REH="no"
       export SHOULD_BUILD_REH_WEB="no"
 
-      if [[ "${SHOULD_BUILD}" != "yes" ]]; then
-        echo "Already have all the Windows arm64 builds"
-      fi
-
-    # windows-ia32
-    elif [[ "${VSCODE_ARCH}" == "ia32" ]]; then
-      if [[ -z $( contains "${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
-        echo "Building on Windows ia32 because we have no system setup"
+      if [[ -z $( contains "${APP_NAME_LC}-cli-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+        echo "Building on Windows arm64 because we have no CLI archive"
         export SHOULD_BUILD="yes"
       else
-        export SHOULD_BUILD_EXE_SYS="no"
-      fi
-
-      if [[ -z $( contains "UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
-        echo "Building on Windows ia32 because we have no user setup"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_EXE_USR="no"
-      fi
-
-      if [[ -z $( contains "${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip" ) ]]; then
-        echo "Building on Windows ia32 because we have no zip"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_ZIP="no"
-      fi
-
-      if [[ "${DISABLE_MSI}" == "yes" ]]; then
-          export SHOULD_BUILD_MSI="no"
-      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
-        echo "Building on Windows ia32 because we have no msi"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_MSI="no"
-      fi
-
-      if [[ "${DISABLE_MSI}" == "yes" ]]; then
-          export SHOULD_BUILD_MSI_NOUP="no"
-      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
-        echo "Building on Windows ia32 because we have no updates-disabled msi"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_MSI_NOUP="no"
-      fi
-
-      if [[ -z $( contains "${APP_NAME_LC}-reh-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
-        echo "Building on Windows ia32 because we have no REH archive"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_REH="no"
-      fi
-
-      if [[ -z $( contains "${APP_NAME_LC}-reh-web-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
-        echo "Building on Windows ia32 because we have no REH-web archive"
-        export SHOULD_BUILD="yes"
-      else
-        export SHOULD_BUILD_REH_WEB="no"
+        export SHOULD_BUILD_CLI="no"
       fi
 
       if [[ "${SHOULD_BUILD}" != "yes" ]]; then
-        echo "Already have all the Windows ia32 builds"
+        echo "Already have all the Windows arm64 builds"
       fi
 
     # windows-x64
@@ -252,6 +207,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_REH_WEB="no"
+      fi
+
+      if [[ -z $( contains "${APP_NAME_LC}-cli-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+        echo "Building on Windows x64 because we have no CLI archive"
+        export SHOULD_BUILD="yes"
+      else
+        export SHOULD_BUILD_CLI="no"
       fi
 
       if [[ "${SHOULD_BUILD}" != "yes" ]]; then
@@ -326,6 +288,14 @@ elif [[ "${ASSETS}" != "null" ]]; then
 
           export SHOULD_BUILD_APPIMAGE="no"
 
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+            echo "Building on Linux arm64 because we have no CLI archive"
+            export SHOULD_BUILD="yes"
+          else
+            export SHOULD_BUILD_CLI="no"
+          fi
+
+
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
             echo "Already have all the Linux arm64 builds"
           fi
@@ -370,6 +340,14 @@ elif [[ "${ASSETS}" != "null" ]]; then
 
           export SHOULD_BUILD_APPIMAGE="no"
 
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+            echo "Building on Linux arm because we have no CLI archive"
+            export SHOULD_BUILD="yes"
+          else
+            export SHOULD_BUILD_CLI="no"
+          fi
+
+
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
             echo "Already have all the Linux arm builds"
           fi
@@ -401,6 +379,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD="yes"
           else
             export SHOULD_BUILD_REH_WEB="no"
+          fi
+
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+            echo "Building on Linux PowerPC64LE because we have no CLI archive"
+            export SHOULD_BUILD="yes"
+          else
+            export SHOULD_BUILD_CLI="no"
           fi
 
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
@@ -435,6 +420,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_REH_WEB="no"
           fi
 
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+            echo "Building on Linux RISC-V 64 because we have no CLI archive"
+            export SHOULD_BUILD="yes"
+          else
+            export SHOULD_BUILD_CLI="no"
+          fi
+
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
             echo "Already have all the Linux riscv64 builds"
           fi
@@ -467,6 +459,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_REH_WEB="no"
           fi
 
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+            echo "Building on Linux Loong64 because we have no CLI archive"
+            export SHOULD_BUILD="yes"
+          else
+            export SHOULD_BUILD_CLI="no"
+          fi
+
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
             echo "Already have all the Linux Loong64 builds"
           fi
@@ -491,6 +490,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD="yes"
           else
             export SHOULD_BUILD_REH_WEB="no"
+          fi
+
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+            echo "Building on Linux s390x because we have no CLI archive"
+            export SHOULD_BUILD="yes"
+          else
+            export SHOULD_BUILD_CLI="no"
           fi
 
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
@@ -549,6 +555,13 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD="yes"
           else
             export SHOULD_BUILD_REH_WEB="no"
+          fi
+
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+            echo "Building on Linux x64 because we have no CLI archive"
+            export SHOULD_BUILD="yes"
+          else
+            export SHOULD_BUILD_CLI="no"
           fi
 
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
@@ -658,6 +671,7 @@ echo "SHOULD_BUILD_MSI=${SHOULD_BUILD_MSI}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_MSI_NOUP=${SHOULD_BUILD_MSI_NOUP}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_REH=${SHOULD_BUILD_REH}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_REH_WEB=${SHOULD_BUILD_REH_WEB}" >> "${GITHUB_ENV}"
+echo "SHOULD_BUILD_CLI=${SHOULD_BUILD_CLI}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_RPM=${SHOULD_BUILD_RPM}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_SNAP=${SHOULD_BUILD_SNAP}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_TAR=${SHOULD_BUILD_TAR}" >> "${GITHUB_ENV}"
