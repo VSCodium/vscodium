@@ -16,21 +16,40 @@ npm install -g github-release-cli
 if [[ $( gh release view "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" 2>&1 ) =~ "release not found" ]]; then
   echo "Creating release '${RELEASE_VERSION}'"
 
+  . ./utils.sh
+
+  APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     NOTES="update vscode to [${MS_COMMIT}](https://github.com/microsoft/vscode/tree/${MS_COMMIT})"
 
-    gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --title "${RELEASE_VERSION}" --notes "${NOTES}"
+    replace "s|@@APP_NAME@@|${APP_NAME}|" release_notes.md
+    replace "s|@@APP_NAME_LC@@|${APP_NAME_LC}|" release_notes.md
+    replace "s|@@APP_NAME_QUALITY@@|${APP_NAME}-Insiders|" release_notes.md
+    replace "s|@@ASSETS_REPOSITORY@@|${ASSETS_REPOSITORY}|" release_notes.md
+    replace "s|@@BINARY_NAME@@|${BINARY_NAME}|" release_notes.md
+    replace "s|@@MS_TAG@@|${MS_COMMIT}|" release_notes.md
+    replace "s|@@MS_URL@@|https://github.com/microsoft/vscode/tree/${MS_COMMIT}|" release_notes.md
+    replace "s|@@RELEASE_NOTES@@||" release_notes.md
+    replace "s|@@RELEASE_VERSION@@|${RELEASE_VERSION}|g" release_notes.md
+    replace "s|@@VSCODE_QUALITY@@|-insider|" release_notes.md
+
+    gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --title "${RELEASE_VERSION}" --notes-file release_notes.md
   else
     gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --title "${RELEASE_VERSION}" --generate-notes
 
-    . ./utils.sh
-
     RELEASE_NOTES=$( gh release view "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --json "body" --jq ".body" )
 
-    replace "s|MS_TAG_SHORT|$( echo "${MS_TAG//./_}" | cut -d'_' -f 1,2 )|" release_notes.md
-    replace "s|MS_TAG|${MS_TAG}|" release_notes.md
-    replace "s|RELEASE_VERSION|${RELEASE_VERSION}|g" release_notes.md
-    replace "s|RELEASE_NOTES|${RELEASE_NOTES//$'\n'/\\n}|" release_notes.md
+    replace "s|@@APP_NAME@@|${APP_NAME}|" release_notes.md
+    replace "s|@@APP_NAME_LC@@|${APP_NAME_LC}|" release_notes.md
+    replace "s|@@APP_NAME_QUALITY@@|${APP_NAME}|" release_notes.md
+    replace "s|@@ASSETS_REPOSITORY@@|${ASSETS_REPOSITORY}|" release_notes.md
+    replace "s|@@BINARY_NAME@@|${BINARY_NAME}|" release_notes.md
+    replace "s|@@MS_TAG@@|${MS_TAG}|" release_notes.md
+    replace "s|@@MS_URL@@|https://code.visualstudio.com/updates/v$( echo "${MS_TAG//./_}" | cut -d'_' -f 1,2 )|" release_notes.md
+    replace "s|@@RELEASE_NOTES@@|${RELEASE_NOTES//$'\n'/\\n}|" release_notes.md
+    replace "s|@@RELEASE_VERSION@@|${RELEASE_VERSION}|g" release_notes.md
+    replace "s|@@VSCODE_QUALITY@@||" release_notes.md
 
     gh release edit "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --notes-file release_notes.md
   fi
