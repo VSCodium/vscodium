@@ -355,9 +355,9 @@ elif [[ "${ASSETS}" != "null" ]]; then
 
         # linux-ppc64le
         if [[ "${VSCODE_ARCH}" == "ppc64le" || "${CHECK_ALL}" == "yes" ]]; then
-          SHOULD_BUILD_APPIMAGE="no"
-          SHOULD_BUILD_DEB="no"
-          SHOULD_BUILD_RPM="no"
+          export SHOULD_BUILD_APPIMAGE="no"
+          export SHOULD_BUILD_DEB="no"
+          export SHOULD_BUILD_RPM="no"
 
           if [[ -z $( contains "${APP_NAME}-linux-ppc64le-${RELEASE_VERSION}.tar.gz" ) ]]; then
             echo "Building on Linux PowerPC64LE because we have no TAR"
@@ -381,12 +381,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_REH_WEB="no"
           fi
 
-          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
-            echo "Building on Linux PowerPC64LE because we have no CLI archive"
-            export SHOULD_BUILD="yes"
-          else
-            export SHOULD_BUILD_CLI="no"
-          fi
+          export SHOULD_BUILD_CLI="no"
 
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
             echo "Already have all the Linux PowerPC64LE builds"
@@ -420,12 +415,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_REH_WEB="no"
           fi
 
-          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
-            echo "Building on Linux RISC-V 64 because we have no CLI archive"
-            export SHOULD_BUILD="yes"
-          else
-            export SHOULD_BUILD_CLI="no"
-          fi
+          export SHOULD_BUILD_CLI="no"
 
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
             echo "Already have all the Linux riscv64 builds"
@@ -459,12 +449,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_REH_WEB="no"
           fi
 
-          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
-            echo "Building on Linux Loong64 because we have no CLI archive"
-            export SHOULD_BUILD="yes"
-          else
-            export SHOULD_BUILD_CLI="no"
-          fi
+         export SHOULD_BUILD_CLI="no"
 
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
             echo "Already have all the Linux Loong64 builds"
@@ -492,12 +477,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_REH_WEB="no"
           fi
 
-          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
-            echo "Building on Linux s390x because we have no CLI archive"
-            export SHOULD_BUILD="yes"
-          else
-            export SHOULD_BUILD_CLI="no"
-          fi
+         export SHOULD_BUILD_CLI="no"
 
           if [[ "${SHOULD_BUILD}" != "yes" ]]; then
             echo "Already have all the Linux s390x builds"
@@ -635,12 +615,19 @@ else
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
       SHOULD_BUILD_TAR="no"
+      SHOULD_BUILD_CLI="no"
     elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
+      SHOULD_BUILD_CLI="no"
     elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
+      SHOULD_BUILD_CLI="no"
+    elif [[ "${VSCODE_ARCH}" == "s390x" ]]; then
+      SHOULD_BUILD_DEB="no"
+      SHOULD_BUILD_RPM="no"
+      SHOULD_BUILD_CLI="no"
     fi
     if [[ "${VSCODE_ARCH}" != "x64" || "${DISABLE_APPIMAGE}" == "yes" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
