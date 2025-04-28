@@ -49,7 +49,7 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
   </tr>
   <tr>
     <td>Remote Host</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-darwin-x64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-darwin-x64-@@VERSION@@.@@QUALITY@@tar.gz</a></td>
+    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-darwin-x64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-darwin-x64-@@VERSION@@.@@QUALITY@@.tar.gz</a></td>
   </tr>
   <tr>
     <td>Web Host</td>
