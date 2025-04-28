@@ -32,7 +32,7 @@ if [[ $( gh release view "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" 2>&1
     replace "s|@@MS_TAG@@|${MS_COMMIT}|g" release_notes.md
     replace "s|@@MS_URL@@|https://github.com/microsoft/vscode/tree/${MS_COMMIT}|g" release_notes.md
     replace "s|@@QUALITY@@|-insider|g" release_notes.md
-    replace "s|@@RELEASE_NOTES@@|g" release_notes.md
+    replace "s|@@RELEASE_NOTES@@||g" release_notes.md
     replace "s|@@VERSION@@|${VERSION}|g" release_notes.md
 
     gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --title "${RELEASE_VERSION}" --notes-file release_notes.md
