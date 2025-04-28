@@ -710,10 +710,10 @@ index 0ebe271..20974b2 100644
 +		throw new Error('Unable to create the !!APP_NAME!! workbench more than once.');
  	} else {
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index 60578ec..a72de6e 100644
+index e82e936..e052153 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -690,3 +690,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -696,3 +696,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  		localize('profileName', "`${profileName}`: name of the profile in which the workspace is opened (e.g. Data Science (Profile)). Ignored if default profile is used."),
 -		localize('appName', "`${appName}`: e.g. VS Code."),
 +		localize('appName', "`${appName}`: e.g. !!APP_NAME!!."),
@@ -783,7 +783,7 @@ index a9002dc..80ec7e6 100644
 +				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to !!APP_NAME!!. Configure these {0} to use this functionality.", link)) }, true);
  			} else {
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index 00234b7..77c56e4 100644
+index ec29729..fbcae7a 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 @@ -468,3 +468,3 @@ export class Extension implements IExtension {
@@ -999,7 +999,7 @@ index d508a0d..a8f9899 100644
 +		content += `// By default, !!APP_NAME!! trusts "localhost".\n`;
  	}
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-index 662f7bc..47d1625 100644
+index 6aa706f..ddbd93e 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 @@ -51,3 +51,3 @@ registerAction2(class extends Action2 {
@@ -1007,7 +1007,7 @@ index 662f7bc..47d1625 100644
 -				description: localize2('minWelcomeDescription', 'Opens a Walkthrough to help you get started in VS Code.')
 +				description: localize2('minWelcomeDescription', 'Opens a Walkthrough to help you get started in !!APP_NAME!!.')
  			}
-@@ -375,3 +375,3 @@ configurationRegistry.registerConfiguration({
+@@ -379,3 +379,3 @@ configurationRegistry.registerConfiguration({
  				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.none' }, "Start without an editor."),
 -				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with VS Code and extensions."),
 +				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with !!APP_NAME!! and extensions."),
@@ -1022,7 +1022,7 @@ index 3f1c098..26bf670 100644
 +											description: localize('walkthroughs.steps.completionEvents.onCommand', 'Check off step when a given command is executed anywhere in !!APP_NAME!!.'),
  											body: 'onCommand:${1:commandId}'
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-index e225894..e1d6e86 100644
+index 603be0e..4f25cdb 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 @@ -14,3 +14,2 @@ import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from '../../../../platform/accessi
@@ -1224,11 +1224,32 @@ index e225894..e1d6e86 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions.svg'
 +						type: 'svg', altText: '!!APP_NAME!! extension marketplace with featured language extensions', path: 'extensions.svg'
  					},
-@@ -678,5 +593,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -678,26 +593,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  			steps: [
--				createCopilotSetupStep('NewCopilotSetupSignedOut', CopilotSignedOutButton, 'chatSetupSignedOut', true),
--				createCopilotSetupStep('NewCopilotSetupComplete', CopilotCompleteButton, 'chatSetupInstalled && (chatPlanPro || chatPlanLimited)', false),
--				createCopilotSetupStep('NewCopilotSetupSignedIn', CopilotSignedInButton, '!chatSetupSignedOut && (!chatSetupInstalled || chatPlanCanSignUp)', true),
+-				{
+-					id: 'copilotSetup.chat',
+-					title: localize('gettingStarted.agentMode.title', "Agent Mode"),
+-					description: localize('gettingStarted.agentMode.description', "Tackle complex, multi-step tasks with AI"),
+-					media: {
+-						type: 'svg', altText: 'VS Code Copilot multi file edits', path: 'multi-file-edits.svg'
+-					},
+-				},
+-				{
+-					id: 'copilotSetup.inline',
+-					title: localize('gettingStarted.nes.title', "Next Edit Suggestions"),
+-					description: localize('gettingStarted.nes.description', "Your next move, predicted while you code"),
+-					media: {
+-						type: 'svg', altText: 'Next Edit Suggestions', path: 'ai-powered-suggestions.svg'
+-					},
+-				},
+-				{
+-					id: 'copilotSetup.customize',
+-					title: localize('gettingStarted.customize.title', "Customize"),
+-					description: localize('gettingStarted.customize.description', "Choose your model, tools, and personalized instructions\n{0}", Button(localize('signUp', "Set up AI in VS Code"), 'command:workbench.action.chat.triggerSetup')),
+-					media: {
+-						type: 'svg', altText: 'Customize', path: 'multi-file-edits.svg'
+-					},
+-				},
  				{
 diff --git a/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts b/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts
 index bdd30bf..317d11c 100644
@@ -1288,7 +1309,7 @@ index 88e0091..ec657a1 100644
 +				description: localize('argv.useInMemorySecretStorage', "Ensures that an in-memory store will be used for secret storage instead of using the OS's credential store. This is often used when running !!APP_NAME!! extension tests or when you're experiencing difficulties with the credential store.")
  			}
 diff --git a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-index 798de91..dea320e 100644
+index 37dfdb6..17efc99 100644
 --- a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
 +++ b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
 @@ -1044,3 +1044,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
