@@ -361,22 +361,22 @@ index 7d6694c..83b2599 100644
 +					"comment": "The simpler (?<=\\bProcess\\.|\\bCommandLine\\.) breaks !!APP_NAME!! / Atom, see https://github.com/textmate/swift.tmbundle/issues/29",
  					"name": "support.variable.swift",
 diff --git a/extensions/typescript-language-features/package.nls.json b/extensions/typescript-language-features/package.nls.json
-index 2547b30..0623078 100644
+index f6a18f9..1e68b76 100644
 --- a/extensions/typescript-language-features/package.nls.json
 +++ b/extensions/typescript-language-features/package.nls.json
-@@ -82,4 +82,4 @@
+@@ -80,4 +80,4 @@
  	"configuration.tsserver.experimental.enableProjectDiagnostics": "Enables project wide error reporting.",
 -	"typescript.locale": "Sets the locale used to report JavaScript and TypeScript errors. Defaults to use VS Code's locale.",
 -	"typescript.locale.auto": "Use VS Code's configured display language.",
 +	"typescript.locale": "Sets the locale used to report JavaScript and TypeScript errors. Defaults to use !!APP_NAME!!'s locale.",
 +	"typescript.locale.auto": "Use !!APP_NAME!!'s configured display language.",
  	"configuration.implicitProjectConfig.module": "Sets the module system for the program. See more: https://www.typescriptlang.org/tsconfig#module.",
-@@ -167,3 +167,3 @@
+@@ -165,3 +165,3 @@
  	"typescript.workspaceSymbols.excludeLibrarySymbols": "Exclude symbols that come from library files in `Go to Symbol in Workspace` results. Requires using TypeScript 5.3+ in the workspace.",
 -	"typescript.updateImportsOnFileMove.enabled": "Enable/disable automatic updating of import paths when you rename or move a file in VS Code.",
 +	"typescript.updateImportsOnFileMove.enabled": "Enable/disable automatic updating of import paths when you rename or move a file in !!APP_NAME!!.",
  	"typescript.updateImportsOnFileMove.enabled.prompt": "Prompt on each rename.",
-@@ -174,6 +174,6 @@
+@@ -172,6 +172,6 @@
  	"configuration.suggest.completeJSDocs": "Enable/disable suggestion to complete JSDoc comments.",
 -	"configuration.tsserver.useVsCodeWatcher": "Use VS Code's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
 +	"configuration.tsserver.useVsCodeWatcher": "Use !!APP_NAME!!'s file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
@@ -385,7 +385,7 @@ index 2547b30..0623078 100644
 -	"configuration.tsserver.watchOptions.vscode": "Use VS Code's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
 +	"configuration.tsserver.watchOptions.vscode": "Use !!APP_NAME!!'s file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
  	"configuration.tsserver.watchOptions.watchFile": "Strategy for how individual files are watched.",
-@@ -228,6 +228,6 @@
+@@ -226,6 +226,6 @@
  	"configuration.suggest.objectLiteralMethodSnippets.enabled": "Enable/disable snippet completions for methods in object literals.",
 -	"configuration.tsserver.web.projectWideIntellisense.enabled": "Enable/disable project-wide IntelliSense on web. Requires that VS Code is running in a trusted context.",
 +	"configuration.tsserver.web.projectWideIntellisense.enabled": "Enable/disable project-wide IntelliSense on web. Requires that !!APP_NAME!! is running in a trusted context.",
@@ -394,7 +394,7 @@ index 2547b30..0623078 100644
 -	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want VS Code to detect a Node installation.",
 +	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want !!APP_NAME!! to detect a Node installation.",
  	"configuration.updateImportsOnPaste": "Automatically update imports when pasting code. Requires TypeScript 5.6+.",
-@@ -243,7 +243,7 @@
+@@ -241,7 +241,7 @@
  	"walkthroughs.nodejsWelcome.debugJsFile.title": "Run and Debug your JavaScript",
 -	"walkthroughs.nodejsWelcome.debugJsFile.description": "Once you've installed Node.js, you can run JavaScript programs at a terminal by entering ``node your-file-name.js``\nAnother easy way to run Node.js programs is by using VS Code's debugger which lets you run your code, pause at different points, and help you understand what's going on step-by-step.\n[Start Debugging](command:javascript-walkthrough.commands.debugJsFile)",
 -	"walkthroughs.nodejsWelcome.debugJsFile.altText": "Debug and run your JavaScript code in Node.js with Visual Studio Code.",
@@ -425,7 +425,7 @@ index 239519e..5e58d4d 100644
 +		vscode.window.showErrorMessage(vscode.l10n.t("!!APP_NAME!!\'s tsserver was deleted by another application such as a misbehaving virus detection tool. Please reinstall !!APP_NAME!!."));
  		throw new Error('Could not find bundled tsserver.js');
 diff --git a/extensions/typescript-language-features/src/tsconfig.ts b/extensions/typescript-language-features/src/tsconfig.ts
-index e85c715..4cc6ac3 100644
+index 01a88a4..1fdc86e 100644
 --- a/extensions/typescript-language-features/src/tsconfig.ts
 +++ b/extensions/typescript-language-features/src/tsconfig.ts
 @@ -155,3 +155,3 @@ export async function openProjectConfigForFile(
@@ -540,10 +540,10 @@ index 2fab3ec..1195e3d 100644
 +					progress.report({ message: 'Installing !!APP_NAME!! Server' });
  					serverLocation = await downloadAndUnzipVSCodeServer(updateUrl, commit, quality, serverBin, m => outputChannel.appendLine(m));
 diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
-index 3fb0f3a..0c22c94 100644
+index 588e1cb..a18f74f 100644
 --- a/src/vs/code/electron-main/app.ts
 +++ b/src/vs/code/electron-main/app.ts
-@@ -522,3 +522,3 @@ export class CodeApplication extends Disposable {
+@@ -526,3 +526,3 @@ export class CodeApplication extends Disposable {
  	async startup(): Promise<void> {
 -		this.logService.debug('Starting VS Code');
 +		this.logService.debug('Starting !!APP_NAME!!');
@@ -710,7 +710,7 @@ index 0ebe271..20974b2 100644
 +		throw new Error('Unable to create the !!APP_NAME!! workbench more than once.');
  	} else {
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index e82e936..e052153 100644
+index 735e721..0356d59 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
 @@ -696,3 +696,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
@@ -728,7 +728,7 @@ index 0a13063..5a342c0 100644
 +						description: nls.localize('debugServer', "For debug extension development only: if a port is specified !!APP_NAME!! tries to connect to a debug adapter running in server mode"),
  						default: 4711
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-index adc0616..8e1782d 100644
+index 39859b4..5e03ec2 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 @@ -338,3 +338,3 @@ CommandsRegistry.registerCommand({
@@ -751,7 +751,7 @@ index adc0616..8e1782d 100644
 -							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, VS Code do not sync this extension when Settings Sync is on."),
 +							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, !!APP_NAME!! do not sync this extension when Settings Sync is on."),
  							default: false
-@@ -878,4 +878,4 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
+@@ -879,4 +879,4 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
  						Severity.Info,
 -						vsixs.length > 1 ? localize('InstallVSIXs.successReload', "Completed installing extensions. Please reload Visual Studio Code to enable them.")
 -							: localize('InstallVSIXAction.successReload', "Completed installing extension. Please reload Visual Studio Code to enable it."),
@@ -759,7 +759,7 @@ index adc0616..8e1782d 100644
 +							: localize('InstallVSIXAction.successReload', "Completed installing extension. Please reload VSCodium to enable it."),
  						[{
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
-index a9002dc..80ec7e6 100644
+index 862d00b..714f0fa 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 @@ -108,3 +108,3 @@ export class PromptExtensionInstallFailureAction extends Action {
@@ -783,7 +783,7 @@ index a9002dc..80ec7e6 100644
 +				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to !!APP_NAME!!. Configure these {0} to use this functionality.", link)) }, true);
  			} else {
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index ec29729..fbcae7a 100644
+index 8ee497e..41de54a 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 @@ -468,3 +468,3 @@ export class Extension implements IExtension {
@@ -1022,14 +1022,14 @@ index 3f1c098..26bf670 100644
 +											description: localize('walkthroughs.steps.completionEvents.onCommand', 'Check off step when a given command is executed anywhere in !!APP_NAME!!.'),
  											body: 'onCommand:${1:commandId}'
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-index 603be0e..4f25cdb 100644
+index 84d3d64..b6b1729 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-@@ -14,3 +14,2 @@ import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from '../../../../platform/accessi
+@@ -15,3 +15,2 @@ import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from '../../../../platform/accessi
  import { URI } from '../../../../base/common/uri.js';
 -import product from '../../../../platform/product/common/product.js';
  
-@@ -198,13 +197,2 @@ export const startEntries: GettingStartedStartEntryContent = [
+@@ -200,13 +199,2 @@ export const startEntries: GettingStartedStartEntryContent = [
  	},
 -	{
 -		id: 'topLevelNewWorkspaceChat',
@@ -1043,7 +1043,7 @@ index 603be0e..4f25cdb 100644
 -		}
 -	},
  ];
-@@ -213,24 +201,2 @@ const Button = (title: string, href: string) => `[${title}](${href})`;
+@@ -215,24 +203,2 @@ const Button = (title: string, href: string) => `[${title}](${href})`;
  
 -const CopilotStepTitle = localize('gettingStarted.copilotSetup.title', "Use AI features with Copilot for free");
 -const CopilotDescription = localize({ key: 'gettingStarted.copilotSetup.description', comment: ['{Locked="["}', '{Locked="]({0})"}'] }, "You can use [Copilot]({0}) to generate code across multiple files, fix errors, ask questions about your code and much more using natural language.", product.defaultChatAgent?.documentationUrl ?? '');
@@ -1068,23 +1068,18 @@ index 603be0e..4f25cdb 100644
 -}
 -
  export const walkthroughs: GettingStartedWalkthroughContent = [
-@@ -238,3 +204,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
- 		id: 'Setup',
--		title: localize('gettingStarted.setup.title', "Get Started with VS Code"),
-+		title: localize('gettingStarted.setup.title', "Get Started with !!APP_NAME!!"),
- 		description: localize('gettingStarted.setup.description', "Customize your editor, learn the basics, and start coding"),
-@@ -243,3 +209,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -245,3 +211,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		when: '!isWeb',
 -		walkthroughPageTitle: localize('gettingStarted.setup.walkthroughPageTitle', 'Setup VS Code'),
 +		walkthroughPageTitle: localize('gettingStarted.setup.walkthroughPageTitle', 'Setup !!APP_NAME!!'),
  		next: 'Beginner',
-@@ -248,5 +214,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -250,5 +216,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  			steps: [
 -				createCopilotSetupStep('CopilotSetupSignedOut', CopilotSignedOutButton, 'chatSetupSignedOut', true),
 -				createCopilotSetupStep('CopilotSetupComplete', CopilotCompleteButton, 'chatSetupInstalled && (chatPlanPro || chatPlanLimited)', false),
 -				createCopilotSetupStep('CopilotSetupSignedIn', CopilotSignedInButton, '!chatSetupSignedOut && (!chatSetupInstalled || chatPlanCanSignUp)', true),
  				{
-@@ -264,6 +227,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -266,6 +229,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
 -					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VS Code's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are !!APP_NAME!!'s power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1093,7 +1088,7 @@ index 603be0e..4f25cdb 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions-web.svg'
 +						type: 'svg', altText: '!!APP_NAME!! extension marketplace with featured language extensions', path: 'extensions-web.svg'
  					},
-@@ -279,21 +242,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -281,21 +244,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  				},
 -				// Hidden in favor of copilot entry (to be revisited when copilot entry moves, if at all)
 -				// {
@@ -1115,17 +1110,17 @@ index 603be0e..4f25cdb 100644
 -				// 	},
 -				// },
  				{
-@@ -301,3 +245,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -303,3 +247,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.settings.title', "Tune your settings"),
 -					description: localize('gettingStarted.settingsAndSync.description.interpolated', "Customize every aspect of VS Code and your extensions to your liking. [Back up and sync](command:workbench.userDataSync.actions.turnOn) your essential customizations across all your devices.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
 +					description: localize('gettingStarted.settingsAndSync.description.interpolated', "Customize every aspect of !!APP_NAME!! and your extensions to your liking. [Back up and sync](command:workbench.userDataSync.actions.turnOn) your essential customizations across all your devices.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
  					when: 'syncStatus != uninitialized',
-@@ -305,3 +249,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -307,3 +251,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					media: {
 -						type: 'svg', altText: 'VS Code Settings', path: 'settings.svg'
 +						type: 'svg', altText: '!!APP_NAME!! Settings', path: 'settings.svg'
  					},
-@@ -311,24 +255,5 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -313,24 +257,5 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPalette.title', "Unlock productivity with the Command Palette "),
 -					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in !!APP_NAME!!.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
@@ -1151,24 +1146,24 @@ index 603be0e..4f25cdb 100644
 -				// 	}
 -				// },
  				{
-@@ -345,4 +270,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -347,4 +272,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.videoTutorial.title', "Watch video tutorials"),
 -					description: localize('gettingStarted.videoTutorial.description.interpolated', "Watch the first in a series of short & practical video tutorials for VS Code's key features.\n{0}", Button(localize('watch', "Watch Tutorial"), 'https://aka.ms/vscode-getting-started-video')),
 -					media: { type: 'svg', altText: 'VS Code Settings', path: 'learn.svg' },
 +					description: localize('gettingStarted.videoTutorial.description.interpolated', "Watch the first in a series of short & practical video tutorials for !!APP_NAME!!'s key features.\n{0}", Button(localize('watch', "Watch Tutorial"), 'https://aka.ms/vscode-getting-started-video')),
 +					media: { type: 'svg', altText: '!!APP_NAME!! Settings', path: 'learn.svg' },
  				}
-@@ -354,3 +279,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -356,3 +281,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		id: 'SetupWeb',
 -		title: localize('gettingStarted.setupWeb.title', "Get Started with VS Code for the Web"),
 +		title: localize('gettingStarted.setupWeb.title', "Get Started with !!APP_NAME!! for the Web"),
  		description: localize('gettingStarted.setupWeb.description', "Customize your editor, learn the basics, and start coding"),
-@@ -360,3 +285,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -362,3 +287,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		next: 'Beginner',
 -		walkthroughPageTitle: localize('gettingStarted.setupWeb.walkthroughPageTitle', 'Setup VS Code Web'),
 +		walkthroughPageTitle: localize('gettingStarted.setupWeb.walkthroughPageTitle', 'Setup !!APP_NAME!! Web'),
  		content: {
-@@ -386,6 +311,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -388,6 +313,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
 -					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VS Code's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are !!APP_NAME!!'s power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1177,7 +1172,7 @@ index 603be0e..4f25cdb 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions-web.svg'
 +						type: 'svg', altText: '!!APP_NAME!! extension marketplace with featured language extensions', path: 'extensions-web.svg'
  					},
-@@ -401,12 +326,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -403,12 +328,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  				},
 -				{
 -					id: 'settingsSyncWeb',
@@ -1190,32 +1185,32 @@ index 603be0e..4f25cdb 100644
 -					},
 -				},
  				{
-@@ -414,3 +329,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -416,3 +331,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPalette.title', "Unlock productivity with the Command Palette "),
 -					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in !!APP_NAME!!.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'svg', altText: 'Command Palette overlay for searching and executing commands.', path: 'commandPalette.svg' },
-@@ -420,3 +335,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -422,3 +337,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into VS Code.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
 +					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into !!APP_NAME!!.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
  					when: 'workspaceFolderCount == 0',
-@@ -441,3 +356,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -443,3 +358,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		title: localize('gettingStarted.setupAccessibility.title', "Get Started with Accessibility Features"),
 -		description: localize('gettingStarted.setupAccessibility.description', "Learn the tools and shortcuts that make VS Code accessible. Note that some actions are not actionable from within the context of the walkthrough."),
 +		description: localize('gettingStarted.setupAccessibility.description', "Learn the tools and shortcuts that make !!APP_NAME!! accessible. Note that some actions are not actionable from within the context of the walkthrough."),
  		isFeatured: true,
-@@ -446,3 +361,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -448,3 +363,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		next: 'Setup',
 -		walkthroughPageTitle: localize('gettingStarted.setupAccessibility.walkthroughPageTitle', 'Setup VS Code Accessibility'),
 +		walkthroughPageTitle: localize('gettingStarted.setupAccessibility.walkthroughPageTitle', 'Setup !!APP_NAME!! Accessibility'),
  		content: {
-@@ -477,3 +392,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -479,3 +394,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPaletteAccessibility.title', "Unlock productivity with the Command Palette "),
 -					description: localize('gettingStarted.commandPaletteAccessibility.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPaletteAccessibility.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in !!APP_NAME!!.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'markdown', path: 'empty' },
-@@ -550,6 +465,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -552,6 +467,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
 -					description: localize('gettingStarted.extensions.description.interpolated', "Extensions are VS Code's power-ups. They range from handy productivity hacks, expanding out-of-the-box features, to adding completely new capabilities.\n{0}", Button(localize('browsePopular', "Browse Popular Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensions.description.interpolated', "Extensions are !!APP_NAME!!'s power-ups. They range from handy productivity hacks, expanding out-of-the-box features, to adding completely new capabilities.\n{0}", Button(localize('browsePopular', "Browse Popular Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1224,12 +1219,12 @@ index 603be0e..4f25cdb 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions.svg'
 +						type: 'svg', altText: '!!APP_NAME!! extension marketplace with featured language extensions', path: 'extensions.svg'
  					},
-@@ -678,26 +593,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -680,26 +595,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  			steps: [
 -				{
 -					id: 'copilotSetup.chat',
--					title: localize('gettingStarted.agentMode.title', "Agent Mode"),
--					description: localize('gettingStarted.agentMode.description', "Tackle complex, multi-step tasks with AI"),
+-					title: localize('gettingStarted.agentMode.title', "Agent mode"),
+-					description: localize('gettingStarted.agentMode.description', "Analyzes the problem, plans next steps, and makes changes for you."),
 -					media: {
 -						type: 'svg', altText: 'VS Code Copilot multi file edits', path: 'multi-file-edits.svg'
 -					},
@@ -1237,17 +1232,17 @@ index 603be0e..4f25cdb 100644
 -				{
 -					id: 'copilotSetup.inline',
 -					title: localize('gettingStarted.nes.title', "Next Edit Suggestions"),
--					description: localize('gettingStarted.nes.description', "Your next move, predicted while you code"),
+-					description: localize('gettingStarted.nes.description', "Get code suggestions that predict your next edit."),
 -					media: {
 -						type: 'svg', altText: 'Next Edit Suggestions', path: 'ai-powered-suggestions.svg'
 -					},
 -				},
 -				{
 -					id: 'copilotSetup.customize',
--					title: localize('gettingStarted.customize.title', "Customize"),
--					description: localize('gettingStarted.customize.description', "Choose your model, tools, and personalized instructions\n{0}", Button(localize('signUp', "Set up AI in VS Code"), 'command:workbench.action.chat.triggerSetup')),
+-					title: localize('gettingStarted.customize.title', "Personalized to how you work"),
+-					description: localize('gettingStarted.customize.description', "Swap models, add agent mode tools, and create personalized instructions.\n{0}", Button(localize('signUp', "Set up AI"), 'command:workbench.action.chat.triggerSetup')),
 -					media: {
--						type: 'svg', altText: 'Customize', path: 'multi-file-edits.svg'
+-						type: 'svg', altText: 'Personalize', path: 'multi-file-edits.svg'
 -					},
 -				},
  				{
@@ -1309,10 +1304,10 @@ index 88e0091..ec657a1 100644
 +				description: localize('argv.useInMemorySecretStorage', "Ensures that an in-memory store will be used for secret storage instead of using the OS's credential store. This is often used when running !!APP_NAME!! extension tests or when you're experiencing difficulties with the credential store.")
  			}
 diff --git a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-index 37dfdb6..17efc99 100644
+index edfe3a2..71a206f 100644
 --- a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
 +++ b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-@@ -1044,3 +1044,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
+@@ -1045,3 +1045,3 @@ export class ExtensionManagementService extends CommontExtensionManagementServic
  
 -		const productName = localize('VS Code for Web', "{0} for the Web", this.productService.nameLong);
 +		const productName = localize('!!APP_NAME!! for Web', "{0} for the Web", this.productService.nameLong);
