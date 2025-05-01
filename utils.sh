@@ -2,6 +2,7 @@
 
 APP_NAME="${APP_NAME:-VSCodium}"
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+ASSETS_REPOSITORY="${ASSETS_REPOSITORY:-VSCodium/vscodium}"
 BINARY_NAME="${BINARY_NAME:-codium}"
 GH_REPO_PATH="${GH_REPO_PATH:-VSCodium/vscodium}"
 ORG_NAME="${ORG_NAME:-VSCodium}"
@@ -18,6 +19,7 @@ apply_patch() {
 
   replace "s|!!APP_NAME!!|${APP_NAME}|g" "$1"
   replace "s|!!APP_NAME_LC!!|${APP_NAME_LC}|g" "$1"
+  replace "s|!!ASSETS_REPOSITORY!!|${ASSETS_REPOSITORY}|g" "$1"
   replace "s|!!BINARY_NAME!!|${BINARY_NAME}|g" "$1"
   replace "s|!!GH_REPO_PATH!!|${GH_REPO_PATH}|g" "$1"
   replace "s|!!ORG_NAME!!|${ORG_NAME}|g" "$1"
