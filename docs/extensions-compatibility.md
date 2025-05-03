@@ -38,6 +38,7 @@ The following extensions are functional replacements for incompatible extensions
 ### Remote
 
 - [Open Remote - SSH](https://open-vsx.org/extension/jeanp413/open-remote-ssh)
+> SSH server must be configured with the setting `AllowTcpForwarding yes`.
 - [Open Remote - WSL](https://open-vsx.org/extension/jeanp413/open-remote-wsl)
 
 ## Beyond
