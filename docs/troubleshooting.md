@@ -1,3 +1,5 @@
+<!-- order: 25 -->
+
 # Troubleshooting
 
 ## Table of Contents
@@ -8,10 +10,6 @@
   - [Global menu workaround for KDE](#linux-kde-global-menu)
   - [Flatpak most common issues](#linux-flatpak-most-common-issues)
   - [Remote SSH doesn't work](#linux-remote-ssh)
-- [macOS](#macos)
-  - [App can't be opened because Apple cannot check it for malicious software](#macos-unidentified-developer)
-  - ["VSCodium.app" is damaged and can’t be opened. You should move it to the Bin](#macos-quarantine)
-
 
 ## <a id="linux"></a>Linux
 
@@ -71,20 +69,4 @@ Use the VSCodium's compatible extension [Open Remote - SSH](https://open-vsx.org
 
 On the server, in the `sshd` config, `AllowTcpForwarding` need to be set to `yes`.
 
-It might requires additional dependeincies due to the OS/distro (alpine).
-
-## <a id="macos"></a>macOS
-
-Since the App is signed with a self-signed certificate, on the first launch, you might see the following messages:
-
-#### <a id="macos-unidentified-developer"></a>*App can't be opened because Apple cannot check it for malicious software*
-
-You can right-click the App and choose `Open`.
-
-#### <a id="macos-quarantine"></a>*"VSCodium.app" is damaged and can’t be opened. You should move it to the Bin.*
-
-The following command will remove the quarantine attribute.
-
-```
-xattr -r -d com.apple.quarantine /Applications/VSCodium.app
-```
+It might requires additional dependencies due to the OS/distro (alpine).

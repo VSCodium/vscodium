@@ -1,3 +1,5 @@
+<!-- order: 35 -->
+
 # How to build VSCodium
 
 ## Table of Contents

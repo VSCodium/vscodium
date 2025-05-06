@@ -1,3 +1,5 @@
+<!-- order: 0 -->
+
 # Extensions compatibility
 
 ## Table of Contents
