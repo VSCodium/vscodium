@@ -19,6 +19,10 @@ check_file() {
     shift
   done
 
+  if [[ -f "${1}.bak" ]]; then
+    mv -f $1{.bak,}
+  fi
+
   if [[ -f "${1}" ]]; then
     echo applying patch: "${1}"
     if ! git apply --ignore-whitespace "${1}"; then
@@ -55,17 +59,21 @@ fi
 
 for ARCH in alpine linux osx windows; do
   for FILE in "../patches/${ARCH}/"*.patch; do
-    if [[ "${FILE}" != *"/arch-"* ]]; then
+    if [[ "${ARCH}" == "linux" && "${FILE}" == *"/arch-"* ]] || [[ "${ARCH}" == "windows" && "${FILE}" == *"/cli"* ]]; then
+      echo "skip ${FILE}"
+    else
       check_file "${FILE}"
     fi
   done
 
   if [[ "${ARCH}" == "linux" ]]; then
-    check_file "../patches/linux/arch-0-support.patch"
-    check_file "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch"
-    check_file "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch" "../patches/linux/arch-2-riscv64.patch"
-    check_file "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch" "../patches/linux/arch-2-riscv64.patch" "../patches/linux/arch-3-loong64.patch"
-    check_file "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch" "../patches/linux/arch-2-riscv64.patch" "../patches/linux/arch-3-loong64.patch" "../patches/linux/arch-4-s390x.patch"
+    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch"
+    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch"
+    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch" "../patches/linux/arch-2-riscv64.patch"
+    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch" "../patches/linux/arch-2-riscv64.patch" "../patches/linux/arch-3-loong64.patch"
+    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch" "../patches/linux/arch-2-riscv64.patch" "../patches/linux/arch-3-loong64.patch" "../patches/linux/arch-4-s390x.patch"
+  elif [[ "${ARCH}" == "windows" ]]; then
+    check_file "../patches/cli.patch" "../patches/windows/cli.patch"
   fi
 
   for TARGET in client reh; do

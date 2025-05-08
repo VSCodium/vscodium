@@ -50,32 +50,32 @@ index 34d20e9..8404cdf 100644
 +		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
  	</policyNamespaces>
 diff --git a/eslint.config.js b/eslint.config.js
-index 822da54..6236bf0 100644
+index f1b01d0..7dca1f1 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
-@@ -796,3 +796,3 @@ export default tseslint.config(
+@@ -797,3 +797,3 @@ export default tseslint.config(
  						'@vscode/iconv-lite-umd',
 -						'@vscode/policy-watcher',
 +						'@vscodium/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
-index 8112caf..682b56a 100644
+index beb023f..623c8ab 100644
 --- a/package-lock.json
 +++ b/package-lock.json
-@@ -19,3 +19,2 @@
+@@ -18,3 +18,2 @@
          "@vscode/iconv-lite-umd": "0.7.0",
--        "@vscode/policy-watcher": "^1.3.0",
+-        "@vscode/policy-watcher": "^1.3.2",
          "@vscode/proxy-agent": "^0.32.0",
-@@ -30,2 +29,3 @@
+@@ -29,2 +28,3 @@
          "@vscode/windows-registry": "^1.1.0",
-+        "@vscodium/policy-watcher": "^1.3.0-2503300035",
-         "@xterm/addon-clipboard": "^0.2.0-beta.82",
-@@ -2844,22 +2844,2 @@
++        "@vscodium/policy-watcher": "^1.3.2-252465",
+         "@xterm/addon-clipboard": "^0.2.0-beta.84",
+@@ -2701,22 +2701,2 @@
      },
 -    "node_modules/@vscode/policy-watcher": {
--      "version": "1.3.0",
--      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.3.0.tgz",
--      "integrity": "sha512-a8pPxlZlMJWOOj2NZ/2ceXgHdDU/NXo+8Pn/InV/sPBfbvTnf/MpMc4pscm9pdU4UIrTGR5+OduQW7mTK8DK7Q==",
+-      "version": "1.3.2",
+-      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.3.2.tgz",
+-      "integrity": "sha512-fmNPYysU2ioH99uCaBPiRblEZSnir5cTmc7w91hAxAoYoGpHt2PZPxT5eIOn7FGmPOsjLdQcd6fduFJGYVD4Mw==",
 -      "hasInstallScript": true,
 -      "license": "MIT",
 -      "dependencies": {
@@ -93,12 +93,12 @@ index 8112caf..682b56a 100644
 -      }
 -    },
      "node_modules/@vscode/proxy-agent": {
-@@ -3260,2 +3240,22 @@
+@@ -3117,2 +3097,22 @@
      },
 +    "node_modules/@vscodium/policy-watcher": {
-+      "version": "1.3.0-2503300035",
-+      "resolved": "https://registry.npmjs.org/@vscodium/policy-watcher/-/policy-watcher-1.3.0-2503300035.tgz",
-+      "integrity": "sha512-Vf83Z2uKkq+SL2Kr+DHlE7Ezb+HBnspn5iMazUele1Mj/7WQv0Zq/fTQ3LFKKVC6hV5+G95BXwOc7oSAU0gWUw==",
++      "version": "1.3.2-252465",
++      "resolved": "https://registry.npmjs.org/@vscodium/policy-watcher/-/policy-watcher-1.3.2-252465.tgz",
++      "integrity": "sha512-kpnb656HMteBIm8d9LhBpQ5gL2A/4rJrsaLCF0D8IWyrZAQ0UR9EzXM6tZ6p5H+KWot3QUjm0Gry6vMV1yye5Q==",
 +      "hasInstallScript": true,
 +      "license": "MIT",
 +      "dependencies": {
@@ -117,13 +117,13 @@ index 8112caf..682b56a 100644
 +    },
      "node_modules/@webassemblyjs/ast": {
 diff --git a/package.json b/package.json
-index add0c27..2e5b5f1 100644
+index 8d3443f..e95927c 100644
 --- a/package.json
 +++ b/package.json
-@@ -78,3 +78,3 @@
+@@ -77,3 +77,3 @@
      "@vscode/iconv-lite-umd": "0.7.0",
--    "@vscode/policy-watcher": "^1.3.0",
-+    "@vscodium/policy-watcher": "^1.3.0-2503300035",
+-    "@vscode/policy-watcher": "^1.3.2",
++    "@vscodium/policy-watcher": "^1.3.2-252465",
      "@vscode/proxy-agent": "^0.32.0",
 diff --git a/src/vs/base/test/node/uri.perf.data.txt b/src/vs/base/test/node/uri.perf.data.txt
 index ee0a24b..881ce36 100644

@@ -27,11 +27,11 @@ index c655ce7..c7150f2 100755
 +  TRIPLE="powerpc64le-linux-gnu"
  fi
 diff --git a/build/checksums/vscode-sysroot.txt b/build/checksums/vscode-sysroot.txt
-index 67182b0..db63d02 100644
+index 5744a5f..3fedbe9 100644
 --- a/build/checksums/vscode-sysroot.txt
 +++ b/build/checksums/vscode-sysroot.txt
-@@ -3 +3,2 @@
- dbb927408393041664a020661f2641c9785741be3d29b050b9dac58980967784  x86_64-linux-gnu-glibc-2.28.tar.gz
+@@ -7 +7,2 @@ f82c8dacbb9dd85819e4801909eb4e842ac12c899632aa75b4839383a18c7501  arm-rpi-linux-
+ 84acc5a15566c98ddf80631731d672e0ce9febcf3f2e969101e0dfd7ef2405e3  x86_64-linux-gnu-glibc-2.28-gcc-8.5.0.tar.gz
 +fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
 index 5ac9f95..cd04bdf 100644
@@ -191,10 +191,10 @@ index 91b0ebc..0d0f11b 100644
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
-index 532e3d5..ab6b826 100644
+index 783db5c..2b63de5 100644
 --- a/build/linux/debian/install-sysroot.js
 +++ b/build/linux/debian/install-sysroot.js
-@@ -140,2 +140,6 @@ async function getVSCodeSysroot(arch) {
+@@ -146,2 +146,6 @@ async function getVSCodeSysroot(arch, isMusl = false) {
              break;
 +		case 'ppc64le':
 +            expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
@@ -202,10 +202,10 @@ index 532e3d5..ab6b826 100644
 +            break;
      }
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index 6543b49..c23db0f 100644
+index 57cf015..8cfa7f4 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -154,2 +154,6 @@ export async function getVSCodeSysroot(arch: DebianArchString): Promise<string>
+@@ -159,2 +159,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
  			break;
 +		case 'ppc64le':
 +			expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
@@ -513,18 +513,18 @@ index 8ea4c0b..b9d3b47 100644
 +    ppc64el) LDCONFIG_ARCH="64bit";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index b7f8325..5400065 100644
+index f270903..8b028eb 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-@@ -44,2 +44,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+@@ -46,2 +46,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
  		case TargetPlatform.LINUX_ARMHF: return 'Linux ARM';
 +		case TargetPlatform.LINUX_PPC64LE: return 'Linux PowerPC64';
  
-@@ -67,2 +68,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+@@ -69,2 +70,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
  		case TargetPlatform.LINUX_ARMHF: return TargetPlatform.LINUX_ARMHF;
 +		case TargetPlatform.LINUX_PPC64LE: return TargetPlatform.LINUX_PPC64LE;
  
-@@ -102,2 +104,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+@@ -104,2 +106,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
  			}
 +			if (arch === 'ppc64le') {
 +				return TargetPlatform.LINUX_PPC64LE;

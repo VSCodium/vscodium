@@ -71,7 +71,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     cd ..
   fi
 
-  if [[ "${SHOULD_BUILD_DMG}" != "no" ]]; then
+  if [[ -n "${CERTIFICATE_OSX_P12_DATA}" && "${SHOULD_BUILD_DMG}" != "no" ]]; then
     echo "Building and moving DMG"
     pushd "VSCode-darwin-${VSCODE_ARCH}"
     npx create-dmg ./*.app .
@@ -213,6 +213,32 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   echo "Building and moving REH-web"
   cd "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
   tar czf "../assets/${APP_NAME_LC}-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+  cd ..
+fi
+
+set -ex
+
+if [[ "${SHOULD_BUILD_CLI}" != "no" ]]; then
+  echo "Building and moving CLI"
+
+  APPLICATION_NAME="$( node -p "require(\"./vscode/product.json\").applicationName" )"
+  NAME_SHORT="$( node -p "require(\"./vscode/product.json\").nameShort" )"
+  TUNNEL_APPLICATION_NAME="$( node -p "require(\"./vscode/product.json\").tunnelApplicationName" )"
+
+  mkdir -p "vscode-cli"
+
+  cd "vscode-cli"
+
+  if [[ "${OS_NAME}" == "osx" ]]; then
+    cp "../VSCode-${VSCODE_PLATFORM}-${VSCODE_ARCH}/${NAME_SHORT}.app/Contents/Resources/app/bin/${TUNNEL_APPLICATION_NAME}" "${APPLICATION_NAME}"
+  elif [[ "${OS_NAME}" == "windows" ]]; then
+    cp "../VSCode-${VSCODE_PLATFORM}-${VSCODE_ARCH}/bin/${TUNNEL_APPLICATION_NAME}.exe" "${APPLICATION_NAME}.exe"
+  else
+    cp "../VSCode-${VSCODE_PLATFORM}-${VSCODE_ARCH}/bin/${TUNNEL_APPLICATION_NAME}" "${APPLICATION_NAME}"
+  fi
+
+  tar czf "../assets/${APP_NAME_LC}-cli-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+
   cd ..
 fi
 
