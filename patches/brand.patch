@@ -1,5 +1,5 @@
 diff --git a/extensions/configuration-editing/src/configurationEditingMain.ts b/extensions/configuration-editing/src/configurationEditingMain.ts
-index f791557..04f138d 100644
+index 2578270..99c8ca5 100644
 --- a/extensions/configuration-editing/src/configurationEditingMain.ts
 +++ b/extensions/configuration-editing/src/configurationEditingMain.ts
 @@ -54,4 +54,4 @@ function registerVariableCompletions(pattern: string): vscode.Disposable {
@@ -10,7 +10,7 @@ index f791557..04f138d 100644
 +					{ label: 'workspaceFolderBasename', detail: vscode.l10n.t("The name of the folder opened in !!APP_NAME!! without any slashes (/)") },
  					{ label: 'fileWorkspaceFolderBasename', detail: vscode.l10n.t("The current opened file workspace folder name without any slashes (/)") },
 diff --git a/extensions/configuration-editing/src/settingsDocumentHelper.ts b/extensions/configuration-editing/src/settingsDocumentHelper.ts
-index 12b50f3..be792c2 100644
+index 12b50f3..7cb0d1b 100644
 --- a/extensions/configuration-editing/src/settingsDocumentHelper.ts
 +++ b/extensions/configuration-editing/src/settingsDocumentHelper.ts
 @@ -123,3 +123,3 @@ export class SettingsDocument {
@@ -19,7 +19,7 @@ index 12b50f3..be792c2 100644
 +		completions.push(this.newSimpleCompletionItem(getText('appName'), range, vscode.l10n.t("e.g. !!APP_NAME!!")));
  		completions.push(this.newSimpleCompletionItem(getText('remoteName'), range, vscode.l10n.t("e.g. SSH")));
 diff --git a/extensions/css-language-features/package.nls.json b/extensions/css-language-features/package.nls.json
-index 057ec21..45cd969 100644
+index 057ec21..53c32b4 100644
 --- a/extensions/css-language-features/package.nls.json
 +++ b/extensions/css-language-features/package.nls.json
 @@ -4,4 +4,4 @@
@@ -45,7 +45,7 @@ index 057ec21..45cd969 100644
 +	"scss.completion.triggerPropertyValueCompletion.desc": "By default, !!APP_NAME!! triggers property value completion after selecting a CSS property. Use this setting to disable this behavior.",
  	"scss.completion.completePropertyWithSemicolon.desc": "Insert semicolon at end of line when completing CSS properties.",
 diff --git a/extensions/emmet/package.nls.json b/extensions/emmet/package.nls.json
-index 2a58c39..af508f3 100644
+index 2a58c39..8224615 100644
 --- a/extensions/emmet/package.nls.json
 +++ b/extensions/emmet/package.nls.json
 @@ -1,3 +1,3 @@
@@ -54,7 +54,7 @@ index 2a58c39..af508f3 100644
 +	"description": "Emmet support for !!APP_NAME!!",
  	"command.wrapWithAbbreviation": "Wrap with Abbreviation",
 diff --git a/extensions/extension-editing/src/constants.ts b/extensions/extension-editing/src/constants.ts
-index 1be4d0e..73a8f3e 100644
+index 1be4d0e..647b147 100644
 --- a/extensions/extension-editing/src/constants.ts
 +++ b/extensions/extension-editing/src/constants.ts
 @@ -8,2 +8,2 @@ import { l10n } from 'vscode';
@@ -62,7 +62,7 @@ index 1be4d0e..73a8f3e 100644
 -export const redundantImplicitActivationEvent = l10n.t("This activation event can be removed as VS Code generates these automatically from your package.json contribution declarations.");
 +export const redundantImplicitActivationEvent = l10n.t("This activation event can be removed as !!APP_NAME!! generates these automatically from your package.json contribution declarations.");
 diff --git a/extensions/extension-editing/src/extensionLinter.ts b/extensions/extension-editing/src/extensionLinter.ts
-index be7eea1..389e89e 100644
+index be7eea1..0737bab 100644
 --- a/extensions/extension-editing/src/extensionLinter.ts
 +++ b/extensions/extension-editing/src/extensionLinter.ts
 @@ -34,4 +34,4 @@ const relativeUrlRequiresHttpsRepository = l10n.t("Relative image URLs require a
@@ -73,37 +73,37 @@ index be7eea1..389e89e 100644
 +const bumpEngineForImplicitActivationEvents = l10n.t("This activation event can be removed for extensions targeting engine version ^1.75 as !!APP_NAME!! will generate these automatically from your package.json contribution declarations.");
  const starActivation = l10n.t("Using '*' activation is usually a bad idea as it impacts performance.");
 diff --git a/extensions/git/package.nls.json b/extensions/git/package.nls.json
-index 52ba381..8a42701 100644
+index 403f704..2f838cd 100644
 --- a/extensions/git/package.nls.json
 +++ b/extensions/git/package.nls.json
-@@ -227,3 +227,3 @@
+@@ -228,3 +228,3 @@
  			"{Locked='](command:git.showOutput'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -255,4 +255,4 @@
+@@ -256,4 +256,4 @@
  	"config.showCommitInput": "Controls whether to show the commit input in the Git source control panel.",
 -	"config.terminalAuthentication": "Controls whether to enable VS Code to be the authentication handler for Git processes spawned in the Integrated Terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
 -	"config.terminalGitEditor": "Controls whether to enable VS Code to be the Git editor for Git processes spawned in the integrated terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
 +	"config.terminalAuthentication": "Controls whether to enable !!APP_NAME!! to be the authentication handler for Git processes spawned in the Integrated Terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
 +	"config.terminalGitEditor": "Controls whether to enable !!APP_NAME!! to be the Git editor for Git processes spawned in the integrated terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
  	"config.timeline.showAuthor": "Controls whether to show the commit author in the Timeline view.",
-@@ -323,3 +323,3 @@
+@@ -324,3 +324,3 @@
  			"{Locked='](command:workbench.extensions.search?%22%40category%3A%5C%22scm%20providers%5C%22%22'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -333,3 +333,3 @@
+@@ -334,3 +334,3 @@
  			"{Locked='](command:workbench.extensions.search?%22%40category%3A%5C%22scm%20providers%5C%22%22'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -343,3 +343,3 @@
+@@ -344,3 +344,3 @@
  			"{Locked='](command:workbench.extensions.search?%22%40category%3A%5C%22scm%20providers%5C%22%22'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -355,6 +355,6 @@
+@@ -356,6 +356,6 @@
  	"view.workbench.scm.disabled": {
 -		"message": "If you would like to use Git features, please enable Git in your [settings](command:workbench.action.openSettings?%5B%22git.enabled%22%5D).\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "If you would like to use Git features, please enable Git in your [settings](command:workbench.action.openSettings?%5B%22git.enabled%22%5D).\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -112,7 +112,7 @@ index 52ba381..8a42701 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -363,6 +363,6 @@
+@@ -364,6 +364,6 @@
  	"view.workbench.scm.empty": {
 -		"message": "In order to use Git features, you can open a folder containing a Git repository or clone from a URL.\n[Open Folder](command:vscode.openFolder)\n[Clone Repository](command:git.cloneRecursive)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "In order to use Git features, you can open a folder containing a Git repository or clone from a URL.\n[Open Folder](command:vscode.openFolder)\n[Clone Repository](command:git.cloneRecursive)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -121,7 +121,7 @@ index 52ba381..8a42701 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -371,6 +371,6 @@
+@@ -372,6 +372,6 @@
  	"view.workbench.scm.folder": {
 -		"message": "The folder currently open doesn't have a Git repository. You can initialize a repository which will enable source control features powered by Git.\n[Initialize Repository](command:git.init?%5Btrue%5D)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "The folder currently open doesn't have a Git repository. You can initialize a repository which will enable source control features powered by Git.\n[Initialize Repository](command:git.init?%5Btrue%5D)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -130,7 +130,7 @@ index 52ba381..8a42701 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -379,6 +379,6 @@
+@@ -380,6 +380,6 @@
  	"view.workbench.scm.workspace": {
 -		"message": "The workspace currently open doesn't have any folders containing Git repositories. You can initialize a repository on a folder which will enable source control features powered by Git.\n[Initialize Repository](command:git.init)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "The workspace currently open doesn't have any folders containing Git repositories. You can initialize a repository on a folder which will enable source control features powered by Git.\n[Initialize Repository](command:git.init)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -139,7 +139,7 @@ index 52ba381..8a42701 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -387,6 +387,6 @@
+@@ -388,6 +388,6 @@
  	"view.workbench.scm.emptyWorkspace": {
 -		"message": "The workspace currently open doesn't have any folders containing Git repositories.\n[Add Folder to Workspace](command:workbench.action.addRootFolder)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "The workspace currently open doesn't have any folders containing Git repositories.\n[Add Folder to Workspace](command:workbench.action.addRootFolder)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -148,27 +148,27 @@ index 52ba381..8a42701 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -405,3 +405,3 @@
+@@ -406,3 +406,3 @@
  			"{Locked='](command:workbench.action.openSettings?%5B%22git.openRepositoryInParentFolders%22%5D'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -414,3 +414,3 @@
+@@ -415,3 +415,3 @@
  			"{Locked='](command:workbench.action.openSettings?%5B%22git.openRepositoryInParentFolders%22%5D'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -422,3 +422,3 @@
+@@ -423,3 +423,3 @@
  			"{Locked='](command:git.manageUnsafeRepositories'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -430,3 +430,3 @@
+@@ -431,3 +431,3 @@
  			"{Locked='](command:git.manageUnsafeRepositories'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -435,6 +435,6 @@
+@@ -436,6 +436,6 @@
  	"view.workbench.scm.closedRepository": {
 -		"message": "A Git repository was found that was previously closed.\n[Reopen Closed Repository](command:git.reopenClosedRepositories)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "A Git repository was found that was previously closed.\n[Reopen Closed Repository](command:git.reopenClosedRepositories)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -177,7 +177,7 @@ index 52ba381..8a42701 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -443,6 +443,6 @@
+@@ -444,6 +444,6 @@
  	"view.workbench.scm.closedRepositories": {
 -		"message": "Git repositories were found that were previously closed.\n[Reopen Closed Repositories](command:git.reopenClosedRepositories)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "Git repositories were found that were previously closed.\n[Reopen Closed Repositories](command:git.reopenClosedRepositories)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -186,18 +186,18 @@ index 52ba381..8a42701 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -454,3 +454,3 @@
+@@ -455,3 +455,3 @@
  			"{Locked='](command:git.clone'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -458,3 +458,3 @@
+@@ -459,3 +459,3 @@
  	},
 -	"view.workbench.learnMore": "To learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm)."
 +	"view.workbench.learnMore": "To learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm)."
  }
 diff --git a/extensions/github/package.nls.json b/extensions/github/package.nls.json
-index 40271be..b52ff0f 100644
+index 40271be..00dae16 100644
 --- a/extensions/github/package.nls.json
 +++ b/extensions/github/package.nls.json
 @@ -2,3 +2,3 @@
@@ -221,7 +221,7 @@ index 40271be..b52ff0f 100644
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
 diff --git a/extensions/grunt/package.nls.json b/extensions/grunt/package.nls.json
-index 789a579..fcf39ff 100644
+index 789a579..12e230e 100644
 --- a/extensions/grunt/package.nls.json
 +++ b/extensions/grunt/package.nls.json
 @@ -1,4 +1,4 @@
@@ -232,7 +232,7 @@ index 789a579..fcf39ff 100644
 +	"displayName": "Grunt support for !!APP_NAME!!",
  	"config.grunt.autoDetect": "Controls enablement of Grunt task detection. Grunt task detection can cause files in any open workspace to be executed.",
 diff --git a/extensions/html-language-features/client/src/htmlClient.ts b/extensions/html-language-features/client/src/htmlClient.ts
-index 7b69c79..6441167 100644
+index 6e66f8d..7c86a69 100644
 --- a/extensions/html-language-features/client/src/htmlClient.ts
 +++ b/extensions/html-language-features/client/src/htmlClient.ts
 @@ -108,3 +108,3 @@ export async function startClient(context: ExtensionContext, newLanguageClient:
@@ -241,7 +241,7 @@ index 7b69c79..6441167 100644
 +					const res = await window.showInformationMessage(l10n.t('!!APP_NAME!! now has built-in support for auto-renaming tags. Do you want to enable it?'), configure);
  					if (res === configure) {
 diff --git a/extensions/html-language-features/package.nls.json b/extensions/html-language-features/package.nls.json
-index f36ecf3..9545ba2 100644
+index f36ecf3..0d795cb 100644
 --- a/extensions/html-language-features/package.nls.json
 +++ b/extensions/html-language-features/package.nls.json
 @@ -3,3 +3,3 @@
@@ -255,7 +255,7 @@ index f36ecf3..9545ba2 100644
 +	"html.trace.server.desc": "Traces the communication between !!APP_NAME!! and the HTML language server.",
  	"html.validate.scripts": "Controls whether the built-in HTML language support validates embedded scripts.",
 diff --git a/extensions/html-language-features/schemas/package.schema.json b/extensions/html-language-features/schemas/package.schema.json
-index 205143c..5a069c6 100644
+index 205143c..cc9f918 100644
 --- a/extensions/html-language-features/schemas/package.schema.json
 +++ b/extensions/html-language-features/schemas/package.schema.json
 @@ -9,3 +9,3 @@
@@ -264,7 +264,7 @@ index 205143c..5a069c6 100644
 +					"markdownDescription": "A list of relative file paths pointing to JSON files following the [custom data format](https://github.com/microsoft/vscode-html-languageservice/blob/master/docs/customData.md).\n\n!!APP_NAME!! loads custom data on startup to enhance its HTML support for the custom HTML tags, attributes and attribute values you specify in the JSON files.\n\nThe file paths are relative to workspace and only workspace folder settings are considered.",
  					"items": {
 diff --git a/extensions/jake/package.nls.json b/extensions/jake/package.nls.json
-index e82030e..1a634bd 100644
+index e82030e..ac999f6 100644
 --- a/extensions/jake/package.nls.json
 +++ b/extensions/jake/package.nls.json
 @@ -1,4 +1,4 @@
@@ -275,7 +275,7 @@ index e82030e..1a634bd 100644
 +	"displayName": "Jake support for !!APP_NAME!!",
  	"jake.taskDefinition.type.description": "The Jake task to customize.",
 diff --git a/extensions/json-language-features/package.nls.json b/extensions/json-language-features/package.nls.json
-index af6c9d8..7057b54 100644
+index af6c9d8..36e64cf 100644
 --- a/extensions/json-language-features/package.nls.json
 +++ b/extensions/json-language-features/package.nls.json
 @@ -11,3 +11,3 @@
@@ -284,7 +284,7 @@ index af6c9d8..7057b54 100644
 +	"json.tracing.desc": "Traces the communication between !!APP_NAME!! and the JSON language server.",
  	"json.colorDecorators.enable.desc": "Enables or disables color decorators",
 diff --git a/extensions/markdown-language-features/package.nls.json b/extensions/markdown-language-features/package.nls.json
-index fe98103..05afb90 100644
+index fe98103..ca36e86 100644
 --- a/extensions/markdown-language-features/package.nls.json
 +++ b/extensions/markdown-language-features/package.nls.json
 @@ -22,3 +22,3 @@
@@ -298,7 +298,7 @@ index fe98103..05afb90 100644
 +			"This setting is use the user drops or pastes image data into the editor. In this case, !!APP_NAME!! automatically creates a new image file in the workspace containing the dropped/pasted image.",
  			"It's easier to explain this setting with an example. For example, let's say the setting value was:",
 diff --git a/extensions/media-preview/package.nls.json b/extensions/media-preview/package.nls.json
-index c45e1e2..d8408d8 100644
+index 920ced7..755a166 100644
 --- a/extensions/media-preview/package.nls.json
 +++ b/extensions/media-preview/package.nls.json
 @@ -2,3 +2,3 @@
@@ -307,7 +307,7 @@ index c45e1e2..d8408d8 100644
 +	"description": "Provides !!APP_NAME!!'s built-in previews for images, audio, and video",
  	"customEditor.audioPreview.displayName": "Audio Preview",
 diff --git a/extensions/media-preview/src/audioPreview.ts b/extensions/media-preview/src/audioPreview.ts
-index e21a418..dc0698b 100644
+index 5058f7e..ee1283a 100644
 --- a/extensions/media-preview/src/audioPreview.ts
 +++ b/extensions/media-preview/src/audioPreview.ts
 @@ -82,3 +82,3 @@ class AudioPreview extends MediaPreview {
@@ -316,16 +316,16 @@ index e21a418..dc0698b 100644
 +		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using !!APP_NAME!!'s standard text/binary editor?")}</a>
  	</div>
 diff --git a/extensions/media-preview/src/imagePreview/index.ts b/extensions/media-preview/src/imagePreview/index.ts
-index e0c605c..079b9e8 100644
+index b405cd6..8eafea3 100644
 --- a/extensions/media-preview/src/imagePreview/index.ts
 +++ b/extensions/media-preview/src/imagePreview/index.ts
-@@ -191,3 +191,3 @@ class ImagePreview extends MediaPreview {
+@@ -209,3 +209,3 @@ class ImagePreview extends MediaPreview {
  		<p>${vscode.l10n.t("An error occurred while loading the image.")}</p>
 -		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using VS Code's standard text/binary editor?")}</a>
 +		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using !!APP_NAME!!'s standard text/binary editor?")}</a>
  	</div>
 diff --git a/extensions/media-preview/src/videoPreview.ts b/extensions/media-preview/src/videoPreview.ts
-index efc6be7..e2a186d 100644
+index 6701212..c9f9fb2 100644
 --- a/extensions/media-preview/src/videoPreview.ts
 +++ b/extensions/media-preview/src/videoPreview.ts
 @@ -86,3 +86,3 @@ class VideoPreview extends MediaPreview {
@@ -334,7 +334,7 @@ index efc6be7..e2a186d 100644
 +		<a href="#" class="open-file-link">${vscode.l10n.t("Open file using !!APP_NAME!!'s standard text/binary editor?")}</a>
  	</div>
 diff --git a/extensions/notebook-renderers/package.json b/extensions/notebook-renderers/package.json
-index d6ece35..9e878df 100644
+index d6ece35..547202f 100644
 --- a/extensions/notebook-renderers/package.json
 +++ b/extensions/notebook-renderers/package.json
 @@ -22,3 +22,3 @@
@@ -343,7 +343,7 @@ index d6ece35..9e878df 100644
 +				"displayName": "!!APP_NAME!! Builtin Notebook Output Renderer",
  				"requiresMessaging": "never",
 diff --git a/extensions/npm/package.nls.json b/extensions/npm/package.nls.json
-index 56a77ff..b1e3722 100644
+index 56a77ff..e9f32d1 100644
 --- a/extensions/npm/package.nls.json
 +++ b/extensions/npm/package.nls.json
 @@ -2,3 +2,3 @@
@@ -352,7 +352,7 @@ index 56a77ff..b1e3722 100644
 +	"displayName": "NPM support for !!APP_NAME!!",
  	"workspaceTrust": "This extension executes tasks, which require trust to run.",
 diff --git a/extensions/swift/syntaxes/swift.tmLanguage.json b/extensions/swift/syntaxes/swift.tmLanguage.json
-index 7d6694c..0e1d484 100644
+index 7d6694c..83b2599 100644
 --- a/extensions/swift/syntaxes/swift.tmLanguage.json
 +++ b/extensions/swift/syntaxes/swift.tmLanguage.json
 @@ -260,3 +260,3 @@
@@ -361,22 +361,22 @@ index 7d6694c..0e1d484 100644
 +					"comment": "The simpler (?<=\\bProcess\\.|\\bCommandLine\\.) breaks !!APP_NAME!! / Atom, see https://github.com/textmate/swift.tmbundle/issues/29",
  					"name": "support.variable.swift",
 diff --git a/extensions/typescript-language-features/package.nls.json b/extensions/typescript-language-features/package.nls.json
-index 447359e..e40077c 100644
+index 44fa54e..e349c6e 100644
 --- a/extensions/typescript-language-features/package.nls.json
 +++ b/extensions/typescript-language-features/package.nls.json
-@@ -75,4 +75,4 @@
+@@ -81,4 +81,4 @@
  	"configuration.tsserver.experimental.enableProjectDiagnostics": "Enables project wide error reporting.",
 -	"typescript.locale": "Sets the locale used to report JavaScript and TypeScript errors. Defaults to use VS Code's locale.",
 -	"typescript.locale.auto": "Use VS Code's configured display language.",
 +	"typescript.locale": "Sets the locale used to report JavaScript and TypeScript errors. Defaults to use !!APP_NAME!!'s locale.",
 +	"typescript.locale.auto": "Use !!APP_NAME!!'s configured display language.",
  	"configuration.implicitProjectConfig.module": "Sets the module system for the program. See more: https://www.typescriptlang.org/tsconfig#module.",
-@@ -160,3 +160,3 @@
+@@ -166,3 +166,3 @@
  	"typescript.workspaceSymbols.excludeLibrarySymbols": "Exclude symbols that come from library files in `Go to Symbol in Workspace` results. Requires using TypeScript 5.3+ in the workspace.",
 -	"typescript.updateImportsOnFileMove.enabled": "Enable/disable automatic updating of import paths when you rename or move a file in VS Code.",
 +	"typescript.updateImportsOnFileMove.enabled": "Enable/disable automatic updating of import paths when you rename or move a file in !!APP_NAME!!.",
  	"typescript.updateImportsOnFileMove.enabled.prompt": "Prompt on each rename.",
-@@ -167,6 +167,6 @@
+@@ -173,6 +173,6 @@
  	"configuration.suggest.completeJSDocs": "Enable/disable suggestion to complete JSDoc comments.",
 -	"configuration.tsserver.useVsCodeWatcher": "Use VS Code's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
 +	"configuration.tsserver.useVsCodeWatcher": "Use !!APP_NAME!!'s file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
@@ -385,7 +385,7 @@ index 447359e..e40077c 100644
 -	"configuration.tsserver.watchOptions.vscode": "Use VS Code's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
 +	"configuration.tsserver.watchOptions.vscode": "Use !!APP_NAME!!'s file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
  	"configuration.tsserver.watchOptions.watchFile": "Strategy for how individual files are watched.",
-@@ -221,9 +221,9 @@
+@@ -227,6 +227,6 @@
  	"configuration.suggest.objectLiteralMethodSnippets.enabled": "Enable/disable snippet completions for methods in object literals.",
 -	"configuration.tsserver.web.projectWideIntellisense.enabled": "Enable/disable project-wide IntelliSense on web. Requires that VS Code is running in a trusted context.",
 +	"configuration.tsserver.web.projectWideIntellisense.enabled": "Enable/disable project-wide IntelliSense on web. Requires that !!APP_NAME!! is running in a trusted context.",
@@ -394,11 +394,7 @@ index 447359e..e40077c 100644
 -	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want VS Code to detect a Node installation.",
 +	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want !!APP_NAME!! to detect a Node installation.",
  	"configuration.updateImportsOnPaste": "Automatically update imports when pasting code. Requires TypeScript 5.6+.",
- 	"walkthroughs.nodejsWelcome.title": "Get started with JavaScript and Node.js",
--	"walkthroughs.nodejsWelcome.description": "Make the most of Visual Studio Code's first-class JavaScript experience.",
-+	"walkthroughs.nodejsWelcome.description": "Make the most of !!APP_NAME!!'s first-class JavaScript experience.",
- 	"walkthroughs.nodejsWelcome.downloadNode.forMacOrWindows.title": "Install Node.js",
-@@ -235,7 +235,7 @@
+@@ -242,7 +242,7 @@
  	"walkthroughs.nodejsWelcome.debugJsFile.title": "Run and Debug your JavaScript",
 -	"walkthroughs.nodejsWelcome.debugJsFile.description": "Once you've installed Node.js, you can run JavaScript programs at a terminal by entering ``node your-file-name.js``\nAnother easy way to run Node.js programs is by using VS Code's debugger which lets you run your code, pause at different points, and help you understand what's going on step-by-step.\n[Start Debugging](command:javascript-walkthrough.commands.debugJsFile)",
 -	"walkthroughs.nodejsWelcome.debugJsFile.altText": "Debug and run your JavaScript code in Node.js with Visual Studio Code.",
@@ -411,7 +407,7 @@ index 447359e..e40077c 100644
 +	"walkthroughs.nodejsWelcome.learnMoreAboutJs.altText": "Learn more about JavaScript and Node.js in !!APP_NAME!!."
  }
 diff --git a/extensions/typescript-language-features/src/tsServer/versionManager.ts b/extensions/typescript-language-features/src/tsServer/versionManager.ts
-index 43a2413..277a089 100644
+index 43a2413..ba7934f 100644
 --- a/extensions/typescript-language-features/src/tsServer/versionManager.ts
 +++ b/extensions/typescript-language-features/src/tsServer/versionManager.ts
 @@ -100,3 +100,3 @@ export class TypeScriptVersionManager extends Disposable {
@@ -420,7 +416,7 @@ index 43a2413..277a089 100644
 +				: '') + vscode.l10n.t("Use !!APP_NAME!!'s Version"),
  			description: bundledVersion.displayName,
 diff --git a/extensions/typescript-language-features/src/tsServer/versionProvider.electron.ts b/extensions/typescript-language-features/src/tsServer/versionProvider.electron.ts
-index 239519e..a308077 100644
+index 239519e..5e58d4d 100644
 --- a/extensions/typescript-language-features/src/tsServer/versionProvider.electron.ts
 +++ b/extensions/typescript-language-features/src/tsServer/versionProvider.electron.ts
 @@ -70,3 +70,3 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
@@ -429,7 +425,7 @@ index 239519e..a308077 100644
 +		vscode.window.showErrorMessage(vscode.l10n.t("!!APP_NAME!!\'s tsserver was deleted by another application such as a misbehaving virus detection tool. Please reinstall !!APP_NAME!!."));
  		throw new Error('Could not find bundled tsserver.js');
 diff --git a/extensions/typescript-language-features/src/tsconfig.ts b/extensions/typescript-language-features/src/tsconfig.ts
-index e85c715..9059335 100644
+index 01a88a4..1fdc86e 100644
 --- a/extensions/typescript-language-features/src/tsconfig.ts
 +++ b/extensions/typescript-language-features/src/tsconfig.ts
 @@ -155,3 +155,3 @@ export async function openProjectConfigForFile(
@@ -438,7 +434,7 @@ index e85c715..9059335 100644
 +			vscode.l10n.t("Please open a folder in !!APP_NAME!! to use a TypeScript or JavaScript project"));
  		return;
 diff --git a/extensions/typescript-language-features/src/typescriptServiceClient.ts b/extensions/typescript-language-features/src/typescriptServiceClient.ts
-index 4201d6d..ec88aa1 100644
+index 4201d6d..ded6803 100644
 --- a/extensions/typescript-language-features/src/typescriptServiceClient.ts
 +++ b/extensions/typescript-language-features/src/typescriptServiceClient.ts
 @@ -653,3 +653,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
@@ -457,7 +453,7 @@ index 4201d6d..ec88aa1 100644
 +							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against !!APP_NAME!!.", pluginExtensionList));
  					} else {
 diff --git a/extensions/vscode-api-tests/package.json b/extensions/vscode-api-tests/package.json
-index 66a80b8..bd2d284 100644
+index 0d7f87a..6b72fec 100644
 --- a/extensions/vscode-api-tests/package.json
 +++ b/extensions/vscode-api-tests/package.json
 @@ -2,3 +2,3 @@
@@ -466,7 +462,7 @@ index 66a80b8..bd2d284 100644
 +  "description": "API tests for !!APP_NAME!!",
    "version": "0.0.1",
 diff --git a/extensions/vscode-colorize-tests/package.json b/extensions/vscode-colorize-tests/package.json
-index b416aee..9e6396d 100644
+index b416aee..3f60c26 100644
 --- a/extensions/vscode-colorize-tests/package.json
 +++ b/extensions/vscode-colorize-tests/package.json
 @@ -2,3 +2,3 @@
@@ -475,7 +471,7 @@ index b416aee..9e6396d 100644
 +  "description": "Colorize tests for !!APP_NAME!!",
    "version": "0.0.1",
 diff --git a/extensions/vscode-colorize-tests/test/colorize-fixtures/14119.less b/extensions/vscode-colorize-tests/test/colorize-fixtures/14119.less
-index a0006d8..5ab2754 100644
+index a0006d8..132b67e 100644
 --- a/extensions/vscode-colorize-tests/test/colorize-fixtures/14119.less
 +++ b/extensions/vscode-colorize-tests/test/colorize-fixtures/14119.less
 @@ -1,2 +1,2 @@
@@ -483,7 +479,7 @@ index a0006d8..5ab2754 100644
 +#f(@hm: "broken highlighting in !!APP_NAME!!") {
      content: "";
 diff --git a/extensions/vscode-colorize-tests/test/colorize-results/14119_less.json b/extensions/vscode-colorize-tests/test/colorize-results/14119_less.json
-index 6680753..48f66bb 100644
+index 6680753..da1795a 100644
 --- a/extensions/vscode-colorize-tests/test/colorize-results/14119_less.json
 +++ b/extensions/vscode-colorize-tests/test/colorize-results/14119_less.json
 @@ -114,3 +114,3 @@
@@ -492,7 +488,7 @@ index 6680753..48f66bb 100644
 +		"c": "broken highlighting in !!APP_NAME!!",
  		"t": "source.css.less meta.selector.less meta.group.less meta.property-value.less string.quoted.double.less",
 diff --git a/extensions/vscode-test-resolver/package.json b/extensions/vscode-test-resolver/package.json
-index 8ab2171..33fb9e0 100644
+index 8ab2171..0cd1cfb 100644
 --- a/extensions/vscode-test-resolver/package.json
 +++ b/extensions/vscode-test-resolver/package.json
 @@ -2,3 +2,3 @@
@@ -501,7 +497,7 @@ index 8ab2171..33fb9e0 100644
 +  "description": "Test resolver for !!APP_NAME!!",
    "version": "0.0.1",
 diff --git a/extensions/vscode-test-resolver/src/download.ts b/extensions/vscode-test-resolver/src/download.ts
-index a351aa7..32bfdb6 100644
+index a351aa7..c32e3ef 100644
 --- a/extensions/vscode-test-resolver/src/download.ts
 +++ b/extensions/vscode-test-resolver/src/download.ts
 @@ -32,3 +32,3 @@ async function downloadVSCodeServerArchive(updateUrl: string, commit: string, qu
@@ -535,7 +531,7 @@ index a351aa7..32bfdb6 100644
 +			throw Error(`Failed to download and unzip !!APP_NAME!! ${quality} - ${commit}`);
  		}
 diff --git a/extensions/vscode-test-resolver/src/extension.ts b/extensions/vscode-test-resolver/src/extension.ts
-index 2fab3ec..35d3325 100644
+index 2fab3ec..1195e3d 100644
 --- a/extensions/vscode-test-resolver/src/extension.ts
 +++ b/extensions/vscode-test-resolver/src/extension.ts
 @@ -178,3 +178,3 @@ export function activate(context: vscode.ExtensionContext) {
@@ -543,17 +539,35 @@ index 2fab3ec..35d3325 100644
 -					progress.report({ message: 'Installing VSCode Server' });
 +					progress.report({ message: 'Installing !!APP_NAME!! Server' });
  					serverLocation = await downloadAndUnzipVSCodeServer(updateUrl, commit, quality, serverBin, m => outputChannel.appendLine(m));
+diff --git a/src/main.ts b/src/main.ts
+index 1af3c94..d1a8ea6 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -397,3 +397,3 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
+ 		const defaultArgvConfigContent = [
+-			'// This configuration file allows you to pass permanent command line arguments to VS Code.',
++			'// This configuration file allows you to pass permanent command line arguments to !!APP_NAME!!.',
+ 			'// Only a subset of arguments is currently supported to reduce the likelihood of breaking',
+@@ -403,6 +403,6 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
+ 			'//',
+-			'// NOTE: Changing this file requires a restart of VS Code.',
++			'// NOTE: Changing this file requires a restart of !!APP_NAME!!.',
+ 			'{',
+ 			'	// Use software rendering instead of hardware accelerated rendering.',
+-			'	// This can help in cases where you see rendering issues in VS Code.',
++			'	// This can help in cases where you see rendering issues in !!APP_NAME!!.',
+ 			'	// "disable-hardware-acceleration": true',
 diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
-index 3fb0f3a..f1e158e 100644
+index 588e1cb..a18f74f 100644
 --- a/src/vs/code/electron-main/app.ts
 +++ b/src/vs/code/electron-main/app.ts
-@@ -522,3 +522,3 @@ export class CodeApplication extends Disposable {
+@@ -526,3 +526,3 @@ export class CodeApplication extends Disposable {
  	async startup(): Promise<void> {
 -		this.logService.debug('Starting VS Code');
 +		this.logService.debug('Starting !!APP_NAME!!');
  		this.logService.debug(`from: ${this.environmentMainService.appRoot}`);
 diff --git a/src/vs/editor/contrib/toggleTabFocusMode/browser/toggleTabFocusMode.ts b/src/vs/editor/contrib/toggleTabFocusMode/browser/toggleTabFocusMode.ts
-index a200bf8..05826cf 100644
+index a200bf8..425936a 100644
 --- a/src/vs/editor/contrib/toggleTabFocusMode/browser/toggleTabFocusMode.ts
 +++ b/src/vs/editor/contrib/toggleTabFocusMode/browser/toggleTabFocusMode.ts
 @@ -19,3 +19,3 @@ export class ToggleTabFocusModeAction extends Action2 {
@@ -562,7 +576,7 @@ index a200bf8..05826cf 100644
 +			title: nls.localize2({ key: 'toggle.tabMovesFocus', comment: ['Turn on/off use of tab key for moving focus around !!APP_NAME!!'] }, 'Toggle Tab Key Moves Focus'),
  			precondition: undefined,
 diff --git a/src/vs/platform/contextkey/common/contextkeys.ts b/src/vs/platform/contextkey/common/contextkeys.ts
-index c256dba..0ae2e47 100644
+index c256dba..10a79c8 100644
 --- a/src/vs/platform/contextkey/common/contextkeys.ts
 +++ b/src/vs/platform/contextkey/common/contextkeys.ts
 @@ -19,3 +19,3 @@ export const IsMobileContext = new RawContextKey<boolean>('isMobile', isMobile,
@@ -571,10 +585,10 @@ index c256dba..0ae2e47 100644
 +export const ProductQualityContext = new RawContextKey<string>('productQualityType', '', localize('productQualityType', "Quality type of !!APP_NAME!!"));
  
 diff --git a/src/vs/platform/extensionManagement/node/extensionManagementService.ts b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-index 696ef6f..801aba0 100644
+index 0a50a2e..0dacd44 100644
 --- a/src/vs/platform/extensionManagement/node/extensionManagementService.ts
 +++ b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-@@ -152,3 +152,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+@@ -153,3 +153,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
  			if (manifest.engines && manifest.engines.vscode && !isEngineValid(manifest.engines.vscode, this.productService.version, this.productService.date)) {
 -				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VS Code '{1}'.", extensionId, this.productService.version));
 +				throw new Error(nls.localize('incompatible', "Unable to install extension '{0}' as it is not compatible with !!APP_NAME!! '{1}'.", extensionId, this.productService.version));
@@ -590,7 +604,7 @@ index 696ef6f..801aba0 100644
 +					throw new Error(nls.localize('restartCode', "Please restart !!APP_NAME!! before reinstalling {0}.", this.manifest.displayName || this.manifest.name));
  				}
 diff --git a/src/vs/platform/extensions/common/extensionValidator.ts b/src/vs/platform/extensions/common/extensionValidator.ts
-index 87a9288..d2b5f3f 100644
+index 87a9288..dcbbf0a 100644
 --- a/src/vs/platform/extensions/common/extensionValidator.ts
 +++ b/src/vs/platform/extensions/common/extensionValidator.ts
 @@ -374,5 +374,5 @@ export function areApiProposalsCompatible(apiProposals: string[], arg1?: any): b
@@ -602,7 +616,7 @@ index 87a9288..d2b5f3f 100644
 +				notices.push(nls.localize('apiProposalMismatch2', "This extension is using the API proposals {0} and '{1}' that are not compatible with the current version of !!APP_NAME!!.",
  					incompatibleProposals.slice(0, incompatibleProposals.length - 1).map(p => `'${p}'`).join(', '),
 diff --git a/src/vs/platform/externalTerminal/node/externalTerminalService.ts b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
-index ca6c82b..346647c 100644
+index ca6c82b..56fab2c 100644
 --- a/src/vs/platform/externalTerminal/node/externalTerminalService.ts
 +++ b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
 @@ -17,3 +17,3 @@ import { ITerminalEnvironment } from '../../terminal/common/terminal.js';
@@ -611,7 +625,7 @@ index ca6c82b..346647c 100644
 +const TERMINAL_TITLE = nls.localize('console.title', "!!APP_NAME!! Console");
  
 diff --git a/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts b/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
-index 7d8d78b..390d3da 100644
+index 7d8d78b..d39dad4 100644
 --- a/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
 +++ b/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
 @@ -338,3 +338,3 @@ const terminalPlatformConfiguration: IConfigurationNode = {
@@ -620,7 +634,7 @@ index 7d8d78b..390d3da 100644
 +			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from !!APP_NAME!!, which may source a login shell to ensure $PATH and other development variables are initialized. This has no effect on Windows."),
  			type: 'boolean',
 diff --git a/src/vs/platform/update/common/update.config.contribution.ts b/src/vs/platform/update/common/update.config.contribution.ts
-index d96926b..c4bbc4a 100644
+index d96926b..a787b34 100644
 --- a/src/vs/platform/update/common/update.config.contribution.ts
 +++ b/src/vs/platform/update/common/update.config.contribution.ts
 @@ -47,3 +47,3 @@ configurationRegistry.registerConfiguration({
@@ -629,7 +643,7 @@ index d96926b..c4bbc4a 100644
 +			description: localize('enableWindowsBackgroundUpdates', "Enable to download and install new !!APP_NAME!! versions in the background on Windows."),
  			included: isWindows && !isWeb
 diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-index a1ec3fe..c974cf7 100644
+index 48d0d86..cbd5a33 100644
 --- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
 +++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
 @@ -23,3 +23,3 @@ export type UpdateErrorClassification = {
@@ -638,10 +652,10 @@ index a1ec3fe..c974cf7 100644
 +	comment: 'This is used to know how often !!APP_NAME!! updates have failed.';
  };
 diff --git a/src/vs/platform/update/electron-main/updateService.darwin.ts b/src/vs/platform/update/electron-main/updateService.darwin.ts
-index 57398fb..9129f54 100644
+index b78ebc5..9b0eb56 100644
 --- a/src/vs/platform/update/electron-main/updateService.darwin.ts
 +++ b/src/vs/platform/update/electron-main/updateService.darwin.ts
-@@ -115,4 +115,4 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+@@ -122,4 +122,4 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
  			owner: 'joaomoreno';
 -			newVersion: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The version number of the new VS Code that has been downloaded.' };
 -			comment: 'This is used to know how often VS Code has successfully downloaded the update.';
@@ -649,7 +663,7 @@ index 57398fb..9129f54 100644
 +			comment: 'This is used to know how often !!APP_NAME!! has successfully downloaded the update.';
  		};
 diff --git a/src/vs/server/node/server.cli.ts b/src/vs/server/node/server.cli.ts
-index 0535ddd..79f12dc 100644
+index 0535ddd..2478997 100644
 --- a/src/vs/server/node/server.cli.ts
 +++ b/src/vs/server/node/server.cli.ts
 @@ -469,3 +469,3 @@ function asExtensionIdOrVSIX(inputs: string[] | undefined) {
@@ -658,7 +672,7 @@ index 0535ddd..79f12dc 100644
 +	console.error('Unable to connect to !!APP_NAME!! server: ' + message);
  	console.error(err);
 diff --git a/src/vs/workbench/api/browser/mainThreadAuthentication.ts b/src/vs/workbench/api/browser/mainThreadAuthentication.ts
-index 6441394..1984fd1 100644
+index 6441394..69955cd 100644
 --- a/src/vs/workbench/api/browser/mainThreadAuthentication.ts
 +++ b/src/vs/workbench/api/browser/mainThreadAuthentication.ts
 @@ -334,3 +334,3 @@ export class MainThreadAuthentication extends Disposable implements MainThreadAu
@@ -667,7 +681,7 @@ index 6441394..1984fd1 100644
 +				comment: 'Used to see which extensions are using the !!APP_NAME!! client id override';
  				extensionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The extension id.' };
 diff --git a/src/vs/workbench/api/browser/viewsExtensionPoint.ts b/src/vs/workbench/api/browser/viewsExtensionPoint.ts
-index fdf354d..502f06e 100644
+index fdf354d..b196297 100644
 --- a/src/vs/workbench/api/browser/viewsExtensionPoint.ts
 +++ b/src/vs/workbench/api/browser/viewsExtensionPoint.ts
 @@ -43,3 +43,3 @@ const viewsContainerSchema: IJSONSchema = {
@@ -676,7 +690,7 @@ index fdf354d..502f06e 100644
 +			description: localize({ key: 'vscode.extension.contributes.views.containers.id', comment: ['Contribution refers to those that an extension contributes to !!APP_NAME!! through an extension/contribution point. '] }, "Unique id used to identify the container in which views can be contributed using 'views' contribution point"),
  			type: 'string',
 diff --git a/src/vs/workbench/api/common/extHostApiCommands.ts b/src/vs/workbench/api/common/extHostApiCommands.ts
-index 1d08ef2..aeef203 100644
+index 0dc4986..efbe644 100644
 --- a/src/vs/workbench/api/common/extHostApiCommands.ts
 +++ b/src/vs/workbench/api/common/extHostApiCommands.ts
 @@ -443,3 +443,3 @@ const newCommands: ApiCommand[] = [
@@ -685,10 +699,10 @@ index 1d08ef2..aeef203 100644
 +			ApiCommandArgument.String.with('viewId', 'Custom editor view id. This should be the viewType string for custom editors or the notebookType string for notebooks. Use \'default\' to use !!APP_NAME!!\'s default text editor'),
  			new ApiCommandArgument<vscode.ViewColumn | typeConverters.TextEditorOpenOptions | undefined, [vscode.ViewColumn?, ITextEditorOptions?] | undefined>('columnOrOptions', 'Either the column in which to open or editor options, see vscode.TextDocumentShowOptions',
 diff --git a/src/vs/workbench/api/common/extHostCommands.ts b/src/vs/workbench/api/common/extHostCommands.ts
-index 0c170ec..7683cb4 100644
+index 0bda2e8..5179ac6 100644
 --- a/src/vs/workbench/api/common/extHostCommands.ts
 +++ b/src/vs/workbench/api/common/extHostCommands.ts
-@@ -460,4 +460,4 @@ export class ApiCommandArgument<V, O = V> {
+@@ -462,4 +462,4 @@ export class ApiCommandArgument<V, O = V> {
  	static readonly TypeHierarchyItem = new ApiCommandArgument('item', 'A type hierarchy item', v => v instanceof extHostTypes.TypeHierarchyItem, extHostTypeConverter.TypeHierarchyItem.from);
 -	static readonly TestItem = new ApiCommandArgument('testItem', 'A VS Code TestItem', v => v instanceof TestItemImpl, extHostTypeConverter.TestItem.from);
 -	static readonly TestProfile = new ApiCommandArgument('testProfile', 'A VS Code test profile', v => v instanceof extHostTypes.TestRunProfileBase, extHostTypeConverter.TestRunProfile.from);
@@ -696,7 +710,7 @@ index 0c170ec..7683cb4 100644
 +	static readonly TestProfile = new ApiCommandArgument('testProfile', 'A !!APP_NAME!! test profile', v => v instanceof extHostTypes.TestRunProfileBase, extHostTypeConverter.TestRunProfile.from);
  
 diff --git a/src/vs/workbench/api/test/browser/extHostNotebook.test.ts b/src/vs/workbench/api/test/browser/extHostNotebook.test.ts
-index 0d71384..45f7923 100644
+index 0d71384..ae8d169 100644
 --- a/src/vs/workbench/api/test/browser/extHostNotebook.test.ts
 +++ b/src/vs/workbench/api/test/browser/extHostNotebook.test.ts
 @@ -364,3 +364,3 @@ suite('NotebookCell#Document', function () {
@@ -704,8 +718,17 @@ index 0d71384..45f7923 100644
 -	test('Opening a notebook results in VS Code firing the event onDidChangeActiveNotebookEditor twice #118470', function () {
 +	test('Opening a notebook results in !!APP_NAME!! firing the event onDidChangeActiveNotebookEditor twice #118470', function () {
  		let count = 0;
+diff --git a/src/vs/workbench/browser/actions/helpActions.ts b/src/vs/workbench/browser/actions/helpActions.ts
+index 2487213..a22b4d1 100644
+--- a/src/vs/workbench/browser/actions/helpActions.ts
++++ b/src/vs/workbench/browser/actions/helpActions.ts
+@@ -163,3 +163,3 @@ class OpenNewsletterSignupUrlAction extends Action2 {
+ 			id: OpenNewsletterSignupUrlAction.ID,
+-			title: localize2('newsletterSignup', 'Signup for the VS Code Newsletter'),
++			title: localize2('newsletterSignup', 'Signup for the !!APP_NAME!! Newsletter'),
+ 			category: Categories.Help,
 diff --git a/src/vs/workbench/browser/web.factory.ts b/src/vs/workbench/browser/web.factory.ts
-index 422fbba..9dc9699 100644
+index 0ebe271..20974b2 100644
 --- a/src/vs/workbench/browser/web.factory.ts
 +++ b/src/vs/workbench/browser/web.factory.ts
 @@ -35,3 +35,3 @@ export function create(domElement: HTMLElement, options: IWorkbenchConstructionO
@@ -714,16 +737,32 @@ index 422fbba..9dc9699 100644
 +		throw new Error('Unable to create the !!APP_NAME!! workbench more than once.');
  	} else {
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index 5e785e8..a8aa1b7 100644
+index 735e721..0356d59 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -678,3 +678,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -696,3 +696,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  		localize('profileName', "`${profileName}`: name of the profile in which the workspace is opened (e.g. Data Science (Profile)). Ignored if default profile is used."),
 -		localize('appName', "`${appName}`: e.g. VS Code."),
 +		localize('appName', "`${appName}`: e.g. !!APP_NAME!!."),
  		localize('remoteName', "`${remoteName}`: e.g. SSH"),
+diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup.ts b/src/vs/workbench/contrib/chat/browser/chatSetup.ts
+index 043193f..9311afb 100644
+--- a/src/vs/workbench/contrib/chat/browser/chatSetup.ts
++++ b/src/vs/workbench/contrib/chat/browser/chatSetup.ts
+@@ -143,3 +143,3 @@ class SetupAgent extends Disposable implements IChatAgentImplementation {
+ 
+-			const { agent, disposable } = SetupAgent.doRegisterAgent(instantiationService, chatAgentService, 'setup.vscode', 'vscode', false, localize2('vscodeAgentDescription', "Ask questions about VS Code").value, ChatAgentLocation.Panel, undefined, context, controller);
++			const { agent, disposable } = SetupAgent.doRegisterAgent(instantiationService, chatAgentService, 'setup.vscode', 'vscode', false, localize2('vscodeAgentDescription', "Ask questions about !!APP_NAME!!").value, ChatAgentLocation.Panel, undefined, context, controller);
+ 			disposables.add(disposable);
+@@ -153,4 +153,4 @@ class SetupAgent extends Disposable implements IChatAgentImplementation {
+ 				displayName: localize('setupToolDisplayName', "New Workspace"),
+-				modelDescription: localize('setupToolsDescription', "Scaffold a new workspace in VS Code"),
+-				userDescription: localize('setupToolsDescription', "Scaffold a new workspace in VS Code"),
++				modelDescription: localize('setupToolsDescription', "Scaffold a new workspace in !!APP_NAME!!"),
++				userDescription: localize('setupToolsDescription', "Scaffold a new workspace in !!APP_NAME!!"),
+ 				canBeReferencedInPrompt: true,
 diff --git a/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts b/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts
-index 0a13063..c62db65 100644
+index 0a13063..5a342c0 100644
 --- a/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts
 +++ b/src/vs/workbench/contrib/debug/browser/debugAdapterManager.ts
 @@ -177,3 +177,3 @@ export class AdapterManager extends Disposable implements IAdapterManager {
@@ -732,30 +771,30 @@ index 0a13063..c62db65 100644
 +						description: nls.localize('debugServer', "For debug extension development only: if a port is specified !!APP_NAME!! tries to connect to a debug adapter running in server mode"),
  						default: 4711
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-index 34a5326..663d6de 100644
+index 39859b4..5e03ec2 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-@@ -400,3 +400,3 @@ CommandsRegistry.registerCommand({
+@@ -338,3 +338,3 @@ CommandsRegistry.registerCommand({
  				description: '(optional) Options for installing the extension. Object with the following properties: ' +
 -					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
 +					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, !!APP_NAME!! installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
  				isOptional: true,
-@@ -407,3 +407,3 @@ CommandsRegistry.registerCommand({
+@@ -345,3 +345,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
 +							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, !!APP_NAME!! installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
  							default: false
-@@ -412,3 +412,3 @@ CommandsRegistry.registerCommand({
+@@ -350,3 +350,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, VS Code installs the pre-release version of the extension if available."),
 +							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, !!APP_NAME!! installs the pre-release version of the extension if available."),
  							default: false
-@@ -417,3 +417,3 @@ CommandsRegistry.registerCommand({
+@@ -355,3 +355,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, VS Code do not sync this extension when Settings Sync is on."),
 +							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, !!APP_NAME!! do not sync this extension when Settings Sync is on."),
  							default: false
-@@ -938,4 +938,4 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
+@@ -879,4 +879,4 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
  						Severity.Info,
 -						vsixs.length > 1 ? localize('InstallVSIXs.successReload', "Completed installing extensions. Please reload Visual Studio Code to enable them.")
 -							: localize('InstallVSIXAction.successReload', "Completed installing extension. Please reload Visual Studio Code to enable it."),
@@ -763,45 +802,45 @@ index 34a5326..663d6de 100644
 +							: localize('InstallVSIXAction.successReload', "Completed installing extension. Please reload VSCodium to enable it."),
  						[{
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
-index 572bb26..53f5740 100644
+index 862d00b..714f0fa 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
-@@ -106,3 +106,3 @@ export class PromptExtensionInstallFailureAction extends Action {
+@@ -108,3 +108,3 @@ export class PromptExtensionInstallFailureAction extends Action {
  		if (this.error.name === ExtensionManagementErrorCode.Unsupported) {
 -			const productName = isWeb ? localize('VS Code for Web', "{0} for the Web", this.productService.nameLong) : this.productService.nameLong;
 +			const productName = isWeb ? localize('!!APP_NAME!! for Web', "{0} for the Web", this.productService.nameLong) : this.productService.nameLong;
  			const message = localize('cannot be installed', "The '{0}' extension is not available in {1}. Click 'More Information' to learn more.", this.extension.displayName || this.extension.identifier.id, productName);
-@@ -524,3 +524,3 @@ export class InstallAction extends ExtensionAction {
+@@ -553,3 +553,3 @@ export class InstallAction extends ExtensionAction {
  			} else if (this.extension.deprecationInfo.settings) {
 -				detail = localize('deprecated with alternate settings message', "This extension is deprecated as this functionality is now built-in to VS Code.");
 +				detail = localize('deprecated with alternate settings message', "This extension is deprecated as this functionality is now built-in to !!APP_NAME!!.");
  
-@@ -912,3 +912,3 @@ export class UninstallAction extends ExtensionAction {
+@@ -941,3 +941,3 @@ export class UninstallAction extends ExtensionAction {
  			await this.extensionsWorkbenchService.uninstall(this.extension);
 -			alert(localize('uninstallExtensionComplete', "Please reload Visual Studio Code to complete the uninstallation of the extension {0}.", this.extension.displayName));
 +			alert(localize('uninstallExtensionComplete', "Please reload !!APP_NAME!! to complete the uninstallation of the extension {0}.", this.extension.displayName));
  		} catch (error) {
-@@ -2565,3 +2565,3 @@ export class ExtensionStatusAction extends ExtensionAction {
+@@ -2597,3 +2597,3 @@ export class ExtensionStatusAction extends ExtensionAction {
  				const link = `[${localize('settings', "settings")}](${URI.parse(`command:workbench.action.openSettings?${encodeURIComponent(JSON.stringify([this.extension.deprecationInfo.settings.map(setting => `@id:${setting}`).join(' ')]))}`)})`;
 -				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to VS Code. Configure these {0} to use this functionality.", link)) }, true);
 +				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to !!APP_NAME!!. Configure these {0} to use this functionality.", link)) }, true);
  			} else {
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index bcf99d6..d473bf9 100644
+index 8ee497e..41de54a 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-@@ -463,3 +463,3 @@ export class Extension implements IExtension {
+@@ -468,3 +468,3 @@ export class Extension implements IExtension {
  			return Promise.resolve(`# ${this.displayName || this.name}
 -**Notice:** This extension is bundled with Visual Studio Code. It can be disabled but not uninstalled.
 +**Notice:** This extension is bundled with !!APP_NAME!!. It can be disabled but not uninstalled.
  ## Features
-@@ -501,3 +501,3 @@ ${this.description}
+@@ -506,3 +506,3 @@ ${this.description}
  		if (this.type === ExtensionType.System) {
 -			return Promise.resolve(`Please check the [VS Code Release Notes](command:${ShowCurrentReleaseNotesActionId}) for changes to the built-in extensions.`);
 +			return Promise.resolve(`Please check the [!!APP_NAME!! Release Notes](command:${ShowCurrentReleaseNotesActionId}) for changes to the built-in extensions.`);
  		}
 diff --git a/src/vs/workbench/contrib/extensions/common/extensionsFileTemplate.ts b/src/vs/workbench/contrib/extensions/common/extensionsFileTemplate.ts
-index 818e662..2450efc 100644
+index 818e662..2d2ead7 100644
 --- a/src/vs/workbench/contrib/extensions/common/extensionsFileTemplate.ts
 +++ b/src/vs/workbench/contrib/extensions/common/extensionsFileTemplate.ts
 @@ -29,3 +29,3 @@ export const ExtensionsConfigurationSchema: IJSONSchema = {
@@ -815,7 +854,7 @@ index 818e662..2450efc 100644
 +	'\t// List of extensions recommended by !!APP_NAME!! that should not be recommended for users of this workspace.',
  	'\t"unwantedRecommendations": [',
 diff --git a/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts b/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts
-index f54ddfe..81ec478 100644
+index f54ddfe..946de6b 100644
 --- a/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts
 +++ b/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts
 @@ -57,3 +57,3 @@ export const externalUriOpenersConfigurationNode: IConfigurationNode = {
@@ -824,7 +863,7 @@ index f54ddfe..81ec478 100644
 +						enumDescriptions: [nls.localize('externalUriOpeners.defaultId', "Open using !!APP_NAME!!'s standard opener.")],
  					},
 diff --git a/src/vs/workbench/contrib/localization/common/localization.contribution.ts b/src/vs/workbench/contrib/localization/common/localization.contribution.ts
-index b89d74b..4f47a63 100644
+index b89d74b..2a06ffb 100644
 --- a/src/vs/workbench/contrib/localization/common/localization.contribution.ts
 +++ b/src/vs/workbench/contrib/localization/common/localization.contribution.ts
 @@ -58,5 +58,5 @@ export class BaseLocalizationWorkbenchContribution extends Disposable implements
@@ -836,7 +875,7 @@ index b89d74b..4f47a63 100644
 +										patternErrorMessage: localize('vscode.extension.contributes.localizations.translations.id.pattern', "Id should be `vscode` or in format `publisherId.extensionName` for translating !!APP_NAME!! or an extension respectively.")
  									},
 diff --git a/src/vs/workbench/contrib/localization/common/localizationsActions.ts b/src/vs/workbench/contrib/localization/common/localizationsActions.ts
-index 8619144..a6ab349 100644
+index 8619144..5815a70 100644
 --- a/src/vs/workbench/contrib/localization/common/localizationsActions.ts
 +++ b/src/vs/workbench/contrib/localization/common/localizationsActions.ts
 @@ -26,3 +26,3 @@ export class ConfigureDisplayLanguageAction extends Action2 {
@@ -845,7 +884,7 @@ index 8619144..a6ab349 100644
 +				description: localize2('configureLocaleDescription', "Changes the locale of !!APP_NAME!! based on installed language packs. Common languages include French, Chinese, Spanish, Japanese, German, Korean, and more.")
  			}
 diff --git a/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts b/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts
-index b533feb..7a11449 100644
+index b533feb..112d695 100644
 --- a/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts
 +++ b/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts
 @@ -95,4 +95,4 @@ interface IUnknownLayout {
@@ -856,25 +895,25 @@ index b533feb..7a11449 100644
 +	`// ${nls.localize('doc', 'Open !!APP_NAME!! and run "Developer: Inspect Key Mappings (JSON)" from Command Palette.')}`,
  	``,
 diff --git a/src/vs/workbench/contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribution.ts b/src/vs/workbench/contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribution.ts
-index b716bcd..07b107b 100644
+index 5de0485..177e215 100644
 --- a/src/vs/workbench/contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribution.ts
 +++ b/src/vs/workbench/contrib/remoteTunnel/electron-sandbox/remoteTunnel.contribution.ts
-@@ -560,3 +560,3 @@ export class RemoteTunnelWorkbenchContribution extends Disposable implements IWo
+@@ -561,3 +561,3 @@ export class RemoteTunnelWorkbenchContribution extends Disposable implements IWo
  								},
 -								"You can now access this machine anywhere via the secure tunnel [{0}](command:{4}). To connect via a different machine, use the generated [{1}]({2}) link or use the [{6}]({7}) extension in the desktop or web. You can [configure](command:{3}) or [turn off](command:{5}) this access via the VS Code Accounts menu.",
 +								"You can now access this machine anywhere via the secure tunnel [{0}](command:{4}). To connect via a different machine, use the generated [{1}]({2}) link or use the [{6}]({7}) extension in the desktop or web. You can [configure](command:{3}) or [turn off](command:{5}) this access via the !!APP_NAME!! Accounts menu.",
  								connectionInfo.tunnelName, connectionInfo.domain, linkToOpenForMarkdown, RemoteTunnelCommandIds.manage, RemoteTunnelCommandIds.configure, RemoteTunnelCommandIds.turnOff, remoteExtension.friendlyName, 'https://code.visualstudio.com/docs/remote/tunnels'
 diff --git a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
-index 2538528..acd9714 100644
+index 78c67ee..b78fbdc 100644
 --- a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
 +++ b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
-@@ -3200,3 +3200,3 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
+@@ -3199,3 +3199,3 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
  						if (response.code && response.code === TerminateResponseCode.ProcessNotFound) {
 -							this._notificationService.error(nls.localize('TerminateAction.noProcess', 'The launched process doesn\'t exist anymore. If the task spawned background tasks exiting VS Code might result in orphaned processes.'));
 +							this._notificationService.error(nls.localize('TerminateAction.noProcess', 'The launched process doesn\'t exist anymore. If the task spawned background tasks exiting !!APP_NAME!! might result in orphaned processes.'));
  						} else {
 diff --git a/src/vs/workbench/contrib/tasks/common/jsonSchemaCommon.ts b/src/vs/workbench/contrib/tasks/common/jsonSchemaCommon.ts
-index 9db6b8a..b68a042 100644
+index 9db6b8a..cecac9f 100644
 --- a/src/vs/workbench/contrib/tasks/common/jsonSchemaCommon.ts
 +++ b/src/vs/workbench/contrib/tasks/common/jsonSchemaCommon.ts
 @@ -193,3 +193,3 @@ const schema: IJSONSchema = {
@@ -888,7 +927,7 @@ index 9db6b8a..b68a042 100644
 +					description: nls.localize('JsonSchema.promptOnClose', 'Whether the user is prompted when !!APP_NAME!! closes with a running background task.'),
  					default: false
 diff --git a/src/vs/workbench/contrib/tasks/common/jsonSchema_v2.ts b/src/vs/workbench/contrib/tasks/common/jsonSchema_v2.ts
-index 42df6db..4eea384 100644
+index 42df6db..99e0383 100644
 --- a/src/vs/workbench/contrib/tasks/common/jsonSchema_v2.ts
 +++ b/src/vs/workbench/contrib/tasks/common/jsonSchema_v2.ts
 @@ -411,3 +411,3 @@ const taskConfiguration: IJSONSchema = {
@@ -897,7 +936,7 @@ index 42df6db..4eea384 100644
 +			description: nls.localize('JsonSchema.tasks.promptOnClose', 'Whether the user is prompted when !!APP_NAME!! closes with a running task.'),
  			default: false
 diff --git a/src/vs/workbench/contrib/tasks/electron-sandbox/taskService.ts b/src/vs/workbench/contrib/tasks/electron-sandbox/taskService.ts
-index 6a5728c..2c561bd 100644
+index 6a5728c..df166de 100644
 --- a/src/vs/workbench/contrib/tasks/electron-sandbox/taskService.ts
 +++ b/src/vs/workbench/contrib/tasks/electron-sandbox/taskService.ts
 @@ -213,3 +213,3 @@ export class TaskService extends AbstractTaskService {
@@ -906,7 +945,7 @@ index 6a5728c..2c561bd 100644
 +							message: nls.localize('TaskSystem.noProcess', 'The launched task doesn\'t exist anymore. If the task spawned background processes exiting !!APP_NAME!! might result in orphaned processes. To avoid this start the last background process with a wait flag.'),
  							primaryButton: nls.localize({ key: 'TaskSystem.exitAnyways', comment: ['&& denotes a mnemonic'] }, "&&Exit Anyways"),
 diff --git a/src/vs/workbench/contrib/terminal/browser/terminalView.ts b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
-index 42ff0ac..7276ab8 100644
+index 42ff0ac..8f2f57c 100644
 --- a/src/vs/workbench/contrib/terminal/browser/terminalView.ts
 +++ b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
 @@ -213,3 +213,3 @@ export class TerminalViewPane extends ViewPane {
@@ -915,7 +954,7 @@ index 42ff0ac..7276ab8 100644
 +					this._notificationService.prompt(Severity.Warning, nls.localize('terminal.monospaceOnly', "The terminal only supports monospace fonts. Be sure to restart !!APP_NAME!! if this is a newly installed font."), choices);
  				}
 diff --git a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
-index 28aa98c..b0da694 100644
+index 28aa98c..a3331fc 100644
 --- a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 +++ b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 @@ -314,3 +314,3 @@ const terminalConfiguration: IConfigurationNode = {
@@ -964,7 +1003,7 @@ index 28aa98c..b0da694 100644
 +			markdownDescription: localize('terminal.integrated.shellIntegration.enabled', "Determines whether or not shell integration is auto-injected to support features like enhanced command tracking and current working directory detection. \n\nShell integration works by injecting the shell with a startup script. The script gives !!APP_NAME!! insight into what is happening within the terminal.\n\nSupported shells:\n\n- Linux/macOS: bash, fish, pwsh, zsh\n - Windows: pwsh, git bash\n\nThis setting applies only when terminals are created, so you will need to restart your terminals for it to take effect.\n\n Note that the script injection may not work if you have custom arguments defined in the terminal profile, have enabled {1}, have a [complex bash `PROMPT_COMMAND`](https://code.visualstudio.com/docs/editor/integrated-terminal#_complex-bash-promptcommand), or other unsupported setup. To disable decorations, see {0}", '`#terminal.integrated.shellIntegration.decorationsEnabled#`', '`#editor.accessibilitySupport#`'),
  			type: 'boolean',
 diff --git a/src/vs/workbench/contrib/terminalContrib/autoReplies/common/terminalAutoRepliesConfiguration.ts b/src/vs/workbench/contrib/terminalContrib/autoReplies/common/terminalAutoRepliesConfiguration.ts
-index 4979520..49d0cbd 100644
+index 4979520..30ae11b 100644
 --- a/src/vs/workbench/contrib/terminalContrib/autoReplies/common/terminalAutoRepliesConfiguration.ts
 +++ b/src/vs/workbench/contrib/terminalContrib/autoReplies/common/terminalAutoRepliesConfiguration.ts
 @@ -19,3 +19,3 @@ export const terminalAutoRepliesConfiguration: IStringDictionary<IConfigurationP
@@ -973,23 +1012,23 @@ index 4979520..49d0cbd 100644
 +		markdownDescription: localize('terminal.integrated.autoReplies', "A set of messages that, when encountered in the terminal, will be automatically responded to. Provided the message is specific enough, this can help automate away common responses.\n\nRemarks:\n\n- Use {0} to automatically respond to the terminate batch job prompt on Windows.\n- The message includes escape sequences so the reply might not happen with styled text.\n- Each reply can only happen once every second.\n- Use {1} in the reply to mean the enter key.\n- To unset a default key, set the value to null.\n- Restart !!APP_NAME!! if new don't apply.", '`"Terminate batch job (Y/N)": "Y\\r"`', '`"\\r"`'),
  		type: 'object',
 diff --git a/src/vs/workbench/contrib/update/browser/update.ts b/src/vs/workbench/contrib/update/browser/update.ts
-index 3def92a..fa835bf 100644
+index a20d7ae..6861b35 100644
 --- a/src/vs/workbench/contrib/update/browser/update.ts
 +++ b/src/vs/workbench/contrib/update/browser/update.ts
-@@ -577,4 +577,4 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
+@@ -583,4 +583,4 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
  							detail: newQuality === 'insider' ?
 -								nls.localize('relaunchDetailInsiders', "Press the reload button to switch to the Insiders version of VS Code.") :
 -								nls.localize('relaunchDetailStable', "Press the reload button to switch to the Stable version of VS Code."),
 +								nls.localize('relaunchDetailInsiders', "Press the reload button to switch to the Insiders version of !!APP_NAME!!.") :
 +								nls.localize('relaunchDetailStable', "Press the reload button to switch to the Stable version of !!APP_NAME!!."),
  							primaryButton: nls.localize({ key: 'reload', comment: ['&& denotes a mnemonic'] }, "&&Reload")
-@@ -613,3 +613,3 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
+@@ -619,3 +619,3 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
  						message: nls.localize('selectSyncService.message', "Choose the settings sync service to use after changing the version"),
 -						detail: nls.localize('selectSyncService.detail', "The Insiders version of VS Code will synchronize your settings, keybindings, extensions, snippets and UI State using separate insiders settings sync service by default."),
 +						detail: nls.localize('selectSyncService.detail', "The Insiders version of !!APP_NAME!! will synchronize your settings, keybindings, extensions, snippets and UI State using separate insiders settings sync service by default."),
  						buttons: [
 diff --git a/src/vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider.ts b/src/vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider.ts
-index d508a0d..35d7df1 100644
+index d508a0d..a8f9899 100644
 --- a/src/vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider.ts
 +++ b/src/vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider.ts
 @@ -55,3 +55,3 @@ function computeTrustedDomainContent(defaultTrustedDomains: string[], trustedDom
@@ -1003,7 +1042,7 @@ index d508a0d..35d7df1 100644
 +		content += `// By default, !!APP_NAME!! trusts "localhost".\n`;
  	}
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-index a57f9c1..cc198f8 100644
+index 6aa706f..ddbd93e 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 @@ -51,3 +51,3 @@ registerAction2(class extends Action2 {
@@ -1011,13 +1050,13 @@ index a57f9c1..cc198f8 100644
 -				description: localize2('minWelcomeDescription', 'Opens a Walkthrough to help you get started in VS Code.')
 +				description: localize2('minWelcomeDescription', 'Opens a Walkthrough to help you get started in !!APP_NAME!!.')
  			}
-@@ -341,3 +341,3 @@ configurationRegistry.registerConfiguration({
+@@ -379,3 +379,3 @@ configurationRegistry.registerConfiguration({
  				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.none' }, "Start without an editor."),
 -				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with VS Code and extensions."),
 +				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with !!APP_NAME!! and extensions."),
  				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.readme' }, "Open the README when opening a folder that contains one, fallback to 'welcomePage' otherwise. Note: This is only observed as a global configuration, it will be ignored if set in a workspace or folder configuration."),
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStartedExtensionPoint.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStartedExtensionPoint.ts
-index 3f1c098..3b2a175 100644
+index 3f1c098..26bf670 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStartedExtensionPoint.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStartedExtensionPoint.ts
 @@ -161,3 +161,3 @@ export const walkthroughsExtensionPoint = ExtensionsRegistry.registerExtensionPo
@@ -1026,14 +1065,28 @@ index 3f1c098..3b2a175 100644
 +											description: localize('walkthroughs.steps.completionEvents.onCommand', 'Check off step when a given command is executed anywhere in !!APP_NAME!!.'),
  											body: 'onCommand:${1:commandId}'
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-index c7074a5..4fd9ae7 100644
+index 949cea7..ccd635d 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-@@ -14,3 +14,2 @@ import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from '../../../../platform/accessi
+@@ -15,3 +15,2 @@ import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from '../../../../platform/accessi
  import { URI } from '../../../../base/common/uri.js';
 -import product from '../../../../platform/product/common/product.js';
  
-@@ -213,24 +212,2 @@ const Button = (title: string, href: string) => `[${title}](${href})`;
+@@ -201,13 +200,2 @@ export const startEntries: GettingStartedStartEntryContent = [
+ 	},
+-	{
+-		id: 'topLevelNewWorkspaceChat',
+-		title: localize('gettingStarted.newWorkspaceChat.title', "New Workspace with Copilot..."),
+-		description: localize('gettingStarted.newWorkspaceChat.description', "Create a new workspace with Copilot"),
+-		icon: Codicon.copilot,
+-		when: '!isWeb && !chatSetupHidden',
+-		content: {
+-			type: 'startEntry',
+-			command: 'command:welcome.newWorkspaceChat',
+-		}
+-	},
+ ];
+@@ -216,24 +204,2 @@ const Button = (title: string, href: string) => `[${title}](${href})`;
  
 -const CopilotStepTitle = localize('gettingStarted.copilotSetup.title', "Use AI features with Copilot for free");
 -const CopilotDescription = localize({ key: 'gettingStarted.copilotSetup.description', comment: ['{Locked="["}', '{Locked="]({0})"}'] }, "You can use [Copilot]({0}) to generate code across multiple files, fix errors, ask questions about your code and much more using natural language.", product.defaultChatAgent?.documentationUrl ?? '');
@@ -1050,7 +1103,7 @@ index c7074a5..4fd9ae7 100644
 -		id,
 -		title: CopilotStepTitle,
 -		description,
--		when,
+-		when: `${when} && !chatSetupHidden`,
 -		media: {
 -			type: 'svg', altText: 'VS Code Copilot multi file edits', path: 'multi-file-edits.svg'
 -		},
@@ -1058,23 +1111,23 @@ index c7074a5..4fd9ae7 100644
 -}
 -
  export const walkthroughs: GettingStartedWalkthroughContent = [
-@@ -238,3 +215,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -241,3 +207,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		id: 'Setup',
--		title: localize('gettingStarted.setup.title', "Get Started with VS Code"),
-+		title: localize('gettingStarted.setup.title', "Get Started with !!APP_NAME!!"),
+-		title: localize('gettingStarted.setup.title', "Get started with VS Code"),
++		title: localize('gettingStarted.setup.title', "Get started with !!APP_NAME!!"),
  		description: localize('gettingStarted.setup.description', "Customize your editor, learn the basics, and start coding"),
-@@ -243,3 +220,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -246,3 +212,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		when: '!isWeb',
 -		walkthroughPageTitle: localize('gettingStarted.setup.walkthroughPageTitle', 'Setup VS Code'),
 +		walkthroughPageTitle: localize('gettingStarted.setup.walkthroughPageTitle', 'Setup !!APP_NAME!!'),
  		next: 'Beginner',
-@@ -248,5 +225,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -251,5 +217,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  			steps: [
 -				createCopilotSetupStep('CopilotSetupSignedOut', CopilotSignedOutButton, 'chatSetupSignedOut', true),
--				createCopilotSetupStep('CopilotSetupComplete', CopilotCompleteButton, 'chatSetupInstalled && (chatPlanPro || chatPlanLimited)', false),
+-				createCopilotSetupStep('CopilotSetupComplete', CopilotCompleteButton, 'chatSetupInstalled && (chatPlanPro || chatPlanProPlus || chatPlanBusiness || chatPlanEnterprise || chatPlanLimited)', false),
 -				createCopilotSetupStep('CopilotSetupSignedIn', CopilotSignedInButton, '!chatSetupSignedOut && (!chatSetupInstalled || chatPlanCanSignUp)', true),
  				{
-@@ -264,6 +238,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -267,6 +230,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
 -					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VS Code's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are !!APP_NAME!!'s power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1083,57 +1136,82 @@ index c7074a5..4fd9ae7 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions-web.svg'
 +						type: 'svg', altText: '!!APP_NAME!! extension marketplace with featured language extensions', path: 'extensions-web.svg'
  					},
-@@ -283,5 +257,5 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
- 				// 	title: localize('gettingStarted.settings.title', "Tune your settings"),
+@@ -282,21 +245,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+ 				},
+-				// Hidden in favor of copilot entry (to be revisited when copilot entry moves, if at all)
+-				// {
+-				// 	id: 'settings',
+-				// 	title: localize('gettingStarted.settings.title', "Tune your settings"),
 -				// 	description: localize('gettingStarted.settings.description.interpolated', "Customize every aspect of VS Code and your extensions to your liking. Commonly used settings are listed first to get you started.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
-+				// 	description: localize('gettingStarted.settings.description.interpolated', "Customize every aspect of !!APP_NAME!! and your extensions to your liking. Commonly used settings are listed first to get you started.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
- 				// 	media: {
+-				// 	media: {
 -				// 		type: 'svg', altText: 'VS Code Settings', path: 'settings.svg'
-+				// 		type: 'svg', altText: '!!APP_NAME!! Settings', path: 'settings.svg'
- 				// 	},
-@@ -301,3 +275,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+-				// 	},
+-				// },
+-				// {
+-				// 	id: 'settingsSync',
+-				// 	title: localize('gettingStarted.settingsSync.title', "Sync settings across devices"),
+-				// 	description: localize('gettingStarted.settingsSync.description.interpolated', "Keep your essential customizations backed up and updated across all your devices.\n{0}", Button(localize('enableSync', "Backup and Sync Settings"), 'command:workbench.userDataSync.actions.turnOn')),
+-				// 	when: 'syncStatus != uninitialized',
+-				// 	completionEvents: ['onEvent:sync-enabled'],
+-				// 	media: {
+-				// 		type: 'svg', altText: 'The "Turn on Sync" entry in the settings gear menu.', path: 'settingsSync.svg'
+-				// 	},
+-				// },
+ 				{
+@@ -304,3 +248,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.settings.title', "Tune your settings"),
 -					description: localize('gettingStarted.settingsAndSync.description.interpolated', "Customize every aspect of VS Code and your extensions to your liking. [Back up and sync](command:workbench.userDataSync.actions.turnOn) your essential customizations across all your devices.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
 +					description: localize('gettingStarted.settingsAndSync.description.interpolated', "Customize every aspect of !!APP_NAME!! and your extensions to your liking. [Back up and sync](command:workbench.userDataSync.actions.turnOn) your essential customizations across all your devices.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
  					when: 'syncStatus != uninitialized',
-@@ -305,3 +279,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -308,3 +252,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					media: {
 -						type: 'svg', altText: 'VS Code Settings', path: 'settings.svg'
 +						type: 'svg', altText: '!!APP_NAME!! Settings', path: 'settings.svg'
  					},
-@@ -311,3 +285,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -314,24 +258,5 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPalette.title', "Unlock productivity with the Command Palette "),
 -					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in !!APP_NAME!!.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'svg', altText: 'Command Palette overlay for searching and executing commands.', path: 'commandPalette.svg' },
-@@ -318,3 +292,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
- 				// 	title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
+ 				},
+-				// Hidden in favor of copilot entry (to be revisited when copilot entry moves, if at all)
+-				// {
+-				// 	id: 'pickAFolderTask-Mac',
+-				// 	title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -				// 	description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VS Code.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFileFolder')),
-+				// 	description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into !!APP_NAME!!.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFileFolder')),
- 				// 	when: 'isMac && workspaceFolderCount == 0',
-@@ -327,3 +301,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
- 				// 	title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
+-				// 	when: 'isMac && workspaceFolderCount == 0',
+-				// 	media: {
+-				// 		type: 'svg', altText: 'Explorer view showing buttons for opening folder and cloning repository.', path: 'openFolder.svg'
+-				// 	}
+-				// },
+-				// {
+-				// 	id: 'pickAFolderTask-Other',
+-				// 	title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -				// 	description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into VS Code.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFolder')),
-+				// 	description: localize('gettingStarted.setup.OpenFolder.description.interpolated', "You're all set to start coding. Open a project folder to get your files into !!APP_NAME!!.\n{0}", Button(localize('pickFolder', "Pick a Folder"), 'command:workbench.action.files.openFolder')),
- 				// 	when: '!isMac && workspaceFolderCount == 0',
-@@ -345,4 +319,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+-				// 	when: '!isMac && workspaceFolderCount == 0',
+-				// 	media: {
+-				// 		type: 'svg', altText: 'Explorer view showing buttons for opening folder and cloning repository.', path: 'openFolder.svg'
+-				// 	}
+-				// },
+ 				{
+@@ -348,4 +273,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.videoTutorial.title', "Watch video tutorials"),
 -					description: localize('gettingStarted.videoTutorial.description.interpolated', "Watch the first in a series of short & practical video tutorials for VS Code's key features.\n{0}", Button(localize('watch', "Watch Tutorial"), 'https://aka.ms/vscode-getting-started-video')),
 -					media: { type: 'svg', altText: 'VS Code Settings', path: 'learn.svg' },
 +					description: localize('gettingStarted.videoTutorial.description.interpolated', "Watch the first in a series of short & practical video tutorials for !!APP_NAME!!'s key features.\n{0}", Button(localize('watch', "Watch Tutorial"), 'https://aka.ms/vscode-getting-started-video')),
 +					media: { type: 'svg', altText: '!!APP_NAME!! Settings', path: 'learn.svg' },
  				}
-@@ -354,3 +328,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -357,3 +282,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		id: 'SetupWeb',
 -		title: localize('gettingStarted.setupWeb.title', "Get Started with VS Code for the Web"),
 +		title: localize('gettingStarted.setupWeb.title', "Get Started with !!APP_NAME!! for the Web"),
  		description: localize('gettingStarted.setupWeb.description', "Customize your editor, learn the basics, and start coding"),
-@@ -360,3 +334,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -363,3 +288,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		next: 'Beginner',
 -		walkthroughPageTitle: localize('gettingStarted.setupWeb.walkthroughPageTitle', 'Setup VS Code Web'),
 +		walkthroughPageTitle: localize('gettingStarted.setupWeb.walkthroughPageTitle', 'Setup !!APP_NAME!! Web'),
  		content: {
-@@ -386,6 +360,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -389,6 +314,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
 -					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are VS Code's power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensionsWeb.description.interpolated', "Extensions are !!APP_NAME!!'s power-ups. A growing number are becoming available in the web.\n{0}", Button(localize('browsePopularWeb', "Browse Popular Web Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1142,32 +1220,45 @@ index c7074a5..4fd9ae7 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions-web.svg'
 +						type: 'svg', altText: '!!APP_NAME!! extension marketplace with featured language extensions', path: 'extensions-web.svg'
  					},
-@@ -414,3 +388,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -404,12 +329,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+ 				},
+-				{
+-					id: 'settingsSyncWeb',
+-					title: localize('gettingStarted.settingsSync.title', "Sync settings across devices"),
+-					description: localize('gettingStarted.settingsSync.description.interpolated', "Keep your essential customizations backed up and updated across all your devices.\n{0}", Button(localize('enableSync', "Backup and Sync Settings"), 'command:workbench.userDataSync.actions.turnOn')),
+-					when: 'syncStatus != uninitialized',
+-					completionEvents: ['onEvent:sync-enabled'],
+-					media: {
+-						type: 'svg', altText: 'The "Turn on Sync" entry in the settings gear menu.', path: 'settingsSync.svg'
+-					},
+-				},
+ 				{
+@@ -417,3 +332,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPalette.title', "Unlock productivity with the Command Palette "),
 -					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in !!APP_NAME!!.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'svg', altText: 'Command Palette overlay for searching and executing commands.', path: 'commandPalette.svg' },
-@@ -420,3 +394,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -423,3 +338,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.setup.OpenFolder.title', "Open up your code"),
 -					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into VS Code.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
 +					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into !!APP_NAME!!.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
  					when: 'workspaceFolderCount == 0',
-@@ -441,3 +415,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -444,3 +359,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		title: localize('gettingStarted.setupAccessibility.title', "Get Started with Accessibility Features"),
 -		description: localize('gettingStarted.setupAccessibility.description', "Learn the tools and shortcuts that make VS Code accessible. Note that some actions are not actionable from within the context of the walkthrough."),
 +		description: localize('gettingStarted.setupAccessibility.description', "Learn the tools and shortcuts that make !!APP_NAME!! accessible. Note that some actions are not actionable from within the context of the walkthrough."),
  		isFeatured: true,
-@@ -446,3 +420,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -449,3 +364,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  		next: 'Setup',
 -		walkthroughPageTitle: localize('gettingStarted.setupAccessibility.walkthroughPageTitle', 'Setup VS Code Accessibility'),
 +		walkthroughPageTitle: localize('gettingStarted.setupAccessibility.walkthroughPageTitle', 'Setup !!APP_NAME!! Accessibility'),
  		content: {
-@@ -477,3 +451,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -480,3 +395,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.commandPaletteAccessibility.title', "Unlock productivity with the Command Palette "),
 -					description: localize('gettingStarted.commandPaletteAccessibility.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
 +					description: localize('gettingStarted.commandPaletteAccessibility.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in !!APP_NAME!!.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
  					media: { type: 'markdown', path: 'empty' },
-@@ -550,6 +524,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+@@ -553,6 +468,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
 -					description: localize('gettingStarted.extensions.description.interpolated', "Extensions are VS Code's power-ups. They range from handy productivity hacks, expanding out-of-the-box features, to adding completely new capabilities.\n{0}", Button(localize('browsePopular', "Browse Popular Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
 +					description: localize('gettingStarted.extensions.description.interpolated', "Extensions are !!APP_NAME!!'s power-ups. They range from handy productivity hacks, expanding out-of-the-box features, to adding completely new capabilities.\n{0}", Button(localize('browsePopular', "Browse Popular Extensions"), 'command:workbench.extensions.action.showPopularExtensions')),
@@ -1176,8 +1267,84 @@ index c7074a5..4fd9ae7 100644
 -						type: 'svg', altText: 'VS Code extension marketplace with featured language extensions', path: 'extensions.svg'
 +						type: 'svg', altText: '!!APP_NAME!! extension marketplace with featured language extensions', path: 'extensions.svg'
  					},
+@@ -670,75 +585,2 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+ 	},
+-	{
+-		id: `${NEW_WELCOME_EXPERIENCE}`,
+-		title: localize('gettingStarted.new.title', "Get started with VS Code"),
+-		description: localize('gettingStarted.new.description', "Supercharge coding with AI"),
+-		isFeatured: false,
+-		icon: setupIcon,
+-		when: '!isWeb',
+-		walkthroughPageTitle: localize('gettingStarted.new.walkthroughPageTitle', 'Set up VS Code'),
+-		content: {
+-			type: 'steps',
+-			steps: [
+-				{
+-					id: 'copilotSetup.chat',
+-					title: localize('gettingStarted.agentMode.title', "Agent mode"),
+-					description: localize('gettingStarted.agentMode.description', "Analyzes the problem, plans next steps, and makes changes for you."),
+-					media: {
+-						type: 'svg', altText: 'VS Code Copilot multi file edits', path: 'multi-file-edits.svg'
+-					},
+-				},
+-				{
+-					id: 'copilotSetup.inline',
+-					title: localize('gettingStarted.nes.title', "Next Edit Suggestions"),
+-					description: localize('gettingStarted.nes.description', "Get code suggestions that predict your next edit."),
+-					media: {
+-						type: 'svg', altText: 'Next Edit Suggestions', path: 'ai-powered-suggestions.svg'
+-					},
+-				},
+-				{
+-					id: 'copilotSetup.customize',
+-					title: localize('gettingStarted.customize.title', "Personalized to how you work"),
+-					description: localize('gettingStarted.customize.description', "Swap models, add agent mode tools, and create personalized instructions.\n{0}", Button(localize('signUp', "Set up AI"), 'command:workbench.action.chat.triggerSetup')),
+-					media: {
+-						type: 'svg', altText: 'Personalize', path: 'multi-file-edits.svg'
+-					},
+-				},
+-				{
+-					id: 'newCommandPaletteTask',
+-					title: localize('newgettingStarted.commandPalette.title', "All commands within reach"),
+-					description: localize('gettingStarted.commandPalette.description.interpolated', "Run commands without reaching for your mouse to accomplish any task in VS Code.\n{0}", Button(localize('commandPalette', "Open Command Palette"), 'command:workbench.action.showCommands')),
+-					media: { type: 'svg', altText: 'Command Palette overlay for searching and executing commands.', path: 'commandPalette.svg' },
+-				},
+-				{
+-					id: 'newPickColorTheme',
+-					title: localize('gettingStarted.pickColor.title', "Choose your theme"),
+-					description: localize('gettingStarted.pickColor.description.interpolated', "The right theme helps you focus on your code, is easy on your eyes, and is simply more fun to use.\n{0}", Button(localize('titleID', "Browse Color Themes"), 'command:workbench.action.selectTheme')),
+-					completionEvents: [
+-						'onSettingChanged:workbench.colorTheme',
+-						'onCommand:workbench.action.selectTheme'
+-					],
+-					media: { type: 'markdown', path: 'theme_picker_small', }
+-				},
+-				{
+-					id: 'newFindLanguageExtensions',
+-					title: localize('newgettingStarted.findLanguageExts.title', "Support for all languages"),
+-					description: localize('newgettingStarted.findLanguageExts.description.interpolated', "Install the language extensions you need in your toolkit.\n{0}", Button(localize('browseLangExts', "Browse Language Extensions"), 'command:workbench.extensions.action.showLanguageExtensions')),
+-					when: 'workspacePlatform != \'webworker\'',
+-					media: {
+-						type: 'svg', altText: 'Language extensions', path: 'languages.svg'
+-					},
+-				},
+-				{
+-					id: 'newSettingsAndSync',
+-					title: localize('newgettingStarted.settings.title', "Customize every aspect of VS Code"),
+-					description: localize('newgettingStarted.settingsAndSync.description.interpolated', "[Back up and sync](command:workbench.userDataSync.actions.turnOn) settings across all your devices.\n{0}", Button(localize('tweakSettings', "Open Settings"), 'command:toSide:workbench.action.openSettings')),
+-					when: 'syncStatus != uninitialized',
+-					completionEvents: ['onEvent:sync-enabled'],
+-					media: {
+-						type: 'svg', altText: 'VS Code Settings', path: 'settings.svg'
+-					},
+-				},
+-			]
+-		}
+-	}
+ ];
 diff --git a/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts b/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts
-index bdd30bf..5023e82 100644
+index bdd30bf..317d11c 100644
 --- a/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts
 +++ b/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts
 @@ -13,3 +13,3 @@ export default function content(accessor: ServicesAccessor) {
@@ -1201,7 +1368,7 @@ index bdd30bf..5023e82 100644
 +Well if you have got this far then you will have touched on some of the editing features in !!APP_NAME!!.  But don't stop now :)  We have lots of additional [documentation](https://code.visualstudio.com/docs), [introductory videos](https://code.visualstudio.com/docs/getstarted/introvideos) and [tips and tricks](https://go.microsoft.com/fwlink/?linkid=852118) for the product that will help you learn how to use it.  And while you are here, here are a few additional things you can try:
  - Open the Integrated Terminal by pressing kb(workbench.action.terminal.toggleTerminal), then see what's possible by [reviewing the terminal documentation](https://code.visualstudio.com/docs/editor/integrated-terminal)
 diff --git a/src/vs/workbench/contrib/workspace/browser/workspace.contribution.ts b/src/vs/workbench/contrib/workspace/browser/workspace.contribution.ts
-index c512b64..8034183 100644
+index c512b64..dfa2150 100644
 --- a/src/vs/workbench/contrib/workspace/browser/workspace.contribution.ts
 +++ b/src/vs/workbench/contrib/workspace/browser/workspace.contribution.ts
 @@ -733,3 +733,3 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
@@ -1215,35 +1382,35 @@ index c512b64..8034183 100644
 +				markdownDescription: localize('workspace.trust.emptyWindow.description', "Controls whether or not the empty window is trusted by default within !!APP_NAME!!. When used with `#{0}#`, you can enable the full functionality of !!APP_NAME!! without prompting in an empty window.", WORKSPACE_TRUST_UNTRUSTED_FILES),
  				tags: [WORKSPACE_TRUST_SETTING_TAG],
 diff --git a/src/vs/workbench/electron-sandbox/desktop.contribution.ts b/src/vs/workbench/electron-sandbox/desktop.contribution.ts
-index d57c6d6..6d846f7 100644
+index 88e0091..ec657a1 100644
 --- a/src/vs/workbench/electron-sandbox/desktop.contribution.ts
 +++ b/src/vs/workbench/electron-sandbox/desktop.contribution.ts
-@@ -361,3 +361,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
+@@ -364,3 +364,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
  		allowTrailingCommas: true,
 -		description: 'VSCode static command line definition file',
 +		description: '!!APP_NAME!! static command line definition file',
  		type: 'object',
-@@ -406,3 +406,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
+@@ -409,3 +409,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
  				type: 'boolean',
 -				description: localize('argv.disableChromiumSandbox', "Disables the Chromium sandbox. This is useful when running VS Code as elevated on Linux and running under Applocker on Windows.")
 +				description: localize('argv.disableChromiumSandbox', "Disables the Chromium sandbox. This is useful when running !!APP_NAME!! as elevated on Linux and running under Applocker on Windows.")
  			},
-@@ -410,3 +410,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
+@@ -413,3 +413,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
  				type: 'boolean',
 -				description: localize('argv.useInMemorySecretStorage', "Ensures that an in-memory store will be used for secret storage instead of using the OS's credential store. This is often used when running VS Code extension tests or when you're experiencing difficulties with the credential store.")
 +				description: localize('argv.useInMemorySecretStorage', "Ensures that an in-memory store will be used for secret storage instead of using the OS's credential store. This is often used when running !!APP_NAME!! extension tests or when you're experiencing difficulties with the credential store.")
  			}
 diff --git a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-index 798de91..3727e24 100644
+index edfe3a2..71a206f 100644
 --- a/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
 +++ b/src/vs/workbench/services/extensionManagement/common/extensionManagementService.ts
-@@ -1044,3 +1044,3 @@ export class ExtensionManagementService extends Disposable implements IWorkbench
+@@ -1045,3 +1045,3 @@ export class ExtensionManagementService extends CommontExtensionManagementServic
  
 -		const productName = localize('VS Code for Web', "{0} for the Web", this.productService.nameLong);
 +		const productName = localize('!!APP_NAME!! for Web', "{0} for the Web", this.productService.nameLong);
  		const virtualWorkspaceSupport = this.extensionManifestPropertiesService.getExtensionVirtualWorkspaceSupportType(manifest);
 diff --git a/src/vs/workbench/services/extensions/common/extensionsRegistry.ts b/src/vs/workbench/services/extensions/common/extensionsRegistry.ts
-index 859b976..dc0a455 100644
+index 859b976..06386e0 100644
 --- a/src/vs/workbench/services/extensions/common/extensionsRegistry.ts
 +++ b/src/vs/workbench/services/extensions/common/extensionsRegistry.ts
 @@ -181,3 +181,3 @@ export const schema: IJSONSchema = {
@@ -1301,7 +1468,7 @@ index 859b976..dc0a455 100644
 +					description: nls.localize('vscode.extension.scripts.uninstall', 'Uninstall hook for !!APP_NAME!! extension. Script that gets executed when the extension is completely uninstalled from !!APP_NAME!! which is when !!APP_NAME!! is restarted (shutdown and start) after the extension is uninstalled. Only Node scripts are supported.'),
  					type: 'string'
 diff --git a/src/vs/workbench/services/extensions/electron-sandbox/nativeExtensionService.ts b/src/vs/workbench/services/extensions/electron-sandbox/nativeExtensionService.ts
-index d38ab6b..8f704b1 100644
+index d38ab6b..2469194 100644
 --- a/src/vs/workbench/services/extensions/electron-sandbox/nativeExtensionService.ts
 +++ b/src/vs/workbench/services/extensions/electron-sandbox/nativeExtensionService.ts
 @@ -167,3 +167,3 @@ export class NativeExtensionService extends AbstractExtensionService implements
@@ -1310,7 +1477,7 @@ index d38ab6b..8f704b1 100644
 +						label: nls.localize('relaunch', "Relaunch !!APP_NAME!!"),
  						run: () => {
 diff --git a/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts b/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
-index cc56d9a..f985bec 100644
+index cc56d9a..f446b8e 100644
 --- a/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
 +++ b/src/vs/workbench/services/userDataProfile/browser/userDataProfileManagement.ts
 @@ -199,3 +199,3 @@ export class UserDataProfileManagementService extends Disposable implements IUse

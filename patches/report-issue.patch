@@ -8,15 +8,15 @@ index 447f4c9..1118f18 100644
 +- !!APP_NAME!! version: \`${this._productService.version}\`\n\n${message}`);
  
 diff --git a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
-index c5074ca..5fb3fa4 100644
+index 3d7653e..7dbd60b 100644
 --- a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
 +++ b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
-@@ -663,3 +663,3 @@ export class BaseIssueReporterService extends Disposable {
+@@ -665,3 +665,3 @@ export class BaseIssueReporterService extends Disposable {
  		if (title) {
 -			this.searchDuplicates(title, issueDescription);
 +			this.searchGitHub('!!GH_REPO_PATH!!', title);
  		} else {
-@@ -755,33 +755,2 @@ export class BaseIssueReporterService extends Disposable {
+@@ -757,33 +757,2 @@ export class BaseIssueReporterService extends Disposable {
  
 -	@debounce(300)
 -	private searchDuplicates(title: string, body?: string): void {
@@ -50,14 +50,14 @@ index c5074ca..5fb3fa4 100644
 -	}
 -
  	private displaySearchResults(results: SearchResult[]) {
-@@ -877,4 +846,4 @@ export class BaseIssueReporterService extends Disposable {
+@@ -879,4 +848,4 @@ export class BaseIssueReporterService extends Disposable {
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
 -		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Visual Studio Code"), false));
 -		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "!!APP_NAME!!"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A !!APP_NAME!! extension"), false));
  		if (this.product.reportMarketplaceIssueUrl) {
-@@ -965,3 +934,3 @@ export class BaseIssueReporterService extends Disposable {
+@@ -967,3 +936,3 @@ export class BaseIssueReporterService extends Disposable {
  			hide(descriptionTextArea);
 -			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
 +			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of !!APP_NAME!!"));
@@ -72,9 +72,14 @@ index 0bbd8ac..3f35022 100644
 +!!APP_NAME!! version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
  OS version: ${this._data.versionInfo && this._data.versionInfo.os}
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts b/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
-index e739f44..573fa7c 100644
+index e739f44..0024f74 100644
 --- a/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
 +++ b/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
+@@ -14,3 +14,3 @@ const sendExperimentsLabel = escape(localize('sendExperiments', "Include A/B exp
+ const sendExtensionData = escape(localize('sendExtensionData', "Include additional extension info"));
+-const acknowledgementsLabel = escape(localize('acknowledgements', "I acknowledge that my VS Code version is not updated and this issue may be closed."));
++const acknowledgementsLabel = escape(localize('acknowledgements', "I acknowledge that my !!APP_NAME!! version is not updated and this issue may be closed."));
+ const reviewGuidanceLabel = localize( // intentionally not escaped because of its embedded tags
 @@ -19,3 +19,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
  		comment: [
 -			'{Locked="<a href=\"https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
