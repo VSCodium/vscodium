@@ -53,6 +53,7 @@ For maximum privacy, you can add these settings to your `settings.json`:
 {
   "telemetry.enableTelemetry": false,
   "telemetry.enableCrashReporter": false,
+  "telemetry.feedback.enabled": false,
   "update.enableWindowsBackgroundUpdates": false,
   "update.mode": "manual",
   "workbench.enableExperiments": false,
