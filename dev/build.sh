@@ -5,12 +5,12 @@
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./dev/build.sh
 ###
 
-export APP_NAME="VSCodium"
-export ASSETS_REPOSITORY="VSCodium/vscodium"
-export BINARY_NAME="codium"
+export APP_NAME="Codex"
+export ASSETS_REPOSITORY="BiblioNexus-Foundation/codex"
+export BINARY_NAME="codex"
 export CI_BUILD="no"
-export GH_REPO_PATH="VSCodium/vscodium"
-export ORG_NAME="VSCodium"
+export GH_REPO_PATH="BiblioNexus-Foundation/codex"
+export ORG_NAME="Codex"
 export SHOULD_BUILD="yes"
 export SKIP_ASSETS="yes"
 export SKIP_BUILD="no"
@@ -22,8 +22,8 @@ export VSCODE_SKIP_NODE_VERSION_CHECK="yes"
 while getopts ":ilops" opt; do
   case "$opt" in
     i)
-      export ASSETS_REPOSITORY="VSCodium/vscodium-insiders"
-      export BINARY_NAME="codium-insiders"
+      export ASSETS_REPOSITORY="BiblioNexus-Foundation/codex-insiders"
+      export BINARY_NAME="codex-insiders"
       export VSCODE_QUALITY="insider"
       ;;
     l)
@@ -123,9 +123,9 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
     mkdir -p ~/.gyp
 
     if [[ -f "${HOME}/.gyp/include.gypi" ]]; then
-      mv ~/.gyp/include.gypi ~/.gyp/include.gypi.pre-vscodium
+      mv ~/.gyp/include.gypi ~/.gyp/include.gypi.pre-codex
     else
-      echo "{}" > ~/.gyp/include.gypi.pre-vscodium
+      echo "{}" > ~/.gyp/include.gypi.pre-codex
     fi
 
     cp ./build/osx/include.gypi ~/.gyp/include.gypi
@@ -134,7 +134,7 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
   . build.sh
 
   if [[ -f "./include_${OS_NAME}.gypi" ]]; then
-    mv ~/.gyp/include.gypi.pre-vscodium ~/.gyp/include.gypi
+    mv ~/.gyp/include.gypi.pre-codex ~/.gyp/include.gypi
   fi
 
   if [[ "${VSCODE_LATEST}" == "yes" ]]; then

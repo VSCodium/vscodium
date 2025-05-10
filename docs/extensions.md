@@ -11,12 +11,12 @@
 - [Visual Studio Marketplace](#visual-studio-marketplace)
 - [Proprietary Debugging Tools](#proprietary-debugging-tools)
 - [Proprietary Extensions](#proprietary-extensions)
-- [Extensions compatibility](https://github.com/VSCodium/vscodium/blob/master/docs/extensions-compatibility.md)
+- [Extensions compatibility](https://github.com/BiblioNexus-Foundation/codex/blob/master/docs/extensions-compatibility.md)
 
 
 ## <a id="marketplace"></a>Marketplace
 
-Being a vscode based editor, VSCodium gets additional features by installing Visual Studio Code extensions.
+Being a vscode based editor, Codex gets additional features by installing Visual Studio Code extensions.
 Unfortunately, as Microsoft [prohibits usages of the Microsoft marketplace by any other products](https://github.com/microsoft/vscode/issues/31168) or redistribution of `.vsix` files from it, in order to use Visual Studio Code extensions in non-Microsoft products those need to be installed differently.
 
 By default, the `product.json` file is set up to use [open-vsx.org](https://open-vsx.org/) as extension gallery, which has an [adapter](https://github.com/eclipse/openvsx/wiki/Using-Open-VSX-in-VS-Code) to the Marketplace API used by Visual Studio Code. Since that is a rather new project, you will likely miss some extensions you know from the Visual Studio Marketplace. You have the following options to obtain such missing extensions:
@@ -27,7 +27,7 @@ By default, the `product.json` file is set up to use [open-vsx.org](https://open
 
 ## <a id="howto-openvsx-marketplace"></a>How to use the Open VSX Registry
 
-As noted above, the [Open VSX Registry](https://open-vsx.org/) is the pre-set extension gallery in VSCodium. Using the extension view in VSCodium will therefore by default use it.
+As noted above, the [Open VSX Registry](https://open-vsx.org/) is the pre-set extension gallery in Codex. Using the extension view in Codex will therefore by default use it.
 See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on the motivation behind Open VSX.
 
 ## <a id="howto-switch-marketplace"></a>How to use a different extension gallery
@@ -42,10 +42,10 @@ You can either use the following environment variables:
 - `VSCODE_GALLERY_EXTENSION_URL_TEMPLATE` ***(required)***
 - `VSCODE_GALLERY_RESOURCE_URL_TEMPLATE`
 
-Or by creating a custom `product.json` at the following location (replace `VSCodium` by `VSCodium - Insiders` if you use that):
-- Windows: `%APPDATA%\VSCodium` or `%USERPROFILE%\AppData\Roaming\VSCodium`
-- macOS: `~/Library/Application Support/VSCodium`
-- Linux: `$XDG_CONFIG_HOME/VSCodium` or `~/.config/VSCodium`
+Or by creating a custom `product.json` at the following location (replace `Codex` by `Codex - Insiders` if you use that):
+- Windows: `%APPDATA%\Codex` or `%USERPROFILE%\AppData\Roaming\Codex`
+- macOS: `~/Library/Application Support/Codex`
+- Linux: `$XDG_CONFIG_HOME/Codex` or `~/.config/Codex`
 
 with the content like:
 
@@ -69,7 +69,7 @@ Individual developers and enterprise companies in regulated or security-consciou
 There are likely other options, but the following were reported to work:
 
 * [Open VSX](https://github.com/eclipse/openvsx) eclipse open-source project
-  While the public instance which is run by the Eclipse Foundation is the pre-set endpoint in VSCodium, you can host your own instance.
+  While the public instance which is run by the Eclipse Foundation is the pre-set endpoint in Codex, you can host your own instance.
 
     > Open VSX is a [vendor-neutral](https://projects.eclipse.org/projects/ecd.openvsx) open-source alternative to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/vscode). It provides a server application that manages [Visual Studio Code extensions](https://code.visualstudio.com/api) in a database, a web application similar to the Visual Studio Marketplace, and a command-line tool for publishing extensions similar to [vsce](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#vsce).
 
@@ -90,11 +90,11 @@ Also note that this extension gallery hosts multiple extensions that are non-fre
 
 The debugger provided with Microsoft's [C# extension](https://github.com/OmniSharp/omnisharp-vscode) as well as the (Windows) debugger provided with their [C++ extension](https://github.com/Microsoft/vscode-cpptools) are very restrictively licensed to only work with the official Visual Studio Code build. See [this comment in the C# extension repo](https://github.com/OmniSharp/omnisharp-vscode/issues/2491#issuecomment-418811364) and [this comment in the C++ extension repo](https://github.com/Microsoft/vscode-cpptools/issues/21#issuecomment-248349017).
 
-A workaround exists to get debugging working in C# projects, by using Samsung's opensource [netcoredbg](https://github.com/Samsung/netcoredbg) package. See [this comment](https://github.com/VSCodium/vscodium/issues/82#issue-409806641) for instructions on how to set that up.
+A workaround exists to get debugging working in C# projects, by using Samsung's opensource [netcoredbg](https://github.com/Samsung/netcoredbg) package. See [this comment](https://github.com/BiblioNexus-Foundation/codex/issues/82#issue-409806641) for instructions on how to set that up.
 
 ## <a id="proprietary-extensions"></a>Proprietary Extensions
 
-Like the debuggers mentioned above, some extensions you may find in the marketplace (like the [Remote Development Extensions](https://code.visualstudio.com/docs/remote/remote-overview)) only function with the official Visual Studio Code build. You can work around this by adding the extension's internal ID (found on the extension's page) to the `extensionAllowedProposedApi` property of the product.json in your VSCodium installation. For example:
+Like the debuggers mentioned above, some extensions you may find in the marketplace (like the [Remote Development Extensions](https://code.visualstudio.com/docs/remote/remote-overview)) only function with the official Visual Studio Code build. You can work around this by adding the extension's internal ID (found on the extension's page) to the `extensionAllowedProposedApi` property of the product.json in your Codex installation. For example:
 
 ```jsonc
   "extensionAllowedProposedApi": [
