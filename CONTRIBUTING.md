@@ -1,42 +1,42 @@
-# Contributing
+# Contribuição
 
-:+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
+:+1::tada: Antes de mais nada, obrigado pelo seu tempo para contribuir! :tada::+1:
 
-#### Table Of Contents
+#### Tabela de Conteúdos
 
-- [Code of Conduct](#code-of-conduct)
-- [Reporting Bugs](#reporting-bugs)
-- [Making Changes](#making-changes)
+- [Código de Conduta](#code-of-conduct)
+- [Reportar Erros](#reporting-bugs)
+- [Efetuar Alterações](#making-changes)
 
-## Code of Conduct
+## Código de Conduta
 
-This project and everyone participating in it is governed by the [VSCodium Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+Este projeto e todos os participantes são governados pelo [VSCodium - Código de Conduta](CODE_OF_CONDUCT.md). Ao participar, esperasse que respeite este código.
 
-## Reporting Bugs
+## Reporte de Erros (Bugs)
 
-### Before Submitting an Issue
+### Antes de Submeter um Problema
 
-Before creating bug reports, please check existing issues and [the Troubleshooting page](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md) as you might find out that you don't need to create one.
-When you are creating a bug report, please include as many details as possible. Fill out [the required template](https://github.com/VSCodium/vscodium/issues/new?&labels=bug&&template=bug_report.md), the information it asks for helps us resolve issues faster.
+Antes de criar relatórios de erros, por favor, consulte os problemas existentes e [a página de «Resolução de Problemas»](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md) como pode descobrir que não precisa criar um.
+Quando estiver a criar um relatório de erros, por favor, inclua o maior número de detalhes possível. Preencha o [modelo necessário](https://github.com/VSCodium/vscodium/issues/new?&labels=bug&&template=bug_report.md), a informação pedida para nos ajudar a resolver os problemas mais rapidamente.
 
-## Making Changes
+## Efetuar Alterações
 
-If you want to make changes, please read [the Build page](./docs/howto-build.md).
+Se pretender efetuar alterações, por favor, leia [a página de «Criação»](./docs/howto-build.md).
 
-### Building VSCodium
+### Criação de VSCodium
 
-To build VSCodium, please follow the command found in the section [`Build Scripts`](./docs/howto-build.md#build-scripts).
+Para criar VSCodium, por favor, siga o comando encontrado na secção [`Scripts de Criação`](./docs/howto-build.md#build-scripts).
 
-### Updating patches
+### Ataulização de correcções (<i>patches</i>)
 
-If you want to update the existing patches, please follow the section [`Patch Update Process - Semi-Automated`](./docs/howto-build.md#patch-update-process-semiauto).
+Se pretender atualizar as correções existentes, por favor, siga a secção [`Processo de Atualização de Correção - Semi Automatático`](./docs/howto-build.md#patch-update-process-semiauto).
 
-### Add a new patch
+### Adicionar uma nova correção
 
-- first, you need to build VSCodium
-- then use the command `./dev/patch.sh <your patch name>`, to initiate a new patch
-- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
-- run `npm run watch`
-- run `./script/code.sh`
-- make your changes
-- press any key to continue the script `patch.sh`
+- primeiro, tem de criar VSCodium
+- depois utilize o comando `./dev/patch.sh <your patch name>`, para iniciar uma nova correção
+- quando o <i>script</i> pausa em `Pressione qualquer tecla quando o conflito estiver resolvido...`, abra a diretoria `vscode` no **VSCodium**
+- execute `npm run watch`
+- execute `./script/code.sh`
+- efetue as suas alterações
+- pressione qualquer tecla para continuar o <i>script</i> `patch.sh`
