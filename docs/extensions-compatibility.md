@@ -18,6 +18,11 @@ Most MS extensions are limited to run on only MS products by their license and b
 - [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
 - [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
 > It's officially unsupported: https://github.com/James-Yu/LaTeX-Workshop/wiki/FAQ#codex-is-not-officially-supported
+
+## Incompatibility due to licensing
+
+The following extensions are not compatible with Codex due to their licensing:
+
 - [Live Share](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare)
 - [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
 - [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)

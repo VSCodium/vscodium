@@ -1,5 +1,3 @@
-<!-- order: 35 -->
-
 # How to build Codex
 
 ## Table of Contents
