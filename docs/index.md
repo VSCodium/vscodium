@@ -27,7 +27,7 @@
   - [Extensions compatibility](https://github.com/VSCodium/vscodium/blob/master/docs/extensions-compatibility.md)
 - [Migration](https://github.com/VSCodium/vscodium/blob/master/docs/migration.md)
   - [Manual Migration from Visual Studio Code to VSCodium](https://github.com/VSCodium/vscodium/blob/master/docs/migration.md#manual-migration)
-  - [Semi-Automatic Migration with Sync Settings Extension](https://github.com/VSCodium/vscodium/blob/master/docs/migration.md#semi-automatic-migration)
+  - [Semi-Automatic Migration with "Sync Settings" Extension](https://github.com/VSCodium/vscodium/blob/master/docs/migration.md#semi-automatic-migration)
 - [Usage](https://github.com/VSCodium/vscodium/blob/master/docs/usage.md)
   - [Sign in with GitHub](https://github.com/VSCodium/vscodium/blob/master/docs/usage.md#signin-github)
   - [Accounts authentication](https://github.com/VSCodium/vscodium/blob/master/docs/accounts-authentication.md)

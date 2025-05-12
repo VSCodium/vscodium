@@ -5,7 +5,7 @@
 ## Table of Contents
 
 - [Manual Migration from Visual Studio Code to VSCodium](#manual-migration)
-- [Semi-Automatic Migration with Sync Settings Extension](#semi-automatic-migration)
+- [Semi-Automatic Migration with "Sync Settings" Extension](#semi-automatic-migration)
 
 ## <a id="manual-migration"></a>Manual Migration from Visual Studio Code to VSCodium
 
@@ -29,7 +29,7 @@ To copy your settings manually:
 - Click the three dots `...` and choose 'Open settings.json'
 - Copy the contents of settings.json into the same place in VSCodium
 
-## <a id="semi-automatic-migration"></a>Semi-Automatic Migration with Sync Settings Extension
+## <a id="semi-automatic-migration"></a>Semi-Automatic Migration with "Sync Settings" Extension
 
 The [**Sync Settings**](https://github.com/zokugun/vscode-sync-settings) extension can simplify the migration process by enabling synchronization of settings, keybindings, extensions, and more between Visual Studio Code and VSCodium. Its author is the main maintainer of VSCodium ;)
 
