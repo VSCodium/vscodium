@@ -65,9 +65,14 @@ These settings will disable various telemetry and tracking features.
 
 ## <a id="announcements"></a>VSCodium Announcements
 
-On the Welcome page, we do load some announcements from out GitHub repository. You can disable it with the `workbench.welcomePage.extraAnnouncements` setting to `false`.
+The Welcome page in VSCodium displays announcements that are fetched from the project's GitHub repository.
+
+If you prefer to disable this feature, you can set the `workbench.welcomePage.extraAnnouncements` setting to `false` in your `settings.json`.
 
 ## <a id="malicious-extensions"></a>Malicious & Deprecated Extensions
 
-The definition for the malicious and deprecated extensions is dynamically load https://raw.githubusercontent.com/EclipseFdn/publish-extensions/refs/heads/master/extension-control/extensions.json.
-In the case you don't want any connection, you must set the `extensions.excludeUnsafes` setting to `false`. But it's not recommended.
+The definitions for malicious and deprecated extensions are dynamically loaded from the following URL:
+https://raw.githubusercontent.com/EclipseFdn/publish-extensions/refs/heads/master/extension-control/extensions.json.
+
+If you prefer to avoid any external connections, you can set the`extensions.excludeUnsafes` setting to `false` in your `settings.json`.
+However, this is not recommended as it may reduce the safety of your environment.
