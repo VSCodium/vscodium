@@ -11,8 +11,8 @@
 - [Visual Studio Marketplace](#visual-studio-marketplace)
 - [Proprietary Debugging Tools](#proprietary-debugging-tools)
 - [Proprietary Extensions](#proprietary-extensions)
+- [Using the "VSIX Manager" Extension](#vsix-manager)
 - [Extensions compatibility](https://github.com/VSCodium/vscodium/blob/master/docs/extensions-compatibility.md)
-
 
 ## <a id="marketplace"></a>Marketplace
 
@@ -106,3 +106,31 @@ Like the debuggers mentioned above, some extensions you may find in the marketpl
 ```
 
 In some cases, the above change won't help because the extension is hard-coded to only work with the official Visual Studio Code product.
+
+## <a id="vsix-manager"></a>Using the "VSIX Manager" Extension
+
+The [**VSIX Manager**](https://github.com/zokugun/vscode-vsix-manager) extension provides a powerful and user-friendly interface for managing `.vsix` files directly within VSCodium. Its author is the main maintainer of VSCodium ;)
+
+It is particularly beneficial for:
+- **Support for Multiple Marketplaces**: Seamlessly install and manage extensions from several marketplaces at the same time, allowing access to a broader range of extensions.
+- **Local Files**: Manage a collection of `.vsix` files stored locally.
+- **GitHub/Forgejo Release**: Install the extension directly from its GitHub/Forgejo release pages.
+- **Fallback Options**
+
+### <a id="use-cases"></a>Use Cases
+
+- Developers working offline can easily manage `.vsix` files.
+- Teams can distribute specific versions of extensions across systems.
+- Enterprises with restricted environments can maintain control over installed extensions.
+- Users can connect to multiple marketplaces and access a wider range of extensions or switch seamlessly between them.
+
+### <a id="marketplace-support"></a>Marketplace Support
+
+The **VSIX Manager** extension supports managing extensions from several marketplaces simultaneously. This feature enables:
+- **Access to Diverse Extensions**: Install extensions from different sources like Open VSX or private repositories.
+- **Fallback Options**: Ensure extension availability even if one marketplace is temporarily inaccessible.
+- **Enterprise Flexibility**: Use private or self-hosted marketplaces alongside public ones to meet security and compliance requirements.
+- **Custom Configurations**: Prioritize specific marketplaces for particular needs while keeping access to others.
+
+## [Extensions compatibility](https://github.com/VSCodium/vscodium/blob/master/docs/extensions-compatibility.md)
+
