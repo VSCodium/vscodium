@@ -16,7 +16,7 @@ parts:
       set -eu
       # Get .deb url
       wget --quiet https://api.github.com/repos/VSCodium/vscodium-insiders/releases -O latest.json
-      VERSION=$( jq -r 'sort_by(.tag_name)|last.tag_name' latest.json )
+      VERSION=$( jq -r 'sort_by(.tag_name|split(".")|map(tonumber))|last.tag_name' latest.json )
       DEB_URL=$( jq -r 'map(select(.tag_name == "'"${VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${SNAPCRAFT_TARGET_ARCH}.deb"'"))' latest.json )
       DEB_NAME=$( basename "${DEB_URL}" )
       # Downloading .deb
