@@ -138,7 +138,9 @@ if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex-insiders/releases"
+    setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex-insiders/releases"
   else
+    setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex/releases"
     setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex/releases"
   fi
 fi
@@ -184,6 +186,9 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "tunnelApplicationName" "codex-tunnel-insiders"
   setpath "product" "win32TunnelServiceMutex" "codexinsiders-tunnelservice"
   setpath "product" "win32TunnelMutex" "codexinsiders-tunnel"
+  setpath "product" "tunnelApplicationName" "codex-tunnel-insiders"
+  setpath "product" "win32TunnelServiceMutex" "codexinsiders-tunnelservice"
+  setpath "product" "win32TunnelMutex" "codexinsiders-tunnel"
 else
   setpath "product" "nameShort" "Codex"
   setpath "product" "nameLong" "Codex"
@@ -219,6 +224,9 @@ else
   setpath "product" "tunnelApplicationName" "codex-tunnel"
   setpath "product" "win32TunnelServiceMutex" "codex-tunnelservice"
   setpath "product" "win32TunnelMutex" "codex-tunnel"
+  setpath "product" "tunnelApplicationName" "codex-tunnel"
+  setpath "product" "win32TunnelServiceMutex" "codex-tunnelservice"
+  setpath "product" "win32TunnelMutex" "codex-tunnel"
 fi
 
 jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
@@ -238,7 +246,11 @@ cp resources/server/manifest.json{,.bak}
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "resources/server/manifest" "name" "Codex - Insiders"
   setpath "resources/server/manifest" "short_name" "Codex - Insiders"
+  setpath "resources/server/manifest" "name" "Codex - Insiders"
+  setpath "resources/server/manifest" "short_name" "Codex - Insiders"
 else
+  setpath "resources/server/manifest" "name" "Codex"
+  setpath "resources/server/manifest" "short_name" "Codex"
   setpath "resources/server/manifest" "name" "Codex"
   setpath "resources/server/manifest" "short_name" "Codex"
 fi

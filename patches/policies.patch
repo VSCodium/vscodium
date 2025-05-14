@@ -29,12 +29,12 @@ index ac69762..db1fd3d 100644
 @@ -81,3 +81,3 @@ class BasePolicy {
          return [
 -            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
-+            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\!!ORG_NAME!!\\${regKey}" presentation="$(presentation.${this.name})">`,
++            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Codex\\${regKey}" presentation="$(presentation.${this.name})">`,
              `	<parentCategory ref="${this.category.name.nlsKey}" />`,
 @@ -501,3 +501,3 @@ function renderADMX(regKey, versions, categories, policies) {
  	<policyNamespaces>
 -		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
-+		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
++		<target prefix="${regKey}" namespace="Codex.Policies.${regKey}" />
  	</policyNamespaces>
 diff --git a/build/lib/policies.ts b/build/lib/policies.ts
 index 34d20e9..8404cdf 100644
@@ -43,12 +43,12 @@ index 34d20e9..8404cdf 100644
 @@ -107,3 +107,3 @@ abstract class BasePolicy implements Policy {
  		return [
 -			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
-+			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\!!ORG_NAME!!\\${regKey}" presentation="$(presentation.${this.name})">`,
++			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Codex\\${regKey}" presentation="$(presentation.${this.name})">`,
  			`	<parentCategory ref="${this.category.name.nlsKey}" />`,
 @@ -703,3 +703,3 @@ function renderADMX(regKey: string, versions: string[], categories: Category[],
  	<policyNamespaces>
 -		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
-+		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
++		<target prefix="${regKey}" namespace="Codex.Policies.${regKey}" />
  	</policyNamespaces>
 diff --git a/eslint.config.js b/eslint.config.js
 index f1b01d0..7dca1f1 100644
@@ -104,6 +104,7 @@ index beb023f..623c8ab 100644
 +      "license": "MIT",
 +      "dependencies": {
 +        "bindings": "^1.5.0",
++        "node-addon-api": "^8.2.0"
 +        "node-addon-api": "^8.2.0"
 +      }
 +    },
@@ -255,5 +256,5 @@ index 67f7892..840d655 100644
 @@ -31,3 +31,3 @@ export class NativePolicyService extends AbstractPolicyService implements IPolic
  			try {
 -				this.watcher.value = createWatcher(this.productName, policyDefinitions, update => {
-+				this.watcher.value = createWatcher('!!ORG_NAME!!', this.productName, policyDefinitions, update => {
++				this.watcher.value = createWatcher('Codex', this.productName, policyDefinitions, update => {
  					this._onDidPolicyChange(update);

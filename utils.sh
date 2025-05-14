@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 APP_NAME="${APP_NAME:-Codex}"
+APP_NAME="${APP_NAME:-Codex}"
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 ASSETS_REPOSITORY="${ASSETS_REPOSITORY:-BiblioNexus-Foundation/codex}"
 BINARY_NAME="${BINARY_NAME:-codex}"

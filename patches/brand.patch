@@ -537,7 +537,7 @@ index 2fab3ec..1195e3d 100644
 @@ -178,3 +178,3 @@ export function activate(context: vscode.ExtensionContext) {
  					const serverBin = path.join(remoteDataDir, 'bin');
 -					progress.report({ message: 'Installing VSCode Server' });
-+					progress.report({ message: 'Installing !!APP_NAME!! Server' });
++					progress.report({ message: 'Installing Codex Server' });
  					serverLocation = await downloadAndUnzipVSCodeServer(updateUrl, commit, quality, serverBin, m => outputChannel.appendLine(m));
 diff --git a/src/main.ts b/src/main.ts
 index 1af3c94..d1a8ea6 100644
@@ -678,7 +678,7 @@ index 6441394..69955cd 100644
 @@ -334,3 +334,3 @@ export class MainThreadAuthentication extends Disposable implements MainThreadAu
  				owner: 'TylerLeonhardt';
 -				comment: 'Used to see which extensions are using the VSCode client id override';
-+				comment: 'Used to see which extensions are using the !!APP_NAME!! client id override';
++				comment: 'Used to see which extensions are using the Codex client id override';
  				extensionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The extension id.' };
 diff --git a/src/vs/workbench/api/browser/viewsExtensionPoint.ts b/src/vs/workbench/api/browser/viewsExtensionPoint.ts
 index fdf354d..b196297 100644
@@ -734,7 +734,7 @@ index 0ebe271..20974b2 100644
 @@ -35,3 +35,3 @@ export function create(domElement: HTMLElement, options: IWorkbenchConstructionO
  	if (created) {
 -		throw new Error('Unable to create the VSCode workbench more than once.');
-+		throw new Error('Unable to create the !!APP_NAME!! workbench more than once.');
++		throw new Error('Unable to create the Codex workbench more than once.');
  	} else {
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
 index 735e721..0356d59 100644
@@ -1009,7 +1009,7 @@ index 4979520..30ae11b 100644
 @@ -19,3 +19,3 @@ export const terminalAutoRepliesConfiguration: IStringDictionary<IConfigurationP
  	[TerminalAutoRepliesSettingId.AutoReplies]: {
 -		markdownDescription: localize('terminal.integrated.autoReplies', "A set of messages that, when encountered in the terminal, will be automatically responded to. Provided the message is specific enough, this can help automate away common responses.\n\nRemarks:\n\n- Use {0} to automatically respond to the terminate batch job prompt on Windows.\n- The message includes escape sequences so the reply might not happen with styled text.\n- Each reply can only happen once every second.\n- Use {1} in the reply to mean the enter key.\n- To unset a default key, set the value to null.\n- Restart VS Code if new don't apply.", '`"Terminate batch job (Y/N)": "Y\\r"`', '`"\\r"`'),
-+		markdownDescription: localize('terminal.integrated.autoReplies', "A set of messages that, when encountered in the terminal, will be automatically responded to. Provided the message is specific enough, this can help automate away common responses.\n\nRemarks:\n\n- Use {0} to automatically respond to the terminate batch job prompt on Windows.\n- The message includes escape sequences so the reply might not happen with styled text.\n- Each reply can only happen once every second.\n- Use {1} in the reply to mean the enter key.\n- To unset a default key, set the value to null.\n- Restart !!APP_NAME!! if new don't apply.", '`"Terminate batch job (Y/N)": "Y\\r"`', '`"\\r"`'),
++		markdownDescription: localize('terminal.integrated.autoReplies', "A set of messages that, when encountered in the terminal, will be automatically responded to. Provided the message is specific enough, this can help automate away common responses.\n\nRemarks:\n\n- Use {0} to automatically respond to the terminate batch job prompt on Windows.\n- The message includes escape sequences so the reply might not happen with styled text.\n- Each reply can only happen once every second.\n- Use {1} in the reply to mean the enter key.\n- To unset a default key, set the value to null.\n- Restart Codex if new don't apply.", '`"Terminate batch job (Y/N)": "Y\\r"`', '`"\\r"`'),
  		type: 'object',
 diff --git a/src/vs/workbench/contrib/update/browser/update.ts b/src/vs/workbench/contrib/update/browser/update.ts
 index a20d7ae..6861b35 100644
@@ -1388,7 +1388,7 @@ index 88e0091..ec657a1 100644
 @@ -364,3 +364,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
  		allowTrailingCommas: true,
 -		description: 'VSCode static command line definition file',
-+		description: '!!APP_NAME!! static command line definition file',
++		description: 'Codex static command line definition file',
  		type: 'object',
 @@ -409,3 +409,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
  				type: 'boolean',
