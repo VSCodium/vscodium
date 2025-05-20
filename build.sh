@@ -37,19 +37,16 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     # generate Group Policy definitions
     node build/lib/policies win32
 
-    # in CI, packaging will be done by a different job
-    if [[ "${CI_BUILD}" == "no" ]]; then
-      . ../build/windows/rtf/make.sh
+    . ../build/windows/rtf/make.sh
 
-      npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+    npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
 
-      if [[ "${VSCODE_ARCH}" != "x64" ]]; then
-        SHOULD_BUILD_REH="no"
-        SHOULD_BUILD_REH_WEB="no"
-      fi
-
-      . ../build_cli.sh
+    if [[ "${VSCODE_ARCH}" != "x64" ]]; then
+      SHOULD_BUILD_REH="no"
+      SHOULD_BUILD_REH_WEB="no"
     fi
+
+    . ../build_cli.sh
 
     VSCODE_PLATFORM="win32"
   else # linux
