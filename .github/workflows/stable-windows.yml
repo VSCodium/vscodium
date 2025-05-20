@@ -162,7 +162,8 @@ jobs:
         shell: bash
     env:
       APP_IDENTIFIER: VSCodium.VSCodium
-    if: env.SHOULD_DEPLOY == 'yes'
+
+    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - uses: actions/checkout@v4
