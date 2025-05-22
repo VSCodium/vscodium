@@ -59,6 +59,8 @@ parts:
       - libnss3
       - libpango-1.0-0
       - libsecret-1-0
+      - libvulkan1
+      - libwayland-egl1
       - libxcomposite1
       - libxdamage1
       - libxfixes3
@@ -79,6 +81,9 @@ parts:
       - -usr/share/lintian
       - -usr/share/man
       - -usr/share/codium/chrome-sandbox
+      - -usr/share/@@NAME@@/libEGL.so*
+      - -usr/share/@@NAME@@/libGLESv2.so*
+      - -usr/share/@@NAME@@/libvulkan.so*
     build-attributes:
       - enable-patchelf
     override-prime: |
