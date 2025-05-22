@@ -24,12 +24,16 @@ check_file() {
   fi
 
   if [[ -f "${1}" ]]; then
+    git apply --reject "../patches/helper/settings.patch"
+    git add .
+    git commit --no-verify -q -m "VSCODIUM HELPER"
+
     echo applying patch: "${1}"
+
     if ! git apply --ignore-whitespace "${1}"; then
       echo failed to apply patch "${1}"
 
       git apply --reject "${1}"
-      git apply --reject "../patches/helper/settings.patch"
 
       read -rp "Press any key when the conflict have been resolved..." -n1 -s
 
@@ -37,8 +41,9 @@ check_file() {
       git add .
       git diff --staged -U1 > "${1}"
     fi
+
     git add .
-    git reset -q --hard HEAD
+    git reset -q --hard HEAD~
   fi
 }
 
