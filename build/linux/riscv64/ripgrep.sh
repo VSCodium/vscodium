@@ -9,7 +9,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 RG_PATH="$1/@vscode/ripgrep/bin/rg"
-RG_VERSION="14.1.1-3"
+RG_VERSION="14.1.1-4"
 
 echo "Replacing ripgrep binary with riscv64 one"
 

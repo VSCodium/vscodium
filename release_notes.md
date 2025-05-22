@@ -66,7 +66,7 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
   </tr>
   <tr>
     <td>.rpm</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@-@@VERSION@@-el9.x86_64.rpm">@@BINARY_NAME@@-@@VERSION@@-el9.x86_64.rpm</a></td>
+    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@-@@VERSION@@-el8.x86_64.rpm">@@BINARY_NAME@@-@@VERSION@@-el8.x86_64.rpm</a></td>
   </tr>
   <tr>
     <td>.tar.gz</td>
@@ -154,7 +154,7 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
   </tr>
   <tr>
     <td>.rpm</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@-@@VERSION@@-el9.aarch64.rpm">@@BINARY_NAME@@-@@VERSION@@-el9.aarch64.rpm</a></td>
+    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@-@@VERSION@@-el8.aarch64.rpm">@@BINARY_NAME@@-@@VERSION@@-el8.aarch64.rpm</a></td>
   </tr>
   <tr>
     <td>.tar.gz</td>
@@ -197,7 +197,7 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
   </tr>
   <tr>
     <td>.rpm</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@-@@VERSION@@-el9.armv7hl.rpm">@@BINARY_NAME@@-@@VERSION@@-el9.armv7hl.rpm</a></td>
+    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@-@@VERSION@@-el8.armv7hl.rpm">@@BINARY_NAME@@-@@VERSION@@-el8.armv7hl.rpm</a></td>
   </tr>
   <tr>
     <td>.tar.gz</td>

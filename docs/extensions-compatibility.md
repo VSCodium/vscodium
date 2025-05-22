@@ -1,29 +1,43 @@
+<!-- order: 0 -->
+
 # Extensions compatibility
 
-## Partial Compatibility
+## Table of Contents
 
-- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
-> [Since May 2021](https://devblogs.microsoft.com/python/python-in-visual-studio-code-may-2021-release/), Python is using a closed source language server ([Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance))
+- [Incompatibility](#incompatibility)
+- [Replacements](#replacements)
+  - [C/C++](#cc)
+  - [Python](#python)
+  - [Remote](#remote)
 
-## Incompatibility
+## <a id="incompatibility"></a>Incompatibility
 
+Most MS extensions are limited to run on only MS products by their license and by running additional checks in their proprietary code.
+
+- [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
 - [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
 > It's officially unsupported: https://github.com/James-Yu/LaTeX-Workshop/wiki/FAQ#vscodium-is-not-officially-supported
-
-## Incompatibility due to licensing
-
-The following extensions are not compatible with VSCodium due to their licensing:
-
 - [Live Share](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare)
+- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
 - [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 - [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
 - [Remote - SSH: Editing Configuration Files](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh-edit)
 - [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl)
 
-## Replacements
+##<a id="replacements"></a>Replacements
 
 The following extensions are functional replacements for incompatible extensions:
 
+### <a id="cc"></a>C/C++
+
+- [clangd](https://open-vsx.org/extension/llvm-vs-code-extensions/vscode-clangd)
+
+### <a id="python"></a>Python
+
+- [BasedPyright](https://open-vsx.org/extension/detachhead/basedpyright)
+
+### <a id="remote"></a>Remote
+
 - [Open Remote - SSH](https://open-vsx.org/extension/jeanp413/open-remote-ssh)
+> SSH server must be configured with the setting `AllowTcpForwarding yes`.
 - [Open Remote - WSL](https://open-vsx.org/extension/jeanp413/open-remote-wsl)
-- [BasedPyright](https://open-vsx.org/extension/detachhead/basedpyright) (open-source alternative to Pylance)
