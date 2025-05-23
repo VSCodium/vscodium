@@ -1,27 +1,27 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index 2da5cf9..700e199 100755
+index 3e33f75..052b38f 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
-@@ -80,2 +80,14 @@ elif [ "$npm_config_arch" == "ppc64" ]; then
- 	export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/usr/lib/powerpc64le-linux-gnu -L$VSCODE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/lib/powerpc64le-linux-gnu"
+@@ -88,2 +88,14 @@ elif [ "$npm_config_arch" == "ppc64" ]; then
+ 	export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_REMOTE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot -L$VSCODE_REMOTE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/usr/lib/powerpc64le-linux-gnu -L$VSCODE_REMOTE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/lib/powerpc64le-linux-gnu"
 +elif [ "$npm_config_arch" == "s390x" ]; then
 +	# Set compiler toolchain for client native modules
-+	export CC=$VSCODE_SYSROOT_DIR/s390x-linux-gnu/bin/s390x-linux-gnu-gcc
-+	export CXX=$VSCODE_SYSROOT_DIR/s390x-linux-gnu/bin/s390x-linux-gnu-g++
-+	export CXXFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot"
-+	export LDFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot -L$VSCODE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/usr/lib/s390x-linux-gnu -L$VSCODE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/lib/s390x-linux-gnu"
++	export CC=$VSCODE_CLIENT_SYSROOT_DIR/s390x-linux-gnu/bin/s390x-linux-gnu-gcc
++	export CXX=$VSCODE_CLIENT_SYSROOT_DIR/s390x-linux-gnu/bin/s390x-linux-gnu-g++
++	export CXXFLAGS="--sysroot=$VSCODE_CLIENT_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot"
++	export LDFLAGS="--sysroot=$VSCODE_CLIENT_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot -L$VSCODE_CLIENT_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/usr/lib/s390x-linux-gnu -L$VSCODE_CLIENT_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/lib/s390x-linux-gnu"
 +
 +	# Set compiler toolchain for remote server
-+	export VSCODE_REMOTE_CC=$VSCODE_SYSROOT_DIR/s390x-linux-gnu/bin/s390x-linux-gnu-gcc
-+	export VSCODE_REMOTE_CXX=$VSCODE_SYSROOT_DIR/s390x-linux-gnu/bin/s390x-linux-gnu-g++
-+	export VSCODE_REMOTE_CXXFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot"
-+	export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot -L$VSCODE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/usr/lib/s390x-linux-gnu -L$VSCODE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/lib/s390x-linux-gnu"
++	export VSCODE_REMOTE_CC=$VSCODE_REMOTE_SYSROOT_DIR/s390x-linux-gnu/bin/s390x-linux-gnu-gcc
++	export VSCODE_REMOTE_CXX=$VSCODE_REMOTE_SYSROOT_DIR/s390x-linux-gnu/bin/s390x-linux-gnu-g++
++	export VSCODE_REMOTE_CXXFLAGS="--sysroot=$VSCODE_REMOTE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot"
++	export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_REMOTE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot -L$VSCODE_REMOTE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/usr/lib/s390x-linux-gnu -L$VSCODE_REMOTE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/lib/s390x-linux-gnu"
  fi
 diff --git a/build/checksums/vscode-sysroot.txt b/build/checksums/vscode-sysroot.txt
-index db63d02..bbfa533 100644
+index 3fedbe9..3c4e291 100644
 --- a/build/checksums/vscode-sysroot.txt
 +++ b/build/checksums/vscode-sysroot.txt
-@@ -4 +4,2 @@ dbb927408393041664a020661f2641c9785741be3d29b050b9dac58980967784  x86_64-linux-g
+@@ -8 +8,2 @@ f82c8dacbb9dd85819e4801909eb4e842ac12c899632aa75b4839383a18c7501  arm-rpi-linux-
  fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
 +7055f3d40e7195fb1e13f0fbaf5ffadf781bddaca5fd5e0d9972f4157a203fb5  s390x-linux-gnu-glibc-2.28.tar.gz
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
@@ -41,10 +41,10 @@ index 8a8c1eb..1ef390b 100644
 +	{ platform: 'linux', arch: 's390x' },
  ];
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 1438867..8593b88 100644
+index ee66585..c9f9ceb 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -494,2 +494,3 @@ const BUILD_TARGETS = [
+@@ -478,2 +478,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'loong64' },
 +	{ platform: 'linux', arch: 's390x' },
  ];
@@ -90,10 +90,10 @@ index 88ee2f0..8037cf2 100644
 +			break;
  	}
 diff --git a/build/linux/debian/dep-lists.js b/build/linux/debian/dep-lists.js
-index 4ccdcd9..ad00020 100644
+index 13cf8f0..9ffd805 100644
 --- a/build/linux/debian/dep-lists.js
 +++ b/build/linux/debian/dep-lists.js
-@@ -218,2 +218,42 @@ exports.referenceGeneratedDepsByArch = {
+@@ -220,2 +220,42 @@ exports.referenceGeneratedDepsByArch = {
      ],
 +    's390x': [
 +        'ca-certificates',
@@ -137,10 +137,10 @@ index 4ccdcd9..ad00020 100644
 +    ],
  };
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index b765492..f7edfda 100644
+index 7e6938a..8a314ec 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
-@@ -218,2 +218,42 @@ export const referenceGeneratedDepsByArch = {
+@@ -220,2 +220,42 @@ export const referenceGeneratedDepsByArch = {
  	],
 +	's390x': [
 +		'ca-certificates',
@@ -184,10 +184,10 @@ index b765492..f7edfda 100644
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
-index fc2817a..735e42d 100644
+index e510426..ce7c75b 100644
 --- a/build/linux/debian/install-sysroot.js
 +++ b/build/linux/debian/install-sysroot.js
-@@ -148,2 +148,6 @@ async function getVSCodeSysroot(arch) {
+@@ -154,2 +154,6 @@ async function getVSCodeSysroot(arch, isMusl = false) {
  	             break;
 +        case 's390x':
 +            expectedName = `s390x-linux-gnu${prefix}.tar.gz`;
@@ -195,10 +195,10 @@ index fc2817a..735e42d 100644
 +            break;
      }
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index 50c28b2..aa30cee 100644
+index 42841f6..cffae59 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -162,2 +162,6 @@ export async function getVSCodeSysroot(arch: DebianArchString): Promise<string>
+@@ -167,2 +167,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
  			break;
 +		case 's390x':
 +			expectedName = `s390x-linux-gnu${prefix}.tar.gz`;
@@ -228,10 +228,10 @@ index 24fe452..9efba5b 100644
 +	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'riscv64', 's390x'].includes(s);
  }
 diff --git a/build/linux/rpm/dep-lists.ts b/build/linux/rpm/dep-lists.ts
-index c6d7761..74c58e0 100644
+index 4231f09..fc70433 100644
 --- a/build/linux/rpm/dep-lists.ts
 +++ b/build/linux/rpm/dep-lists.ts
-@@ -413,2 +413,102 @@ export const referenceGeneratedDepsByArch = {
+@@ -415,2 +415,102 @@ export const referenceGeneratedDepsByArch = {
  		'xdg-utils'
 +	],
 +	"s390x": [
@@ -365,28 +365,28 @@ index 0b7aa4e..e8b7ce0 100644
 +    s390x)   LDCONFIG_ARCH="64bit";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index 1a0decd..e657203 100644
+index dedea4c..1043fe4 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-@@ -47,2 +47,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+@@ -50,2 +50,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
  		case TargetPlatform.LINUX_LOONG64: return 'Linux Loong64';
 +		case TargetPlatform.LINUX_S390X: return 'Linux S390X';
  
-@@ -73,2 +74,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+@@ -76,2 +77,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
  		case TargetPlatform.LINUX_LOONG64: return TargetPlatform.LINUX_LOONG64;
 +		case TargetPlatform.LINUX_S390X: return TargetPlatform.LINUX_S390X;
  
-@@ -117,2 +119,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+@@ -120,2 +122,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
  			}
 +			if (arch === 's390x') {
 +				return TargetPlatform.LINUX_S390X;
 +			}
  			return TargetPlatform.UNKNOWN;
 diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
-index 3eb0412..4b5b29b 100644
+index 6d554ce..51d23fa 100644
 --- a/src/vs/platform/extensions/common/extensions.ts
 +++ b/src/vs/platform/extensions/common/extensions.ts
-@@ -322,2 +322,3 @@ export const enum TargetPlatform {
+@@ -332,2 +332,3 @@ export const enum TargetPlatform {
  	LINUX_LOONG64 = 'linux-loong64',
 +	LINUX_S390X = 'linux-s390x',
  
