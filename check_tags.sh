@@ -288,7 +288,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
 
           export SHOULD_BUILD_APPIMAGE="no"
 
-          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-arm64-${RELEASE_VERSION}.tar.gz" ) ]]; then
             echo "Building on Linux arm64 because we have no CLI archive"
             export SHOULD_BUILD="yes"
           else
@@ -340,7 +340,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
 
           export SHOULD_BUILD_APPIMAGE="no"
 
-          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-armhf-${RELEASE_VERSION}.tar.gz" ) ]]; then
             echo "Building on Linux arm because we have no CLI archive"
             export SHOULD_BUILD="yes"
           else
@@ -537,7 +537,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_REH_WEB="no"
           fi
 
-          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
+          if [[ -z $( contains "${APP_NAME_LC}-cli-linux-x64-${RELEASE_VERSION}.tar.gz" ) ]]; then
             echo "Building on Linux x64 because we have no CLI archive"
             export SHOULD_BUILD="yes"
           else
