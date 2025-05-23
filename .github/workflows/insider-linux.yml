@@ -529,10 +529,10 @@ jobs:
           architecture: ${{ matrix.platform }}
         id: build
 
-      - uses: diddlesnaps/snapcraft-review-action@v1
-        with:
-          snap: ${{ steps.build.outputs.snap }}
-          isClassic: 'true'
+      # - uses: diddlesnaps/snapcraft-review-action@v1
+      #   with:
+      #     snap: ${{ steps.build.outputs.snap }}
+      #     isClassic: 'true'
 
       - uses: svenstaro/upload-release-action@v2
         with:
