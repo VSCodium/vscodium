@@ -1,5 +1,5 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index 9410564..c1736f0 100755
+index a148d51..fb2f8ff 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
 @@ -2,3 +2,3 @@
@@ -7,6 +7,11 @@ index 9410564..c1736f0 100755
 -set -e
 +set -ex
  
+@@ -22,3 +22,3 @@ else
+   echo "Downloading remote sysroot"
+-  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" VSCODE_SYSROOT_PREFIX="-glibc-2.28-gcc-8.5.0" node -e '(async () => { const { getVSCodeSysroot } = require("./build/linux/debian/install-sysroot.js"); await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
++  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" node -e '(async () => { const { getVSCodeSysroot } = require("./build/linux/debian/install-sysroot.js"); await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
+ fi
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
 index c1d64c0..5ac9f95 100644
 --- a/build/gulpfile.reh.js
@@ -43,10 +48,10 @@ index c1d64c0..5ac9f95 100644
 +			}
  		case 'alpine':
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 7046ee0..67cb99a 100644
+index 26a6287..004417f 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -382,2 +382,12 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -366,2 +366,12 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  
 +		const electronOverride = {};
 +		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
@@ -59,31 +64,31 @@ index 7046ee0..67cb99a 100644
 +		}
 +
  		let result = all
-@@ -386,3 +396,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -370,3 +380,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  			.pipe(filter(['**', '!**/.github/**'], { dot: true })) // https://github.com/microsoft/vscode/issues/116523
 -			.pipe(electron({ ...config, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
 +			.pipe(electron({ ...config, ...electronOverride, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
  			.pipe(filter(['**', '!LICENSE', '!version'], { dot: true }));
 diff --git a/build/linux/debian/dep-lists.js b/build/linux/debian/dep-lists.js
-index 8ac57b9..8580d79 100644
+index 4ef448d..057961c 100644
 --- a/build/linux/debian/dep-lists.js
 +++ b/build/linux/debian/dep-lists.js
-@@ -138,3 +138,3 @@ exports.referenceGeneratedDepsByArch = {
+@@ -140,3 +140,3 @@ exports.referenceGeneratedDepsByArch = {
          'xdg-utils (>= 1.0.2)'
 -    ]
 +    ],
  };
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index df119e8..91b0ebc 100644
+index 5b7ccd5..707129f 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
-@@ -138,3 +138,3 @@ export const referenceGeneratedDepsByArch = {
+@@ -140,3 +140,3 @@ export const referenceGeneratedDepsByArch = {
  		'xdg-utils (>= 1.0.2)'
 -	]
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
-index 16d8d01..532e3d5 100644
+index 612d0a3..8fbdf3d 100644
 --- a/build/linux/debian/install-sysroot.js
 +++ b/build/linux/debian/install-sysroot.js
 @@ -74,3 +74,5 @@ async function fetchUrl(options, retries = 10, retryDelay = 1000) {
@@ -99,7 +104,7 @@ index 16d8d01..532e3d5 100644
 +                    throw new Error(`Could not find asset in release of ${repository} @ ${actualVersion}`);
                  }
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index aa10e39..6543b49 100644
+index 8a61159..9f3fd15 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
 @@ -83,3 +83,5 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
