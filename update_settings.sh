@@ -53,3 +53,11 @@ update_setting () {
 update_setting "${TELEMETRY_CRASH_REPORTER}" src/vs/workbench/electron-sandbox/desktop.contribution.ts
 update_setting "${TELEMETRY_CONFIGURATION}" src/vs/platform/telemetry/common/telemetryService.ts
 update_setting "${NLS}" src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
+
+# Move activity bar views to panel to hide them from activity bar
+# Keep the original working patterns for search, debug, extensions, explorer, and SCM
+replace "s/}, ViewContainerLocation\.Sidebar, \\{ doNotRegisterOpenCommand: true \\}\\);/}, ViewContainerLocation.Panel, { doNotRegisterOpenCommand: true });/g" src/vs/workbench/contrib/search/browser/search.contribution.ts
+replace "s/}, ViewContainerLocation\.Sidebar\\);/}, ViewContainerLocation.Panel);/g" src/vs/workbench/contrib/debug/browser/debug.contribution.ts
+replace "s/}, ViewContainerLocation\.Sidebar\\);/}, ViewContainerLocation.Panel);/g" src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
+replace "s/}, ViewContainerLocation\.Sidebar, \\{ isDefault: true \\}\\);/}, ViewContainerLocation.Panel, { isDefault: true });/g" src/vs/workbench/contrib/files/browser/explorerViewlet.ts
+replace "s/}, ViewContainerLocation\.Sidebar, \\{ doNotRegisterOpenCommand: true \\}\\);/}, ViewContainerLocation.Panel, { doNotRegisterOpenCommand: true });/g" src/vs/workbench/contrib/scm/browser/scm.contribution.ts
