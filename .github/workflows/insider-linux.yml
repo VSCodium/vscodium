@@ -104,7 +104,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.19.0'
+          node-version: '22.14.0'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
@@ -330,7 +330,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.19.0'
+          node-version: '22.14.0'
         if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
@@ -529,10 +529,10 @@ jobs:
           architecture: ${{ matrix.platform }}
         id: build
 
-      - uses: diddlesnaps/snapcraft-review-action@v1
-        with:
-          snap: ${{ steps.build.outputs.snap }}
-          isClassic: 'true'
+      # - uses: diddlesnaps/snapcraft-review-action@v1
+      #   with:
+      #     snap: ${{ steps.build.outputs.snap }}
+      #     isClassic: 'true'
 
       - uses: svenstaro/upload-release-action@v2
         with:
