@@ -1,7 +1,7 @@
 export CARGO_NET_GIT_FETCH_WITH_CLI="true"
 export VSCODE_CLI_APP_NAME="codex"
 export VSCODE_CLI_BINARY_NAME="codex-server-insiders"
-export VSCODE_CLI_DOWNLOAD_URL="https://github.com/BiblioNexus-Foundation/codex-insiders/releases"
+export VSCODE_CLI_DOWNLOAD_URL="https://github.com/genesis-ai-dev/codex-insiders/releases"
 export VSCODE_CLI_QUALITY="insider"
 export VSCODE_CLI_UPDATE_URL="https://raw.githubusercontent.com/Codex/versions/refs/heads/master"
 

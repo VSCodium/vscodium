@@ -14,7 +14,10 @@ fi
 
 cp -f LICENSE vscode/LICENSE.txt
 
-cd vscode || { echo "'vscode' dir not found"; exit 1; }
+cd vscode || {
+  echo "'vscode' dir not found"
+  exit 1
+}
 
 ../update_settings.sh
 
@@ -123,10 +126,10 @@ setpath "product" "introductoryVideosUrl" "https://go.microsoft.com/fwlink/?link
 setpath "product" "keyboardShortcutsUrlLinux" "https://go.microsoft.com/fwlink/?linkid=832144"
 setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?linkid=832143"
 setpath "product" "keyboardShortcutsUrlWin" "https://go.microsoft.com/fwlink/?linkid=832145"
-setpath "product" "licenseUrl" "https://github.com/BiblioNexus-Foundation/codex/blob/master/LICENSE"
+setpath "product" "licenseUrl" "https://github.com/genesis-ai-dev/codex/blob/master/LICENSE"
 setpath_json "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
 setpath "product" "releaseNotesUrl" "https://go.microsoft.com/fwlink/?LinkID=533483#vscode"
-setpath "product" "reportIssueUrl" "https://github.com/BiblioNexus-Foundation/codex/issues/new"
+setpath "product" "reportIssueUrl" "https://github.com/genesis-ai-dev/codex/issues/new"
 setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
 setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=852118"
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
@@ -135,9 +138,9 @@ if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
   setpath "product" "updateUrl" "https://raw.githubusercontent.com/Codex/versions/refs/heads/master"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex-insiders/releases"
+    setpath "product" "downloadUrl" "https://github.com/genesis-ai-dev/codex-insiders/releases"
   else
-    setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex/releases"
+    setpath "product" "downloadUrl" "https://github.com/genesis-ai-dev/codex/releases"
   fi
 fi
 
@@ -241,25 +244,25 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   # fix the packages metadata
   # code.appdata.xml
   sed -i 's|Visual Studio Code|Codex|g' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/BiblioNexus-Foundation/codex#download-install|' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/genesis-ai-dev/codex#download-install|' resources/linux/code.appdata.xml
   sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://codex.com/img/codex.png|' resources/linux/code.appdata.xml
   sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/code.appdata.xml
 
   # control.template
-  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|Codex Team https://github.com/BiblioNexus-Foundation/codex/graphs/contributors|'  resources/linux/debian/control.template
+  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|Codex Team https://github.com/genesis-ai-dev/codex/graphs/contributors|' resources/linux/debian/control.template
   sed -i 's|Visual Studio Code|Codex|g' resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/BiblioNexus-Foundation/codex#download-install|' resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/genesis-ai-dev/codex#download-install|' resources/linux/debian/control.template
   sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/debian/control.template
 
   # code.spec.template
   sed -i 's|Microsoft Corporation|Codex Team|' resources/linux/rpm/code.spec.template
-  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|Codex Team https://github.com/BiblioNexus-Foundation/codex/graphs/contributors|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|Codex Team https://github.com/genesis-ai-dev/codex/graphs/contributors|' resources/linux/rpm/code.spec.template
   sed -i 's|Visual Studio Code|Codex|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/BiblioNexus-Foundation/codex#download-install|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/genesis-ai-dev/codex#download-install|' resources/linux/rpm/code.spec.template
   sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/rpm/code.spec.template
 
   # snapcraft.yaml
-  sed -i 's|Visual Studio Code|Codex|'  resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code|Codex|' resources/linux/rpm/code.spec.template
 elif [[ "${OS_NAME}" == "windows" ]]; then
   # code.iss
   sed -i 's|https://code.visualstudio.com|https://codex.com|' build/win32/code.iss

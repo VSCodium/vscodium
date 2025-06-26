@@ -8,7 +8,7 @@
 export APP_NAME="Codex"
 export BINARY_NAME="codex"
 export CI_BUILD="no"
-export GH_REPO_PATH="BiblioNexus-Foundation/codex"
+export GH_REPO_PATH="genesis-ai-dev/codex"
 export ORG_NAME="Codex"
 export SHOULD_BUILD="yes"
 export SKIP_ASSETS="yes"
@@ -105,7 +105,10 @@ fi
 
 if [[ "${SKIP_BUILD}" == "no" ]]; then
   if [[ "${SKIP_SOURCE}" != "no" ]]; then
-    cd vscode || { echo "'vscode' dir not found"; exit 1; }
+    cd vscode || {
+      echo "'vscode' dir not found"
+      exit 1
+    }
 
     git add .
     git reset -q --hard HEAD
