@@ -237,8 +237,8 @@ jobs:
           github-artifact-id: ${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}
           artifact-configuration-slug: ${{ matrix.vscode_arch }}
           wait-for-completion: true
-          # 3h to manually approve the request
-          wait-for-completion-timeout-in-seconds: 10800
+          # 8h to manually approve the request
+          wait-for-completion-timeout-in-seconds: 28800
           output-artifact-directory: assets/
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
