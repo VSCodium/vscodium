@@ -14,7 +14,7 @@
 
 ## <a id="dependencies"></a>Dependencies
 
-- node 20.14
+- node 20.18.2
 - jq
 - git
 - python3 3.11
@@ -67,10 +67,35 @@ You can try the latest version with the command `./dev/build.sh -il` but the pat
 The script `dev/build.sh` provides several flags:
 
 - `-i`: build the Insiders version
-- `-l`: build with latest version of Visual Studio Code
-- `-o`: skip the build step
+- `-l`: build with latest version of Visual Studio Code (⚠️ use carefully - may break patches)
+- `-o`: skip the build step (download source only)
 - `-p`: generate the packages/assets/installers
-- `-s`: do not retrieve the source code of Visual Studio Code, it won't delete the existing build
+- `-s`: do not retrieve the source code (skip source download, use existing vscode/ folder)
+
+### Testing Your Build
+
+After building, test your app:
+
+```bash
+# macOS
+open ./VSCode-darwin-arm64/Codex.app
+
+# Linux
+./VSCode-linux-x64/bin/codex
+
+# Windows
+./VSCode-win32-x64/Codex.exe
+```
+
+### Testing Update Detection
+
+```bash
+# Test if update URLs work
+./test-version-url.sh
+
+# Test update detection with built app
+./test-update-detection.sh
+```
 
 ## <a id="build-snap"></a>Build Snap
 

@@ -1,0 +1,91 @@
+name: Check for VS Code Updates
+
+on:
+  # schedule:
+  # Run every 6 hours - DISABLED for manual control
+  # - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+env:
+  APP_NAME: Codex
+  GH_REPO_PATH: ${{ github.repository }}
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        quality: [stable, insider]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+
+      - name: Check for new VS Code version
+        id: check
+        env:
+          VSCODE_QUALITY: ${{ matrix.quality }}
+        run: |
+          # Get current tracked version
+          if [[ -f "./upstream/${VSCODE_QUALITY}.json" ]]; then
+            CURRENT_TAG=$( jq -r '.tag' "./upstream/${VSCODE_QUALITY}.json" )
+            echo "Current ${VSCODE_QUALITY} version: ${CURRENT_TAG}"
+          else
+            CURRENT_TAG=""
+            echo "No current version tracked for ${VSCODE_QUALITY}"
+          fi
+
+          # Get latest version from Microsoft
+          UPDATE_INFO=$( curl --silent --fail "https://update.code.visualstudio.com/api/update/darwin/${VSCODE_QUALITY}/0000000000000000000000000000000000000000" )
+          LATEST_COMMIT=$( echo "${UPDATE_INFO}" | jq -r '.version' )
+          LATEST_TAG=$( echo "${UPDATE_INFO}" | jq -r '.name' )
+
+          if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+            LATEST_TAG="${LATEST_TAG/\-insider/}"
+          fi
+
+          echo "Latest ${VSCODE_QUALITY} version: ${LATEST_TAG}"
+
+          # Check if update is needed
+          if [[ "${CURRENT_TAG}" != "${LATEST_TAG}" ]]; then
+            echo "New version available!"
+            echo "new_version=true" >> $GITHUB_OUTPUT
+            echo "latest_tag=${LATEST_TAG}" >> $GITHUB_OUTPUT
+            echo "latest_commit=${LATEST_COMMIT}" >> $GITHUB_OUTPUT
+          else
+            echo "Already up to date"
+            echo "new_version=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update version files
+        if: steps.check.outputs.new_version == 'true'
+        env:
+          VSCODE_QUALITY: ${{ matrix.quality }}
+          LATEST_TAG: ${{ steps.check.outputs.latest_tag }}
+          LATEST_COMMIT: ${{ steps.check.outputs.latest_commit }}
+        run: |
+          # Update upstream JSON
+          jq -n --arg tag "${LATEST_TAG}" --arg commit "${LATEST_COMMIT}" \
+            '{tag: $tag, commit: $commit}' > "./upstream/${VSCODE_QUALITY}.json"
+
+          # Commit changes
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add "./upstream/${VSCODE_QUALITY}.json"
+          git commit -m "Update ${VSCODE_QUALITY} to ${LATEST_TAG}"
+          git push
+
+      - name: Trigger builds
+        if: steps.check.outputs.new_version == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          VSCODE_QUALITY: ${{ matrix.quality }}
+        run: |
+          # Trigger repository dispatch event
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${GH_REPO_PATH}/dispatches \
+            -d "{\"event_type\":\"${VSCODE_QUALITY}\",\"client_payload\":{\"quality\":\"${VSCODE_QUALITY}\"}}"

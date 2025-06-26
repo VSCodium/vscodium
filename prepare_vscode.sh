@@ -66,7 +66,7 @@ export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 if [[ "${OS_NAME}" == "linux" ]]; then
   export VSCODE_SKIP_NODE_VERSION_CHECK=1
 
-   if [[ "${npm_config_arch}" == "arm" ]]; then
+  if [[ "${npm_config_arch}" == "arm" ]]; then
     export npm_config_arm_version=7
   fi
 elif [[ "${OS_NAME}" == "windows" ]]; then
@@ -95,7 +95,7 @@ for i in {1..5}; do # try 5 times
   fi
   echo "Npm install failed $i, trying again..."
 
-  sleep $(( 15 * (i + 1)))
+  sleep $((15 * (i + 1)))
 done
 
 mv .npmrc.bak .npmrc
@@ -103,16 +103,16 @@ mv .npmrc.bak .npmrc
 setpath() {
   local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$( jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
-  echo "${jsonTmp}" > "${1}.json"
+  jsonTmp=$(jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json")
+  echo "${jsonTmp}" >"${1}.json"
   set -x
 }
 
 setpath_json() {
   local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$( jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
-  echo "${jsonTmp}" > "${1}.json"
+  jsonTmp=$(jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json")
+  echo "${jsonTmp}" >"${1}.json"
   set -x
 }
 
@@ -198,8 +198,8 @@ else
   setpath "product" "win32TunnelMutex" "codex-tunnel"
 fi
 
-jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
-echo "${jsonTmp}" > product.json && unset jsonTmp
+jsonTmp=$(jq -s '.[0] * .[1]' product.json ../product.json)
+echo "${jsonTmp}" >product.json && unset jsonTmp
 
 cat product.json
 
@@ -221,7 +221,7 @@ else
 fi
 
 # announcements
-replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( tr -d '\n' < ../announcements-builtin.json )|" src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
+replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$(tr -d '\n' <../announcements-builtin.json)|" src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 
 ../undo_telemetry.sh
 

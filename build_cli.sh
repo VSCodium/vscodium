@@ -5,8 +5,8 @@ set -ex
 cd cli
 
 export CARGO_NET_GIT_FETCH_WITH_CLI="true"
-export VSCODE_CLI_APP_NAME="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
-export VSCODE_CLI_BINARY_NAME="$( node -p "require(\"../product.json\").serverApplicationName" )"
+export VSCODE_CLI_APP_NAME="$(echo "${APP_NAME}" | awk '{print tolower($0)}')"
+export VSCODE_CLI_BINARY_NAME="$(node -p "require(\"../product.json\").serverApplicationName")"
 export VSCODE_CLI_UPDATE_ENDPOINT="https://raw.githubusercontent.com/genesis-ai-dev/versions/refs/heads/master"
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
@@ -15,8 +15,8 @@ else
   export VSCODE_CLI_DOWNLOAD_ENDPOINT="https://github.com/genesis-ai-dev/codex/releases"
 fi
 
-TUNNEL_APPLICATION_NAME="$( node -p "require(\"../product.json\").tunnelApplicationName" )"
-NAME_SHORT="$( node -p "require(\"../product.json\").nameShort" )"
+TUNNEL_APPLICATION_NAME="$(node -p "require(\"../product.json\").tunnelApplicationName")"
+NAME_SHORT="$(node -p "require(\"../product.json\").nameShort")"
 
 npm pack @vscode/openssl-prebuilt@0.0.11
 mkdir openssl
@@ -29,8 +29,8 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     VSCODE_CLI_TARGET="x86_64-apple-darwin"
   fi
 
-  export OPENSSL_LIB_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-osx/lib"
-  export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-osx/include"
+  export OPENSSL_LIB_DIR="$(pwd)/openssl/out/${VSCODE_ARCH}-osx/lib"
+  export OPENSSL_INCLUDE_DIR="$(pwd)/openssl/out/${VSCODE_ARCH}-osx/include"
 
   cargo build --release --target "${VSCODE_CLI_TARGET}" --bin=code
 
@@ -45,8 +45,8 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   fi
 
   export VSCODE_CLI_CFLAGS="/guard:cf /Qspectre"
-  export OPENSSL_LIB_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-windows-static/lib"
-  export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-windows-static/include"
+  export OPENSSL_LIB_DIR="$(pwd)/openssl/out/${VSCODE_ARCH}-windows-static/lib"
+  export OPENSSL_INCLUDE_DIR="$(pwd)/openssl/out/${VSCODE_ARCH}-windows-static/include"
 
   rustup target add "${VSCODE_CLI_TARGET}"
 
@@ -54,8 +54,8 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
 
   cp "target/${VSCODE_CLI_TARGET}/release/code.exe" "../../VSCode-win32-${VSCODE_ARCH}/bin/${TUNNEL_APPLICATION_NAME}.exe"
 else
-  export OPENSSL_LIB_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-linux/lib"
-  export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-linux/include"
+  export OPENSSL_LIB_DIR="$(pwd)/openssl/out/${VSCODE_ARCH}-linux/lib"
+  export OPENSSL_INCLUDE_DIR="$(pwd)/openssl/out/${VSCODE_ARCH}-linux/include"
   export VSCODE_SYSROOT_DIR="../.build/sysroots"
 
   if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
@@ -70,8 +70,8 @@ else
   elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
     VSCODE_CLI_TARGET="armv7-unknown-linux-gnueabihf"
 
-    export OPENSSL_LIB_DIR="$( pwd )/openssl/out/arm-linux/lib"
-    export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/arm-linux/include"
+    export OPENSSL_LIB_DIR="$(pwd)/openssl/out/arm-linux/lib"
+    export OPENSSL_INCLUDE_DIR="$(pwd)/openssl/out/arm-linux/include"
 
     if [[ "${CI_BUILD}" != "no" ]]; then
       export CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER=arm-linux-gnueabihf-gcc
