@@ -92,23 +92,21 @@ jobs:
   trigger-all-builds:
     needs: prepare
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform: [stable-macos, stable-linux, stable-windows]
 
     steps:
-      - name: Trigger ${{ matrix.platform }} build
+      - name: Trigger all platform builds
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           QUALITY: ${{ github.event.inputs.quality }}
           RELEASE_VERSION: ${{ needs.prepare.outputs.release_version }}
           BUILD_REASON: ${{ needs.prepare.outputs.build_reason }}
         run: |
-          echo "🚀 Triggering ${{ matrix.platform }} PATCH REBUILD"
+          echo "🚀 Triggering PATCH REBUILD for all platforms"
           echo "Version: ${RELEASE_VERSION}"
           echo "Reason: ${BUILD_REASON}"
 
           # Force build by using repository dispatch with special payload
+          # This single dispatch will trigger all OS workflows that listen for this quality
           curl -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
@@ -125,7 +123,4 @@ jobs:
               }
             }"
 
-          echo "✅ Triggered ${{ matrix.platform }}"
-
-          # Add delay between triggers to avoid conflicts
-          sleep 5
+          echo "✅ Triggered all ${QUALITY} platform builds"
