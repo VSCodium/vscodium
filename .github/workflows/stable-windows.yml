@@ -60,6 +60,7 @@ jobs:
       - name: Check PR or cron
         env:
           GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
+          GITHUB_EVENT_CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
         run: ./check_cron_or_pr.sh
 
       - name: Check existing Codex tags/releases
