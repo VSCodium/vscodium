@@ -121,6 +121,48 @@ The extra digits (`2712`) represent:
 - This ensures each build has a unique version number
 - Example: Day 271 at 2 PM = 2712
 
+### **Patch Rebuild Versions**
+
+When using the **Patch Rebuild** workflow, versions use the same Julian day format as normal builds:
+
+- **Normal build:** `1.99.24260` (Julian day 271, hour 2)
+- **Patch rebuild:** `1.99.24262` (Julian day 271, hour 4 - later the same day)
+- **Next day patch:** `1.99.24284` (Julian day 272, hour 2)
+
+**Key Points:**
+
+- Patch rebuilds use identical versioning to normal builds
+- Since patch rebuilds happen AFTER original builds, they naturally get higher version numbers
+- Time-based ordering ensures proper update flow
+- Same calculation: `(Julian day × 24) + hour of day`
+
+### **Updating from VSCodium Upstream**
+
+When a new VS Code version is released:
+
+1. **Update upstream files:**
+
+   ```bash
+   # Edit upstream/stable.json with new VS Code version
+   vim upstream/stable.json
+   ```
+
+2. **Normal version update process:**
+
+   - Use **Manual Release Build** workflow
+   - Enter the new VS Code version (e.g., `1.100.0`)
+   - This triggers builds for all platforms
+
+3. **Force update for patch rebuild users:**
+
+   - Users on patch versions (e.g., `1.99.24262`) will automatically get updates to new major versions (e.g., `1.100.22801`)
+   - The base version comparison (`1.99` → `1.100`) triggers the update
+   - No special action needed - normal version update works
+
+4. **Version precedence:**
+   - `1.99.22712` (normal) < `1.99.24262` (patch) < `1.100.22801` (new normal)
+   - Users always get the latest available version for their platform
+
 ## Local Development & Testing
 
 ### **Building Locally for Testing**
@@ -209,7 +251,7 @@ open ./VSCode-darwin-arm64/Codex.app
 **What happens:**
 
 - Uses current VS Code version from `upstream/stable.json`
-- Adds timestamp to version (e.g., `1.99.2.2501281430`)
+- Adds timestamp to version (e.g., `1.99.24262` for hour 4 on day 271)
 - **Forces builds to bypass existing asset checks** - ensures patches are applied
 - Triggers all platforms at once (Mac, Windows, Linux)
 - Creates new release assets even if the base VS Code version hasn't changed

@@ -58,13 +58,16 @@ jobs:
           echo "ms_commit=${MS_COMMIT}" >> $GITHUB_OUTPUT
 
           # Generate unique build version with timestamp
-          # Format: 1.99.2.YYMMDDHHMM (base version + timestamp)
-          BUILD_TIMESTAMP=$(date +"%y%m%d%H%M")
+          # Use same format as normal builds - Julian day calculation ensures later builds have higher versions
+          # Format: MS_TAG + (Julian day * 24 + hour) = 1.99.24260
+          # Since patch rebuilds happen AFTER original builds, they naturally get higher version numbers
+          # Note that a patch rebuild *could* be higher than an upstream vscodium build version, so it may not trigger an update notice if we have already patched more recently
+          TIME_PATCH=$(printf "%04d" $(($(date +%-j) * 24 + $(date +%-H))))
 
           if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-            RELEASE_VERSION="${MS_TAG}.${BUILD_TIMESTAMP}-insider"
+            RELEASE_VERSION="${MS_TAG}${TIME_PATCH}-insider"
           else
-            RELEASE_VERSION="${MS_TAG}.${BUILD_TIMESTAMP}"
+            RELEASE_VERSION="${MS_TAG}${TIME_PATCH}"
           fi
 
           echo "Generated rebuild version: ${RELEASE_VERSION}"
