@@ -210,8 +210,11 @@ open ./VSCode-darwin-arm64/Codex.app
 
 - Uses current VS Code version from `upstream/stable.json`
 - Adds timestamp to version (e.g., `1.99.2.2501281430`)
+- **Forces builds to bypass existing asset checks** - ensures patches are applied
 - Triggers all platforms at once (Mac, Windows, Linux)
-- Forces deployment even if base VS Code version hasn't changed
+- Creates new release assets even if the base VS Code version hasn't changed
+
+**✅ Fixed Issue:** Patch rebuilds now properly apply patches and create new assets, even when releases with the same base version already exist.
 
 ### **Option 2: Full Version Update**
 

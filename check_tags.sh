@@ -40,7 +40,21 @@ else
       fi
     fi
 
-    if [[ "${SHOULD_BUILD}" != "yes" ]]; then
+    # Check if this is a patch rebuild - if so, always build and deploy
+    if [[ "${PATCH_REBUILD}" == "true" ]]; then
+      echo "🔥 PATCH REBUILD: Forcing build and deploy regardless of existing assets"
+      export SHOULD_BUILD="yes"
+      export SHOULD_DEPLOY="yes"
+
+      # Use custom version if provided, otherwise use existing logic
+      if [[ -n "${CUSTOM_RELEASE_VERSION}" ]]; then
+        export RELEASE_VERSION="${CUSTOM_RELEASE_VERSION}"
+        echo "RELEASE_VERSION=${RELEASE_VERSION}" >>"${GITHUB_ENV}"
+        echo "Using custom patch rebuild version: ${RELEASE_VERSION}"
+      fi
+
+      ASSETS="null" # Skip asset checking for patch rebuilds
+    elif [[ "${SHOULD_BUILD}" != "yes" ]]; then
       export RELEASE_VERSION="${LATEST_VERSION}"
       echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
 
