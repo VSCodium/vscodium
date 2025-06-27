@@ -1,6 +1,6 @@
 === PATCH REBUILD ===
-**Build Version:** 1.99.24285
+**Build Version:** 1.99.24286
 **Base VS Code:** 1.99.2
-**Rebuild Reason:** Ensure GITHUB_EVENT_CLIENT_PAYLOAD is passed through to os-specific workflows
-**Build Date:** Fri Jun 27 13:15:11 UTC 2025
-**Commit:** a4c9a31406dcd33a2b09c047cbe538d9af3d4a37
+**Rebuild Reason:** Use stronger token for mac and windows builds
+**Build Date:** Fri Jun 27 14:34:01 UTC 2025
+**Commit:** 17b35fd4fc8e6fd2b491f322a643c60759163acc
