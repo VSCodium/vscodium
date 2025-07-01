@@ -1,22 +1,22 @@
-diff --git a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
-index 447f4c9..1118f18 100644
---- a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
-+++ b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
+diff --git a/src/vs/workbench/contrib/extensions/electron-browser/extensionsSlowActions.ts b/src/vs/workbench/contrib/extensions/electron-browser/extensionsSlowActions.ts
+index 46120a9..6bc88c8 100644
+--- a/src/vs/workbench/contrib/extensions/electron-browser/extensionsSlowActions.ts
++++ b/src/vs/workbench/contrib/extensions/electron-browser/extensionsSlowActions.ts
 @@ -153,3 +153,3 @@ class ReportExtensionSlowAction extends Action {
  - OS Version: \`${osVersion}\`
 -- VS Code version: \`${this._productService.version}\`\n\n${message}`);
 +- !!APP_NAME!! version: \`${this._productService.version}\`\n\n${message}`);
  
 diff --git a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
-index 3d7653e..7dbd60b 100644
+index efe8061..831ce2e 100644
 --- a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
 +++ b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
-@@ -665,3 +665,3 @@ export class BaseIssueReporterService extends Disposable {
+@@ -591,3 +591,3 @@ export class BaseIssueReporterService extends Disposable {
  		if (title) {
 -			this.searchDuplicates(title, issueDescription);
 +			this.searchGitHub('!!GH_REPO_PATH!!', title);
  		} else {
-@@ -757,33 +757,2 @@ export class BaseIssueReporterService extends Disposable {
+@@ -668,33 +668,2 @@ export class BaseIssueReporterService extends Disposable {
  
 -	@debounce(300)
 -	private searchDuplicates(title: string, body?: string): void {
@@ -50,14 +50,14 @@ index 3d7653e..7dbd60b 100644
 -	}
 -
  	private displaySearchResults(results: SearchResult[]) {
-@@ -879,4 +848,4 @@ export class BaseIssueReporterService extends Disposable {
+@@ -786,4 +755,4 @@ export class BaseIssueReporterService extends Disposable {
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
 -		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Visual Studio Code"), false));
 -		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "!!APP_NAME!!"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A !!APP_NAME!! extension"), false));
  		if (this.product.reportMarketplaceIssueUrl) {
-@@ -967,3 +936,3 @@ export class BaseIssueReporterService extends Disposable {
+@@ -874,3 +843,3 @@ export class BaseIssueReporterService extends Disposable {
  			hide(descriptionTextArea);
 -			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
 +			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of !!APP_NAME!!"));

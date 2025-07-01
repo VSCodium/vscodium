@@ -1,8 +1,8 @@
 diff --git a/build/lib/compilation.js b/build/lib/compilation.js
-index 841dbe1..7cf692a 100644
+index 61a6d28..831b7c2 100644
 --- a/build/lib/compilation.js
 +++ b/build/lib/compilation.js
-@@ -148,24 +148,3 @@ function compileTask(src, out, build, options = {}) {
+@@ -145,24 +145,3 @@ function compileTask(src, out, build, options = {}) {
          }
 -        // mangle: TypeScript to TypeScript
 -        let mangleStream = event_stream_1.default.through();
@@ -28,15 +28,15 @@ index 841dbe1..7cf692a 100644
 -            .pipe(mangleStream)
              .pipe(generator.stream)
 diff --git a/build/lib/compilation.ts b/build/lib/compilation.ts
-index 6e1fcab..4e45106 100644
+index a1de9f1..084fd2f 100644
 --- a/build/lib/compilation.ts
 +++ b/build/lib/compilation.ts
 @@ -18,4 +18,2 @@ import File from 'vinyl';
  import * as task from './task';
 -import { Mangler } from './mangle/index';
 -import { RawSourceMap } from 'source-map';
- import { gulpPostcss } from './postcss';
-@@ -138,27 +136,3 @@ export function compileTask(src: string, out: string, build: boolean, options: {
+ import ts = require('typescript');
+@@ -133,27 +131,3 @@ export function compileTask(src: string, out: string, build: boolean, options: {
  
 -		// mangle: TypeScript to TypeScript
 -		let mangleStream = es.through();
