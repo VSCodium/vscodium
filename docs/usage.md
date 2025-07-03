@@ -73,4 +73,6 @@ On Linux, when installed with a package manager, `codium` has been installed in 
 
 ### <a id="from-linux-targz"></a>From Linux .tar.gz
 
-When the archive `VSCodium-linux-<arch>-<version>.tar.gz` is extracted, the main entry point for VSCodium is `./bin/codium`.
+When the archive `VSCodium-linux-<arch>-<version>.tar.gz` is extracted, the main entry point for VSCodium is the `codium` executable located in the `bin` subdirectory (e.g., `./bin/codium`).
+
+To run VSCodium from any terminal location without specifying the full path, you can add this `bin` directory to your shell's `PATH` environment variable. For example, if you extracted VSCodium to `/opt/VSCodium`, you would add `/opt/VSCodium/bin` to your `PATH`. The method for setting the `PATH` varies depending on your shell (e.g., by editing `~/.bashrc`, `~/.zshrc`, etc.).
