@@ -14,7 +14,7 @@ import { FileWriteTool } from "src/vs/platform/ai/common/tools/fileWriteTool";
 import { GitInitTool } from "src/vs/platform/ai/common/tools/gitInitTool";
 import { ProjectInitializeWorkspaceTool } from "src/vs/platform/ai/common/tools/projectInitializeWorkspaceTool";
 import { ProjectScaffoldDirectoryTool } from "src/vs/platform/ai/common/tools/projectScaffoldDirectoryTool";
-import { PMLogTaskTool } from "src/vs/platform/ai/common/tools/pmLogTaskTool"; // Added
+import { PMUpsertTaskTool } from "src/vs/platform/ai/common/tools/pmUpsertTaskTool"; // Changed
 
 export class AgentToolsService implements IAgentToolService {
     private tools: Map<string, IAgentTool> = new Map();
@@ -29,7 +29,7 @@ export class AgentToolsService implements IAgentToolService {
         this.registerTool(new ProjectInitializeWorkspaceTool());
         this.registerTool(new FileWriteTool());
         this.registerTool(new FileReadTool());
-        this.registerTool(new PMLogTaskTool()); // Added
+        this.registerTool(new PMUpsertTaskTool()); // Changed
         // Register other tools here as they are defined
     }
 
