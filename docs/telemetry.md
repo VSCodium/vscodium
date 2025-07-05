@@ -15,9 +15,11 @@ This page explains how VSCodium handles telemetry and how to ensure your privacy
 
 ## <a id="telemetry"></a>Telemetry in VSCodium
 
-Even though we do not pass the telemetry build flags (and go out of our way to cripple the baked-in telemetry), Microsoft will still track usage by default.
+VSCodium is built to minimize telemetry. We do not pass telemetry-specific build flags and actively work to disable or remove baked-in telemetry mechanisms from Microsoft's upstream vscode repository. However, it's important to understand that the original codebase from Microsoft may still contain elements that could attempt usage tracking by default if not properly configured.
 
-We do however set the default `telemetry.enableTelemetry` and `telemetry.enableCrashReporter` values to `false`. You can see those by viewing your VSCodium `settings.json` and searching for `telemetry`.
+VSCodium addresses this by:
+- Setting default values for `telemetry.enableTelemetry` and `telemetry.enableCrashReporter` to `false`. You can verify these in your VSCodium `settings.json`.
+- Guiding users to review and manage settings that use online services.
 
 It is also highly recommended that you review all the settings that "use online services" by following [these instructions](https://code.visualstudio.com/docs/getstarted/telemetry#_managing-online-services). The `@tag:usesOnlineServices` filter on the settings page will show that by default:
 
