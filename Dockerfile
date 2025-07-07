@@ -31,7 +31,7 @@ RUN ./dev/build.sh
 
 ENV VSCODE_SERVER_HOST=0.0.0.0
 ENV VSCODE_SERVER_PORT=8000
-WORKDIR /opt/vscodium/vscode-reh-web-linux-amd64
+WORKDIR /opt/vscodium/vscode-reh-web-linux-x64
 
 RUN mkdir scripts ; cp ../vscode/scripts/code-server.js ./scripts/code-server.cjs
 RUN rm -rf node_modules && \
