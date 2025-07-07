@@ -1,5 +1,9 @@
 FROM node:20.19.0
 
+# Accept GITHUB_TOKEN as build argument
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
