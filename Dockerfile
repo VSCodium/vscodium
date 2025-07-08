@@ -26,13 +26,10 @@ WORKDIR /opt/vscodium
 RUN ./dev/build.sh && \
     mkdir ./vscode-reh-web-linux-x64/scripts && \
     cp ./vscode/scripts/code-server.js ./vscode-reh-web-linux-x64/scripts/code-server.cjs && \
-    cp -r ./vscode/node_modules ./vscode-reh-web-linux-x64/node_modules && \
-    mkdir -p /opt/codex && \
-    mv ./vscode-reh-web-linux-x64 /opt/codex && \
-    cd ../ && rm -rf vscodium
+    cp -r ./vscode/node_modules ./vscode-reh-web-linux-x64/node_modules
 
 FROM node:20.19.0 as runtime
-COPY --from=builder /opt/codex /opt/codex
+COPY --from=builder /opt/vscodium/vscode-reh-web-linux-x64 /opt/codex
 
 ENV VSCODE_SERVER_HOST=0.0.0.0
 ENV VSCODE_SERVER_PORT=8000
