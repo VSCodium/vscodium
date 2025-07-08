@@ -16,6 +16,7 @@ for i in $(seq $count); do
   curl -Lso "$name".zip "$url"
   unzip -q "$name".zip -d ${extensions_dir}/"$name"
   mv ${extensions_dir}/"$name"/extension/* ${extensions_dir}/"$name"/
+  cp -r ${extensions_dir}/"$name" ./extensions/
   rm "$name".zip
 done
 
