@@ -23,19 +23,18 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 COPY . /opt/vscodium
 WORKDIR /opt/vscodium
-RUN ./dev/build.sh
+RUN ./dev/build.sh && \
+    mkdir ./vscode-reh-web-linux-x64/scripts && \
+    cp ./vscode/scripts/code-server.js ./vscode-reh-web-linux-x64/scripts/code-server.cjs && \
+    cp -r ./vscode/node_modules ./vscode-reh-web-linux-x64/node_modules && \
+    mkdir -p /opt/codex && \
+    mv ./vscode-reh-web-linux-x64 /opt/codex && \
+    cd ../ && rm -rf vscodium
 
-# RUN node build/lib/preLaunch.js && \
-#     npm run electron && \
-#     npm run compile
 
 ENV VSCODE_SERVER_HOST=0.0.0.0
 ENV VSCODE_SERVER_PORT=8000
-WORKDIR /opt/vscodium/vscode-reh-web-linux-x64
-
-RUN mkdir scripts ; cp ../vscode/scripts/code-server.js ./scripts/code-server.cjs
-RUN rm -rf node_modules && \
-    cp -r ../vscode/node_modules ./node_modules
+WORKDIR /opt/codex
 
 EXPOSE 8000
 CMD ["node", "scripts/code-server.cjs","--host","0.0.0.0","--port","8000","--without-connection-token"]
