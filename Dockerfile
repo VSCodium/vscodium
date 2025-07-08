@@ -26,7 +26,7 @@ WORKDIR /opt/vscodium
 RUN ./dev/build.sh && \
     mkdir ./vscode-reh-web-linux-x64/scripts && \
     cp ./vscode/scripts/code-server.js ./vscode-reh-web-linux-x64/scripts/code-server.cjs && \
-    cp -r ./vscode/node_modules ./vscode-reh-web-linux-x64/node_modules
+    cp -r ./vscode/node_modules ./vscode-reh-web-linux-x64/
 
 FROM node:20.19.0 as runtime
 COPY --from=builder /opt/vscodium/vscode-reh-web-linux-x64 /opt/codex
