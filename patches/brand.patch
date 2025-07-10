@@ -624,13 +624,13 @@ index ca6c82b..56fab2c 100644
 +const TERMINAL_TITLE = nls.localize('console.title', "!!APP_NAME!! Console");
  
 diff --git a/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts b/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
-index e5763c0..3582723 100644
+index 7d8d78b..d39dad4 100644
 --- a/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
 +++ b/src/vs/platform/terminal/common/terminalPlatformConfiguration.ts
 @@ -338,3 +338,3 @@ const terminalPlatformConfiguration: IConfigurationNode = {
  			scope: ConfigurationScope.APPLICATION,
--			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from VS Code, which may source a login shell to ensure $PATH and other development variables are initialized."),
-+			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from !!APP_NAME!!, which may source a login shell to ensure $PATH and other development variables are initialized."),
+-			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from VS Code, which may source a login shell to ensure $PATH and other development variables are initialized. This has no effect on Windows."),
++			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from !!APP_NAME!!, which may source a login shell to ensure $PATH and other development variables are initialized. This has no effect on Windows."),
  			type: 'boolean',
 diff --git a/src/vs/platform/update/common/update.config.contribution.ts b/src/vs/platform/update/common/update.config.contribution.ts
 index d96926b..a787b34 100644
@@ -698,10 +698,10 @@ index 12d2a2b..05e3f11 100644
 +			ApiCommandArgument.String.with('viewId', 'Custom editor view id. This should be the viewType string for custom editors or the notebookType string for notebooks. Use \'default\' to use !!APP_NAME!!\'s default text editor'),
  			new ApiCommandArgument<vscode.ViewColumn | typeConverters.TextEditorOpenOptions | undefined, [vscode.ViewColumn?, ITextEditorOptions?] | undefined>('columnOrOptions', 'Either the column in which to open or editor options, see vscode.TextDocumentShowOptions',
 diff --git a/src/vs/workbench/api/common/extHostCommands.ts b/src/vs/workbench/api/common/extHostCommands.ts
-index 0bda2e8..5179ac6 100644
+index d914f21..9bca633 100644
 --- a/src/vs/workbench/api/common/extHostCommands.ts
 +++ b/src/vs/workbench/api/common/extHostCommands.ts
-@@ -462,4 +462,4 @@ export class ApiCommandArgument<V, O = V> {
+@@ -466,4 +466,4 @@ export class ApiCommandArgument<V, O = V> {
  	static readonly TypeHierarchyItem = new ApiCommandArgument('item', 'A type hierarchy item', v => v instanceof extHostTypes.TypeHierarchyItem, extHostTypeConverter.TypeHierarchyItem.from);
 -	static readonly TestItem = new ApiCommandArgument('testItem', 'A VS Code TestItem', v => v instanceof TestItemImpl, extHostTypeConverter.TestItem.from);
 -	static readonly TestProfile = new ApiCommandArgument('testProfile', 'A VS Code test profile', v => v instanceof extHostTypes.TestRunProfileBase, extHostTypeConverter.TestRunProfile.from);
@@ -736,24 +736,24 @@ index 0ebe271..20974b2 100644
 +		throw new Error('Unable to create the !!APP_NAME!! workbench more than once.');
  	} else {
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index 123df4f..89f671b 100644
+index 3a756fb..327ce60 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -698,3 +698,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -697,3 +697,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  		localize('profileName', "`${profileName}`: name of the profile in which the workspace is opened (e.g. Data Science (Profile)). Ignored if default profile is used."),
 -		localize('appName', "`${appName}`: e.g. VS Code."),
 +		localize('appName', "`${appName}`: e.g. !!APP_NAME!!."),
  		localize('remoteName', "`${remoteName}`: e.g. SSH"),
 diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup.ts b/src/vs/workbench/contrib/chat/browser/chatSetup.ts
-index fff7e52..d10828d 100644
+index 517b7cb..70a9c6e 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatSetup.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chatSetup.ts
-@@ -145,3 +145,3 @@ class SetupAgent extends Disposable implements IChatAgentImplementation {
+@@ -146,3 +146,3 @@ class SetupAgent extends Disposable implements IChatAgentImplementation {
  
 -			const { agent, disposable } = SetupAgent.doRegisterAgent(instantiationService, chatAgentService, 'setup.vscode', 'vscode', false, localize2('vscodeAgentDescription', "Ask questions about VS Code").value, ChatAgentLocation.Panel, undefined, context, controller);
 +			const { agent, disposable } = SetupAgent.doRegisterAgent(instantiationService, chatAgentService, 'setup.vscode', 'vscode', false, localize2('vscodeAgentDescription', "Ask questions about !!APP_NAME!!").value, ChatAgentLocation.Panel, undefined, context, controller);
  			disposables.add(disposable);
-@@ -153,4 +153,4 @@ class SetupAgent extends Disposable implements IChatAgentImplementation {
+@@ -154,4 +154,4 @@ class SetupAgent extends Disposable implements IChatAgentImplementation {
  				displayName: localize('setupToolDisplayName', "New Workspace"),
 -				modelDescription: localize('setupToolsDescription', "Scaffold a new workspace in VS Code"),
 -				userDescription: localize('setupToolsDescription', "Scaffold a new workspace in VS Code"),
@@ -1023,21 +1023,21 @@ index 393c8c3..9268a6c 100644
 +		content += `// By default, !!APP_NAME!! trusts "localhost".\n`;
  	}
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-index 6aa706f..ddbd93e 100644
+index ab7fcb4..12c26ee 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-@@ -51,3 +51,3 @@ registerAction2(class extends Action2 {
+@@ -49,3 +49,3 @@ registerAction2(class extends Action2 {
  			metadata: {
 -				description: localize2('minWelcomeDescription', 'Opens a Walkthrough to help you get started in VS Code.')
 +				description: localize2('minWelcomeDescription', 'Opens a Walkthrough to help you get started in !!APP_NAME!!.')
  			}
-@@ -379,3 +379,3 @@ configurationRegistry.registerConfiguration({
+@@ -326,3 +326,3 @@ configurationRegistry.registerConfiguration({
  				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.none' }, "Start without an editor."),
 -				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with VS Code and extensions."),
 +				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page, with content to aid in getting started with !!APP_NAME!! and extensions."),
  				localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.readme' }, "Open the README when opening a folder that contains one, fallback to 'welcomePage' otherwise. Note: This is only observed as a global configuration, it will be ignored if set in a workspace or folder configuration."),
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
-index cc5c3bd..b7a030f 100644
+index 77a3a36..1d25064 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 @@ -20,3 +20,3 @@ import { splitRecentLabel } from '../../../../base/common/labels.js';
@@ -1050,7 +1050,7 @@ index cc5c3bd..b7a030f 100644
 -import { copilotSettingsMessage, NEW_WELCOME_EXPERIENCE, startEntries } from '../common/gettingStartedContent.js';
 +import { NEW_WELCOME_EXPERIENCE, startEntries } from '../common/gettingStartedContent.js';
  import { GroupDirection, GroupsOrder, IEditorGroup, IEditorGroupsService } from '../../../services/editor/common/editorGroupsService.js';
-@@ -1633,6 +1633,2 @@ export class GettingStartedPage extends EditorPane {
+@@ -1632,6 +1632,2 @@ export class GettingStartedPage extends EditorPane {
  					multiStepContainer.appendChild(descElement);
 -					const actionMessage = $('span.action-message');
 -					const updatedText = parseLinkedText(copilotSettingsMessage);
