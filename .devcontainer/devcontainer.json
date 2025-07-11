@@ -1,0 +1,74 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+{
+    "name": "VSC Build Environment",
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "build": {
+        "dockerfile": "Containerfile"
+    },
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": "true",
+            "username": "vscode",
+            "userUid": "1000",
+            "userGid": "1000",
+            "upgradePackages": "true"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "20.18.2"
+        },
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest",
+            "ppa": "false"
+        },
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "3.11"
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "dockerDashComposeVersion": "none"
+        },
+        "ghcr.io/devcontainers-extra/features/shfmt:1": {}
+    },
+    // Uncomment if you have `sed` issues due to VirtFs
+    // "mounts": [
+    //     "type=volume,source=vscode-src,target=${containerWorkspaceFolder}/vscode"
+    // ],
+    "runArgs": [
+        "--security-opt",
+        "label=disable",
+        "--env-file",
+        "${localWorkspaceFolder}/.env"
+    ],
+    "capAdd": [
+        "CAP_AUDIT_WRITE"
+    ],
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // "postCreateCommand": "yarn install",
+    "onCreateCommand": "sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc", // you will also need the DISABLE_QEMU=true env var
+    // Configure tool-specific properties.
+    "customizations": {
+        // Configure properties specific to VS Code.
+        "vscode": {
+            // Set *default* container specific settings.json values on container create.
+            "settings": {
+                "shellformat.path": "/usr/local/bin/shfmt",
+                "shellcheck.executablePath": "/usr/bin/shellcheck"
+            },
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "ms-azuretools.vscode-docker",
+                "github.vscode-github-actions",
+                "foxundermoon.shell-format",
+                "rogalmic.bash-debug",
+                "mads-hartmann.bash-ide-vscode",
+                "timonwong.shellcheck"
+            ]
+        }
+    },
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    "remoteUser": "vscode"
+}
