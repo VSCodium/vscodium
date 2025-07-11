@@ -6,7 +6,7 @@ GH_ARCH="amd64"
 
 TAG=$( curl --retry 12 --retry-delay 30 "https://api.github.com/repos/cli/cli/releases/latest" 2>/dev/null | jq --raw-output '.tag_name' )
 
-if [[ $? -ne 0 ]] || [[ -z "${TAG}" ]]; then
+if [[ $? -ne 0 ]] || [[ "${TAG}" == "null" ]]; then
   echo "Error: Failed to retrieve the latest tag from GitHub CLI releases."
   exit 1
 fi
