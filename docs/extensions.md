@@ -99,13 +99,14 @@ Like the debuggers mentioned above, some extensions you may find in the marketpl
 ```jsonc
   "extensionAllowedProposedApi": [
     // ...
-    "ms-vscode-remote.vscode-remote-extensionpack",
-    "ms-vscode-remote.remote-wsl",
+    "ms-vscode-remote.vscode-remote-extensionpack", // Example: Enables the Remote Extension Pack
+    "ms-vscode-remote.remote-wsl",                // Example: Enables Remote - WSL
     // ...
   ],
 ```
+Note: While this configuration may allow certain proprietary extensions (like the Remote Development extensions shown) to activate in VSCodium, please be aware of their licensing terms. Many are restricted to official Visual Studio Code builds. For a list of known incompatible extensions and open-source alternatives, see [Extensions compatibility](https://github.com/VSCodium/vscodium/blob/master/docs/extensions-compatibility.md).
 
-In some cases, the above change won't help because the extension is hard-coded to only work with the official Visual Studio Code product.
+In some cases, the above change won't help because the extension is hard-coded to only work with the official Visual Studio Code product. It's also important to remember that enabling an extension via this method does not alter its license terms; if an extension's license restricts its use to official Microsoft Visual Studio Code builds, this method does not make its use in VSCodium compliant with those terms.
 
 ## <a id="vsix-manager"></a>Using the "VSIX Manager" Extension
 

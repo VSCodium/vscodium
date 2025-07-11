@@ -14,7 +14,7 @@ This guide will help you get started with VSCodium.
 
 ## <a id="installation"></a>Installation
 
-VSCodium can be installed on Windows, macOS, and Linux. Visit the [download page](https://vscodium.com/#install) for installation instructions.
+VSCodium can be installed on Windows, macOS, and Linux. Visit the [Download/Install section in our README](https://github.com/VSCodium/vscodium#download-install) for installation instructions.
 
 ## <a id="first-steps"></a>First Steps
 
