@@ -38,8 +38,6 @@ WORKDIR /opt/codex
 
 EXPOSE 8000
 RUN useradd -m -s /bin/bash codex && \
-    groupadd codex && \
-    usermod -aG codex codex && \
     chown -R codex:codex /opt/codex && \
     mkdir -p /opt/data && \
     chown codex:codex /opt/data
