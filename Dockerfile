@@ -28,6 +28,7 @@ RUN ./dev/build.sh && \
     cp ./vscode/scripts/code-server.js ./vscode-reh-web-linux-x64/scripts/code-server.cjs && \
     cp -r ./vscode/node_modules ./vscode-reh-web-linux-x64/
 
+
 FROM node:20.19.0 as runtime
 COPY --from=builder /opt/vscodium/vscode-reh-web-linux-x64 /opt/codex
 
@@ -36,5 +37,12 @@ ENV VSCODE_SERVER_PORT=8000
 WORKDIR /opt/codex
 
 EXPOSE 8000
-CMD ["node", "scripts/code-server.cjs","--host","0.0.0.0","--port","8000","--without-connection-token"]
+RUN useradd -m -s /bin/bash codex && \
+    groupadd codex && \
+    usermod -aG codex codex && \
+    chown -R codex:codex /opt/codex && \
+    mkdir -p /opt/data && \
+    chown codex:codex /opt/data
+USER codex
+CMD ["node", "scripts/code-server.cjs","--host","0.0.0.0","--port","8000","--without-connection-token","--user-data-dir","/opt/data"]
 
