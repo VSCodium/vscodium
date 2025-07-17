@@ -4,6 +4,9 @@ FROM node:20.19.0 as builder
 ARG GITHUB_TOKEN
 ENV GITHUB_TOKEN=${GITHUB_TOKEN}
 
+# Setting this skips the run of the script that sideloads extensions
+ENV SKIP_EXTENSIONS=true
+
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
