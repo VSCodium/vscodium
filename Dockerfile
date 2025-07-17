@@ -15,7 +15,9 @@ RUN apt-get update && \
         python-is-python3 \
         pkg-config \
         libssl-dev \
-        jq
+        jq \
+        unzip \
+        curl
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
@@ -23,10 +25,18 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 COPY . /opt/vscodium
 WORKDIR /opt/vscodium
+
+# Download and extract extensions
+RUN chmod +x ./download-extensions.sh && \
+    ./download-extensions.sh
+
 RUN ./dev/build.sh && \
     mkdir ./vscode-reh-web-linux-x64/scripts && \
     cp ./vscode/scripts/code-server.js ./vscode-reh-web-linux-x64/scripts/code-server.cjs && \
     cp -r ./vscode/node_modules ./vscode-reh-web-linux-x64/
+
+# Copy extracted extensions to the final build
+RUN cp -r ./extracted-extensions ./vscode-reh-web-linux-x64/
 
 
 FROM node:20.19.0 as runtime
