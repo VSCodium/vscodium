@@ -26,17 +26,10 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 COPY . /opt/vscodium
 WORKDIR /opt/vscodium
 
-# Download and extract extensions
-RUN chmod +x ./download-extensions.sh && \
-    ./download-extensions.sh
-
 RUN ./dev/build.sh && \
     mkdir ./vscode-reh-web-linux-x64/scripts && \
     cp ./vscode/scripts/code-server.js ./vscode-reh-web-linux-x64/scripts/code-server.cjs && \
     cp -r ./vscode/node_modules ./vscode-reh-web-linux-x64/
-
-# Copy extracted extensions to the final build
-RUN cp -r ./extracted-extensions ./vscode-reh-web-linux-x64/
 
 
 FROM node:20.19.0 as runtime
@@ -45,6 +38,10 @@ COPY --from=builder /opt/vscodium/vscode-reh-web-linux-x64 /opt/codex
 ENV VSCODE_SERVER_HOST=0.0.0.0
 ENV VSCODE_SERVER_PORT=8000
 WORKDIR /opt/codex
+
+RUN ./bin/codex-server --disable-extensions && \
+    ./bin/codex-server --install-extension project-accelerate.codex-editor-extension && \
+    ./bin/codex-server --install-extension frontier-rnd.frontier-authentication
 
 EXPOSE 8000
 RUN useradd -m -s /bin/bash codex && \
