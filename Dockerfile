@@ -39,8 +39,7 @@ ENV VSCODE_SERVER_HOST=0.0.0.0
 ENV VSCODE_SERVER_PORT=8000
 WORKDIR /opt/codex
 
-RUN ./bin/codex-server --disable-extensions && \
-    ./bin/codex-server --install-extension project-accelerate.codex-editor-extension && \
+RUN ./bin/codex-server --install-extension project-accelerate.codex-editor-extension && \
     ./bin/codex-server --install-extension frontier-rnd.frontier-authentication
 
 EXPOSE 8000
