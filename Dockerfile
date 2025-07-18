@@ -42,14 +42,15 @@ ENV VSCODE_SERVER_HOST=0.0.0.0
 ENV VSCODE_SERVER_PORT=8000
 WORKDIR /opt/codex
 
-RUN ./bin/codex-server --install-extension project-accelerate.codex-editor-extension && \
-    ./bin/codex-server --install-extension frontier-rnd.frontier-authentication
-
 EXPOSE 8000
 RUN useradd -m -s /bin/bash codex && \
     chown -R codex:codex /opt/codex && \
     mkdir -p /opt/data && \
     chown codex:codex /opt/data
 USER codex
+
+RUN ./bin/codex-server --install-extension project-accelerate.codex-editor-extension --extensions-dir --extensions-dir /home/codex/.codex-server/extensions && \
+    ./bin/codex-server --install-extension frontier-rnd.frontier-authentication --extensions-dir /home/codex/.codex-server/extensions
+
 CMD ["node", "scripts/code-server.cjs","--host","0.0.0.0","--port","8000","--without-connection-token","--user-data-dir","/opt/data"]
 
