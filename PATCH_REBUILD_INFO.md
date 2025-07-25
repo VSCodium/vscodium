@@ -1,6 +1,6 @@
 === PATCH REBUILD ===
-**Build Version:** 1.99.24939
+**Build Version:** 1.99.24959
 **Base VS Code:** 1.99.2
-**Rebuild Reason:** Reintroduced extensions in the activity bar
-**Build Date:** Thu Jul 24 19:26:42 UTC 2025
-**Commit:** ab64da891471df1add7561c3f9feb06219e50e6e
+**Rebuild Reason:** Added Extensions Back (and updated windows to windows-2022)
+**Build Date:** Fri Jul 25 15:36:42 UTC 2025
+**Commit:** b5985cff763326c126bdb1b80acc552f7829b71d
