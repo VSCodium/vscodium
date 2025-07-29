@@ -100,7 +100,7 @@ mv .npmrc.bak .npmrc
 setpath() {
   local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$( jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
+  jsonTmp=$( jq --arg 'value' "${3}" "setpath(path(.${2}); \$value)" "${1}.json" )
   echo "${jsonTmp}" > "${1}.json"
   set -x
 }
@@ -108,7 +108,7 @@ setpath() {
 setpath_json() {
   local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$( jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
+  jsonTmp=$( jq --argjson 'value' "${3}" "setpath(path(.${2}); \$value)" "${1}.json" )
   echo "${jsonTmp}" > "${1}.json"
   set -x
 }
