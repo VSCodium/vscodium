@@ -745,7 +745,7 @@ index e214bf7..efb48d6 100644
 +		localize('appName', "`${appName}`: e.g. !!APP_NAME!!."),
  		localize('remoteName', "`${remoteName}`: e.g. SSH"),
 diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup.ts b/src/vs/workbench/contrib/chat/browser/chatSetup.ts
-index f0afc65..96f6944 100644
+index 5ebe9c1..ff02d8b 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatSetup.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chatSetup.ts
 @@ -140,3 +140,3 @@ class SetupAgent extends Disposable implements IChatAgentImplementation {
@@ -825,15 +825,15 @@ index 1fc3f63..c1f8609 100644
 +				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to !!APP_NAME!!. Configure these {0} to use this functionality.", link)) }, true);
  			} else {
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index ffe36f4..d7ebb5d 100644
+index 9927c14..c117131 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-@@ -476,3 +476,3 @@ export class Extension implements IExtension {
+@@ -477,3 +477,3 @@ export class Extension implements IExtension {
  			return Promise.resolve(`# ${this.displayName || this.name}
 -**Notice:** This extension is bundled with Visual Studio Code. It can be disabled but not uninstalled.
 +**Notice:** This extension is bundled with !!APP_NAME!!. It can be disabled but not uninstalled.
  ## Features
-@@ -514,3 +514,3 @@ ${this.description}
+@@ -515,3 +515,3 @@ ${this.description}
  		if (this.type === ExtensionType.System) {
 -			return Promise.resolve(`Please check the [VS Code Release Notes](command:${ShowCurrentReleaseNotesActionId}) for changes to the built-in extensions.`);
 +			return Promise.resolve(`Please check the [!!APP_NAME!! Release Notes](command:${ShowCurrentReleaseNotesActionId}) for changes to the built-in extensions.`);
@@ -1067,16 +1067,16 @@ index 3f1c098..26bf670 100644
 +											description: localize('walkthroughs.steps.completionEvents.onCommand', 'Check off step when a given command is executed anywhere in !!APP_NAME!!.'),
  											body: 'onCommand:${1:commandId}'
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-index 6815074..0da92bf 100644
+index ac2672d..0da92bf 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 @@ -210,13 +210,2 @@ export const startEntries: GettingStartedStartEntryContent = [
  	},
 -	{
 -		id: 'topLevelNewWorkspaceChat',
--		title: localize('gettingStarted.newWorkspaceChat.title', "New Workspace with Copilot..."),
--		description: localize('gettingStarted.newWorkspaceChat.description', "Create a new workspace with Copilot"),
--		icon: Codicon.copilot,
+-		title: localize('gettingStarted.newWorkspaceChat.title', "Generate New Workspace..."),
+-		description: localize('gettingStarted.newWorkspaceChat.description', "Chat to create a new workspace"),
+-		icon: Codicon.chatSparkle,
 -		when: '!isWeb && !chatSetupHidden',
 -		content: {
 -			type: 'startEntry',

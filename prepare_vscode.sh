@@ -100,7 +100,7 @@ mv .npmrc.bak .npmrc
 setpath() {
   local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$( jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
+  jsonTmp=$( jq --arg 'value' "${3}" "setpath(path(.${2}); \$value)" "${1}.json" )
   echo "${jsonTmp}" > "${1}.json"
   set -x
 }
@@ -108,7 +108,7 @@ setpath() {
 setpath_json() {
   local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$( jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json" )
+  jsonTmp=$( jq --argjson 'value' "${3}" "setpath(path(.${2}); \$value)" "${1}.json" )
   echo "${jsonTmp}" > "${1}.json"
   set -x
 }
@@ -167,6 +167,8 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "tunnelApplicationName" "codium-tunnel-insiders"
   setpath "product" "win32TunnelServiceMutex" "vscodiuminsiders-tunnelservice"
   setpath "product" "win32TunnelMutex" "vscodiuminsiders-tunnel"
+  setpath "product" "win32ContextMenu.x64.clsid" "90AAD229-85FD-43A3-B82D-8598A88829CF"
+  setpath "product" "win32ContextMenu.arm64.clsid" "7544C31C-BDBF-4DDF-B15E-F73A46D6723D"
 else
   setpath "product" "nameShort" "VSCodium"
   setpath "product" "nameLong" "VSCodium"
@@ -192,6 +194,8 @@ else
   setpath "product" "tunnelApplicationName" "codium-tunnel"
   setpath "product" "win32TunnelServiceMutex" "vscodium-tunnelservice"
   setpath "product" "win32TunnelMutex" "vscodium-tunnel"
+  setpath "product" "win32ContextMenu.x64.clsid" "D910D5E6-B277-4F4A-BDC5-759A34EEE25D"
+  setpath "product" "win32ContextMenu.arm64.clsid" "4852FC55-4A84-4EA1-9C86-D53BE3DF83C0"
 fi
 
 jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
