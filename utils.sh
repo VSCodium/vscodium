@@ -5,7 +5,7 @@ APP_NAME="${APP_NAME:-Codex}"
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 ASSETS_REPOSITORY="${ASSETS_REPOSITORY:-BiblioNexus-Foundation/codex}"
 BINARY_NAME="${BINARY_NAME:-codex}"
-GH_REPO_PATH="${GH_REPO_PATH:-BiblioNexus-Foundation/codex}"
+GH_REPO_PATH="${GH_REPO_PATH:-genesis-ai-dev/codex}"
 ORG_NAME="${ORG_NAME:-Codex}"
 
 # All common functions can be added to this file
