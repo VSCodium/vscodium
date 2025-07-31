@@ -3,7 +3,7 @@
 
 set -e
 
-APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+APP_NAME_LC="$(echo "${APP_NAME}" | awk '{print tolower($0)}')"
 
 mkdir -p assets
 
@@ -17,11 +17,11 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     KEYCHAIN="${RUNNER_TEMP}/buildagent.keychain"
     AGENT_TEMPDIRECTORY="${RUNNER_TEMP}"
     # shellcheck disable=SC2006
-    KEYCHAINS=`security list-keychains | xargs`
+    KEYCHAINS=$(security list-keychains | xargs)
 
     rm -f "${KEYCHAIN}"
 
-    echo "${CERTIFICATE_OSX_P12_DATA}" | base64 --decode > "${CERTIFICATE_P12}"
+    echo "${CERTIFICATE_OSX_P12_DATA}" | base64 --decode >"${CERTIFICATE_P12}"
 
     echo "+ create temporary keychain"
     security create-keychain -p pwd "${KEYCHAIN}"
@@ -33,15 +33,15 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 
     echo "+ import certificate to keychain"
     security import "${CERTIFICATE_P12}" -k "${KEYCHAIN}" -P "${CERTIFICATE_OSX_P12_PASSWORD}" -T /usr/bin/codesign
-    security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k pwd "${KEYCHAIN}" > /dev/null
+    security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k pwd "${KEYCHAIN}" >/dev/null
     # security find-identity "${KEYCHAIN}"
 
-    CODESIGN_IDENTITY="$( security find-identity -v -p codesigning "${KEYCHAIN}" | grep -oEi "([0-9A-F]{40})" | head -n 1 )"
+    CODESIGN_IDENTITY="$(security find-identity -v -p codesigning "${KEYCHAIN}" | grep -oEi "([0-9A-F]{40})" | head -n 1)"
 
     echo "+ signing"
     export CODESIGN_IDENTITY AGENT_TEMPDIRECTORY
 
-    DEBUG="electron-osx-sign*" node vscode/build/darwin/sign.js "$( pwd )"
+    DEBUG="electron-osx-sign*" node vscode/build/darwin/sign.js "$(pwd)"
     # codesign --display --entitlements :- ""
 
     echo "+ notarize"
@@ -71,10 +71,31 @@ if [[ "${OS_NAME}" == "osx" ]]; then
     cd ..
   fi
 
-  if [[ "${SHOULD_BUILD_DMG}" != "no" ]]; then
+  if [[ -n "${CERTIFICATE_OSX_P12_DATA}" && "${SHOULD_BUILD_DMG}" != "no" ]]; then
     echo "Building and moving DMG"
+
+    # Use architecture-specific volume names to prevent conflicts between parallel builds
+    VOLUME_NAME="${APP_NAME}-${VSCODE_ARCH}"
+
+    # Clean up any existing mounted volumes before DMG creation
+    if [[ -d "/Volumes/${VOLUME_NAME}" ]]; then
+      echo "Unmounting existing ${VOLUME_NAME} volume"
+      hdiutil detach "/Volumes/${VOLUME_NAME}" || true
+    fi
+    if [[ -d "/Volumes/Codex" ]]; then
+      echo "Unmounting existing Codex volume"
+      hdiutil detach "/Volumes/Codex" || true
+    fi
+    if [[ -d "/Volumes/${APP_NAME}" ]]; then
+      echo "Unmounting existing ${APP_NAME} volume"
+      hdiutil detach "/Volumes/${APP_NAME}" || true
+    fi
+
     pushd "VSCode-darwin-${VSCODE_ARCH}"
-    npx create-dmg ./*.app .
+
+    # Use create-dmg with explicit volume name to avoid conflicts
+    npx create-dmg --volume-name="${VOLUME_NAME}" ./*.app .
+
     mv ./*.dmg "../assets/${APP_NAME}.${VSCODE_ARCH}.${RELEASE_VERSION}.dmg"
     popd
   fi
@@ -93,20 +114,23 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 
   VSCODE_PLATFORM="darwin"
 elif [[ "${OS_NAME}" == "windows" ]]; then
-  cd vscode || { echo "'vscode' dir not found"; exit 1; }
+  cd vscode || {
+    echo "'vscode' dir not found"
+    exit 1
+  }
 
-  yarn gulp "vscode-win32-${VSCODE_ARCH}-inno-updater"
+  npm run gulp "vscode-win32-${VSCODE_ARCH}-inno-updater"
 
   if [[ "${SHOULD_BUILD_ZIP}" != "no" ]]; then
     7z.exe a -tzip "../assets/${APP_NAME}-win32-${VSCODE_ARCH}-${RELEASE_VERSION}.zip" -x!CodeSignSummary*.md -x!tools "../VSCode-win32-${VSCODE_ARCH}/*" -r
   fi
 
   if [[ "${SHOULD_BUILD_EXE_SYS}" != "no" ]]; then
-    yarn gulp "vscode-win32-${VSCODE_ARCH}-system-setup"
+    npm run gulp "vscode-win32-${VSCODE_ARCH}-system-setup"
   fi
 
   if [[ "${SHOULD_BUILD_EXE_USR}" != "no" ]]; then
-    yarn gulp "vscode-win32-${VSCODE_ARCH}-user-setup"
+    npm run gulp "vscode-win32-${VSCODE_ARCH}-user-setup"
   fi
 
   if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
@@ -145,18 +169,23 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
 
   VSCODE_PLATFORM="win32"
 else
-  cd vscode || { echo "'vscode' dir not found"; exit 1; }
+  cd vscode || {
+    echo "'vscode' dir not found"
+    exit 1
+  }
 
   if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" && "${VSCODE_ARCH}" != "x64" ]]; then
     SHOULD_BUILD_APPIMAGE="no"
   fi
 
   if [[ "${SHOULD_BUILD_DEB}" != "no" || "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
-    yarn gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
+    npm run gulp "vscode-linux-${VSCODE_ARCH}-prepare-deb"
+    npm run gulp "vscode-linux-${VSCODE_ARCH}-build-deb"
   fi
 
   if [[ "${SHOULD_BUILD_RPM}" != "no" ]]; then
-    yarn gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
+    npm run gulp "vscode-linux-${VSCODE_ARCH}-prepare-rpm"
+    npm run gulp "vscode-linux-${VSCODE_ARCH}-build-rpm"
   fi
 
   if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" ]]; then
@@ -211,6 +240,32 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   echo "Building and moving REH-web"
   cd "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
   tar czf "../assets/${APP_NAME_LC}-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+  cd ..
+fi
+
+set -ex
+
+if [[ "${SHOULD_BUILD_CLI}" != "no" ]]; then
+  echo "Building and moving CLI"
+
+  APPLICATION_NAME="$( node -p "require(\"./vscode/product.json\").applicationName" )"
+  NAME_SHORT="$( node -p "require(\"./vscode/product.json\").nameShort" )"
+  TUNNEL_APPLICATION_NAME="$( node -p "require(\"./vscode/product.json\").tunnelApplicationName" )"
+
+  mkdir -p "vscode-cli"
+
+  cd "vscode-cli"
+
+  if [[ "${OS_NAME}" == "osx" ]]; then
+    cp "../VSCode-${VSCODE_PLATFORM}-${VSCODE_ARCH}/${NAME_SHORT}.app/Contents/Resources/app/bin/${TUNNEL_APPLICATION_NAME}" "${APPLICATION_NAME}"
+  elif [[ "${OS_NAME}" == "windows" ]]; then
+    cp "../VSCode-${VSCODE_PLATFORM}-${VSCODE_ARCH}/bin/${TUNNEL_APPLICATION_NAME}.exe" "${APPLICATION_NAME}.exe"
+  else
+    cp "../VSCode-${VSCODE_PLATFORM}-${VSCODE_ARCH}/bin/${TUNNEL_APPLICATION_NAME}" "${APPLICATION_NAME}"
+  fi
+
+  tar czf "../assets/${APP_NAME_LC}-cli-${VSCODE_PLATFORM}-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
+
   cd ..
 fi
 

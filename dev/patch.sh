@@ -38,7 +38,11 @@ else
 fi
 
 if [[ -f "${FILE}" ]]; then
-  git apply --reject "${FILE}"
+  if [[ -f "${FILE}.bak" ]]; then
+    mv -f $FILE{.bak,}
+  fi
+
+  git apply --reject "${FILE}" || true
 fi
 
 read -rp "Press any key when the conflict have been resolved..." -n1 -s

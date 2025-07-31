@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Exit early if SKIP_EXTENSIONS is set
+if [[ -n "$SKIP_EXTENSIONS" ]]; then
+    return 0
+fi
+
 jsonfile=$(curl -s https://raw.githubusercontent.com/andrewhertog/extension-sideloader/refs/heads/main/extensions.json)
 extensions_dir=./.build/extensions
 base_dir=$(pwd)
@@ -16,6 +21,7 @@ for i in $(seq $count); do
   curl -Lso "$name".zip "$url"
   unzip -q "$name".zip -d ${extensions_dir}/"$name"
   mv ${extensions_dir}/"$name"/extension/* ${extensions_dir}/"$name"/
+  cp -r ${extensions_dir}/"$name" ./extensions/
   rm "$name".zip
 done
 

@@ -6,8 +6,11 @@
 ###
 
 export APP_NAME="Codex"
+export ASSETS_REPOSITORY="BiblioNexus-Foundation/codex"
 export BINARY_NAME="codex"
 export CI_BUILD="no"
+export GH_REPO_PATH="genesis-ai-dev/codex"
+export ORG_NAME="Codex"
 export SHOULD_BUILD="yes"
 export SKIP_ASSETS="yes"
 export SKIP_BUILD="no"
@@ -19,6 +22,7 @@ export VSCODE_SKIP_NODE_VERSION_CHECK="yes"
 while getopts ":ilops" opt; do
   case "$opt" in
     i)
+      export ASSETS_REPOSITORY="BiblioNexus-Foundation/codex-insiders"
       export BINARY_NAME="codex-insiders"
       export VSCODE_QUALITY="insider"
       ;;
@@ -103,7 +107,10 @@ fi
 
 if [[ "${SKIP_BUILD}" == "no" ]]; then
   if [[ "${SKIP_SOURCE}" != "no" ]]; then
-    cd vscode || { echo "'vscode' dir not found"; exit 1; }
+    cd vscode || {
+      echo "'vscode' dir not found"
+      exit 1
+    }
 
     git add .
     git reset -q --hard HEAD

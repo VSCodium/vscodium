@@ -1,22 +1,22 @@
 diff --git a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
-index 447f4c9..4ad0e18 100644
+index 447f4c9..1118f18 100644
 --- a/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
 +++ b/src/vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions.ts
 @@ -153,3 +153,3 @@ class ReportExtensionSlowAction extends Action {
  - OS Version: \`${osVersion}\`
 -- VS Code version: \`${this._productService.version}\`\n\n${message}`);
-+- Codex version: \`${this._productService.version}\`\n\n${message}`);
++- !!APP_NAME!! version: \`${this._productService.version}\`\n\n${message}`);
  
 diff --git a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
-index 26d796b..1d1ff79 100644
+index 3d7653e..7dbd60b 100644
 --- a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
 +++ b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
-@@ -630,3 +630,3 @@ export class BaseIssueReporterService extends Disposable {
+@@ -665,3 +665,3 @@ export class BaseIssueReporterService extends Disposable {
  		if (title) {
 -			this.searchDuplicates(title, issueDescription);
-+			this.searchGitHub('BiblioNexus-Foundation/codex', title);
++			this.searchGitHub('!!GH_REPO_PATH!!', title);
  		} else {
-@@ -722,33 +722,2 @@ export class BaseIssueReporterService extends Disposable {
+@@ -757,33 +757,2 @@ export class BaseIssueReporterService extends Disposable {
  
 -	@debounce(300)
 -	private searchDuplicates(title: string, body?: string): void {
@@ -50,38 +50,43 @@ index 26d796b..1d1ff79 100644
 -	}
 -
  	private displaySearchResults(results: SearchResult[]) {
-@@ -844,4 +813,4 @@ export class BaseIssueReporterService extends Disposable {
+@@ -879,4 +848,4 @@ export class BaseIssueReporterService extends Disposable {
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
 -		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Visual Studio Code"), false));
 -		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
-+		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Codex"), false));
-+		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A Codex extension"), false));
++		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "!!APP_NAME!!"), false));
++		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A !!APP_NAME!! extension"), false));
  		if (this.product.reportMarketplaceIssueUrl) {
-@@ -905,3 +874,3 @@ export class BaseIssueReporterService extends Disposable {
+@@ -967,3 +936,3 @@ export class BaseIssueReporterService extends Disposable {
  			hide(descriptionTextArea);
 -			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
-+			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of Codex"));
++			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of !!APP_NAME!!"));
  			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
-index 0bbd8ac..4cffa1a 100644
+index 0bbd8ac..3f35022 100644
 --- a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
 +++ b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
 @@ -92,3 +92,3 @@ ${this._data.issueDescription}
  ${this.getExtensionVersion()}
 -VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
-+Codex version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
++!!APP_NAME!! version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
  OS version: ${this._data.versionInfo && this._data.versionInfo.os}
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts b/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
-index 5cbc709..5d6b1e2 100644
+index e739f44..0024f74 100644
 --- a/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
 +++ b/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
-@@ -18,3 +18,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
+@@ -14,3 +14,3 @@ const sendExperimentsLabel = escape(localize('sendExperiments', "Include A/B exp
+ const sendExtensionData = escape(localize('sendExtensionData', "Include additional extension info"));
+-const acknowledgementsLabel = escape(localize('acknowledgements', "I acknowledge that my VS Code version is not updated and this issue may be closed."));
++const acknowledgementsLabel = escape(localize('acknowledgements', "I acknowledge that my !!APP_NAME!! version is not updated and this issue may be closed."));
+ const reviewGuidanceLabel = localize( // intentionally not escaped because of its embedded tags
+@@ -19,3 +19,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
  		comment: [
 -			'{Locked="<a href=\"https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
-+			'{Locked="<a href=\"https://github.com/BiblioNexus-Foundation/codex/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
++			'{Locked="<a href=\"https://github.com/!!GH_REPO_PATH!!/wiki/Submitting-Bugs-and-Suggestions\" target=\"_blank\">"}',
  			'{Locked="</a>"}'
-@@ -22,3 +22,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
+@@ -23,3 +23,3 @@ const reviewGuidanceLabel = localize( // intentionally not escaped because of it
  	},
--	'Before you report an issue here please <a href="https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
-+	'Before you report an issue here please <a href="https://github.com/BiblioNexus-Foundation/codex/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>.'
+-	'Before you report an issue here please <a href="https://github.com/microsoft/vscode/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>. Please complete the form in English.'
++	'Before you report an issue here please <a href="https://github.com/!!GH_REPO_PATH!!/wiki/Submitting-Bugs-and-Suggestions" target="_blank">review the guidance we provide</a>. Please complete the form in English.'
  );

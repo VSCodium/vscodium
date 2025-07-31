@@ -1,0 +1,39 @@
+diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
+index 588e1cb..751230d 100644
+--- a/src/vs/code/electron-main/app.ts
++++ b/src/vs/code/electron-main/app.ts
+@@ -172,11 +172,13 @@ export class CodeApplication extends Disposable {
+ 
+ 		const allowedPermissionsInWebview = new Set([
+ 			...alwaysAllowedPermissions,
++			'media',
+ 			'clipboard-read',
+ 			'clipboard-sanitized-write',
+ 			// TODO(deepak1556): Should be removed once migration is complete
+ 			// https://github.com/microsoft/vscode/issues/239228
+ 			'deprecated-sync-clipboard-read',
++			'microphone'
+ 		]);
+ 
+ 		const allowedPermissionsInCore = new Set([
+@@ -186,6 +188,7 @@ export class CodeApplication extends Disposable {
+ 			// TODO(deepak1556): Should be removed once migration is complete
+ 			// https://github.com/microsoft/vscode/issues/239228
+ 			'deprecated-sync-clipboard-read',
++			'microphone'
+ 		]);
+ 
+ 		session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback, details) => {
+diff --git a/src/vs/workbench/contrib/webview/browser/webviewElement.ts b/src/vs/workbench/contrib/webview/browser/webviewElement.ts
+index 84b5eac..2cd30f9 100644
+--- a/src/vs/workbench/contrib/webview/browser/webviewElement.ts
++++ b/src/vs/workbench/contrib/webview/browser/webviewElement.ts
+@@ -398,7 +398,7 @@ export class WebviewElement extends Disposable implements IWebview, WebviewFindD
+ 		element.className = `webview ${options.customClasses || ''}`;
+ 		element.sandbox.add('allow-scripts', 'allow-same-origin', 'allow-forms', 'allow-pointer-lock', 'allow-downloads');
+ 
+-		const allowRules = ['cross-origin-isolated', 'autoplay'];
++		const allowRules = ['cross-origin-isolated', 'autoplay','microphone'];
+ 		if (!isFirefox) {
+ 			allowRules.push('clipboard-read', 'clipboard-write');
+ 		}

@@ -1,3 +1,5 @@
+<!-- order: 25 -->
+
 # Troubleshooting
 
 ## Table of Contents
@@ -8,14 +10,10 @@
   - [Global menu workaround for KDE](#linux-kde-global-menu)
   - [Flatpak most common issues](#linux-flatpak-most-common-issues)
   - [Remote SSH doesn't work](#linux-remote-ssh)
-- [macOS](#macos)
-  - [App can't be opened because Apple cannot check it for malicious software](#macos-unidentified-developer)
-  - ["Codex.app" is damaged and can’t be opened. You should move it to the Bin](#macos-quarantine)
-
 
 ## <a id="linux"></a>Linux
 
-#### <a id="linux-fonts-rectangle"></a>*Fonts showing up as rectangles*
+### <a id="linux-fonts-rectangle"></a>*Fonts showing up as rectangles*
 
 The following command should help:
 
@@ -25,7 +23,7 @@ rm -rf ~/snap/codex/common/.cache
 fc-cache -r
 ```
 
-#### <a id="linux-rendering-glitches"></a>*Text and/or the entire interface not appearing*
+### <a id="linux-rendering-glitches"></a>*Text and/or the entire interface not appearing*
 
 You have likely encountered [a bug in Chromium and Electron](microsoft/vscode#190437) when compiling Mesa shaders, which has affected all Visual Studio Code and Codex versions for Linux distributions since 1.82.  The current workaround (see microsoft/vscode#190437) is to delete the GPU cache as follows:
 
@@ -33,7 +31,7 @@ You have likely encountered [a bug in Chromium and Electron](microsoft/vscode#19
 rm -rf ~/.config/Codex/GPUCache
 ```
 
-#### <a id="linux-kde-global-menu"></a>*Global menu workaround for KDE*
+### <a id="linux-kde-global-menu"></a>*Global menu workaround for KDE*
 
 Install these packages on Fedora:
 
@@ -45,7 +43,7 @@ On Ubuntu this package is called `libdbusmenu-glib4`.
 
 Credits: [Gerson](https://gitlab.com/paulcarroty/codex-deb-rpm-repo/-/issues/91)
 
-#### <a id="linux-flatpak-most-common-issues"></a>*Flatpak most common issues*
+### <a id="linux-flatpak-most-common-issues"></a>*Flatpak most common issues*
 
 - blurry screen with HiDPI on wayland run:
   ```bash
@@ -65,26 +63,10 @@ Credits: [Gerson](https://gitlab.com/paulcarroty/codex-deb-rpm-repo/-/issues/91)
 
 - If you have any other problems with the flatpak package try to look on the [FAQ](https://github.com/flathub/com.codex.codex?tab=readme-ov-file#faq) maybe the solution is already there or open an [issue](https://github.com/flathub/com.codex.codex/issues).
 
-##### <a id="linux-remote-ssh"></a>*Remote SSH doesn't work*
+### <a id="linux-remote-ssh"></a>*Remote SSH doesn't work*
 
 Use the Codex's compatible extension [Open Remote - SSH](https://open-vsx.org/extension/jeanp413/open-remote-ssh).
 
 On the server, in the `sshd` config, `AllowTcpForwarding` need to be set to `yes`.
 
-It might requires additional dependeincies due to the OS/distro (alpine).
-
-## <a id="macos"></a>macOS
-
-Since the App is signed with a self-signed certificate, on the first launch, you might see the following messages:
-
-#### <a id="macos-unidentified-developer"></a>*App can't be opened because Apple cannot check it for malicious software*
-
-You can right-click the App and choose `Open`.
-
-#### <a id="macos-quarantine"></a>*"Codex.app" is damaged and can’t be opened. You should move it to the Bin.*
-
-The following command will remove the quarantine attribute.
-
-```
-xattr -r -d com.apple.quarantine /Applications/Codex.app
-```
+It might requires additional dependencies due to the OS/distro (alpine).

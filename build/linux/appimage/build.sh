@@ -27,14 +27,16 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   # remove check so build in docker can succeed
   sed -i 's/grep docker/# grep docker/' pkg2appimage.AppDir/usr/share/pkg2appimage/functions.sh
 
+  APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    sed -i 's|@@NAME@@|Codex-Insiders|g' recipe.yml
-    sed -i 's|@@APPNAME@@|codex-insiders|g' recipe.yml
-    sed -i 's|@@ICON@@|codex-insiders|g' recipe.yml
+    sed -i "s|@@NAME@@|${APP_NAME}-Insiders|g" recipe.yml
+    sed -i "s|@@APPNAME@@|${BINARY_NAME}|g" recipe.yml
+    sed -i "s|@@ICON@@|${APP_NAME_LC}-insiders|g" recipe.yml
   else
-    sed -i 's|@@NAME@@|Codex|g' recipe.yml
-    sed -i 's|@@APPNAME@@|codex|g' recipe.yml
-    sed -i 's|@@ICON@@|codex|g' recipe.yml
+    sed -i "s|@@NAME@@|${APP_NAME}|g" recipe.yml
+    sed -i "s|@@APPNAME@@|${BINARY_NAME}|g" recipe.yml
+    sed -i "s|@@ICON@@|${APP_NAME_LC}|g" recipe.yml
   fi
 
   # workaround that enforces x86 ARCH for pkg2appimage having /__w/codex/codex/build/linux/appimage/Codex/Codex.AppDir/usr/share/codex/resources/app/node_modules/rc/index.js is of architecture armhf

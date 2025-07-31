@@ -24,19 +24,21 @@ node build/azure-pipelines/distro/mixin-npm
 
 . ../build/windows/rtf/make.sh
 
-yarn gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+
+. ../build_cli.sh
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
     echo "Building REH"
-    yarn gulp minify-vscode-reh
-    yarn gulp "vscode-reh-win32-${VSCODE_ARCH}-min-ci"
+    npm run gulp minify-vscode-reh
+    npm run gulp "vscode-reh-win32-${VSCODE_ARCH}-min-ci"
   fi
 
   if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
     echo "Building REH-web"
-    yarn gulp minify-vscode-reh-web
-    yarn gulp "vscode-reh-web-win32-${VSCODE_ARCH}-min-ci"
+    npm run gulp minify-vscode-reh-web
+    npm run gulp "vscode-reh-web-win32-${VSCODE_ARCH}-min-ci"
   fi
 fi
 

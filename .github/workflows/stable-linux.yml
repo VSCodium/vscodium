@@ -30,6 +30,8 @@ env:
   ASSETS_REPOSITORY: ${{ github.repository }}
   BINARY_NAME: codex
   DISABLE_UPDATE: 'yes'
+  GH_REPO_PATH: ${{ github.repository }}
+  ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: linux
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
   VSCODE_QUALITY: stable
@@ -60,6 +62,7 @@ jobs:
       - name: Check PR or cron
         env:
           GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
+          GITHUB_EVENT_CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
         run: ./check_cron_or_pr.sh
 
       - name: Check existing Codex tags/releases
@@ -71,7 +74,7 @@ jobs:
   compile:
     needs:
       - check
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
@@ -103,11 +106,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.18.1'
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Install Yarn
-        run: npm install -g yarn
+          node-version: '20.19.0'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
@@ -221,8 +220,11 @@ jobs:
         run: ./check_tags.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - name: Install libkrb5-dev
-        run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
+      - name: Install dependencies
+        run: ./build/linux/deps.sh
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
@@ -272,7 +274,7 @@ jobs:
     needs:
       - check
       - compile
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -331,7 +333,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.18.1'
+          node-version: '20.19.0'
         if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
@@ -387,7 +389,7 @@ jobs:
     needs:
       - check
       - compile
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:

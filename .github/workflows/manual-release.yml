@@ -1,0 +1,117 @@
+name: Manual Release Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      vscode_version:
+        description: "VS Code version to build (e.g., 1.99.3)"
+        required: true
+        type: string
+      vscode_commit:
+        description: "VS Code commit hash (leave empty to auto-detect from tag)"
+        required: false
+        type: string
+      force_version:
+        description: "Force update version files"
+        required: false
+        default: false
+        type: boolean
+      quality:
+        description: "Build quality"
+        required: true
+        default: "stable"
+        type: choice
+        options:
+          - stable
+          - insider
+
+env:
+  APP_NAME: Codex
+  GH_REPO_PATH: ${{ github.repository }}
+  ORG_NAME: ${{ github.repository_owner }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      ms_commit: ${{ steps.prepare.outputs.ms_commit }}
+      ms_tag: ${{ steps.prepare.outputs.ms_tag }}
+      release_version: ${{ steps.prepare.outputs.release_version }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+
+      - name: Prepare version
+        id: prepare
+        env:
+          VSCODE_VERSION: ${{ github.event.inputs.vscode_version }}
+          VSCODE_COMMIT: ${{ github.event.inputs.vscode_commit }}
+          VSCODE_QUALITY: ${{ github.event.inputs.quality }}
+        run: |
+          echo "Preparing build for VS Code version: ${VSCODE_VERSION}"
+
+          # Set tag
+          MS_TAG="${VSCODE_VERSION}"
+          echo "ms_tag=${MS_TAG}" >> $GITHUB_OUTPUT
+
+          # Get or detect commit
+          if [[ -n "${VSCODE_COMMIT}" ]]; then
+            MS_COMMIT="${VSCODE_COMMIT}"
+            echo "Using provided commit: ${MS_COMMIT}"
+          else
+            echo "Auto-detecting commit for tag ${MS_TAG}"
+            git ls-remote --tags https://github.com/Microsoft/vscode.git | grep "refs/tags/${MS_TAG}$" | head -1 | cut -f1 > commit.txt
+            MS_COMMIT=$(cat commit.txt)
+            if [[ -z "${MS_COMMIT}" ]]; then
+              echo "Error: Could not find commit for tag ${MS_TAG}"
+              exit 1
+            fi
+            echo "Auto-detected commit: ${MS_COMMIT}"
+          fi
+          echo "ms_commit=${MS_COMMIT}" >> $GITHUB_OUTPUT
+
+          # Generate release version with time patch
+          TIME_PATCH=$( printf "%04d" $(($(date +%-j) * 24 + $(date +%-H))) )
+          if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+            RELEASE_VERSION="${MS_TAG}${TIME_PATCH}-insider"
+          else
+            RELEASE_VERSION="${MS_TAG}${TIME_PATCH}"
+          fi
+          echo "release_version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
+
+          echo "Generated release version: ${RELEASE_VERSION}"
+
+          # Update upstream tracking file
+          jq -n --arg tag "${MS_TAG}" --arg commit "${MS_COMMIT}" \
+            '{tag: $tag, commit: $commit}' > "./upstream/${VSCODE_QUALITY}.json"
+
+          # Commit the version update
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add "./upstream/${VSCODE_QUALITY}.json"
+          git commit -m "Manual update: ${VSCODE_QUALITY} to ${MS_TAG}" || echo "No changes to commit"
+          git push || echo "No changes to push"
+
+  trigger-builds:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [stable-macos, stable-linux, stable-windows]
+
+    steps:
+      - name: Trigger ${{ matrix.platform }} build
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          QUALITY: ${{ github.event.inputs.quality }}
+        run: |
+          echo "Triggering ${{ matrix.platform }} build for version ${{ needs.prepare.outputs.release_version }}"
+
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d "{\"event_type\":\"${QUALITY}\",\"client_payload\":{\"quality\":\"${QUALITY}\",\"manual_trigger\":true}}"
