@@ -1,0 +1,85 @@
+diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
+index 1234567..abcdefg 100644
+--- a/build/gulpfile.vscode.win32.js
++++ b/build/gulpfile.vscode.win32.js
+@@ -62,10 +62,6 @@ function packageInnoSetup(issPath, options, cb) {
+ /**
+  * @param {string} arch
+- * @param {string} target
+  */
+-function buildWin32Setup(arch, target) {
+-	if (target !== 'system' && target !== 'user') {
+-		throw new Error('Invalid setup target');
+-	}
+-
++function buildWin32Setup(arch) {
+ 	return cb => {
+-		const x64AppId = target === 'system' ? product.win32x64AppId : product.win32x64UserAppId;
+-		const arm64AppId = target === 'system' ? product.win32arm64AppId : product.win32arm64UserAppId;
++		// Use system AppId for unified installer (user scope will be determined at runtime)
++		const x64AppId = product.win32x64AppId;
++		const arm64AppId = product.win32arm64AppId;
+ 
+ 		const sourcePath = buildPath(arch);
+-		const outputPath = setupDir(arch, target);
++		const outputPath = setupDir(arch, 'unified');
+ 		fs.mkdirSync(outputPath, { recursive: true });
+ 
+@@ -89,7 +85,7 @@ function buildWin32Setup(arch, target) {
+ 			DirName: product.win32DirName,
+ 			Version: pkg.version,
+ 			RawVersion: pkg.version.replace(/-\w+$/, ''),
+-			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
++			NameVersion: product.win32NameVersion,
+ 			ExeBasename: product.nameShort,
+ 			RegValueName: product.win32RegValueName,
+ 			ShellNameShort: product.win32ShellNameShort,
+@@ -107,7 +103,6 @@ function buildWin32Setup(arch, target) {
+ 			SourceDir: sourcePath,
+ 			RepoDir: repoPath,
+ 			OutputDir: outputPath,
+-			InstallTarget: target,
+ 			ProductJsonPath: productJsonPath,
+ 			Quality: quality
+ 		};
+@@ -124,17 +119,13 @@ function buildWin32Setup(arch, target) {
+ 
+ /**
+  * @param {string} arch
+- * @param {string} target
+  */
+-function defineWin32SetupTasks(arch, target) {
+-	const cleanTask = util.rimraf(setupDir(arch, target));
+-	gulp.task(task.define(`vscode-win32-${arch}-${target}-setup`, task.series(cleanTask, buildWin32Setup(arch, target))));
++function defineWin32SetupTasks(arch) {
++	const cleanTask = util.rimraf(setupDir(arch, 'unified'));
++	gulp.task(task.define(`vscode-win32-${arch}-setup`, task.series(cleanTask, buildWin32Setup(arch))));
+ }
+ 
+-defineWin32SetupTasks('x64', 'system');
+-defineWin32SetupTasks('arm64', 'system');
+-defineWin32SetupTasks('x64', 'user');
+-defineWin32SetupTasks('arm64', 'user');
++defineWin32SetupTasks('x64');
++defineWin32SetupTasks('arm64');
+ 
+ /**
+  * @param {string} arch
+diff --git a/build/win32/code.iss b/build/win32/code.iss
+index 1234567..abcdefg 100644
+--- a/build/win32/code.iss
++++ b/build/win32/code.iss
+@@ -1639,9 +1639,11 @@ procedure DisableAppDirInheritance();
+ begin
+   Permissions := '/grant:r "*S-1-5-18:(OI)(CI)F" /grant:r "*S-1-5-32-544:(OI)(CI)F" /grant:r "*S-1-5-11:(OI)(CI)RX" /grant:r "*S-1-5-32-545:(OI)(CI)RX"';
+ 
+-  #if "user" == InstallTarget
++  // Apply user-specific permissions dynamically based on installation scope
++  if not InstallForAllUsers then
++  begin
+     Permissions := Permissions + Format(' /grant:r "*S-1-3-0:(OI)(CI)F" /grant:r "%s:(OI)(CI)F"', [GetUserNameString()]);
+-  #endif
++  end;
+ 
+   Exec(ExpandConstant('{sys}\icacls.exe'), ExpandConstant('"{app}" /inheritance:r ' + Permissions), '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+ end;
