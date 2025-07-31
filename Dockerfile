@@ -52,5 +52,5 @@ USER codex
 RUN ./bin/codex-server --install-extension project-accelerate.codex-editor-extension --extensions-dir --extensions-dir /home/codex/.codex-server/extensions && \
     ./bin/codex-server --install-extension frontier-rnd.frontier-authentication --extensions-dir /home/codex/.codex-server/extensions
 
-CMD ["node", "scripts/code-server.cjs","--host","0.0.0.0","--port","8000","--without-connection-token","--user-data-dir","/opt/data"]
-
+ENTRYPOINT [ "node", "scripts/code-server.cjs" ]
+CMD ["--host","0.0.0.0","--port","8000","--without-connection-token"]
