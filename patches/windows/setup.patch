@@ -1,9 +1,11 @@
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
-index 643bf54..d7950a0 100644
+index 0c4dc52..0e8db9b 100644
 --- a/build/gulpfile.vscode.win32.js
 +++ b/build/gulpfile.vscode.win32.js
-@@ -115,3 +115,3 @@ function buildWin32Setup(arch, target) {
+@@ -115,4 +115,4 @@ function buildWin32Setup(arch, target) {
  		if (quality !== 'exploration') {
 -			definitions['AppxPackage'] = `${quality === 'stable' ? 'code' : 'code_insider'}_${arch}.appx`;
+-			definitions['AppxPackageDll'] = `${quality === 'stable' ? 'code' : 'code_insider'}_explorer_command_${arch}.dll`;
 +			definitions['AppxPackage'] = `${product.applicationName.replace(/-/g, '_')}_${arch}.appx`;
++			definitions['AppxPackageDll'] = `${product.applicationName.replace(/-/g, '_')}_explorer_command_${arch}.dll`;
  			definitions['AppxPackageName'] = `${product.win32AppUserModelId}`;
