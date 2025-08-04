@@ -31,9 +31,9 @@ index 25d8916..95863d2 100644
 +			// 		.pipe(replace('@@AppxPackageDescription@@', product.win32NameVersion))
 +			// 		.pipe(replace('@@ApplicationIdShort@@', product.win32RegValueName))
 +			// 		.pipe(replace('@@ApplicationExe@@', product.nameShort + '.exe'))
-+			// 		.pipe(replace('@@FileExplorerContextMenuID@@', quality === 'stable' ? 'OpenWithCode' : 'OpenWithCodeInsiders'))
++			// 		.pipe(replace('@@FileExplorerContextMenuID@@', `OpenWith${product.win32RegValueName}`))
 +			// 		.pipe(replace('@@FileExplorerContextMenuCLSID@@', product.win32ContextMenu[arch].clsid))
-+			// 		.pipe(replace('@@FileExplorerContextMenuDLL@@', `${quality === 'stable' ? 'code' : 'code_insider'}_explorer_command_${arch}.dll`))
++			// 		.pipe(replace('@@FileExplorerContextMenuDLL@@', `${product.applicationName.replace(/-/g, '_')}_explorer_command_${arch}.dll`))
 +			// 		.pipe(rename(f => f.dirname = `appx/manifest`)));
 +			// }
  		} else if (platform === 'linux') {
