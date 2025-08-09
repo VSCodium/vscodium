@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Emitter, Event } from 'vs/base/common/event';
-import { IAgentDefinition, IAgentRequest, IAgentTask, IAgentRunnerService, IAgentTool, IAgentToolsService, LlmActionResponse, AgentTaskStatus } from 'vs/platform/ai/common/aiTypes';
+import { IAgentDefinition, IAgentRequest, IAgentTask, IAgentRunnerService, IAgentTool, IAgentToolsService, LlmActionResponse, AgentTaskStatus, IAgentActivity } from 'vs/platform/ai/common/aiTypes';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IAgentDefinitionService } from 'vs/platform/ai/common/agentDefinitionService';
@@ -15,45 +15,30 @@ import { URI } from 'vs/base/common/uri';
 import { AgentPerformanceMonitorService, IAgentPerformanceMonitorService } from 'vs/platform/ai/common/agentPerformanceMonitorService';
 import { IAgentTaskMetrics } from 'vs/platform/ai/common/agentMetrics';
 import { IFileService } from 'vs/platform/files/common/files';
+import { UserRequestInputTool } from 'vs/platform/ai/common/tools/userRequestInputTool';
+
+interface IWaitingForUserInputState {
+	task: IAgentTask;
+	agent: IAgentDefinition;
+	request: IAgentRequest;
+	resolve: (result: any) => void;
+	reject: (reason?: any) => void;
+}
 
 // TODO: an actual implementation of this
 const vscode_executeTerminalCommand_SANDBOXED = (command: string, args: string[], cwd: URI, onOutput: (output: string) => void, onExit: (error?: any) => void) => {
 	onOutput(`> ${command} ${args.join(' ')}\n`);
-	if (command === 'git') {
-		if (args[0] === 'status') {
-			onOutput('On branch main\nYour branch is up to date with \'origin/main\'.\n\nnothing to commit, working tree clean\n');
-		} else if (args[0] === 'branch') {
-			onOutput('* main\n');
-		} else {
-			onOutput('mock git output');
-		}
-	} else if (command === 'ls') {
-		onOutput('file1.txt\nfile2.ts\n');
-	} else if (command.includes('prettier')) {
-		onOutput('mock prettier output');
-	} else if (command.includes('eslint')) {
-		onOutput('mock eslint output');
-	} else if (command.includes('jest')) {
-		onOutput('mock jest output');
-	} else if (command.includes('flake8')) {
-		if (args[0].includes('_error.py')) {
-			onExit('flake8 found errors');
-			return;
-		}
-		onOutput('mock flake8 output');
-	} else if (command === 'python') {
-		onOutput('mock python output');
-	} else {
-		onOutput('mock unsupported command output');
-	}
+	// mock implementations
 	onExit();
 };
 
 export class AgentRunnerService implements IAgentRunnerService {
 	_serviceBrand: undefined;
 
-	private readonly _onAgentActivity = new Emitter<any>();
-	readonly onAgentActivity: Event<any> = this._onAgentActivity.event;
+	private readonly _onAgentActivity = new Emitter<IAgentActivity>();
+	readonly onAgentActivity: Event<IAgentActivity> = this._onAgentActivity.event;
+
+	private readonly _waitingForUserInput = new Map<string, IWaitingForUserInputState>();
 
 	private readonly performanceMonitorService: IAgentPerformanceMonitorService;
 
@@ -110,13 +95,30 @@ export class AgentRunnerService implements IAgentRunnerService {
 				}
 
 				if (action.tool) {
+					if (action.tool === UserRequestInputTool.toolName) {
+						this.logService.info(`[AgentRunnerService] Task ${taskId} is waiting for user input.`);
+						const task = await this.agentTaskStoreService.getTask(taskId);
+						if (task) {
+							task.status = 'waiting';
+							await this.agentTaskStoreService.updateTask(task);
+						}
+
+						this._onAgentActivity.fire({ type: 'waitingForUserInput', taskId, message: action.args.message });
+
+						const userInput = await new Promise((resolve, reject) => {
+							this._waitingForUserInput.set(taskId, { task: task!, agent, request, resolve, reject });
+						});
+
+						prompt += `\n\nI have used the tool '${action.tool}' and the user responded with: ${JSON.stringify(userInput)}`;
+						continue;
+					}
+
 					const tool = this.agentToolsService.getTool(action.tool);
 					if (tool) {
 						this.logService.info(`[AgentRunnerService] Task ${taskId} is using tool ${tool.name}`);
 						toolCalls++;
 						const toolResult = await tool.execute(action.args, {
 							projectRoot,
-							// eslint-disable-next-line max-len
 							executeTerminalCommand: (command, args, cwd) => new Promise((resolve, reject) => vscode_executeTerminalCommand_SANDBOXED(command, args, cwd, (output) => this.logService.info(output), (error) => error ? reject(error) : resolve('Command executed successfully')))
 						});
 						prompt += `\n\nI have used the tool '${tool.name}' with arguments ${JSON.stringify(action.args)}. The result was: ${toolResult}`;
@@ -150,7 +152,7 @@ export class AgentRunnerService implements IAgentRunnerService {
 			throw new Error(`Agent ${agent.name} exceeded max iterations.`);
 		} finally {
 			const task = await this.agentTaskStoreService.getTask(taskId);
-			if (task) {
+			if (task && (task.status === 'completed' || task.status === 'failed')) {
 				const metrics: IAgentTaskMetrics = {
 					taskId: task.id,
 					agentName: task.agentName,
@@ -167,7 +169,7 @@ export class AgentRunnerService implements IAgentRunnerService {
 		}
 	}
 
-	async runAgent(agentName: string, request: IAgentRequest, parentTaskId?: string | undefined): Promise<string> {
+	public async runAgent(agentName: string, request: IAgentRequest, parentTaskId?: string | undefined): Promise<string> {
 		this.logService.info(`[AgentRunnerService] Received request to run agent ${agentName}`);
 		const agent = this.agentDefinitionService.getAgent(agentName);
 		if (!agent) {
@@ -190,9 +192,27 @@ export class AgentRunnerService implements IAgentRunnerService {
 			task.status = 'failed';
 			task.output = e.message;
 			this.agentTaskStoreService.updateTask(task);
-			// Metrics are now handled in the finally block of _executeAgentTask
 		});
 
 		return task.id;
+	}
+
+	public async resolveUserInput(taskId: string, userInput: any): Promise<void> {
+		const waitingTask = this._waitingForUserInput.get(taskId);
+		if (!waitingTask) {
+			this.logService.warn(`[AgentRunnerService] No task found waiting for user input with id ${taskId}`);
+			return;
+		}
+
+		this.logService.info(`[AgentRunnerService] Received user input for task ${taskId}`);
+		this._waitingForUserInput.delete(taskId);
+
+		const task = await this.agentTaskStoreService.getTask(taskId);
+		if (task) {
+			task.status = 'running';
+			await this.agentTaskStoreService.updateTask(task);
+		}
+
+		waitingTask.resolve({ userInput });
 	}
 }
