@@ -43,3 +43,7 @@ The following extensions are functional replacements for incompatible extensions
 - [Open Remote - SSH](https://open-vsx.org/extension/jeanp413/open-remote-ssh)
 > SSH server must be configured with the setting `AllowTcpForwarding yes`.
 - [Open Remote - WSL](https://open-vsx.org/extension/jeanp413/open-remote-wsl)
+
+---
+
+*This list is not exhaustive. The world of VS Code extensions is constantly evolving. We encourage users to search for alternatives on [Open VSX](https://open-vsx.org/) and to [contribute](https://github.com/VSCodium/vscodium/blob/master/CONTRIBUTING.md) if they find new incompatibilities or viable open-source replacements.*

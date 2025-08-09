@@ -45,7 +45,7 @@ Download latest release here:
 [insiders](https://github.com/VSCodium/vscodium-insiders/releases)
 :tada: :tada:
 
-[More info / helpful tips are here.](https://github.com/VSCodium/vscodium/blob/master/docs/index.md)
+[For more detailed information, please see our documentation.](https://github.com/VSCodium/vscodium/blob/master/docs/index.md)
 
 
 #### <a id="install-with-brew"></a>Install with Brew (Mac)

@@ -17,10 +17,10 @@
 
 ## <a id="dependencies"></a>Dependencies
 
-- node 20.18
+- node 22.14.0 (see `.nvmrc` file)
 - jq
 - git
-- python3 3.11
+- python 3.11
 - rustup
 
 ### <a id="dependencies-linux"></a>Linux
@@ -145,4 +145,4 @@ To run `icons/build_icons.sh`, you will need:
 
 - imagemagick
 - png2icns (`npm install png2icns -g`)
-- librsvg
+- librsvg (e.g., `sudo apt install librsvg2-bin` on Debian/Ubuntu, `brew install librsvg` on macOS)
