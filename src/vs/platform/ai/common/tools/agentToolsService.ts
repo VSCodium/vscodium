@@ -14,6 +14,7 @@ import { FileReadTool } from 'vs/platform/ai/common/tools/fileReadTool';
 import { PMUpsertTaskTool } from 'vs/platform/ai/common/tools/pmUpsertTaskTool';
 import { UserRequestInputTool } from 'vs/platform/ai/common/tools/userRequestInputTool';
 import { SecurityScanFileTool } from 'vs/platform/ai/common/tools/securityScanFileTool';
+import { PMUpdateTaskStatusTool } from 'vs/platform/ai/common/tools/pmUpdateTaskStatusTool';
 
 export class AgentToolsService implements IAgentToolsService {
 	_serviceBrand: undefined;
@@ -32,6 +33,7 @@ export class AgentToolsService implements IAgentToolsService {
 		this.registerTool(this.instantiationService.createInstance(PMUpsertTaskTool));
 		this.registerTool(this.instantiationService.createInstance(UserRequestInputTool));
 		this.registerTool(this.instantiationService.createInstance(SecurityScanFileTool));
+		this.registerTool(this.instantiationService.createInstance(PMUpdateTaskStatusTool));
 	}
 
 	private registerTool(tool: IAgentTool): void {
