@@ -1,0 +1,109 @@
+--- /dev/null
++++ b/vscode/extensions/sample-tool-extension/package.json
+@@ -0,0 +1,29 @@
++{
++    "name": "sample-tool-extension",
++    "displayName": "Sample Tool Extension",
++    "description": "An extension that contributes a sample tool to the chat agent.",
++    "version": "0.0.1",
++    "engines": {
++        "vscode": "^1.89.0"
++    },
++    "activationEvents": [
++        "onLanguageModelTool:file.list",
++        "onLanguageModelTool:test.run"
++    ],
++    "main": "./extension.js",
++    "enabledApiProposals": [
++        "languageModelTools"
++    ],
++    "contributes": {
++        "languageModelTools": [
++            {
++                "name": "file.list",
++                "displayName": "List Files",
++                "modelDescription": "Lists the files in the current directory. Use it to see what files are in the current project.",
++                "canBeReferencedInPrompt": true,
++                "toolReferenceName": "ls"
++            },
++            {
++                "name": "test.run",
++                "displayName": "Run Tests",
++                "modelDescription": "Runs the test suite for the project and returns the output.",
++                "canBeReferencedInPrompt": true,
++                "toolReferenceName": "test"
++            }
++        ]
++    }
++}
+--- /dev/null
++++ b/vscode/extensions/sample-tool-extension/extension.ts
+@@ -0,0 +1,41 @@
++import * as vscode from 'vscode';
++import { exec } from 'child_process';
++
++// This method is called when your extension is activated
++// Your extension is activated the very first time the command is executed
++export function activate(context: vscode.ExtensionContext) {
++
++    console.log('Congratulations, your extension "sample-tool-extension" is now active!');
++
++    const tool = {
++        async invoke(invocation: vscode.ToolInvocation, progress: vscode.Progress<vscode.ToolProgressStep>, token: vscode.CancellationToken): Promise<vscode.ToolResult> {
++            return new Promise((resolve, reject) => {
++                exec('ls -l', (error, stdout, stderr) => {
++                    if (error) {
++                        reject(error);
++                        return;
++                    }
++                    if (stderr) {
++                        reject(new Error(stderr));
++                        return;
++                    }
++                    resolve({
++                        content: [{
++                            kind: 'text',
++                            value: stdout
++                        }]
++                    });
++                });
++            });
++        }
++    };
++
++    vscode.lm.registerToolImplementation('file.list', tool);
++
++    const testTool = {
++        async invoke(invocation: vscode.ToolInvocation, progress: vscode.Progress<vscode.ToolProgressStep>, token: vscode.CancellationToken): Promise<vscode.ToolResult> {
++            return new Promise((resolve, reject) => {
++                exec('npm test', (error, stdout, stderr) => {
++                    if (error) {
++                        // npm test exits with an error if tests fail, so we should still return the output
++                        resolve({
++                            content: [{
++                                kind: 'text',
++                                value: `stdout:\n${stdout}\n\nstderr:\n${stderr}`
++                            }]
++                        });
++                        return;
++                    }
++                    if (stderr) {
++                        reject(new Error(stderr));
++                        return;
++                    }
++                    resolve({
++                        content: [{
++                            kind: 'text',
++                            value: stdout
++                        }]
++                    });
++                });
++            });
++        }
++    };
++
++    vscode.lm.registerToolImplementation('test.run', testTool);
++}
++
++// This method is called when your extension is deactivated
++export function deactivate() {}

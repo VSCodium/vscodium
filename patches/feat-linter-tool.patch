@@ -1,0 +1,189 @@
+--- a/vscode/src/vs/workbench/contrib/chat/common/languageModelToolsService.ts
++++ b/vscode/src/vs/workbench/contrib/chat/common/languageModelToolsService.ts
+@@ -155,7 +155,7 @@
+	toolResultMessage?: string | IMarkdownString;
+	toolResultDetails?: Array<URI | Location> | IToolResultInputOutputDetails;
+	toolResultError?: string;
+-	displayType?: 'file-list' | 'test-report';
++	displayType?: 'file-list' | 'test-report' | 'linter-report';
+ }
+
+ export function toolResultHasBuffers(result: IToolResult): boolean {
+--- a/vscode/extensions/sample-tool-extension/package.json
++++ b/vscode/extensions/sample-tool-extension/package.json
+@@ -8,7 +8,8 @@
+     },
+     "activationEvents": [
+         "onLanguageModelTool:file.list",
+-        "onLanguageModelTool:test.run"
++        "onLanguageModelTool:test.run",
++        "onLanguageModelTool:lint.run"
+     ],
+     "main": "./extension.js",
+     "enabledApiProposals": [
+@@ -30,6 +31,13 @@
+                 "modelDescription": "Runs the test suite for the project and returns the output.",
+                 "canBeReferencedInPrompt": true,
+                 "toolReferenceName": "test"
++            },
++            {
++                "name": "lint.run",
++                "displayName": "Run Linter",
++                "modelDescription": "Runs the linter on the entire workspace and returns the output.",
++                "canBeReferencedInPrompt": true,
++                "toolReferenceName": "lint"
+             }
+         ]
+     }
+--- a/vscode/extensions/sample-tool-extension/extension.ts
++++ b/vscode/extensions/sample-tool-extension/extension.ts
+@@ -82,6 +82,43 @@
+     };
+
+     vscode.lm.registerToolImplementation('test.run', testTool);
++
++    const lintTool = {
++        async invoke(invocation: vscode.ToolInvocation, progress: vscode.Progress<vscode.ToolProgressStep>, token: vscode.CancellationToken): Promise<vscode.ToolResult> {
++            return new Promise((resolve, reject) => {
++                exec('npx eslint . --format json', (error, stdout, stderr) => {
++                    if (stderr && !error) { // linter warnings are printed to stderr
++                        reject(new Error(stderr));
++                        return;
++                    }
++
++                    // eslint exits with an error code if there are any issues, so we should still return the output
++                    try {
++                        const results = JSON.parse(stdout);
++                        resolve({
++                            displayType: 'linter-report',
++                            content: [{
++                                kind: 'data',
++                                value: {
++                                    mimeType: 'application/vnd.vscode.eslint-results+json',
++                                    data: Buffer.from(JSON.stringify(results))
++                                }
++                            }]
++                        });
++                    } catch (e) {
++                        // If parsing fails, return the raw output
++                        resolve({
++                            content: [{
++                                kind: 'text',
++                                value: `stdout:\n${stdout}\n\nstderr:\n${stderr}`
++                            }]
++                        });
++                    }
++                });
++            });
++        }
++    };
++
++    vscode.lm.registerToolImplementation('lint.run', lintTool);
+ }
+
+ // This method is called when your extension is deactivated
+--- /dev/null
++++ b/vscode/src/vs/workbench/contrib/chat/browser/chatContentParts/chatLinterReportRenderer.ts
+@@ -0,0 +1,58 @@
++import * as dom from '../../../../../../base/browser/dom.js';
++import { Emitter } from '../../../../../../base/common/event.js';
++import { Disposable } from '../../../../../../base/common/lifecycle.js';
++import { IInstantiationService } from '../../../../../../platform/instantiation/common/instantiation.js';
++import { IChatContentPart, IChatContentPartRenderContext } from './chatContentParts.js';
++import { IToolResultDataPart } from '../../../common/languageModelToolsService.js';
++
++interface IEslintMessage {
++    ruleId: string;
++    severity: number;
++    message: string;
++    line: number;
++    column: number;
++}
++
++interface IEslintResult {
++    filePath: string;
++    messages: IEslintMessage[];
++}
++
++export class ChatLinterReportRenderer extends Disposable implements IChatContentPart {
++    public readonly domNode: HTMLElement;
++
++    private _onDidChangeHeight = this._register(new Emitter<void>());
++    public readonly onDidChangeHeight = this._onDidChangeHeight.event;
++
++    constructor(
++        private readonly data: IToolResultDataPart,
++        private readonly context: IChatContentPartRenderContext,
++        @IInstantiationService private readonly instantiationService: IInstantiationService,
++    ) {
++        super();
++        this.domNode = dom.$('.chat-linter-report-renderer');
++        this.render();
++    }
++
++    private render(): void {
++        const results: IEslintResult[] = JSON.parse(this.data.value.data.toString());
++
++        for (const result of results) {
++            if (result.messages.length === 0) {
++                continue;
++            }
++
++            const header = dom.append(this.domNode, dom.$('h4', undefined, result.filePath));
++            const table = dom.append(this.domNode, dom.$('table'));
++            const thead = dom.append(table, dom.$('thead'));
++            const tbody = dom.append(table, dom.$('tbody'));
++
++            const headerRow = dom.append(thead, dom.$('tr'));
++            dom.append(headerRow, dom.$('th', undefined, 'Line'));
++            dom.append(headerRow, dom.$('th', undefined, 'Message'));
++            dom.append(headerRow, dom.append(dom.$('th'), dom.$('pre', undefined, 'Rule')));
++
++            for (const message of result.messages) {
++                const row = dom.append(tbody, dom.$('tr'));
++                dom.append(row, dom.append(dom.$('td'), dom.$('pre', undefined, `${message.line}:${message.column}`)));
++                dom.append(row, dom.append(dom.$('td'), dom.$('pre', undefined, message.message)));
++                dom.append(row, dom.append(dom.$('td'), dom.$('pre', undefined, message.ruleId)));
++            }
++        }
++    }
++
++    hasSameContent(other: any): boolean {
++        return other.kind === 'data' && other.value.mimeType === 'application/vnd.vscode.eslint-results+json';
++    }
++}
+--- a/vscode/src/vs/workbench/contrib/chat/browser/chatContentParts/toolInvocationParts/chatToolInvocationPart.ts
++++ b/vscode/src/vs/workbench/contrib/chat/browser/chatContentParts/toolInvocationParts/chatToolInvocationPart.ts
+@@ -25,6 +25,7 @@
+ import { BaseChatToolInvocationSubPart } from './chatToolInvocationSubPart.js';
+ import { ChatToolProgressSubPart } from './chatToolProgressPart.js';
+ import { ChatFileListRenderer } from '../chatFileListRenderer.js';
++import { ChatLinterReportRenderer } from '../chatLinterReportRenderer.js';
+
+ export class ChatToolInvocationPart extends Disposable implements IChatContentPart {
+	public readonly domNode: HTMLElement;
+@@ -108,6 +109,13 @@
+			}
+		}
+
++		if (this.toolInvocation.result?.displayType === 'linter-report') {
++			const dataPart = this.toolInvocation.result.content[0];
++			if (dataPart.kind === 'data') {
++				return this.instantiationService.createInstance(ChatLinterReportRenderer, dataPart, this.context);
++			}
++		}
++
+		if (isToolResultInputOutputDetails(this.toolInvocation.resultDetails)) {
+			return this.instantiationService.createInstance(
+				ChatInputOutputMarkdownProgressPart,
+--- a/vscode/src/vs/workbench/contrib/chat/common/chatModes.ts
++++ b/vscode/src/vs/workbench/contrib/chat/common/chatModes.ts
+@@ -339,7 +339,7 @@
+ export namespace ChatMode {
+	export const Ask = new BuiltinChatMode(ChatModeKind.Ask, 'Ask', localize('chatDescription', "Ask Copilot"), 'You are a general-purpose AI assistant. Your primary goal is to answer questions and provide information to the user.');
+	export const Edit = new BuiltinChatMode(ChatModeKind.Edit, 'Edit', localize('editsDescription', "Edit files in your workspace"), 'You are a code-editing AI assistant. Your primary goal is to help the user edit their code. You can suggest code changes, and the user can accept or reject them.');
+-	export const Agent = new BuiltinChatMode(ChatModeKind.Agent, 'Agent', localize('agentDescription', "Edit files in your workspace in agent mode"), 'You are a software development agent. Your primary goal is to help the user with their software development tasks. You can use tools to interact with the user\'s workspace, such as listing files, running tests, and applying code changes.');
++	export const Agent = new BuiltinChatMode(ChatModeKind.Agent, 'Agent', localize('agentDescription', "Edit files in your workspace in agent mode"), 'You are a software development agent. Your primary goal is to help the user with their software development tasks. You can use tools to interact with the user\'s workspace, such as listing files, running tests, running the linter, and applying code changes.');
+ }
+
+ export function isBuiltinChatMode(mode: IChatMode): boolean {

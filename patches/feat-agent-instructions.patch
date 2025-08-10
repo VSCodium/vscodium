@@ -1,0 +1,41 @@
+--- a/vscode/src/vs/workbench/contrib/chat/common/chatModes.ts
++++ b/vscode/src/vs/workbench/contrib/chat/common/chatModes.ts
+@@ -305,13 +305,16 @@
+
+ export class BuiltinChatMode implements IChatMode {
+	public readonly description: IObservable<string>;
++	public readonly body: IObservable<string>;
+
+	constructor(
+		public readonly kind: ChatModeKind,
+		public readonly name: string,
+-		description: string
++		description: string,
++		body: string
+	) {
+		this.description = observableValue('description', description);
++		this.body = observableValue('body', body);
+	}
+
+	get id(): string {
+@@ -327,15 +330,16 @@
+			id: this.id,
+			name: this.name,
+			description: this.description.get(),
+-			kind: this.kind
++			kind: this.kind,
++			body: this.body.get()
+		};
+	}
+ }
+
+ export namespace ChatMode {
+-	export const Ask = new BuiltinChatMode(ChatModeKind.Ask, 'Ask', localize('chatDescription', "Ask Copilot"));
+-	export const Edit = new BuiltinChatMode(ChatModeKind.Edit, 'Edit', localize('editsDescription', "Edit files in your workspace"));
+-	export const Agent = new BuiltinChatMode(ChatModeKind.Agent, 'Agent', localize('agentDescription', "Edit files in your workspace in agent mode"));
++	export const Ask = new BuiltinChatMode(ChatModeKind.Ask, 'Ask', localize('chatDescription', "Ask Copilot"), 'You are a general-purpose AI assistant. Your primary goal is to answer questions and provide information to the user.');
++	export const Edit = new BuiltinChatMode(ChatModeKind.Edit, 'Edit', localize('editsDescription', "Edit files in your workspace"), 'You are a code-editing AI assistant. Your primary goal is to help the user edit their code. You can suggest code changes, and the user can accept or reject them.');
++	export const Agent = new BuiltinChatMode(ChatModeKind.Agent, 'Agent', localize('agentDescription', "Edit files in your workspace in agent mode"), 'You are a software development agent. Your primary goal is to help the user with their software development tasks. You can use tools to interact with the user\'s workspace, such as listing files, running tests, and applying code changes.');
+ }
+
+ export function isBuiltinChatMode(mode: IChatMode): boolean {
