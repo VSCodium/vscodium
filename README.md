@@ -59,6 +59,8 @@ brew install --cask vscodium
 brew install --cask vscodium@insiders
 ```
 
+*Note for macOS users: if you can't open the App, please read [the following troubleshooting](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md#macos).*
+
 #### <a id="install-with-winget"></a>Install with Windows Package Manager (WinGet)
 
 If you use Windows and have [Windows Package Manager](https://github.com/microsoft/winget-cli) installed:

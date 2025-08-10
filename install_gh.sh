@@ -4,20 +4,12 @@ set -ex
 
 GH_ARCH="amd64"
 
-for i in {1..5}; do
-  TAG=$( curl --retry 12 --retry-delay 30 "https://api.github.com/repos/cli/cli/releases/latest" 2>/dev/null | jq --raw-output '.tag_name' )
+TAG=$( curl --retry 12 --retry-delay 30 "https://api.github.com/repos/cli/cli/releases/latest" 2>/dev/null | jq --raw-output '.tag_name' )
 
-  if [[ $? == 0 && "${TAG}" != "null" ]]; then
-    break
-  fi
-
-  if [[ $i == 3 ]]; then
-    echo "GH install failed too many times" >&2
-    exit 1
-  fi
-
-  echo "GH install failed $i, trying again..."
-done
+if [[ $? -ne 0 ]] || [[ "${TAG}" == "null" ]]; then
+  echo "Error: Failed to retrieve the latest tag from GitHub CLI releases."
+  exit 1
+fi
 
 VERSION="${TAG#v}"
 
