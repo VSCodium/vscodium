@@ -34,8 +34,6 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   export CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0'
 
   export VSCODE_SKIP_SETUPENV=1
-
-  find . -type f -name 'objdump'
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   EXPECTED_GLIBC_VERSION="2.30"
 
@@ -176,6 +174,8 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   echo "Building REH"
   npm run gulp minify-vscode-reh
   npm run gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+
+  find . -type f -name 'objdump'
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
