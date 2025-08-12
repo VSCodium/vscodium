@@ -34,6 +34,8 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   export CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0'
 
   export VSCODE_SKIP_SETUPENV=1
+
+  find . -type f -name 'objdump'
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   EXPECTED_GLIBC_VERSION="2.30"
 
