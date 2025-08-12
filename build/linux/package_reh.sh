@@ -31,6 +31,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
 
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
   export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
+  export CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0'
 
   export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
