@@ -175,7 +175,11 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   npm run gulp minify-vscode-reh
   npm run gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
-  find . -type f -name 'objdump'
+  which objdump
+  whereis objdump
+
+  ls -la .build
+  find .build -type f -name 'objdump'
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
