@@ -33,7 +33,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
   export CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0'
 
-  # export VSCODE_SKIP_SETUPENV=1
+  export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   EXPECTED_GLIBC_VERSION="2.30"
 
@@ -58,13 +58,13 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   NODE_VERSION="20.16.0"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
 
-  # export VSCODE_SKIP_SETUPENV=1
+  export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
 elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   NODE_VERSION="20.16.0"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:beige-devtoolset-loong64"
 
-  # export VSCODE_SKIP_SETUPENV=1
+  export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
 elif [[ "${VSCODE_ARCH}" == "s390x" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-s390x"
@@ -149,6 +149,14 @@ if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
   else
     source ./build/azure-pipelines/linux/setup-env.sh
   fi
+
+  export VSCODE_SYSROOT_DIR="${VSCODE_REMOTE_SYSROOT_DIR}"
+else
+  mkdir -p .build/x86_64-linux-gnu/x86_64-linux-gnu/bin
+
+  ln $( which objdump ) .build/x86_64-linux-gnu/x86_64-linux-gnu/bin/objdump
+
+  export VSCODE_SYSROOT_DIR=".build"
 fi
 
 for i in {1..5}; do # try 5 times
@@ -180,7 +188,7 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   ls -la .build
   find .build -type f -name 'objdump'
 
-  VSCODE_SYSROOT_DIR="${VSCODE_REMOTE_SYSROOT_DIR}" EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+  EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
