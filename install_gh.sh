@@ -11,12 +11,14 @@ for i in {1..5}; do
     break
   fi
 
-  if [[ $i == 3 ]]; then
+  if [[ $i == 5 ]]; then
     echo "GH install failed too many times" >&2
     exit 1
   fi
 
   echo "GH install failed $i, trying again..."
+
+  sleep $(( 15 * (i + 1)))
 done
 
 VERSION="${TAG#v}"
