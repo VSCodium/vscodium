@@ -149,6 +149,14 @@ if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
   else
     source ./build/azure-pipelines/linux/setup-env.sh
   fi
+
+  export VSCODE_SYSROOT_DIR="${VSCODE_REMOTE_SYSROOT_DIR}"
+else
+  mkdir -p .build/x86_64-linux-gnu/x86_64-linux-gnu/bin
+
+  ln -s $( which objdump ) .build/x86_64-linux-gnu/x86_64-linux-gnu/bin/objdump
+
+  export VSCODE_SYSROOT_DIR=".build"
 fi
 
 for i in {1..5}; do # try 5 times
