@@ -154,7 +154,7 @@ if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
 else
   mkdir -p .build/x86_64-linux-gnu/x86_64-linux-gnu/bin
 
-  ln .build/x86_64-linux-gnu/x86_64-linux-gnu/bin/objdump $( which objdump )
+  ln -s $( which objdump ) .build/x86_64-linux-gnu/x86_64-linux-gnu/bin/objdump
 
   export VSCODE_SYSROOT_DIR=".build"
 fi
