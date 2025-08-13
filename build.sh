@@ -23,6 +23,9 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   npm run gulp minify-vscode
 
   if [[ "${OS_NAME}" == "osx" ]]; then
+    # remove win32 node modules
+    rm -f .build/extensions/ms-vscode.js-debug/src/win32-app-container-tokens.*.node
+
     # generate Group Policy definitions
     node build/lib/policies darwin
 
@@ -53,6 +56,9 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
     VSCODE_PLATFORM="win32"
   else # linux
+    # remove win32 node modules
+    rm -f .build/extensions/ms-vscode.js-debug/src/win32-app-container-tokens.*.node
+
     # in CI, packaging will be done by a different job
     if [[ "${CI_BUILD}" == "no" ]]; then
       npm run gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
