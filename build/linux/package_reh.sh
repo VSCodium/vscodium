@@ -33,7 +33,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
   export CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0'
 
-  export VSCODE_SKIP_SETUPENV=1
+  # export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   EXPECTED_GLIBC_VERSION="2.30"
 
@@ -58,13 +58,13 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   NODE_VERSION="20.16.0"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
 
-  export VSCODE_SKIP_SETUPENV=1
+  # export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
 elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   NODE_VERSION="20.16.0"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:beige-devtoolset-loong64"
 
-  export VSCODE_SKIP_SETUPENV=1
+  # export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
 elif [[ "${VSCODE_ARCH}" == "s390x" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-s390x"
@@ -78,10 +78,6 @@ export ELECTRON_SKIP_BINARY_DOWNLOAD=1
 export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 export VSCODE_PLATFORM='linux'
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
-
-# if [[ -z "${VSCODE_SYSROOT_DIR}" ]]; then
-#   export VSCODE_SYSROOT_DIR=".build/sysroots/glibc-${GLIBC_VERSION}-gcc-10.5.0"
-# fi
 
 if [[ -z "${VSCODE_SYSROOT_PREFIX}" ]]; then
   export VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}-gcc-10.5.0"
@@ -184,9 +180,7 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   ls -la .build
   find .build -type f -name 'objdump'
 
-  echo "${VSCODE_REMOTE_SYSROOT_DIR}"
-
-  EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+  VSCODE_SYSROOT_DIR="${VSCODE_REMOTE_SYSROOT_DIR}" EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
