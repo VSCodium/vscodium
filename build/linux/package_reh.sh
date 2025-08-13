@@ -78,7 +78,10 @@ export ELECTRON_SKIP_BINARY_DOWNLOAD=1
 export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 export VSCODE_PLATFORM='linux'
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
-export VSCODE_SYSROOT_DIR="./.build/sysroots"
+
+# if [[ -z "${VSCODE_SYSROOT_DIR}" ]]; then
+#   export VSCODE_SYSROOT_DIR=".build/sysroots/glibc-${GLIBC_VERSION}-gcc-10.5.0"
+# fi
 
 if [[ -z "${VSCODE_SYSROOT_PREFIX}" ]]; then
   export VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}-gcc-10.5.0"
@@ -180,6 +183,8 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
 
   ls -la .build
   find .build -type f -name 'objdump'
+
+  echo "${VSCODE_REMOTE_SYSROOT_DIR}"
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
