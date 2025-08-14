@@ -31,7 +31,6 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
 
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
   export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
-  export CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0'
 
   export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
@@ -170,6 +169,17 @@ for i in {1..5}; do # try 5 times
   # remove dependencies that fail during cleanup
   rm -rf node_modules/@vscode node_modules/node-pty
 done
+
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  for LIB in @parcel/watcher @vscode/spdlog kerberos
+  do
+    pushd "node_modules/${LIB}"
+
+    CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
+
+    popd
+  done
+fi
 
 mv .npmrc.bak .npmrc
 
