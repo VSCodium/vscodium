@@ -170,8 +170,15 @@ for i in {1..5}; do # try 5 times
   rm -rf node_modules/@vscode node_modules/node-pty
 done
 
-if [[ -n "${VSCODE_SKIP_SETUPENV}" ]]; then
-  CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npm run build
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  for LIB in @parcel/watcher @vscode/spdlog kerberos/build
+  do
+    pushd "node_modules/${LIB}"
+
+    CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" node-gyp rebuild
+
+    popd
+  done
 fi
 
 mv .npmrc.bak .npmrc
