@@ -335,7 +335,7 @@ jobs:
 
       - name: Install Unofficial Node.js
         run: ./install_nodejs.sh
-        nv:
+        env:
           NODE_ARCH: ${{ matrix.npm_arch }}
         if: env.DISABLED != 'yes' && matrix.npm_arch == 'x64'
 
