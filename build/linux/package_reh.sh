@@ -171,7 +171,7 @@ for i in {1..5}; do # try 5 times
 done
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  for LIB in @parcel/watcher @vscode/spdlog kerberos/build
+  for LIB in @parcel/watcher @vscode/spdlog kerberos
   do
     pushd "node_modules/${LIB}"
 
