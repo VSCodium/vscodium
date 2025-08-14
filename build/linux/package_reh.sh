@@ -175,7 +175,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   do
     pushd "node_modules/${LIB}"
 
-    CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" node-gyp rebuild
+    CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
 
     popd
   done
