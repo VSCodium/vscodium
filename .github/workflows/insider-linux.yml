@@ -331,7 +331,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-        if: env.DISABLED != 'yes'
+        if: env.DISABLED != 'yes' && matrix.npm_arch != 'x64'
+
+      - name: Install Unofficial Node.js
+        run: ./install_nodejs.sh
+        nv:
+          NODE_ARCH: ${{ matrix.npm_arch }}
+        if: env.DISABLED != 'yes' && matrix.npm_arch == 'x64'
 
       - name: Setup Python 3
         uses: actions/setup-python@v5
