@@ -170,20 +170,20 @@ for i in {1..5}; do # try 5 times
   rm -rf node_modules/@vscode node_modules/node-pty
 done
 
-if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  pushd "remote"
+# if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+#   pushd "remote"
 
-  for LIB in @parcel/watcher @vscode/spdlog kerberos
-  do
-    pushd "node_modules/${LIB}"
+#   for LIB in @parcel/watcher @vscode/spdlog kerberos
+#   do
+#     pushd "node_modules/${LIB}"
 
-    CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
+#     CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
 
-    popd
-  done
+#     popd
+#   done
 
-  popd
-fi
+#   popd
+# fi
 
 mv .npmrc.bak .npmrc
 
@@ -197,6 +197,12 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   npm run gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+
+  FILES=$(find "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" -name "*.node" -not -path "*prebuilds*" -not -path "*extensions/node_modules/@parcel/watcher*" -o -type f -executable -name "node")
+  for FILE in ${FILES}; do
+    echo "Verifying ABI for ${FILE}:"
+    strings "${FILE}" | grep -i ^CXXABI
+  done
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
