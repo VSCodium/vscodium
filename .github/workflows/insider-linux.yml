@@ -206,7 +206,7 @@ jobs:
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Install GH
-        run: ./install_gh.sh
+        run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
@@ -334,9 +334,12 @@ jobs:
         if: env.DISABLED != 'yes' && matrix.npm_arch != 'x64'
 
       - name: Install Unofficial Node.js
-        run: ./install_nodejs.sh
+        run: ./build/linux/install_nodejs.sh
         env:
-          NODE_ARCH: ${{ matrix.npm_arch }}
+          NODEJS_ARCH: ${{ matrix.npm_arch }}
+          NODEJS_SITE: https://unofficial-builds.nodejs.org
+          NODEJS_URLROOT: /download/release
+          NODEJS_URLSUFFIX: -glibc-217
         if: env.DISABLED != 'yes' && matrix.npm_arch == 'x64'
 
       - name: Setup Python 3
@@ -350,7 +353,7 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Install GH
-        run: ./install_gh.sh
+        run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
@@ -432,7 +435,7 @@ jobs:
           platform: x64
 
       - name: Install GH
-        run: ./install_gh.sh
+        run: ./build/linux/install_gh.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
