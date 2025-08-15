@@ -200,8 +200,7 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
 
   FILES=$(find "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" -name "*.node" -not -path "*prebuilds*" -not -path "*extensions/node_modules/@parcel/watcher*" -o -type f -executable -name "node")
   for FILE in ${FILES}; do
-    echo "Verifying ABI for ${FILE}:"
-    strings "${FILE}" | grep -i ^CXXABI
+    grep -i ^CXXABI < <( strings "${FILE}" )
   done
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
