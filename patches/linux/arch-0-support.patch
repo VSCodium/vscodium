@@ -12,11 +12,6 @@ index 6805633..9d4b59f 100755
 -  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" VSCODE_SYSROOT_PREFIX="-glibc-2.28-gcc-8.5.0" node -e '(async () => { const { getVSCodeSysroot } = require("./build/linux/debian/install-sysroot.js"); await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
 +  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" node -e '(async () => { const { getVSCodeSysroot } = require("./build/linux/debian/install-sysroot.js"); await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
  fi
-@@ -50,3 +50,3 @@ if [ "$npm_config_arch" == "x64" ]; then
-   export VSCODE_REMOTE_CXX=$VSCODE_REMOTE_SYSROOT_DIR/x86_64-linux-gnu/bin/x86_64-linux-gnu-g++
--  export VSCODE_REMOTE_CXXFLAGS="--sysroot=$VSCODE_REMOTE_SYSROOT_DIR/x86_64-linux-gnu/x86_64-linux-gnu/sysroot"
-+  export VSCODE_REMOTE_CXXFLAGS="--sysroot=$VSCODE_REMOTE_SYSROOT_DIR/x86_64-linux-gnu/x86_64-linux-gnu/sysroot -D_GLIBCXX_USE_CXX11_ABI=0"
-   export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_REMOTE_SYSROOT_DIR/x86_64-linux-gnu/x86_64-linux-gnu/sysroot -L$VSCODE_REMOTE_SYSROOT_DIR/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/usr/lib/x86_64-linux-gnu -L$VSCODE_REMOTE_SYSROOT_DIR/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib/x86_64-linux-gnu"
 diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
 index 10b7b44..0ad7550 100644
 --- a/build/gulpfile.reh.js
