@@ -2,7 +2,9 @@
 
 set -e
 
-files=$(find $SEARCH_PATH -name "*.node" -not -path "*prebuilds*" -not -path "*extensions/node_modules/@parcel/watcher*" -o -type f -executable -name "node")
+FILES=$( find "${SEARCH_PATH}" -name "*.node" -not -path "*prebuilds*" -not -path "*extensions/node_modules/@parcel/watcher*" -o -type f -executable -name "node" )
+
+echo "Verifying requirements for files: ${FILES}"
 
 for FILE in ${FILES}; do
   CXXABI_VERSION="${EXPECTED_CXXABI_VERSION}"
@@ -10,15 +12,13 @@ for FILE in ${FILES}; do
   while IFS= read -r LINE; do
     VERSION=${LINE#*_}
 
-    if [[ $(printf "%s\n%s" "${VERSION}" "${CXXABI_VERSION}" | sort -V | tail -n1) == "${VERSION}" ]]; then
+    if [[ $( printf "%s\n%s" "${VERSION}" "${CXXABI_VERSION}" | sort -V | tail -n1 ) == "${VERSION}" ]]; then
       CXXABI_VERSION="${VERSION}"
     fi
-  done < <(strings "${FILE}" | grep -i ^CXXABI)
+  done < <( strings "${FILE}" | grep -i ^CXXABI )
 
   if [[ "${CXXABI_VERSION}" != "${EXPECTED_CXXABI_VERSION}" ]]; then
     echo "Error: File ${FILE} has dependency on ABI > ${EXPECTED_CXXABI_VERSION}, found ${CXXABI_VERSION}"
     exit 1
-  else
-    echo "File ${FILE} has dependency on ABI ${CXXABI_VERSION}"
   fi
 done
