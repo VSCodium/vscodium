@@ -171,20 +171,20 @@ for i in {1..5}; do # try 5 times
   rm -rf node_modules/@vscode node_modules/node-pty
 done
 
-# if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-#   pushd "remote"
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  pushd "remote"
 
-#   for LIB in @parcel/watcher @vscode/spdlog kerberos
-#   do
-#     pushd "node_modules/${LIB}"
+  for LIB in @parcel/watcher @vscode/spdlog kerberos
+  do
+    pushd "node_modules/${LIB}"
 
-#     CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
+    CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
 
-#     popd
-#   done
+    popd
+  done
 
-#   popd
-# fi
+  popd
+fi
 
 mv .npmrc.bak .npmrc
 
