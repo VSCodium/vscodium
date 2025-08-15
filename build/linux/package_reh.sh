@@ -171,6 +171,8 @@ for i in {1..5}; do # try 5 times
 done
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  pushd "remote"
+
   for LIB in @parcel/watcher @vscode/spdlog kerberos
   do
     pushd "node_modules/${LIB}"
@@ -179,6 +181,8 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
 
     popd
   done
+
+  popd
 fi
 
 mv .npmrc.bak .npmrc
