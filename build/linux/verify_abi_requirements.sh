@@ -2,7 +2,10 @@
 
 set -e
 
-FILES=$( find "${SEARCH_PATH}" -name "*.node" -not -path "*prebuilds*" -not -path "*extensions/node_modules/@parcel/watcher*" -o -type f -executable -name "node" )
+FILES=$(
+  find "${SEARCH_PATH}" -type f -executable -name "node"
+  find "${SEARCH_PATH}" -name "*.node" -not -path "*prebuilds*" -not -path "*extensions/node_modules/@parcel/watcher*"
+)
 
 echo "Verifying requirements for files: ${FILES}"
 

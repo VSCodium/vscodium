@@ -331,17 +331,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-        if: env.DISABLED != 'yes'
-        # if: env.DISABLED != 'yes' && matrix.npm_arch != 'x64'
+        if: env.DISABLED != 'yes' && matrix.npm_arch != 'x64'
 
-      # - name: Install Unofficial Node.js
-      #   run: ./build/linux/install_nodejs.sh
-      #   env:
-      #     NODEJS_ARCH: ${{ matrix.npm_arch }}
-      #     NODEJS_SITE: https://unofficial-builds.nodejs.org
-      #     NODEJS_URLROOT: /download/release
-      #     NODEJS_URLSUFFIX: -glibc-217
-      #   if: env.DISABLED != 'yes' && matrix.npm_arch == 'x64'
+      - name: Install unofficial Node.js
+        run: ./build/linux/install_nodejs.sh
+        env:
+          NODEJS_ARCH: ${{ matrix.npm_arch }}
+          NODEJS_SITE: https://unofficial-builds.nodejs.org
+          NODEJS_URLROOT: /download/release
+          NODEJS_URLSUFFIX: -glibc-217
+        if: env.DISABLED != 'yes' && matrix.npm_arch == 'x64'
 
       - name: Setup Python 3
         uses: actions/setup-python@v5
