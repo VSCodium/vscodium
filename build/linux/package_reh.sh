@@ -7,8 +7,6 @@ if [[ "${CI_BUILD}" == "no" ]]; then
   exit 1
 fi
 
-strings $( which node ) | grep GLIBCXX
-
 # include common functions
 . ./utils.sh
 
