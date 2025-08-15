@@ -10,7 +10,7 @@ FILES=$(
 echo "Verifying requirements for files: ${FILES}"
 
 for FILE in ${FILES}; do
-  CXXABI_VERSION="${EXPECTED_CXXABI_VERSION}"
+  CXXABI_VERSION="0.0.0"
 
   while IFS= read -r LINE; do
     VERSION=${LINE#*_}
@@ -20,8 +20,10 @@ for FILE in ${FILES}; do
     fi
   done < <( strings "${FILE}" | grep -i ^CXXABI )
 
-  if [[ "${CXXABI_VERSION}" != "${EXPECTED_CXXABI_VERSION}" ]]; then
-    echo "Error: File ${FILE} has dependency on ABI > ${EXPECTED_CXXABI_VERSION}, found ${CXXABI_VERSION}"
+  if [[ $( printf "%s\n%s" "${EXPECTED_CXXABI_VERSION}" "${CXXABI_VERSION}" | sort -V | tail -n1 ) == "${EXPECTED_CXXABI_VERSION}" ]]; then
+    echo "File ${FILE} has dependency on ABI ${CXXABI_VERSION} <= ${EXPECTED_CXXABI_VERSION}"
+  else
+    echo "Error: File ${FILE} has dependency on ABI ${CXXABI_VERSION} > ${EXPECTED_CXXABI_VERSION}"
     exit 1
   fi
 done
