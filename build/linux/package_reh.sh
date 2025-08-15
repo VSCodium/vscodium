@@ -26,6 +26,7 @@ export VSCODE_NODEJS_URLSUFFIX=''
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   GLIBC_VERSION="2.17"
   GLIBCXX_VERSION="3.4.22"
+  EXPECTED_CXXABI_VERSION="1.3.7"
 
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-x64"
 
@@ -198,10 +199,9 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  FILES=$(find "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" -name "*.node" -not -path "*prebuilds*" -not -path "*extensions/node_modules/@parcel/watcher*" -o -type f -executable -name "node")
-  for FILE in ${FILES}; do
-    grep -i ^CXXABI < <( strings "${FILE}" )
-  done
+  if [[ -n "${EXPECTED_CXXABI_VERSION}" ]]; then
+    EXPECTED_CXXABI_VERSION="${EXPECTED_CXXABI_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_abi_requirements.sh
+  fi
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
@@ -221,6 +221,10 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   npm run gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+
+  if [[ -n "${EXPECTED_CXXABI_VERSION}" ]]; then
+    EXPECTED_CXXABI_VERSION="${EXPECTED_CXXABI_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_abi_requirements.sh
+  fi
 
   pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
