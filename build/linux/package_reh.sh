@@ -173,7 +173,7 @@ done
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   pushd "remote"
 
-  for LIB in @parcel/watcher @vscode/spdlog kerberos
+  for LIB in @parcel/watcher @vscode/spdlog kerberos node-pty
   do
     pushd "node_modules/${LIB}"
 
@@ -183,6 +183,8 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   done
 
   popd
+  
+  VERIFY_CXX11=1
 fi
 
 mv .npmrc.bak .npmrc
@@ -197,6 +199,10 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   npm run gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+
+  if [[ -n "${VERIFY_CX11}" ]]; then
+    SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
+  fi
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
@@ -216,6 +222,10 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   npm run gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+
+  if [[ -n "${VERIFY_CXX11}" ]]; then
+    SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
+  fi
 
   pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
