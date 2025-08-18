@@ -200,7 +200,7 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  if [[ -n "${VERIFY_CX11}" ]]; then
+  if [[ -n "${VERIFY_CXX11}" ]]; then
     SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
   fi
 
