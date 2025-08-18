@@ -135,7 +135,7 @@ cp ../npmrc .npmrc
 
 for i in {1..5}; do # try 5 times
   npm ci --prefix build && break
-  if [[ $i == 3 ]]; then
+  if [[ $i == 5 ]]; then
     echo "Npm install failed too many times" >&2
     exit 1
   fi
@@ -148,11 +148,19 @@ if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
   else
     source ./build/azure-pipelines/linux/setup-env.sh
   fi
+
+  export VSCODE_SYSROOT_DIR="${VSCODE_REMOTE_SYSROOT_DIR}"
+else
+  mkdir -p .build/x86_64-linux-gnu/x86_64-linux-gnu/bin
+
+  ln -s $( which objdump ) .build/x86_64-linux-gnu/x86_64-linux-gnu/bin/objdump
+
+  export VSCODE_SYSROOT_DIR=".build"
 fi
 
 for i in {1..5}; do # try 5 times
   npm ci && break
-  if [[ $i == 3 ]]; then
+  if [[ $i == 5 ]]; then
     echo "Npm install failed too many times" >&2
     exit 1
   fi
@@ -161,6 +169,23 @@ for i in {1..5}; do # try 5 times
   # remove dependencies that fail during cleanup
   rm -rf node_modules/@vscode node_modules/node-pty
 done
+
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  pushd "remote"
+
+  for LIB in @parcel/watcher @vscode/spdlog kerberos node-pty
+  do
+    pushd "node_modules/${LIB}"
+
+    CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
+
+    popd
+  done
+
+  popd
+  
+  VERIFY_CXX11=1
+fi
 
 mv .npmrc.bak .npmrc
 
@@ -174,6 +199,10 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   npm run gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+
+  if [[ -n "${VERIFY_CXX11}" ]]; then
+    SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
+  fi
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
@@ -193,6 +222,10 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   npm run gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
+
+  if [[ -n "${VERIFY_CXX11}" ]]; then
+    SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
+  fi
 
   pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 

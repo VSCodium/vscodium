@@ -104,7 +104,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '22.15.1'
+          node-version-file: '.nvmrc'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
@@ -206,7 +206,7 @@ jobs:
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Install GH
-        run: ./install_gh.sh
+        run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
@@ -330,7 +330,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '22.15.1'
+          node-version-file: '.nvmrc'
         if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
@@ -344,7 +344,7 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Install GH
-        run: ./install_gh.sh
+        run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
@@ -426,7 +426,7 @@ jobs:
           platform: x64
 
       - name: Install GH
-        run: ./install_gh.sh
+        run: ./build/linux/install_gh.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing VSCodium tags/releases
