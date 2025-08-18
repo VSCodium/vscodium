@@ -171,18 +171,18 @@ for i in {1..5}; do # try 5 times
 done
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  pushd "remote"
+  # pushd "remote"
 
-  for LIB in @parcel/watcher @vscode/spdlog kerberos node-pty
-  do
-    pushd "node_modules/${LIB}"
+  # for LIB in @parcel/watcher @vscode/spdlog kerberos node-pty
+  # do
+  #   pushd "node_modules/${LIB}"
 
-    CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
+  #   CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
 
-    popd
-  done
+  #   popd
+  # done
 
-  popd
+  # popd
   
   VERIFY_CXX11=1
 fi
@@ -200,7 +200,7 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  if [[ -n "${VERIFY_CX11}" ]]; then
+  if [[ -n "${VERIFY_CXX11}" ]]; then
     SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
   fi
 
