@@ -26,7 +26,6 @@ export VSCODE_NODEJS_URLSUFFIX=''
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   GLIBC_VERSION="2.17"
   GLIBCXX_VERSION="3.4.22"
-  EXPECTED_CXXABI_VERSION="1.3.7"
 
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-x64"
 
@@ -174,7 +173,7 @@ done
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   pushd "remote"
 
-  for LIB in @parcel/watcher @vscode/spdlog kerberos
+  for LIB in @parcel/watcher @vscode/spdlog kerberos node-pty
   do
     pushd "node_modules/${LIB}"
 
@@ -184,6 +183,8 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   done
 
   popd
+  
+  VERIFY_CXX11=1
 fi
 
 mv .npmrc.bak .npmrc
@@ -199,8 +200,8 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  if [[ -n "${EXPECTED_CXXABI_VERSION}" ]]; then
-    EXPECTED_CXXABI_VERSION="${EXPECTED_CXXABI_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_abi_requirements.sh
+  if [[ -n "${VERIFY_CX11}" ]]; then
+    SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
   fi
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
@@ -222,8 +223,8 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  if [[ -n "${EXPECTED_CXXABI_VERSION}" ]]; then
-    EXPECTED_CXXABI_VERSION="${EXPECTED_CXXABI_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_abi_requirements.sh
+  if [[ -n "${VERIFY_CXX11}" ]]; then
+    SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
   fi
 
   pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
