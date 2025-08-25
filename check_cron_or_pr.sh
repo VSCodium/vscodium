@@ -1,38 +1,45 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2129
 
-set -e
+set -euo pipefail
 
-if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-	echo "It's a PR"
+echo "GitHub event: ${GITHUB_EVENT_NAME}"
 
-  export SHOULD_BUILD="yes"
-	export SHOULD_DEPLOY="no"
-elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-	echo "It's a Push"
+SHOULD_BUILD="no"
+SHOULD_DEPLOY="no"
 
-	export SHOULD_BUILD="yes"
-	export SHOULD_DEPLOY="no"
-elif [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-  if [[ "${GENERATE_ASSETS}" == "true" ]]; then
-    echo "It will generate the assets"
+case "${GITHUB_EVENT_NAME}" in
+  "pull_request")
+    echo "It's a PR"
+    SHOULD_BUILD="yes"
+    ;;
 
-    export SHOULD_BUILD="yes"
-    export SHOULD_DEPLOY="no"
-  else
-  	echo "It's a Dispatch"
+  "push")
+    echo "It's a Push"
+    SHOULD_BUILD="yes"
+    ;;
 
-    export SHOULD_DEPLOY="yes"
-  fi
-else
-	echo "It's a Cron"
+  "workflow_dispatch")
+    if [[ "${GENERATE_ASSETS:-}" == "true" ]]; then
+      echo "It will generate the assets"
+      SHOULD_BUILD="yes"
+    else
+      echo "It's a Dispatch"
+      SHOULD_DEPLOY="yes"
+    fi
+    ;;
 
-	export SHOULD_DEPLOY="yes"
-fi
+  *)
+    echo "It's a Cron"
+    SHOULD_DEPLOY="yes"
+    ;;
+esac
 
-if [[ "${GITHUB_ENV}" ]]; then
-  echo "GITHUB_BRANCH=${GITHUB_BRANCH}" >> "${GITHUB_ENV}"
-  echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
-  echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" >> "${GITHUB_ENV}"
-  echo "VSCODE_QUALITY=${VSCODE_QUALITY}" >> "${GITHUB_ENV}"
+if [[ -n "${GITHUB_ENV:-}" ]]; then
+  {
+    echo "GITHUB_BRANCH=${GITHUB_BRANCH:-}"
+    echo "SHOULD_BUILD=${SHOULD_BUILD}"
+    echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}"
+    echo "VSCODE_QUALITY=${VSCODE_QUALITY:-}"
+  } >> "${GITHUB_ENV}"
 fi
