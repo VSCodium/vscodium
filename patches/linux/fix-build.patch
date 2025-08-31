@@ -1,19 +1,19 @@
 diff --git a/build/linux/dependencies-generator.js b/build/linux/dependencies-generator.js
-index 1dfaeb3..c5ff6d3 100644
+index b544223..e9063ec 100644
 --- a/build/linux/dependencies-generator.js
 +++ b/build/linux/dependencies-generator.js
 @@ -27,3 +27,3 @@ const product = require("../../product.json");
  // are valid, are in dep-lists.ts
 -const FAIL_BUILD_FOR_NEW_DEPENDENCIES = true;
 +const FAIL_BUILD_FOR_NEW_DEPENDENCIES = false;
- // Based on https://source.chromium.org/chromium/chromium/src/+/refs/tags/138.0.7204.100:chrome/installer/linux/BUILD.gn;l=64-80
+ // Based on https://source.chromium.org/chromium/chromium/src/+/refs/tags/138.0.7204.235:chrome/installer/linux/BUILD.gn;l=64-80
 @@ -60,3 +60,3 @@ async function getDependencies(packageType, buildDir, applicationName, arch) {
      // Add the tunnel binary.
 -    files.push(path_1.default.join(buildDir, 'bin', product.tunnelApplicationName));
 +    // files.push(path_1.default.join(buildDir, 'bin', product.tunnelApplicationName));
      // Add the main executable.
 diff --git a/build/linux/dependencies-generator.ts b/build/linux/dependencies-generator.ts
-index 1aab03f..ec859f1 100644
+index 00d7bc6..a5e256c 100644
 --- a/build/linux/dependencies-generator.ts
 +++ b/build/linux/dependencies-generator.ts
 @@ -25,3 +25,3 @@ import product = require('../../product.json');

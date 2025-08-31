@@ -1,25 +1,42 @@
 diff --git a/src/bootstrap-esm.ts b/src/bootstrap-esm.ts
-index 188a25a..12b262d 100644
+index c4a55e6..7285051 100644
 --- a/src/bootstrap-esm.ts
 +++ b/src/bootstrap-esm.ts
 @@ -6,3 +6,3 @@
  import * as fs from 'fs';
--import { createRequire, register } from 'node:module';
+-import { register } from 'node:module';
 +import * as Module from 'node:module';
  import { product, pkg } from './bootstrap-meta.js';
-@@ -12,6 +12,7 @@ import { INLSConfiguration } from './vs/nls.js';
- 
--const require = createRequire(import.meta.url);
-+const require = Module.createRequire(import.meta.url);
- 
+@@ -13,3 +13,3 @@ import { INLSConfiguration } from './vs/nls.js';
  // Install a hook to module resolution to map 'fs' to 'original-fs'
 -if (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron']) {
-+// @ts-ignore
 +if (Module.register && (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron'])) {
  	const jsCode = `
-@@ -30,3 +31,4 @@ if (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron']) {
+@@ -28,3 +28,4 @@ if (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron']) {
  	}`;
 -	register(`data:text/javascript;base64,${Buffer.from(jsCode).toString('base64')}`, import.meta.url);
 +	// @ts-ignore
 +	Module.register(`data:text/javascript;base64,${Buffer.from(jsCode).toString('base64')}`, import.meta.url);
  }
+diff --git a/src/bootstrap-esm.ts.rej b/src/bootstrap-esm.ts.rej
+new file mode 100644
+index 0000000..df9a975
+--- /dev/null
++++ b/src/bootstrap-esm.ts.rej
+@@ -0,0 +1,16 @@
++diff a/src/bootstrap-esm.ts b/src/bootstrap-esm.ts	(rejected hunks)
++@@ -6,3 +6,3 @@
++ import * as fs from 'fs';
++-import { createRequire, register } from 'node:module';
+++import * as Module from 'node:module';
++ import { product, pkg } from './bootstrap-meta.js';
++@@ -12,6 +12,7 @@ import { INLSConfiguration } from './vs/nls.js';
++ 
++-const require = createRequire(import.meta.url);
+++const require = Module.createRequire(import.meta.url);
++ 
++ // Install a hook to module resolution to map 'fs' to 'original-fs'
++-if (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron']) {
+++// @ts-ignore
+++if (Module.register && (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron'])) {
++ 	const jsCode = `
