@@ -1,11 +1,11 @@
 diff --git a/src/main.ts b/src/main.ts
-index 1600666..eb6eee9 100644
+index deba4c4..1b41bde 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -8,2 +8,3 @@ import * as fs from 'original-fs';
- import * as os from 'os';
+ import * as os from 'node:os';
 +import { createRequire } from 'node:module';
- import { performance } from 'perf_hooks';
+ import { performance } from 'node:perf_hooks';
 @@ -22,2 +23,4 @@ import { NativeParsedArgs } from './vs/platform/environment/common/argv.js';
  
 +const require = createRequire(import.meta.url);
@@ -31,7 +31,7 @@ index 1600666..eb6eee9 100644
 +	resolveUserProduct();
  
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index a299f02..cca9de6 100644
+index 5a6c171..0cb5e20 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -31,2 +31,36 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {

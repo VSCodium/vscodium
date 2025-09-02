@@ -1,9 +1,9 @@
 diff --git a/src/bootstrap-esm.ts b/src/bootstrap-esm.ts
-index c4a55e6..7285051 100644
+index 54681a2..39f72ad 100644
 --- a/src/bootstrap-esm.ts
 +++ b/src/bootstrap-esm.ts
 @@ -6,3 +6,3 @@
- import * as fs from 'fs';
+ import * as fs from 'node:fs';
 -import { register } from 'node:module';
 +import * as Module from 'node:module';
  import { product, pkg } from './bootstrap-meta.js';
@@ -18,25 +18,3 @@ index c4a55e6..7285051 100644
 +	// @ts-ignore
 +	Module.register(`data:text/javascript;base64,${Buffer.from(jsCode).toString('base64')}`, import.meta.url);
  }
-diff --git a/src/bootstrap-esm.ts.rej b/src/bootstrap-esm.ts.rej
-new file mode 100644
-index 0000000..df9a975
---- /dev/null
-+++ b/src/bootstrap-esm.ts.rej
-@@ -0,0 +1,16 @@
-+diff a/src/bootstrap-esm.ts b/src/bootstrap-esm.ts	(rejected hunks)
-+@@ -6,3 +6,3 @@
-+ import * as fs from 'fs';
-+-import { createRequire, register } from 'node:module';
-++import * as Module from 'node:module';
-+ import { product, pkg } from './bootstrap-meta.js';
-+@@ -12,6 +12,7 @@ import { INLSConfiguration } from './vs/nls.js';
-+ 
-+-const require = createRequire(import.meta.url);
-++const require = Module.createRequire(import.meta.url);
-+ 
-+ // Install a hook to module resolution to map 'fs' to 'original-fs'
-+-if (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron']) {
-++// @ts-ignore
-++if (Module.register && (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron'])) {
-+ 	const jsCode = `
