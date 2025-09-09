@@ -51,13 +51,13 @@ For maximum privacy, you can add these settings to your `settings.json`:
 
 ```json
 {
-  "telemetry.enableTelemetry": false,
-  "telemetry.enableCrashReporter": false,
+  "telemetry.editStats.enabled": false,
   "telemetry.feedback.enabled": false,
   "update.enableWindowsBackgroundUpdates": false,
   "update.mode": "manual",
   "workbench.enableExperiments": false,
-  "workbench.settings.enableNaturalLanguageSearch": false
+  "workbench.settings.enableNaturalLanguageSearch": false,
+  "workbench.commandPalette.experimental.enableNaturalLanguageSearch": false
 }
 ```
 
