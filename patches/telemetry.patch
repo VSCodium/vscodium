@@ -1,0 +1,50 @@
+diff --git a/src/vs/platform/telemetry/common/telemetryService.ts b/src/vs/platform/telemetry/common/telemetryService.ts
+index ef676bd..4feb98b 100644
+--- a/src/vs/platform/telemetry/common/telemetryService.ts
++++ b/src/vs/platform/telemetry/common/telemetryService.ts
+@@ -219,3 +219,3 @@ configurationRegistry.registerConfiguration({
+ 			'markdownDescription': getTelemetryLevelSettingDescription(),
+-			'default': TelemetryConfiguration.ON,
++			'default': TelemetryConfiguration.OFF,
+ 			'restricted': true,
+@@ -245,3 +245,3 @@ configurationRegistry.registerConfiguration({
+ 					localize('telemetry.enableTelemetryMd', "Enable diagnostic data to be collected. This helps us to better understand how {0} is performing and where improvements need to be made. [Read more]({1}) about what we collect and our privacy statement.", product.nameLong, product.privacyStatementUrl),
+-			'default': true,
++			'default': false,
+ 			'restricted': true,
+diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
+index d09ab3f..f37edd6 100644
+--- a/src/vs/workbench/browser/workbench.contribution.ts
++++ b/src/vs/workbench/browser/workbench.contribution.ts
+@@ -496,3 +496,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+ 				'description': localize('enableNaturalLanguageSearch', "Controls whether the command palette should include similar commands. You must have an extension installed that provides Natural Language support."),
+-				'default': true
++				'default': false
+ 			},
+diff --git a/src/vs/workbench/contrib/editTelemetry/browser/editTelemetry.contribution.ts b/src/vs/workbench/contrib/editTelemetry/browser/editTelemetry.contribution.ts
+index 16fd396..587e1e3 100644
+--- a/src/vs/workbench/contrib/editTelemetry/browser/editTelemetry.contribution.ts
++++ b/src/vs/workbench/contrib/editTelemetry/browser/editTelemetry.contribution.ts
+@@ -28,3 +28,3 @@ configurationRegistry.registerConfiguration({
+ 			type: 'boolean',
+-			default: true,
++			default: false,
+ 			tags: ['experimental'],
+diff --git a/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts b/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
+index e5cec6f..9c9e169 100644
+--- a/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
++++ b/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
+@@ -113,3 +113,3 @@ registry.registerConfiguration({
+ 			'description': nls.localize('enableNaturalLanguageSettingsSearch', "Controls whether to enable the natural language search mode for settings. The natural language search is provided by a Microsoft online service."),
+-			'default': true,
++			'default': false,
+ 			'scope': ConfigurationScope.WINDOW,
+diff --git a/src/vs/workbench/electron-browser/desktop.contribution.ts b/src/vs/workbench/electron-browser/desktop.contribution.ts
+index 3517cc1..7b365fa 100644
+--- a/src/vs/workbench/electron-browser/desktop.contribution.ts
++++ b/src/vs/workbench/electron-browser/desktop.contribution.ts
+@@ -342,3 +342,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
+ 				'description': localize('telemetry.enableCrashReporting', "Enable crash reports to be collected. This helps us improve stability. \nThis option requires restart to take effect."),
+-				'default': true,
++				'default': false,
+ 				'tags': ['usesOnlineServices', 'telemetry'],
