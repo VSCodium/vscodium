@@ -1,10 +1,10 @@
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 25d8916..95863d2 100644
+index ed06b6a..f2b4a82 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
 @@ -406,18 +406,18 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  
--			if (quality !== 'exploration') {
+-			if (quality === 'stable' || quality === 'insider') {
 -				result = es.merge(result, gulp.src('.build/win32/appx/**', { base: '.build/win32' }));
 -				const rawVersion = version.replace(/-\w+$/, '').split('.');
 -				const appxVersion = `${rawVersion[0]}.0.${rawVersion[1]}.${rawVersion[2]}`;
@@ -20,7 +20,7 @@ index 25d8916..95863d2 100644
 -					.pipe(replace('@@FileExplorerContextMenuDLL@@', `${quality === 'stable' ? 'code' : 'code_insider'}_explorer_command_${arch}.dll`))
 -					.pipe(rename(f => f.dirname = `appx/manifest`)));
 -			}
-+			// if (quality !== 'exploration') {
++			// if (quality === 'stable' || quality === 'insider') {
 +			// 	result = es.merge(result, gulp.src('.build/win32/appx/**', { base: '.build/win32' }));
 +			// 	const rawVersion = version.replace(/-\w+$/, '').split('.');
 +			// 	const appxVersion = `${rawVersion[0]}.0.${rawVersion[1]}.${rawVersion[2]}`;
@@ -31,17 +31,17 @@ index 25d8916..95863d2 100644
 +			// 		.pipe(replace('@@AppxPackageDescription@@', product.win32NameVersion))
 +			// 		.pipe(replace('@@ApplicationIdShort@@', product.win32RegValueName))
 +			// 		.pipe(replace('@@ApplicationExe@@', product.nameShort + '.exe'))
-+			// 		.pipe(replace('@@FileExplorerContextMenuID@@', `OpenWith${product.win32RegValueName}`))
++			// 		.pipe(replace('@@FileExplorerContextMenuID@@', quality === 'stable' ? 'OpenWithCode' : 'OpenWithCodeInsiders'))
 +			// 		.pipe(replace('@@FileExplorerContextMenuCLSID@@', product.win32ContextMenu[arch].clsid))
-+			// 		.pipe(replace('@@FileExplorerContextMenuDLL@@', `${product.applicationName.replace(/-/g, '_')}_explorer_command_${arch}.dll`))
++			// 		.pipe(replace('@@FileExplorerContextMenuDLL@@', `${quality === 'stable' ? 'code' : 'code_insider'}_explorer_command_${arch}.dll`))
 +			// 		.pipe(rename(f => f.dirname = `appx/manifest`)));
 +			// }
  		} else if (platform === 'linux') {
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
-index 0c4dc52..156322b 100644
+index 9207df5..ff6c116 100644
 --- a/build/gulpfile.vscode.win32.js
 +++ b/build/gulpfile.vscode.win32.js
-@@ -114,7 +114,7 @@ function buildWin32Setup(arch, target) {
+@@ -113,7 +113,7 @@ function buildWin32Setup(arch, target) {
  
 -		if (quality !== 'exploration') {
 -			definitions['AppxPackage'] = `${quality === 'stable' ? 'code' : 'code_insider'}_${arch}.appx`;

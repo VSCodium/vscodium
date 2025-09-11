@@ -1,16 +1,17 @@
 diff --git a/src/main.ts b/src/main.ts
-index fdc424e..46b014b 100644
+index deba4c4..1b41bde 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -8,2 +8,3 @@ import * as fs from 'original-fs';
- import * as os from 'os';
+ import * as os from 'node:os';
 +import { createRequire } from 'node:module';
- import { performance } from 'perf_hooks';
-@@ -24,2 +25,3 @@ import { NativeParsedArgs } from './vs/platform/environment/common/argv.js';
- const __dirname = path.dirname(fileURLToPath(import.meta.url));
-+const require = createRequire(import.meta.url);
+ import { performance } from 'node:perf_hooks';
+@@ -22,2 +23,4 @@ import { NativeParsedArgs } from './vs/platform/environment/common/argv.js';
  
-@@ -112,2 +114,14 @@ registerListeners();
++const require = createRequire(import.meta.url);
++
+ perf.mark('code/didStartMain');
+@@ -109,2 +112,14 @@ registerListeners();
  
 +function resolveUserProduct() {
 +	const userProductPath = path.join(userDataPath, 'product.json');
@@ -25,12 +26,12 @@ index fdc424e..46b014b 100644
 +}
 +
  /**
-@@ -208,2 +222,3 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
+@@ -205,2 +220,3 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
 +	resolveUserProduct();
  
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index d27cdce..d758c5e 100644
+index 5a6c171..0cb5e20 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -31,2 +31,36 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
