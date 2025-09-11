@@ -9,7 +9,6 @@ This page explains how VSCodium handles telemetry and how it enhances your priva
 - [Telemetry in VSCodium](#telemetry)
 - [Replacements to Microsoft Online Services](#replacements)
 - [Checking for telemetry](#checking)
-- [Additional privacy settings](#additional-settings)
 - [VSCodium announcements](#announcements)
 - [Malicious & deprecated extensions](#malicious-extensions)
 
@@ -49,9 +48,9 @@ If you want to verify that no telemetry is being sent, you can use network monit
 
 Look for connections to Microsoft domains and telemetry endpoints.
 
-## <a id="announcements"></a>VSCodium Aanouncements
+## <a id="announcements"></a>VSCodium anouncements
 
-The "Welcome" page in VSCodium displays announcements that are fetched via the internet from the project's GitHub repository.
+The welcome page in VSCodium displays announcements that are fetched via the internet from the project's GitHub repository.
 
 If you prefer to disable this feature, you can disable the preference `workbench.welcomePage.extraAnnouncements`.
 
