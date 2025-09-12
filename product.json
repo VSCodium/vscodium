@@ -47,8 +47,18 @@
     "^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/(actions\\/)?workflows\\/.*badge\\.svg"
   ],
   "extensionEnabledApiProposals": {
+    "ms-azuretools.vscode-containers": [
+      "authenticationChallenges"
+    ],
+    "ms-azuretools.vscode-azureresourcegroups": [
+      "authenticationChallenges"
+    ],
+    "ms-azuretools.vscode-azure-github-copilot": [
+      "authenticationChallenges"
+    ],
     "ms-azuretools.vscode-dev-azurecloudshell": [
-      "contribEditSessions"
+      "contribEditSessions",
+      "authenticationChallenges"
     ],
     "ms-vscode.vscode-selfhost-test-provider": [
       "testObserver",
@@ -65,7 +75,6 @@
       "documentFiltersExclusive",
       "fileSearchProvider",
       "findTextInFiles",
-      "notebookCellExecutionState",
       "notebookLiveShare",
       "terminalDimensions",
       "terminalDataWriteEvent",
@@ -212,14 +221,10 @@
       "treeViewMarkdownMessage"
     ],
     "GitHub.copilot": [
-      "inlineCompletionsAdditions",
-      "interactive",
-      "terminalDataWriteEvent"
+      "inlineCompletionsAdditions"
     ],
     "GitHub.copilot-nightly": [
-      "inlineCompletionsAdditions",
-      "interactive",
-      "terminalDataWriteEvent"
+      "inlineCompletionsAdditions"
     ],
     "GitHub.copilot-chat": [
       "interactive",
@@ -227,14 +232,14 @@
       "terminalExecuteCommandEvent",
       "terminalSelection",
       "terminalQuickFixProvider",
-      "chatProvider",
       "chatParticipantAdditions",
       "defaultChatParticipant",
       "embeddings",
+      "chatEditing",
+      "chatProvider",
       "mappedEditsProvider",
       "aiRelatedInformation",
       "aiSettingsSearch",
-      "chatEditing",
       "codeActionAI",
       "findTextInFiles",
       "findTextInFiles2",
@@ -261,13 +266,15 @@
       "languageModelSystem",
       "languageModelCapabilities",
       "languageModelDataPart",
+      "languageModelThinkingPart",
       "chatStatusItem",
       "taskProblemMatcherStatus",
       "contribLanguageModelToolSets",
       "textDocumentChangeReason",
       "resolvers",
       "taskExecutionTerminal",
-      "dataChannels"
+      "dataChannels",
+      "chatSessionsProvider"
     ],
     "GitHub.remotehub": [
       "contribRemoteHelp",
@@ -284,11 +291,7 @@
       "textSearchProvider",
       "timeline"
     ],
-    "ms-python.gather": [
-      "notebookCellExecutionState"
-    ],
     "ms-python.vscode-pylance": [
-      "mcpConfigurationProvider",
       "terminalShellEnv"
     ],
     "ms-python.debugpy": [
@@ -335,6 +338,7 @@
       "terminalDataWriteEvent",
       "chatParticipantAdditions"
     ],
+    "vscjava.vscode-java-pack": [],
     "ms-dotnettools.csdevkit": [
       "inlineCompletionsAdditions"
     ],
@@ -353,6 +357,9 @@
       "chatParticipantAdditions",
       "languageModelSystem"
     ],
+    "ms-toolsai.datawrangler": [],
+    "ms-vscode.vscode-commander": [],
+    "ms-vscode.vscode-websearchforcopilot": [],
     "ms-vscode.vscode-copilot-vision": [
       "chatReferenceBinaryData",
       "codeActionAI"
@@ -360,12 +367,9 @@
     "ms-autodev.vscode-autodev": [
       "chatParticipantAdditions"
     ],
-    "codetrek.haystack-search": [
-      "fileSearchProvider",
-      "textSearchProvider2"
-    ],
     "vscjava.vscode-java-upgrade": [
-      "chatParticipantAdditions"
+      "chatParticipantAdditions",
+      "chatParticipantPrivate"
     ],
     "FoundryLocal.foundry-local-chat": [
       "chatProvider"
