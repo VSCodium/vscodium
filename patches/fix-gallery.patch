@@ -1,0 +1,42 @@
+diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
+index 3954823..f8026cd 100644
+--- a/src/vs/base/common/product.ts
++++ b/src/vs/base/common/product.ts
+@@ -112,2 +112,4 @@ export interface IProductConfiguration {
+ 		readonly accessSKUs?: string[];
++		readonly itemUrl: string;
++		readonly latestUrlTemplate?: string;
+ 	};
+diff --git a/src/vs/platform/extensionManagement/common/extensionGalleryManifestService.ts b/src/vs/platform/extensionManagement/common/extensionGalleryManifestService.ts
+index 658219e..d1bf7a9 100644
+--- a/src/vs/platform/extensionManagement/common/extensionGalleryManifestService.ts
++++ b/src/vs/platform/extensionManagement/common/extensionGalleryManifestService.ts
+@@ -19,2 +19,3 @@ type ExtensionGalleryConfig = {
+ 	readonly nlsBaseUrl: string;
++	readonly latestUrlTemplate?: string;
+ };
+@@ -49,3 +50,3 @@ export class ExtensionGalleryManifestService extends Disposable implements IExte
+ 			{
+-				id: `${extensionsGallery.serviceUrl}/vscode/{publisher}/{name}/latest`,
++				id: extensionsGallery.latestUrlTemplate ?? `${extensionsGallery.serviceUrl}/vscode/{publisher}/{name}/latest`,
+ 				type: ExtensionGalleryResourceType.ExtensionLatestVersionUri
+diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
+index 5a6c171..112b31b 100644
+--- a/src/vs/platform/product/common/product.ts
++++ b/src/vs/platform/product/common/product.ts
+@@ -31,2 +31,15 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+ 
++	const { serviceUrl, controlUrl, itemUrl, latestUrlTemplate, extensionUrlTemplate, resourceUrlTemplate } = product.extensionsGallery || {};
++
++	Object.assign(product, {
++		extensionsGallery: {
++			serviceUrl: env['VSCODE_GALLERY_SERVICE_URL'] || serviceUrl,
++			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
++			itemUrl: env['VSCODE_GALLERY_ITEM_URL'] || itemUrl,
++			latestUrlTemplate: env['VSCODE_GALLERY_LATEST_URL_TEMPLATE'] || latestUrlTemplate,
++			extensionUrlTemplate: env['VSCODE_GALLERY_EXTENSION_URL_TEMPLATE'] || extensionUrlTemplate,
++			resourceUrlTemplate: env['VSCODE_GALLERY_RESOURCE_URL_TEMPLATE'] || resourceUrlTemplate,
++		}
++	});
++
+ 	// Running out of sources
