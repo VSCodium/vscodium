@@ -25,6 +25,10 @@ echo "BINARY_NAME=\"${BINARY_NAME}\""
 echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
 echo "ORG_NAME=\"${ORG_NAME}\""
 
+if [[ "${DISABLE_UPDATE}" == "yes" ]]; then
+  mv ../patches/disable-update.patch.yet ../patches/disable-update.patch
+fi
+
 for file in ../patches/*.patch; do
   if [[ -f "${file}" ]]; then
     apply_patch "${file}"
