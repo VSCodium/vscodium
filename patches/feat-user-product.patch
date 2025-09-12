@@ -31,22 +31,11 @@ index deba4c4..1b41bde 100644
 +	resolveUserProduct();
  
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 5a6c171..0cb5e20 100644
+index 5a6c171..275cbcf 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -31,2 +31,36 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+@@ -31,2 +31,25 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
  
-+	const { serviceUrl, controlUrl, extensionUrlTemplate, resourceUrlTemplate } = product.extensionsGallery || {};
-+
-+	Object.assign(product, {
-+		extensionsGallery: {
-+			serviceUrl: env['VSCODE_GALLERY_SERVICE_URL'] || serviceUrl,
-+			controlUrl: env['VSCODE_GALLERY_CONTROL_URL'] || controlUrl,
-+			extensionUrlTemplate: env['VSCODE_GALLERY_EXTENSION_URL_TEMPLATE'] || extensionUrlTemplate,
-+			resourceUrlTemplate: env['VSCODE_GALLERY_RESOURCE_URL_TEMPLATE'] || resourceUrlTemplate,
-+		}
-+	});
-+
 +	// Merge user-customized product.json
 +	try {
 +		const merge = (...objects: any[]) =>
