@@ -14,7 +14,7 @@ This page explains how VSCodium handles telemetry and how it enhances your priva
 
 ## <a id="telemetry"></a>Telemetry in VSCodium
 
-Even though we do not pass the telemetry build flags and go out of our way to cripple the baked-in telemetry, Microsoft will still can track usage by default depending on your settings.
+Even though we do not pass the telemetry build flags and go out of our way to cripple the baked-in telemetry, Microsoft still can track usage by default depending on your settings.
 
 We disable all the following telemetry-related settings by default to enhance your privacy:
 ```
