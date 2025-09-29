@@ -1,17 +1,15 @@
 diff --git a/build/npm/postinstall.js b/build/npm/postinstall.js
-index c1f22aa5002..a6fb2728b1f 100644
+index fa8da7d..abd8957 100644
 --- a/build/npm/postinstall.js
 +++ b/build/npm/postinstall.js
-@@ -53,8 +53,10 @@ function npmInstall(dir, opts) {
- 		log(dir, `Installing dependencies inside container ${process.env['VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME']}...`);
- 
+@@ -55,5 +55,7 @@ function npmInstall(dir, opts) {
  		opts.cwd = root;
 -		if (process.env['npm_config_arch'] === 'arm64') {
 -			run('sudo', ['docker', 'run', '--rm', '--privileged', 'multiarch/qemu-user-static', '--reset', '-p', 'yes'], opts);
+-		}
 +		if ((process.env['npm_config_arch'] === 'arm64' || process.env['npm_config_arch'] === 'arm' || process.env['npm_config_arch'] === 'ppc64' || process.env['npm_config_arch'] === 'riscv64' || process.env['npm_config_arch'] === 's390x') && process.env['DISABLE_QEMU'] !== 'true') {
 +			run('sudo', ['docker', 'run', '--rm', '--privileged', 'tonistiigi/binfmt:latest', '--install', 'all'], opts);
 +		} else if (process.env['npm_config_arch'] === 'loong64') {
 +			run('sudo', ['docker', 'run', '--rm', '--privileged', 'loongcr.lcpu.dev/multiarch/archlinux', '--reset', '-p', 'yes'], opts);
- 		}
- 		run('sudo', ['docker', 'run', '-e', 'GITHUB_TOKEN', '-v', `${process.env['VSCODE_HOST_MOUNT']}:/root/vscode`, '-v', `${process.env['VSCODE_HOST_MOUNT']}/.build/.netrc:/root/.netrc`, '-w', path.resolve('/root/vscode', dir), process.env['VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME'], 'sh', '-c', `\"chown -R root:root ${path.resolve('/root/vscode', dir)} && npm i -g node-gyp-build && npm ci\"`], opts);
- 		run('sudo', ['chown', '-R', `${userinfo.uid}:${userinfo.gid}`, `${path.resolve(root, dir)}`], opts);
++ 		}
+ 		run('sudo', [
