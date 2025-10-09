@@ -78,6 +78,9 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload sourcemaps
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./upload_sourcemaps.sh
         if: env.SHOULD_BUILD == 'yes'
 
