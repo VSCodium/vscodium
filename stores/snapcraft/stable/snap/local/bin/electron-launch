@@ -109,7 +109,6 @@ copy_env_variable GDK_BACKEND
 copy_env_variable GTK_PATH
 copy_env_variable GTK_EXE_PREFIX
 copy_env_variable GTK_IM_MODULE_FILE
-copy_env_variable LIBGL_DRIVERS_PATH
 
 # XDG Config
 prepend_dir XDG_CONFIG_DIRS "$SNAP/etc/xdg"
@@ -121,16 +120,12 @@ prepend_dir XDG_DATA_DIRS "$SNAP/data-dir"
 prepend_dir XDG_DATA_DIRS "$SNAP_USER_DATA"
 
 # Set XDG_DATA_HOME to local path
-ensure_dir_exists "$SNAP_USER_DATA/.local/share"
+export XDG_DATA_HOME="$SNAP_USER_DATA/.local/share"
+ensure_dir_exists "$XDG_DATA_HOME"
 
 # Workaround for GLib < 2.53.2 not searching for schemas in $XDG_DATA_HOME:
 #   https://bugzilla.gnome.org/show_bug.cgi?id=741335
-prepend_dir XDG_DATA_DIRS "$SNAP_USER_DATA/.local/share"
-
-# Use the snap MESA drivers to launch the snap.
-# This is required by wayland, but electron will make better use under X11 too
-prepend_dir LIBGL_DRIVERS_PATH "$SNAP/usr/lib/dri"
-prepend_dir LIBGL_DRIVERS_PATH "$SNAP/usr/lib/$ARCH/dri"
+prepend_dir XDG_DATA_DIRS "$XDG_DATA_HOME"
 
 # Set cache folder to local path
 if [[ -d "$SNAP_USER_DATA/.cache" && ! -e "$SNAP_USER_COMMON/.cache" ]]; then
@@ -158,28 +153,45 @@ if [[ -n "$XDG_RUNTIME_DIR" && -z "$DISABLE_WAYLAND" ]] && \
     if [ -n "$WAYLAND_DISPLAY" ]; then
         wdisplay="$WAYLAND_DISPLAY"
     fi
+    wayland_sockpath="$XDG_RUNTIME_DIR/../$wdisplay"
     wayland_snappath="$XDG_RUNTIME_DIR/$wdisplay"
-    if [ -S "$wayland_snappath" ]; then
+    if [ -S "$wayland_sockpath" ]; then
         # if running under wayland, use it
         #export WAYLAND_DEBUG=1
         # shellcheck disable=SC2034
         wayland_available=true
+        # create the compat symlink for now
+        if [ ! -e "$wayland_snappath" ]; then
+            ln -s "$wayland_sockpath" "$wayland_snappath"
+        fi
     fi
 fi
 
 # Keep an array of data dirs, for looping through them
 IFS=':' read -r -a data_dirs_array <<< "$XDG_DATA_DIRS"
 
-# Build mime.cache
-# needed for gtk and qt icon
+# Font Config
+export FONTCONFIG_PATH="/etc/fonts"
+export FONTCONFIG_FILE="/etc/fonts/fonts.conf"
+
+if [ "$needs_update" = true ]; then
+  rm -rf "$XDG_DATA_HOME"/fonts
+
+  if [ -d "$SNAP_REAL_HOME/.local/share/fonts" ]; then
+    ln -s "$SNAP_REAL_HOME/.local/share/fonts" "$XDG_DATA_HOME/fonts"
+  fi
+fi
+
+# Build mime.cache needed for gtk and qt icon
+# @TODO: Re-enable this once we move to core22
 if [ "$needs_update" = true ]; then
   rm -rf "$SNAP_USER_DATA/.local/share/mime"
-  if [ ! -f "$SNAP/usr/share/mime/mime.cache" ]; then
-    if command -v update-mime-database >/dev/null; then
-      cp --preserve=timestamps -dR "$SNAP/usr/share/mime" "$SNAP_USER_DATA/.local/share"
-      async_exec update-mime-database "$SNAP_USER_DATA/.local/share/mime"
-    fi
-  fi
+  # if [ ! -f "$SNAP/usr/share/mime/mime.cache" ]; then
+  #   if command -v update-mime-database >/dev/null; then
+  #     cp --preserve=timestamps -dR "$SNAP/usr/share/mime" "$SNAP_USER_DATA/.local/share"
+  #     async_exec update-mime-database "$SNAP_USER_DATA/.local/share/mime"
+  #   fi
+  # fi
 fi
 
 # Gio modules and cache (including gsettings module)
