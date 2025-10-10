@@ -27,9 +27,12 @@ find "${SOURCE_DIR}" -type f -name "*.js.map" | while read -r SOURCE_FILE_PATH; 
   cp "${SOURCE_FILE_PATH}" "$DESTINATION_DIR-${FLATTENED_FILENAME}"
 done
 
-find . -type f -exec checksum -a sha256 {} \; > checksum.txt
+tar czf "${APP_NAME}-${RELEASE_VERSION}-sourcemaps.tar.gz" *.js.map
+
+find . -type f -name "*.js.map" | sort | xargs checksum -a sha256 > checksum.txt
 
 checksum -a sha256 checksum.txt > checksum.txt.sha256
+checksum -a sha256 "${APP_NAME}-${RELEASE_VERSION}-sourcemaps.tar.gz" > "${APP_NAME}-${RELEASE_VERSION}-sourcemaps.tar.gz.sha256"
 
 REPOSITORY_OWNER="${SOURCEMAPS_REPOSITORY/\/*/}"
 REPOSITORY_NAME="${SOURCEMAPS_REPOSITORY/*\//}"
