@@ -24,7 +24,7 @@ else
   if [[ "${VSCODE_QUALITY}" == "stable" ]]; then
     CHANNEL="${SNAPCRAFT_STORE_CHANNEL:-stable}"
 
-    sudo snap install --channel stable --classic snapcraft
+    sudo snap install --channel "${CHANNEL}" --classic snapcraft
 
     echo "Architecture: ${ARCHITECTURE}"
 
