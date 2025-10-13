@@ -92,7 +92,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Dispatch builds
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/repository-dispatch@v4
         with:
           event-type: insider
         if: github.event.inputs.dont_dispatch != 'true' && (env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true')
