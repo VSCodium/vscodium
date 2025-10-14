@@ -1,6 +1,6 @@
 <!-- order: 10 -->
 
-# Getiing all telemetry out
+# Getting all telemetry out
 
 This page explains how VSCodium handles telemetry and how it enhances your privacy.
 
@@ -69,5 +69,5 @@ If you prefer to disable this feature, you can disable the preference `workbench
 The definitions for malicious and deprecated extensions are dynamically loaded from the following URL:
 https://raw.githubusercontent.com/EclipseFdn/publish-extensions/refs/heads/master/extension-control/extensions.json
 
-If you prefer to avoid any external connections, you can disable the preference `extensions.excludeUnsafes`.  
+If you prefer to avoid any external connections, you can disable the preference `extensions.excludeUnsafes`.
 However, this is not recommended as it may reduce the safety of your environment.
