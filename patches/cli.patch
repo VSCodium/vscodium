@@ -1,13 +1,13 @@
 diff --git a/cli/src/commands/serve_web.rs b/cli/src/commands/serve_web.rs
-index 2ddefe1..ab9c658 100644
+index d3f7db8..988024b 100644
 --- a/cli/src/commands/serve_web.rs
 +++ b/cli/src/commands/serve_web.rs
-@@ -730,3 +730,3 @@ impl ConnectionManager {
+@@ -756,3 +756,3 @@ impl ConnectionManager {
  		let dir_fut = cache.create(&args.release.commit, |target_dir| async move {
 -			info!(log_for_fut, "Downloading server {}", release_for_fut.commit);
 +			info!(log_for_fut, "Downloading server {}/{}", release_for_fut.commit, release_for_fut.name);
  			let tmpdir = tempfile::tempdir().unwrap();
-@@ -758,3 +758,3 @@ impl ConnectionManager {
+@@ -784,3 +784,3 @@ impl ConnectionManager {
  			.join("bin")
 -			.join(args.release.quality.server_entrypoint());
 +			.join(args.release.quality.server_entrypoint().unwrap());
@@ -300,3 +300,12 @@ index 9033914..a39bbf7 100644
 -	}
 -
  	pub fn env_default() -> Option<Platform> {
+diff --git a/extensions/tunnel-forwarding/src/extension.ts b/extensions/tunnel-forwarding/src/extension.ts
+index 299c728..9fb635d 100644
+--- a/extensions/tunnel-forwarding/src/extension.ts
++++ b/extensions/tunnel-forwarding/src/extension.ts
+@@ -28,3 +28,3 @@ const cliPath = process.env.VSCODE_FORWARDING_IS_DEV
+ 		process.platform === 'darwin' ? 'bin' : '../../bin',
+-		vscode.env.appQuality === 'stable' ? 'code-tunnel' : 'code-tunnel-insiders',
++		'!!TUNNEL_APP_NAME!!'
+ 	) + (process.platform === 'win32' ? '.exe' : '');
