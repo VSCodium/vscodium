@@ -1,0 +1,49 @@
+diff --git a/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts b/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
+index d5aa998..dab534b 100644
+--- a/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
++++ b/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
+@@ -1876,3 +1876,3 @@ MenuRegistry.appendMenuItem(MenuId.EditorContext, {
+ 		ChatContextKeys.Setup.disabled.negate(),
+-		ChatContextKeys.Setup.installed.negate(),
++		ChatContextKeys.Setup.installed,
+ 	);
+diff --git a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts b/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
+index dbd2125..bceed38 100644
+--- a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
++++ b/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
+@@ -696,3 +696,3 @@ configurationRegistry.registerConfiguration({
+ 			description: nls.localize('chat.disableAIFeatures', "Disable and hide built-in AI features provided by GitHub Copilot, including chat, code completions and next edit suggestions."),
+-			default: false,
++			default: true,
+ 			scope: ConfigurationScope.WINDOW
+diff --git a/src/vs/workbench/contrib/chat/browser/chatParticipant.contribution.ts b/src/vs/workbench/contrib/chat/browser/chatParticipant.contribution.ts
+index 391a4de..a1489b2 100644
+--- a/src/vs/workbench/contrib/chat/browser/chatParticipant.contribution.ts
++++ b/src/vs/workbench/contrib/chat/browser/chatParticipant.contribution.ts
+@@ -67,9 +67,8 @@ const chatViewDescriptor: IViewDescriptor[] = [{
+ 	ctorDescriptor: new SyncDescriptor(ChatViewPane, [{ location: ChatAgentLocation.Chat }]),
+-	when: ContextKeyExpr.or(
+-		ContextKeyExpr.or(
+-			ChatContextKeys.Setup.hidden,
+-			ChatContextKeys.Setup.disabled
+-		)?.negate(),
++	when: ContextKeyExpr.and(
++		ChatContextKeys.Setup.installed,
++		ChatContextKeys.Setup.disabled.negate(),
++		ChatContextKeys.Setup.hidden.negate(),
+ 		ChatContextKeys.panelParticipantRegistered,
+-		ChatContextKeys.extensionInvalid
++		ChatContextKeys.extensionInvalid.negate()
+ 	)
+diff --git a/src/vs/workbench/contrib/chat/browser/chatStatus.ts b/src/vs/workbench/contrib/chat/browser/chatStatus.ts
+index 05f6f0e..7fe62fd 100644
+--- a/src/vs/workbench/contrib/chat/browser/chatStatus.ts
++++ b/src/vs/workbench/contrib/chat/browser/chatStatus.ts
+@@ -132,2 +132,7 @@ export class ChatStatusBarEntry extends Disposable implements IWorkbenchContribu
+ 
++		const context = chatEntitlementService.context?.value;
++		if (!context) {
++			return; // disabled
++		}
++
+ 		this.update();
