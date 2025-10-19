@@ -1,8 +1,38 @@
 diff --git a/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts b/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
-index d5aa998..dab534b 100644
+index d5aa998..a7e4d57 100644
 --- a/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
 +++ b/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
-@@ -1876,3 +1876,3 @@ MenuRegistry.appendMenuItem(MenuId.EditorContext, {
+@@ -183,3 +183,4 @@ abstract class OpenChatGlobalAction extends Action2 {
+ 				ChatContextKeys.Setup.hidden.negate(),
+-				ChatContextKeys.Setup.disabled.negate()
++				ChatContextKeys.Setup.disabled.negate(),
++				ChatContextKeys.Setup.installed
+ 			)
+@@ -1668,3 +1669,4 @@ MenuRegistry.appendMenuItem(MenuId.CommandCenter, {
+ 			ChatContextKeys.Setup.hidden.negate(),
+-			ChatContextKeys.Setup.disabled.negate()
++			ChatContextKeys.Setup.disabled.negate(),
++			ChatContextKeys.Setup.installed
+ 		),
+@@ -1685,3 +1687,4 @@ MenuRegistry.appendMenuItem(MenuId.TitleBar, {
+ 			ChatContextKeys.Setup.hidden.negate(),
+-			ChatContextKeys.Setup.disabled.negate()
++			ChatContextKeys.Setup.disabled.negate(),
++			ChatContextKeys.Setup.installed
+ 		),
+@@ -1702,3 +1705,4 @@ registerAction2(class ToggleCopilotControl extends ToggleTitleBarConfigAction {
+ 					ChatContextKeys.Setup.hidden.negate(),
+-					ChatContextKeys.Setup.disabled.negate()
++					ChatContextKeys.Setup.disabled.negate(),
++					ChatContextKeys.Setup.installed
+ 				),
+@@ -1843,3 +1847,4 @@ MenuRegistry.appendMenuItem(MenuId.EditorContext, {
+ 		ChatContextKeys.Setup.hidden.negate(),
+-		ChatContextKeys.Setup.disabled.negate()
++		ChatContextKeys.Setup.disabled.negate(),
++		ChatContextKeys.Setup.installed
+ 	)
+@@ -1876,3 +1881,3 @@ MenuRegistry.appendMenuItem(MenuId.EditorContext, {
  		ChatContextKeys.Setup.disabled.negate(),
 -		ChatContextKeys.Setup.installed.negate(),
 +		ChatContextKeys.Setup.installed,
@@ -35,6 +65,48 @@ index 391a4de..a1489b2 100644
 -		ChatContextKeys.extensionInvalid
 +		ChatContextKeys.extensionInvalid.negate()
  	)
+diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup.ts b/src/vs/workbench/contrib/chat/browser/chatSetup.ts
+index 4325d48..de10415 100644
+--- a/src/vs/workbench/contrib/chat/browser/chatSetup.ts
++++ b/src/vs/workbench/contrib/chat/browser/chatSetup.ts
+@@ -953,7 +953,9 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+ 					f1: true,
+-					precondition: ContextKeyExpr.or(
+-						ChatContextKeys.Setup.hidden,
+-						ChatContextKeys.Setup.disabled,
+-						ChatContextKeys.Setup.untrusted,
+-						ChatContextKeys.Setup.installed.negate(),
++					precondition: ContextKeyExpr.and(
++						ContextKeyExpr.or(
++							ChatContextKeys.Setup.hidden,
++							ChatContextKeys.Setup.disabled,
++							ChatContextKeys.Setup.untrusted,
++						),
++						ChatContextKeys.Setup.installed,
+ 						ChatContextKeys.Entitlement.canSignUp
+@@ -1069,3 +1071,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+ 							ChatContextKeys.Setup.hidden.negate(),
+-							ChatContextKeys.Setup.installed.negate(),
++							ChatContextKeys.Setup.installed,
+ 							ChatContextKeys.Entitlement.signedOut
+@@ -1096,2 +1098,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+ 						ChatContextKeys.Setup.hidden.negate(),
++						ChatContextKeys.Setup.installed,
+ 						ContextKeyExpr.or(
+@@ -1152,2 +1155,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+ 						ChatContextKeys.Setup.hidden.negate(),
++						ChatContextKeys.Setup.installed,
+ 						ContextKeyExpr.or(
+@@ -1350,3 +1354,3 @@ export class ChatTeardownContribution extends Disposable implements IWorkbenchCo
+ 						ChatContextKeys.Setup.hidden.negate(),
+-						ChatContextKeys.Setup.installed.negate()
++						ChatContextKeys.Setup.installed
+ 					),
+@@ -1356,3 +1360,3 @@ export class ChatTeardownContribution extends Disposable implements IWorkbenchCo
+ 						order: 1,
+-						when: ChatContextKeys.Setup.installed.negate()
++						when: ChatContextKeys.Setup.installed
+ 					}
 diff --git a/src/vs/workbench/contrib/chat/browser/chatStatus.ts b/src/vs/workbench/contrib/chat/browser/chatStatus.ts
 index 05f6f0e..7fe62fd 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatStatus.ts
@@ -47,3 +119,46 @@ index 05f6f0e..7fe62fd 100644
 +		}
 +
  		this.update();
+diff --git a/src/vs/workbench/contrib/chat/common/chatContextKeys.ts b/src/vs/workbench/contrib/chat/common/chatContextKeys.ts
+index 4877407..fa134a7 100644
+--- a/src/vs/workbench/contrib/chat/common/chatContextKeys.ts
++++ b/src/vs/workbench/contrib/chat/common/chatContextKeys.ts
+@@ -104,4 +104,4 @@ export namespace ChatContextKeyExprs {
+ 	 */
+-	export const chatSetupTriggerContext = ContextKeyExpr.or(
+-		ChatContextKeys.Setup.installed.negate(),
++	export const chatSetupTriggerContext = ContextKeyExpr.and(
++		ChatContextKeys.Setup.installed,
+ 		ChatContextKeys.Entitlement.canSignUp
+diff --git a/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts b/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
+index 5a12c9d..f62c111 100644
+--- a/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
++++ b/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
+@@ -530,3 +530,3 @@ export class McpServersViewsContribution extends Disposable implements IWorkbenc
+ 				ctorDescriptor: new SyncDescriptor(DefaultBrowseMcpServersView, [{}]),
+-				when: ContextKeyExpr.and(DefaultViewsContext, HasInstalledMcpServersContext.toNegated(), ChatContextKeys.Setup.hidden.negate(), McpServersGalleryStatusContext.isEqualTo(McpGalleryManifestStatus.Available), ContextKeyExpr.or(ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceUrlConfig}`), ProductQualityContext.notEqualsTo('stable'), ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceEnablementConfig}`))),
++				when: ContextKeyExpr.and(DefaultViewsContext, HasInstalledMcpServersContext.toNegated(), ChatContextKeys.Setup.installed, ChatContextKeys.Setup.hidden.negate(), McpServersGalleryStatusContext.isEqualTo(McpGalleryManifestStatus.Available), ContextKeyExpr.or(ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceUrlConfig}`), ProductQualityContext.notEqualsTo('stable'), ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceEnablementConfig}`))),
+ 				weight: 40,
+@@ -545,3 +545,3 @@ export class McpServersViewsContribution extends Disposable implements IWorkbenc
+ 				ctorDescriptor: new SyncDescriptor(DefaultBrowseMcpServersView, [{ showWelcome: true }]),
+-				when: ContextKeyExpr.and(DefaultViewsContext, HasInstalledMcpServersContext.toNegated(), ChatContextKeys.Setup.hidden.negate(), McpServersGalleryStatusContext.isEqualTo(McpGalleryManifestStatus.Available), ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceUrlConfig}`).negate(), ProductQualityContext.isEqualTo('stable'), ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceEnablementConfig}`).negate()),
++				when: ContextKeyExpr.and(DefaultViewsContext, HasInstalledMcpServersContext.toNegated(), ChatContextKeys.Setup.installed, ChatContextKeys.Setup.hidden.negate(), McpServersGalleryStatusContext.isEqualTo(McpGalleryManifestStatus.Available), ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceUrlConfig}`).negate(), ProductQualityContext.isEqualTo('stable'), ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceEnablementConfig}`).negate()),
+ 				weight: 40,
+diff --git a/src/vs/workbench/contrib/scm/browser/scm.contribution.ts b/src/vs/workbench/contrib/scm/browser/scm.contribution.ts
+index a2d4dc9..a15ac03 100644
+--- a/src/vs/workbench/contrib/scm/browser/scm.contribution.ts
++++ b/src/vs/workbench/contrib/scm/browser/scm.contribution.ts
+@@ -659,3 +659,3 @@ registerAction2(class extends Action2 {
+ 					ChatContextKeys.Setup.disabled.negate(),
+-					ChatContextKeys.Setup.installed.negate(),
++					ChatContextKeys.Setup.installed,
+ 					ContextKeyExpr.equals('git.activeResourceHasMergeConflicts', true)
+diff --git a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
+index d32554a..9257c26 100644
+--- a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
++++ b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
+@@ -1346,3 +1346,3 @@ registerAction2(class extends Action2 {
+ 					ChatContextKeys.Setup.disabled.negate(),
+-					ChatContextKeys.Setup.installed.negate(),
++					ChatContextKeys.Setup.installed,
+ 					ContextKeyExpr.equals('scmProvider', 'git')
