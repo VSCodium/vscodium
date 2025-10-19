@@ -13,6 +13,8 @@ cp -f LICENSE vscode/LICENSE.txt
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+{ set +x; } 2>/dev/null
+
 # {{{ product.json
 cp product.json{,.bak}
 
@@ -81,7 +83,7 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "win32UserAppId" "{{ED2E5618-3E7E-4888-BF3C-A6CCC84F586F}"
   setpath "product" "win32x64UserAppId" "{{20F79D0D-A9AC-4220-9A81-CE675FFB6B41}"
   setpath "product" "win32arm64UserAppId" "{{2E362F92-14EA-455A-9ABD-3E656BBBFE71}"
-  setpath "product" "tunnelApplicationName" "codium-tunnel-insiders"
+  setpath "product" "tunnelApplicationName" "codium-insiders-tunnel"
   setpath "product" "win32TunnelServiceMutex" "vscodiuminsiders-tunnelservice"
   setpath "product" "win32TunnelMutex" "vscodiuminsiders-tunnel"
   setpath "product" "win32ContextMenu.x64.clsid" "90AAD229-85FD-43A3-B82D-8598A88829CF"
@@ -127,7 +129,6 @@ cat product.json
 . ../utils.sh
 
 # {{{ apply patches
-{ set +x; } 2>/dev/null
 
 echo "APP_NAME=\"${APP_NAME}\""
 echo "APP_NAME_LC=\"${APP_NAME_LC}\""
@@ -167,9 +168,9 @@ for file in ../patches/user/*.patch; do
     apply_patch "${file}"
   fi
 done
+# }}}
 
 set -x
-# }}}
 
 # {{{ install dependencies
 export ELECTRON_SKIP_BINARY_DOWNLOAD=1

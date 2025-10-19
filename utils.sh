@@ -6,7 +6,7 @@ ASSETS_REPOSITORY="${ASSETS_REPOSITORY:-VSCodium/vscodium}"
 BINARY_NAME="${BINARY_NAME:-codium}"
 GH_REPO_PATH="${GH_REPO_PATH:-VSCodium/vscodium}"
 ORG_NAME="${ORG_NAME:-VSCodium}"
-TUNNEL_APP_NAME="$( node -p "require(\"./product.json\").tunnelApplicationName" )"
+TUNNEL_APP_NAME="${TUNNEL_APP_NAME:-"${BINARY_NAME}-tunnel"}"
 
 # All common functions can be added to this file
 
