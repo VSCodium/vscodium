@@ -1,5 +1,5 @@
 diff --git a/build/lib/compilation.js b/build/lib/compilation.js
-index 61a6d28..831b7c2 100644
+index ac6eae3..45e2610 100644
 --- a/build/lib/compilation.js
 +++ b/build/lib/compilation.js
 @@ -145,24 +145,3 @@ function compileTask(src, out, build, options = {}) {
@@ -28,7 +28,7 @@ index 61a6d28..831b7c2 100644
 -            .pipe(mangleStream)
              .pipe(generator.stream)
 diff --git a/build/lib/compilation.ts b/build/lib/compilation.ts
-index a1de9f1..084fd2f 100644
+index a8b7291..77b2f53 100644
 --- a/build/lib/compilation.ts
 +++ b/build/lib/compilation.ts
 @@ -18,4 +18,2 @@ import File from 'vinyl';
@@ -41,7 +41,7 @@ index a1de9f1..084fd2f 100644
 -		// mangle: TypeScript to TypeScript
 -		let mangleStream = es.through();
 -		if (build && !options.disableMangle) {
--			let ts2tsMangler = new Mangler(compile.projectPath, (...data) => fancyLog(ansiColors.blue('[mangler]'), ...data), { mangleExports: true, manglePrivateFields: true });
+-			let ts2tsMangler: Mangler | undefined = new Mangler(compile.projectPath, (...data) => fancyLog(ansiColors.blue('[mangler]'), ...data), { mangleExports: true, manglePrivateFields: true });
 -			const newContentsByFileName = ts2tsMangler.computeNewFileContents(new Set(['saveState']));
 -			mangleStream = es.through(async function write(data: File & { sourceMap?: RawSourceMap }) {
 -				type TypeScriptExt = typeof ts & { normalizePath(path: string): string };
@@ -57,7 +57,7 @@ index a1de9f1..084fd2f 100644
 -				(await newContentsByFileName).clear();
 -
 -				this.push(null);
--				(<any>ts2tsMangler) = undefined;
+-				ts2tsMangler = undefined;
 -			});
 -		}
 -

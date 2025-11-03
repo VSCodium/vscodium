@@ -39,7 +39,7 @@ index 295a977..318ce92 100644
 +	optimize.minifyTask('out-vscode-web', `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}/core`)
  ));
 diff --git a/build/lib/extensions.js b/build/lib/extensions.js
-index c80a1be..25cf259 100644
+index e373688..efa26c9 100644
 --- a/build/lib/extensions.js
 +++ b/build/lib/extensions.js
 @@ -75,4 +75,5 @@ const vzip = require('gulp-vinyl-zip');
@@ -55,7 +55,7 @@ index c80a1be..25cf259 100644
 +                            return `\n//# sourceMappingURL=${sourceMappingURLBase}/extensions-${path_1.default.basename(extensionPath).replaceAll('/', '-')}-${relativeOutputPath.replaceAll('/', '-')}-${g1.replaceAll('/', '-')}`;
                          }), 'utf8');
 diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
-index 9e7cf9f..eed31ca 100644
+index 4779ddb..e19fc36 100644
 --- a/build/lib/extensions.ts
 +++ b/build/lib/extensions.ts
 @@ -30,4 +30,5 @@ const vzip = require('gulp-vinyl-zip');
@@ -71,28 +71,28 @@ index 9e7cf9f..eed31ca 100644
 +								return `\n//# sourceMappingURL=${sourceMappingURLBase}/extensions-${path.basename(extensionPath).replaceAll('/', '-')}-${relativeOutputPath.replaceAll('/', '-')}-${g1.replaceAll('/', '-')}`;
  							}), 'utf8');
 diff --git a/build/lib/optimize.js b/build/lib/optimize.js
-index fbc455b..4e7fe85 100644
+index 2ba72a9..4ea70d0 100644
 --- a/build/lib/optimize.js
 +++ b/build/lib/optimize.js
-@@ -186,3 +186,3 @@ function bundleTask(opts) {
+@@ -188,3 +188,3 @@ function bundleTask(opts) {
  function minifyTask(src, sourceMapBaseUrl) {
 -    const sourceMappingURL = sourceMapBaseUrl ? ((f) => `${sourceMapBaseUrl}/${f.relative}.map`) : undefined;
-+    const sourceMappingURL = sourceMapBaseUrl ? ((f) => `${sourceMapBaseUrl}-${f.relative.replaceAll('/', '-')}.map`) : undefined;
-     return cb => {
++	const sourceMappingURL = sourceMapBaseUrl ? ((f) => `${sourceMapBaseUrl}-${f.relative.replaceAll('/', '-')}.map`) : undefined;
+     const target = getBuildTarget();
 diff --git a/build/lib/optimize.ts b/build/lib/optimize.ts
-index d89d0d6..fca30cf 100644
+index 1e824a5..808dbeb 100644
 --- a/build/lib/optimize.ts
 +++ b/build/lib/optimize.ts
-@@ -211,3 +211,3 @@ export function bundleTask(opts: IBundleESMTaskOpts): () => NodeJS.ReadWriteStre
+@@ -225,3 +225,3 @@ export function bundleTask(opts: IBundleESMTaskOpts): () => NodeJS.ReadWriteStre
  export function minifyTask(src: string, sourceMapBaseUrl?: string): (cb: any) => void {
 -	const sourceMappingURL = sourceMapBaseUrl ? ((f: any) => `${sourceMapBaseUrl}/${f.relative}.map`) : undefined;
 +	const sourceMappingURL = sourceMapBaseUrl ? ((f: any) => `${sourceMapBaseUrl}-${f.relative.replaceAll('/', '-')}.map`) : undefined;
- 
+ 	const target = getBuildTarget();
 diff --git a/build/lib/util.js b/build/lib/util.js
-index 389b9e0..f80d8e5 100644
+index 9d2f3b1..62a5afc 100644
 --- a/build/lib/util.js
 +++ b/build/lib/util.js
-@@ -235,4 +235,4 @@ function rewriteSourceMappingURL(sourceMappingURLBase) {
+@@ -237,4 +237,4 @@ function rewriteSourceMappingURL(sourceMappingURLBase) {
          const contents = f.contents.toString('utf8');
 -        const str = `//# sourceMappingURL=${sourceMappingURLBase}/${path_1.default.dirname(f.relative).replace(/\\/g, '/')}/$1`;
 -        f.contents = Buffer.from(contents.replace(/\n\/\/# sourceMappingURL=(.*)$/gm, str));
@@ -100,10 +100,10 @@ index 389b9e0..f80d8e5 100644
 +        f.contents = Buffer.from(contents.replace(/\n\/\/# sourceMappingURL=(.*)$/gm, (_m, p) => `//# sourceMappingURL=${sourceMappingURLBase}/${fp}-${p.replaceAll('/', '-')}`));
          return f;
 diff --git a/build/lib/util.ts b/build/lib/util.ts
-index 4931342..833091c 100644
+index 5f3b2f6..7863dd4 100644
 --- a/build/lib/util.ts
 +++ b/build/lib/util.ts
-@@ -285,4 +285,4 @@ export function rewriteSourceMappingURL(sourceMappingURLBase: string): NodeJS.Re
+@@ -286,4 +286,4 @@ export function rewriteSourceMappingURL(sourceMappingURLBase: string): NodeJS.Re
  			const contents = (<Buffer>f.contents).toString('utf8');
 -			const str = `//# sourceMappingURL=${sourceMappingURLBase}/${path.dirname(f.relative).replace(/\\/g, '/')}/$1`;
 -			f.contents = Buffer.from(contents.replace(/\n\/\/# sourceMappingURL=(.*)$/gm, str));

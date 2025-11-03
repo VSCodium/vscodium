@@ -27,7 +27,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     rm -f .build/extensions/ms-vscode.js-debug/src/win32-app-container-tokens.*.node
 
     # generate Group Policy definitions
-    node build/lib/policies darwin
+    node build/lib/policies/policyGenerator build/lib/policies/policyData.jsonc darwin
 
     npm run gulp "vscode-darwin-${VSCODE_ARCH}-min-ci"
 
@@ -38,7 +38,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     VSCODE_PLATFORM="darwin"
   elif [[ "${OS_NAME}" == "windows" ]]; then
     # generate Group Policy definitions
-    node build/lib/policies win32
+    node build/lib/policies/policyGenerator build/lib/policies/policyData.jsonc win32
 
     # in CI, packaging will be done by a different job
     if [[ "${CI_BUILD}" == "no" ]]; then
