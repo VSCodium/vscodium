@@ -1,8 +1,8 @@
 diff --git a/build/.moduleignore b/build/.moduleignore
-index 3e654cf..d9ee9f5 100644
+index 0459b46..49f3c66 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
-@@ -126,9 +126,11 @@ vsda/**
+@@ -128,9 +128,11 @@ vsda/**
  
 -@vscode/policy-watcher/build/**
 -@vscode/policy-watcher/.husky/**
@@ -21,56 +21,28 @@ index 3e654cf..d9ee9f5 100644
 +@vscodium/policy-watcher/index.d.ts
 +!@vscodium/policy-watcher/build/Release/vscodium-policy-watcher.node
  
-diff --git a/build/lib/policies.js b/build/lib/policies.js
-index d2ef760..fa0eea4 100644
---- a/build/lib/policies.js
-+++ b/build/lib/policies.js
-@@ -81,3 +81,3 @@ class BasePolicy {
-         return [
--            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
-+            `<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\!!ORG_NAME!!\\${regKey}" presentation="$(presentation.${this.name})">`,
-             `	<parentCategory ref="${this.category.name.nlsKey}" />`,
-@@ -501,3 +501,3 @@ function renderADMX(regKey, versions, categories, policies) {
- 	<policyNamespaces>
--		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
-+		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
- 	</policyNamespaces>
-diff --git a/build/lib/policies.ts b/build/lib/policies.ts
-index 381d2f4..9cdec71 100644
---- a/build/lib/policies.ts
-+++ b/build/lib/policies.ts
-@@ -107,3 +107,3 @@ abstract class BasePolicy implements Policy {
- 		return [
--			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
-+			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\!!ORG_NAME!!\\${regKey}" presentation="$(presentation.${this.name})">`,
- 			`	<parentCategory ref="${this.category.name.nlsKey}" />`,
-@@ -703,3 +703,3 @@ function renderADMX(regKey: string, versions: string[], categories: Category[],
- 	<policyNamespaces>
--		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
-+		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
- 	</policyNamespaces>
 diff --git a/eslint.config.js b/eslint.config.js
-index 127bb34..44d2b4c 100644
+index 6c74dc2..f721334 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
-@@ -800,3 +800,3 @@ export default tseslint.config(
+@@ -1854,3 +1854,3 @@ export default tseslint.config(
  						'@vscode/iconv-lite-umd',
 -						'@vscode/policy-watcher',
 +						'@vscodium/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
-index 4572a94..9f8c938 100644
+index 34bf479..4345179 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -18,3 +18,2 @@
-         "@vscode/iconv-lite-umd": "0.7.0",
+         "@vscode/iconv-lite-umd": "0.7.1",
 -        "@vscode/policy-watcher": "^1.3.2",
          "@vscode/proxy-agent": "^0.35.0",
 @@ -29,2 +28,3 @@
          "@vscode/windows-registry": "^1.1.0",
 +        "@vscodium/policy-watcher": "^1.3.2-252465",
-         "@xterm/addon-clipboard": "^0.2.0-beta.102",
-@@ -2960,22 +2960,2 @@
+         "@xterm/addon-clipboard": "^0.2.0-beta.119",
+@@ -2997,22 +2997,2 @@
      },
 -    "node_modules/@vscode/policy-watcher": {
 -      "version": "1.3.2",
@@ -93,7 +65,7 @@ index 4572a94..9f8c938 100644
 -      }
 -    },
      "node_modules/@vscode/proxy-agent": {
-@@ -3372,2 +3352,22 @@
+@@ -3409,2 +3389,22 @@
      },
 +    "node_modules/@vscodium/policy-watcher": {
 +      "version": "1.3.2-252465",
@@ -117,11 +89,11 @@ index 4572a94..9f8c938 100644
 +    },
      "node_modules/@webassemblyjs/ast": {
 diff --git a/package.json b/package.json
-index 8c0fdf3..0817f25 100644
+index 31532a6..d726b8c 100644
 --- a/package.json
 +++ b/package.json
-@@ -79,3 +79,3 @@
-     "@vscode/iconv-lite-umd": "0.7.0",
+@@ -80,3 +80,3 @@
+     "@vscode/iconv-lite-umd": "0.7.1",
 -    "@vscode/policy-watcher": "^1.3.2",
 +    "@vscodium/policy-watcher": "^1.3.2-252465",
      "@vscode/proxy-agent": "^0.35.0",
@@ -238,7 +210,7 @@ index 2a6acba..167d759 100644
 +		assert.ok(typeof watcher.createWatcher === 'function', testErrorMessage('@vscodium/policy-watcher'));
  	});
 diff --git a/src/vs/platform/policy/node/nativePolicyService.ts b/src/vs/platform/policy/node/nativePolicyService.ts
-index 67f7892..840d655 100644
+index 21bb9c4..6a85d60 100644
 --- a/src/vs/platform/policy/node/nativePolicyService.ts
 +++ b/src/vs/platform/policy/node/nativePolicyService.ts
 @@ -8,3 +8,3 @@ import { IStringDictionary } from '../../../base/common/collections.js';
