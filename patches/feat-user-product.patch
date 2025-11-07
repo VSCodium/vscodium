@@ -1,5 +1,41 @@
+diff --git a/src/cli.ts b/src/cli.ts
+index b643e34..2f228ef 100644
+--- a/src/cli.ts
++++ b/src/cli.ts
+@@ -5,2 +5,4 @@
+ 
++import * as path from 'node:path';
++import { createRequire } from 'node:module';
+ import './bootstrap-cli.js'; // this MUST come before other imports as it changes global state
+@@ -10,3 +12,5 @@ import { resolveNLSConfiguration } from './vs/base/node/nls.js';
+ import { product } from './bootstrap-meta.js';
++import { getUserDataPath } from './vs/platform/environment/node/userDataPath.js';
+ 
++const require = createRequire(import.meta.url);
+ // NLS
+@@ -21,2 +25,4 @@ process.env['VSCODE_CLI'] = '1';
+ 
++resolveUserProduct();
++
+ // Bootstrap ESM
+@@ -26 +32,14 @@ await bootstrapESM();
+ await import('./vs/code/node/cli.js');
++
++function resolveUserProduct() {
++	const userDataPath = getUserDataPath({_:[]}, product.nameShort ?? 'code-oss-dev');
++	const userProductPath = path.join(userDataPath, 'product.json');
++
++	try {
++		// Assign the product configuration to the global scope
++		const productJson = require(userProductPath);
++
++		globalThis._VSCODE_USER_PRODUCT_JSON = productJson;
++	} catch (ex) {
++	}
++}
+\ No newline at end of file
 diff --git a/src/main.ts b/src/main.ts
-index deba4c4..1b41bde 100644
+index 7b7e1da..f07b015 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -8,2 +8,3 @@ import * as fs from 'original-fs';
@@ -19,7 +55,7 @@ index deba4c4..1b41bde 100644
 +	try {
 +		// Assign the product configuration to the global scope
 +		const productJson = require(userProductPath);
-+		// @ts-expect-error
++
 +		globalThis._VSCODE_USER_PRODUCT_JSON = productJson;
 +	} catch (ex) {
 +	}
@@ -30,8 +66,17 @@ index deba4c4..1b41bde 100644
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
 +	resolveUserProduct();
  
+diff --git a/src/typings/vscode-globals-product.d.ts b/src/typings/vscode-globals-product.d.ts
+index 2cd632e..dbb25e3 100644
+--- a/src/typings/vscode-globals-product.d.ts
++++ b/src/typings/vscode-globals-product.d.ts
+@@ -29,2 +29,4 @@ declare global {
+ 
++	var _VSCODE_USER_PRODUCT_JSON: Record<string, any>;
++
+ }
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 5a6c171..275cbcf 100644
+index 6f093e9..b63af55 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
 @@ -31,2 +31,25 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
@@ -53,7 +98,7 @@ index 5a6c171..275cbcf 100644
 +				return result;
 +			}, {}) as any;
 +
-+		const userProduct = (globalThis as Record<string, any>)._VSCODE_USER_PRODUCT_JSON || {};
++		const userProduct = globalThis._VSCODE_USER_PRODUCT_JSON || {};
 +
 +		product = merge(product, userProduct);
 +	} catch (ex) {
