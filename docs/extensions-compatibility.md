@@ -18,7 +18,7 @@ Most MS extensions are limited to run on only MS products by their license and b
 - [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
 > It's officially unsupported: https://github.com/James-Yu/LaTeX-Workshop/wiki/FAQ#vscodium-is-not-officially-supported
 - [Live Share](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare)
-- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+- [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
 - [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 - [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
 - [Remote - SSH: Editing Configuration Files](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh-edit)
