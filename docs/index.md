@@ -25,6 +25,7 @@
   - [Proprietary Extensions](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#proprietary-extensions)
   - [Using the "VSIX Manager" Extension](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#vsix-manager)
   - [Extensions compatibility](https://github.com/VSCodium/vscodium/blob/master/docs/extensions-compatibility.md)
+  - [Ext: GitHub Copilot](https://github.com/VSCodium/vscodium/blob/master/docs/ext-github-copilot.md)
 - [Migration](https://github.com/VSCodium/vscodium/blob/master/docs/migration.md)
   - [Manual Migration from Visual Studio Code to VSCodium](https://github.com/VSCodium/vscodium/blob/master/docs/migration.md#manual-migration)
   - [Semi-Automatic Migration with "Sync Settings" Extension](https://github.com/VSCodium/vscodium/blob/master/docs/migration.md#semi-automatic-migration)
