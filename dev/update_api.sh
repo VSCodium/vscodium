@@ -31,9 +31,9 @@ if [[ ! -d "${DIRECTORY}" ]]; then
 fi
 
 APIS=$( jq -r '.extensionEnabledApiProposals' "${DIRECTORY}/resources/app/product.json" )
-
 APIS=$( echo "${APIS}" | jq '. += {"jeanp413.open-remote-ssh": ["resolvers", "tunnels", "terminalDataWriteEvent", "contribRemoteHelp", "contribViewsRemote"]}' )
 APIS=$( echo "${APIS}" | jq '. += {"jeanp413.open-remote-wsl": ["resolvers", "contribRemoteHelp", "contribViewsRemote"]}' )
+echo "$( jq --argjson v "${APIS}" 'setpath(["extensionEnabledApiProposals"]; $v)' product.json )" > product.json
 
-jsonTmp=$( jq --argjson v "${APIS}" 'setpath(["extensionEnabledApiProposals"]; $v)' product.json )
-echo "${jsonTmp}" > product.json && unset jsonTmp
+APIS=$( jq -r '.extensionsEnabledWithApiProposalVersion' "${DIRECTORY}/resources/app/product.json" )
+echo "$( jq --argjson v "${APIS}" 'setpath(["extensionsEnabledWithApiProposalVersion"]; $v)' product.json )" > product.json
