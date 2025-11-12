@@ -1,0 +1,58 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Download latest stable-linux vscode.tar.gz",
+        "type": "shell",
+        "command": "set -a && source .env || true && set +a && gh run list --workflow stable-linux --branch master -e workflow_dispatch --json databaseId --limit 1 --jq '.[].databaseId' | xargs -I {} gh run download {} -n vscode",
+        "group": {
+          "kind": "none"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Package REH",
+        "type": "shell",
+        "command": "set -a && source .env || true && set +a && ./build/linux/package_reh.sh",
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        },
+        "options": {
+          "env": {
+            "ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION": "true",
+            "APP_NAME": "VSCodium",
+            "ASSETS_REPOSITORY": "VSCodium/VSCodium",
+            "BINARY_NAME": "codium",
+            "DISABLE_UPDATE": "yes",
+            "OS_NAME": "linux",
+            "VERSIONS_REPOSITORY": "VSCodium/versions",
+            "VSCODE_QUALITY": "stable"
+          }
+        }
+      },
+      {
+        "label": "Package BIN",
+        "type": "shell",
+        "command": "set -a && source .env || true && set +a && ./build/linux/package_bin.sh",
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        },
+        "options": {
+          "env": {
+            "ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION": "true",
+            "APP_NAME": "VSCodium",
+            "ASSETS_REPOSITORY": "VSCodium/VSCodium",
+            "BINARY_NAME": "codium",
+            "DISABLE_UPDATE": "yes",
+            "OS_NAME": "linux",
+            "VERSIONS_REPOSITORY": "VSCodium/versions",
+            "VSCODE_QUALITY": "stable"
+          }
+        }
+      }
+    ]
+  }
