@@ -62,7 +62,7 @@ build_darwin_main() { # {{{
     convert "code_1024.png" -resize 256x256 code_256.png
     convert "code_1024.png" -resize 128x128 code_128.png
 
-    png2icns "${SRC_PREFIX}src/${QUALITY}/resources/darwin/code.icns" code_512.png code_256.png code_128.png
+    png2icns "${SRC_PREFIX}src/${QUALITY}/resources/darwin/code.icns" code_1024.png code_512.png code_256.png code_128.png
 
     rm -f code_1024.png code_512.png code_256.png code_128.png code_logo.png
   fi
