@@ -15,16 +15,3 @@ index 89d9736..b2a1623 100644
  		services.set(IUserDataSyncAccountService, new SyncDescriptor(UserDataSyncAccountService, undefined, true));
 -		services.set(IUserDataSyncLogService, new SyncDescriptor(UserDataSyncLogService, undefined, true));
  		services.set(IUserDataSyncUtilService, ProxyChannel.toService(this.server.getChannel('userDataSyncUtil', client => client.ctx !== 'main')));
-diff --git a/src/vs/workbench/workbench.common.main.ts b/src/vs/workbench/workbench.common.main.ts
-index 61d63db..ccd7ff7 100644
---- a/src/vs/workbench/workbench.common.main.ts
-+++ b/src/vs/workbench/workbench.common.main.ts
-@@ -157,4 +157,2 @@ import { IgnoredExtensionsManagementService, IIgnoredExtensionsManagementService
- import { ExtensionStorageService, IExtensionStorageService } from '../platform/extensionManagement/common/extensionStorage.js';
--import { IUserDataSyncLogService } from '../platform/userDataSync/common/userDataSync.js';
--import { UserDataSyncLogService } from '../platform/userDataSync/common/userDataSyncLog.js';
- import { AllowedExtensionsService } from '../platform/extensionManagement/common/allowedExtensionsService.js';
-@@ -164,3 +162,2 @@ import { AllowedMcpServersService } from '../platform/mcp/common/allowedMcpServe
- 
--registerSingleton(IUserDataSyncLogService, UserDataSyncLogService, InstantiationType.Delayed);
- registerSingleton(IAllowedExtensionsService, AllowedExtensionsService, InstantiationType.Delayed);
