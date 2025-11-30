@@ -1,27 +1,13 @@
-diff --git a/build/linux/dependencies-generator.js b/build/linux/dependencies-generator.js
-index ae05d17..c692141 100644
---- a/build/linux/dependencies-generator.js
-+++ b/build/linux/dependencies-generator.js
-@@ -27,3 +27,3 @@ const product = require("../../product.json");
- // are valid, are in dep-lists.ts
--const FAIL_BUILD_FOR_NEW_DEPENDENCIES = true;
-+const FAIL_BUILD_FOR_NEW_DEPENDENCIES = false;
- // Based on https://source.chromium.org/chromium/chromium/src/+/refs/tags/138.0.7204.251:chrome/installer/linux/BUILD.gn;l=64-80
-@@ -60,3 +60,3 @@ async function getDependencies(packageType, buildDir, applicationName, arch) {
-     // Add the tunnel binary.
--    files.push(path_1.default.join(buildDir, 'bin', product.tunnelApplicationName));
-+    // files.push(path_1.default.join(buildDir, 'bin', product.tunnelApplicationName));
-     // Add the main executable.
 diff --git a/build/linux/dependencies-generator.ts b/build/linux/dependencies-generator.ts
-index 46c6d6c..23ae589 100644
+index 0ebeb41..686f7b8 100644
 --- a/build/linux/dependencies-generator.ts
 +++ b/build/linux/dependencies-generator.ts
-@@ -25,3 +25,3 @@ import product = require('../../product.json');
+@@ -22,3 +22,3 @@ import product from '../../product.json' with { type: 'json' };
  // are valid, are in dep-lists.ts
 -const FAIL_BUILD_FOR_NEW_DEPENDENCIES: boolean = true;
 +const FAIL_BUILD_FOR_NEW_DEPENDENCIES: boolean = false;
  
-@@ -62,3 +62,3 @@ export async function getDependencies(packageType: 'deb' | 'rpm', buildDir: stri
+@@ -59,3 +59,3 @@ export async function getDependencies(packageType: 'deb' | 'rpm', buildDir: stri
  	// Add the tunnel binary.
 -	files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
 +	// files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
