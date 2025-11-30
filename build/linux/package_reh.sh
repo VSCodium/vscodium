@@ -130,9 +130,6 @@ EOF
   echo "${INCLUDES}" > "${HOME}/.gyp/include.gypi"
 fi
 
-mv .npmrc .npmrc.bak
-cp ../npmrc .npmrc
-
 for i in {1..5}; do # try 5 times
   npm ci --prefix build && break
   if [[ $i == 5 ]]; then
@@ -157,6 +154,11 @@ else
 
   export VSCODE_SYSROOT_DIR=".build"
 fi
+
+node build/npm/preinstall.ts
+
+mv .npmrc .npmrc.bak
+cp ../npmrc .npmrc
 
 for i in {1..5}; do # try 5 times
   npm ci && break
@@ -183,7 +185,7 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   done
 
   popd
-  
+
   VERIFY_CXX11=1
 fi
 

@@ -192,8 +192,10 @@ else
   fi
 fi
 
-mv .npmrc .npmrc.bak
-cp ../npmrc .npmrc
+# node build/npm/preinstall.ts
+
+# mv .npmrc .npmrc.bak
+# cp ../npmrc .npmrc
 
 for i in {1..5}; do # try 5 times
   if [[ "${CI_BUILD}" != "no" && "${OS_NAME}" == "osx" ]]; then
@@ -211,7 +213,7 @@ for i in {1..5}; do # try 5 times
   sleep $(( 15 * (i + 1)))
 done
 
-mv .npmrc.bak .npmrc
+# mv .npmrc.bak .npmrc
 # }}}
 
 # package.json
