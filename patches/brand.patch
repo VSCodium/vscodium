@@ -406,10 +406,10 @@ index fb28b2a..788780a 100644
 +	"walkthroughs.nodejsWelcome.learnMoreAboutJs.altText": "Learn more about JavaScript and Node.js in !!APP_NAME!!."
  }
 diff --git a/extensions/typescript-language-features/src/tsServer/versionManager.ts b/extensions/typescript-language-features/src/tsServer/versionManager.ts
-index 43a2413..ba7934f 100644
+index dcfee49..35e9ef3 100644
 --- a/extensions/typescript-language-features/src/tsServer/versionManager.ts
 +++ b/extensions/typescript-language-features/src/tsServer/versionManager.ts
-@@ -100,3 +100,3 @@ export class TypeScriptVersionManager extends Disposable {
+@@ -111,3 +111,3 @@ export class TypeScriptVersionManager extends Disposable {
  				? '• '
 -				: '') + vscode.l10n.t("Use VS Code's Version"),
 +				: '') + vscode.l10n.t("Use !!APP_NAME!!'s Version"),
@@ -745,10 +745,10 @@ index e342f83..7c314e6 100644
 +		throw new Error('Unable to create the !!APP_NAME!! workbench more than once.');
  	} else {
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index 4850bf4..5c9fadb 100644
+index 8715c5e..9070d95 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -733,3 +733,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -724,3 +724,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  		localize('profileName', "`${profileName}`: name of the profile in which the workspace is opened (e.g. Data Science (Profile)). Ignored if default profile is used."),
 -		localize('appName', "`${appName}`: e.g. VS Code."),
 +		localize('appName', "`${appName}`: e.g. !!APP_NAME!!."),
@@ -763,21 +763,21 @@ index c0528fe..d1fd07f 100644
 +export const InAutomationContext = new RawContextKey<boolean>('inAutomation', false, localize('inAutomation', "Whether !!APP_NAME!! is running under automation/smoke test"));
  
 diff --git a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts b/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
-index f7a2e96..bba28c1 100644
+index ee0b4a4..38040b2 100644
 --- a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
-@@ -394,3 +394,3 @@ configurationRegistry.registerConfiguration({
+@@ -409,3 +409,3 @@ configurationRegistry.registerConfiguration({
  				nls.localize('chat.mcp.access.none', "No access to MCP servers."),
 -				nls.localize('chat.mcp.access.registry', "Allows access to MCP servers installed from the registry that VS Code is connected to."),
 +				nls.localize('chat.mcp.access.registry', "Allows access to MCP servers installed from the registry that !!APP_NAME!! is connected to."),
  				nls.localize('chat.mcp.access.any', "Allow access to any installed MCP server.")
-@@ -421,3 +421,3 @@ configurationRegistry.registerConfiguration({
+@@ -436,3 +436,3 @@ configurationRegistry.registerConfiguration({
  						{
 -							key: 'chat.mcp.access.registry', value: nls.localize('chat.mcp.access.registry', "Allows access to MCP servers installed from the registry that VS Code is connected to."),
 +							key: 'chat.mcp.access.registry', value: nls.localize('chat.mcp.access.registry', "Allows access to MCP servers installed from the registry that !!APP_NAME!! is connected to."),
  						},
 diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts
-index df9d6d3..d255aa4 100644
+index 7e6f2a9..00be07b 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts
 @@ -104,3 +104,3 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
@@ -793,7 +793,7 @@ index df9d6d3..d255aa4 100644
 +				userDescription: localize('setupToolsDescription', "Scaffold a new workspace in !!APP_NAME!!"),
  				canBeReferencedInPrompt: true,
 diff --git a/src/vs/workbench/contrib/chat/browser/languageModelToolsService.ts b/src/vs/workbench/contrib/chat/browser/languageModelToolsService.ts
-index 187536f..e38f375 100644
+index 8823457..9beb9a7 100644
 --- a/src/vs/workbench/contrib/chat/browser/languageModelToolsService.ts
 +++ b/src/vs/workbench/contrib/chat/browser/languageModelToolsService.ts
 @@ -142,3 +142,3 @@ export class LanguageModelToolsService extends Disposable implements ILanguageMo
@@ -802,7 +802,7 @@ index 187536f..e38f375 100644
 +				description: localize('copilot.toolSet.vscode.description', 'Use !!APP_NAME!! features'),
  			}
 diff --git a/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts b/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts
-index 68694e5..f305fc1 100644
+index cb05edd..9d91520 100644
 --- a/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts
 +++ b/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts
 @@ -179,5 +179,5 @@ export class PromptValidator {
@@ -814,13 +814,13 @@ index 68694e5..f305fc1 100644
 +								report(toMarker(localize('promptValidator.unknownAttribute.vscode-agent', "Attribute '{0}' is not supported in !!APP_NAME!! agent files. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Warning));
  							}
 diff --git a/src/vs/workbench/contrib/chat/test/browser/languageModelToolsService.test.ts b/src/vs/workbench/contrib/chat/test/browser/languageModelToolsService.test.ts
-index bade06d..094fd16 100644
+index 0fcdd88..55ac444 100644
 --- a/src/vs/workbench/contrib/chat/test/browser/languageModelToolsService.test.ts
 +++ b/src/vs/workbench/contrib/chat/test/browser/languageModelToolsService.test.ts
 @@ -1072,3 +1072,3 @@ suite('LanguageModelToolsService', () => {
  			const fullReferenceNames = service.toFullReferenceNames(result).sort();
--			assert.deepStrictEqual(fullReferenceNames, [VSCodeToolReference.agent, VSCodeToolReference.execute].sort(), 'toFullReferenceNames should return the VS Code tool names');
-+			assert.deepStrictEqual(fullReferenceNames, [VSCodeToolReference.agent, VSCodeToolReference.execute].sort(), 'toFullReferenceNames should return the !!APP_NAME!! tool names');
+-			assert.deepStrictEqual(fullReferenceNames, [SpecedToolAliases.agent, SpecedToolAliases.execute].sort(), 'toFullReferenceNames should return the VS Code tool names');
++			assert.deepStrictEqual(fullReferenceNames, [SpecedToolAliases.agent, SpecedToolAliases.execute].sort(), 'toFullReferenceNames should return the !!APP_NAME!! tool names');
  
 @@ -1086,3 +1086,3 @@ suite('LanguageModelToolsService', () => {
  			const fullReferenceNames = service.toFullReferenceNames(result).sort();

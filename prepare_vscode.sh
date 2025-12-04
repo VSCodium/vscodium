@@ -280,7 +280,4 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   sed -i 's|Microsoft Corporation|VSCodium|' build/win32/code.iss
 fi
 
-# remove microsoft-authentication extension
-rm -rf extensions/microsoft-authentication
-
 cd ..
