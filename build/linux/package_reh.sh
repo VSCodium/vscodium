@@ -139,6 +139,10 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
+cd build
+npx tsgo --project tsconfig.build.json
+cd ..
+
 if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
   if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
     source ./build/azure-pipelines/linux/setup-env.sh --skip-sysroot
@@ -155,7 +159,7 @@ else
   export VSCODE_SYSROOT_DIR=".build"
 fi
 
-node build/npm/preinstall.ts
+node build/npm/preinstall.js
 
 mv .npmrc .npmrc.bak
 cp ../npmrc .npmrc
@@ -191,7 +195,7 @@ fi
 
 mv .npmrc.bak .npmrc
 
-node build/azure-pipelines/distro/mixin-npm
+node build/azure-pipelines/distro/mixin-npm.js
 
 export VSCODE_NODE_GLIBC="-glibc-${GLIBC_VERSION}"
 

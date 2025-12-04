@@ -1,3 +1,17 @@
+diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
+index 2f25764..bb3692d 100755
+--- a/build/azure-pipelines/linux/setup-env.sh
++++ b/build/azure-pipelines/linux/setup-env.sh
+@@ -15,3 +15,3 @@ else
+   echo "Downloading client sysroot"
+-  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_CLIENT_SYSROOT_DIR" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
++  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_CLIENT_SYSROOT_DIR" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.js"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
+ fi
+@@ -22,3 +22,3 @@ else
+   echo "Downloading remote sysroot"
+-  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" VSCODE_SYSROOT_PREFIX="-glibc-2.28-gcc-8.5.0" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
++  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" VSCODE_SYSROOT_PREFIX="-glibc-2.28-gcc-8.5.0" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.js"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
+ fi
 diff --git a/build/linux/dependencies-generator.ts b/build/linux/dependencies-generator.ts
 index 0ebeb41..686f7b8 100644
 --- a/build/linux/dependencies-generator.ts
@@ -12,3 +26,31 @@ index 0ebeb41..686f7b8 100644
 -	files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
 +	// files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
  	// Add the main executable.
+diff --git a/build/tsconfig.build.json b/build/tsconfig.build.json
+new file mode 100644
+index 0000000..9b5a602
+--- /dev/null
++++ b/build/tsconfig.build.json
+@@ -0,0 +1,12 @@
++{
++	"extends": "./tsconfig.json",
++	"compilerOptions": {
++		"allowJs": false,
++		"checkJs": false,
++		"noEmit": false,
++		"skipLibCheck": true
++	},
++	"include": [
++		"**/*.ts"
++	]
++}
+\ No newline at end of file
+diff --git a/build/tsconfig.json b/build/tsconfig.json
+index 383d534..a0ec7ec 100644
+--- a/build/tsconfig.json
++++ b/build/tsconfig.json
+@@ -10,3 +10,3 @@
+ 		"verbatimModuleSyntax": true,
+-		"allowImportingTsExtensions": true,
++		// "allowImportingTsExtensions": true,
+ 		"resolveJsonModule": true,
