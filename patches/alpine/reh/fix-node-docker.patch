@@ -1,9 +1,9 @@
-diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index e12a33e..9300d62 100644
---- a/build/gulpfile.reh.js
-+++ b/build/gulpfile.reh.js
-@@ -188,5 +188,16 @@ function getNodeChecksum(expectedName) {
- function extractAlpinefromDocker(nodeVersion, platform, arch) {
+diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
+index cb1a0a5..375851e 100644
+--- a/build/gulpfile.reh.ts
++++ b/build/gulpfile.reh.ts
+@@ -159,5 +159,16 @@ function getNodeChecksum(expectedName: string): string | undefined {
+ function extractAlpinefromDocker(nodeVersion: string, platform: string, arch: string) {
 -	const imageName = arch === 'arm64' ? 'arm64v8/node' : 'node';
 +	let imageName = 'node';
 +	let dockerPlatform = '';
@@ -20,4 +20,4 @@ index e12a33e..9300d62 100644
  	log(`Downloading node.js ${nodeVersion} ${platform} ${arch} from docker image ${imageName}`);
 -	const contents = cp.execSync(`docker run --rm ${imageName}:${nodeVersion}-alpine /bin/sh -c 'cat \`which node\`'`, { maxBuffer: 100 * 1024 * 1024, encoding: 'buffer' });
 +	const contents = cp.execSync(`docker run --rm ${dockerPlatform} ${imageName}:${nodeVersion}-alpine /bin/sh -c 'cat \`which node\`'`, { maxBuffer: 200 * 1024 * 1024, encoding: 'buffer' });
- 	return es.readArray([new File({ path: 'node', contents, stat: { mode: parseInt('755', 8) } })]);
+ 	// eslint-disable-next-line local/code-no-dangerous-type-assertions

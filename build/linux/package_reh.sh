@@ -130,9 +130,6 @@ EOF
   echo "${INCLUDES}" > "${HOME}/.gyp/include.gypi"
 fi
 
-mv .npmrc .npmrc.bak
-cp ../npmrc .npmrc
-
 for i in {1..5}; do # try 5 times
   npm ci --prefix build && break
   if [[ $i == 5 ]]; then
@@ -141,6 +138,10 @@ for i in {1..5}; do # try 5 times
   fi
   echo "Npm install failed $i, trying again..."
 done
+
+cd build
+npx tsgo --project tsconfig.build.json
+cd ..
 
 if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
   if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
@@ -157,6 +158,11 @@ else
 
   export VSCODE_SYSROOT_DIR=".build"
 fi
+
+node build/npm/preinstall.js
+
+mv .npmrc .npmrc.bak
+cp ../npmrc .npmrc
 
 for i in {1..5}; do # try 5 times
   npm ci && break
@@ -183,13 +189,13 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   done
 
   popd
-  
+
   VERIFY_CXX11=1
 fi
 
 mv .npmrc.bak .npmrc
 
-node build/azure-pipelines/distro/mixin-npm
+node build/azure-pipelines/distro/mixin-npm.js
 
 export VSCODE_NODE_GLIBC="-glibc-${GLIBC_VERSION}"
 
