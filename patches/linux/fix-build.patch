@@ -13,7 +13,7 @@ index 0ebeb41..686f7b8 100644
 +	// files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
  	// Add the main executable.
 diff --git a/build/package-lock.json b/build/package-lock.json
-index fe9be0c..3d1095c 100644
+index 0681cad..510c469 100644
 --- a/build/package-lock.json
 +++ b/build/package-lock.json
 @@ -17,3 +17,2 @@
@@ -30,8 +30,8 @@ index fe9be0c..3d1095c 100644
          "gulp-sort": "^2.0.0",
 +        "gulp-svgmin": "^4.1.0",
          "jsonc-parser": "^2.3.0",
-@@ -66,5 +68,8 @@
-         "tree-sitter": "^0.22.4",
+@@ -65,5 +67,8 @@
+         "through2": "^4.0.2",
 +        "typescript": "^6.0.0-dev.20251110",
          "vscode-universal-bundler": "^0.1.3",
 +        "webpack": "^5.94.0",
@@ -3119,7 +3119,7 @@ index fe9be0c..3d1095c 100644
 +      }
      }
 diff --git a/build/package.json b/build/package.json
-index 39db6b7..cb39def 100644
+index dce657b..a51ecd9 100644
 --- a/build/package.json
 +++ b/build/package.json
 @@ -11,3 +11,2 @@
@@ -3136,9 +3136,10 @@ index 39db6b7..cb39def 100644
      "gulp-sort": "^2.0.0",
 +    "gulp-svgmin": "^4.1.0",
      "jsonc-parser": "^2.3.0",
-@@ -60,5 +62,8 @@
-     "tree-sitter": "^0.22.4",
+@@ -58,6 +60,9 @@
+     "ternary-stream": "^3.0.0",
 +    "typescript": "^6.0.0-dev.20251110",
+     "through2": "^4.0.2",
      "vscode-universal-bundler": "^0.1.3",
 +    "webpack": "^5.94.0",
      "workerpool": "^6.4.0",
@@ -3148,7 +3149,7 @@ index 39db6b7..cb39def 100644
    },
 diff --git a/build/tsconfig.build.json b/build/tsconfig.build.json
 new file mode 100644
-index 0000000..cc26fdd
+index 0000000..c2be349
 --- /dev/null
 +++ b/build/tsconfig.build.json
 @@ -0,0 +1,24 @@
@@ -3160,7 +3161,7 @@ index 0000000..cc26fdd
 +		"skipLibCheck": true,
 +		"noImplicitAny": false,
 +		"noUnusedLocals": false,
-+    	"noUnusedParameters": false,
++		"noUnusedParameters": false,
 +		"erasableSyntaxOnly": false,
 +		"verbatimModuleSyntax": false,
 +		"strict": false
