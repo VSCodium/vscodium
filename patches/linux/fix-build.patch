@@ -14,20 +14,30 @@ index 0ebeb41..686f7b8 100644
  	// Add the main executable.
 diff --git a/build/tsconfig.build.json b/build/tsconfig.build.json
 new file mode 100644
-index 0000000..9b5a602
+index 0000000..03471ed
 --- /dev/null
 +++ b/build/tsconfig.build.json
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,22 @@
 +{
 +	"extends": "./tsconfig.json",
 +	"compilerOptions": {
 +		"allowJs": false,
 +		"checkJs": false,
-+		"noEmit": false,
-+		"skipLibCheck": true
++		"skipLibCheck": true,
++		"noImplicitAny": false,
++		"noUnusedLocals": false,
++    	"noUnusedParameters": false,
++		"erasableSyntaxOnly": false,
++		"verbatimModuleSyntax": false,
++		"strict": false
 +	},
 +	"include": [
 +		"**/*.ts"
++	],
++	"exclude": [
++		"darwin/**",
++		"vite/**",
++		"*hygiene.ts"
 +	]
 +}
 \ No newline at end of file
