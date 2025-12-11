@@ -1,0 +1,104 @@
+diff --git a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
+--- a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
++++ b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
+@@ -131,2 +131,5 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+ 			}
++			if (e.affectsConfiguration('workbench.secondarySideBar.fontSize')) {
++				this.applyAuxiliaryBarFontSize();
++			}
+ 		}));
+@@ -173,2 +176,4 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+ 		container.style.borderRightWidth = borderColor && isPositionLeft ? '1px' : '0px';
++
++		this.applyAuxiliaryBarFontSize(container);
+ 	}
+@@ -234,2 +239,16 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+
++	private applyAuxiliaryBarFontSize(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const configuredSize = this.configurationService.getValue<number>('workbench.secondarySideBar.fontSize');
++		if (typeof configuredSize === 'number' && configuredSize > 0) {
++			target.style.setProperty('--vscode-workbench-secondary-sidebar-font-size', `${configuredSize}px`);
++		} else {
++			target.style.removeProperty('--vscode-workbench-secondary-sidebar-font-size');
++		}
++	}
++
+ 	protected shouldShowCompositeBar(): boolean {
+diff --git a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
+--- a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
++++ b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
+@@ -26,2 +26,6 @@
+ }
++
++.monaco-workbench .part.auxiliarybar > .content {
++	font-size: var(--vscode-workbench-secondary-sidebar-font-size, 13px);
++}
+
+diff --git a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
+--- a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
++++ b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
+@@ -20,2 +20,6 @@
+ }
++
++.monaco-workbench .part.sidebar > .content {
++	font-size: var(--vscode-workbench-sidebar-font-size, 13px);
++}
+
+diff --git a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
+--- a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
++++ b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
+@@ -111,2 +111,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 			}
++			if (e.affectsConfiguration('workbench.sideBar.fontSize')) {
++				this.applySidebarFontSize();
++			}
+ 		}));
+@@ -150,2 +153,4 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 		container.style.outlineColor = this.getColor(SIDE_BAR_DRAG_AND_DROP_BACKGROUND) ?? '';
++
++		this.applySidebarFontSize(container);
+ 	}
+@@ -275,2 +280,16 @@ export class SidebarPart extends AbstractPaneCompositePart {
+
++	private applySidebarFontSize(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const configuredSize = this.configurationService.getValue<number>('workbench.sideBar.fontSize');
++		if (typeof configuredSize === 'number' && configuredSize > 0) {
++			target.style.setProperty('--vscode-workbench-sidebar-font-size', `${configuredSize}px`);
++		} else {
++			target.style.removeProperty('--vscode-workbench-sidebar-font-size');
++		}
++	}
++
+ 	private registerActions(): void {
+diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
+--- a/src/vs/workbench/browser/workbench.contribution.ts
++++ b/src/vs/workbench/browser/workbench.contribution.ts
+@@ -533,2 +533,18 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+ 			},
++			'workbench.sideBar.fontSize': {
++				'type': 'number',
++				'default': 13,
++				'minimum': 6,
++				'maximum': 32,
++				'markdownDescription': localize('sideBarFontSize', "Controls the font size used for content inside the primary side bar."),
++				'tags': ['accessibility']
++			},
++			'workbench.secondarySideBar.fontSize': {
++				'type': 'number',
++				'default': 13,
++				'minimum': 6,
++				'maximum': 32,
++				'markdownDescription': localize('secondarySideBarFontSize', "Controls the font size used for content inside the secondary side bar."),
++				'tags': ['accessibility']
++			},
+ 			'workbench.panel.showLabels': {
