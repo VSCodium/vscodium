@@ -1,0 +1,14 @@
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index d3ab651..6e2d01a 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -477,2 +477,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 
++		console.log(cwd);
++
+ 		await Promise.all(deps.map(async dep => {
+@@ -480,2 +482,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 
++			console.log(path.join(cwd, dep));
++
+ 			await rcedit(path.join(cwd, dep), {
