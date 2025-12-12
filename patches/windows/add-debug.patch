@@ -12,3 +12,16 @@ index d3ab651..6e2d01a 100644
 +			console.log(path.join(cwd, dep));
 +
  			await rcedit(path.join(cwd, dep), {
+diff --git a/extensions/microsoft-authentication/extension.webpack.config.js b/extensions/microsoft-authentication/extension.webpack.config.js
+index a46d5a5..14f2dea 100644
+--- a/extensions/microsoft-authentication/extension.webpack.config.js
++++ b/extensions/microsoft-authentication/extension.webpack.config.js
+@@ -40,2 +40,3 @@ if (
+ ) {
++	console.log('Copy native files');
+ 	plugins.push(new CopyWebpackPlugin({
+@@ -49,2 +50,4 @@ if (
+ 	}));
++} else {
++	console.log('Do not copy native files');
+ }
