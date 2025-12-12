@@ -108,10 +108,6 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-cd build
-npx tsgo --project tsconfig.build.json
-cd ..
-
 if [[ -z "${VSCODE_SKIP_SETUPENV}" ]]; then
   if [[ -n "${VSCODE_SKIP_SYSROOT}" ]]; then
     source ./build/azure-pipelines/linux/setup-env.sh --skip-sysroot
@@ -129,7 +125,7 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-node build/azure-pipelines/distro/mixin-npm.js
+node build/azure-pipelines/distro/mixin-npm.ts
 
 npm run gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
