@@ -46,7 +46,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
       npm run copy-policy-dto --prefix build
       node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc darwin
 
-      npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+      npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci" -- -LLLL
 
       if [[ "${VSCODE_ARCH}" != "x64" ]]; then
         SHOULD_BUILD_REH="no"
