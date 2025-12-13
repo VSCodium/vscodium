@@ -22,7 +22,14 @@ done
 
 node build/azure-pipelines/distro/mixin-npm.ts
 
+# delete native files built in the `compile` step
+find .build/extensions -type f -name '*.node' -print -delete
+
 . ../build/windows/rtf/make.sh
+
+# generate Group Policy definitions
+npm run copy-policy-dto --prefix build
+node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc win32
 
 npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
 

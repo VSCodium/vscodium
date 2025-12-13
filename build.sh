@@ -44,7 +44,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
       # generate Group Policy definitions
       npm run copy-policy-dto --prefix build
-      node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc darwin
+      node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc win32
 
       npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
 
@@ -65,7 +65,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     if [[ "${CI_BUILD}" == "no" ]]; then
       # generate Group Policy definitions
       npm run copy-policy-dto --prefix build
-      node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc darwin
+      node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc linux
 
       npm run gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 

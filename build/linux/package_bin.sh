@@ -127,6 +127,13 @@ done
 
 node build/azure-pipelines/distro/mixin-npm.ts
 
+# delete native files built in the `compile` step
+find .build/extensions -type f -name '*.node' -print -delete
+
+# generate Group Policy definitions
+npm run copy-policy-dto --prefix build
+node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc linux
+
 npm run gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 
 if [[ -f "../build/linux/${VSCODE_ARCH}/ripgrep.sh" ]]; then
