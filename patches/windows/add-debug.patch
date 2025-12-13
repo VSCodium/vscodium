@@ -1,27 +1,25 @@
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index d3ab651..105dc32 100644
+index d3ab651..0e9a088 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -218,3 +218,7 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -218,3 +218,5 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  
 -	const task = () => {
 +	const task = async () => {
-+		console.log(await glob('**/*.node', { cwd: destination }))
-+		console.log(await glob('**/*.node', { cwd: path.join('.', sourceFolderName) }))
-+		console.log(await glob('**/*.node', { cwd: path.join(process.cwd(), 'node_modules') }))
++		console.log(await glob('**/*.node', { cwd: path.join(process.cwd(), '.build/extensions') }))
 +
  		const out = sourceFolderName;
-@@ -462,3 +466,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -462,3 +464,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  
 -		return result.pipe(vfs.dest(destination));
 +		return Promise.resolve(result.pipe(vfs.dest(destination)));
  	};
-@@ -477,2 +481,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -477,2 +479,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 +		console.log(cwd);
 +
  		await Promise.all(deps.map(async dep => {
-@@ -480,2 +486,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -480,2 +484,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 +			console.log(path.join(cwd, dep));
 +
