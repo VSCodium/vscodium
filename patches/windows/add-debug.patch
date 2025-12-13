@@ -1,39 +1,59 @@
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index d3ab651..0e9a088 100644
+index d3ab651..c0334fb 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -218,3 +218,5 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
- 
--	const task = () => {
-+	const task = async () => {
-+		console.log(await glob('**/*.node', { cwd: path.join(process.cwd(), '.build/extensions') }))
-+
- 		const out = sourceFolderName;
-@@ -462,3 +464,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -462,3 +462,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  
 -		return result.pipe(vfs.dest(destination));
 +		return Promise.resolve(result.pipe(vfs.dest(destination)));
  	};
-@@ -477,2 +479,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -477,2 +477,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 +		console.log(cwd);
 +
  		await Promise.all(deps.map(async dep => {
-@@ -480,2 +484,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -480,2 +482,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 +			console.log(path.join(cwd, dep));
 +
  			await rcedit(path.join(cwd, dep), {
 diff --git a/extensions/microsoft-authentication/extension.webpack.config.js b/extensions/microsoft-authentication/extension.webpack.config.js
-index a46d5a5..14f2dea 100644
+index a46d5a5..2d20217 100644
 --- a/extensions/microsoft-authentication/extension.webpack.config.js
 +++ b/extensions/microsoft-authentication/extension.webpack.config.js
-@@ -40,2 +40,3 @@ if (
- ) {
-+	console.log('Copy native files');
- 	plugins.push(new CopyWebpackPlugin({
-@@ -49,2 +50,4 @@ if (
- 	}));
-+} else {
-+	console.log('Do not copy native files');
- }
+@@ -35,17 +35,20 @@ console.log(`Building Microsoft Authentication Extension for ${process.platform}
+ const plugins = [...nodePlugins(import.meta.dirname)];
+-if (
+-	(isWindows && windowsArches.includes(arch)) ||
+-	isMacOS ||
+-	(isLinux && linuxArches.includes(arch))
+-) {
+-	plugins.push(new CopyWebpackPlugin({
+-		patterns: [
+-			{
+-				// The native files we need to ship with the extension
+-				from: `**/dist/${platformFolder}/${arch}/(lib|)msal*.(node|dll|dylib|so)`,
+-				to: '[name][ext]'
+-			}
+-		]
+-	}));
+-}
++// if (
++// 	(isWindows && windowsArches.includes(arch)) ||
++// 	isMacOS ||
++// 	(isLinux && linuxArches.includes(arch))
++// ) {
++// 	console.log('Copy native files');
++// 	plugins.push(new CopyWebpackPlugin({
++// 		patterns: [
++// 			{
++// 				// The native files we need to ship with the extension
++// 				from: `**/dist/${platformFolder}/${arch}/(lib|)msal*.(node|dll|dylib|so)`,
++// 				to: '[name][ext]'
++// 			}
++// 		]
++// 	}));
++// } else {
++// 	console.log('Do not copy native files');
++// }
+ 
