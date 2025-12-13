@@ -1,13 +1,21 @@
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index d3ab651..6e2d01a 100644
+index d3ab651..50f27f6 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -477,2 +477,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -218,3 +218,6 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 
+-	const task = () => {
++	const task = async () => {
++		console.log(await glob('**/*.node', { cwd: destination }))
++		console.log(await glob('**/*.node', { cwd: path.join('.', sourceFolderName) }))
++
+ 		const out = sourceFolderName;
+@@ -477,2 +480,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 +		console.log(cwd);
 +
  		await Promise.all(deps.map(async dep => {
-@@ -480,2 +482,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -480,2 +485,4 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 +			console.log(path.join(cwd, dep));
 +
