@@ -1,22 +1,22 @@
-diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index 7046ee0..faca888 100644
---- a/build/gulpfile.vscode.js
-+++ b/build/gulpfile.vscode.js
-@@ -376,3 +376,3 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index d3ab651..63cd71f 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -369,3 +369,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  				.pipe(replace('@@APPNAME@@', product.applicationName))
 -				.pipe(rename('bin/code'));
 +				.pipe(rename('bin/' + product.applicationName));
  			const policyDest = gulp.src('.build/policies/darwin/**', { base: '.build/policies/darwin' })
 diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-index 6324e98..3d2fba3 100644
+index 2c3b710..8041f08 100644
 --- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
 +++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-@@ -445,3 +445,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -503,3 +503,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  	private async getShellCommandLink(): Promise<{ readonly source: string; readonly target: string }> {
 -		const target = resolve(this.environmentMainService.appRoot, 'bin', 'code');
 +		const target = resolve(this.environmentMainService.appRoot, 'bin', this.productService.applicationName);
  		const source = `/usr/local/bin/${this.productService.applicationName}`;
-@@ -680,3 +680,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -772,3 +772,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  		if (this.environmentMainService.isBuilt) {
 -			return join(this.environmentMainService.appRoot, 'bin', 'code');
 +			return join(this.environmentMainService.appRoot, 'bin', `${this.productService.applicationName}`);

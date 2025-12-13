@@ -22,7 +22,7 @@ export VSCODE_SYSROOT_PREFIX='-glibc-2.28-gcc-10.5.0'
 
 if [[ "${VSCODE_ARCH}" == "arm64" || "${VSCODE_ARCH}" == "armhf" ]]; then
   export VSCODE_SKIP_SYSROOT=1
-  export USE_GNUPP2A=1
+  # export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
@@ -125,7 +125,14 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-node build/azure-pipelines/distro/mixin-npm
+node build/azure-pipelines/distro/mixin-npm.ts
+
+# delete native files built in the `compile` step
+find .build/extensions -type f -name '*.node' -print -delete
+
+# generate Group Policy definitions
+npm run copy-policy-dto --prefix build
+node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc linux
 
 npm run gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
 

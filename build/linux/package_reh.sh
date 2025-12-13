@@ -18,14 +18,14 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 GLIBC_VERSION="2.28"
 GLIBCXX_VERSION="3.4.26"
-NODE_VERSION="22.15.1"
+NODE_VERSION="22.20.0"
 
 export VSCODE_NODEJS_URLROOT='/download/release'
 export VSCODE_NODEJS_URLSUFFIX=''
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   GLIBC_VERSION="2.17"
-  GLIBCXX_VERSION="3.4.22"
+  GLIBCXX_VERSION="3.4.30"
 
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-x64"
 
@@ -130,9 +130,6 @@ EOF
   echo "${INCLUDES}" > "${HOME}/.gyp/include.gypi"
 fi
 
-mv .npmrc .npmrc.bak
-cp ../npmrc .npmrc
-
 for i in {1..5}; do # try 5 times
   npm ci --prefix build && break
   if [[ $i == 5 ]]; then
@@ -157,6 +154,11 @@ else
 
   export VSCODE_SYSROOT_DIR=".build"
 fi
+
+node build/npm/preinstall.ts
+
+mv .npmrc .npmrc.bak
+cp ../npmrc .npmrc
 
 for i in {1..5}; do # try 5 times
   npm ci && break
@@ -183,13 +185,13 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   done
 
   popd
-  
+
   VERIFY_CXX11=1
 fi
 
 mv .npmrc.bak .npmrc
 
-node build/azure-pipelines/distro/mixin-npm
+node build/azure-pipelines/distro/mixin-npm.ts
 
 export VSCODE_NODE_GLIBC="-glibc-${GLIBC_VERSION}"
 
