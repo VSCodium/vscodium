@@ -13,10 +13,10 @@ index d3ab651..6e2d01a 100644
 +
  			await rcedit(path.join(cwd, dep), {
 diff --git a/extensions/microsoft-authentication/extension.webpack.config.js b/extensions/microsoft-authentication/extension.webpack.config.js
-index a46d5a5..2d20217 100644
+index a46d5a5..1abdba4 100644
 --- a/extensions/microsoft-authentication/extension.webpack.config.js
 +++ b/extensions/microsoft-authentication/extension.webpack.config.js
-@@ -35,17 +35,20 @@ console.log(`Building Microsoft Authentication Extension for ${process.platform}
+@@ -35,17 +35,21 @@ console.log(`Building Microsoft Authentication Extension for ${process.platform}
  const plugins = [...nodePlugins(import.meta.dirname)];
 -if (
 -	(isWindows && windowsArches.includes(arch)) ||
@@ -33,6 +33,7 @@ index a46d5a5..2d20217 100644
 -		]
 -	}));
 -}
++console.log(isWindows, windowsArches.includes(arch), isMacOS, isLinux, linuxArches.includes(arch))
 +// if (
 +// 	(isWindows && windowsArches.includes(arch)) ||
 +// 	isMacOS ||
