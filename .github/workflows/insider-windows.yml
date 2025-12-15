@@ -96,11 +96,11 @@ jobs:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
 
-      - name: Setup GCC
-        uses: egor-tensin/setup-gcc@v1
-        with:
-          version: 10
-          platform: x64
+      # - name: Setup GCC
+      #   uses: egor-tensin/setup-gcc@v1
+      #   with:
+      #     version: 10
+      #     platform: x64
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
@@ -114,9 +114,9 @@ jobs:
           python-version: '3.11'
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Install libkrb5-dev
-        run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
-        if: env.SHOULD_BUILD == 'yes'
+      # - name: Install libkrb5-dev
+      #   run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
+      #   if: env.SHOULD_BUILD == 'yes'
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
