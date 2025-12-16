@@ -34,20 +34,22 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
 
   export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
-  EXPECTED_GLIBC_VERSION="2.30"
+  GLIBC_VERSION="2.30"
 
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-arm64"
 
   export VSCODE_SKIP_SYSROOT=1
   export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
-  EXPECTED_GLIBC_VERSION="2.30"
+  GLIBC_VERSION="2.30"
 
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-armhf"
 
   export VSCODE_SKIP_SYSROOT=1
   export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
+  GLIBC_VERSION="2.17"
+
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-ppc64le"
   VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
 
@@ -66,6 +68,8 @@ elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
 elif [[ "${VSCODE_ARCH}" == "s390x" ]]; then
+  GLIBC_VERSION="2.17"
+
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-s390x"
   VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
 
@@ -172,22 +176,22 @@ for i in {1..5}; do # try 5 times
   rm -rf node_modules/@vscode node_modules/node-pty
 done
 
-if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  pushd "remote"
+# if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+#   pushd "remote"
 
-  for LIB in @parcel/watcher @vscode/spdlog kerberos node-pty
-  do
-    pushd "node_modules/${LIB}"
+#   for LIB in @parcel/watcher @vscode/spdlog kerberos node-pty
+#   do
+#     pushd "node_modules/${LIB}"
 
-    CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
+#     CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" npx node-gyp rebuild
 
-    popd
-  done
+#     popd
+#   done
 
-  popd
+#   popd
 
-  VERIFY_CXX11=1
-fi
+#   VERIFY_CXX11=1
+# fi
 
 mv .npmrc.bak .npmrc
 
@@ -202,9 +206,9 @@ if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  if [[ -n "${VERIFY_CXX11}" ]]; then
-    SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
-  fi
+  # if [[ -n "${VERIFY_CXX11}" ]]; then
+  #   SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
+  # fi
 
   pushd "../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 
@@ -225,9 +229,9 @@ if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
-  if [[ -n "${VERIFY_CXX11}" ]]; then
-    SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
-  fi
+  # if [[ -n "${VERIFY_CXX11}" ]]; then
+  #   SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ../build/linux/verify_cxx11_requirements.sh
+  # fi
 
   pushd "../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}"
 

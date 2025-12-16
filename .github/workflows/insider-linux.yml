@@ -425,6 +425,11 @@ jobs:
           version: 10
           platform: x64
 
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
       - name: Install GH
         run: ./build/linux/install_gh.sh
         if: env.SHOULD_DEPLOY == 'yes'
