@@ -143,7 +143,11 @@ while [[ -n "$( git log -1 | grep "VSCODIUM HELPER" )" ]]; do
 done
 
 for FILE in ../patches/*.patch; do
-  check_file "${FILE}"
+  if [[ "${FILE}" == *"/fix-policies.patch" ]]; then
+    check_file "../patches/fix-keymap.patch" "../patches/fix-policies.patch"
+  else
+    check_file "${FILE}"
+  fi
 done
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then

@@ -12,6 +12,63 @@ index 2f25764..742aaef 100755
 -  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" VSCODE_SYSROOT_PREFIX="-glibc-2.28-gcc-8.5.0" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
 +  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
  fi
+diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
+index cb1a0a5..6c21dd2 100644
+--- a/build/gulpfile.reh.ts
++++ b/build/gulpfile.reh.ts
+@@ -235,9 +235,23 @@ function nodejs(platform: string, arch: string): NodeJS.ReadWriteStream | undefi
+ 		case 'linux':
+-			return (product.nodejsRepository !== 'https://nodejs.org' ?
+-				fetchGithub(product.nodejsRepository, { version: `${nodeVersion}-${internalNodeVersion}`, name: expectedName!, checksumSha256 }) :
+-				fetchUrls(`/dist/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz`, { base: 'https://nodejs.org', checksumSha256 })
+-			).pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
+-				.pipe(filter('**/node'))
+-				.pipe(util.setExecutableBit('**'))
+-				.pipe(rename('node'));
++			if (process.env.VSCODE_NODEJS_SITE && process.env.VSCODE_NODEJS_URLROOT) {
++				return fetchUrls(`${process.env.VSCODE_NODEJS_URLROOT}/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}${process.env.VSCODE_NODEJS_URLSUFFIX}.tar.gz`, { base: process.env.VSCODE_NODEJS_SITE, checksumSha256 })
++					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
++					.pipe(filter('**/node'))
++					.pipe(util.setExecutableBit('**'))
++					.pipe(rename('node'));
++			}
++			if (product.nodejsRepository !== 'https://nodejs.org') {
++				return fetchGithub(product.nodejsRepository, { version: `${nodeVersion}-${internalNodeVersion}`, name: expectedName!, checksumSha256 })
++					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
++					.pipe(filter('**/node'))
++					.pipe(util.setExecutableBit('**'))
++					.pipe(rename('node'));
++			}
++			else {
++				return fetchUrls(`/dist/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz`, { base: 'https://nodejs.org', checksumSha256 })
++					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
++					.pipe(filter('**/node'))
++					.pipe(util.setExecutableBit('**'))
++					.pipe(rename('node'));
++			}
+ 		case 'alpine':
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index d3ab651..9dbe6f3 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -375,2 +375,12 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 
++		const electronOverride: { repo?: string; tag?: string } = {};
++		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
++			// official electron doesn't support all arch, override the repo with `VSCODE_ELECTRON_REPOSITORY`.
++			electronOverride.repo = process.env.VSCODE_ELECTRON_REPOSITORY;
++		}
++
++		if (process.env.VSCODE_ELECTRON_TAG) {
++			electronOverride.tag = process.env.VSCODE_ELECTRON_TAG;
++		}
++
+ 		let result: NodeJS.ReadWriteStream = all
+@@ -379,3 +389,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 			.pipe(filter(['**', '!**/.github/**'], { dot: true })) // https://github.com/microsoft/vscode/issues/116523
+-			.pipe(electron({ ...config, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false, ...customElectronConfig }))
++			.pipe(electron({ ...config, ...electronOverride, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false, ...customElectronConfig }))
+ 			.pipe(filter(['**', '!LICENSE', '!version'], { dot: true }));
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
 index d00eb59..34ecdf1 100644
 --- a/build/linux/debian/dep-lists.ts
