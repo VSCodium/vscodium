@@ -1,3 +1,17 @@
+diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
+index 24462a3..ecb43fd 100644
+--- a/build/lib/extensions.ts
++++ b/build/lib/extensions.ts
+@@ -94,3 +94,3 @@ function fromLocal(extensionPath: string, forWeb: boolean, disableMangle: boolea
+ function fromLocalWebpack(extensionPath: string, webpackConfigFileName: string, disableMangle: boolean): Stream {
+-	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
++	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
+ 	const webpack = require('webpack');
+@@ -208,3 +208,3 @@ function fromLocalWebpack(extensionPath: string, webpackConfigFileName: string,
+ function fromLocalNormal(extensionPath: string): Stream {
+-	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
++	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
+ 	const result = es.through();
 diff --git a/build/package-lock.json b/build/package-lock.json
 index fe9be0c..d3d0ae9 100644
 --- a/build/package-lock.json
