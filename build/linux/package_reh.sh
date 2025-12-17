@@ -34,14 +34,14 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
 
   export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
-  GLIBC_VERSION="2.30"
+  EXPECTED_GLIBC_VERSION="2.30"
 
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-arm64"
 
   export VSCODE_SKIP_SYSROOT=1
   export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
-  GLIBC_VERSION="2.30"
+  EXPECTED_GLIBC_VERSION="2.30"
 
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-armhf"
 
