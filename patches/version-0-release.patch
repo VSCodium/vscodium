@@ -1,31 +1,26 @@
-diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index cd8610d..2d928b1 100644
---- a/build/gulpfile.vscode.linux.js
-+++ b/build/gulpfile.vscode.linux.js
-@@ -27,4 +27,2 @@ const commit = getVersion(root);
- 
--const linuxPackageRevision = Math.floor(new Date().getTime() / 1000);
--
- /**
-@@ -90,3 +88,3 @@ function prepareDebPackage(arch) {
+diff --git a/build/gulpfile.vscode.linux.ts b/build/gulpfile.vscode.linux.ts
+index c5d2163..b4768b9 100644
+--- a/build/gulpfile.vscode.linux.ts
++++ b/build/gulpfile.vscode.linux.ts
+@@ -90,3 +90,3 @@ function prepareDebPackage(arch: string) {
  					.pipe(replace('@@NAME@@', product.applicationName))
 -					.pipe(replace('@@VERSION@@', packageJson.version + '-' + linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', packageJson.version))
  					.pipe(replace('@@ARCHITECTURE@@', debArch))
-@@ -204,3 +202,2 @@ function prepareRpmPackage(arch) {
+@@ -198,3 +198,2 @@ function prepareRpmPackage(arch: string) {
  			.pipe(replace('@@VERSION@@', packageJson.version))
--			.pipe(replace('@@RELEASE@@', linuxPackageRevision))
+-			.pipe(replace('@@RELEASE@@', linuxPackageRevision.toString()))
  			.pipe(replace('@@ARCHITECTURE@@', rpmArch))
-@@ -278,3 +275,3 @@ function prepareSnapPackage(arch) {
+@@ -263,3 +262,3 @@ function prepareSnapPackage(arch: string) {
  			.pipe(replace('@@NAME@@', product.applicationName))
--			.pipe(replace('@@VERSION@@', commit.substr(0, 8)))
+-			.pipe(replace('@@VERSION@@', commit!.substr(0, 8)))
 +			.pipe(replace('@@VERSION@@', packageJson.version))
  			// Possible run-on values https://snapcraft.io/docs/architectures
 diff --git a/src/vs/workbench/api/common/extHost.api.impl.ts b/src/vs/workbench/api/common/extHost.api.impl.ts
-index 0db2369..5cac67b 100644
+index 8838f2f..fb120ae 100644
 --- a/src/vs/workbench/api/common/extHost.api.impl.ts
 +++ b/src/vs/workbench/api/common/extHost.api.impl.ts
-@@ -1537,5 +1537,7 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
+@@ -1629,5 +1629,7 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
  
 +		const version = initData.version.replace(/^([0-9]+\.[0-9]+\.[0-5]).*$/, '$1');
 +

@@ -1,0 +1,135 @@
+diff --git a/.npmrc b/.npmrc
+index c58ce2e..a1f42cd 100644
+--- a/.npmrc
++++ b/.npmrc
+@@ -5,2 +5,3 @@ runtime="electron"
+ build_from_source="true"
++build_from_source_native_keymap="no"
+ legacy-peer-deps="true"
+diff --git a/build/.moduleignore b/build/.moduleignore
+index 0459b46..cd99c71 100644
+--- a/build/.moduleignore
++++ b/build/.moduleignore
+@@ -65,7 +65,7 @@ fsevents/test/**
+ 
+-native-keymap/binding.gyp
+-native-keymap/build/**
+-native-keymap/src/**
+-native-keymap/deps/**
+-!native-keymap/build/Release/*.node
++@vscodium/native-keymap/binding.gyp
++@vscodium/native-keymap/build/**
++@vscodium/native-keymap/src/**
++@vscodium/native-keymap/deps/**
++!@vscodium/native-keymap/build/Release/*.node
+ 
+diff --git a/eslint.config.js b/eslint.config.js
+index 8fda673..967ae23 100644
+--- a/eslint.config.js
++++ b/eslint.config.js
+@@ -1475,3 +1475,3 @@ export default tseslint.config(
+ 						'node:module',
+-						'native-keymap',
++						'@vscodium/native-keymap',
+ 						'native-watchdog',
+diff --git a/package-lock.json b/package-lock.json
+index 4d43f38..7334f04 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -9,3 +9,2 @@
+       "version": "1.107.0",
+-      "hasInstallScript": true,
+       "license": "MIT",
+@@ -29,2 +28,3 @@
+         "@vscode/windows-registry": "^1.1.0",
++        "@vscodium/native-keymap": "3.3.7-258424",
+         "@xterm/addon-clipboard": "^0.2.0-beta.119",
+@@ -46,3 +46,2 @@
+         "native-is-elevated": "0.8.0",
+-        "native-keymap": "^3.3.5",
+         "native-watchdog": "^1.4.1",
+@@ -3300,2 +3299,9 @@
+     },
++    "node_modules/@vscodium/native-keymap": {
++      "version": "3.3.7-258424",
++      "resolved": "https://registry.npmjs.org/@vscodium/native-keymap/-/native-keymap-3.3.7-258424.tgz",
++      "integrity": "sha512-HZ20QfExV0kE2l939yE3wn0LezSV7BcpxOFmlUMUHBQbdANMSLkwzo6Zw1xOEZDoYm3VTDHt8/+WwLBR2MpA3A==",
++      "hasInstallScript": true,
++      "license": "MIT"
++    },
+     "node_modules/@webassemblyjs/ast": {
+@@ -12662,5 +12668,6 @@
+     "node_modules/napi-build-utils": {
+-      "version": "1.0.2",
+-      "resolved": "https://registry.npmjs.org/napi-build-utils/-/napi-build-utils-1.0.2.tgz",
+-      "integrity": "sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg=="
++      "version": "2.0.0",
++      "resolved": "https://registry.npmjs.org/napi-build-utils/-/napi-build-utils-2.0.0.tgz",
++      "integrity": "sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA==",
++      "license": "MIT"
+     },
+@@ -12673,9 +12680,2 @@
+     },
+-    "node_modules/native-keymap": {
+-      "version": "3.3.7",
+-      "resolved": "https://registry.npmjs.org/native-keymap/-/native-keymap-3.3.7.tgz",
+-      "integrity": "sha512-07n5kF0L9ERC9pilqEFucnhs1XG4WttbHAMWhhOSqQYXhB8mMNTSCzP4psTaVgDSp6si2HbIPhTIHuxSia6NPQ==",
+-      "hasInstallScript": true,
+-      "license": "MIT"
+-    },
+     "node_modules/native-watchdog": {
+@@ -14180,5 +14180,6 @@
+     "node_modules/prebuild-install": {
+-      "version": "7.1.2",
+-      "resolved": "https://registry.npmjs.org/prebuild-install/-/prebuild-install-7.1.2.tgz",
+-      "integrity": "sha512-UnNke3IQb6sgarcZIDU3gbMeTp/9SSU1DAIkil7PrqG1vZlBtY5msYccSKSHDqa3hNg436IXK+SNImReuA1wEQ==",
++      "version": "7.1.3",
++      "resolved": "https://registry.npmjs.org/prebuild-install/-/prebuild-install-7.1.3.tgz",
++      "integrity": "sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==",
++      "license": "MIT",
+       "dependencies": {
+@@ -14189,3 +14190,3 @@
+         "mkdirp-classic": "^0.5.3",
+-        "napi-build-utils": "^1.0.1",
++        "napi-build-utils": "^2.0.0",
+         "node-abi": "^3.3.0",
+diff --git a/package.json b/package.json
+index 18b9a35..afa9c72 100644
+--- a/package.json
++++ b/package.json
+@@ -108,3 +108,3 @@
+     "native-is-elevated": "0.8.0",
+-    "native-keymap": "^3.3.5",
++    "@vscodium/native-keymap": "3.3.7-258424",
+     "native-watchdog": "^1.4.1",
+diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
+index 5099915..aa1b0b8 100644
+--- a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
++++ b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
+@@ -44,8 +44,8 @@ flakySuite('Native Modules (all platforms)', () => {
+ 	test('native-keymap', async () => {
+-		const keyMap = await import('native-keymap');
+-		assert.ok(typeof keyMap.onDidChangeKeyboardLayout === 'function', testErrorMessage('native-keymap'));
+-		assert.ok(typeof keyMap.getCurrentKeyboardLayout === 'function', testErrorMessage('native-keymap'));
++		const keyMap = await import('@vscodium/native-keymap');
++		assert.ok(typeof keyMap.onDidChangeKeyboardLayout === 'function', testErrorMessage('@vscodium/native-keymap'));
++		assert.ok(typeof keyMap.getCurrentKeyboardLayout === 'function', testErrorMessage('@vscodium/native-keymap'));
+ 
+ 		const result = keyMap.getCurrentKeyboardLayout();
+-		assert.ok(result, testErrorMessage('native-keymap'));
++		assert.ok(result, testErrorMessage('@vscodium/native-keymap'));
+ 	});
+diff --git a/src/vs/platform/keyboardLayout/electron-main/keyboardLayoutMainService.ts b/src/vs/platform/keyboardLayout/electron-main/keyboardLayoutMainService.ts
+index 8950ce2..f31cea6 100644
+--- a/src/vs/platform/keyboardLayout/electron-main/keyboardLayoutMainService.ts
++++ b/src/vs/platform/keyboardLayout/electron-main/keyboardLayoutMainService.ts
+@@ -5,3 +5,3 @@
+ 
+-import type * as nativeKeymap from 'native-keymap';
++import type * as nativeKeymap from '@vscodium/native-keymap';
+ import * as platform from '../../../base/common/platform.js';
+@@ -48,3 +48,3 @@ export class KeyboardLayoutMainService extends Disposable implements INativeKeyb
+ 	private async _doInitialize(): Promise<void> {
+-		const nativeKeymapMod = await import('native-keymap');
++		const nativeKeymapMod = await import('@vscodium/native-keymap');
+ 
