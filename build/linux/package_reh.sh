@@ -24,13 +24,7 @@ export VSCODE_NODEJS_URLROOT='/download/release'
 export VSCODE_NODEJS_URLSUFFIX=''
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  GLIBC_VERSION="2.17"
-  GLIBCXX_VERSION="3.4.30"
-
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-x64"
-
-  export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
-  export VSCODE_NODEJS_URLSUFFIX='-glibc-217'
 
   export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
