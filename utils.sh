@@ -29,6 +29,7 @@ apply_patch() {
   replace "s|!!ASSETS_REPOSITORY!!|${ASSETS_REPOSITORY}|g" "$1"
   replace "s|!!BINARY_NAME!!|${BINARY_NAME}|g" "$1"
   replace "s|!!GH_REPO_PATH!!|${GH_REPO_PATH}|g" "$1"
+  replace "s|!!GLOBAL_DIRNAME!!|${GLOBAL_DIRNAME}|g" "$1"
   replace "s|!!ORG_NAME!!|${ORG_NAME}|g" "$1"
   replace "s|!!RELEASE_VERSION!!|${RELEASE_VERSION}|g" "$1"
   replace "s|!!TUNNEL_APP_NAME!!|${TUNNEL_APP_NAME}|g" "$1"
