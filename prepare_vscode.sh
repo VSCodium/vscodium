@@ -132,8 +132,10 @@ cat product.json
 
 echo "APP_NAME=\"${APP_NAME}\""
 echo "APP_NAME_LC=\"${APP_NAME_LC}\""
+echo "ASSETS_REPOSITORY=\"${ASSETS_REPOSITORY}\""
 echo "BINARY_NAME=\"${BINARY_NAME}\""
 echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
+echo "GLOBAL_DIRNAME=\"${GLOBAL_DIRNAME}\""
 echo "ORG_NAME=\"${ORG_NAME}\""
 echo "TUNNEL_APP_NAME=\"${TUNNEL_APP_NAME}\""
 
