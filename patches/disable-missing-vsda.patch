@@ -1,0 +1,128 @@
+diff --git a/src/vs/platform/sign/browser/signService.ts b/src/vs/platform/sign/browser/signService.ts
+index ec1e11b..8303040 100644
+--- a/src/vs/platform/sign/browser/signService.ts
++++ b/src/vs/platform/sign/browser/signService.ts
+@@ -5,6 +5,2 @@
+ 
+-import { importAMDNodeModule, resolveAmdNodeModulePath } from '../../../amdX.js';
+-import { WindowIntervalTimer } from '../../../base/browser/dom.js';
+-import { mainWindow } from '../../../base/browser/window.js';
+-import { memoize } from '../../../base/common/decorators.js';
+ import { IProductService } from '../../product/common/productService.js';
+@@ -13,30 +9,4 @@ import { ISignService } from '../common/sign.js';
+ 
+-declare module vsdaWeb {
+-	export function sign(salted_message: string): string;
+-
+-	// eslint-disable-next-line @typescript-eslint/naming-convention
+-	export class validator {
+-		free(): void;
+-		constructor();
+-		createNewMessage(original: string): string;
+-		validate(signed_message: string): 'ok' | 'error';
+-	}
+-
+-	export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
+-	export function init(module_or_path?: InitInput | Promise<InitInput>): Promise<unknown>;
+-}
+-
+-// Initialized if/when vsda is loaded
+-declare const vsda_web: {
+-	default: typeof vsdaWeb.init;
+-	sign: typeof vsdaWeb.sign;
+-	validator: typeof vsdaWeb.validator;
+-};
+-
+-const KEY_SIZE = 32;
+-const IV_SIZE = 16;
+-const STEP_SIZE = KEY_SIZE + IV_SIZE;
+-
+ export class SignService extends AbstractSignService implements ISignService {
+-	constructor(@IProductService private readonly productService: IProductService) {
++	constructor(@IProductService _productService: IProductService) {
+ 		super();
+@@ -44,53 +14,7 @@ export class SignService extends AbstractSignService implements ISignService {
+ 	protected override getValidator(): Promise<IVsdaValidator> {
+-		return this.vsda().then(vsda => {
+-			const v = new vsda.validator();
+-			return {
+-				createNewMessage: arg => v.createNewMessage(arg),
+-				validate: arg => v.validate(arg),
+-				dispose: () => v.free(),
+-			};
+-		});
+-	}
+-
+-	protected override signValue(arg: string): Promise<string> {
+-		return this.vsda().then(vsda => vsda.sign(arg));
+-	}
+-
+-	@memoize
+-	private async vsda(): Promise<typeof vsda_web> {
+-		const checkInterval = new WindowIntervalTimer();
+-		let [wasm] = await Promise.all([
+-			this.getWasmBytes(),
+-			new Promise<void>((resolve, reject) => {
+-				importAMDNodeModule('vsda', 'rust/web/vsda.js').then(() => resolve(), reject);
+-
+-				// todo@connor4312: there seems to be a bug(?) in vscode-loader with
+-				// require() not resolving in web once the script loads, so check manually
+-				checkInterval.cancelAndSet(() => {
+-					if (typeof vsda_web !== 'undefined') {
+-						resolve();
+-					}
+-				}, 50, mainWindow);
+-			}).finally(() => checkInterval.dispose()),
+-		]);
+-
+-		const keyBytes = new TextEncoder().encode(this.productService.serverLicense?.join('\n') || '');
+-		for (let i = 0; i + STEP_SIZE < keyBytes.length; i += STEP_SIZE) {
+-			const key = await crypto.subtle.importKey('raw', keyBytes.slice(i + IV_SIZE, i + IV_SIZE + KEY_SIZE), { name: 'AES-CBC' }, false, ['decrypt']);
+-			wasm = await crypto.subtle.decrypt({ name: 'AES-CBC', iv: keyBytes.slice(i, i + IV_SIZE) }, key, wasm);
+-		}
+-
+-		await vsda_web.default(wasm);
+-
+-		return vsda_web;
++		throw new Error('error loading vsda');
+ 	}
+ 
+-	private async getWasmBytes(): Promise<ArrayBuffer> {
+-		const url = resolveAmdNodeModulePath('vsda', 'rust/web/vsda_bg.wasm');
+-		const response = await fetch(url);
+-		if (!response.ok) {
+-			throw new Error('error loading vsda');
+-		}
+-
+-		return response.arrayBuffer();
++	protected override signValue(_arg: string): Promise<string> {
++		throw new Error('error loading vsda');
+ 	}
+diff --git a/src/vs/server/node/remoteExtensionHostAgentServer.ts b/src/vs/server/node/remoteExtensionHostAgentServer.ts
+index e7949d3..2a553cc 100644
+--- a/src/vs/server/node/remoteExtensionHostAgentServer.ts
++++ b/src/vs/server/node/remoteExtensionHostAgentServer.ts
+@@ -8,3 +8,2 @@ import type * as http from 'http';
+ import * as net from 'net';
+-import { createRequire } from 'node:module';
+ import { performance } from 'perf_hooks';
+@@ -41,3 +40,2 @@ import { setupServerServices, SocketServer } from './serverServices.js';
+ import { CacheControl, serveError, serveFile, WebClientServer } from './webClientServer.js';
+-const require = createRequire(import.meta.url);
+ 
+@@ -734,14 +732,3 @@ export async function createServer(address: string | net.AddressInfo | null, arg
+ 
+-	const vsdaMod = instantiationService.invokeFunction((accessor) => {
+-		const logService = accessor.get(ILogService);
+-		const hasVSDA = fs.existsSync(join(FileAccess.asFileUri('').fsPath, '../node_modules/vsda'));
+-		if (hasVSDA) {
+-			try {
+-				return require('vsda');
+-			} catch (err) {
+-				logService.error(err);
+-			}
+-		}
+-		return null;
+-	});
++	const vsdaMod = instantiationService.invokeFunction(() => null);
+ 
