@@ -10,6 +10,7 @@
   - [Global menu workaround for KDE](#linux-kde-global-menu)
   - [Flatpak most common issues](#linux-flatpak-most-common-issues)
   - [Remote SSH doesn't work](#linux-remote-ssh)
+  - [The window doesn't show up](#linux-no-window)
 
 ## <a id="linux"></a>Linux
 
@@ -70,3 +71,10 @@ Use the VSCodium's compatible extension [Open Remote - SSH](https://open-vsx.org
 On the server, in the `sshd` config, `AllowTcpForwarding` need to be set to `yes`.
 
 It might requires additional dependencies due to the OS/distro (alpine).
+
+### <a id="linux-no-window"></a>*The window doesn't show up*
+
+If you are under Wayland:
+- try the command `codium --verbose`
+- if you see an error like `:ERROR:ui/gl/egl_util.cc:92] EGL Driver message (Error) eglCreateContext: Requested version is not supported`
+- try `codium --ozone-platform=x11`
