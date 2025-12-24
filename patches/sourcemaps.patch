@@ -1,110 +1,34 @@
-diff --git a/build/gulpfile.extensions.js b/build/gulpfile.extensions.js
-index 7826f48..eca4a1d 100644
---- a/build/gulpfile.extensions.js
-+++ b/build/gulpfile.extensions.js
-@@ -23,2 +23,3 @@ const plumber = require('gulp-plumber');
- const ext = require('./lib/extensions');
-+const product = require('../product.json');
- 
-@@ -74,3 +75,3 @@ const compilations = [
- 
--const getBaseUrl = out => `https://main.vscode-cdn.net/sourcemaps/${commit}/${out}`;
-+const getBaseUrl = out => `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}/${out.replaceAll('/', '-')}`;
- 
-diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 10b7b44..79861bf 100644
---- a/build/gulpfile.reh.js
-+++ b/build/gulpfile.reh.js
-@@ -454,3 +454,3 @@ function tweakProductForServerWeb(product) {
- 		util.rimraf(`out-vscode-${type}-min`),
--		optimize.minifyTask(`out-vscode-${type}`, `https://main.vscode-cdn.net/sourcemaps/${commit}/core`)
-+		optimize.minifyTask(`out-vscode-${type}`, `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}/core`)
- 	));
-diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index ed06b6a..9488983 100644
---- a/build/gulpfile.vscode.js
-+++ b/build/gulpfile.vscode.js
-@@ -147,3 +147,3 @@ gulp.task(bundleVSCodeTask);
- 
--const sourceMappingURLBase = `https://main.vscode-cdn.net/sourcemaps/${commit}`;
-+const sourceMappingURLBase = `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}`;
- const minifyVSCodeTask = task.define('minify-vscode', task.series(
-diff --git a/build/gulpfile.vscode.web.js b/build/gulpfile.vscode.web.js
-index 295a977..318ce92 100644
---- a/build/gulpfile.vscode.web.js
-+++ b/build/gulpfile.vscode.web.js
-@@ -140,3 +140,3 @@ const minifyVSCodeWebTask = task.define('minify-vscode-web', task.series(
- 	util.rimraf('out-vscode-web-min'),
--	optimize.minifyTask('out-vscode-web', `https://main.vscode-cdn.net/sourcemaps/${commit}/core`)
-+	optimize.minifyTask('out-vscode-web', `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}/core`)
- ));
-diff --git a/build/lib/extensions.js b/build/lib/extensions.js
-index e373688..efa26c9 100644
---- a/build/lib/extensions.js
-+++ b/build/lib/extensions.js
-@@ -75,4 +75,5 @@ const vzip = require('gulp-vinyl-zip');
- const root = path_1.default.dirname(path_1.default.dirname(__dirname));
-+const product = JSON.parse(fs_1.default.readFileSync(path_1.default.join(root, 'product.json'), 'utf8'));
- const commit = (0, getVersion_1.getVersion)(root);
--const sourceMappingURLBase = `https://main.vscode-cdn.net/sourcemaps/${commit}`;
-+const sourceMappingURLBase = `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}`;
- function minifyExtensionResources(input) {
-@@ -205,3 +206,3 @@ function fromLocalWebpack(extensionPath, webpackConfigFileName, disableMangle) {
-                         data.contents = Buffer.from(contents.replace(/\n\/\/# sourceMappingURL=(.*)$/gm, function (_m, g1) {
--                            return `\n//# sourceMappingURL=${sourceMappingURLBase}/extensions/${path_1.default.basename(extensionPath)}/${relativeOutputPath}/${g1}`;
-+                            return `\n//# sourceMappingURL=${sourceMappingURLBase}/extensions-${path_1.default.basename(extensionPath).replaceAll('/', '-')}-${relativeOutputPath.replaceAll('/', '-')}-${g1.replaceAll('/', '-')}`;
-                         }), 'utf8');
 diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
-index 4779ddb..e19fc36 100644
+index 24462a3..1daa855 100644
 --- a/build/lib/extensions.ts
 +++ b/build/lib/extensions.ts
-@@ -30,4 +30,5 @@ const vzip = require('gulp-vinyl-zip');
- const root = path.dirname(path.dirname(__dirname));
+@@ -33,4 +33,5 @@ const require = createRequire(import.meta.url);
+ const root = path.dirname(path.dirname(import.meta.dirname));
 +const product = JSON.parse(fs.readFileSync(path.join(root, 'product.json'), 'utf8'));
  const commit = getVersion(root);
 -const sourceMappingURLBase = `https://main.vscode-cdn.net/sourcemaps/${commit}`;
 +const sourceMappingURLBase = `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}`;
  
-@@ -179,3 +180,3 @@ function fromLocalWebpack(extensionPath: string, webpackConfigFileName: string,
+@@ -181,3 +182,3 @@ function fromLocalWebpack(extensionPath: string, webpackConfigFileName: string,
  							data.contents = Buffer.from(contents.replace(/\n\/\/# sourceMappingURL=(.*)$/gm, function (_m, g1) {
 -								return `\n//# sourceMappingURL=${sourceMappingURLBase}/extensions/${path.basename(extensionPath)}/${relativeOutputPath}/${g1}`;
 +								return `\n//# sourceMappingURL=${sourceMappingURLBase}/extensions-${path.basename(extensionPath).replaceAll('/', '-')}-${relativeOutputPath.replaceAll('/', '-')}-${g1.replaceAll('/', '-')}`;
  							}), 'utf8');
-diff --git a/build/lib/optimize.js b/build/lib/optimize.js
-index 2ba72a9..4ea70d0 100644
---- a/build/lib/optimize.js
-+++ b/build/lib/optimize.js
-@@ -188,3 +188,3 @@ function bundleTask(opts) {
- function minifyTask(src, sourceMapBaseUrl) {
--    const sourceMappingURL = sourceMapBaseUrl ? ((f) => `${sourceMapBaseUrl}/${f.relative}.map`) : undefined;
-+	const sourceMappingURL = sourceMapBaseUrl ? ((f) => `${sourceMapBaseUrl}-${f.relative.replaceAll('/', '-')}.map`) : undefined;
-     const target = getBuildTarget();
 diff --git a/build/lib/optimize.ts b/build/lib/optimize.ts
-index 1e824a5..808dbeb 100644
+index 58b8e07..f452614 100644
 --- a/build/lib/optimize.ts
 +++ b/build/lib/optimize.ts
-@@ -225,3 +225,3 @@ export function bundleTask(opts: IBundleESMTaskOpts): () => NodeJS.ReadWriteStre
+@@ -229,3 +229,3 @@ export function bundleTask(opts: IBundleTaskOpts): () => NodeJS.ReadWriteStream
  export function minifyTask(src: string, sourceMapBaseUrl?: string): (cb: any) => void {
 -	const sourceMappingURL = sourceMapBaseUrl ? ((f: any) => `${sourceMapBaseUrl}/${f.relative}.map`) : undefined;
 +	const sourceMappingURL = sourceMapBaseUrl ? ((f: any) => `${sourceMapBaseUrl}-${f.relative.replaceAll('/', '-')}.map`) : undefined;
  	const target = getBuildTarget();
-diff --git a/build/lib/util.js b/build/lib/util.js
-index 9d2f3b1..62a5afc 100644
---- a/build/lib/util.js
-+++ b/build/lib/util.js
-@@ -237,4 +237,4 @@ function rewriteSourceMappingURL(sourceMappingURLBase) {
-         const contents = f.contents.toString('utf8');
--        const str = `//# sourceMappingURL=${sourceMappingURLBase}/${path_1.default.dirname(f.relative).replace(/\\/g, '/')}/$1`;
--        f.contents = Buffer.from(contents.replace(/\n\/\/# sourceMappingURL=(.*)$/gm, str));
-+        const fp = path_1.default.dirname(f.relative).replace(/\\/g, '/').replaceAll('/', '-');
-+        f.contents = Buffer.from(contents.replace(/\n\/\/# sourceMappingURL=(.*)$/gm, (_m, p) => `//# sourceMappingURL=${sourceMappingURLBase}/${fp}-${p.replaceAll('/', '-')}`));
-         return f;
 diff --git a/build/lib/util.ts b/build/lib/util.ts
-index 5f3b2f6..7863dd4 100644
+index f1354b8..dda8c37 100644
 --- a/build/lib/util.ts
 +++ b/build/lib/util.ts
-@@ -286,4 +286,4 @@ export function rewriteSourceMappingURL(sourceMappingURLBase: string): NodeJS.Re
- 			const contents = (<Buffer>f.contents).toString('utf8');
+@@ -285,4 +285,4 @@ export function rewriteSourceMappingURL(sourceMappingURLBase: string): NodeJS.Re
+ 			const contents = (f.contents as Buffer).toString('utf8');
 -			const str = `//# sourceMappingURL=${sourceMappingURLBase}/${path.dirname(f.relative).replace(/\\/g, '/')}/$1`;
 -			f.contents = Buffer.from(contents.replace(/\n\/\/# sourceMappingURL=(.*)$/gm, str));
 +			const fp = path.dirname(f.relative).replace(/\\/g, '/').replaceAll('/', '-');

@@ -1,0 +1,32 @@
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index d3ab651..8ad9cc6 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -41,3 +41,3 @@ const root = path.dirname(import.meta.dirname);
+ const commit = getVersion(root);
+-const versionedResourcesFolder = (product as typeof product & { quality?: string })?.quality === 'insider' ? commit!.substring(0, 10) : '';
++const versionedResourcesFolder = '';
+ 
+@@ -356,8 +356,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 			], { base: '.' }));
+-			if (quality && quality === 'insider') {
+-				customElectronConfig = {
+-					createVersionedResources: true,
+-					productVersionString: `${versionedResourcesFolder}`,
+-				};
+-			}
+ 		} else if (platform === 'linux') {
+diff --git a/build/gulpfile.vscode.win32.ts b/build/gulpfile.vscode.win32.ts
+index a7b01f0..cc60676 100644
+--- a/build/gulpfile.vscode.win32.ts
++++ b/build/gulpfile.vscode.win32.ts
+@@ -74,8 +74,4 @@ function buildWin32Setup(arch: string, target: string): task.CallbackTask {
+ 		const quality = (product as typeof product & { quality?: string }).quality || 'dev';
+-		let versionedResourcesFolder = '';
++		const versionedResourcesFolder = '';
+ 		let issPath = path.join(import.meta.dirname, 'win32', 'code.iss');
+-		if (quality && quality === 'insider') {
+-			versionedResourcesFolder = commit!.substring(0, 10);
+-			issPath = path.join(import.meta.dirname, 'win32', 'code-insider.iss');
+-		}
+ 		const originalProductJsonPath = path.join(sourcePath, versionedResourcesFolder, 'resources/app/product.json');

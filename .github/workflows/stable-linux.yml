@@ -173,7 +173,7 @@ jobs:
         - slug: LOONG64
           vscode_arch: loong64
           npm_arch: loong64
-          image: vscodium/vscodium-linux-build-agent:beige-loong64
+          image: vscodium/vscodium-linux-build-agent:crimson-loong64
         - slug: PPC64
           vscode_arch: ppc64le
           npm_arch: ppc64
@@ -425,6 +425,11 @@ jobs:
         with:
           version: 10
           platform: x64
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
 
       - name: Install GH
         run: ./build/linux/install_gh.sh

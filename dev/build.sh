@@ -112,6 +112,10 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
     git add .
     git reset -q --hard HEAD
 
+    while [[ -n "$( git log -1 | grep "VSCODIUM HELPER" )" ]]; do
+      git reset -q --hard HEAD~
+    done
+
     rm -rf .build out*
 
     cd ..

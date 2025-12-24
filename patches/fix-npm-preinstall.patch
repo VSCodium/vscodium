@@ -1,0 +1,14 @@
+diff --git a/build/npm/preinstall.ts b/build/npm/preinstall.ts
+index 3476fca..e23329f 100644
+--- a/build/npm/preinstall.ts
++++ b/build/npm/preinstall.ts
+@@ -129,3 +129,3 @@ function installHeaders() {
+ 	// Refs https://chromium-review.googlesource.com/c/v8/v8/+/6879784
+-	if (process.platform === 'linux') {
++	if (process.platform === 'linux' && local) {
+ 		const homedir = os.homedir();
+@@ -133,3 +133,3 @@ function installHeaders() {
+ 		const nodeGypCache = path.join(cachePath, 'node-gyp');
+-		const localHeaderPath = path.join(nodeGypCache, local!.target, 'include', 'node');
++		const localHeaderPath = path.join(nodeGypCache, local.target, 'include', 'node');
+ 		if (fs.existsSync(localHeaderPath)) {
