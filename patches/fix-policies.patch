@@ -1,5 +1,5 @@
 diff --git a/build/.moduleignore b/build/.moduleignore
-index 0459b46..49f3c66 100644
+index cd99c71..9d14923 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
 @@ -128,9 +128,11 @@ vsda/**
@@ -22,32 +22,32 @@ index 0459b46..49f3c66 100644
 +!@vscodium/policy-watcher/build/Release/vscodium-policy-watcher.node
  
 diff --git a/eslint.config.js b/eslint.config.js
-index 69a9a69..9a3d7ed 100644
+index 967ae23..16580ab 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
-@@ -1724,3 +1724,3 @@ export default tseslint.config(
+@@ -1458,3 +1458,3 @@ export default tseslint.config(
  						'@vscode/iconv-lite-umd',
 -						'@vscode/policy-watcher',
 +						'@vscodium/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
-index 2ffd231..70d78f7 100644
+index 834f597..95a1aea 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -18,3 +18,2 @@
          "@vscode/iconv-lite-umd": "0.7.1",
 -        "@vscode/policy-watcher": "^1.3.2",
          "@vscode/proxy-agent": "^0.36.0",
-@@ -29,2 +28,3 @@
-         "@vscode/windows-registry": "^1.1.0",
+@@ -30,2 +29,3 @@
+         "@vscodium/native-keymap": "3.3.7-258424",
 +        "@vscodium/policy-watcher": "^1.3.2-252465",
          "@xterm/addon-clipboard": "^0.2.0-beta.119",
-@@ -2997,22 +2997,2 @@
+@@ -2972,22 +2972,2 @@
      },
 -    "node_modules/@vscode/policy-watcher": {
--      "version": "1.3.2",
--      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.3.2.tgz",
--      "integrity": "sha512-fmNPYysU2ioH99uCaBPiRblEZSnir5cTmc7w91hAxAoYoGpHt2PZPxT5eIOn7FGmPOsjLdQcd6fduFJGYVD4Mw==",
+-      "version": "1.3.5",
+-      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.3.5.tgz",
+-      "integrity": "sha512-k1n9gaDBjyVRy5yJLABbZCnyFwgQ8OA4sR3vXmXnmB+mO9JA0nsl/XOXQfVCoLasBu3UHCOfAnDWGn2sRzCR+A==",
 -      "hasInstallScript": true,
 -      "license": "MIT",
 -      "dependencies": {
@@ -65,7 +65,7 @@ index 2ffd231..70d78f7 100644
 -      }
 -    },
      "node_modules/@vscode/proxy-agent": {
-@@ -3412,2 +3392,22 @@
+@@ -3307,2 +3287,22 @@
      },
 +    "node_modules/@vscodium/policy-watcher": {
 +      "version": "1.3.2-252465",
@@ -89,7 +89,7 @@ index 2ffd231..70d78f7 100644
 +    },
      "node_modules/@webassemblyjs/ast": {
 diff --git a/package.json b/package.json
-index 32047ab..ecbce6b 100644
+index a3f77c0..e1d6178 100644
 --- a/package.json
 +++ b/package.json
 @@ -80,3 +80,3 @@
@@ -197,7 +197,7 @@ index ee0a24b..881ce36 100644
 +/Users/example/node_modules/@vscodium/policy-watcher/src/windows/NumberPolicy.hh
  /Users/example/node_modules/@vscode/vscode-languagedetection/CODE_OF_CONDUCT.md
 diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
-index 5099915..98a2041 100644
+index aa1b0b8..c56e16e 100644
 --- a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 +++ b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 @@ -62,5 +62,5 @@ flakySuite('Native Modules (all platforms)', () => {
@@ -210,7 +210,7 @@ index 5099915..98a2041 100644
 +		assert.ok(typeof watcher.createWatcher === 'function', testErrorMessage('@vscodium/policy-watcher'));
  	});
 diff --git a/src/vs/platform/policy/node/nativePolicyService.ts b/src/vs/platform/policy/node/nativePolicyService.ts
-index 21bb9c4..6a85d60 100644
+index 5b08cd9..728d7bd 100644
 --- a/src/vs/platform/policy/node/nativePolicyService.ts
 +++ b/src/vs/platform/policy/node/nativePolicyService.ts
 @@ -8,3 +8,3 @@ import { IStringDictionary } from '../../../base/common/collections.js';
@@ -226,5 +226,5 @@ index 21bb9c4..6a85d60 100644
 @@ -31,3 +31,3 @@ export class NativePolicyService extends AbstractPolicyService implements IPolic
  			try {
 -				this.watcher.value = createWatcher(this.productName, policyDefinitions, update => {
-+				this.watcher.value = createWatcher('!!ORG_NAME!!', this.productName, policyDefinitions, update => {
++				this.watcher.value = createWatcher('VSCodium', this.productName, policyDefinitions, update => {
  					this._onDidPolicyChange(update);

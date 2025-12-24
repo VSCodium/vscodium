@@ -75,8 +75,8 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
   <tr>
     <td>AppImage</td>
     <td>
-      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.29-x86_64.AppImage">@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.29-x86_64.AppImage</a><br />
-      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.29-x86_64.AppImage.zsync">@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.29-x86_64.AppImage.zsync</a>
+      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.30-x86_64.AppImage">@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.30-x86_64.AppImage</a><br />
+      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.30-x86_64.AppImage.zsync">@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.30-x86_64.AppImage.zsync</a>
     </td>
   </tr>
   <tr>

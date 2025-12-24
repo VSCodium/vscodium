@@ -14,7 +14,6 @@ while getopts ":i" opt; do
   esac
 done
 
-
 URL=$( curl -s "https://update.code.visualstudio.com/api/update/win32-x64-archive/${VSCODE_QUALITY}/0000000000000000000000000000000000000000" | jq -c '.url' | sed -E 's/.*"([^"]+)".*/\1/' )
 # echo "url: ${URL}"
 FILE="${URL##*/}"
@@ -30,10 +29,17 @@ if [[ ! -d "${DIRECTORY}" ]]; then
   unzip "${FILE}" -d "${DIRECTORY}"
 fi
 
-APIS=$( jq -r '.extensionEnabledApiProposals' "${DIRECTORY}/resources/app/product.json" )
+BIN_PATH=$(find "${DIRECTORY}/bin" -type f ! -name "*.*")
+
+LINE="$( grep -E '^[[:space:]]*(export[[:space:]]+)?VERSIONFOLDER[[:space:]]*=' "$BIN_PATH" | tail -n1 )"
+VERSIONFOLDER="${LINE#*=}"
+VERSIONFOLDER="${VERSIONFOLDER#\"}"
+VERSIONFOLDER="${VERSIONFOLDER%\"}"
+
+APIS=$( jq -r '.extensionEnabledApiProposals' "${DIRECTORY}/${VERSIONFOLDER}/resources/app/product.json" )
 APIS=$( echo "${APIS}" | jq '. += {"jeanp413.open-remote-ssh": ["resolvers", "tunnels", "terminalDataWriteEvent", "contribRemoteHelp", "contribViewsRemote"]}' )
 APIS=$( echo "${APIS}" | jq '. += {"jeanp413.open-remote-wsl": ["resolvers", "contribRemoteHelp", "contribViewsRemote"]}' )
 echo "$( jq --argjson v "${APIS}" 'setpath(["extensionEnabledApiProposals"]; $v)' product.json )" > product.json
 
-APIS=$( jq -r '.extensionsEnabledWithApiProposalVersion' "${DIRECTORY}/resources/app/product.json" )
+APIS=$( jq -r '.extensionsEnabledWithApiProposalVersion' "${DIRECTORY}/${VERSIONFOLDER}/resources/app/product.json" )
 echo "$( jq --argjson v "${APIS}" 'setpath(["extensionsEnabledWithApiProposalVersion"]; $v)' product.json )" > product.json
