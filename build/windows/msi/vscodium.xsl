@@ -14,14 +14,14 @@
   <xsl:key name="vId1ToReplace" match="wi:Component[wi:File[contains(@Source,'@@PRODUCT_NAME@@.exe')]]" use="@Id"/>
   <xsl:template match="node()[key('vId1ToReplace', @Id)]">
     <xsl:copy>
-      <xsl:attribute name="Id">VSCODIUM.EXE</xsl:attribute>
+      <xsl:attribute name="Id">SHELL-IDE.EXE</xsl:attribute>
       <xsl:copy-of select="@*[name()!='Id']"/>
       <xsl:apply-templates />
     </xsl:copy>
   </xsl:template>
   <xsl:template match="wi:Component/wi:File[contains(@Source,'@@PRODUCT_NAME@@.exe')]">
      <xsl:copy>
-        <xsl:attribute name="Id">VSCODIUM.EXE</xsl:attribute>
+        <xsl:attribute name="Id">SHELL-IDE.EXE</xsl:attribute>
         <xsl:copy-of select="@*[name()!='Id']"/>
         <xsl:apply-templates />
      </xsl:copy>

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-APP_NAME="${APP_NAME:-VSCodium}"
-APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
+APP_NAME="${APP_NAME:-Shell-IDE}"
+APP_NAME_LC="${APP_NAME_LC:-shell-ide}"
 ASSETS_REPOSITORY="${ASSETS_REPOSITORY:-VSCodium/vscodium}"
-BINARY_NAME="${BINARY_NAME:-codium}"
+BINARY_NAME="${BINARY_NAME:-shell-ide}"
 GH_REPO_PATH="${GH_REPO_PATH:-VSCodium/vscodium}"
-ORG_NAME="${ORG_NAME:-VSCodium}"
+ORG_NAME="${ORG_NAME:-Shell-IDE}"
 TUNNEL_APP_NAME="${TUNNEL_APP_NAME:-"${BINARY_NAME}-tunnel"}"
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
