@@ -30,3 +30,18 @@ index a7b01f0..cc60676 100644
 -			issPath = path.join(import.meta.dirname, 'win32', 'code-insider.iss');
 -		}
  		const originalProductJsonPath = path.join(sourcePath, versionedResourcesFolder, 'resources/app/product.json');
+diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
+index ae4fd9c..2572548 100644
+--- a/src/vs/platform/update/electron-main/updateService.win32.ts
++++ b/src/vs/platform/update/electron-main/updateService.win32.ts
+@@ -94,10 +94,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+ 	protected override async initialize(): Promise<void> {
+-		if (this.environmentMainService.isBuilt) {
+-			const cachePath = await this.cachePath;
+-			app.setPath('appUpdate', cachePath);
+-			try {
+-				await unlink(path.join(cachePath, 'session-ending.flag'));
+-			} catch { }
+-		}
+-
+ 		if (this.productService.target === 'user' && await this.nativeHostMainService.isAdmin(undefined)) {
