@@ -1,58 +1,58 @@
 diff --git a/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts b/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
-index 43eea51..4ce6918 100644
+index 2543324..338c0ca 100644
 --- a/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
 +++ b/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
-@@ -181,3 +181,4 @@ abstract class OpenChatGlobalAction extends Action2 {
+@@ -170,3 +170,4 @@ abstract class OpenChatGlobalAction extends Action2 {
  				ChatContextKeys.Setup.hidden.negate(),
 -				ChatContextKeys.Setup.disabled.negate()
 +				ChatContextKeys.Setup.disabled.negate(),
 +				ContextKeyExpr.has('config.chat.disableAIFeatures').negate()
  			)
-@@ -1395,3 +1396,3 @@ export function registerChatActions() {
+@@ -734,3 +735,3 @@ export function registerChatActions() {
  				precondition: ContextKeyExpr.and(
 -					ChatContextKeys.Setup.installed,
 +					ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  					ChatContextKeys.Setup.disabled.negate(),
-@@ -1608,3 +1609,4 @@ MenuRegistry.appendMenuItem(MenuId.CommandCenter, {
+@@ -947,3 +948,4 @@ MenuRegistry.appendMenuItem(MenuId.CommandCenter, {
  			ChatContextKeys.Setup.hidden.negate(),
 -			ChatContextKeys.Setup.disabled.negate()
 +			ChatContextKeys.Setup.disabled.negate(),
 +			ContextKeyExpr.has('config.chat.disableAIFeatures').negate()
  		),
-@@ -1625,3 +1627,4 @@ MenuRegistry.appendMenuItem(MenuId.TitleBar, {
+@@ -964,3 +966,4 @@ MenuRegistry.appendMenuItem(MenuId.TitleBar, {
  			ChatContextKeys.Setup.hidden.negate(),
 -			ChatContextKeys.Setup.disabled.negate()
 +			ChatContextKeys.Setup.disabled.negate(),
 +			ContextKeyExpr.has('config.chat.disableAIFeatures').negate()
  		),
-@@ -1642,3 +1645,4 @@ registerAction2(class ToggleCopilotControl extends ToggleTitleBarConfigAction {
+@@ -981,3 +984,4 @@ registerAction2(class ToggleCopilotControl extends ToggleTitleBarConfigAction {
  					ChatContextKeys.Setup.hidden.negate(),
 -					ChatContextKeys.Setup.disabled.negate()
 +					ChatContextKeys.Setup.disabled.negate(),
 +					ContextKeyExpr.has('config.chat.disableAIFeatures').negate()
  				),
-@@ -1779,3 +1783,4 @@ MenuRegistry.appendMenuItem(MenuId.EditorContext, {
+@@ -1119,3 +1123,4 @@ MenuRegistry.appendMenuItem(MenuId.EditorContext, {
  		ChatContextKeys.Setup.hidden.negate(),
 -		ChatContextKeys.Setup.disabled.negate()
 +		ChatContextKeys.Setup.disabled.negate(),
 +		ContextKeyExpr.has('config.chat.disableAIFeatures').negate()
  	)
 diff --git a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts b/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
-index ee0b4a4..c6243b8 100644
+index fac472c..107a3b1 100644
 --- a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
-@@ -187,3 +187,3 @@ configurationRegistry.registerConfiguration({
+@@ -186,3 +186,3 @@ configurationRegistry.registerConfiguration({
  			markdownDescription: nls.localize('chat.commandCenter.enabled', "Controls whether the command center shows a menu for actions to control chat (requires {0}).", '`#window.commandCenter#`'),
 -			default: true
 +			default: false
  		},
-@@ -801,3 +801,3 @@ configurationRegistry.registerConfiguration({
+@@ -802,3 +802,3 @@ configurationRegistry.registerConfiguration({
  			description: nls.localize('chat.disableAIFeatures', "Disable and hide built-in AI features provided by GitHub Copilot, including chat and inline suggestions."),
 -			default: false,
 +			default: true,
  			scope: ConfigurationScope.WINDOW
 diff --git a/src/vs/workbench/contrib/chat/browser/chatParticipant.contribution.ts b/src/vs/workbench/contrib/chat/browser/chatParticipant.contribution.ts
-index 9573667..f71e066 100644
+index 8953884..cf0c2d2 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatParticipant.contribution.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chatParticipant.contribution.ts
 @@ -67,10 +67,9 @@ const chatViewDescriptor: IViewDescriptor = {
@@ -73,19 +73,17 @@ index 9573667..f71e066 100644
 +		ChatContextKeys.extensionInvalid.negate()
 + 	)
  };
-diff --git a/src/vs/workbench/contrib/chat/common/chatContextKeys.ts b/src/vs/workbench/contrib/chat/common/chatContextKeys.ts
-index 09aef7e..daf6437 100644
---- a/src/vs/workbench/contrib/chat/common/chatContextKeys.ts
-+++ b/src/vs/workbench/contrib/chat/common/chatContextKeys.ts
-@@ -113,4 +113,4 @@ export namespace ChatContextKeyExprs {
- 	 */
--	export const chatSetupTriggerContext = ContextKeyExpr.or(
+diff --git a/src/vs/workbench/contrib/chat/common/actions/chatContextKeys.ts b/src/vs/workbench/contrib/chat/common/actions/chatContextKeys.ts
+index 62efc91..12e97c6 100644
+--- a/src/vs/workbench/contrib/chat/common/actions/chatContextKeys.ts
++++ b/src/vs/workbench/contrib/chat/common/actions/chatContextKeys.ts
+@@ -119,3 +119,3 @@ export namespace ChatContextKeyExprs {
+ 	export const chatSetupTriggerContext = ContextKeyExpr.or(
 -		ChatContextKeys.Setup.installed.negate(),
-+	export const chatSetupTriggerContext = ContextKeyExpr.and(
 +		ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  		ChatContextKeys.Entitlement.canSignUp
 diff --git a/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts b/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
-index d8ddc37..f48fd86 100644
+index 7f4dfea..5957267 100644
 --- a/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
 +++ b/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
 @@ -540,3 +540,3 @@ export class McpServersViewsContribution extends Disposable implements IWorkbenc
@@ -99,7 +97,7 @@ index d8ddc37..f48fd86 100644
 +				when: ContextKeyExpr.and(DefaultViewsContext, HasInstalledMcpServersContext.toNegated(), ContextKeyExpr.has('config.chat.disableAIFeatures').negate(), ChatContextKeys.Setup.hidden.negate(), McpServersGalleryStatusContext.isEqualTo(McpGalleryManifestStatus.Available), ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceUrlConfig}`).negate(), ProductQualityContext.isEqualTo('stable'), ContextKeyDefinedExpr.create(`config.${mcpGalleryServiceEnablementConfig}`).negate()),
  				weight: 40,
 diff --git a/src/vs/workbench/contrib/scm/browser/scm.contribution.ts b/src/vs/workbench/contrib/scm/browser/scm.contribution.ts
-index fe12782..06b1b76 100644
+index 6f533f1..56c8f9d 100644
 --- a/src/vs/workbench/contrib/scm/browser/scm.contribution.ts
 +++ b/src/vs/workbench/contrib/scm/browser/scm.contribution.ts
 @@ -685,3 +685,3 @@ registerAction2(class extends Action2 {
@@ -108,10 +106,10 @@ index fe12782..06b1b76 100644
 +					ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  					ContextKeyExpr.in(ResourceContextKey.Resource.key, 'git.mergeChanges'),
 diff --git a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
-index 4260a28..6ac55b6 100644
+index cfea087..5f3efe3 100644
 --- a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
 +++ b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
-@@ -1383,3 +1383,3 @@ registerAction2(class extends Action2 {
+@@ -1391,3 +1391,3 @@ registerAction2(class extends Action2 {
  					ChatContextKeys.Setup.disabled.negate(),
 -					ChatContextKeys.Setup.installed.negate(),
 +					ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
