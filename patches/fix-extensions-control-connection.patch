@@ -1,20 +1,15 @@
 diff --git a/src/vs/platform/extensionManagement/common/extensionGalleryService.ts b/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
-index 876f779..8b0f6f2 100644
+index 594412f..52de11c 100644
 --- a/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
-@@ -1795,8 +1795,14 @@ export abstract class AbstractExtensionGalleryService implements IExtensionGalle
- 		if (!excludeUnsafes) {
- 			return { malicious: [], deprecated: {}, search: [] };
- 		}
+@@ -1814,3 +1814,3 @@ export abstract class AbstractExtensionGalleryService implements IExtensionGalle
+ 
 -		const context = await this.requestService.request({
--			type: 'GET',
--			url: this.extensionsControlUrl,
--			timeout: this.getRequestTimeout()
--		}, CancellationToken.None);
 +		const requestOptions: IRequestOptions = {
-+			type: 'GET',
-+			url: this.extensionsControlUrl,
-+			timeout: this.getRequestTimeout()
+ 			type: 'GET',
+@@ -1818,3 +1818,9 @@ export abstract class AbstractExtensionGalleryService implements IExtensionGalle
+ 			timeout: this.getRequestTimeout()
+-		}, CancellationToken.None);
 +		};
 +
 +		if (!isWeb) {
@@ -22,3 +17,4 @@ index 876f779..8b0f6f2 100644
 +		}
 +
 +		const context = await this.requestService.request(requestOptions, CancellationToken.None);
+ 
