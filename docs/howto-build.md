@@ -17,7 +17,7 @@
 
 ## <a id="dependencies"></a>Dependencies
 
-- node 20.18
+- node 22.21.1
 - jq
 - git
 - python3 3.11
