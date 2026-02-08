@@ -1,5 +1,5 @@
 diff --git a/.npmrc b/.npmrc
-index 060337b..9292787 100644
+index 50d910c..472b622 100644
 --- a/.npmrc
 +++ b/.npmrc
 @@ -5,2 +5,3 @@ runtime="electron"
@@ -7,7 +7,7 @@ index 060337b..9292787 100644
 +build_from_source_native_keymap="no"
  legacy-peer-deps="true"
 diff --git a/build/.moduleignore b/build/.moduleignore
-index fc7c538..7aece0d 100644
+index ed36151..5b040cc 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
 @@ -65,7 +65,7 @@ fsevents/test/**
@@ -24,27 +24,27 @@ index fc7c538..7aece0d 100644
 +!@vscodium/native-keymap/build/Release/*.node
  
 diff --git a/eslint.config.js b/eslint.config.js
-index e9809e6..6065336 100644
+index 47eeebf..f8077c2 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
 @@ -1465,3 +1465,3 @@ export default tseslint.config(
  						'node:module',
 -						'native-keymap',
 +						'@vscodium/native-keymap',
- 						'native-watchdog',
+ 						'net',
 diff --git a/package-lock.json b/package-lock.json
-index b7ae476..93692b8 100644
+index 801e87b..a991591 100644
 --- a/package-lock.json
 +++ b/package-lock.json
-@@ -29,2 +29,3 @@
+@@ -32,2 +32,3 @@
          "@vscode/windows-registry": "^1.1.0",
 +        "@vscodium/native-keymap": "3.3.7-258424",
-         "@xterm/addon-clipboard": "^0.3.0-beta.91",
-@@ -46,3 +47,2 @@
-         "native-is-elevated": "0.8.0",
+         "@xterm/addon-clipboard": "^0.3.0-beta.109",
+@@ -49,3 +50,2 @@
+         "native-is-elevated": "0.9.0",
 -        "native-keymap": "^3.3.5",
-         "native-watchdog": "^1.4.1",
-@@ -3300,2 +3300,9 @@
+         "node-pty": "^1.2.0-beta.10",
+@@ -3674,2 +3674,9 @@
      },
 +    "node_modules/@vscodium/native-keymap": {
 +      "version": "3.3.7-258424",
@@ -54,7 +54,7 @@ index b7ae476..93692b8 100644
 +      "license": "MIT"
 +    },
      "node_modules/@webassemblyjs/ast": {
-@@ -12516,5 +12523,6 @@
+@@ -12741,5 +12748,6 @@
      "node_modules/napi-build-utils": {
 -      "version": "1.0.2",
 -      "resolved": "https://registry.npmjs.org/napi-build-utils/-/napi-build-utils-1.0.2.tgz",
@@ -64,17 +64,17 @@ index b7ae476..93692b8 100644
 +      "integrity": "sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA==",
 +      "license": "MIT"
      },
-@@ -12527,9 +12535,2 @@
+@@ -12752,9 +12760,2 @@
      },
 -    "node_modules/native-keymap": {
--      "version": "3.3.7",
--      "resolved": "https://registry.npmjs.org/native-keymap/-/native-keymap-3.3.7.tgz",
--      "integrity": "sha512-07n5kF0L9ERC9pilqEFucnhs1XG4WttbHAMWhhOSqQYXhB8mMNTSCzP4psTaVgDSp6si2HbIPhTIHuxSia6NPQ==",
+-      "version": "3.3.9",
+-      "resolved": "https://registry.npmjs.org/native-keymap/-/native-keymap-3.3.9.tgz",
+-      "integrity": "sha512-d/ydQ5x+GM5W0dyAjFPwexhtc9CDH1g/xWZESS5CXk16ThyFzSBLvlBJq1+FyzUIFf/F2g1MaHdOpa6G9150YQ==",
 -      "hasInstallScript": true,
 -      "license": "MIT"
 -    },
-     "node_modules/native-watchdog": {
-@@ -13922,5 +13923,6 @@
+     "node_modules/natural-compare": {
+@@ -14142,5 +14143,6 @@
      "node_modules/prebuild-install": {
 -      "version": "7.1.2",
 -      "resolved": "https://registry.npmjs.org/prebuild-install/-/prebuild-install-7.1.2.tgz",
@@ -84,22 +84,22 @@ index b7ae476..93692b8 100644
 +      "integrity": "sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==",
 +      "license": "MIT",
        "dependencies": {
-@@ -13931,3 +13933,3 @@
+@@ -14151,3 +14153,3 @@
          "mkdirp-classic": "^0.5.3",
 -        "napi-build-utils": "^1.0.1",
 +        "napi-build-utils": "^2.0.0",
          "node-abi": "^3.3.0",
 diff --git a/package.json b/package.json
-index b9978d4..bffe52e 100644
+index efeaec1..b2a6703 100644
 --- a/package.json
 +++ b/package.json
-@@ -108,3 +108,3 @@
-     "native-is-elevated": "0.8.0",
+@@ -111,3 +111,3 @@
+     "native-is-elevated": "0.9.0",
 -    "native-keymap": "^3.3.5",
 +    "@vscodium/native-keymap": "3.3.7-258424",
-     "native-watchdog": "^1.4.1",
+     "node-pty": "^1.2.0-beta.10",
 diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
-index d4ce18a..9db7f76 100644
+index c30c6da..ca6cea2 100644
 --- a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 +++ b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 @@ -44,8 +44,8 @@ flakySuite('Native Modules (all platforms)', () => {
