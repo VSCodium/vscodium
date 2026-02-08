@@ -275,17 +275,11 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/rpm/code.spec.template
 
   # snapcraft.yaml
-  sed -i 's|Visual Studio Code|VSCodium|'  resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code|VSCodium|' resources/linux/rpm/code.spec.template
 elif [[ "${OS_NAME}" == "windows" ]]; then
-  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    ISS_PATH="build/win32/code-insider.iss"
-  else
-    ISS_PATH="build/win32/code.iss"
-  fi
-
   # code.iss
-  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' "${ISS_PATH}"
-  sed -i 's|Microsoft Corporation|VSCodium|' "${ISS_PATH}"
+  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' build/win32/code.iss
+  sed -i 's|Microsoft Corporation|VSCodium|' build/win32/code.iss
 fi
 
 cd ..
