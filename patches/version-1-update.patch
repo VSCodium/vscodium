@@ -1,14 +1,27 @@
+diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
+index a3efce9..be970c6 100644
+--- a/src/vs/code/electron-main/app.ts
++++ b/src/vs/code/electron-main/app.ts
+@@ -78,3 +78,2 @@ import { DarwinUpdateService } from '../../platform/update/electron-main/updateS
+ import { LinuxUpdateService } from '../../platform/update/electron-main/updateService.linux.js';
+-import { SnapUpdateService } from '../../platform/update/electron-main/updateService.snap.js';
+ import { Win32UpdateService } from '../../platform/update/electron-main/updateService.win32.js';
+@@ -997,3 +996,3 @@ export class CodeApplication extends Disposable {
+ 				if (isLinuxSnap) {
+-					services.set(IUpdateService, new SyncDescriptor(SnapUpdateService, [process.env['SNAP'], process.env['SNAP_REVISION']]));
++					// services.set(IUpdateService, new SyncDescriptor(SnapUpdateService, [process.env['SNAP'], process.env['SNAP_REVISION']]));
+ 				} else {
 diff --git a/src/vs/platform/update/common/update.ts b/src/vs/platform/update/common/update.ts
-index 199f433..a6cbb10 100644
+index b859dfd..75e8987 100644
 --- a/src/vs/platform/update/common/update.ts
 +++ b/src/vs/platform/update/common/update.ts
-@@ -51,3 +51,4 @@ export const enum UpdateType {
+@@ -54,3 +54,4 @@ export const enum UpdateType {
  	Archive,
 -	Snap
 +	Snap,
 +	WindowsInstaller,
  }
-@@ -110 +111,38 @@ export interface IUpdateService {
+@@ -116 +117,38 @@ export interface IUpdateService {
  }
 +
 +export type Architecture =
@@ -49,30 +62,37 @@ index 199f433..a6cbb10 100644
 +	| "user";
 \ No newline at end of file
 diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-index ed8043f..e19c9e4 100644
+index 0e63d40..c8426ea 100644
 --- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
 +++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-@@ -14,6 +14,10 @@ import { IProductService } from '../../product/common/productService.js';
+@@ -14,3 +14,3 @@ import { IProductService } from '../../product/common/productService.js';
  import { IRequestService } from '../../request/common/request.js';
 -import { AvailableForDownload, DisablementReason, IUpdateService, State, StateType, UpdateType } from '../common/update.js';
 +import { Architecture, AvailableForDownload, DisablementReason, IUpdateService, Platform, State, StateType, Target, UpdateType } from '../common/update.js';
  
--export function createUpdateURL(platform: string, quality: string, productService: IProductService): string {
--	return `${productService.updateUrl}/api/update/${platform}/${quality}/${productService.commit}`;
+@@ -20,10 +20,8 @@ export interface IUpdateURLOptions {
+ 
+-export function createUpdateURL(baseUpdateUrl: string, platform: string, quality: string, commit: string, options?: IUpdateURLOptions): string {
+-	const url = new URL(`${baseUpdateUrl}/api/update/${platform}/${quality}/${commit}`);
+-
+-	if (options?.background) {
+-		url.searchParams.set('bg', 'true');
 +export function createUpdateURL(productService: IProductService, quality: string, platform: Platform, architecture: Architecture, target?: Target): string {
 +	if (target) {
 +		return `${productService.updateUrl}/${quality}/${platform}/${architecture}/${target}/latest.json`;
 +	} else {
 +		return `${productService.updateUrl}/${quality}/${platform}/${architecture}/latest.json`;
-+	}
+ 	}
+-
+-	return url.toString();
  }
-@@ -205,3 +209,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
+@@ -265,3 +263,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
  
 -		if (mode === 'none') {
 +		if (mode === 'none' || mode === 'manual') {
- 			return false;
+ 			return undefined;
 diff --git a/src/vs/platform/update/electron-main/updateService.darwin.ts b/src/vs/platform/update/electron-main/updateService.darwin.ts
-index b78ebc5..a4a3b1d 100644
+index b20673b..af677f6 100644
 --- a/src/vs/platform/update/electron-main/updateService.darwin.ts
 +++ b/src/vs/platform/update/electron-main/updateService.darwin.ts
 @@ -15,3 +15,3 @@ import { ILogService } from '../../log/common/log.js';
@@ -81,19 +101,15 @@ index b78ebc5..a4a3b1d 100644
 +import { IRequestService, asJson } from '../../request/common/request.js';
  import { ITelemetryService } from '../../telemetry/common/telemetry.js';
 @@ -19,2 +19,4 @@ import { IUpdate, State, StateType, UpdateType } from '../common/update.js';
- import { AbstractUpdateService, createUpdateURL, UpdateErrorClassification } from './abstractUpdateService.js';
+ import { AbstractUpdateService, createUpdateURL, IUpdateURLOptions, UpdateErrorClassification } from './abstractUpdateService.js';
 +import { CancellationToken } from '../../../base/common/cancellation.js';
 +import * as semver from 'semver';
  
-@@ -76,17 +78,3 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
- 	protected buildUpdateFeedUrl(quality: string): string | undefined {
--		let assetID: string;
--		if (!this.productService.darwinUniversalAssetId) {
--			assetID = process.arch === 'x64' ? 'darwin' : 'darwin-arm64';
--		} else {
--			assetID = this.productService.darwinUniversalAssetId;
--		}
--		const url = createUpdateURL(assetID, quality, this.productService);
+@@ -75,13 +77,4 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+ 
+-	protected buildUpdateFeedUrl(quality: string, commit: string, options?: IUpdateURLOptions): string | undefined {
+-		const assetID = this.productService.darwinUniversalAssetId ?? (process.arch === 'x64' ? 'darwin' : 'darwin-arm64');
+-		const url = createUpdateURL(this.productService.updateUrl!, assetID, quality, commit, options);
 -		try {
 -			electron.autoUpdater.setFeedURL({ url });
 -		} catch (e) {
@@ -102,14 +118,13 @@ index b78ebc5..a4a3b1d 100644
 -			return undefined;
 -		}
 -		return url;
++	protected buildUpdateFeedUrl(quality: string, _commit: string, _options?: IUpdateURLOptions): string | undefined {
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch);
  	}
-@@ -100,5 +88,30 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+@@ -112,3 +105,30 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
  
--		const url = explicit ? this.url : `${this.url}?bg=true`;
--		electron.autoUpdater.setFeedURL({ url });
 -		electron.autoUpdater.checkForUpdates();
-+		this.requestService.request({ url: this.url }, CancellationToken.None)
++		this.requestService.request({ url }, CancellationToken.None)
 +			.then<IUpdate | null>(asJson)
 +			.then(update => {
 +				if (!update || !update.url || !update.version || !update.productVersion) {
@@ -125,7 +140,7 @@ index b78ebc5..a4a3b1d 100644
 +					this.setState(State.Idle(UpdateType.Setup));
 +				}
 +				else {
-+					electron.autoUpdater.setFeedURL({ url: this.url! });
++					electron.autoUpdater.setFeedURL({ url });
 +					electron.autoUpdater.checkForUpdates();
 +				}
 +
@@ -139,27 +154,21 @@ index b78ebc5..a4a3b1d 100644
 +			});
  	}
 diff --git a/src/vs/platform/update/electron-main/updateService.linux.ts b/src/vs/platform/update/electron-main/updateService.linux.ts
-index 8550ace..c2fddcb 100644
+index 32040dc..59cf109 100644
 --- a/src/vs/platform/update/electron-main/updateService.linux.ts
 +++ b/src/vs/platform/update/electron-main/updateService.linux.ts
 @@ -15,2 +15,3 @@ import { AvailableForDownload, IUpdate, State, UpdateType } from '../common/upda
- import { AbstractUpdateService, createUpdateURL } from './abstractUpdateService.js';
+ import { AbstractUpdateService, createUpdateURL, IUpdateURLOptions } from './abstractUpdateService.js';
 +import * as semver from 'semver';
  
-@@ -31,3 +32,3 @@ export class LinuxUpdateService extends AbstractUpdateService {
- 	protected buildUpdateFeedUrl(quality: string): string {
--		return createUpdateURL(`linux-${process.arch}`, quality, this.productService);
+@@ -30,4 +31,4 @@ export class LinuxUpdateService extends AbstractUpdateService {
+ 
+-	protected buildUpdateFeedUrl(quality: string, commit: string, options?: IUpdateURLOptions): string {
+-		return createUpdateURL(this.productService.updateUrl!, `linux-${process.arch}`, quality, commit, options);
++	protected buildUpdateFeedUrl(quality: string, _commit: string, _options?: IUpdateURLOptions): string {
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch);
  	}
-@@ -39,6 +40,5 @@ export class LinuxUpdateService extends AbstractUpdateService {
- 
--		const url = explicit ? this.url : `${this.url}?bg=true`;
- 		this.setState(State.CheckingForUpdates(explicit));
- 
--		this.requestService.request({ url }, CancellationToken.None)
-+		this.requestService.request({ url: this.url }, CancellationToken.None)
- 			.then<IUpdate | null>(asJson)
-@@ -47,5 +47,17 @@ export class LinuxUpdateService extends AbstractUpdateService {
+@@ -48,5 +49,17 @@ export class LinuxUpdateService extends AbstractUpdateService {
  					this.setState(State.Idle(UpdateType.Archive));
 -				} else {
 +
@@ -179,7 +188,7 @@ index 8550ace..c2fddcb 100644
 +				return Promise.resolve(null);
  			})
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index ae4fd9c..7fc81a0 100644
+index 3edbd9d..6666876 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
 @@ -13,3 +13,2 @@ import { CancellationToken } from '../../../base/common/cancellation.js';
@@ -189,9 +198,9 @@ index ae4fd9c..7fc81a0 100644
 @@ -27,4 +26,5 @@ import { asJson, IRequestService } from '../../request/common/request.js';
  import { ITelemetryService } from '../../telemetry/common/telemetry.js';
 -import { AvailableForDownload, DisablementReason, IUpdate, State, StateType, UpdateType } from '../common/update.js';
--import { AbstractUpdateService, createUpdateURL, UpdateErrorClassification } from './abstractUpdateService.js';
+-import { AbstractUpdateService, createUpdateURL, IUpdateURLOptions, UpdateErrorClassification } from './abstractUpdateService.js';
 +import { AvailableForDownload, DisablementReason, IUpdate, State, StateType, Target, UpdateType } from '../common/update.js';
-+import { AbstractUpdateService, createUpdateURL} from './abstractUpdateService.js';
++import { AbstractUpdateService, createUpdateURL, IUpdateURLOptions } from './abstractUpdateService.js';
 +import * as semver from 'semver';
  
 @@ -44,5 +44,9 @@ function getUpdateType(): UpdateType {
@@ -211,14 +220,17 @@ index ae4fd9c..7fc81a0 100644
  		@IConfigurationService configurationService: IConfigurationService,
 +		// @ts-expect-error
  		@ITelemetryService private readonly telemetryService: ITelemetryService,
-@@ -155,11 +160,21 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
- 	protected buildUpdateFeedUrl(quality: string): string | undefined {
+@@ -154,12 +159,22 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+ 
+-	protected buildUpdateFeedUrl(quality: string, commit: string, options?: IUpdateURLOptions): string | undefined {
 -		let platform = `win32-${process.arch}`;
 -
 -		if (getUpdateType() === UpdateType.Archive) {
 -			platform += '-archive';
 -		} else if (this.productService.target === 'user') {
 -			platform += '-user';
+-		}
++	protected buildUpdateFeedUrl(quality: string, _commit: string, _options?: IUpdateURLOptions): string | undefined {
 +		let target: Target;
 +
 +		switch (getUpdateType()) {
@@ -235,12 +247,12 @@ index ae4fd9c..7fc81a0 100644
 +				else {
 +					target = "system"
 +				}
- 		}
++ 		}
  
--		return createUpdateURL(platform, quality, this.productService);
+-		return createUpdateURL(this.productService.updateUrl!, platform, quality, commit, options);
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch, target);
  	}
-@@ -184,2 +199,10 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -185,2 +200,10 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 +				const fetchedVersion = /\d+\.\d+\.\d+\.\d+/.test(update.productVersion) ? update.productVersion.replace(/(\d+\.\d+\.\d+)\.\d+(\-\w+)?/, '$1$2') : update.productVersion.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
 +				const currentVersion = this.productService.version.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
@@ -251,16 +263,16 @@ index ae4fd9c..7fc81a0 100644
 +				}
 +
  				if (updateType === UpdateType.Archive) {
-@@ -210,3 +233,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -211,3 +234,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -						const fastUpdatesEnabled = this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
 +						const fastUpdatesEnabled = getUpdateType() == UpdateType.Setup && this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
  						if (fastUpdatesEnabled) {
-@@ -222,3 +245,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -223,3 +246,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  			.then(undefined, err => {
 -				this.telemetryService.publicLog2<{ messageHash: string }, UpdateErrorClassification>('update:error', { messageHash: String(hash(String(err))) });
  				this.logService.error(err);
-@@ -307,6 +329,14 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -309,6 +331,14 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  		} else {
 -			spawn(this.availableUpdate.packagePath, ['/silent', '/log', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
 -				detached: true,
