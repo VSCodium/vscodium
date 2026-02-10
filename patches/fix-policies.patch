@@ -1,5 +1,5 @@
 diff --git a/build/.moduleignore b/build/.moduleignore
-index 7aece0d..baebcd5 100644
+index 5b040cc..8d5fd71 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
 @@ -128,9 +128,11 @@ vsda/**
@@ -22,32 +22,32 @@ index 7aece0d..baebcd5 100644
 +!@vscodium/policy-watcher/build/Release/vscodium-policy-watcher.node
  
 diff --git a/eslint.config.js b/eslint.config.js
-index 6065336..1d36678 100644
+index f8077c2..182d6ce 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
 @@ -1448,3 +1448,3 @@ export default tseslint.config(
- 						'@vscode/iconv-lite-umd',
+ 						'@vscode/native-watchdog',
 -						'@vscode/policy-watcher',
 +						'@vscodium/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
-index 93692b8..fd1d22a 100644
+index a991591..fb05fad 100644
 --- a/package-lock.json
 +++ b/package-lock.json
-@@ -17,3 +17,2 @@
-         "@vscode/iconv-lite-umd": "0.7.1",
+@@ -21,3 +21,2 @@
+         "@vscode/native-watchdog": "^1.4.6",
 -        "@vscode/policy-watcher": "^1.3.2",
-         "@vscode/proxy-agent": "^0.36.0",
-@@ -30,2 +29,3 @@
+         "@vscode/proxy-agent": "^0.37.0",
+@@ -33,2 +32,3 @@
          "@vscodium/native-keymap": "3.3.7-258424",
 +        "@vscodium/policy-watcher": "^1.3.2-252465",
-         "@xterm/addon-clipboard": "^0.3.0-beta.91",
-@@ -2952,22 +2952,2 @@
+         "@xterm/addon-clipboard": "^0.3.0-beta.109",
+@@ -3345,22 +3345,2 @@
      },
 -    "node_modules/@vscode/policy-watcher": {
--      "version": "1.3.5",
--      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.3.5.tgz",
--      "integrity": "sha512-k1n9gaDBjyVRy5yJLABbZCnyFwgQ8OA4sR3vXmXnmB+mO9JA0nsl/XOXQfVCoLasBu3UHCOfAnDWGn2sRzCR+A==",
+-      "version": "1.3.7",
+-      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.3.7.tgz",
+-      "integrity": "sha512-OvIczTbtGLZs7YU0ResbjM0KEB2ORBnlJ4ICxaB9fKHNVBwNVp4i2qIkDQGp3UBGtu7P8/+eg4/ZKk2oJGFcug==",
 -      "hasInstallScript": true,
 -      "license": "MIT",
 -      "dependencies": {
@@ -65,7 +65,7 @@ index 93692b8..fd1d22a 100644
 -      }
 -    },
      "node_modules/@vscode/proxy-agent": {
-@@ -3307,2 +3287,22 @@
+@@ -3681,2 +3661,22 @@
      },
 +    "node_modules/@vscodium/policy-watcher": {
 +      "version": "1.3.2-252465",
@@ -89,14 +89,14 @@ index 93692b8..fd1d22a 100644
 +    },
      "node_modules/@webassemblyjs/ast": {
 diff --git a/package.json b/package.json
-index bffe52e..d0e04d0 100644
+index b2a6703..3d03e9a 100644
 --- a/package.json
 +++ b/package.json
-@@ -79,3 +79,3 @@
-     "@vscode/iconv-lite-umd": "0.7.1",
+@@ -83,3 +83,3 @@
+     "@vscode/native-watchdog": "^1.4.6",
 -    "@vscode/policy-watcher": "^1.3.2",
 +    "@vscodium/policy-watcher": "^1.3.2-252465",
-     "@vscode/proxy-agent": "^0.36.0",
+     "@vscode/proxy-agent": "^0.37.0",
 diff --git a/src/vs/base/test/node/uri.perf.data.txt b/src/vs/base/test/node/uri.perf.data.txt
 index ee0a24b..881ce36 100644
 --- a/src/vs/base/test/node/uri.perf.data.txt
@@ -197,7 +197,7 @@ index ee0a24b..881ce36 100644
 +/Users/example/node_modules/@vscodium/policy-watcher/src/windows/NumberPolicy.hh
  /Users/example/node_modules/@vscode/vscode-languagedetection/CODE_OF_CONDUCT.md
 diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
-index 9db7f76..33beb8c 100644
+index ca6cea2..32b22fe 100644
 --- a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 +++ b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 @@ -62,5 +62,5 @@ flakySuite('Native Modules (all platforms)', () => {

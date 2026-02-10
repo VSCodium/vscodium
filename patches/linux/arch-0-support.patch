@@ -1,5 +1,5 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index 2f25764..742aaef 100755
+index f0d5fe6..fdb3707 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
 @@ -2,3 +2,3 @@
@@ -13,7 +13,7 @@ index 2f25764..742aaef 100755
 +  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
  fi
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index cb1a0a5..6c21dd2 100644
+index 2714933..36396dc 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
 @@ -235,9 +235,23 @@ function nodejs(platform: string, arch: string): NodeJS.ReadWriteStream | undefi
@@ -48,10 +48,10 @@ index cb1a0a5..6c21dd2 100644
 +			}
  		case 'alpine':
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index d3ab651..9dbe6f3 100644
+index 358bb3a..2cc6d9a 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -375,2 +375,12 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -372,2 +372,12 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  
 +		const electronOverride: { repo?: string; tag?: string } = {};
 +		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
@@ -64,13 +64,13 @@ index d3ab651..9dbe6f3 100644
 +		}
 +
  		let result: NodeJS.ReadWriteStream = all
-@@ -379,3 +389,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -376,3 +386,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  			.pipe(filter(['**', '!**/.github/**'], { dot: true })) // https://github.com/microsoft/vscode/issues/116523
--			.pipe(electron({ ...config, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false, ...customElectronConfig }))
-+			.pipe(electron({ ...config, ...electronOverride, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false, ...customElectronConfig }))
+-			.pipe(electron({ ...config, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
++			.pipe(electron({ ...config, ...electronOverride, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
  			.pipe(filter(['**', '!LICENSE', '!version'], { dot: true }));
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index d00eb59..34ecdf1 100644
+index 46c257d..78bfb66 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
 @@ -141,3 +141,3 @@ export const referenceGeneratedDepsByArch = {
