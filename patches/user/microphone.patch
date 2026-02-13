@@ -28,12 +28,12 @@ diff --git a/src/vs/workbench/contrib/webview/browser/webviewElement.ts b/src/vs
 index 84b5eac..2cd30f9 100644
 --- a/src/vs/workbench/contrib/webview/browser/webviewElement.ts
 +++ b/src/vs/workbench/contrib/webview/browser/webviewElement.ts
-@@ -398,7 +398,7 @@ export class WebviewElement extends Disposable implements IWebview, WebviewFindD
+@@ -402,7 +402,7 @@ export class WebviewElement extends Disposable implements IWebview, WebviewFindD
  		element.className = `webview ${options.customClasses || ''}`;
  		element.sandbox.add('allow-scripts', 'allow-same-origin', 'allow-forms', 'allow-pointer-lock', 'allow-downloads');
- 
--		const allowRules = ['cross-origin-isolated', 'autoplay'];
-+		const allowRules = ['cross-origin-isolated', 'autoplay','microphone'];
+
+-		const allowRules = ['cross-origin-isolated', 'autoplay', 'local-network-access'];
++		const allowRules = ['cross-origin-isolated', 'autoplay', 'local-network-access', 'microphone'];
  		if (!isFirefox) {
  			allowRules.push('clipboard-read', 'clipboard-write');
  		}

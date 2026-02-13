@@ -104,9 +104,9 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20.19.0'
+          node-version-file: '.nvmrc'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
@@ -209,7 +209,7 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Install GH
-        run: ./install_gh.sh
+        run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing Codex tags/releases
@@ -331,9 +331,9 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20.19.0'
+          node-version-file: '.nvmrc'
         if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
@@ -347,7 +347,7 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Install GH
-        run: ./install_gh.sh
+        run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing Codex tags/releases
@@ -428,8 +428,13 @@ jobs:
           version: 10
           platform: x64
 
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
       - name: Install GH
-        run: ./install_gh.sh
+        run: ./build/linux/install_gh.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Check existing Codex tags/releases

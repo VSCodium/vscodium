@@ -9,9 +9,8 @@
   - [C/C++](#cc)
   - [Python](#python)
   - [Remote](#remote)
-- [Beyond](#beyond)
 
-## Incompatibility
+## <a id="incompatibility"></a>Incompatibility
 
 Most MS extensions are limited to run on only MS products by their license and by running additional checks in their proprietary code.
 
@@ -30,24 +29,22 @@ The following extensions are not compatible with Codex due to their licensing:
 - [Remote - SSH: Editing Configuration Files](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh-edit)
 - [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl)
 
-## Replacements
+## <a id="replacements"></a>Replacements
 
 The following extensions are functional replacements for incompatible extensions:
 
-### C/C++
+### <a id="cc"></a>C/C++
 
-- [clangd](https://open-vsx.org/extension/llvm-vs-code-extensions/vscode-clangd)
+- [clangd](https://open-vsx.org/extension/llvm-vs-code-extensions/vscode-clangd) for full featured editing (including IntelliSense)
+- [Native Debug](https://open-vsx.org/extension/webfreak/debug) for Debugging with GDB + LLDB  
+  Note that there are many working debugging extensions and specialized ones including for microcontrollers.
 
-### Python
+### <a id="python"></a>Python
 
 - [BasedPyright](https://open-vsx.org/extension/detachhead/basedpyright)
 
-### Remote
+### <a id="remote"></a>Remote Development
 
 - [Open Remote - SSH](https://open-vsx.org/extension/jeanp413/open-remote-ssh)
 > SSH server must be configured with the setting `AllowTcpForwarding yes`.
 - [Open Remote - WSL](https://open-vsx.org/extension/jeanp413/open-remote-wsl)
-
-## Beyond
-
-[VSIX Manager](https://github.com/zokugun/vscode-vsix-manager) allows you to be able install extensions from multiple sources.

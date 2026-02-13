@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 
 APP_NAME="${APP_NAME:-Codex}"
-APP_NAME="${APP_NAME:-Codex}"
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 ASSETS_REPOSITORY="${ASSETS_REPOSITORY:-BiblioNexus-Foundation/codex}"
 BINARY_NAME="${BINARY_NAME:-codex}"
 GH_REPO_PATH="${GH_REPO_PATH:-genesis-ai-dev/codex}"
 ORG_NAME="${ORG_NAME:-Codex}"
+TUNNEL_APP_NAME="${TUNNEL_APP_NAME:-"${BINARY_NAME}-tunnel"}"
+
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  GLOBAL_DIRNAME="${GLOBAL_DIRNAME:-"${APP_NAME_LC}"}-insiders"
+else
+  GLOBAL_DIRNAME="${GLOBAL_DIRNAME:-"${APP_NAME_LC}"}"
+fi
 
 # All common functions can be added to this file
 
@@ -23,8 +29,10 @@ apply_patch() {
   replace "s|!!ASSETS_REPOSITORY!!|${ASSETS_REPOSITORY}|g" "$1"
   replace "s|!!BINARY_NAME!!|${BINARY_NAME}|g" "$1"
   replace "s|!!GH_REPO_PATH!!|${GH_REPO_PATH}|g" "$1"
+  replace "s|!!GLOBAL_DIRNAME!!|${GLOBAL_DIRNAME}|g" "$1"
   replace "s|!!ORG_NAME!!|${ORG_NAME}|g" "$1"
   replace "s|!!RELEASE_VERSION!!|${RELEASE_VERSION}|g" "$1"
+  replace "s|!!TUNNEL_APP_NAME!!|${TUNNEL_APP_NAME}|g" "$1"
 
   if ! git apply --ignore-whitespace "$1"; then
     echo failed to apply patch "$1" >&2

@@ -1,0 +1,48 @@
+diff --git a/src/vs/workbench/contrib/debug/browser/debug.contribution.ts b/src/vs/workbench/contrib/debug/browser/debug.contribution.ts
+--- a/src/vs/workbench/contrib/debug/browser/debug.contribution.ts
++++ b/src/vs/workbench/contrib/debug/browser/debug.contribution.ts
+@@ -463,7 +463,7 @@ const viewContainer = Registry.as<IViewContainersRegistry>(ViewExtensions.ViewCo
+ 	icon: icons.runViewIcon,
+ 	alwaysUseContainerInfo: true,
+ 	order: 3,
+-}, ViewContainerLocation.Sidebar);
++}, ViewContainerLocation.AuxiliaryBar);
+
+ // Register default debug views
+ const viewsRegistry = Registry.as<IViewsRegistry>(ViewExtensions.ViewsRegistry);
+diff --git a/src/vs/workbench/contrib/files/browser/explorerViewlet.ts b/src/vs/workbench/contrib/files/browser/explorerViewlet.ts
+--- a/src/vs/workbench/contrib/files/browser/explorerViewlet.ts
++++ b/src/vs/workbench/contrib/files/browser/explorerViewlet.ts
+@@ -270,7 +270,7 @@ export const VIEW_CONTAINER: ViewContainer = viewContainerRegistry.registerViewC
+ 		keybindings: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyE },
+ 		order: 0
+ 	},
+-}, ViewContainerLocation.Sidebar, { isDefault: true });
++}, ViewContainerLocation.AuxiliaryBar, { isDefault: true });
+
+ const openFolder = localize('openFolder', "Open Folder");
+ const addAFolder = localize('addAFolder', "add a folder");
+diff --git a/src/vs/workbench/contrib/scm/browser/scm.contribution.ts b/src/vs/workbench/contrib/scm/browser/scm.contribution.ts
+--- a/src/vs/workbench/contrib/scm/browser/scm.contribution.ts
++++ b/src/vs/workbench/contrib/scm/browser/scm.contribution.ts
+@@ -74,7 +74,7 @@ const viewContainer = Registry.as<IViewContainersRegistry>(ViewContainerExtensio
+ 	alwaysUseContainerInfo: true,
+ 	order: 2,
+ 	hideIfEmpty: true,
+-}, ViewContainerLocation.Sidebar, { doNotRegisterOpenCommand: true });
++}, ViewContainerLocation.AuxiliaryBar, { doNotRegisterOpenCommand: true });
+
+ const viewsRegistry = Registry.as<IViewsRegistry>(ViewContainerExtensions.ViewsRegistry);
+ const containerTitle = localize('source control view', "Source Control");
+diff --git a/src/vs/workbench/contrib/search/browser/search.contribution.ts b/src/vs/workbench/contrib/search/browser/search.contribution.ts
+--- a/src/vs/workbench/contrib/search/browser/search.contribution.ts
++++ b/src/vs/workbench/contrib/search/browser/search.contribution.ts
+@@ -63,7 +63,7 @@ const viewContainer = Registry.as<IViewContainersRegistry>(ViewExtensions.ViewCo
+ 	hideIfEmpty: true,
+ 	icon: searchViewIcon,
+ 	order: 1,
+-}, ViewContainerLocation.Sidebar, { doNotRegisterOpenCommand: true });
++}, ViewContainerLocation.AuxiliaryBar, { doNotRegisterOpenCommand: true });
+
+ const viewDescriptor: IViewDescriptor = {
+ 	id: VIEW_ID,

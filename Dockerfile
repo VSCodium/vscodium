@@ -1,4 +1,4 @@
-FROM node:20.19.0 as builder
+FROM node:22.21.1 as builder
 
 # Accept GITHUB_TOKEN as build argument
 ARG GITHUB_TOKEN
@@ -35,7 +35,7 @@ RUN ./dev/build.sh && \
     cp -r ./vscode/node_modules ./vscode-reh-web-linux-x64/
 
 
-FROM node:20.19.0 as runtime
+FROM node:22.21.1 as runtime
 COPY --from=builder /opt/vscodium/vscode-reh-web-linux-x64 /opt/codex
 
 ENV VSCODE_SERVER_HOST=0.0.0.0

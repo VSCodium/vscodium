@@ -3,9 +3,6 @@
 
 set -e
 
-# include common functions
-. ./utils.sh
-
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   cp -rp src/insider/* vscode/
 else
@@ -14,114 +11,33 @@ fi
 
 cp -f LICENSE vscode/LICENSE.txt
 
-cd vscode || {
-  echo "'vscode' dir not found"
-  exit 1
-}
+cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-../update_settings.sh
-
-# apply patches
 { set +x; } 2>/dev/null
 
-echo "APP_NAME=\"${APP_NAME}\""
-echo "APP_NAME_LC=\"${APP_NAME_LC}\""
-echo "BINARY_NAME=\"${BINARY_NAME}\""
-echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
-echo "ORG_NAME=\"${ORG_NAME}\""
-
-for file in ../patches/*.patch; do
-  if [[ -f "${file}" ]]; then
-    apply_patch "${file}"
-  fi
-done
-
-if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  for file in ../patches/insider/*.patch; do
-    if [[ -f "${file}" ]]; then
-      apply_patch "${file}"
-    fi
-  done
-fi
-
-if [[ -d "../patches/${OS_NAME}/" ]]; then
-  for file in "../patches/${OS_NAME}/"*.patch; do
-    if [[ -f "${file}" ]]; then
-      apply_patch "${file}"
-    fi
-  done
-fi
-
-for file in ../patches/user/*.patch; do
-  if [[ -f "${file}" ]]; then
-    apply_patch "${file}"
-  fi
-done
-
-set -x
-
-export ELECTRON_SKIP_BINARY_DOWNLOAD=1
-export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-
-if [[ "${OS_NAME}" == "linux" ]]; then
-  export VSCODE_SKIP_NODE_VERSION_CHECK=1
-
-  if [[ "${npm_config_arch}" == "arm" ]]; then
-    export npm_config_arm_version=7
-  fi
-elif [[ "${OS_NAME}" == "windows" ]]; then
-  if [[ "${npm_config_arch}" == "arm" ]]; then
-    export npm_config_arm_version=7
-  fi
-else
-  if [[ "${CI_BUILD}" != "no" ]]; then
-    clang++ --version
-  fi
-fi
-
-mv .npmrc .npmrc.bak
-cp ../npmrc .npmrc
-
-for i in {1..5}; do # try 5 times
-  if [[ "${CI_BUILD}" != "no" && "${OS_NAME}" == "osx" ]]; then
-    CXX=clang++ npm ci && break
-  else
-    npm ci && break
-  fi
-
-  if [[ $i == 3 ]]; then
-    echo "Npm install failed too many times" >&2
-    exit 1
-  fi
-  echo "Npm install failed $i, trying again..."
-
-  sleep $((15 * (i + 1)))
-done
-
-mv .npmrc.bak .npmrc
+# {{{ product.json
+cp product.json{,.bak}
 
 setpath() {
   local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$(jq --arg 'path' "${2}" --arg 'value' "${3}" 'setpath([$path]; $value)' "${1}.json")
-  echo "${jsonTmp}" >"${1}.json"
+  jsonTmp=$( jq --arg 'value' "${3}" "setpath(path(.${2}); \$value)" "${1}.json" )
+  echo "${jsonTmp}" > "${1}.json"
   set -x
 }
 
 setpath_json() {
   local jsonTmp
   { set +x; } 2>/dev/null
-  jsonTmp=$(jq --arg 'path' "${2}" --argjson 'value' "${3}" 'setpath([$path]; $value)' "${1}.json")
-  echo "${jsonTmp}" >"${1}.json"
+  jsonTmp=$( jq --argjson 'value' "${3}" "setpath(path(.${2}); \$value)" "${1}.json" )
+  echo "${jsonTmp}" > "${1}.json"
   set -x
 }
 
-# product.json
-cp product.json{,.bak}
-
 setpath "product" "checksumFailMoreInfoUrl" "https://go.microsoft.com/fwlink/?LinkId=828886"
 setpath "product" "documentationUrl" "https://go.microsoft.com/fwlink/?LinkID=533484#vscode"
-setpath_json "product" "extensionsGallery" '{"serviceUrl": "https://open-vsx.org/vscode/gallery", "itemUrl": "https://open-vsx.org/vscode/item", "extensionUrlTemplate": "https://open-vsx.org/vscode/gallery/{publisher}/{name}/latest", "controlUrl": "https://raw.githubusercontent.com/EclipseFdn/publish-extensions/refs/heads/master/extension-control/extensions.json"}'
+setpath_json "product" "extensionsGallery" '{"serviceUrl": "https://open-vsx.org/vscode/gallery", "itemUrl": "https://open-vsx.org/vscode/item", "latestUrlTemplate": "https://open-vsx.org/vscode/gallery/{publisher}/{name}/latest", "controlUrl": "https://raw.githubusercontent.com/EclipseFdn/publish-extensions/refs/heads/master/extension-control/extensions.json"}'
+
 setpath "product" "introductoryVideosUrl" "https://go.microsoft.com/fwlink/?linkid=832146"
 setpath "product" "keyboardShortcutsUrlLinux" "https://go.microsoft.com/fwlink/?linkid=832144"
 setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?linkid=832143"
@@ -150,22 +66,7 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "applicationName" "codex-insiders"
   setpath "product" "dataFolderName" ".codex-insiders"
   setpath "product" "linuxIconName" "codex-insiders"
-  setpath "product" "nameShort" "Codex - Insiders"
-  setpath "product" "nameLong" "Codex - Insiders"
-  setpath "product" "applicationName" "codex-insiders"
-  setpath "product" "dataFolderName" ".codex-insiders"
-  setpath "product" "linuxIconName" "codex-insiders"
   setpath "product" "quality" "insider"
-  setpath "product" "urlProtocol" "codex-insiders"
-  setpath "product" "serverApplicationName" "codex-server-insiders"
-  setpath "product" "serverDataFolderName" ".codex-server-insiders"
-  setpath "product" "darwinBundleIdentifier" "com.codex.CodexInsiders"
-  setpath "product" "win32AppUserModelId" "Codex.CodexInsiders"
-  setpath "product" "win32DirName" "Codex Insiders"
-  setpath "product" "win32MutexName" "codexinsiders"
-  setpath "product" "win32NameVersion" "Codex Insiders"
-  setpath "product" "win32RegValueName" "CodexInsiders"
-  setpath "product" "win32ShellNameShort" "Codex Insiders"
   setpath "product" "urlProtocol" "codex-insiders"
   setpath "product" "serverApplicationName" "codex-server-insiders"
   setpath "product" "serverDataFolderName" ".codex-server-insiders"
@@ -185,25 +86,14 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "tunnelApplicationName" "codex-tunnel-insiders"
   setpath "product" "win32TunnelServiceMutex" "codexinsiders-tunnelservice"
   setpath "product" "win32TunnelMutex" "codexinsiders-tunnel"
-  setpath "product" "tunnelApplicationName" "codex-tunnel-insiders"
-  setpath "product" "win32TunnelServiceMutex" "codexinsiders-tunnelservice"
-  setpath "product" "win32TunnelMutex" "codexinsiders-tunnel"
+  setpath "product" "win32ContextMenu.x64.clsid" "90AAD229-85FD-43A3-B82D-8598A88829CF"
+  setpath "product" "win32ContextMenu.arm64.clsid" "7544C31C-BDBF-4DDF-B15E-F73A46D6723D"
 else
   setpath "product" "nameShort" "Codex"
   setpath "product" "nameLong" "Codex"
   setpath "product" "applicationName" "codex"
   setpath "product" "linuxIconName" "codex"
   setpath "product" "quality" "stable"
-  setpath "product" "urlProtocol" "codex"
-  setpath "product" "serverApplicationName" "codex-server"
-  setpath "product" "serverDataFolderName" ".codex-server"
-  setpath "product" "darwinBundleIdentifier" "com.codex"
-  setpath "product" "win32AppUserModelId" "Codex.Codex"
-  setpath "product" "win32DirName" "Codex"
-  setpath "product" "win32MutexName" "codex"
-  setpath "product" "win32NameVersion" "Codex"
-  setpath "product" "win32RegValueName" "Codex"
-  setpath "product" "win32ShellNameShort" "Codex"
   setpath "product" "urlProtocol" "codex"
   setpath "product" "serverApplicationName" "codex-server"
   setpath "product" "serverDataFolderName" ".codex-server"
@@ -223,15 +113,110 @@ else
   setpath "product" "tunnelApplicationName" "codex-tunnel"
   setpath "product" "win32TunnelServiceMutex" "codex-tunnelservice"
   setpath "product" "win32TunnelMutex" "codex-tunnel"
-  setpath "product" "tunnelApplicationName" "codex-tunnel"
-  setpath "product" "win32TunnelServiceMutex" "codex-tunnelservice"
-  setpath "product" "win32TunnelMutex" "codex-tunnel"
+  setpath "product" "win32ContextMenu.x64.clsid" "D910D5E6-B277-4F4A-BDC5-759A34EEE25D"
+  setpath "product" "win32ContextMenu.arm64.clsid" "4852FC55-4A84-4EA1-9C86-D53BE3DF83C0"
 fi
 
-jsonTmp=$(jq -s '.[0] * .[1]' product.json ../product.json)
-echo "${jsonTmp}" >product.json && unset jsonTmp
+setpath_json "product" "tunnelApplicationConfig" '{}'
+
+jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
+echo "${jsonTmp}" > product.json && unset jsonTmp
 
 cat product.json
+# }}}
+
+# include common functions
+. ../utils.sh
+
+# {{{ apply patches
+
+echo "APP_NAME=\"${APP_NAME}\""
+echo "APP_NAME_LC=\"${APP_NAME_LC}\""
+echo "ASSETS_REPOSITORY=\"${ASSETS_REPOSITORY}\""
+echo "BINARY_NAME=\"${BINARY_NAME}\""
+echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
+echo "GLOBAL_DIRNAME=\"${GLOBAL_DIRNAME}\""
+echo "ORG_NAME=\"${ORG_NAME}\""
+echo "TUNNEL_APP_NAME=\"${TUNNEL_APP_NAME}\""
+
+if [[ "${DISABLE_UPDATE}" == "yes" ]]; then
+  mv ../patches/disable-update.patch.yet ../patches/disable-update.patch
+fi
+
+for file in ../patches/*.patch; do
+  if [[ -f "${file}" ]]; then
+    apply_patch "${file}"
+  fi
+done
+
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  for file in ../patches/insider/*.patch; do
+    if [[ -f "${file}" ]]; then
+      apply_patch "${file}"
+    fi
+  done
+fi
+
+if [[ -d "../patches/${OS_NAME}/" ]]; then
+  for file in "../patches/${OS_NAME}/"*.patch; do
+    if [[ -f "${file}" ]]; then
+      apply_patch "${file}"
+    fi
+  done
+fi
+
+for file in ../patches/user/*.patch; do
+  if [[ -f "${file}" ]]; then
+    apply_patch "${file}"
+  fi
+done
+# }}}
+
+set -x
+
+# {{{ install dependencies
+export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+
+if [[ "${OS_NAME}" == "linux" ]]; then
+  export VSCODE_SKIP_NODE_VERSION_CHECK=1
+
+   if [[ "${npm_config_arch}" == "arm" ]]; then
+    export npm_config_arm_version=7
+  fi
+elif [[ "${OS_NAME}" == "windows" ]]; then
+  if [[ "${npm_config_arch}" == "arm" ]]; then
+    export npm_config_arm_version=7
+  fi
+else
+  if [[ "${CI_BUILD}" != "no" ]]; then
+    clang++ --version
+  fi
+fi
+
+node build/npm/preinstall.ts
+
+mv .npmrc .npmrc.bak
+cp ../npmrc .npmrc
+
+for i in {1..5}; do # try 5 times
+  if [[ "${CI_BUILD}" != "no" && "${OS_NAME}" == "osx" ]]; then
+    CXX=clang++ npm ci && break
+  else
+    npm ci && break
+  fi
+
+  if [[ $i == 5 ]]; then
+    echo "Npm install failed too many times" >&2
+    exit 1
+  fi
+  echo "Npm install failed $i, trying again..."
+
+  sleep $(( 15 * (i + 1)))
+done
+
+mv .npmrc.bak .npmrc
+# }}}
 
 # package.json
 cp package.json{,.bak}
@@ -245,40 +230,27 @@ cp resources/server/manifest.json{,.bak}
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "resources/server/manifest" "name" "Codex - Insiders"
   setpath "resources/server/manifest" "short_name" "Codex - Insiders"
-  setpath "resources/server/manifest" "name" "Codex - Insiders"
-  setpath "resources/server/manifest" "short_name" "Codex - Insiders"
 else
-  setpath "resources/server/manifest" "name" "Codex"
-  setpath "resources/server/manifest" "short_name" "Codex"
   setpath "resources/server/manifest" "name" "Codex"
   setpath "resources/server/manifest" "short_name" "Codex"
 fi
 
 # announcements
-replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$(tr -d '\n' <../announcements-builtin.json)|" src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
+replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( tr -d '\n' < ../announcements-builtin.json )|" src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 
 ../undo_telemetry.sh
 
-replace 's|Microsoft Corporation|Codex|' build/lib/electron.js
 replace 's|Microsoft Corporation|Codex|' build/lib/electron.ts
-replace 's|([0-9]) Microsoft|\1 Codex|' build/lib/electron.js
-replace 's|([0-9]) Microsoft|\1 Codex|' build/lib/electron.ts
-replace 's|Microsoft Corporation|Codex|' build/lib/electron.js
-replace 's|Microsoft Corporation|Codex|' build/lib/electron.ts
-replace 's|([0-9]) Microsoft|\1 Codex|' build/lib/electron.js
 replace 's|([0-9]) Microsoft|\1 Codex|' build/lib/electron.ts
 
 if [[ "${OS_NAME}" == "linux" ]]; then
   # microsoft adds their apt repo to sources
   # unless the app name is code-oss
   # as we are renaming the application to codex
-  # as we are renaming the application to codex
   # we need to edit a line in the post install template
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     sed -i "s/code-oss/codex-insiders/" resources/linux/debian/postinst.template
-    sed -i "s/code-oss/codex-insiders/" resources/linux/debian/postinst.template
   else
-    sed -i "s/code-oss/codex/" resources/linux/debian/postinst.template
     sed -i "s/code-oss/codex/" resources/linux/debian/postinst.template
   fi
 
@@ -288,19 +260,11 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/genesis-ai-dev/codex#download-install|' resources/linux/code.appdata.xml
   sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://codex.com/img/codex.png|' resources/linux/code.appdata.xml
   sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/code.appdata.xml
-  sed -i 's|Visual Studio Code|Codex|g' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/BiblioNexus-Foundation/codex#download-install|' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://codex.com/img/codex.png|' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/code.appdata.xml
 
   # control.template
-  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|Codex Team https://github.com/genesis-ai-dev/codex/graphs/contributors|' resources/linux/debian/control.template
+  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|Codex Team https://github.com/genesis-ai-dev/codex/graphs/contributors|'  resources/linux/debian/control.template
   sed -i 's|Visual Studio Code|Codex|g' resources/linux/debian/control.template
   sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/genesis-ai-dev/codex#download-install|' resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/debian/control.template
-  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|Codex Team https://github.com/BiblioNexus-Foundation/codex/graphs/contributors|'  resources/linux/debian/control.template
-  sed -i 's|Visual Studio Code|Codex|g' resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/BiblioNexus-Foundation/codex#download-install|' resources/linux/debian/control.template
   sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/debian/control.template
 
   # code.spec.template
@@ -309,20 +273,19 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   sed -i 's|Visual Studio Code|Codex|' resources/linux/rpm/code.spec.template
   sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/genesis-ai-dev/codex#download-install|' resources/linux/rpm/code.spec.template
   sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/rpm/code.spec.template
-  sed -i 's|Microsoft Corporation|Codex Team|' resources/linux/rpm/code.spec.template
-  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|Codex Team https://github.com/BiblioNexus-Foundation/codex/graphs/contributors|' resources/linux/rpm/code.spec.template
-  sed -i 's|Visual Studio Code|Codex|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/BiblioNexus-Foundation/codex#download-install|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com|https://codex.com|' resources/linux/rpm/code.spec.template
 
   # snapcraft.yaml
-  sed -i 's|Visual Studio Code|Codex|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code|Codex|'  resources/linux/rpm/code.spec.template
 elif [[ "${OS_NAME}" == "windows" ]]; then
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+    ISS_PATH="build/win32/code-insider.iss"
+  else
+    ISS_PATH="build/win32/code.iss"
+  fi
+
   # code.iss
-  sed -i 's|https://code.visualstudio.com|https://codex.com|' build/win32/code.iss
-  sed -i 's|Microsoft Corporation|Codex|' build/win32/code.iss
-  sed -i 's|https://code.visualstudio.com|https://codex.com|' build/win32/code.iss
-  sed -i 's|Microsoft Corporation|Codex|' build/win32/code.iss
+  sed -i 's|https://code.visualstudio.com|https://codex.com|' "${ISS_PATH}"
+  sed -i 's|Microsoft Corporation|Codex|' "${ISS_PATH}"
 fi
 
 cd ..

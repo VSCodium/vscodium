@@ -1,0 +1,123 @@
+diff --git a/src/vs/platform/environment/common/environment.ts b/src/vs/platform/environment/common/environment.ts
+index 4a14c83..59c963b 100644
+--- a/src/vs/platform/environment/common/environment.ts
++++ b/src/vs/platform/environment/common/environment.ts
+@@ -137,2 +137,3 @@ export interface INativeEnvironmentService extends IEnvironmentService {
+ 	userDataPath: string;
++	userStatePath: string;
+ 
+diff --git a/src/vs/platform/environment/common/environmentService.ts b/src/vs/platform/environment/common/environmentService.ts
+index 535132f..edd76bc 100644
+--- a/src/vs/platform/environment/common/environmentService.ts
++++ b/src/vs/platform/environment/common/environmentService.ts
+@@ -28,2 +28,4 @@ export interface INativeEnvironmentPaths {
+ 
++	userStateDir: string;
++
+ 	/**
+@@ -54,2 +56,5 @@ export abstract class AbstractNativeEnvironmentService implements INativeEnviron
+ 
++	@memoize
++	get userStatePath(): string { return this.paths.userStateDir; }
++
+ 	@memoize
+@@ -75,3 +80,3 @@ export abstract class AbstractNativeEnvironmentService implements INativeEnviron
+ 			const key = toLocalISOString(new Date()).replace(/-|:|\.\d+Z$/g, '');
+-			this.args.logsPath = join(this.userDataPath, 'logs', key);
++			this.args.logsPath = join(this.userStatePath, key);
+ 		}
+diff --git a/src/vs/platform/environment/node/environmentService.ts b/src/vs/platform/environment/node/environmentService.ts
+index ae9e7e1..3c6c6c5 100644
+--- a/src/vs/platform/environment/node/environmentService.ts
++++ b/src/vs/platform/environment/node/environmentService.ts
+@@ -11,2 +11,3 @@ import { getUserDataPath } from './userDataPath.js';
+ import { IProductService } from '../../product/common/productService.js';
++import { getUserStatePath } from './userStatePath.js';
+ 
+@@ -18,3 +19,4 @@ export class NativeEnvironmentService extends AbstractNativeEnvironmentService {
+ 			tmpDir: tmpdir(),
+-			userDataDir: getUserDataPath(args, productService.nameShort)
++			userDataDir: getUserDataPath(args, productService.nameShort),
++			userStateDir: getUserStatePath(args, productService.nameShort)
+ 		}, productService);
+diff --git a/src/vs/platform/environment/node/userStatePath.ts b/src/vs/platform/environment/node/userStatePath.ts
+new file mode 100644
+index 0000000..53f9e2f
+--- /dev/null
++++ b/src/vs/platform/environment/node/userStatePath.ts
+@@ -0,0 +1,42 @@
++import { homedir } from 'os';
++import { NativeParsedArgs } from '../common/argv.js';
++
++import { resolve, isAbsolute, join } from 'path';
++
++const cwd = process.env['VSCODE_CWD'] || process.cwd();
++
++export function getUserStatePath(cliArgs: NativeParsedArgs, productName: string): string {
++	const userStatePath = doGetUserStatePath(cliArgs, productName);
++	const pathsToResolve = [userStatePath];
++
++	if (!isAbsolute(userStatePath)) {
++		pathsToResolve.unshift(cwd);
++	}
++
++	return resolve(...pathsToResolve);
++}
++
++function doGetUserStatePath(cliArgs: NativeParsedArgs, productName: string): string {
++
++	// 0. Running out of sources has a fixed productName
++	if (process.env['VSCODE_DEV']) {
++		productName = 'code-oss-dev';
++	}
++
++	// 1. Support portable mode
++	const portablePath = process.env['VSCODE_PORTABLE'];
++	if (portablePath) {
++		return join(portablePath, 'user-state');
++	}
++
++	// 2. Support global VSCODE_APPSTATE environment variable
++	let appStatePath = process.env['VSCODE_APPSTATE'];
++	if (appStatePath) {
++		return join(appStatePath, productName);
++	}
++
++	// 4. Otherwise
++	appStatePath = process.env['XDG_STATE_HOME'] || join(homedir(), '.local', 'state');
++
++	return join(appStatePath, productName);
++}
+diff --git a/src/vs/platform/window/common/window.ts b/src/vs/platform/window/common/window.ts
+index fa297d1..839fd60 100644
+--- a/src/vs/platform/window/common/window.ts
++++ b/src/vs/platform/window/common/window.ts
+@@ -443,2 +443,3 @@ export interface INativeWindowConfiguration extends IWindowConfiguration, Native
+ 	userDataDir: string;
++	userStateDir: string;
+ 
+diff --git a/src/vs/platform/windows/electron-main/windowsMainService.ts b/src/vs/platform/windows/electron-main/windowsMainService.ts
+index 117dfd2..6b0458b 100644
+--- a/src/vs/platform/windows/electron-main/windowsMainService.ts
++++ b/src/vs/platform/windows/electron-main/windowsMainService.ts
+@@ -1511,2 +1511,3 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
+ 			userDataDir: this.environmentMainService.userDataPath,
++			userStateDir: this.environmentMainService.userStatePath,
+ 
+diff --git a/src/vs/workbench/services/environment/electron-browser/environmentService.ts b/src/vs/workbench/services/environment/electron-browser/environmentService.ts
+index 6cfa517..46286c6 100644
+--- a/src/vs/workbench/services/environment/electron-browser/environmentService.ts
++++ b/src/vs/workbench/services/environment/electron-browser/environmentService.ts
+@@ -153,3 +153,3 @@ export class NativeWorkbenchEnvironmentService extends AbstractNativeEnvironment
+ 	) {
+-		super(configuration, { homeDir: configuration.homeDir, tmpDir: configuration.tmpDir, userDataDir: configuration.userDataDir }, productService);
++		super(configuration, { homeDir: configuration.homeDir, tmpDir: configuration.tmpDir, userDataDir: configuration.userDataDir, userStateDir: configuration.userStateDir }, productService);
+ 	}
+diff --git a/src/vs/workbench/services/workingCopy/test/electron-browser/workingCopyBackupService.test.ts b/src/vs/workbench/services/workingCopy/test/electron-browser/workingCopyBackupService.test.ts
+index 6b7307e..c74476a 100644
+--- a/src/vs/workbench/services/workingCopy/test/electron-browser/workingCopyBackupService.test.ts
++++ b/src/vs/workbench/services/workingCopy/test/electron-browser/workingCopyBackupService.test.ts
+@@ -74,2 +74,3 @@ const TestNativeWindowConfiguration: INativeWindowConfiguration = {
+ 	userDataDir: joinPath(homeDir, product.nameShort).fsPath,
++	userStateDir: joinPath(homeDir, product.nameShort).fsPath,
+ 	profiles: { profile: NULL_PROFILE, all: [NULL_PROFILE], home: homeDir },

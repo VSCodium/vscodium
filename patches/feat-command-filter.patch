@@ -1,0 +1,167 @@
+diff --git a/src/vs/workbench/contrib/commands/common/commands.contribution.ts b/src/vs/workbench/contrib/commands/common/commands.contribution.ts
+index 3fd6b59..97a0e04 100644
+--- a/src/vs/workbench/contrib/commands/common/commands.contribution.ts
++++ b/src/vs/workbench/contrib/commands/common/commands.contribution.ts
+@@ -9,2 +9,3 @@ import { Action2, registerAction2 } from '../../../../platform/actions/common/ac
+ import { ICommandService } from '../../../../platform/commands/common/commands.js';
++import { ConfigurationScope, IConfigurationRegistry } from '../../../../platform/configuration/common/configurationRegistry.js';
+ import { ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
+@@ -12,2 +13,3 @@ import { ILogService } from '../../../../platform/log/common/log.js';
+ import { INotificationService } from '../../../../platform/notification/common/notification.js';
++import { Registry } from '../../../../platform/registry/common/platform.js';
+ 
+@@ -156,2 +158,30 @@ class RunCommands extends Action2 {
+ 
++Registry.as<IConfigurationRegistry>('base.contributions.configuration')
++	.registerConfiguration({
++		id: 'commands',
++		order: 30,
++		title: nls.localize('commandsConfigurationTitle', "Commands"),
++		type: 'object',
++		properties: {
++			'commands.filters': {
++				additionalProperties: {
++					type: 'string',
++					enum: ['ask', 'off', 'on'],
++					enumDescriptions: [
++						nls.localize('commands.filters.ask', 'Ask the user before executing the command.'),
++						nls.localize('commands.filters.off', 'The command is never authorized.'),
++						nls.localize('commands.filters.on', 'The command is always authorized.'),
++					],
++					description: nls.localize('commands.filters.value', "Authorization for the command."),
++				},
++				description: nls.localize('commands.filters', "Controls which commands are authorized to be executed."),
++				default: {
++					'workbench.action.terminal.newLocal': 'off'
++				},
++				scope: ConfigurationScope.APPLICATION,
++				tags: []
++			},
++		}
++	});
++
+ registerAction2(RunCommands);
+diff --git a/src/vs/workbench/services/commands/common/commandService.ts b/src/vs/workbench/services/commands/common/commandService.ts
+index 93d1631..0533cf0 100644
+--- a/src/vs/workbench/services/commands/common/commandService.ts
++++ b/src/vs/workbench/services/commands/common/commandService.ts
+@@ -8,3 +8,6 @@ import { Emitter, Event } from '../../../../base/common/event.js';
+ import { Disposable } from '../../../../base/common/lifecycle.js';
++import Severity from '../../../../base/common/severity.js';
+ import { CommandsRegistry, ICommandEvent, ICommandService } from '../../../../platform/commands/common/commands.js';
++import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
+ import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
+@@ -20,2 +23,3 @@ export class CommandService extends Disposable implements ICommandService {
+ 	private _starActivation: CancelablePromise<void> | null;
++	private _commandFilters: Record<string, "ask" | "off" | "on">
+ 
+@@ -30,3 +34,5 @@ export class CommandService extends Disposable implements ICommandService {
+ 		@IExtensionService private readonly _extensionService: IExtensionService,
+-		@ILogService private readonly _logService: ILogService
++		@ILogService private readonly _logService: ILogService,
++		@IConfigurationService private readonly _configurationService: IConfigurationService,
++		@IDialogService private readonly _dialogService: IDialogService
+ 	) {
+@@ -35,2 +41,9 @@ export class CommandService extends Disposable implements ICommandService {
+ 		this._starActivation = null;
++		this._commandFilters = this._configurationService.getValue('commands.filters') ?? { 'workbench.action.terminal.newLocal': 'off' };
++
++		this._configurationService.onDidChangeConfiguration(async (event) => {
++			if (event.affectsConfiguration('commands.filters')) {
++				this._commandFilters = this._configurationService.getValue('commands.filters') ?? { 'workbench.action.terminal.newLocal': 'off' };
++			}
++		})
+ 	}
+@@ -57,2 +70,27 @@ export class CommandService extends Disposable implements ICommandService {
+ 
++		const filter = this._commandFilters[id];
++		if (filter === 'off') {
++			return Promise.reject(new Error(`command '${id}' not authorized`));
++		}
++		else if (filter === 'ask') {
++			const { result } = await this._dialogService.prompt({
++				type: Severity.Error,
++				message: `Are you sure you want to execute the command "${id}"?`,
++				buttons: [
++					{
++						label: 'Yes',
++						run: () => true
++					},
++					{
++						label: 'No',
++						run: () => false
++					}
++				],
++			});
++
++			if (!result) {
++				return Promise.reject(new Error(`command '${id}' not authorized`));
++			}
++		}
++
+ 		if (commandIsRegistered) {
+diff --git a/src/vs/workbench/services/commands/test/common/commandService.test.ts b/src/vs/workbench/services/commands/test/common/commandService.test.ts
+index ca3be11..fb456a3 100644
+--- a/src/vs/workbench/services/commands/test/common/commandService.test.ts
++++ b/src/vs/workbench/services/commands/test/common/commandService.test.ts
+@@ -12,2 +12,7 @@ import { NullExtensionService } from '../../../extensions/common/extensions.js';
+ import { CommandService } from '../../common/commandService.js';
++import { NullPolicyService } from '../../../../../platform/policy/common/policy.js';
++import { FileService } from '../../../../../platform/files/common/fileService.js';
++import { URI } from '../../../../../base/common/uri.js';
++import { ConfigurationService } from '../../../../../platform/configuration/common/configurationService.js';
++import { TestDialogService } from '../../../../../platform/dialogs/test/common/testDialogService.js';
+ 
+@@ -16,4 +21,16 @@ suite('CommandService', function () {
+ 	const store = ensureNoDisposablesAreLeakedInTestSuite();
++	const testDisposables = ensureNoDisposablesAreLeakedInTestSuite();
++	let nullConfigService: ConfigurationService
+ 
+ 	setup(function () {
++		const nullPolicyService = new NullPolicyService();
++		const nullLogService = testDisposables.add(new NullLogService());
++		const nullFileService = testDisposables.add(new FileService(nullLogService));
++		nullConfigService = testDisposables.add(new ConfigurationService(
++			URI.file('/config.json'),
++			nullFileService,
++			nullPolicyService,
++			nullLogService,
++		));
++
+ 		store.add(CommandsRegistry.registerCommand('foo', function () { }));
+@@ -30,3 +47,3 @@ suite('CommandService', function () {
+ 			}
+-		}, new NullLogService()));
++		}, new NullLogService(), nullConfigService, new TestDialogService()));
+ 
+@@ -50,3 +67,3 @@ suite('CommandService', function () {
+ 
+-		const service = store.add(new CommandService(new InstantiationService(), extensionService, new NullLogService()));
++		const service = store.add(new CommandService(new InstantiationService(), extensionService, new NullLogService(), nullConfigService, new TestDialogService()));
+ 
+@@ -68,3 +85,3 @@ suite('CommandService', function () {
+ 			}
+-		}, new NullLogService()));
++		}, new NullLogService(), nullConfigService, new TestDialogService()));
+ 
+@@ -85,3 +102,3 @@ suite('CommandService', function () {
+ 			}
+-		}, new NullLogService()));
++		}, new NullLogService(), nullConfigService, new TestDialogService()));
+ 
+@@ -125,3 +142,3 @@ suite('CommandService', function () {
+ 
+-		}, new NullLogService()));
++		}, new NullLogService(), nullConfigService, new TestDialogService()));
+ 
+@@ -166,3 +183,3 @@ suite('CommandService', function () {
+ 
+-		}, new NullLogService()));
++		}, new NullLogService(), nullConfigService, new TestDialogService()));
+ 
+@@ -187,3 +204,3 @@ suite('CommandService', function () {
+ 		};
+-		const service = store.add(new CommandService(new InstantiationService(), extensionService, new NullLogService()));
++		const service = store.add(new CommandService(new InstantiationService(), extensionService, new NullLogService(), nullConfigService, new TestDialogService()));
+ 

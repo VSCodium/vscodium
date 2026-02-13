@@ -1,0 +1,53 @@
+diff --git a/src/vs/workbench/contrib/files/browser/fileActions.contribution.ts b/src/vs/workbench/contrib/files/browser/fileActions.contribution.ts
+index 6cd0433..074c7eb 100644
+--- a/src/vs/workbench/contrib/files/browser/fileActions.contribution.ts
++++ b/src/vs/workbench/contrib/files/browser/fileActions.contribution.ts
+@@ -12,3 +12,3 @@ import { KeyMod, KeyCode } from '../../../../base/common/keyCodes.js';
+ import { openWindowCommand, newWindowCommand } from './fileCommands.js';
+-import { COPY_PATH_COMMAND_ID, REVEAL_IN_EXPLORER_COMMAND_ID, OPEN_TO_SIDE_COMMAND_ID, REVERT_FILE_COMMAND_ID, SAVE_FILE_COMMAND_ID, SAVE_FILE_LABEL, SAVE_FILE_AS_COMMAND_ID, SAVE_FILE_AS_LABEL, SAVE_ALL_IN_GROUP_COMMAND_ID, OpenEditorsGroupContext, COMPARE_WITH_SAVED_COMMAND_ID, COMPARE_RESOURCE_COMMAND_ID, SELECT_FOR_COMPARE_COMMAND_ID, ResourceSelectedForCompareContext, OpenEditorsDirtyEditorContext, COMPARE_SELECTED_COMMAND_ID, REMOVE_ROOT_FOLDER_COMMAND_ID, REMOVE_ROOT_FOLDER_LABEL, SAVE_FILES_COMMAND_ID, COPY_RELATIVE_PATH_COMMAND_ID, SAVE_FILE_WITHOUT_FORMATTING_COMMAND_ID, SAVE_FILE_WITHOUT_FORMATTING_LABEL, OpenEditorsReadonlyEditorContext, OPEN_WITH_EXPLORER_COMMAND_ID, NEW_UNTITLED_FILE_COMMAND_ID, NEW_UNTITLED_FILE_LABEL, SAVE_ALL_COMMAND_ID, OpenEditorsSelectedFileOrUntitledContext } from './fileConstants.js';
++import { COPY_PATH_COMMAND_ID, REVEAL_IN_EXPLORER_COMMAND_ID, OPEN_TO_SIDE_COMMAND_ID, REVERT_FILE_COMMAND_ID, SAVE_FILE_COMMAND_ID, SAVE_FILE_LABEL, SAVE_ALL_IN_GROUP_COMMAND_ID, OpenEditorsGroupContext, COMPARE_WITH_SAVED_COMMAND_ID, COMPARE_RESOURCE_COMMAND_ID, SELECT_FOR_COMPARE_COMMAND_ID, ResourceSelectedForCompareContext, OpenEditorsDirtyEditorContext, COMPARE_SELECTED_COMMAND_ID, REMOVE_ROOT_FOLDER_COMMAND_ID, REMOVE_ROOT_FOLDER_LABEL, SAVE_FILES_COMMAND_ID, COPY_RELATIVE_PATH_COMMAND_ID, SAVE_FILE_WITHOUT_FORMATTING_COMMAND_ID, SAVE_FILE_WITHOUT_FORMATTING_LABEL, OpenEditorsReadonlyEditorContext, OPEN_WITH_EXPLORER_COMMAND_ID, NEW_UNTITLED_FILE_COMMAND_ID, NEW_UNTITLED_FILE_LABEL, SAVE_ALL_COMMAND_ID, OpenEditorsSelectedFileOrUntitledContext } from './fileConstants.js';
+ import { CommandsRegistry, ICommandHandler } from '../../../../platform/commands/common/commands.js';
+@@ -260,8 +260,2 @@ appendToCommandPalette({
+ 
+-appendToCommandPalette({
+-	id: SAVE_FILE_AS_COMMAND_ID,
+-	title: SAVE_FILE_AS_LABEL,
+-	category: Categories.File
+-});
+-
+ appendToCommandPalette({
+@@ -696,12 +690,2 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 
+-MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+-	group: '4_save',
+-	command: {
+-		id: SAVE_FILE_AS_COMMAND_ID,
+-		title: nls.localize({ key: 'miSaveAs', comment: ['&& denotes a mnemonic'] }, "Save &&As..."),
+-		precondition: ContextKeyExpr.or(ActiveEditorContext, ContextKeyExpr.and(FoldersViewVisibleContext, SidebarFocusContext))
+-	},
+-	order: 2
+-});
+-
+ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+diff --git a/src/vs/workbench/contrib/files/browser/fileCommands.ts b/src/vs/workbench/contrib/files/browser/fileCommands.ts
+index 267b609..d2b077b 100644
+--- a/src/vs/workbench/contrib/files/browser/fileCommands.ts
++++ b/src/vs/workbench/contrib/files/browser/fileCommands.ts
+@@ -48,3 +48,3 @@ import { ViewContainerLocation } from '../../../common/views.js';
+ import { IViewsService } from '../../../services/views/common/viewsService.js';
+-import { OPEN_TO_SIDE_COMMAND_ID, COMPARE_WITH_SAVED_COMMAND_ID, SELECT_FOR_COMPARE_COMMAND_ID, ResourceSelectedForCompareContext, COMPARE_SELECTED_COMMAND_ID, COMPARE_RESOURCE_COMMAND_ID, COPY_PATH_COMMAND_ID, COPY_RELATIVE_PATH_COMMAND_ID, REVEAL_IN_EXPLORER_COMMAND_ID, OPEN_WITH_EXPLORER_COMMAND_ID, SAVE_FILE_COMMAND_ID, SAVE_FILE_WITHOUT_FORMATTING_COMMAND_ID, SAVE_FILE_AS_COMMAND_ID, SAVE_ALL_COMMAND_ID, SAVE_ALL_IN_GROUP_COMMAND_ID, SAVE_FILES_COMMAND_ID, REVERT_FILE_COMMAND_ID, REMOVE_ROOT_FOLDER_COMMAND_ID, PREVIOUS_COMPRESSED_FOLDER, NEXT_COMPRESSED_FOLDER, FIRST_COMPRESSED_FOLDER, LAST_COMPRESSED_FOLDER, NEW_UNTITLED_FILE_COMMAND_ID, NEW_UNTITLED_FILE_LABEL, NEW_FILE_COMMAND_ID } from './fileConstants.js';
++import { OPEN_TO_SIDE_COMMAND_ID, COMPARE_WITH_SAVED_COMMAND_ID, SELECT_FOR_COMPARE_COMMAND_ID, ResourceSelectedForCompareContext, COMPARE_SELECTED_COMMAND_ID, COMPARE_RESOURCE_COMMAND_ID, COPY_PATH_COMMAND_ID, COPY_RELATIVE_PATH_COMMAND_ID, REVEAL_IN_EXPLORER_COMMAND_ID, OPEN_WITH_EXPLORER_COMMAND_ID, SAVE_FILE_COMMAND_ID, SAVE_FILE_WITHOUT_FORMATTING_COMMAND_ID, SAVE_ALL_COMMAND_ID, SAVE_ALL_IN_GROUP_COMMAND_ID, SAVE_FILES_COMMAND_ID, REVERT_FILE_COMMAND_ID, REMOVE_ROOT_FOLDER_COMMAND_ID, PREVIOUS_COMPRESSED_FOLDER, NEXT_COMPRESSED_FOLDER, FIRST_COMPRESSED_FOLDER, LAST_COMPRESSED_FOLDER, NEW_UNTITLED_FILE_COMMAND_ID, NEW_UNTITLED_FILE_LABEL, NEW_FILE_COMMAND_ID } from './fileConstants.js';
+ import { IFileDialogService } from '../../../../platform/dialogs/common/dialogs.js';
+@@ -484,12 +484,2 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 
+-KeybindingsRegistry.registerCommandAndKeybindingRule({
+-	id: SAVE_FILE_AS_COMMAND_ID,
+-	weight: KeybindingWeight.WorkbenchContrib,
+-	when: undefined,
+-	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyS,
+-	handler: accessor => {
+-		return saveSelectedEditors(accessor, { reason: SaveReason.EXPLICIT, saveAs: true });
+-	}
+-});
+-
+ KeybindingsRegistry.registerCommandAndKeybindingRule({

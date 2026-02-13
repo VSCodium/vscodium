@@ -43,13 +43,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runner: macos-13
+          - runner: macos-15-intel
             vscode_arch: x64
           - runner: macos-14
             vscode_arch: arm64
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ env.GITHUB_BRANCH }}
 
@@ -59,12 +59,12 @@ jobs:
         run: . get_pr.sh
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20.19.0'
+          node-version-file: '.nvmrc'
 
       - name: Setup Python 3
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
         if: env.VSCODE_ARCH == 'x64'
@@ -115,7 +115,7 @@ jobs:
         if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/

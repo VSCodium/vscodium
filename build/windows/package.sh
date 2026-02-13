@@ -13,16 +13,23 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 for i in {1..5}; do # try 5 times
   npm ci && break
-  if [[ $i -eq 3 ]]; then
+  if [[ $i == 5 ]]; then
     echo "Npm install failed too many times" >&2
     exit 1
   fi
   echo "Npm install failed $i, trying again..."
 done
 
-node build/azure-pipelines/distro/mixin-npm
+node build/azure-pipelines/distro/mixin-npm.ts
+
+# delete native files built in the `compile` step
+find .build/extensions -type f -name '*.node' -print -delete
 
 . ../build/windows/rtf/make.sh
+
+# generate Group Policy definitions
+npm run copy-policy-dto --prefix build
+node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc win32
 
 npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
 

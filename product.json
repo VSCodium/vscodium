@@ -46,9 +46,31 @@
   "extensionAllowedBadgeProvidersRegex": [
     "^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/(actions\\/)?workflows\\/.*badge\\.svg"
   ],
+  "extensionsEnabledWithApiProposalVersion": [
+    "GitHub.copilot-chat",
+    "ms-vscode.vscode-commander",
+    "ms-vscode.vscode-copilot-vision",
+    "GitHub.vscode-pull-request-github"
+  ],
   "extensionEnabledApiProposals": {
+    "ms-azuretools.vscode-containers": [
+      "authenticationChallenges"
+    ],
+    "ms-azuretools.vscode-azureresourcegroups": [
+      "authenticationChallenges"
+    ],
+    "ms-azuretools.vscode-azure-github-copilot": [
+      "authenticationChallenges"
+    ],
     "ms-azuretools.vscode-dev-azurecloudshell": [
-      "contribEditSessions"
+      "contribEditSessions",
+      "authenticationChallenges"
+    ],
+    "ms-toolsai.vscode-ai": [
+      "authenticationChallenges"
+    ],
+    "TeamsDevApp.vscode-ai-foundry": [
+      "authenticationChallenges"
     ],
     "ms-vscode.vscode-selfhost-test-provider": [
       "testObserver",
@@ -65,7 +87,6 @@
       "documentFiltersExclusive",
       "fileSearchProvider",
       "findTextInFiles",
-      "notebookCellExecutionState",
       "notebookLiveShare",
       "terminalDimensions",
       "terminalDataWriteEvent",
@@ -78,7 +99,8 @@
       "tunnels"
     ],
     "ms-toolsai.vscode-ai-remote": [
-      "resolvers"
+      "resolvers",
+      "authenticationChallenges"
     ],
     "ms-python.python": [
       "codeActionAI",
@@ -94,7 +116,8 @@
       "terminalShellEnv"
     ],
     "ms-python.vscode-python-envs": [
-      "terminalShellEnv"
+      "terminalShellEnv",
+      "terminalDataWriteEvent"
     ],
     "ms-dotnettools.dotnet-interactive-vscode": [
       "notebookMessaging"
@@ -184,11 +207,16 @@
     ],
     "GitHub.vscode-pull-request-github": [
       "activeComment",
+      "chatContextProvider",
+      "chatParticipantAdditions",
+      "chatParticipantPrivate",
+      "chatSessionsProvider",
       "codiconDecoration",
       "codeActionRanges",
       "commentingRangeHint",
       "commentReactor",
       "commentReveal",
+      "commentsDraftState",
       "commentThreadApplicability",
       "contribAccessibilityHelpContent",
       "contribCommentEditorActionsMenu",
@@ -199,17 +227,24 @@
       "contribMultiDiffEditorMenus",
       "contribShareMenu",
       "diffCommand",
+      "languageModelToolResultAudience",
+      "markdownAlertSyntax",
       "quickDiffProvider",
+      "remoteCodingAgents",
       "shareProvider",
+      "tabInputMultiDiff",
       "tabInputTextMerge",
       "tokenInformation",
+      "treeItemMarkdownLabel",
       "treeViewMarkdownMessage"
     ],
     "GitHub.copilot": [
-      "inlineCompletionsAdditions"
+      "inlineCompletionsAdditions",
+      "devDeviceId"
     ],
     "GitHub.copilot-nightly": [
-      "inlineCompletionsAdditions"
+      "inlineCompletionsAdditions",
+      "devDeviceId"
     ],
     "GitHub.copilot-chat": [
       "interactive",
@@ -246,14 +281,22 @@
       "documentFiltersExclusive",
       "chatParticipantPrivate",
       "contribDebugCreateConfiguration",
-      "inlineEdit",
       "inlineCompletionsAdditions",
       "chatReferenceBinaryData",
       "languageModelSystem",
       "languageModelCapabilities",
-      "languageModelDataPart",
+      "languageModelThinkingPart",
       "chatStatusItem",
-      "taskProblemMatcherStatus"
+      "taskProblemMatcherStatus",
+      "contribLanguageModelToolSets",
+      "textDocumentChangeReason",
+      "resolvers",
+      "taskExecutionTerminal",
+      "dataChannels",
+      "chatSessionsProvider",
+      "devDeviceId",
+      "contribEditorContentMenu",
+      "tokenInformation"
     ],
     "GitHub.remotehub": [
       "contribRemoteHelp",
@@ -270,12 +313,10 @@
       "textSearchProvider",
       "timeline"
     ],
-    "ms-python.gather": [
-      "notebookCellExecutionState"
-    ],
     "ms-python.vscode-pylance": [
-      "mcpConfigurationProvider",
-      "terminalShellEnv"
+      "terminalShellEnv",
+      "portsAttributes",
+      "codeActionAI"
     ],
     "ms-python.debugpy": [
       "contribViewsWelcome",
@@ -349,6 +390,23 @@
     ],
     "ms-autodev.vscode-autodev": [
       "chatParticipantAdditions"
+    ],
+    "vscjava.vscode-java-upgrade": [
+      "chatParticipantAdditions",
+      "chatParticipantPrivate"
+    ],
+    "FoundryLocal.foundry-local-chat": [
+      "chatProvider"
+    ],
+    "Microsoft.foundry-local-chat": [
+      "chatProvider"
+    ],
+    "ms-wmcp.windows-mcp-server-extension": [
+      "mcpToolDefinitions"
+    ],
+    "openai.chatgpt": [
+      "languageModelProxy",
+      "chatSessionsProvider"
     ],
     "jeanp413.open-remote-ssh": [
       "resolvers",
