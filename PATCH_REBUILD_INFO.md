@@ -1,6 +1,6 @@
 === PATCH REBUILD ===
-**Build Version:** 1.108.11074
+**Build Version:** 1.108.11148
 **Base VS Code:** 1.108.1
-**Rebuild Reason:** fix workspace trust and extension dir
-**Build Date:** Fri Feb 13 18:31:25 UTC 2026
-**Commit:** 623c79227424cf062c955c21608d0427d58299bf
+**Rebuild Reason:** Add windows codesigning
+**Build Date:** Mon Feb 16 20:18:27 UTC 2026
+**Commit:** 3da950e862488d84c6af2c1b358c0a0afef30e42
