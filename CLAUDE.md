@@ -231,6 +231,13 @@ When merging upstream, these are our key customizations that must be preserved:
    - `patches/user/microphone.patch` - Codex-specific
    - Minor modifications to other patches for branding
 
+6. **Windows Code Signing** (`.github/workflows/stable-windows.yml`)
+   - SSL.com eSigner integration for code signing
+   - Signs application binaries (.exe, .dll) before packaging
+   - Signs installer packages (.exe, .msi) after packaging
+   - Required secrets: `ES_USERNAME`, `ES_PASSWORD`, `ES_CREDENTIAL_ID`, `ES_TOTP_SECRET`
+   - **Must preserve**: The signing steps between "Build" and "Prepare assets", and after "Upload unsigned artifacts"
+
 ### Merge Strategy
 
 #### Option A: Incremental Merge (Recommended for small gaps)
@@ -308,6 +315,7 @@ When upstream updates patches that we've also modified:
 | File/Area | Typical Resolution |
 |-----------|-------------------|
 | `.github/workflows/*.yml` | Keep our simplified versions, cherry-pick important CI fixes |
+| `.github/workflows/stable-windows.yml` | **Preserve code signing steps** - keep SSL.com eSigner integration intact |
 | `patches/*.patch` | Take upstream's version, verify our branding placeholders work |
 | `prepare_vscode.sh` | Keep our branding URLs/names, adopt new build logic |
 | `build/windows/msi/` | Keep our `codex.*` files, apply equivalent changes from `vscodium.*` |
