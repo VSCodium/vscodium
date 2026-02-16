@@ -22,26 +22,26 @@ index 5b040cc..8d5fd71 100644
 +!@vscodium/policy-watcher/build/Release/vscodium-policy-watcher.node
  
 diff --git a/eslint.config.js b/eslint.config.js
-index f8077c2..182d6ce 100644
+index 2a8250b..1df17ec 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
-@@ -1448,3 +1448,3 @@ export default tseslint.config(
+@@ -1434,3 +1434,3 @@ export default tseslint.config(
  						'@vscode/native-watchdog',
 -						'@vscode/policy-watcher',
 +						'@vscodium/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
-index a991591..fb05fad 100644
+index cc77547..622093b 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -21,3 +21,2 @@
          "@vscode/native-watchdog": "^1.4.6",
 -        "@vscode/policy-watcher": "^1.3.2",
-         "@vscode/proxy-agent": "^0.37.0",
+         "@vscode/proxy-agent": "^0.38.0",
 @@ -33,2 +32,3 @@
          "@vscodium/native-keymap": "3.3.7-258424",
 +        "@vscodium/policy-watcher": "^1.3.2-252465",
-         "@xterm/addon-clipboard": "^0.3.0-beta.109",
+         "@xterm/addon-clipboard": "^0.3.0-beta.152",
 @@ -3345,22 +3345,2 @@
      },
 -    "node_modules/@vscode/policy-watcher": {
@@ -89,14 +89,14 @@ index a991591..fb05fad 100644
 +    },
      "node_modules/@webassemblyjs/ast": {
 diff --git a/package.json b/package.json
-index b2a6703..3d03e9a 100644
+index dcd9913..8becea3 100644
 --- a/package.json
 +++ b/package.json
-@@ -83,3 +83,3 @@
+@@ -86,3 +86,3 @@
      "@vscode/native-watchdog": "^1.4.6",
 -    "@vscode/policy-watcher": "^1.3.2",
 +    "@vscodium/policy-watcher": "^1.3.2-252465",
-     "@vscode/proxy-agent": "^0.37.0",
+     "@vscode/proxy-agent": "^0.38.0",
 diff --git a/src/vs/base/test/node/uri.perf.data.txt b/src/vs/base/test/node/uri.perf.data.txt
 index ee0a24b..881ce36 100644
 --- a/src/vs/base/test/node/uri.perf.data.txt
@@ -210,7 +210,7 @@ index ca6cea2..32b22fe 100644
 +		assert.ok(typeof watcher.createWatcher === 'function', testErrorMessage('@vscodium/policy-watcher'));
  	});
 diff --git a/src/vs/platform/policy/node/nativePolicyService.ts b/src/vs/platform/policy/node/nativePolicyService.ts
-index 5b08cd9..728d7bd 100644
+index feb4ba1..4d9e0c3 100644
 --- a/src/vs/platform/policy/node/nativePolicyService.ts
 +++ b/src/vs/platform/policy/node/nativePolicyService.ts
 @@ -8,3 +8,3 @@ import { IStringDictionary } from '../../../base/common/collections.js';

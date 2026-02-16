@@ -1,5 +1,5 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index 2c98e50..6ff90d4 100755
+index fdb3707..67bc741 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
 @@ -76,2 +76,14 @@ elif [ "$npm_config_arch" == "arm" ]; then
@@ -18,7 +18,7 @@ index 2c98e50..6ff90d4 100755
 +	export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_REMOTE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot -L$VSCODE_REMOTE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/usr/lib/powerpc64le-linux-gnu -L$VSCODE_REMOTE_SYSROOT_DIR/powerpc64le-linux-gnu/powerpc64le-linux-gnu/sysroot/lib/powerpc64le-linux-gnu"
  fi
 diff --git a/build/azure-pipelines/linux/verify-glibc-requirements.sh b/build/azure-pipelines/linux/verify-glibc-requirements.sh
-index 3db9047..1418fee 100755
+index 5294177..1e33aeb 100755
 --- a/build/azure-pipelines/linux/verify-glibc-requirements.sh
 +++ b/build/azure-pipelines/linux/verify-glibc-requirements.sh
 @@ -9,2 +9,4 @@ elif [ "$VSCODE_ARCH" == "armhf" ]; then
@@ -27,14 +27,15 @@ index 3db9047..1418fee 100755
 +  TRIPLE="powerpc64le-linux-gnu"
  fi
 diff --git a/build/checksums/vscode-sysroot.txt b/build/checksums/vscode-sysroot.txt
-index 5744a5f..3fedbe9 100644
+index 847383e..af1cb6a 100644
 --- a/build/checksums/vscode-sysroot.txt
 +++ b/build/checksums/vscode-sysroot.txt
-@@ -7 +7,2 @@ f82c8dacbb9dd85819e4801909eb4e842ac12c899632aa75b4839383a18c7501  arm-rpi-linux-
- 84acc5a15566c98ddf80631731d672e0ce9febcf3f2e969101e0dfd7ef2405e3  x86_64-linux-gnu-glibc-2.28-gcc-8.5.0.tar.gz
+@@ -7 +7,2 @@ ac4b6b14b4cec027a22a51bbbb049b3504958a78106c8a8d5cec144206b767d1  x86_64-linux-g
+ 1ebb6ef1fe2983269fd0855a88f9c9a37f9b515d16524a9146198e4cabdf34f7  x86_64-linux-gnu-glibc-2.28-gcc-8.5.0.tar.gz
 +fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
+\ No newline at end of file
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index 6c21dd2..f986b4e 100644
+index 012df0b..a7da071 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
 @@ -52,2 +52,3 @@ const BUILD_TARGETS = [
@@ -66,10 +67,10 @@ index c5d2163..da4fc1f 100644
 +	{ arch: 'ppc64le' },
  ];
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index d5efbdb..1d7e9d5 100644
+index ce46a41..3389ede 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -517,2 +517,3 @@ const BUILD_TARGETS = [
+@@ -614,2 +614,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'arm64' },
 +	{ platform: 'linux', arch: 'ppc64le' },
  ];
@@ -88,7 +89,7 @@ index 98a9630..6c6bbf5 100644
 +			break;
  	}
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index 34ecdf1..73d451f 100644
+index 78bfb66..5acd3a0 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
 @@ -142,2 +142,41 @@ export const referenceGeneratedDepsByArch = {
@@ -134,7 +135,7 @@ index 34ecdf1..73d451f 100644
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index 0d9dc55..3086928 100644
+index 7b6ac8b..dde47ba 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
 @@ -158,2 +158,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
@@ -158,10 +159,10 @@ index e97485e..c56d067 100644
 +	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'ppc64le'].includes(s);
  }
 diff --git a/build/linux/rpm/dep-lists.ts b/build/linux/rpm/dep-lists.ts
-index 783923f..fba6ee4 100644
+index 0424c8d..c7e0820 100644
 --- a/build/linux/rpm/dep-lists.ts
 +++ b/build/linux/rpm/dep-lists.ts
-@@ -316,2 +316,102 @@ export const referenceGeneratedDepsByArch = {
+@@ -318,2 +318,102 @@ export const referenceGeneratedDepsByArch = {
  		'xdg-utils'
 +	],
 +	"ppc64le": [
@@ -320,7 +321,7 @@ index 8ea4c0b..94028e3 100644
 +    ppc64le) LDCONFIG_ARCH="64bit";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index 34eaca0..a754ff3 100644
+index ab11f6b..fd1ec31 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
 @@ -48,2 +48,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
@@ -338,10 +339,10 @@ index 34eaca0..a754ff3 100644
 +			}
  			return TargetPlatform.UNKNOWN;
 diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
-index 8961b90..b605be0 100644
+index 021ad01..60cd058 100644
 --- a/src/vs/platform/extensions/common/extensions.ts
 +++ b/src/vs/platform/extensions/common/extensions.ts
-@@ -331,2 +331,3 @@ export const enum TargetPlatform {
+@@ -342,2 +342,3 @@ export const enum TargetPlatform {
  	LINUX_ARMHF = 'linux-armhf',
 +	LINUX_PPC64LE = 'linux-ppc64le',
  
