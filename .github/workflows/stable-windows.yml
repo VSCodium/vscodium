@@ -213,6 +213,45 @@ jobs:
         run: ./build/windows/package.sh
         if: env.SHOULD_BUILD == 'yes'
 
+      - name: Prepare application binaries for signing
+        run: |
+          mkdir -p app_signing_input app_signing_output
+          find VSCode-win32-${{ matrix.vscode_arch }} -type f \( -name "*.exe" -o -name "*.dll" \) | while read f; do
+            newname=$(echo "$f" | tr '/' '_')
+            cp "$f" "app_signing_input/$newname"
+            echo "$newname|$f" >> app_signing_map.txt
+          done
+          echo "Files to sign:"
+          ls -la app_signing_input/
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        shell: bash
+
+      - name: Sign application binaries with SSL.com eSigner
+        uses: sslcom/esigner-codesign@develop
+        with:
+          command: batch_sign
+          username: ${{ secrets.ES_USERNAME }}
+          password: ${{ secrets.ES_PASSWORD }}
+          credential_id: ${{ secrets.ES_CREDENTIAL_ID }}
+          totp_secret: ${{ secrets.ES_TOTP_SECRET }}
+          dir_path: ${GITHUB_WORKSPACE}/app_signing_input
+          output_path: ${GITHUB_WORKSPACE}/app_signing_output
+          environment_name: PROD
+          override: true
+          malware_block: true
+          clean_logs: true
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
+      - name: Restore signed application binaries
+        run: |
+          while IFS='|' read -r newname origpath; do
+            cp "app_signing_output/$newname" "$origpath"
+          done < app_signing_map.txt
+          rm -rf app_signing_input app_signing_output app_signing_map.txt
+          echo "Signed binaries restored to VSCode-win32-${{ matrix.vscode_arch }}/"
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        shell: bash
+
       - name: Prepare assets
         run: ./prepare_assets.sh
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
@@ -228,20 +267,35 @@ jobs:
           retention-days: 1
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
-      # - name: Signing
-      #   uses: signpath/github-action-submit-signing-request@v1
-      #   with:
-      #     api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
-      #     organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
-      #     project-slug: ${{ secrets.SIGNPATH_PROJECT_SLUG }}
-      #     signing-policy-slug: ${{ secrets.SIGNPATH_POLICY_SLUG }}
-      #     github-artifact-id: ${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}
-      #     artifact-configuration-slug: ${{ matrix.vscode_arch }}
-      #     wait-for-completion: true
-      #     # 3h to manually approve the request
-      #     wait-for-completion-timeout-in-seconds: 10800
-      #     output-artifact-directory: assets/
-      #   if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+      - name: Prepare files for signing
+        run: |
+          mkdir -p signing_input signing_output
+          mv assets/*.exe signing_input/ || true
+          mv assets/*.msi signing_input/ || true
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
+      - name: Sign Windows Artifacts with SSL.com eSigner
+        uses: sslcom/esigner-codesign@develop
+        with:
+          command: batch_sign
+          username: ${{ secrets.ES_USERNAME }}
+          password: ${{ secrets.ES_PASSWORD }}
+          credential_id: ${{ secrets.ES_CREDENTIAL_ID }}
+          totp_secret: ${{ secrets.ES_TOTP_SECRET }}
+          dir_path: ${GITHUB_WORKSPACE}/signing_input
+          output_path: ${GITHUB_WORKSPACE}/signing_output
+          environment_name: PROD
+          override: true
+          malware_block: true
+          clean_logs: true
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+
+      - name: Move signed files back
+        run: |
+          mv signing_output/*.exe assets/ || true
+          mv signing_output/*.msi assets/ || true
+          rm -rf signing_input signing_output
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Prepare checksums
         run: ./prepare_checksums.sh
