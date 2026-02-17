@@ -1,5 +1,5 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index 3e33f75..052b38f 100755
+index 6ff90d4..381150d 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
 @@ -88,2 +88,14 @@ elif [ "$npm_config_arch" == "ppc64" ]; then
@@ -24,63 +24,51 @@ index 3fedbe9..3c4e291 100644
 @@ -8 +8,2 @@ f82c8dacbb9dd85819e4801909eb4e842ac12c899632aa75b4839383a18c7501  arm-rpi-linux-
  fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
 +7055f3d40e7195fb1e13f0fbaf5ffadf781bddaca5fd5e0d9972f4157a203fb5  s390x-linux-gnu-glibc-2.28.tar.gz
-diff --git a/build/gulpfile.reh.js b/build/gulpfile.reh.js
-index 52f9a12..4b890f4 100644
---- a/build/gulpfile.reh.js
-+++ b/build/gulpfile.reh.js
-@@ -53,2 +53,3 @@ const BUILD_TARGETS = [
+diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
+index af8403a..a697f8c 100644
+--- a/build/gulpfile.reh.ts
++++ b/build/gulpfile.reh.ts
+@@ -55,2 +55,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'loong64' },
 +	{ platform: 'linux', arch: 's390x' },
  	{ platform: 'alpine', arch: 'arm64' },
-diff --git a/build/gulpfile.scan.js b/build/gulpfile.scan.js
-index 8a8c1eb..1ef390b 100644
---- a/build/gulpfile.scan.js
-+++ b/build/gulpfile.scan.js
-@@ -29,2 +29,3 @@ const BUILD_TARGETS = [
+diff --git a/build/gulpfile.scan.ts b/build/gulpfile.scan.ts
+index e7881de..affa8df 100644
+--- a/build/gulpfile.scan.ts
++++ b/build/gulpfile.scan.ts
+@@ -27,2 +27,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'loong64' },
 +	{ platform: 'linux', arch: 's390x' },
  ];
-diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index ee66585..c9f9ceb 100644
---- a/build/gulpfile.vscode.js
-+++ b/build/gulpfile.vscode.js
-@@ -478,2 +478,3 @@ const BUILD_TARGETS = [
- 	{ platform: 'linux', arch: 'loong64' },
-+	{ platform: 'linux', arch: 's390x' },
- ];
-diff --git a/build/gulpfile.vscode.linux.js b/build/gulpfile.vscode.linux.js
-index 298181d..dcc42a8 100644
---- a/build/gulpfile.vscode.linux.js
-+++ b/build/gulpfile.vscode.linux.js
-@@ -33,3 +33,3 @@ const linuxPackageRevision = Math.floor(new Date().getTime() / 1000);
- function getDebPackageArch(arch) {
--	return { x64: 'amd64', armhf: 'armhf', arm64: 'arm64', ppc64le: 'ppc64el', riscv64: 'riscv64' }[arch];
-+	return { x64: 'amd64', armhf: 'armhf', arm64: 'arm64', ppc64le: 'ppc64el', riscv64: 'riscv64', s390x: 's390x' }[arch];
- }
-@@ -146,3 +146,3 @@ function getRpmBuildPath(rpmArch) {
- function getRpmPackageArch(arch) {
--	return { x64: 'x86_64', armhf: 'armv7hl', arm64: 'aarch64', ppc64le: 'ppc64le', riscv64: 'riscv64' }[arch];
-+	return { x64: 'x86_64', armhf: 'armv7hl', arm64: 'aarch64', ppc64le: 'ppc64le', riscv64: 'riscv64', s390x: 's390x' }[arch];
- }
-@@ -306,2 +306,3 @@ const BUILD_TARGETS = [
- 	{ arch: 'riscv64' },
+diff --git a/build/gulpfile.vscode.linux.ts b/build/gulpfile.vscode.linux.ts
+index e146586..ca18865 100644
+--- a/build/gulpfile.vscode.linux.ts
++++ b/build/gulpfile.vscode.linux.ts
+@@ -35,2 +35,3 @@ function getDebPackageArch(arch: string): string {
+ 		case 'loong64': return 'loong64';
++		case 's390x': return 's390x';
+ 		default: throw new Error(`Unknown arch: ${arch}`);
+@@ -148,2 +149,3 @@ function getRpmPackageArch(arch: string): string {
+ 		case 'loong64': return 'loong64';
++		case 's390x': return 's390x';
+ 		default: throw new Error(`Unknown arch: ${arch}`);
+@@ -295,2 +297,3 @@ const BUILD_TARGETS = [
+ 	{ arch: 'loong64' },
 +	{ arch: 's390x' },
  ];
-diff --git a/build/linux/debian/calculate-deps.js b/build/linux/debian/calculate-deps.js
-index a08ebda..9527119 100644
---- a/build/linux/debian/calculate-deps.js
-+++ b/build/linux/debian/calculate-deps.js
-@@ -60,2 +60,5 @@ function calculatePackageDeps(binaryPath, arch, chromiumSysroot, vscodeSysroot)
- 			break;
-+		case 's390x':
-+			cmd.push(`-l${chromiumSysroot}/usr/lib/s390x-linux-gnu`, `-l${chromiumSysroot}/lib/s390x-linux-gnu`, `-l${vscodeSysroot}/usr/lib/s390x-linux-gnu`, `-l${vscodeSysroot}/lib/s390x-linux-gnu`);
-+			break;
-     }
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index d5f3ed8..ac87a54 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -520,2 +520,3 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'loong64' },
++	{ platform: 'linux', arch: 's390x' },
+ ];
 diff --git a/build/linux/debian/calculate-deps.ts b/build/linux/debian/calculate-deps.ts
-index 88ee2f0..8037cf2 100644
+index 5ee005e..71fb92e 100644
 --- a/build/linux/debian/calculate-deps.ts
 +++ b/build/linux/debian/calculate-deps.ts
-@@ -73,2 +73,8 @@ function calculatePackageDeps(binaryPath: string, arch: DebianArchString, chromi
+@@ -74,2 +74,8 @@ function calculatePackageDeps(binaryPath: string, arch: DebianArchString, chromi
  			break;
 +		case 's390x':
 +			cmd.push(`-l${chromiumSysroot}/usr/lib/s390x-linux-gnu`,
@@ -89,58 +77,11 @@ index 88ee2f0..8037cf2 100644
 +				`-l${vscodeSysroot}/lib/s390x-linux-gnu`);
 +			break;
  	}
-diff --git a/build/linux/debian/dep-lists.js b/build/linux/debian/dep-lists.js
-index 13cf8f0..9ffd805 100644
---- a/build/linux/debian/dep-lists.js
-+++ b/build/linux/debian/dep-lists.js
-@@ -220,2 +220,42 @@ exports.referenceGeneratedDepsByArch = {
-     ],
-+    's390x': [
-+        'ca-certificates',
-+        'libatomic1',
-+        'libasound2 (>= 1.0.17)',
-+        'libatk-bridge2.0-0 (>= 2.5.3)',
-+        'libatk1.0-0 (>= 2.2.0)',
-+        'libatspi2.0-0 (>= 2.9.90)',
-+        'libc6 (>= 2.17)',
-+        'libc6 (>= 2.28)',
-+        'libcairo2 (>= 1.6.0)',
-+        'libcurl3-gnutls | libcurl3-nss | libcurl4 | libcurl3',
-+        'libdbus-1-3 (>= 1.0.2)',
-+        'libdrm2 (>= 2.4.60)',
-+        'libexpat1 (>= 2.0.1)',
-+        'libgbm1 (>= 17.1.0~rc2)',
-+        'libglib2.0-0 (>= 2.16.0)',
-+        'libglib2.0-0 (>= 2.39.4)',
-+        'libgtk-3-0 (>= 3.9.10)',
-+        'libgtk-3-0 (>= 3.9.10) | libgtk-4-1',
-+        'libnspr4 (>= 2:4.9-2~)',
-+        'libnss3 (>= 2:3.22)',
-+        'libnss3 (>= 3.26)',
-+        'libpango-1.0-0 (>= 1.14.0)',
-+        'libsecret-1-0 (>= 0.18)',
-+        'libstdc++6 (>= 4.1.1)',
-+        'libstdc++6 (>= 5)',
-+        'libstdc++6 (>= 5.2)',
-+        'libstdc++6 (>= 6)',
-+        'libx11-6',
-+        'libx11-6 (>= 2:1.4.99.1)',
-+        'libxcb1 (>= 1.9.2)',
-+        'libxcomposite1 (>= 1:0.4.4-1)',
-+        'libxdamage1 (>= 1:1.1)',
-+        'libxext6',
-+        'libxfixes3',
-+        'libxkbcommon0 (>= 0.4.1)',
-+        'libxkbfile1',
-+        'libxrandr2',
-+        'xdg-utils (>= 1.0.2)'
-+    ],
- };
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index 7e6938a..8a314ec 100644
+index 7ea5910..9498993 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
-@@ -220,2 +220,42 @@ export const referenceGeneratedDepsByArch = {
+@@ -221,2 +221,42 @@ export const referenceGeneratedDepsByArch = {
  	],
 +	's390x': [
 +		'ca-certificates',
@@ -183,55 +124,35 @@ index 7e6938a..8a314ec 100644
 +		'xdg-utils (>= 1.0.2)'
 +	],
  };
-diff --git a/build/linux/debian/install-sysroot.js b/build/linux/debian/install-sysroot.js
-index e510426..ce7c75b 100644
---- a/build/linux/debian/install-sysroot.js
-+++ b/build/linux/debian/install-sysroot.js
-@@ -154,2 +154,6 @@ async function getVSCodeSysroot(arch, isMusl = false) {
- 	             break;
-+        case 's390x':
-+            expectedName = `s390x-linux-gnu${prefix}.tar.gz`;
-+            triple = 's390x-linux-gnu';
-+            break;
-     }
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index 42841f6..cffae59 100644
+index 6e5246c..89fac34 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -167,2 +167,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
+@@ -166,2 +166,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
  			break;
 +		case 's390x':
 +			expectedName = `s390x-linux-gnu${prefix}.tar.gz`;
 +			triple = 's390x-linux-gnu';
 +			break;
  	}
-diff --git a/build/linux/debian/types.js b/build/linux/debian/types.js
-index cadefc2..8132812 100644
---- a/build/linux/debian/types.js
-+++ b/build/linux/debian/types.js
-@@ -8,3 +8,3 @@ exports.isDebianArchString = isDebianArchString;
- function isDebianArchString(s) {
--    return ['amd64', 'armhf', 'arm64', 'ppc64el', 'riscv64'].includes(s);
-+    return ['amd64', 'armhf', 'arm64', 'ppc64el', 'riscv64', 's390x'].includes(s);
- }
 diff --git a/build/linux/debian/types.ts b/build/linux/debian/types.ts
-index 24fe452..9efba5b 100644
+index 5d63ed2..5f793e2 100644
 --- a/build/linux/debian/types.ts
 +++ b/build/linux/debian/types.ts
 @@ -5,6 +5,6 @@
  
--export type DebianArchString = 'amd64' | 'armhf' | 'arm64' | 'ppc64el' | 'riscv64';
-+export type DebianArchString = 'amd64' | 'armhf' | 'arm64' | 'ppc64el' | 'riscv64' | 's390x';
+-export type DebianArchString = 'amd64' | 'armhf' | 'arm64' | 'ppc64el' | 'ppc64le' | 'riscv64';
++export type DebianArchString = 'amd64' | 'armhf' | 'arm64' | 'ppc64el' | 'ppc64le' | 'riscv64' | 's390x';
  
  export function isDebianArchString(s: string): s is DebianArchString {
--	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'riscv64'].includes(s);
-+	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'riscv64', 's390x'].includes(s);
+-	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'ppc64le', 'riscv64'].includes(s);
++	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'ppc64le', 'riscv64', 's390x'].includes(s);
  }
 diff --git a/build/linux/rpm/dep-lists.ts b/build/linux/rpm/dep-lists.ts
-index 4231f09..fc70433 100644
+index fba6ee4..33efc80 100644
 --- a/build/linux/rpm/dep-lists.ts
 +++ b/build/linux/rpm/dep-lists.ts
-@@ -415,2 +415,102 @@ export const referenceGeneratedDepsByArch = {
+@@ -416,2 +416,102 @@ export const referenceGeneratedDepsByArch = {
  		'xdg-utils'
 +	],
 +	"s390x": [
@@ -334,15 +255,6 @@ index 4231f09..fc70433 100644
 +		'rtld(GNU_HASH)',
 +		'xdg-utils'
  	]
-diff --git a/build/linux/rpm/types.js b/build/linux/rpm/types.js
-index 99a8cff..e2f3548 100644
---- a/build/linux/rpm/types.js
-+++ b/build/linux/rpm/types.js
-@@ -8,3 +8,3 @@ exports.isRpmArchString = isRpmArchString;
- function isRpmArchString(s) {
--    return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le', 'riscv64'].includes(s);
-+    return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le', 'riscv64', 's390x'].includes(s);
- }
 diff --git a/build/linux/rpm/types.ts b/build/linux/rpm/types.ts
 index d94537e..3834b94 100644
 --- a/build/linux/rpm/types.ts
@@ -357,7 +269,7 @@ index d94537e..3834b94 100644
 +	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le', 'riscv64', 's390x'].includes(s);
  }
 diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
-index 0b7aa4e..e8b7ce0 100644
+index dc9faac..9078cc9 100644
 --- a/resources/server/bin/helpers/check-requirements-linux.sh
 +++ b/resources/server/bin/helpers/check-requirements-linux.sh
 @@ -58,2 +58,3 @@ case $ARCH in
@@ -365,28 +277,28 @@ index 0b7aa4e..e8b7ce0 100644
 +    s390x)   LDCONFIG_ARCH="64bit";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index dedea4c..1043fe4 100644
+index 7162d83..f6bb8fd 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-@@ -50,2 +50,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+@@ -51,2 +51,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
  		case TargetPlatform.LINUX_LOONG64: return 'Linux Loong64';
 +		case TargetPlatform.LINUX_S390X: return 'Linux S390X';
  
-@@ -76,2 +77,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+@@ -77,2 +78,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
  		case TargetPlatform.LINUX_LOONG64: return TargetPlatform.LINUX_LOONG64;
 +		case TargetPlatform.LINUX_S390X: return TargetPlatform.LINUX_S390X;
  
-@@ -120,2 +122,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+@@ -121,2 +123,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
  			}
 +			if (arch === 's390x') {
 +				return TargetPlatform.LINUX_S390X;
 +			}
  			return TargetPlatform.UNKNOWN;
 diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
-index 6d554ce..51d23fa 100644
+index f93e0ca..c4cc8c9 100644
 --- a/src/vs/platform/extensions/common/extensions.ts
 +++ b/src/vs/platform/extensions/common/extensions.ts
-@@ -332,2 +332,3 @@ export const enum TargetPlatform {
+@@ -334,2 +334,3 @@ export const enum TargetPlatform {
  	LINUX_LOONG64 = 'linux-loong64',
 +	LINUX_S390X = 'linux-s390x',
  

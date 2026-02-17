@@ -58,10 +58,10 @@ index 7d152c0..c0f2fb2 100644
 +		Ok(server_name)
  	}
 diff --git a/cli/src/tunnels/code_server.rs b/cli/src/tunnels/code_server.rs
-index cf00bc4..b564330 100644
+index bbabadc..b454d0e 100644
 --- a/cli/src/tunnels/code_server.rs
 +++ b/cli/src/tunnels/code_server.rs
-@@ -457,3 +457,3 @@ impl<'a> ServerBuilder<'a> {
+@@ -462,3 +462,3 @@ impl<'a> ServerBuilder<'a> {
  							.join("bin")
 -							.join(self.server_params.release.quality.server_entrypoint()),
 +							.join(self.server_params.release.quality.server_entrypoint().unwrap()),
@@ -76,7 +76,7 @@ index 3d7d718..98529bc 100644
 +					.join(self.quality.server_entrypoint().unwrap())
  			},
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 9033914..a39bbf7 100644
+index 55f1dad..3b7ef5c 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
 @@ -10,3 +10,3 @@ use serde::{Deserialize, Serialize};
@@ -89,7 +89,7 @@ index 9033914..a39bbf7 100644
 -	},
 +	}
  };
-@@ -58,4 +58,12 @@ fn quality_download_segment(quality: options::Quality) -> &'static str {
+@@ -58,2 +58,10 @@ fn quality_download_segment(quality: options::Quality) -> &'static str {
  
 +fn get_app_name() -> Result<&'static str, CodeError> {
 +	VSCODE_CLI_APP_NAME.ok_or_else(|| CodeError::UpdatesNotConfigured("no app name"))
@@ -99,17 +99,19 @@ index 9033914..a39bbf7 100644
 +	VSCODE_CLI_DOWNLOAD_ENDPOINT.ok_or_else(|| CodeError::UpdatesNotConfigured("no download url"))
 +}
 +
- fn get_update_endpoint() -> Result<&'static str, CodeError> {
--	VSCODE_CLI_UPDATE_ENDPOINT.ok_or_else(|| CodeError::UpdatesNotConfigured("no service url"))
-+	VSCODE_CLI_UPDATE_ENDPOINT.ok_or_else(|| CodeError::UpdatesNotConfigured("no update url"))
+ fn get_update_endpoint() -> Result<String, CodeError> {
+@@ -66,3 +74,3 @@ fn get_update_endpoint() -> Result<String, CodeError> {
+ 		.map(|s| s.to_string())
+-		.ok_or_else(|| CodeError::UpdatesNotConfigured("no service url"))
++		.ok_or_else(|| CodeError::UpdatesNotConfigured("no update url"))
  }
-@@ -67,3 +75,4 @@ impl UpdateService {
+@@ -74,3 +82,4 @@ impl UpdateService {
  
 -	pub async fn get_release_by_semver_version(
 +	/// Gets the latest commit for the target of the given quality.
 +	pub async fn get_latest_commit(
  		&self,
-@@ -72,14 +81,10 @@ impl UpdateService {
+@@ -79,14 +88,10 @@ impl UpdateService {
  		quality: options::Quality,
 -		version: &str,
  	) -> Result<Release, AnyError> {
@@ -120,19 +122,19 @@ index 9033914..a39bbf7 100644
  		let download_url = format!(
 -			"{}/api/versions/{}/{}/{}",
 +			"{}/{}/{}/{}/latest.json",
- 			update_endpoint,
+ 			&update_endpoint,
 -			version,
 -			download_segment,
  			quality_download_segment(quality),
 +			platform.os(),
 +			platform.arch(),
  		);
-@@ -97,3 +102,3 @@ impl UpdateService {
+@@ -104,3 +109,3 @@ impl UpdateService {
  		let res = response.json::<UpdateServerVersion>().await?;
 -		debug!(self.log, "Resolved version {} to {}", version, res.version);
 +		debug!(self.log, "Resolved quality {} to {}", quality, res.version);
  
-@@ -108,40 +113,17 @@ impl UpdateService {
+@@ -115,40 +120,17 @@ impl UpdateService {
  
 -	/// Gets the latest commit for the target of the given quality.
 -	pub async fn get_latest_commit(
@@ -151,7 +153,7 @@ index 9033914..a39bbf7 100644
 +
  		let download_url = format!(
 -			"{}/api/latest/{}/{}",
--			update_endpoint,
+-			&update_endpoint,
 -			download_segment,
 -			quality_download_segment(quality),
 +			"{}/download/{}/{}-reh-web-{}-{}-{}.tar.gz",
@@ -185,7 +187,7 @@ index 9033914..a39bbf7 100644
 -		})
 +		Ok(download_url)
  	}
-@@ -150,15 +132,3 @@ impl UpdateService {
+@@ -157,15 +139,3 @@ impl UpdateService {
  	pub async fn get_download_stream(&self, release: &Release) -> Result<SimpleResponse, AnyError> {
 -		let update_endpoint = get_update_endpoint()?;
 -		let download_segment = release
@@ -195,14 +197,14 @@ index 9033914..a39bbf7 100644
 -
 -		let download_url = format!(
 -			"{}/commit:{}/{}/{}",
--			update_endpoint,
+-			&update_endpoint,
 -			release.commit,
 -			download_segment,
 -			quality_download_segment(release.quality),
 -		);
 +		let download_url = self.get_download_url(release)?;
  
-@@ -196,13 +166,2 @@ pub enum TargetKind {
+@@ -203,13 +173,2 @@ pub enum TargetKind {
  
 -impl TargetKind {
 -	fn download_segment(&self, platform: Platform) -> Option<String> {
@@ -216,7 +218,7 @@ index 9033914..a39bbf7 100644
 -}
 -
  #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
-@@ -225,30 +184,17 @@ pub enum Platform {
+@@ -232,30 +191,17 @@ pub enum Platform {
  impl Platform {
 -	pub fn archive(&self) -> Option<String> {
 -		match self {
@@ -261,7 +263,7 @@ index 9033914..a39bbf7 100644
 +			Platform::WindowsX86 => "ia42",
 +			Platform::WindowsARM64 => "arm64",
  		}
-@@ -257,17 +203,17 @@ impl Platform {
+@@ -264,17 +210,17 @@ impl Platform {
  
 -	pub fn cli(&self) -> String {
 +	pub fn os(&self) -> String {
@@ -293,7 +295,7 @@ index 9033914..a39bbf7 100644
 +			Platform::WindowsX86 => "win32",
 +			Platform::WindowsARM64 => "win32",
  		}
-@@ -276,6 +222,2 @@ impl Platform {
+@@ -283,6 +229,2 @@ impl Platform {
  
 -	pub fn web(&self) -> String {
 -		format!("{}-web", self.headless())
@@ -301,11 +303,11 @@ index 9033914..a39bbf7 100644
 -
  	pub fn env_default() -> Option<Platform> {
 diff --git a/extensions/tunnel-forwarding/src/extension.ts b/extensions/tunnel-forwarding/src/extension.ts
-index 299c728..9fb635d 100644
+index 2f71999..e689f62 100644
 --- a/extensions/tunnel-forwarding/src/extension.ts
 +++ b/extensions/tunnel-forwarding/src/extension.ts
-@@ -28,3 +28,3 @@ const cliPath = process.env.VSCODE_FORWARDING_IS_DEV
- 		process.platform === 'darwin' ? 'bin' : '../../bin',
--		vscode.env.appQuality === 'stable' ? 'code-tunnel' : 'code-tunnel-insiders',
-+		'!!TUNNEL_APP_NAME!!'
- 	) + (process.platform === 'win32' ? '.exe' : '');
+@@ -37,3 +37,3 @@ if (process.env.VSCODE_FORWARDING_IS_DEV) {
+ 
+-	const cliName = vscode.env.appQuality === 'stable' ? 'code-tunnel' : 'code-tunnel-insiders';
++	const cliName = '!!TUNNEL_APP_NAME!!';
+ 	const extension = process.platform === 'win32' ? '.exe' : '';

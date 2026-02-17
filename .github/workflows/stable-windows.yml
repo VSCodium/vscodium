@@ -71,7 +71,10 @@ jobs:
   compile:
     needs:
       - check
-    runs-on: ubuntu-22.04
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
     env:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
@@ -92,11 +95,11 @@ jobs:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
 
-      - name: Setup GCC
-        uses: egor-tensin/setup-gcc@v1
-        with:
-          version: 10
-          platform: x64
+      # - name: Setup GCC
+      #   uses: egor-tensin/setup-gcc@v1
+      #   with:
+      #     version: 10
+      #     platform: x64
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
@@ -110,9 +113,9 @@ jobs:
           python-version: '3.11'
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Install libkrb5-dev
-        run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
-        if: env.SHOULD_BUILD == 'yes'
+      # - name: Install libkrb5-dev
+      #   run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
+      #   if: env.SHOULD_BUILD == 'yes'
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
@@ -134,7 +137,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload vscode artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: vscode
           path: ./vscode.tar.gz
@@ -199,7 +202,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: vscode
         if: env.SHOULD_BUILD == 'yes'
@@ -218,7 +221,7 @@ jobs:
 
       - name: Upload unsigned artifacts
         id: upload-unsigned-artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: unsigned-${{ matrix.vscode_arch }}
           path: |
@@ -261,7 +264,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/

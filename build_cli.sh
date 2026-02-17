@@ -32,6 +32,8 @@ if [[ "${OS_NAME}" == "osx" ]]; then
   export OPENSSL_LIB_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-osx/lib"
   export OPENSSL_INCLUDE_DIR="$( pwd )/openssl/out/${VSCODE_ARCH}-osx/include"
 
+  rustup target add "${VSCODE_CLI_TARGET}"
+
   cargo build --release --target "${VSCODE_CLI_TARGET}" --bin=code
 
   cp "target/${VSCODE_CLI_TARGET}/release/code" "../../VSCode-darwin-${VSCODE_ARCH}/${NAME_SHORT}.app/Contents/Resources/app/bin/${TUNNEL_APPLICATION_NAME}"

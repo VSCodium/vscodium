@@ -1,5 +1,5 @@
 diff --git a/src/vs/platform/sign/browser/signService.ts b/src/vs/platform/sign/browser/signService.ts
-index ec1e11b..8303040 100644
+index c288b2e..8303040 100644
 --- a/src/vs/platform/sign/browser/signService.ts
 +++ b/src/vs/platform/sign/browser/signService.ts
 @@ -5,6 +5,2 @@
@@ -11,7 +11,7 @@ index ec1e11b..8303040 100644
  import { IProductService } from '../../product/common/productService.js';
 @@ -13,30 +9,4 @@ import { ISignService } from '../common/sign.js';
  
--declare module vsdaWeb {
+-declare namespace vsdaWeb {
 -	export function sign(salted_message: string): string;
 -
 -	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -99,7 +99,7 @@ index ec1e11b..8303040 100644
 +		throw new Error('error loading vsda');
  	}
 diff --git a/src/vs/server/node/remoteExtensionHostAgentServer.ts b/src/vs/server/node/remoteExtensionHostAgentServer.ts
-index e7949d3..2a553cc 100644
+index 269cc38..a53fca9 100644
 --- a/src/vs/server/node/remoteExtensionHostAgentServer.ts
 +++ b/src/vs/server/node/remoteExtensionHostAgentServer.ts
 @@ -8,3 +8,2 @@ import type * as http from 'http';
@@ -110,7 +110,7 @@ index e7949d3..2a553cc 100644
  import { CacheControl, serveError, serveFile, WebClientServer } from './webClientServer.js';
 -const require = createRequire(import.meta.url);
  
-@@ -734,14 +732,3 @@ export async function createServer(address: string | net.AddressInfo | null, arg
+@@ -736,14 +734,3 @@ export async function createServer(address: string | net.AddressInfo | null, arg
  
 -	const vsdaMod = instantiationService.invokeFunction((accessor) => {
 -		const logService = accessor.get(ILogService);

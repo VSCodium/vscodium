@@ -1,4 +1,4 @@
-name: Lock Issues
+name: Lock Closed Threads
 
 on:
   schedule:
@@ -8,9 +8,10 @@ jobs:
   lock:
     runs-on: ubuntu-latest
     steps:
-      - uses: dessant/lock-threads@v5
+      - uses: dessant/lock-threads@v6
         with:
           github-token: ${{ github.token }}
           issue-inactive-days: '90'
           pr-inactive-days: '90'
+          discussion-inactive-days: '90'
           log-output: true

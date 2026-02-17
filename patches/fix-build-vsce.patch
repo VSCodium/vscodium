@@ -1,0 +1,320 @@
+diff --git a/build/.moduleignore b/build/.moduleignore
+index ed36151..022d6ed 100644
+--- a/build/.moduleignore
++++ b/build/.moduleignore
+@@ -82,7 +82,7 @@ native-is-elevated/deps/**
+ 
+-@vscode/vsce-sign/**
+-!@vscode/vsce-sign/src/main.d.ts
+-!@vscode/vsce-sign/src/main.js
+-!@vscode/vsce-sign/package.json
+-!@vscode/vsce-sign/bin/**
++@vscodium/vsce-sign/**
++!@vscodium/vsce-sign/src/main.d.ts
++!@vscodium/vsce-sign/src/main.js
++!@vscodium/vsce-sign/package.json
++!@vscodium/vsce-sign/bin/**
+ 
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index a103f11..5211245 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -407,3 +407,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 				'**/*.wasm',
+-				'**/@vscode/vsce-sign/bin/*',
++				'**/@vscodium/vsce-sign/bin/*',
+ 			], [
+diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
+index fac7946..a653269 100644
+--- a/build/lib/extensions.ts
++++ b/build/lib/extensions.ts
+@@ -125,3 +125,3 @@ export function typeCheckExtensionStream(extensionPath: string, forWeb: boolean)
+ function fromLocalWebpack(extensionPath: string, webpackConfigFileName: string, disableMangle: boolean): Stream {
+-	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
++	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
+ 	const webpack = require('webpack');
+@@ -252,3 +252,3 @@ function fromLocalWebpack(extensionPath: string, webpackConfigFileName: string,
+ function fromLocalNormal(extensionPath: string): Stream {
+-	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
++	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
+ 	const result = es.through();
+@@ -274,3 +274,3 @@ function fromLocalNormal(extensionPath: string): Stream {
+ function fromLocalEsbuild(extensionPath: string, esbuildConfigFileName: string): Stream {
+-	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
++	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
+ 	const result = es.through();
+diff --git a/build/package-lock.json b/build/package-lock.json
+index 92ebc36..a610d36 100644
+--- a/build/package-lock.json
++++ b/build/package-lock.json
+@@ -51,3 +51,3 @@
+         "@vscode/ripgrep": "^1.15.13",
+-        "@vscode/vsce": "3.6.1",
++        "@vscodium/vsce": "3.6.1-258428",
+         "ansi-colors": "^3.2.3",
+@@ -2646,6 +2646,6 @@
+     },
+-    "node_modules/@vscode/vsce": {
+-      "version": "3.6.1",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce/-/vsce-3.6.1.tgz",
+-      "integrity": "sha512-UXtMgeCBl/t5zjn1TX1v1sl5L/oIv3Xc3pkKPGzaqeFCIkp5+wfFFDBXTWDt3d5uUulHnZKORHkMIsKNe9+k5A==",
++    "node_modules/@vscodium/vsce": {
++      "version": "3.6.1-258428",
++      "resolved": "https://registry.npmjs.org/@vscodium/vsce/-/vsce-3.6.1-258428.tgz",
++      "integrity": "sha512-B2uys5YU5MGNmzQPHsMsRXxzlQvZanhxE8Sfkd4Sr/LBN9BaV5yhMCppV7jyLUOQajj9K3YZThLqUYm4CCBy3A==",
+       "dev": true,
+@@ -2658,3 +2658,2 @@
+         "@secretlint/secretlint-rule-preset-recommend": "^10.1.2",
+-        "@vscode/vsce-sign": "^2.0.0",
+         "azure-devops-node-api": "^12.5.0",
+@@ -2693,148 +2692,3 @@
+     },
+-    "node_modules/@vscode/vsce-sign": {
+-      "version": "2.0.7",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign/-/vsce-sign-2.0.7.tgz",
+-      "integrity": "sha512-cz0GFW8qCxpypOy3y509u26K1FIPMlDIHBwGmDyvEbgoma2v3y5YIHHuijr8zCYBp9kzCCOJd28s/0PG7cA7ew==",
+-      "dev": true,
+-      "hasInstallScript": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optionalDependencies": {
+-        "@vscode/vsce-sign-alpine-arm64": "2.0.6",
+-        "@vscode/vsce-sign-alpine-x64": "2.0.6",
+-        "@vscode/vsce-sign-darwin-arm64": "2.0.6",
+-        "@vscode/vsce-sign-darwin-x64": "2.0.6",
+-        "@vscode/vsce-sign-linux-arm": "2.0.6",
+-        "@vscode/vsce-sign-linux-arm64": "2.0.6",
+-        "@vscode/vsce-sign-linux-x64": "2.0.6",
+-        "@vscode/vsce-sign-win32-arm64": "2.0.6",
+-        "@vscode/vsce-sign-win32-x64": "2.0.6"
+-      }
+-    },
+-    "node_modules/@vscode/vsce-sign-alpine-arm64": {
+-      "version": "2.0.6",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign-alpine-arm64/-/vsce-sign-alpine-arm64-2.0.6.tgz",
+-      "integrity": "sha512-wKkJBsvKF+f0GfsUuGT0tSW0kZL87QggEiqNqK6/8hvqsXvpx8OsTEc3mnE1kejkh5r+qUyQ7PtF8jZYN0mo8Q==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "dev": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optional": true,
+-      "os": [
+-        "alpine"
+-      ]
+-    },
+-    "node_modules/@vscode/vsce-sign-alpine-x64": {
+-      "version": "2.0.6",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign-alpine-x64/-/vsce-sign-alpine-x64-2.0.6.tgz",
+-      "integrity": "sha512-YoAGlmdK39vKi9jA18i4ufBbd95OqGJxRvF3n6ZbCyziwy3O+JgOpIUPxv5tjeO6gQfx29qBivQ8ZZTUF2Ba0w==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "dev": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optional": true,
+-      "os": [
+-        "alpine"
+-      ]
+-    },
+-    "node_modules/@vscode/vsce-sign-darwin-arm64": {
+-      "version": "2.0.6",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign-darwin-arm64/-/vsce-sign-darwin-arm64-2.0.6.tgz",
+-      "integrity": "sha512-5HMHaJRIQuozm/XQIiJiA0W9uhdblwwl2ZNDSSAeXGO9YhB9MH5C4KIHOmvyjUnKy4UCuiP43VKpIxW1VWP4tQ==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "dev": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ]
+-    },
+-    "node_modules/@vscode/vsce-sign-darwin-x64": {
+-      "version": "2.0.6",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign-darwin-x64/-/vsce-sign-darwin-x64-2.0.6.tgz",
+-      "integrity": "sha512-25GsUbTAiNfHSuRItoQafXOIpxlYj+IXb4/qarrXu7kmbH94jlm5sdWSCKrrREs8+GsXF1b+l3OB7VJy5jsykw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "dev": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ]
+-    },
+-    "node_modules/@vscode/vsce-sign-linux-arm": {
+-      "version": "2.0.6",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign-linux-arm/-/vsce-sign-linux-arm-2.0.6.tgz",
+-      "integrity": "sha512-UndEc2Xlq4HsuMPnwu7420uqceXjs4yb5W8E2/UkaHBB9OWCwMd3/bRe/1eLe3D8kPpxzcaeTyXiK3RdzS/1CA==",
+-      "cpu": [
+-        "arm"
+-      ],
+-      "dev": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ]
+-    },
+-    "node_modules/@vscode/vsce-sign-linux-arm64": {
+-      "version": "2.0.6",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign-linux-arm64/-/vsce-sign-linux-arm64-2.0.6.tgz",
+-      "integrity": "sha512-cfb1qK7lygtMa4NUl2582nP7aliLYuDEVpAbXJMkDq1qE+olIw/es+C8j1LJwvcRq1I2yWGtSn3EkDp9Dq5FdA==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "dev": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ]
+-    },
+-    "node_modules/@vscode/vsce-sign-linux-x64": {
+-      "version": "2.0.6",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign-linux-x64/-/vsce-sign-linux-x64-2.0.6.tgz",
+-      "integrity": "sha512-/olerl1A4sOqdP+hjvJ1sbQjKN07Y3DVnxO4gnbn/ahtQvFrdhUi0G1VsZXDNjfqmXw57DmPi5ASnj/8PGZhAA==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "dev": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ]
+-    },
+-    "node_modules/@vscode/vsce-sign-win32-arm64": {
+-      "version": "2.0.6",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign-win32-arm64/-/vsce-sign-win32-arm64-2.0.6.tgz",
+-      "integrity": "sha512-ivM/MiGIY0PJNZBoGtlRBM/xDpwbdlCWomUWuLmIxbi1Cxe/1nooYrEQoaHD8ojVRgzdQEUzMsRbyF5cJJgYOg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "dev": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ]
+-    },
+-    "node_modules/@vscode/vsce-sign-win32-x64": {
+-      "version": "2.0.6",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign-win32-x64/-/vsce-sign-win32-x64-2.0.6.tgz",
+-      "integrity": "sha512-mgth9Kvze+u8CruYMmhHw6Zgy3GRX2S+Ed5oSokDEK5vPEwGGKnmuXua9tmFhomeAnhgJnL4DCna3TiNuGrBTQ==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "dev": true,
+-      "license": "SEE LICENSE IN LICENSE.txt",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ]
+-    },
+-    "node_modules/@vscode/vsce/node_modules/ansi-styles": {
++    "node_modules/@vscodium/vsce/node_modules/ansi-styles": {
+       "version": "4.3.0",
+@@ -2854,3 +2708,3 @@
+     },
+-    "node_modules/@vscode/vsce/node_modules/chalk": {
++    "node_modules/@vscodium/vsce/node_modules/chalk": {
+       "version": "4.1.2",
+@@ -2871,3 +2725,3 @@
+     },
+-    "node_modules/@vscode/vsce/node_modules/color-convert": {
++    "node_modules/@vscodium/vsce/node_modules/color-convert": {
+       "version": "2.0.1",
+@@ -2884,3 +2738,3 @@
+     },
+-    "node_modules/@vscode/vsce/node_modules/color-name": {
++    "node_modules/@vscodium/vsce/node_modules/color-name": {
+       "version": "1.1.4",
+@@ -2891,3 +2745,3 @@
+     },
+-    "node_modules/@vscode/vsce/node_modules/glob": {
++    "node_modules/@vscodium/vsce/node_modules/glob": {
+       "version": "11.1.0",
+@@ -2915,3 +2769,3 @@
+     },
+-    "node_modules/@vscode/vsce/node_modules/glob/node_modules/minimatch": {
++    "node_modules/@vscodium/vsce/node_modules/glob/node_modules/minimatch": {
+       "version": "10.1.1",
+@@ -2931,3 +2785,3 @@
+     },
+-    "node_modules/@vscode/vsce/node_modules/has-flag": {
++    "node_modules/@vscodium/vsce/node_modules/has-flag": {
+       "version": "4.0.0",
+@@ -2941,3 +2795,3 @@
+     },
+-    "node_modules/@vscode/vsce/node_modules/jsonc-parser": {
++    "node_modules/@vscodium/vsce/node_modules/jsonc-parser": {
+       "version": "3.3.1",
+@@ -2945,9 +2799,11 @@
+       "integrity": "sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==",
+-      "dev": true
++      "dev": true,
++      "license": "MIT"
+     },
+-    "node_modules/@vscode/vsce/node_modules/semver": {
+-      "version": "7.6.3",
+-      "resolved": "https://registry.npmjs.org/semver/-/semver-7.6.3.tgz",
+-      "integrity": "sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==",
++    "node_modules/@vscodium/vsce/node_modules/semver": {
++      "version": "7.7.3",
++      "resolved": "https://registry.npmjs.org/semver/-/semver-7.7.3.tgz",
++      "integrity": "sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==",
+       "dev": true,
++      "license": "ISC",
+       "bin": {
+@@ -2959,3 +2815,3 @@
+     },
+-    "node_modules/@vscode/vsce/node_modules/supports-color": {
++    "node_modules/@vscodium/vsce/node_modules/supports-color": {
+       "version": "7.2.0",
+@@ -2972,12 +2828,2 @@
+     },
+-    "node_modules/@vscode/vsce/node_modules/yazl": {
+-      "version": "2.5.1",
+-      "resolved": "https://registry.npmjs.org/yazl/-/yazl-2.5.1.tgz",
+-      "integrity": "sha512-phENi2PLiHnHb6QBVot+dJnaAZ0xosj7p3fWl+znIjBDlnMI2PsZCJZ306BPTFOaHf5qdDEI8x5qFrSOBN5vrw==",
+-      "dev": true,
+-      "license": "MIT",
+-      "dependencies": {
+-        "buffer-crc32": "~0.2.3"
+-      }
+-    },
+     "node_modules/@xmldom/xmldom": {
+@@ -10046,2 +9892,12 @@
+     },
++    "node_modules/yazl": {
++      "version": "2.5.1",
++      "resolved": "https://registry.npmjs.org/yazl/-/yazl-2.5.1.tgz",
++      "integrity": "sha512-phENi2PLiHnHb6QBVot+dJnaAZ0xosj7p3fWl+znIjBDlnMI2PsZCJZ306BPTFOaHf5qdDEI8x5qFrSOBN5vrw==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "buffer-crc32": "~0.2.3"
++      }
++    },
+     "node_modules/yocto-queue": {
+diff --git a/build/package.json b/build/package.json
+index e889b6a..6ebd757 100644
+--- a/build/package.json
++++ b/build/package.json
+@@ -45,3 +45,3 @@
+     "@vscode/ripgrep": "^1.15.13",
+-    "@vscode/vsce": "3.6.1",
++    "@vscodium/vsce": "3.6.1-258428",
+     "ansi-colors": "^3.2.3",
+diff --git a/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts b/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
+index 98535c5..cc37d7b 100644
+--- a/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
++++ b/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
+@@ -69,3 +69,3 @@ export class ExtensionSignatureVerificationService implements IExtensionSignatur
+ 	private async resolveVsceSign(): Promise<typeof vsceSign> {
+-		const mod = '@vscode/vsce-sign';
++		const mod = '@vscodium/vsce-sign';
+ 		return import(mod);
