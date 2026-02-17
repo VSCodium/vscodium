@@ -1,19 +1,43 @@
+diff --git a/src/vs/base/browser/ui/splitview/paneview.ts b/src/vs/base/browser/ui/splitview/paneview.ts
+index fb2e1f4..268d2cb 100644
+--- a/src/vs/base/browser/ui/splitview/paneview.ts
++++ b/src/vs/base/browser/ui/splitview/paneview.ts
+@@ -21,2 +21,3 @@ import { IView, Sizing, SplitView } from './splitview.js';
+ import { applyDragImage } from '../dnd/dnd.js';
++import { SidebarPart } from '../../../../workbench/browser/parts/sidebar/sidebarPart.js';
+ 
+@@ -50,3 +51,3 @@ export abstract class Pane extends Disposable implements IView {
+ 
+-	private static readonly HEADER_SIZE = 22;
++	static readonly COEFFICIENT = 22 / 13;
+ 
+@@ -121,3 +122,3 @@ export abstract class Pane extends Disposable implements IView {
+ 	private get headerSize(): number {
+-		return this.headerVisible ? Pane.HEADER_SIZE : 0;
++		return this.headerVisible ? SidebarPart.getFontSize() * Pane.COEFFICIENT : 0;
+ 	}
+@@ -300,3 +301,3 @@ export abstract class Pane extends Disposable implements IView {
+ 	layout(size: number): void {
+-		const headerSize = this.headerVisible ? Pane.HEADER_SIZE : 0;
++		const headerSize = this.headerSize;
+ 
 diff --git a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
+index d32082b..c786715 100644
 --- a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
 +++ b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
-@@ -131,2 +131,5 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+@@ -147,2 +147,5 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
  			}
 +			if (e.affectsConfiguration('workbench.secondarySideBar.fontSize')) {
 +				this.applyAuxiliaryBarFontSize();
 +			}
  		}));
-@@ -173,2 +176,4 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+@@ -198,2 +201,4 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
  		container.style.borderRightWidth = borderColor && isPositionLeft ? '1px' : '0px';
 +
 +		this.applyAuxiliaryBarFontSize(container);
  	}
-@@ -234,2 +239,16 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
-
+@@ -262,2 +267,16 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+ 
 +	private applyAuxiliaryBarFontSize(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
 +		if (!target) {
@@ -30,75 +54,276 @@ diff --git a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts b/s
 +
  	protected shouldShowCompositeBar(): boolean {
 diff --git a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
+index aec3de2..e582843 100644
 --- a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
 +++ b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
-@@ -26,2 +26,6 @@
- }
-+
+@@ -28,2 +28,6 @@
+ 
 +.monaco-workbench .part.auxiliarybar > .content {
 +	font-size: var(--vscode-workbench-secondary-sidebar-font-size, 13px);
 +}
-
++
+ .monaco-workbench .part.auxiliarybar > .title > .title-label {
 diff --git a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
+index decb51a..70394be 100644
 --- a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
 +++ b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
-@@ -20,2 +20,6 @@
+@@ -15,3 +15,3 @@
+ .monaco-workbench .part.sidebar .title-actions .action-item {
+-	margin-right: 4px;
++	margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.308);
+ }
+@@ -22,4 +22,10 @@
+ 
++.monaco-workbench .part.sidebar > .content {
++	font-size: var(--vscode-workbench-sidebar-font-size);
++	line-height: 1.4em;
++}
++
+ .monaco-workbench .part.sidebar > .title > .title-label h2 {
+ 	text-transform: uppercase;
++	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846);
+ }
+@@ -43,4 +49,4 @@
+ .monaco-workbench .viewlet .collapsible.header .actions .action-label {
+-	width: 28px;
+-	background-size: 16px;
++	width: calc(var(--vscode-workbench-sidebar-font-size) * 2.154);
++	background-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
+ 	background-position: center center;
+@@ -48,3 +54,3 @@
+ 	margin-right: 0;
+-	height: 22px;
++	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692);
+ }
+@@ -60,6 +66,6 @@
+ .monaco-workbench .viewlet .collapsible.header .action-label {
+-	margin-right: 0.2em;
++	margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.2);
+ 	background-repeat: no-repeat;
+-	width: 16px;
+-	height: 16px;
++	width: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
++	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
+ }
+@@ -86,3 +92,3 @@
+ 	position: absolute;
+-	left: 5px; /* place icon in center */
++	left: calc(var(--vscode-workbench-sidebar-font-size) * 0.385); /* place icon in center */
+ }
+@@ -124,3 +130,55 @@
+ .monaco-workbench .sidebar.pane-composite-part > .title.has-composite-bar > .title-actions .monaco-action-bar .action-item {
+-	max-width: 150px;
++	max-width: calc(var(--vscode-workbench-sidebar-font-size) * 11.538);
++}
++
++.monaco-workbench .part.sidebar .pane > .pane-header h3.title {
++	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846);
++}
++
++.monaco-workbench .part.sidebar .monaco-text-button {
++	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923);
++}
++
++.monaco-workbench .part.sidebar .monaco-icon-label::before {
++    background-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.462);
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692);
++}
++
++.monaco-workbench .part.sidebar .open-editors .open-editor,
++.monaco-workbench .part.sidebar .open-editors .editor-group {
++	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692);
++	line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692);
++}
++
++.monaco-workbench .part.sidebar > .title,
++.monaco-workbench .part.sidebar > .header-or-footer {
++	height: calc(var(--vscode-workbench-sidebar-font-size) * 2.692);
  }
 +
-+.monaco-workbench .part.sidebar > .content {
-+	font-size: var(--vscode-workbench-sidebar-font-size, 13px);
++.monaco-workbench .part.sidebar > .title > .title-label {
++	line-height: calc(var(--vscode-workbench-sidebar-font-size) * 2.692);
 +}
-
++
++.monaco-workbench .part.sidebar .pane > .pane-header {
++	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692);
++	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846);
++}
++
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item .codicon {
++	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
++	width: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
++}
++.monaco-workbench .part.sidebar .codicon[class*='codicon-'] {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
++}
++
++.monaco-workbench .part.sidebar .pane > .pane-header > .actions {
++	margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.616);
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header > .actions .action-item {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.308);
++}
++
++}
+\ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
+index 101b9c6..95cb622 100644
 --- a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
 +++ b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
-@@ -111,2 +111,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -37,2 +37,4 @@ import { Extensions } from '../../panecomposite.js';
+ 
++let fontSize = 13;
++
+ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -40,2 +42,3 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 	static readonly activeViewletSettingsKey = 'workbench.sidebar.activeviewletid';
++	static readonly fontSizeSettingsKey = 'workbench.sideBar.experimental.fontSize';
+ 
+@@ -126,2 +129,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
  			}
-+			if (e.affectsConfiguration('workbench.sideBar.fontSize')) {
++			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
 +				this.applySidebarFontSize();
 +			}
  		}));
-@@ -150,2 +153,4 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -131,2 +137,6 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 
++	public static getFontSize() {
++		return fontSize;
++	}
++
+ 	private onDidChangeAutoHideViewContainers(e: { before: number; after: number }): void {
+@@ -178,2 +188,4 @@ export class SidebarPart extends AbstractPaneCompositePart {
  		container.style.outlineColor = this.getColor(SIDE_BAR_DRAG_AND_DROP_BACKGROUND) ?? '';
 +
 +		this.applySidebarFontSize(container);
  	}
-@@ -275,2 +280,16 @@ export class SidebarPart extends AbstractPaneCompositePart {
-
+@@ -320,2 +332,18 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 
 +	private applySidebarFontSize(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
 +		if (!target) {
 +			return;
 +		}
 +
-+		const configuredSize = this.configurationService.getValue<number>('workbench.sideBar.fontSize');
++		fontSize = 13
++
++		const configuredSize = this.configurationService.getValue(SidebarPart.fontSizeSettingsKey);
 +		if (typeof configuredSize === 'number' && configuredSize > 0) {
-+			target.style.setProperty('--vscode-workbench-sidebar-font-size', `${configuredSize}px`);
-+		} else {
-+			target.style.removeProperty('--vscode-workbench-sidebar-font-size');
++			fontSize = Math.trunc(configuredSize)
 +		}
++
++		target.style.setProperty('--vscode-workbench-sidebar-font-size', `${fontSize}px`);
 +	}
 +
  	private registerActions(): void {
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
+index b1c5637..ce89429 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -533,2 +533,18 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -561,2 +561,10 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  			},
-+			'workbench.sideBar.fontSize': {
++			'workbench.sideBar.experimental.fontSize': {
 +				'type': 'number',
 +				'default': 13,
 +				'minimum': 6,
 +				'maximum': 32,
 +				'markdownDescription': localize('sideBarFontSize', "Controls the font size used for content inside the primary side bar."),
-+				'tags': ['accessibility']
++				'tags': ['accessibility', 'experimental']
 +			},
-+			'workbench.secondarySideBar.fontSize': {
+ 			'workbench.panel.showLabels': {
+@@ -607,2 +615,10 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+ 			},
++			'workbench.secondarySideBar.experimental.fontSize': {
 +				'type': 'number',
 +				'default': 13,
 +				'minimum': 6,
 +				'maximum': 32,
 +				'markdownDescription': localize('secondarySideBarFontSize', "Controls the font size used for content inside the secondary side bar."),
-+				'tags': ['accessibility']
++				'tags': ['accessibility', 'experimental']
 +			},
- 			'workbench.panel.showLabels': {
+ 			'workbench.statusBar.visible': {
+diff --git a/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts b/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts
+index c6298b3..3eb7fcb 100644
+--- a/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts
++++ b/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts
+@@ -31,2 +31,3 @@ import { IThemeService } from '../../../../../platform/theme/common/themeService
+ import { fillEditorsDragData } from '../../../../browser/dnd.js';
++import { SidebarPart } from '../../../../browser/parts/sidebar/sidebarPart.js';
+ import { IOutlineComparator, OutlineConfigKeys, OutlineTarget } from '../../../../services/outline/browser/outline.js';
+@@ -159,4 +160,6 @@ export class DocumentSymbolVirtualDelegate implements IListVirtualDelegate<Docum
+ 
++	static readonly COEFFICIENT = 22 / 13;
++
+ 	getHeight(_element: DocumentSymbolItem): number {
+-		return 22;
++		return SidebarPart.getFontSize() * DocumentSymbolVirtualDelegate.COEFFICIENT;
+ 	}
+diff --git a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
+index ed7dbe0..674088d 100644
+--- a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
++++ b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
+@@ -76,2 +76,3 @@ import { listFilterMatchHighlight, listFilterMatchHighlightBorder } from '../../
+ import { asCssVariable } from '../../../../../platform/theme/common/colorUtils.js';
++import { SidebarPart } from '../../../../browser/parts/sidebar/sidebarPart.js';
+ 
+@@ -79,6 +80,6 @@ export class ExplorerDelegate implements IListVirtualDelegate<ExplorerItem> {
+ 
+-	static readonly ITEM_HEIGHT = 22;
++	static readonly COEFFICIENT = 22 / 13;
+ 
+ 	getHeight(element: ExplorerItem): number {
+-		return ExplorerDelegate.ITEM_HEIGHT;
++		return SidebarPart.getFontSize() * ExplorerDelegate.COEFFICIENT;
+ 	}
+@@ -852,3 +853,3 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
+ 			const indent = this.configurationService.getValue<number>('workbench.tree.indent');
+-			const offset = Math.max(22 - indent, 0); // derived via inspection
++			const offset = Math.max(39 - indent, 0); // derived via inspection
+ 			container.style.setProperty(`--vscode-explorer-align-offset-margin-left`, `${offset}px`);
+diff --git a/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts b/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts
+index 7229c14..1e52c37 100644
+--- a/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts
++++ b/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts
+@@ -58,2 +58,3 @@ import { IHoverService } from '../../../../../platform/hover/browser/hover.js';
+ import { IFileService } from '../../../../../platform/files/common/files.js';
++import { SidebarPart } from '../../../../browser/parts/sidebar/sidebarPart.js';
+ 
+@@ -519,3 +520,3 @@ export class OpenEditorsView extends ViewPane {
+ 
+-		return (Math.max(this.elementCount, minVisibleOpenEditors)) * OpenEditorsDelegate.ITEM_HEIGHT;
++		return (Math.max(this.elementCount, minVisibleOpenEditors)) * OpenEditorsDelegate.COEFFICIENT * SidebarPart.getFontSize();
+ 	}
+@@ -533,3 +534,3 @@ export class OpenEditorsView extends ViewPane {
+ 		const itemsToShow = Math.min(Math.max(visibleOpenEditors, 1), this.elementCount);
+-		return itemsToShow * OpenEditorsDelegate.ITEM_HEIGHT;
++		return itemsToShow * OpenEditorsDelegate.COEFFICIENT * SidebarPart.getFontSize();
+ 	}
+@@ -581,6 +582,6 @@ class OpenEditorsDelegate implements IListVirtualDelegate<OpenEditor | IEditorGr
+ 
+-	public static readonly ITEM_HEIGHT = 22;
++	static readonly COEFFICIENT = 22 / 13;
+ 
+ 	getHeight(_element: OpenEditor | IEditorGroup): number {
+-		return OpenEditorsDelegate.ITEM_HEIGHT;
++		return SidebarPart.getFontSize() * OpenEditorsDelegate.COEFFICIENT;
+ 	}
+diff --git a/src/vs/workbench/contrib/search/browser/searchResultsView.ts b/src/vs/workbench/contrib/search/browser/searchResultsView.ts
+index 62d5db9..e05aa2a 100644
+--- a/src/vs/workbench/contrib/search/browser/searchResultsView.ts
++++ b/src/vs/workbench/contrib/search/browser/searchResultsView.ts
+@@ -36,2 +36,3 @@ import { ISearchTreeMatch, isSearchTreeMatch, RenderableMatch, ITextSearchHeadin
+ import { isSearchTreeAIFileMatch } from './AISearch/aiSearchModelBase.js';
++import { SidebarPart } from '../../../browser/parts/sidebar/sidebarPart.js';
+ 
+@@ -77,6 +78,6 @@ export class SearchDelegate implements IListVirtualDelegate<RenderableMatch> {
+ 
+-	public static ITEM_HEIGHT = 22;
++	static readonly COEFFICIENT = 22 / 13;
+ 
+ 	getHeight(element: RenderableMatch): number {
+-		return SearchDelegate.ITEM_HEIGHT;
++		return SidebarPart.getFontSize() * SearchDelegate.COEFFICIENT;
+ 	}
