@@ -44,14 +44,15 @@ index 13ff794..c19b125 100644
 +	font-family: var(--vscode-workbench-font-family, var(--monaco-font));
  }
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index b1c5637..547fc0b 100644
+index b1c5637..a09585e 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -675,2 +675,6 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -675,2 +675,7 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  			},
 +			'workbench.experimental.fontFamily': {
 +				type: 'string',
 +				description: localize('workbench.fontFamily', "Controls the font family in the workbench."),
++				'tags': ['experimental']
 +			},
  			'workbench.settings.editor': {
 diff --git a/src/vs/workbench/browser/workbench.ts b/src/vs/workbench/browser/workbench.ts
