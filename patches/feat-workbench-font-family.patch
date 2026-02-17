@@ -1,0 +1,116 @@
+diff --git a/src/vs/workbench/browser/media/style.css b/src/vs/workbench/browser/media/style.css
+index 13ff794..c19b125 100644
+--- a/src/vs/workbench/browser/media/style.css
++++ b/src/vs/workbench/browser/media/style.css
+@@ -11,20 +11,20 @@
+ 
+-.monaco-workbench.mac { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+-.monaco-workbench.mac:lang(zh-Hans) { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif; }
+-.monaco-workbench.mac:lang(zh-Hant) { font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", sans-serif; }
+-.monaco-workbench.mac:lang(ja) { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic Pro", sans-serif; }
+-.monaco-workbench.mac:lang(ko) { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Nanum Gothic", "AppleGothic", sans-serif; }
+-
+-.monaco-workbench.windows { font-family: "Segoe WPC", "Segoe UI", sans-serif; }
+-.monaco-workbench.windows:lang(zh-Hans) { font-family: "Segoe WPC", "Segoe UI", "Microsoft YaHei", sans-serif; }
+-.monaco-workbench.windows:lang(zh-Hant) { font-family: "Segoe WPC", "Segoe UI", "Microsoft Jhenghei", sans-serif; }
+-.monaco-workbench.windows:lang(ja) { font-family: "Segoe WPC", "Segoe UI", "Yu Gothic UI", "Meiryo UI", sans-serif; }
+-.monaco-workbench.windows:lang(ko) { font-family: "Segoe WPC", "Segoe UI", "Malgun Gothic", "Dotom", sans-serif; }
++.monaco-workbench.mac { --monaco-font: -apple-system, BlinkMacSystemFont, sans-serif; }
++.monaco-workbench.mac:lang(zh-Hans) { --monaco-font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif; }
++.monaco-workbench.mac:lang(zh-Hant) { --monaco-font: -apple-system, BlinkMacSystemFont, "PingFang TC", sans-serif; }
++.monaco-workbench.mac:lang(ja) { --monaco-font: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic Pro", sans-serif; }
++.monaco-workbench.mac:lang(ko) { --monaco-font: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Nanum Gothic", "AppleGothic", sans-serif; }
++
++.monaco-workbench.windows { --monaco-font: "Segoe WPC", "Segoe UI", sans-serif; }
++.monaco-workbench.windows:lang(zh-Hans) { --monaco-font: "Segoe WPC", "Segoe UI", "Microsoft YaHei", sans-serif; }
++.monaco-workbench.windows:lang(zh-Hant) { --monaco-font: "Segoe WPC", "Segoe UI", "Microsoft Jhenghei", sans-serif; }
++.monaco-workbench.windows:lang(ja) { --monaco-font: "Segoe WPC", "Segoe UI", "Yu Gothic UI", "Meiryo UI", sans-serif; }
++.monaco-workbench.windows:lang(ko) { --monaco-font: "Segoe WPC", "Segoe UI", "Malgun Gothic", "Dotom", sans-serif; }
+ 
+ /* Linux: add `system-ui` as first font and not `Ubuntu` to allow other distribution pick their standard OS font */
+-.monaco-workbench.linux { font-family: system-ui, "Ubuntu", "Droid Sans", sans-serif; }
+-.monaco-workbench.linux:lang(zh-Hans) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans SC", "Source Han Sans CN", "Source Han Sans", sans-serif; }
+-.monaco-workbench.linux:lang(zh-Hant) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans TC", "Source Han Sans TW", "Source Han Sans", sans-serif; }
+-.monaco-workbench.linux:lang(ja) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", sans-serif; }
+-.monaco-workbench.linux:lang(ko) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans K", "Source Han Sans JR", "Source Han Sans", "UnDotum", "FBaekmuk Gulim", sans-serif; }
++.monaco-workbench.linux { --monaco-font: system-ui, "Ubuntu", "Droid Sans", sans-serif; }
++.monaco-workbench.linux:lang(zh-Hans) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans SC", "Source Han Sans CN", "Source Han Sans", sans-serif; }
++.monaco-workbench.linux:lang(zh-Hant) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans TC", "Source Han Sans TW", "Source Han Sans", sans-serif; }
++.monaco-workbench.linux:lang(ja) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", sans-serif; }
++.monaco-workbench.linux:lang(ko) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans K", "Source Han Sans JR", "Source Han Sans", "UnDotum", "FBaekmuk Gulim", sans-serif; }
+ 
+@@ -55,2 +55,3 @@ body {
+ 	color: var(--vscode-foreground);
++	font-family: var(--vscode-workbench-font-family, var(--monaco-font));
+ }
+diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
+index b1c5637..547fc0b 100644
+--- a/src/vs/workbench/browser/workbench.contribution.ts
++++ b/src/vs/workbench/browser/workbench.contribution.ts
+@@ -675,2 +675,6 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+ 			},
++			'workbench.experimental.fontFamily': {
++				type: 'string',
++				description: localize('workbench.fontFamily', "Controls the font family in the workbench."),
++			},
+ 			'workbench.settings.editor': {
+diff --git a/src/vs/workbench/browser/workbench.ts b/src/vs/workbench/browser/workbench.ts
+index 10e2c3e..7259aff 100644
+--- a/src/vs/workbench/browser/workbench.ts
++++ b/src/vs/workbench/browser/workbench.ts
+@@ -19,3 +19,3 @@ import { Position, Parts, IWorkbenchLayoutService, positionToString } from '../s
+ import { IStorageService, WillSaveStateReason, StorageScope, StorageTarget } from '../../platform/storage/common/storage.js';
+-import { IConfigurationChangeEvent, IConfigurationService } from '../../platform/configuration/common/configuration.js';
++import { IConfigurationService } from '../../platform/configuration/common/configuration.js';
+ import { IInstantiationService } from '../../platform/instantiation/common/instantiation.js';
+@@ -233,3 +233,10 @@ export class Workbench extends Layout {
+ 		// Configuration changes
+-		this._register(configurationService.onDidChangeConfiguration(e => this.updateFontAliasing(e, configurationService)));
++		this._register(configurationService.onDidChangeConfiguration(e => {
++			if (e.affectsConfiguration('workbench.fontAliasing')) {
++				this.updateFontAliasing(configurationService);
++			}
++			else if (e.affectsConfiguration('workbench.experimental.fontFamily')) {
++				this.updateFontFamily(configurationService);
++			}
++		}));
+ 
+@@ -270,3 +277,3 @@ export class Workbench extends Layout {
+ 	private fontAliasing: 'default' | 'antialiased' | 'none' | 'auto' | undefined;
+-	private updateFontAliasing(e: IConfigurationChangeEvent | undefined, configurationService: IConfigurationService) {
++	private updateFontAliasing(configurationService: IConfigurationService) {
+ 		if (!isMacintosh) {
+@@ -275,6 +282,2 @@ export class Workbench extends Layout {
+ 
+-		if (e && !e.affectsConfiguration('workbench.fontAliasing')) {
+-			return;
+-		}
+-
+ 		const aliasing = configurationService.getValue<'default' | 'antialiased' | 'none' | 'auto'>('workbench.fontAliasing');
+@@ -296,2 +299,19 @@ export class Workbench extends Layout {
+ 
++	private fontFamily: string | undefined;
++	private updateFontFamily(configurationService: IConfigurationService) {
++		let family = configurationService.getValue<string>('workbench.experimental.fontFamily');
++
++		if (this.fontFamily === family) {
++			return;
++		}
++
++		this.fontFamily = family;
++
++		if (family) {
++			this.mainContainer.style.setProperty('--vscode-workbench-font-family', family);
++		} else {
++			this.mainContainer.style.removeProperty('--vscode-workbench-font-family');
++		}
++	}
++
+ 	private restoreFontInfo(storageService: IStorageService, configurationService: IConfigurationService): void {
+@@ -339,3 +359,5 @@ export class Workbench extends Layout {
+ 		// Apply font aliasing
+-		this.updateFontAliasing(undefined, configurationService);
++		this.updateFontAliasing(configurationService);
++
++		this.updateFontFamily(configurationService);
+ 
