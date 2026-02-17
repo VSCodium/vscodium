@@ -1,19 +1,50 @@
+diff --git a/build/.moduleignore b/build/.moduleignore
+index ed36151..022d6ed 100644
+--- a/build/.moduleignore
++++ b/build/.moduleignore
+@@ -82,7 +82,7 @@ native-is-elevated/deps/**
+ 
+-@vscode/vsce-sign/**
+-!@vscode/vsce-sign/src/main.d.ts
+-!@vscode/vsce-sign/src/main.js
+-!@vscode/vsce-sign/package.json
+-!@vscode/vsce-sign/bin/**
++@vscodium/vsce-sign/**
++!@vscodium/vsce-sign/src/main.d.ts
++!@vscodium/vsce-sign/src/main.js
++!@vscodium/vsce-sign/package.json
++!@vscodium/vsce-sign/bin/**
+ 
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index a103f11..5211245 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -407,3 +407,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 				'**/*.wasm',
+-				'**/@vscode/vsce-sign/bin/*',
++				'**/@vscodium/vsce-sign/bin/*',
+ 			], [
 diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
-index 24462a3..ecb43fd 100644
+index fac7946..a653269 100644
 --- a/build/lib/extensions.ts
 +++ b/build/lib/extensions.ts
-@@ -94,3 +94,3 @@ function fromLocal(extensionPath: string, forWeb: boolean, disableMangle: boolea
+@@ -125,3 +125,3 @@ export function typeCheckExtensionStream(extensionPath: string, forWeb: boolean)
  function fromLocalWebpack(extensionPath: string, webpackConfigFileName: string, disableMangle: boolean): Stream {
 -	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const webpack = require('webpack');
-@@ -208,3 +208,3 @@ function fromLocalWebpack(extensionPath: string, webpackConfigFileName: string,
+@@ -252,3 +252,3 @@ function fromLocalWebpack(extensionPath: string, webpackConfigFileName: string,
  function fromLocalNormal(extensionPath: string): Stream {
 -	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const result = es.through();
+@@ -274,3 +274,3 @@ function fromLocalNormal(extensionPath: string): Stream {
+ function fromLocalEsbuild(extensionPath: string, esbuildConfigFileName: string): Stream {
+-	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
++	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
+ 	const result = es.through();
 diff --git a/build/package-lock.json b/build/package-lock.json
-index fe9be0c..9747dca 100644
+index 92ebc36..a610d36 100644
 --- a/build/package-lock.json
 +++ b/build/package-lock.json
 @@ -51,3 +51,3 @@
@@ -21,7 +52,7 @@ index fe9be0c..9747dca 100644
 -        "@vscode/vsce": "3.6.1",
 +        "@vscodium/vsce": "3.6.1-258428",
          "ansi-colors": "^3.2.3",
-@@ -1944,6 +1944,6 @@
+@@ -2646,6 +2646,6 @@
      },
 -    "node_modules/@vscode/vsce": {
 -      "version": "3.6.1",
@@ -32,11 +63,11 @@ index fe9be0c..9747dca 100644
 +      "resolved": "https://registry.npmjs.org/@vscodium/vsce/-/vsce-3.6.1-258428.tgz",
 +      "integrity": "sha512-B2uys5YU5MGNmzQPHsMsRXxzlQvZanhxE8Sfkd4Sr/LBN9BaV5yhMCppV7jyLUOQajj9K3YZThLqUYm4CCBy3A==",
        "dev": true,
-@@ -1956,3 +1956,2 @@
+@@ -2658,3 +2658,2 @@
          "@secretlint/secretlint-rule-preset-recommend": "^10.1.2",
 -        "@vscode/vsce-sign": "^2.0.0",
          "azure-devops-node-api": "^12.5.0",
-@@ -1991,148 +1990,3 @@
+@@ -2693,148 +2692,3 @@
      },
 -    "node_modules/@vscode/vsce-sign": {
 -      "version": "2.0.7",
@@ -186,42 +217,42 @@ index fe9be0c..9747dca 100644
 -    "node_modules/@vscode/vsce/node_modules/ansi-styles": {
 +    "node_modules/@vscodium/vsce/node_modules/ansi-styles": {
        "version": "4.3.0",
-@@ -2152,3 +2006,3 @@
+@@ -2854,3 +2708,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/chalk": {
 +    "node_modules/@vscodium/vsce/node_modules/chalk": {
        "version": "4.1.2",
-@@ -2169,3 +2023,3 @@
+@@ -2871,3 +2725,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/color-convert": {
 +    "node_modules/@vscodium/vsce/node_modules/color-convert": {
        "version": "2.0.1",
-@@ -2182,3 +2036,3 @@
+@@ -2884,3 +2738,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/color-name": {
 +    "node_modules/@vscodium/vsce/node_modules/color-name": {
        "version": "1.1.4",
-@@ -2189,3 +2043,3 @@
+@@ -2891,3 +2745,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/glob": {
 +    "node_modules/@vscodium/vsce/node_modules/glob": {
        "version": "11.1.0",
-@@ -2213,3 +2067,3 @@
+@@ -2915,3 +2769,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/glob/node_modules/minimatch": {
 +    "node_modules/@vscodium/vsce/node_modules/glob/node_modules/minimatch": {
        "version": "10.1.1",
-@@ -2229,3 +2083,3 @@
+@@ -2931,3 +2785,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/has-flag": {
 +    "node_modules/@vscodium/vsce/node_modules/has-flag": {
        "version": "4.0.0",
-@@ -2239,3 +2093,3 @@
+@@ -2941,3 +2795,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/jsonc-parser": {
 +    "node_modules/@vscodium/vsce/node_modules/jsonc-parser": {
        "version": "3.3.1",
-@@ -2243,9 +2097,11 @@
+@@ -2945,9 +2799,11 @@
        "integrity": "sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==",
 -      "dev": true
 +      "dev": true,
@@ -238,12 +269,12 @@ index fe9be0c..9747dca 100644
        "dev": true,
 +      "license": "ISC",
        "bin": {
-@@ -2257,3 +2113,3 @@
+@@ -2959,3 +2815,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/supports-color": {
 +    "node_modules/@vscodium/vsce/node_modules/supports-color": {
        "version": "7.2.0",
-@@ -2270,12 +2126,2 @@
+@@ -2972,12 +2828,2 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/yazl": {
 -      "version": "2.5.1",
@@ -256,7 +287,7 @@ index fe9be0c..9747dca 100644
 -      }
 -    },
      "node_modules/@xmldom/xmldom": {
-@@ -6955,2 +6801,12 @@
+@@ -10046,2 +9892,12 @@
      },
 +    "node_modules/yazl": {
 +      "version": "2.5.1",
@@ -270,7 +301,7 @@ index fe9be0c..9747dca 100644
 +    },
      "node_modules/yocto-queue": {
 diff --git a/build/package.json b/build/package.json
-index 39db6b7..55beb4a 100644
+index e889b6a..6ebd757 100644
 --- a/build/package.json
 +++ b/build/package.json
 @@ -45,3 +45,3 @@
@@ -278,3 +309,12 @@ index 39db6b7..55beb4a 100644
 -    "@vscode/vsce": "3.6.1",
 +    "@vscodium/vsce": "3.6.1-258428",
      "ansi-colors": "^3.2.3",
+diff --git a/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts b/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
+index 98535c5..cc37d7b 100644
+--- a/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
++++ b/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
+@@ -69,3 +69,3 @@ export class ExtensionSignatureVerificationService implements IExtensionSignatur
+ 	private async resolveVsceSign(): Promise<typeof vsceSign> {
+-		const mod = '@vscode/vsce-sign';
++		const mod = '@vscodium/vsce-sign';
+ 		return import(mod);
