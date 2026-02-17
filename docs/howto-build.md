@@ -17,7 +17,7 @@
 
 ## <a id="dependencies"></a>Dependencies
 
-- node 20.18
+- node (check [.nvmrc](../.nvmrc) for version)
 - jq
 - git
 - python3 3.11
