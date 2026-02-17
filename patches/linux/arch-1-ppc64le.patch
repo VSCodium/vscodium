@@ -27,13 +27,12 @@ index 5294177..1e33aeb 100755
 +  TRIPLE="powerpc64le-linux-gnu"
  fi
 diff --git a/build/checksums/vscode-sysroot.txt b/build/checksums/vscode-sysroot.txt
-index 847383e..af1cb6a 100644
+index 847383e..37186f4 100644
 --- a/build/checksums/vscode-sysroot.txt
 +++ b/build/checksums/vscode-sysroot.txt
 @@ -7 +7,2 @@ ac4b6b14b4cec027a22a51bbbb049b3504958a78106c8a8d5cec144206b767d1  x86_64-linux-g
  1ebb6ef1fe2983269fd0855a88f9c9a37f9b515d16524a9146198e4cabdf34f7  x86_64-linux-gnu-glibc-2.28-gcc-8.5.0.tar.gz
 +fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
-\ No newline at end of file
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
 index 012df0b..a7da071 100644
 --- a/build/gulpfile.reh.ts
@@ -279,27 +278,31 @@ index c6a01da..3f3c3f5 100644
 +	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le'].includes(s);
  }
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 3b7ef5c..ec97760 100644
+index 55f1dad..16b112d 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
-@@ -183,2 +183,3 @@ pub enum Platform {
+@@ -224,2 +224,3 @@ pub enum Platform {
  	LinuxARM32Legacy,
 +	LinuxPPC64LE,
  	DarwinX64,
-@@ -201,2 +202,3 @@ impl Platform {
- 			Platform::LinuxARM32Legacy => "armhf",
-+			Platform::LinuxPPC64LE => "ppc64le",
- 			Platform::DarwinX64 => "x64",
-@@ -220,2 +222,3 @@ impl Platform {
- 			Platform::LinuxARM32Legacy => "linux",
-+			Platform::LinuxPPC64LE => "linux",
- 			Platform::DarwinX64 => "darwin",
-@@ -248,2 +251,4 @@ impl Platform {
+@@ -237,2 +238,3 @@ impl Platform {
+ 			Platform::LinuxARM32 => Some("linux-armhf".to_owned()),
++			Platform::LinuxPPC64LE => Some("linux-ppc64le".to_owned()),
+ 			Platform::DarwinX64 => Some("darwin".to_owned()),
+@@ -255,2 +257,3 @@ impl Platform {
+ 			Platform::LinuxARM32Legacy => "server-linux-legacy-armhf",
++			Platform::LinuxPPC64LE => "server-linux-ppc64le",
+ 			Platform::DarwinX64 => "server-darwin",
+@@ -274,2 +277,3 @@ impl Platform {
+ 			Platform::LinuxARM32Legacy => "cli-linux-armhf",
++			Platform::LinuxPPC64LE => "cli-linux-ppc64le",
+ 			Platform::DarwinX64 => "cli-darwin-x64",
+@@ -306,2 +310,4 @@ impl Platform {
  			Some(Platform::LinuxARM64)
 +		} else if cfg!(all(target_os = "linux", target_arch = "powerpc64")) {
 +			Some(Platform::LinuxPPC64LE)
  		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
-@@ -275,2 +280,3 @@ impl fmt::Display for Platform {
+@@ -333,2 +339,3 @@ impl fmt::Display for Platform {
  			Platform::LinuxARM32Legacy => "LinuxARM32Legacy",
 +			Platform::LinuxPPC64LE => "LinuxPPC64LE",
  			Platform::DarwinX64 => "DarwinX64",
