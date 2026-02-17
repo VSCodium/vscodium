@@ -278,31 +278,27 @@ index c6a01da..3f3c3f5 100644
 +	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le'].includes(s);
  }
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 55f1dad..16b112d 100644
+index 3b7ef5c..ec97760 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
-@@ -224,2 +224,3 @@ pub enum Platform {
+@@ -183,2 +183,3 @@ pub enum Platform {
  	LinuxARM32Legacy,
 +	LinuxPPC64LE,
  	DarwinX64,
-@@ -237,2 +238,3 @@ impl Platform {
- 			Platform::LinuxARM32 => Some("linux-armhf".to_owned()),
-+			Platform::LinuxPPC64LE => Some("linux-ppc64le".to_owned()),
- 			Platform::DarwinX64 => Some("darwin".to_owned()),
-@@ -255,2 +257,3 @@ impl Platform {
- 			Platform::LinuxARM32Legacy => "server-linux-legacy-armhf",
-+			Platform::LinuxPPC64LE => "server-linux-ppc64le",
- 			Platform::DarwinX64 => "server-darwin",
-@@ -274,2 +277,3 @@ impl Platform {
- 			Platform::LinuxARM32Legacy => "cli-linux-armhf",
-+			Platform::LinuxPPC64LE => "cli-linux-ppc64le",
- 			Platform::DarwinX64 => "cli-darwin-x64",
-@@ -306,2 +310,4 @@ impl Platform {
+@@ -201,2 +202,3 @@ impl Platform {
+ 			Platform::LinuxARM32Legacy => "armhf",
++			Platform::LinuxPPC64LE => "ppc64le",
+ 			Platform::DarwinX64 => "x64",
+@@ -220,2 +222,3 @@ impl Platform {
+ 			Platform::LinuxARM32Legacy => "linux",
++			Platform::LinuxPPC64LE => "linux",
+ 			Platform::DarwinX64 => "darwin",
+@@ -248,2 +251,4 @@ impl Platform {
  			Some(Platform::LinuxARM64)
 +		} else if cfg!(all(target_os = "linux", target_arch = "powerpc64")) {
 +			Some(Platform::LinuxPPC64LE)
  		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
-@@ -333,2 +339,3 @@ impl fmt::Display for Platform {
+@@ -275,2 +280,3 @@ impl fmt::Display for Platform {
  			Platform::LinuxARM32Legacy => "LinuxARM32Legacy",
 +			Platform::LinuxPPC64LE => "LinuxPPC64LE",
  			Platform::DarwinX64 => "DarwinX64",
