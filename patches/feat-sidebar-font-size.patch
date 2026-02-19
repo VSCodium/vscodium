@@ -1,42 +1,406 @@
+diff --git a/src/vs/base/browser/ui/actionbar/actionbar.css b/src/vs/base/browser/ui/actionbar/actionbar.css
+index 467b1ff..91fd5a0 100644
+--- a/src/vs/base/browser/ui/actionbar/actionbar.css
++++ b/src/vs/base/browser/ui/actionbar/actionbar.css
+@@ -127 +127,33 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item .codicon, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .codicon {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-label, .monaco-workbench .part.sidebar .monaco-action-bar .action-item .keybinding, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .keybinding {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar.vertical .action-item .action-label.separator, .monaco-workbench .part.auxiliarybar .monaco-action-bar.vertical .action-item .action-label.separator {
++    padding-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923);
++    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692) .8em
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item .action-label.separator, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .action-label.separator {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.384615) calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++}
++.monaco-workbench .part.sidebar .secondary-actions .monaco-action-bar .action-label, .monaco-workbench .part.auxiliarybar .secondary-actions .monaco-action-bar .action-label {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item.select-container, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item.select-container {
++    max-width: calc(var(--vscode-workbench-sidebar-font-size) * 13.076923);
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 4.615385);
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item.action-dropdown-item > .action-dropdown-item-separator > div, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item.action-dropdown-item > .action-dropdown-item-separator > div {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++}
+\ No newline at end of file
+diff --git a/src/vs/base/browser/ui/codicons/codicon/codicon.css b/src/vs/base/browser/ui/codicons/codicon/codicon.css
+index d7f257d..af55bdd 100644
+--- a/src/vs/base/browser/ui/codicons/codicon/codicon.css
++++ b/src/vs/base/browser/ui/codicons/codicon/codicon.css
+@@ -25 +25,7 @@
+ /* icon rules are dynamically created by the platform theme service (see iconsStyleSheet.ts) */
++
++
++
++.monaco-workbench .part.sidebar .codicon[class*='codicon-'], .monaco-workbench .part.auxiliarybar .codicon[class*='codicon-'] {
++    font: normal normal normal calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)/1 codicon
++}
+\ No newline at end of file
+diff --git a/src/vs/base/browser/ui/iconLabel/iconlabel.css b/src/vs/base/browser/ui/iconLabel/iconlabel.css
+index d3dfd9a..cf59627 100644
+--- a/src/vs/base/browser/ui/iconLabel/iconlabel.css
++++ b/src/vs/base/browser/ui/iconLabel/iconlabel.css
+@@ -119 +119,21 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .monaco-icon-label::before, .monaco-workbench .part.auxiliarybar .monaco-icon-label::before {
++    background-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538);
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .monaco-icon-label-iconpath, .monaco-workbench .part.auxiliarybar .monaco-icon-label-iconpath {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .monaco-icon-label > .monaco-icon-label-container > .monaco-icon-name-container > .label-name > .label-separator, .monaco-workbench .part.auxiliarybar .monaco-icon-label > .monaco-icon-label-container > .monaco-icon-name-container > .label-name > .label-separator {
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-icon-label::after, .monaco-workbench .part.auxiliarybar .monaco-icon-label::after {
++    margin: auto calc(var(--vscode-workbench-sidebar-font-size) * 1.230769) 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.384615)
++}
+\ No newline at end of file
+diff --git a/src/vs/base/browser/ui/inputbox/inputBox.css b/src/vs/base/browser/ui/inputbox/inputBox.css
+index 827a19f..43a1996 100644
+--- a/src/vs/base/browser/ui/inputbox/inputBox.css
++++ b/src/vs/base/browser/ui/inputbox/inputBox.css
+@@ -106 +106,26 @@
+ }
++
++.monaco-workbench .part.sidebar .monaco-inputbox > .ibwrapper {
++	line-height: var(--vscode-workbench-sidebar-font-size);
++	font-size: var(--vscode-workbench-sidebar-font-size);
++}
++
++.monaco-workbench .part.sidebar .monaco-inputbox > .ibwrapper > .input, .monaco-workbench .part.sidebar .monaco-inputbox > .ibwrapper > .mirror, .monaco-workbench .part.auxiliarybar .monaco-inputbox > .ibwrapper > .input, .monaco-workbench .part.auxiliarybar .monaco-inputbox > .ibwrapper > .mirror {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692) calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .monaco-inputbox-container .monaco-inputbox-message, .monaco-workbench .part.auxiliarybar .monaco-inputbox-container .monaco-inputbox-message {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077);
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.307692);
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
++.monaco-workbench .part.sidebar .monaco-inputbox .monaco-action-bar, .monaco-workbench .part.auxiliarybar .monaco-inputbox .monaco-action-bar {
++    right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
++    top: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .monaco-inputbox .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar .monaco-inputbox .monaco-action-bar .action-item {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-inputbox .monaco-action-bar .action-item .codicon, .monaco-workbench .part.auxiliarybar .monaco-inputbox .monaco-action-bar .action-item .codicon {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
+\ No newline at end of file
+diff --git a/src/vs/base/browser/ui/selectBox/selectBox.css b/src/vs/base/browser/ui/selectBox/selectBox.css
+index 2b0011a..327fe0f 100644
+--- a/src/vs/base/browser/ui/selectBox/selectBox.css
++++ b/src/vs/base/browser/ui/selectBox/selectBox.css
+@@ -35 +35,16 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .monaco-select-box-dropdown-container, .monaco-workbench .part.auxiliarybar .monaco-select-box-dropdown-container {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 1)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item .monaco-select-box, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .monaco-select-box {
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 7.692308);
++    min-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846) calc(var(--vscode-workbench-sidebar-font-size) * 1.769231) calc(var(--vscode-workbench-sidebar-font-size) * 0.153846) calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench.mac .part.sidebar .monaco-action-bar .action-item .monaco-select-box, .monaco-workbench.mac .part.auxiliarybar .monaco-action-bar .action-item .monaco-select-box {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
++    min-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.846154)
++}
+\ No newline at end of file
+diff --git a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
+index f6c2ff1..a7da491 100644
+--- a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
++++ b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
+@@ -8,2 +8,3 @@ import * as arrays from '../../../common/arrays.js';
+ import { Emitter, Event } from '../../../common/event.js';
++import { FONT } from '../../../common/font.js';
+ import { KeyCode, KeyCodeUtils } from '../../../common/keyCodes.js';
+@@ -164,3 +165,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+ 	getHeight(): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/base/browser/ui/splitview/paneview.css b/src/vs/base/browser/ui/splitview/paneview.css
+index 7bb4282..92c027a 100644
+--- a/src/vs/base/browser/ui/splitview/paneview.css
++++ b/src/vs/base/browser/ui/splitview/paneview.css
+@@ -153 +153,38 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane.horizontal:not(.expanded) > .pane-header, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane.horizontal:not(.expanded) > .pane-header {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header > .codicon:first-of-type, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header > .codicon:first-of-type {
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane.horizontal:not(.expanded) > .pane-header > .codicon:first-of-type, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane.horizontal:not(.expanded) > .pane-header > .codicon:first-of-type {
++    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header > .actions, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header > .actions {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header > .actions .action-item, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header > .actions .action-item {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header > .actions .action-label, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header > .actions .action-label {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header .action-item .monaco-select-box, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header .action-item .monaco-select-box {
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 8.461538);
++    min-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846) calc(var(--vscode-workbench-sidebar-font-size) * 1.769231) calc(var(--vscode-workbench-sidebar-font-size) * 0.153846) calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .linux .monaco-pane-view .pane > .pane-header .action-item .monaco-select-box, .monaco-workbench .part.sidebar .windows .monaco-pane-view .pane > .pane-header .action-item .monaco-select-box, .monaco-workbench .part.auxiliarybar .linux .monaco-pane-view .pane > .pane-header .action-item .monaco-select-box, .monaco-workbench .part.auxiliarybar .windows .monaco-pane-view .pane > .pane-header .action-item .monaco-select-box {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0) calc(var(--vscode-workbench-sidebar-font-size) * 1.769231) calc(var(--vscode-workbench-sidebar-font-size) * 0) calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar #monaco-pane-drop-overlay > .pane-overlay-indicator, .monaco-workbench .part.auxiliarybar #monaco-pane-drop-overlay > .pane-overlay-indicator {
++    min-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 1.461538)
++}
+\ No newline at end of file
 diff --git a/src/vs/base/browser/ui/splitview/paneview.ts b/src/vs/base/browser/ui/splitview/paneview.ts
-index fb2e1f4..268d2cb 100644
+index fb2e1f4..3b1e23f 100644
 --- a/src/vs/base/browser/ui/splitview/paneview.ts
 +++ b/src/vs/base/browser/ui/splitview/paneview.ts
 @@ -21,2 +21,3 @@ import { IView, Sizing, SplitView } from './splitview.js';
  import { applyDragImage } from '../dnd/dnd.js';
-+import { SidebarPart } from '../../../../workbench/browser/parts/sidebar/sidebarPart.js';
++import { FONT } from '../../../common/font.js';
  
-@@ -50,3 +51,3 @@ export abstract class Pane extends Disposable implements IView {
+@@ -50,4 +51,2 @@ export abstract class Pane extends Disposable implements IView {
  
 -	private static readonly HEADER_SIZE = 22;
-+	static readonly COEFFICIENT = 22 / 13;
- 
-@@ -121,3 +122,3 @@ export abstract class Pane extends Disposable implements IView {
+-
+ 	readonly element: HTMLElement;
+@@ -121,3 +120,3 @@ export abstract class Pane extends Disposable implements IView {
  	private get headerSize(): number {
 -		return this.headerVisible ? Pane.HEADER_SIZE : 0;
-+		return this.headerVisible ? SidebarPart.getFontSize() * Pane.COEFFICIENT : 0;
++		return this.headerVisible ? FONT.sidebarSize22 : 0;
  	}
-@@ -300,3 +301,3 @@ export abstract class Pane extends Disposable implements IView {
+@@ -300,3 +299,3 @@ export abstract class Pane extends Disposable implements IView {
  	layout(size: number): void {
 -		const headerSize = this.headerVisible ? Pane.HEADER_SIZE : 0;
 +		const headerSize = this.headerSize;
  
+diff --git a/src/vs/base/browser/ui/toggle/toggle.css b/src/vs/base/browser/ui/toggle/toggle.css
+index e2d206d..e69352c 100644
+--- a/src/vs/base/browser/ui/toggle/toggle.css
++++ b/src/vs/base/browser/ui/toggle/toggle.css
+@@ -69 +69,27 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .monaco-custom-toggle, .monaco-workbench .part.auxiliarybar .monaco-custom-toggle {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462);
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++}
++.monaco-workbench .part.sidebar .monaco-custom-toggle.monaco-checkbox, .monaco-workbench .part.auxiliarybar .monaco-custom-toggle.monaco-checkbox {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.692308);
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0);
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0);
++    background-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .checkbox-action-item, .monaco-workbench .part.auxiliarybar .monaco-action-bar .checkbox-action-item {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .checkbox-action-item > .monaco-custom-toggle.monaco-checkbox, .monaco-workbench .part.auxiliarybar .monaco-action-bar .checkbox-action-item > .monaco-custom-toggle.monaco-checkbox {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .checkbox-action-item > .checkbox-label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .checkbox-action-item > .checkbox-label {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077)
++}
+\ No newline at end of file
+diff --git a/src/vs/base/browser/ui/toggle/toggle.ts b/src/vs/base/browser/ui/toggle/toggle.ts
+index 0b2fcbb..6370e6f 100644
+--- a/src/vs/base/browser/ui/toggle/toggle.ts
++++ b/src/vs/base/browser/ui/toggle/toggle.ts
+@@ -5,2 +5,3 @@
+ 
++import { FONT } from '../../../common/font.js';
+ import { IAction } from '../../../common/actions.js';
+@@ -230,3 +231,4 @@ export class Toggle extends Widget {
+ 	width(): number {
+-		return 2 /*margin left*/ + 2 /*border*/ + 2 /*padding*/ + 16 /* icon width */;
++		// return 2 /*margin left*/ + 2 /*border*/ + 2 /*padding*/ + 16 /* icon width */;
++		return 2 + FONT.sidebarSize20
+ 	}
+diff --git a/src/vs/base/common/font.ts b/src/vs/base/common/font.ts
+new file mode 100644
+index 0000000..2be97d7
+--- /dev/null
++++ b/src/vs/base/common/font.ts
+@@ -0,0 +1,56 @@
++export const FONT = {
++	sidebarSize: 13,
++	sidebarSize8: 8,
++	sidebarSize10: 10,
++	sidebarSize16: 16,
++	sidebarSize17: 17,
++	sidebarSize18: 18,
++	sidebarSize20: 20,
++	sidebarSize22: 22,
++	sidebarSize23: 23,
++	sidebarSize24: 24,
++	sidebarSize26: 26,
++	sidebarSize28: 28,
++	sidebarSize34: 34,
++	sidebarSize39: 39,
++	sidebarSize44: 44,
++	sidebarSize62: 62,
++	sidebarSize72: 72,
++};
++
++const COEFF_8 = 8/13;
++const COEFF_10 = 10/13;
++const COEFF_16 = 16/13;
++const COEFF_17 = 17/13;
++const COEFF_18 = 18/13;
++const COEFF_20 = 20/13;
++const COEFF_22 = 22/13;
++const COEFF_23 = 23/13;
++const COEFF_24 = 24/13;
++const COEFF_26 = 26/13;
++const COEFF_28 = 28/13;
++const COEFF_34 = 34/13;
++const COEFF_39 = 39/13;
++const COEFF_44 = 44/13;
++const COEFF_62 = 62/13;
++const COEFF_72 = 72/13;
++
++export function updateSidebarSize(size: number): void {
++	FONT.sidebarSize = size;
++	FONT.sidebarSize8 = size * COEFF_8;
++	FONT.sidebarSize10 = size * COEFF_10;
++	FONT.sidebarSize16 = size * COEFF_16;
++	FONT.sidebarSize17 = size * COEFF_17;
++	FONT.sidebarSize18 = size * COEFF_18;
++	FONT.sidebarSize20 = size * COEFF_20;
++	FONT.sidebarSize22 = size * COEFF_22;
++	FONT.sidebarSize23 = size * COEFF_23;
++	FONT.sidebarSize24 = size * COEFF_24;
++	FONT.sidebarSize26 = size * COEFF_26;
++	FONT.sidebarSize28 = size * COEFF_28;
++	FONT.sidebarSize34 = size * COEFF_34;
++	FONT.sidebarSize39 = size * COEFF_39;
++	FONT.sidebarSize44 = size * COEFF_44;
++	FONT.sidebarSize62 = size * COEFF_62;
++	FONT.sidebarSize72 = size * COEFF_72;
++}
+diff --git a/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts b/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
+index 328285f..0735dfa 100644
+--- a/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
++++ b/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
+@@ -6,2 +6,3 @@
+ import { IListVirtualDelegate } from '../../../../base/browser/ui/list/list.js';
++import { FONT } from '../../../../base/common/font.js';
+ import { IQuickTreeItem } from '../../common/quickInput.js';
+@@ -14,3 +15,3 @@ export class QuickInputTreeDelegate<T extends IQuickTreeItem> implements IListVi
+ 	getHeight(_element: T): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/browser/media/style.css b/src/vs/workbench/browser/media/style.css
+index 13ff794..e5025e1 100644
+--- a/src/vs/workbench/browser/media/style.css
++++ b/src/vs/workbench/browser/media/style.css
+@@ -322 +322,41 @@ body {
+ }
++
++
++
++.monaco-workbench .part.sidebar body, .monaco-workbench .part.auxiliarybar body {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar, .monaco-workbench .part.auxiliarybar {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 1)
++}
++.monaco-workbench .part.sidebar .codicon[class*='codicon-'], .monaco-workbench .part.auxiliarybar .codicon[class*='codicon-'] {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .predefined-file-icon[class*='codicon-']::before, .monaco-workbench .part.auxiliarybar .predefined-file-icon[class*='codicon-']::before {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .select-container:after, .monaco-workbench .part.auxiliarybar .select-container:after {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar [tabindex="0"]:focus, .monaco-workbench .part.sidebar [tabindex="-1"]:focus, .monaco-workbench .part.sidebar .synthetic-focus, .monaco-workbench .part.sidebar select:focus, .monaco-workbench .part.sidebar input[type="button"]:focus, .monaco-workbench .part.sidebar input[type="text"]:focus, .monaco-workbench .part.sidebar button:focus, .monaco-workbench .part.sidebar textarea:focus, .monaco-workbench .part.sidebar input[type="search"]:focus, .monaco-workbench .part.sidebar input[type="checkbox"]:focus, .monaco-workbench .part.auxiliarybar [tabindex="0"]:focus, .monaco-workbench .part.auxiliarybar [tabindex="-1"]:focus, .monaco-workbench .part.auxiliarybar .synthetic-focus, .monaco-workbench .part.auxiliarybar select:focus, .monaco-workbench .part.auxiliarybar input[type="button"]:focus, .monaco-workbench .part.auxiliarybar input[type="text"]:focus, .monaco-workbench .part.auxiliarybar button:focus, .monaco-workbench .part.auxiliarybar textarea:focus, .monaco-workbench .part.auxiliarybar input[type="search"]:focus, .monaco-workbench .part.auxiliarybar input[type="checkbox"]:focus {
++    outline-width: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923);
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
++.monaco-workbench .part.sidebar input[type="checkbox"]:focus, .monaco-workbench .part.auxiliarybar input[type="checkbox"]:focus {
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-list:not(.element-focused):not(:active):focus:before, .monaco-workbench .part.auxiliarybar .monaco-list:not(.element-focused):not(:active):focus:before {
++    outline: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) solid;
++    outline-width: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923);
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar:not(.vertical) .action-item .action-label:hover:not(.disabled), .monaco-workbench .part.auxiliarybar .monaco-action-bar:not(.vertical) .action-item .action-label:hover:not(.disabled) {
++    outline: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) dashed var(--vscode-toolbar-hoverOutline);
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
+\ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
-index d32082b..c786715 100644
+index d32082b..f9272c6 100644
 --- a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
 +++ b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
-@@ -147,2 +147,5 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+@@ -36,2 +36,4 @@ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js
+ import { Extensions } from '../../panecomposite.js';
++import { FONT, updateSidebarSize } from '../../../../base/common/font.js';
++import { SidebarPart } from '../sidebar/sidebarPart.js';
+ 
+@@ -147,2 +149,5 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
  			}
-+			if (e.affectsConfiguration('workbench.secondarySideBar.fontSize')) {
++			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
 +				this.applyAuxiliaryBarFontSize();
 +			}
  		}));
-@@ -198,2 +201,4 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+@@ -198,2 +203,4 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
  		container.style.borderRightWidth = borderColor && isPositionLeft ? '1px' : '0px';
 +
 +		this.applyAuxiliaryBarFontSize(container);
  	}
-@@ -262,2 +267,16 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+@@ -262,2 +269,18 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
  
 +	private applyAuxiliaryBarFontSize(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
@@ -44,12 +408,14 @@ index d32082b..c786715 100644
 +			return;
 +		}
 +
-+		const configuredSize = this.configurationService.getValue<number>('workbench.secondarySideBar.fontSize');
++		const configuredSize = this.configurationService.getValue(SidebarPart.fontSizeSettingsKey);
 +		if (typeof configuredSize === 'number' && configuredSize > 0) {
-+			target.style.setProperty('--vscode-workbench-secondary-sidebar-font-size', `${configuredSize}px`);
++			updateSidebarSize(Math.trunc(configuredSize));
 +		} else {
-+			target.style.removeProperty('--vscode-workbench-secondary-sidebar-font-size');
++			updateSidebarSize(13);
 +		}
++
++		target.style.setProperty('--vscode-workbench-sidebar-font-size', `${FONT.sidebarSize}px`);
 +	}
 +
  	protected shouldShowCompositeBar(): boolean {
@@ -65,7 +431,7 @@ index aec3de2..e582843 100644
 +
  .monaco-workbench .part.auxiliarybar > .title > .title-label {
 diff --git a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
-index decb51a..70394be 100644
+index decb51a..7088a97 100644
 --- a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
 +++ b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
 @@ -15,3 +15,3 @@
@@ -111,19 +477,24 @@ index decb51a..70394be 100644
 -	left: 5px; /* place icon in center */
 +	left: calc(var(--vscode-workbench-sidebar-font-size) * 0.385); /* place icon in center */
  }
-@@ -124,3 +130,55 @@
+@@ -124,3 +130,72 @@
  .monaco-workbench .sidebar.pane-composite-part > .title.has-composite-bar > .title-actions .monaco-action-bar .action-item {
 -	max-width: 150px;
 +	max-width: calc(var(--vscode-workbench-sidebar-font-size) * 11.538);
 +}
 +
-+.monaco-workbench .part.sidebar .pane > .pane-header h3.title {
++.monaco-workbench .part.sidebar .monaco-tl-contents {
++	display: flex;
++    align-items: center;
++}
++
++/* .monaco-workbench .part.sidebar .pane > .pane-header h3.title {
 +	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846);
 +}
 +
 +.monaco-workbench .part.sidebar .monaco-text-button {
 +	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923);
-+}
+ }
 +
 +.monaco-workbench .part.sidebar .monaco-icon-label::before {
 +    background-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
@@ -141,7 +512,7 @@ index decb51a..70394be 100644
 +.monaco-workbench .part.sidebar > .title,
 +.monaco-workbench .part.sidebar > .header-or-footer {
 +	height: calc(var(--vscode-workbench-sidebar-font-size) * 2.692);
- }
++}
 +
 +.monaco-workbench .part.sidebar > .title > .title-label {
 +	line-height: calc(var(--vscode-workbench-sidebar-font-size) * 2.692);
@@ -167,40 +538,44 @@ index decb51a..70394be 100644
 +    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.308);
 +}
 +
++.monaco-workbench .part.sidebar .monaco-inputbox > .ibwrapper > .input {
++	font-size: var(--vscode-workbench-sidebar-font-size);
 +}
++
++.monaco-workbench .part.sidebar .monaco-tl-contents {
++	display: flex;
++    align-items: center;
++}
++
++.monaco-workbench .part.sidebar .monaco-custom-toggle {
++	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.539);
++	width: calc(var(--vscode-workbench-sidebar-font-size) * 1.539);
++} */
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
-index 101b9c6..95cb622 100644
+index 101b9c6..6e22f7a 100644
 --- a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
 +++ b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
-@@ -37,2 +37,4 @@ import { Extensions } from '../../panecomposite.js';
+@@ -36,2 +36,3 @@ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js
+ import { Extensions } from '../../panecomposite.js';
++import { FONT, updateSidebarSize } from '../../../../base/common/font.js';
  
-+let fontSize = 13;
-+
- export class SidebarPart extends AbstractPaneCompositePart {
-@@ -40,2 +42,3 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -40,2 +41,3 @@ export class SidebarPart extends AbstractPaneCompositePart {
  	static readonly activeViewletSettingsKey = 'workbench.sidebar.activeviewletid';
 +	static readonly fontSizeSettingsKey = 'workbench.sideBar.experimental.fontSize';
  
-@@ -126,2 +129,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -126,2 +128,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
  			}
 +			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
 +				this.applySidebarFontSize();
 +			}
  		}));
-@@ -131,2 +137,6 @@ export class SidebarPart extends AbstractPaneCompositePart {
- 
-+	public static getFontSize() {
-+		return fontSize;
-+	}
-+
- 	private onDidChangeAutoHideViewContainers(e: { before: number; after: number }): void {
-@@ -178,2 +188,4 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -178,2 +183,4 @@ export class SidebarPart extends AbstractPaneCompositePart {
  		container.style.outlineColor = this.getColor(SIDE_BAR_DRAG_AND_DROP_BACKGROUND) ?? '';
 +
 +		this.applySidebarFontSize(container);
  	}
-@@ -320,2 +332,18 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -320,2 +327,18 @@ export class SidebarPart extends AbstractPaneCompositePart {
  
 +	private applySidebarFontSize(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
@@ -208,19 +583,72 @@ index 101b9c6..95cb622 100644
 +			return;
 +		}
 +
-+		fontSize = 13
-+
 +		const configuredSize = this.configurationService.getValue(SidebarPart.fontSizeSettingsKey);
 +		if (typeof configuredSize === 'number' && configuredSize > 0) {
-+			fontSize = Math.trunc(configuredSize)
++			updateSidebarSize(Math.trunc(configuredSize));
++		} else {
++			updateSidebarSize(13);
 +		}
 +
-+		target.style.setProperty('--vscode-workbench-sidebar-font-size', `${fontSize}px`);
++		target.style.setProperty('--vscode-workbench-sidebar-font-size', `${FONT.sidebarSize}px`);
 +	}
 +
  	private registerActions(): void {
+diff --git a/src/vs/workbench/browser/parts/views/media/paneviewlet.css b/src/vs/workbench/browser/parts/views/media/paneviewlet.css
+index aca98de..5bf9bf7 100644
+--- a/src/vs/workbench/browser/parts/views/media/paneviewlet.css
++++ b/src/vs/workbench/browser/parts/views/media/paneviewlet.css
+@@ -87 +87,30 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header.not-collapsible .title, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header.not-collapsible .title {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header > .icon, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header > .icon {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane.pane.horizontal:not(.expanded) > .pane-header > .icon, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane.pane.horizontal:not(.expanded) > .pane-header > .icon {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header h3.title, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header h3.title {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header .description, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header .description {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header .description .codicon, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane > .pane-header .description .codicon {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.692308);
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane .monaco-progress-container, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane .monaco-progress-container {
++    top: calc(var(--vscode-workbench-sidebar-font-size) * -0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-pane-view .pane:not(.merged-header) .monaco-progress-container, .monaco-workbench .part.auxiliarybar .monaco-pane-view .pane:not(.merged-header) .monaco-progress-container {
++    top: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/views/treeView.ts b/src/vs/workbench/browser/parts/views/treeView.ts
+index 1c9305b..6471a0d 100644
+--- a/src/vs/workbench/browser/parts/views/treeView.ts
++++ b/src/vs/workbench/browser/parts/views/treeView.ts
+@@ -79,2 +79,3 @@ import { IAccessibleViewInformationService } from '../../../services/accessibili
+ import { Command } from '../../../../editor/common/languages.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -1166,3 +1167,3 @@ class TreeViewDelegate implements IListVirtualDelegate<ITreeItem> {
+ 	getHeight(element: ITreeItem): number {
+-		return TreeRenderer.ITEM_HEIGHT;
++		return FONT.sidebarSize22;
+ 	}
+@@ -1242,3 +1243,2 @@ interface ITreeExplorerTemplateData {
+ class TreeRenderer extends Disposable implements ITreeRenderer<ITreeItem, FuzzyScore, ITreeExplorerTemplateData> {
+-	static readonly ITEM_HEIGHT = 22;
+ 	static readonly TREE_TEMPLATE_ID = 'treeExplorer';
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index b1c5637..ce89429 100644
+index b1c5637..3bcdefb 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
 @@ -561,2 +561,10 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
@@ -234,96 +662,1399 @@ index b1c5637..ce89429 100644
 +				'tags': ['accessibility', 'experimental']
 +			},
  			'workbench.panel.showLabels': {
-@@ -607,2 +615,10 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
- 			},
-+			'workbench.secondarySideBar.experimental.fontSize': {
-+				'type': 'number',
-+				'default': 13,
-+				'minimum': 6,
-+				'maximum': 32,
-+				'markdownDescription': localize('secondarySideBarFontSize', "Controls the font size used for content inside the secondary side bar."),
-+				'tags': ['accessibility', 'experimental']
-+			},
- 			'workbench.statusBar.visible': {
+diff --git a/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts b/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts
+index 6f58865..3ab0ee4 100644
+--- a/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts
++++ b/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts
+@@ -17,2 +17,3 @@ import { localize } from '../../../../nls.js';
+ import { ThemeIcon } from '../../../../base/common/themables.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -137,3 +138,3 @@ export class VirtualDelegate implements IListVirtualDelegate<Call> {
+ 	getHeight(_element: Call): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
+index 2a89832..d2cfdbf 100644
+--- a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
++++ b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
+@@ -45,2 +45,3 @@ import { AgentSessionProviders, getAgentSessionTime } from './agentSessions.js';
+ import { AgentSessionsGrouping } from './agentSessionsFilter.js';
++import { FONT } from '../../../../../base/common/font.js';
+ 
+@@ -504,11 +505,8 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+ 
+-	static readonly ITEM_HEIGHT = 44;
+-	static readonly SECTION_HEIGHT = 26;
+-
+ 	getHeight(element: AgentSessionListItem): number {
+ 		if (isAgentSessionSection(element)) {
+-			return AgentSessionsListDelegate.SECTION_HEIGHT;
++			return FONT.sidebarSize26;
+ 		}
+ 
+-		return AgentSessionsListDelegate.ITEM_HEIGHT;
++		return FONT.sidebarSize44;
+ 	}
+diff --git a/src/vs/workbench/contrib/chat/browser/chatManagement/chatManagementEditor.ts b/src/vs/workbench/contrib/chat/browser/chatManagement/chatManagementEditor.ts
+index ad2c82a..6cb6bce 100644
+--- a/src/vs/workbench/contrib/chat/browser/chatManagement/chatManagementEditor.ts
++++ b/src/vs/workbench/contrib/chat/browser/chatManagement/chatManagementEditor.ts
+@@ -34,2 +34,3 @@ import { IContextKey, IContextKeyService } from '../../../../../platform/context
+ import { CONTEXT_MODELS_EDITOR } from '../../common/constants.js';
++import { FONT } from '../../../../../base/common/font.js';
+ 
+@@ -439,3 +440,3 @@ class SectionItemDelegate implements IListVirtualDelegate<SectionItem> {
+ 	getHeight(element: SectionItem) {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
+index 4fd9d3e..fce1aad 100644
+--- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
++++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
+@@ -34,2 +34,3 @@ import { ResourcePool } from './chatCollections.js';
+ import { IChatContentPart, IChatContentPartRenderContext } from './chatContentParts.js';
++import { FONT } from '../../../../../../base/common/font.js';
+ 
+@@ -246,3 +247,3 @@ class CollapsibleChangesSummaryListDelegate implements IListVirtualDelegate<IEdi
+ 	getHeight(element: IEditSessionEntryDiff): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatMultiDiffContentPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatMultiDiffContentPart.ts
+index 15ae799..06a95d5 100644
+--- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatMultiDiffContentPart.ts
++++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatMultiDiffContentPart.ts
+@@ -36,2 +36,3 @@ import { ChatTreeItem } from '../../chat.js';
+ import { IChatContentPart } from './chatContentParts.js';
++import { FONT } from '../../../../../../base/common/font.js';
+ 
+@@ -265,3 +266,3 @@ class ChatMultiDiffListDelegate implements IListVirtualDelegate<IChatMultiDiffIt
+ 	getHeight(): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
+index d62abbb..5d7359f 100644
+--- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
++++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
+@@ -49,2 +49,3 @@ import { IChatContentPartRenderContext } from './chatContentParts.js';
+ import { IHoverService } from '../../../../../../platform/hover/browser/hover.js';
++import { FONT } from '../../../../../../base/common/font.js';
+ 
+@@ -293,3 +294,3 @@ class CollapsibleListDelegate implements IListVirtualDelegate<IChatCollapsibleLi
+ 	getHeight(element: IChatCollapsibleListItem): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts
+index 619d00a..9edbd1b 100644
+--- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts
++++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts
+@@ -11,2 +11,3 @@ import { IListRenderer, IListVirtualDelegate } from '../../../../../../base/brow
+ import { Codicon } from '../../../../../../base/common/codicons.js';
++import { FONT } from '../../../../../../base/common/font.js';
+ import { Disposable, DisposableStore } from '../../../../../../base/common/lifecycle.js';
+@@ -23,3 +24,3 @@ class TodoListDelegate implements IListVirtualDelegate<IChatTodo> {
+ 	getHeight(element: IChatTodo): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTreeContentPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTreeContentPart.ts
+index 703940e..e0fa9eb 100644
+--- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTreeContentPart.ts
++++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTreeContentPart.ts
+@@ -12,2 +12,3 @@ import { IAsyncDataSource, ITreeNode } from '../../../../../../base/browser/ui/t
+ import { Event } from '../../../../../../base/common/event.js';
++import { FONT } from '../../../../../../base/common/font.js';
+ import { Disposable, DisposableStore, IDisposable } from '../../../../../../base/common/lifecycle.js';
+@@ -155,6 +156,5 @@ export class TreePool extends Disposable {
+ class ChatListTreeDelegate implements IListVirtualDelegate<IChatResponseProgressFileTreeData> {
+-	static readonly ITEM_HEIGHT = 22;
+ 
+ 	getHeight(element: IChatResponseProgressFileTreeData): number {
+-		return ChatListTreeDelegate.ITEM_HEIGHT;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css b/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css
+index f57aca1..2c34fb8 100644
+--- a/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css
++++ b/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css
+@@ -161 +161,68 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .chat-viewpane.has-sessions-control .agent-sessions-container, .monaco-workbench .part.auxiliarybar .chat-viewpane.has-sessions-control .agent-sessions-container {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
++    letter-spacing: calc(var(--vscode-workbench-sidebar-font-size) * 0.038462);
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .agent-sessions-title-container, .monaco-workbench .part.auxiliarybar .agent-sessions-title-container {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
++    letter-spacing: calc(var(--vscode-workbench-sidebar-font-size) * 0.038462)
++}
++.monaco-workbench .part.sidebar .agent-sessions-toolbar, .monaco-workbench .part.auxiliarybar .agent-sessions-toolbar {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .action-item, .monaco-workbench .part.auxiliarybar .action-item {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .chat-viewpane.has-sessions-control.sessions-control-orientation-stacked, .monaco-workbench .part.auxiliarybar .chat-viewpane.has-sessions-control.sessions-control-orientation-stacked {
++    max-width: calc(var(--vscode-workbench-sidebar-font-size) * 73.076923)
++}
++.monaco-workbench .part.sidebar .agent-sessions-container, .monaco-workbench .part.auxiliarybar .agent-sessions-container {
++    max-width: calc(var(--vscode-workbench-sidebar-font-size) * 73.076923)
++}
++.monaco-workbench .part.sidebar .chat-viewpane.has-sessions-control.sessions-control-orientation-sidebyside, .monaco-workbench .part.auxiliarybar .chat-viewpane.has-sessions-control.sessions-control-orientation-sidebyside {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .agent-sessions-new-button-container, .monaco-workbench .part.auxiliarybar .agent-sessions-new-button-container {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .chat-viewpane.has-sessions-control, .monaco-workbench .part.auxiliarybar .chat-viewpane.has-sessions-control {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385) 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.538462);
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538) 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.076923);
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385);
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538) 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .agent-sessions-title-container, .monaco-workbench .part.auxiliarybar .agent-sessions-title-container {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385) 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.538462)
++}
++.monaco-workbench .part.sidebar .agent-session-section, .monaco-workbench .part.auxiliarybar .agent-session-section {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538) 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.076923)
++}
++.monaco-workbench .part.sidebar &.sessions-control-orientation-sidebyside.chat-view-position-right, .monaco-workbench .part.auxiliarybar &.sessions-control-orientation-sidebyside.chat-view-position-right {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385);
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538) 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .agent-sessions-title-container, .monaco-workbench .part.auxiliarybar .agent-sessions-title-container {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .agent-session-section, .monaco-workbench .part.auxiliarybar .agent-session-section {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538) 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar &.activity-bar-location-other.chat-view-location-auxiliarybar, .monaco-workbench .part.auxiliarybar &.activity-bar-location-other.chat-view-location-auxiliarybar {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .agent-sessions-title-container, .monaco-workbench .part.auxiliarybar .agent-sessions-title-container {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar &.sessions-control-orientation-sidebyside.chat-view-position-right, .monaco-workbench .part.auxiliarybar &.sessions-control-orientation-sidebyside.chat-view-position-right {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .agent-sessions-title-container, .monaco-workbench .part.sidebar .agent-session-section, .monaco-workbench .part.auxiliarybar .agent-sessions-title-container, .monaco-workbench .part.auxiliarybar .agent-session-section {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
+\ No newline at end of file
 diff --git a/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts b/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts
-index c6298b3..3eb7fcb 100644
+index c6298b3..8fcab5f 100644
 --- a/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts
 +++ b/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts
-@@ -31,2 +31,3 @@ import { IThemeService } from '../../../../../platform/theme/common/themeService
- import { fillEditorsDragData } from '../../../../browser/dnd.js';
-+import { SidebarPart } from '../../../../browser/parts/sidebar/sidebarPart.js';
- import { IOutlineComparator, OutlineConfigKeys, OutlineTarget } from '../../../../services/outline/browser/outline.js';
-@@ -159,4 +160,6 @@ export class DocumentSymbolVirtualDelegate implements IListVirtualDelegate<Docum
- 
-+	static readonly COEFFICIENT = 22 / 13;
-+
+@@ -15,2 +15,3 @@ import { safeIntl } from '../../../../../base/common/date.js';
+ import { createMatches, FuzzyScore } from '../../../../../base/common/filters.js';
++import { FONT } from '../../../../../base/common/font.js';
+ import { ThemeIcon } from '../../../../../base/common/themables.js';
+@@ -160,3 +161,3 @@ export class DocumentSymbolVirtualDelegate implements IListVirtualDelegate<Docum
  	getHeight(_element: DocumentSymbolItem): number {
 -		return 22;
-+		return SidebarPart.getFontSize() * DocumentSymbolVirtualDelegate.COEFFICIENT;
++		return FONT.sidebarSize22;
  	}
+diff --git a/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts b/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts
+index cacba31..7785734 100644
+--- a/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts
++++ b/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts
+@@ -40,2 +40,3 @@ import { SelectionClipboardContributionID } from '../selectionClipboard.js';
+ import { getSimpleEditorOptions, setupSimpleEditorSelectionStyling } from '../simpleEditorOptions.js';
++import { FONT } from '../../../../../base/common/font.js';
+ 
+@@ -468,4 +469,4 @@ function getSuggestEnabledInputOptions(ariaLabel?: string): IEditorOptions {
+ 	return {
+-		fontSize: 13,
+-		lineHeight: 20,
++		fontSize: FONT.sidebarSize,
++		lineHeight: FONT.sidebarSize20,
+ 		wordWrap: 'off',
+diff --git a/src/vs/workbench/contrib/comments/browser/commentsTreeViewer.ts b/src/vs/workbench/contrib/comments/browser/commentsTreeViewer.ts
+index b5234b6..b36e465 100644
+--- a/src/vs/workbench/contrib/comments/browser/commentsTreeViewer.ts
++++ b/src/vs/workbench/contrib/comments/browser/commentsTreeViewer.ts
+@@ -43,2 +43,3 @@ import { MarshalledCommentThread, MarshalledCommentThreadInternal } from '../../
+ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -83,5 +84,5 @@ class CommentsModelVirtualDelegate implements IListVirtualDelegate<ResourceWithC
+ 		if ((element instanceof CommentNode) && element.hasReply()) {
+-			return 44;
++			return FONT.sidebarSize44;
+ 		}
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/debug/browser/breakpointsView.ts b/src/vs/workbench/contrib/debug/browser/breakpointsView.ts
+index 6f82df1..6c8ae0d 100644
+--- a/src/vs/workbench/contrib/debug/browser/breakpointsView.ts
++++ b/src/vs/workbench/contrib/debug/browser/breakpointsView.ts
+@@ -63,2 +63,3 @@ import { equals } from '../../../../base/common/arrays.js';
+ import { hasKey } from '../../../../base/common/types.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -578,3 +579,3 @@ class BreakpointsDelegate implements IListVirtualDelegate<BreakpointTreeElement>
+ 	getHeight(_element: BreakpointTreeElement): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/debug/browser/callStackView.ts b/src/vs/workbench/contrib/debug/browser/callStackView.ts
+index 35c9c1e..f8bf9c5 100644
+--- a/src/vs/workbench/contrib/debug/browser/callStackView.ts
++++ b/src/vs/workbench/contrib/debug/browser/callStackView.ts
+@@ -22,2 +22,3 @@ import { Event } from '../../../../base/common/event.js';
+ import { createMatches, FuzzyScore, IMatch } from '../../../../base/common/filters.js';
++import { FONT } from '../../../../base/common/font.js';
+ import { DisposableStore, dispose, IDisposable } from '../../../../base/common/lifecycle.js';
+@@ -898,9 +899,9 @@ class CallStackDelegate implements IListVirtualDelegate<CallStackItem> {
+ 		if (element instanceof StackFrame && element.presentationHint === 'label') {
+-			return 16;
++			return FONT.sidebarSize16;
+ 		}
+ 		if (element instanceof ThreadAndSessionIds || element instanceof Array) {
+-			return 16;
++			return FONT.sidebarSize16;
+ 		}
+ 
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/debug/browser/callStackWidget.ts b/src/vs/workbench/contrib/debug/browser/callStackWidget.ts
+index 42e4cbe..bfaf21e 100644
+--- a/src/vs/workbench/contrib/debug/browser/callStackWidget.ts
++++ b/src/vs/workbench/contrib/debug/browser/callStackWidget.ts
+@@ -13,2 +13,3 @@ import { Codicon } from '../../../../base/common/codicons.js';
+ import { Emitter, Event } from '../../../../base/common/event.js';
++import { FONT } from '../../../../base/common/font.js';
+ import { Disposable, DisposableStore, IDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
+@@ -84,3 +85,3 @@ class WrappedCallStackFrame extends CallStackFrame implements IFrameLikeItem {
+ 	public readonly height = derived(reader => {
+-		return this.collapsed.read(reader) ? CALL_STACK_WIDGET_HEADER_HEIGHT : CALL_STACK_WIDGET_HEADER_HEIGHT + this.editorHeight.read(reader);
++		return this.collapsed.read(reader) ? FONT.sidebarSize24 : FONT.sidebarSize24 + this.editorHeight.read(reader);
+ 	});
+@@ -96,3 +97,3 @@ class WrappedCustomStackFrame implements IFrameLikeItem {
+ 	public readonly height = derived(reader => {
+-		const headerHeight = this.original.showHeader.read(reader) ? CALL_STACK_WIDGET_HEADER_HEIGHT : 0;
++		const headerHeight = this.original.showHeader.read(reader) ? FONT.sidebarSize24 : 0;
+ 		return this.collapsed.read(reader) ? headerHeight : headerHeight + this.original.height.read(reader);
+@@ -267,3 +268,3 @@ class StackDelegate implements IListVirtualDelegate<ListItem> {
+ 		if (element instanceof SkippedCallFrames) {
+-			return CALL_STACK_WIDGET_HEADER_HEIGHT;
++			return FONT.sidebarSize24;
+ 		}
+@@ -322,4 +323,2 @@ const makeFrameElements = () => dom.h('div.multiCallStackFrame', [
+ 
+-export const CALL_STACK_WIDGET_HEADER_HEIGHT = 24;
+-
+ interface IAbstractFrameRendererTemplateData {
+diff --git a/src/vs/workbench/contrib/debug/browser/debugHover.ts b/src/vs/workbench/contrib/debug/browser/debugHover.ts
+index fe8ae2b..5830976 100644
+--- a/src/vs/workbench/contrib/debug/browser/debugHover.ts
++++ b/src/vs/workbench/contrib/debug/browser/debugHover.ts
+@@ -15,2 +15,3 @@ import { coalesce } from '../../../../base/common/arrays.js';
+ import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
++import { FONT } from '../../../../base/common/font.js';
+ import { KeyCode } from '../../../../base/common/keyCodes.js';
+@@ -446,3 +447,3 @@ class DebugHoverDelegate implements IListVirtualDelegate<IExpression> {
+ 	getHeight(element: IExpression): number {
+-		return 18;
++		return FONT.sidebarSize18;
+ 	}
+diff --git a/src/vs/workbench/contrib/debug/browser/loadedScriptsView.ts b/src/vs/workbench/contrib/debug/browser/loadedScriptsView.ts
+index 531c114..909a66d 100644
+--- a/src/vs/workbench/contrib/debug/browser/loadedScriptsView.ts
++++ b/src/vs/workbench/contrib/debug/browser/loadedScriptsView.ts
+@@ -14,2 +14,3 @@ import { Codicon } from '../../../../base/common/codicons.js';
+ import { createMatches, FuzzyScore } from '../../../../base/common/filters.js';
++import { FONT } from '../../../../base/common/font.js';
+ import { normalizeDriveLetter, tildify } from '../../../../base/common/labels.js';
+@@ -652,3 +653,3 @@ class LoadedScriptsDelegate implements IListVirtualDelegate<LoadedScriptsItem> {
+ 	getHeight(element: LoadedScriptsItem): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css b/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
+index 090c53e..d5c4b9f 100644
+--- a/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
++++ b/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
+@@ -54 +54,23 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .debug-toolbar, .monaco-workbench .part.auxiliarybar .debug-toolbar {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 2.153846);
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .debug-toolbar .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar .debug-toolbar .monaco-action-bar .action-item {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .debug-toolbar .monaco-action-bar .action-item.select-container, .monaco-workbench .part.auxiliarybar .debug-toolbar .monaco-action-bar .action-item.select-container {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .debug-toolbar .monaco-action-bar .action-item.select-container .monaco-select-box, .monaco-workbench .part.sidebar .start-debug-action-item .select-container .monaco-select-box, .monaco-workbench .part.auxiliarybar .debug-toolbar .monaco-action-bar .action-item.select-container .monaco-select-box, .monaco-workbench .part.auxiliarybar .start-debug-action-item .select-container .monaco-select-box {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.846154) 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .debug-toolbar .drag-area, .monaco-workbench .part.auxiliarybar .debug-toolbar .drag-area {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462)
++}
++.monaco-workbench .part.sidebar  .debug-toolbar .monaco-action-bar .action-item .action-label, .monaco-workbench .part.auxiliarybar  .debug-toolbar .monaco-action-bar .action-item .action-label {
++    background-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css b/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
+index f6ca5b3..ac13e94 100644
+--- a/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
++++ b/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
+@@ -370 +370,90 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .debug-action.notification:after, .monaco-workbench .part.auxiliarybar .debug-action.notification:after {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538);
++    top: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231);
++    right: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar > .title > .title-actions .start-debug-action-item, .monaco-workbench .part.auxiliarybar > .title > .title-actions .start-debug-action-item {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462)
++}
++.monaco-workbench .part.sidebar > .title > .title-actions .start-debug-action-item .codicon-debug-start, .monaco-workbench .part.auxiliarybar > .title > .title-actions .start-debug-action-item .codicon-debug-start {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923);
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .start-debug-action-item .configuration .monaco-select-box, .monaco-workbench .part.auxiliarybar .monaco-action-bar .start-debug-action-item .configuration .monaco-select-box {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0);
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 6.923077)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .start-debug-action-item .configuration .monaco-select-box, .monaco-workbench .part.auxiliarybar .monaco-action-bar .start-debug-action-item .configuration .monaco-select-box {
++    margin-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0)
++}
++.monaco-workbench .part.sidebar .debug-pane .line-number, .monaco-workbench .part.auxiliarybar .debug-pane .line-number {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .debug-pane .call-stack-state-message, .monaco-workbench .part.auxiliarybar .debug-pane .call-stack-state-message {
++    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0) calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
++}
++.monaco-workbench .part.sidebar .debug-pane .call-stack-state-message > .label, .monaco-workbench .part.auxiliarybar .debug-pane .call-stack-state-message > .label {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.692308)
++}
++.monaco-workbench .part.sidebar .debug-pane .debug-call-stack .thread, .monaco-workbench .part.sidebar .debug-pane .debug-call-stack .session, .monaco-workbench .part.sidebar .debug-pane .debug-call-stack .stack-frame, .monaco-workbench .part.auxiliarybar .debug-pane .debug-call-stack .thread, .monaco-workbench .part.auxiliarybar .debug-pane .debug-call-stack .session, .monaco-workbench .part.auxiliarybar .debug-pane .debug-call-stack .stack-frame {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077)
++}
++.monaco-workbench .part.sidebar .debug-pane .debug-call-stack .thread > .state.label, .monaco-workbench .part.sidebar .debug-pane .debug-call-stack .session > .state.label, .monaco-workbench .part.auxiliarybar .debug-pane .debug-call-stack .thread > .state.label, .monaco-workbench .part.auxiliarybar .debug-pane .debug-call-stack .session > .state.label {
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
++}
++.monaco-workbench .part.sidebar .debug-pane .monaco-list-row .monaco-action-bar .action-label, .monaco-workbench .part.auxiliarybar .debug-pane .monaco-list-row .monaco-action-bar .action-label {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .debug-pane .session .codicon, .monaco-workbench .part.auxiliarybar .debug-pane .session .codicon {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .debug-pane .scope, .monaco-workbench .part.auxiliarybar .debug-pane .scope {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar .debug-pane .monaco-list-row .expression .value, .monaco-workbench .part.auxiliarybar .debug-pane .monaco-list-row .expression .value {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .debug-pane .monaco-inputbox > .ibwrapper, .monaco-workbench .part.auxiliarybar .debug-pane .monaco-inputbox > .ibwrapper {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.461538)
++}
++.monaco-workbench .part.sidebar .debug-pane .monaco-inputbox > .ibwrapper > .input, .monaco-workbench .part.auxiliarybar .debug-pane .monaco-inputbox > .ibwrapper > .input {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0)
++}
++.monaco-workbench .part.sidebar .debug-view-content .monaco-tl-contents .highlight, .monaco-workbench .part.auxiliarybar .debug-view-content .monaco-tl-contents .highlight {
++    outline: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) dotted var(--vscode-list-filterMatchBorder);
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
++.monaco-workbench .part.sidebar .debug-pane .monaco-list-row, .monaco-workbench .part.auxiliarybar .debug-pane .monaco-list-row {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .debug-pane .debug-breakpoints .breakpoint, .monaco-workbench .part.auxiliarybar .debug-pane .debug-breakpoints .breakpoint {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * -1.461538)
++}
++.monaco-workbench .part.sidebar .debug-pane .debug-breakpoints .breakpoint .monaco-custom-toggle, .monaco-workbench .part.auxiliarybar .debug-pane .debug-breakpoints .breakpoint .monaco-custom-toggle {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .debug-pane .debug-breakpoints .breakpoint .monaco-custom-toggle.monaco-checkbox, .monaco-workbench .part.auxiliarybar .debug-pane .debug-breakpoints .breakpoint .monaco-custom-toggle.monaco-checkbox {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
++    max-width: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615)
++}
++.monaco-workbench .part.sidebar .debug-pane .debug-breakpoints .breakpoint > .codicon, .monaco-workbench .part.auxiliarybar .debug-pane .debug-breakpoints .breakpoint > .codicon {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.461538);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.461538);
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 1.461538)
++}
++.monaco-workbench .part.sidebar .debug-pane .pane-header .breakpoint-warning, .monaco-workbench .part.auxiliarybar .debug-pane .pane-header .breakpoint-warning {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/contrib/debug/browser/variablesView.ts b/src/vs/workbench/contrib/debug/browser/variablesView.ts
+index f18d41b..8863b19 100644
+--- a/src/vs/workbench/contrib/debug/browser/variablesView.ts
++++ b/src/vs/workbench/contrib/debug/browser/variablesView.ts
+@@ -18,2 +18,3 @@ import { Codicon } from '../../../../base/common/codicons.js';
+ import { FuzzyScore, createMatches } from '../../../../base/common/filters.js';
++import { FONT } from '../../../../base/common/font.js';
+ import { IDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
+@@ -370,3 +371,3 @@ class VariablesDelegate implements IListVirtualDelegate<IExpression | IScope> {
+ 	getHeight(element: IExpression | IScope): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/debug/browser/watchExpressionsView.ts b/src/vs/workbench/contrib/debug/browser/watchExpressionsView.ts
+index f290f70..3269808 100644
+--- a/src/vs/workbench/contrib/debug/browser/watchExpressionsView.ts
++++ b/src/vs/workbench/contrib/debug/browser/watchExpressionsView.ts
+@@ -42,2 +42,3 @@ import { watchExpressionsAdd, watchExpressionsRemoveAll } from './debugIcons.js'
+ import { VariablesRenderer, VisualizedVariableRenderer } from './variablesView.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -240,3 +241,3 @@ class WatchExpressionsDelegate implements IListVirtualDelegate<IExpression> {
+ 	getHeight(_element: IExpression): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensionFeaturesTab.ts b/src/vs/workbench/contrib/extensions/browser/extensionFeaturesTab.ts
+index 3cd48a5..3238df4 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensionFeaturesTab.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensionFeaturesTab.ts
+@@ -40,2 +40,3 @@ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+ import { IMarkdownRendererService } from '../../../../platform/markdown/browser/markdownRenderer.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -474,3 +475,3 @@ interface IExtensionFeatureItemTemplateData {
+ class ExtensionFeatureItemDelegate implements IListVirtualDelegate<IExtensionFeatureDescriptor> {
+-	getHeight() { return 22; }
++	getHeight() { return FONT.sidebarSize22; }
+ 	getTemplateId() { return 'extensionFeatureDescriptor'; }
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsList.ts b/src/vs/workbench/contrib/extensions/browser/extensionsList.ts
+index 95226c5..dcea716 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensionsList.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensionsList.ts
+@@ -27,4 +27,3 @@ import { IActionViewItemOptions } from '../../../../base/browser/ui/actionbar/ac
+ import { extensionVerifiedPublisherIconColor, verifiedPublisherIcon } from '../../../services/extensionManagement/common/extensionsIcons.js';
+-
+-const EXTENSION_LIST_ELEMENT_HEIGHT = 72;
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -44,3 +43,3 @@ export interface ITemplateData {
+ export class Delegate implements IListVirtualDelegate<IExtension> {
+-	getHeight() { return EXTENSION_LIST_ELEMENT_HEIGHT; }
++	getHeight() { return FONT.sidebarSize72; }
+ 	getTemplateId() { return 'extension'; }
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsViewer.ts b/src/vs/workbench/contrib/extensions/browser/extensionsViewer.ts
+index 418cb12..fbb30c5 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensionsViewer.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensionsViewer.ts
+@@ -40,2 +40,3 @@ import { ILogService } from '../../../../platform/log/common/log.js';
+ import { isCancellationError } from '../../../../base/common/errors.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -262,3 +263,3 @@ class VirualDelegate implements IListVirtualDelegate<IExtensionData> {
+ 	public getHeight(element: IExtensionData): number {
+-		return 62;
++		return FONT.sidebarSize62;
+ 	}
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts b/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts
+index 6b63799..9cec063 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts
+@@ -72,2 +72,3 @@ import { DEFAULT_ACCOUNT_SIGN_IN_COMMAND } from '../../../services/accounts/brow
+ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -727,5 +728,5 @@ export class ExtensionsViewPaneContainer extends ViewPaneContainer<IExtensionsVi
+ 		}
+-		this.searchBox?.layout(new Dimension(dimension.width - 34 - /*padding*/8 - (24 * 2), 20));
+-		const searchBoxHeight = 20 + 21 /*margin*/;
+-		const headerHeight = this.header && !!this.notificationContainer?.childNodes.length ? this.notificationContainer.clientHeight + searchBoxHeight + 10 /*margin*/ : searchBoxHeight;
++		this.searchBox?.layout(new Dimension(dimension.width - FONT.sidebarSize34 - /*padding*/FONT.sidebarSize8 - (FONT.sidebarSize24 * 2), FONT.sidebarSize20));
++		const searchBoxHeight = FONT.sidebarSize20 + FONT.sidebarSize20 + 1 /*margin*/;
++		const headerHeight = this.header && !!this.notificationContainer?.childNodes.length ? this.notificationContainer.clientHeight + searchBoxHeight + FONT.sidebarSize10 /*margin*/ : searchBoxHeight;
+ 		this.header!.style.height = `${headerHeight}px`;
+diff --git a/src/vs/workbench/contrib/extensions/browser/media/extension.css b/src/vs/workbench/contrib/extensions/browser/media/extension.css
+index d581283..7ab0492 100644
+--- a/src/vs/workbench/contrib/extensions/browser/media/extension.css
++++ b/src/vs/workbench/contrib/extensions/browser/media/extension.css
+@@ -281 +281,83 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .extension-list-item, .monaco-workbench .part.auxiliarybar .extension-list-item {
++    padding: 0 0 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .icon-container .extension-badge, .monaco-workbench .part.auxiliarybar .extension-list-item > .icon-container .extension-badge {
++    bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231);
++    left: calc(var(--vscode-workbench-sidebar-font-size) * -0.615385)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .icon-container .extension-badge.extension-icon-badge, .monaco-workbench .part.auxiliarybar .extension-list-item > .icon-container .extension-badge.extension-icon-badge {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    right: calc(var(--vscode-workbench-sidebar-font-size) * 0.384615)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.461538);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header .extension-kind-indicator, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header .extension-kind-indicator {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header > .install-count:not(:empty), .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header > .install-count:not(:empty) {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header > .activation-status:not(:empty), .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header > .activation-status:not(:empty) {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header > .activation-status .activationTime, .monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header > .activation-status:not(:empty) .codicon, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header > .activation-status .activationTime, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header > .activation-status:not(:empty) .codicon {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header .codicon, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header .codicon {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header .extension-icon-badge, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header .extension-icon-badge {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.076923);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.076923);
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.076923)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header .extension-icon-badge > .codicon, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header .extension-icon-badge > .codicon {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .description, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .description {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .footer, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .footer {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.538462);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.846154)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .footer > .publisher-container, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .footer > .publisher-container {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.846154)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .footer .publisher > .publisher-name:not(:first-child), .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .footer .publisher > .publisher-name:not(:first-child) {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .footer > .monaco-action-bar > .actions-container .extension-action.label, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .footer > .monaco-action-bar > .actions-container .extension-action.label {
++    max-width: calc(var(--vscode-workbench-sidebar-font-size) * 11.538462);
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .extension-list-item .footer .monaco-action-bar .action-item.action-dropdown-item.empty > .action-label, .monaco-workbench .part.auxiliarybar .extension-list-item .footer .monaco-action-bar .action-item.action-dropdown-item.empty > .action-label {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .extension-list-item .monaco-action-bar .action-label.icon, .monaco-workbench .part.auxiliarybar .extension-list-item .monaco-action-bar .action-label.icon {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .hc-black .extension-list-item .monaco-action-bar .action-label.icon, .monaco-workbench .part.sidebar .hc-light .extension-list-item .monaco-action-bar .action-label.icon, .monaco-workbench .part.auxiliarybar .hc-black .extension-list-item .monaco-action-bar .action-label.icon, .monaco-workbench .part.auxiliarybar .hc-light .extension-list-item .monaco-action-bar .action-label.icon {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0) calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .extension-list-item .monaco-action-bar > .actions-container > .action-item.action-dropdown-item, .monaco-workbench .part.sidebar .extension-list-item .monaco-action-bar > .actions-container > .action-item:not(.action-dropdown-item) > .extension-action, .monaco-workbench .part.auxiliarybar .extension-list-item .monaco-action-bar > .actions-container > .action-item.action-dropdown-item, .monaco-workbench .part.auxiliarybar .extension-list-item .monaco-action-bar > .actions-container > .action-item:not(.action-dropdown-item) > .extension-action {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .extension-list-item .monaco-action-bar > .actions-container > .action-item.action-dropdown-item > .action-dropdown-item-separator, .monaco-workbench .part.auxiliarybar .extension-list-item .monaco-action-bar > .actions-container > .action-item.action-dropdown-item > .action-dropdown-item-separator {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .extension-list-item .monaco-action-bar > .actions-container > .action-item.action-dropdown-item > .action-dropdown-item-separator > div, .monaco-workbench .part.auxiliarybar .extension-list-item .monaco-action-bar > .actions-container > .action-item.action-dropdown-item > .action-dropdown-item-separator > div {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css b/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css
+index db5712f..0f75b63 100644
+--- a/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css
++++ b/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css
+@@ -108 +108,24 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .explorer-folders-view .explorer-item, .monaco-workbench .part.sidebar .explorer-folders-view .editor-group, .monaco-workbench .part.auxiliarybar .explorer-folders-view .explorer-item, .monaco-workbench .part.auxiliarybar .explorer-folders-view .editor-group {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .explorer-folders-view .monaco-list-row .explorer-item .monaco-count-badge, .monaco-workbench .part.auxiliarybar .explorer-folders-view .monaco-list-row .explorer-item .monaco-count-badge {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.384615)
++}
++.monaco-workbench.linux .part.sidebar .explorer-folders-view .explorer-item .monaco-inputbox, .monaco-workbench.mac .part.sidebar .explorer-folders-view .explorer-item .monaco-inputbox, .monaco-workbench.linux .part.auxiliarybar .explorer-folders-view .explorer-item .monaco-inputbox, .monaco-workbench.mac .part.auxiliarybar .explorer-folders-view .explorer-item .monaco-inputbox {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .explorer-folders-view .explorer-item .monaco-inputbox > .ibwrapper > .input, .monaco-workbench .part.auxiliarybar .explorer-folders-view .explorer-item .monaco-inputbox > .ibwrapper > .input {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462)
++}
++.monaco-workbench.hc-black .part.sidebar .explorer-folders-view .explorer-item, .monaco-workbench.hc-light .part.sidebar .explorer-folders-view .explorer-item, .monaco-workbench.hc-black .part.auxiliarybar .explorer-folders-view .explorer-item, .monaco-workbench.hc-light .part.auxiliarybar .explorer-folders-view .explorer-item {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462)
++}
++.monaco-workbench .part.sidebar .explorer-folders-view .explorer-item .monaco-inputbox input[type="text"], .monaco-workbench .part.auxiliarybar .explorer-folders-view .explorer-item .monaco-inputbox input[type="text"] {
++    outline-width: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923);
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/contrib/files/browser/views/explorerView.ts b/src/vs/workbench/contrib/files/browser/views/explorerView.ts
+index 5b11568..d276b5c 100644
+--- a/src/vs/workbench/contrib/files/browser/views/explorerView.ts
++++ b/src/vs/workbench/contrib/files/browser/views/explorerView.ts
+@@ -511,3 +511,3 @@ export class ExplorerView extends ViewPane implements IExplorerView {
+ 			},
+-			paddingBottom: ExplorerDelegate.ITEM_HEIGHT,
++			paddingBottom: ExplorerDelegate.getHeight(),
+ 			overrideStyles: this.getLocationBasedColors().listOverrideStyles,
 diff --git a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
-index ed7dbe0..674088d 100644
+index ed7dbe0..dba05e8 100644
 --- a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
 +++ b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
 @@ -76,2 +76,3 @@ import { listFilterMatchHighlight, listFilterMatchHighlightBorder } from '../../
  import { asCssVariable } from '../../../../../platform/theme/common/colorUtils.js';
-+import { SidebarPart } from '../../../../browser/parts/sidebar/sidebarPart.js';
++import { FONT } from '../../../../../base/common/font.js';
  
-@@ -79,6 +80,6 @@ export class ExplorerDelegate implements IListVirtualDelegate<ExplorerItem> {
+@@ -79,6 +80,8 @@ export class ExplorerDelegate implements IListVirtualDelegate<ExplorerItem> {
  
 -	static readonly ITEM_HEIGHT = 22;
-+	static readonly COEFFICIENT = 22 / 13;
++	static getHeight(): number {
++		return FONT.sidebarSize22;
++	}
  
  	getHeight(element: ExplorerItem): number {
 -		return ExplorerDelegate.ITEM_HEIGHT;
-+		return SidebarPart.getFontSize() * ExplorerDelegate.COEFFICIENT;
++		return FONT.sidebarSize22;
  	}
-@@ -852,3 +853,3 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
+@@ -852,3 +855,3 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
  			const indent = this.configurationService.getValue<number>('workbench.tree.indent');
 -			const offset = Math.max(22 - indent, 0); // derived via inspection
 +			const offset = Math.max(39 - indent, 0); // derived via inspection
  			container.style.setProperty(`--vscode-explorer-align-offset-margin-left`, `${offset}px`);
+diff --git a/src/vs/workbench/contrib/files/browser/views/media/openeditors.css b/src/vs/workbench/contrib/files/browser/views/media/openeditors.css
+index d933ff9..3995b14 100644
+--- a/src/vs/workbench/contrib/files/browser/views/media/openeditors.css
++++ b/src/vs/workbench/contrib/files/browser/views/media/openeditors.css
+@@ -108 +108,28 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .pane-header .open-editors-dirty-count-container > .dirty-count.monaco-count-badge, .monaco-workbench .part.auxiliarybar .pane-header .open-editors-dirty-count-container > .dirty-count.monaco-count-badge {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846) calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .open-editors .monaco-list .monaco-list-row > .monaco-action-bar .action-label, .monaco-workbench .part.auxiliarybar .open-editors .monaco-list .monaco-list-row > .monaco-action-bar .action-label {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .open-editors .monaco-list .monaco-list-row > .monaco-action-bar .action-close-all-files, .monaco-workbench .part.sidebar .open-editors .monaco-list .monaco-list-row > .monaco-action-bar .save-all, .monaco-workbench .part.auxiliarybar .open-editors .monaco-list .monaco-list-row > .monaco-action-bar .action-close-all-files, .monaco-workbench .part.auxiliarybar .open-editors .monaco-list .monaco-list-row > .monaco-action-bar .save-all {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.769231);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .open-editors .monaco-list .monaco-list-row, .monaco-workbench .part.auxiliarybar .open-editors .monaco-list .monaco-list-row {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .open-editors .monaco-list .monaco-list-row .editor-group, .monaco-workbench .part.auxiliarybar .open-editors .monaco-list .monaco-list-row .editor-group {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar .open-editors .open-editor, .monaco-workbench .part.sidebar .open-editors .editor-group, .monaco-workbench .part.auxiliarybar .open-editors .open-editor, .monaco-workbench .part.auxiliarybar .open-editors .editor-group {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench.hc-black .part.sidebar .open-editors .open-editor, .monaco-workbench.hc-black .part.sidebar .open-editors .editor-group, .monaco-workbench.hc-light .part.sidebar .open-editors .open-editor, .monaco-workbench.hc-light .part.sidebar .open-editors .editor-group, .monaco-workbench.hc-black .part.auxiliarybar .open-editors .open-editor, .monaco-workbench.hc-black .part.auxiliarybar .open-editors .editor-group, .monaco-workbench.hc-light .part.auxiliarybar .open-editors .open-editor, .monaco-workbench.hc-light .part.auxiliarybar .open-editors .editor-group {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462)
++}
+\ No newline at end of file
 diff --git a/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts b/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts
-index 7229c14..1e52c37 100644
+index 7229c14..33cae40 100644
 --- a/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts
 +++ b/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts
 @@ -58,2 +58,3 @@ import { IHoverService } from '../../../../../platform/hover/browser/hover.js';
  import { IFileService } from '../../../../../platform/files/common/files.js';
-+import { SidebarPart } from '../../../../browser/parts/sidebar/sidebarPart.js';
++import { FONT } from '../../../../../base/common/font.js';
  
 @@ -519,3 +520,3 @@ export class OpenEditorsView extends ViewPane {
  
 -		return (Math.max(this.elementCount, minVisibleOpenEditors)) * OpenEditorsDelegate.ITEM_HEIGHT;
-+		return (Math.max(this.elementCount, minVisibleOpenEditors)) * OpenEditorsDelegate.COEFFICIENT * SidebarPart.getFontSize();
++		return (Math.max(this.elementCount, minVisibleOpenEditors)) * FONT.sidebarSize22;
  	}
 @@ -533,3 +534,3 @@ export class OpenEditorsView extends ViewPane {
  		const itemsToShow = Math.min(Math.max(visibleOpenEditors, 1), this.elementCount);
 -		return itemsToShow * OpenEditorsDelegate.ITEM_HEIGHT;
-+		return itemsToShow * OpenEditorsDelegate.COEFFICIENT * SidebarPart.getFontSize();
++		return itemsToShow * FONT.sidebarSize22;
  	}
-@@ -581,6 +582,6 @@ class OpenEditorsDelegate implements IListVirtualDelegate<OpenEditor | IEditorGr
+@@ -581,6 +582,4 @@ class OpenEditorsDelegate implements IListVirtualDelegate<OpenEditor | IEditorGr
  
 -	public static readonly ITEM_HEIGHT = 22;
-+	static readonly COEFFICIENT = 22 / 13;
- 
+-
  	getHeight(_element: OpenEditor | IEditorGroup): number {
 -		return OpenEditorsDelegate.ITEM_HEIGHT;
-+		return SidebarPart.getFontSize() * OpenEditorsDelegate.COEFFICIENT;
++		return FONT.sidebarSize22;
  	}
+diff --git a/src/vs/workbench/contrib/files/test/browser/explorerFindProvider.test.ts b/src/vs/workbench/contrib/files/test/browser/explorerFindProvider.test.ts
+index f16d9fa..3296abc 100644
+--- a/src/vs/workbench/contrib/files/test/browser/explorerFindProvider.test.ts
++++ b/src/vs/workbench/contrib/files/test/browser/explorerFindProvider.test.ts
+@@ -28,2 +28,3 @@ import { ExplorerFindProvider, FilesFilter } from '../../browser/views/explorerV
+ import { ExplorerItem } from '../../common/explorerModel.js';
++import { FONT } from '../../../../../base/common/font.js';
+ 
+@@ -80,3 +81,3 @@ class IdentityProvider implements IIdentityProvider<ExplorerItem> {
+ class VirtualDelegate implements IListVirtualDelegate<ExplorerItem> {
+-	getHeight() { return 20; }
++	getHeight() { return FONT.sidebarSize20; }
+ 	getTemplateId(element: ExplorerItem): string { return 'default'; }
+diff --git a/src/vs/workbench/contrib/markers/browser/markersTreeViewer.ts b/src/vs/workbench/contrib/markers/browser/markersTreeViewer.ts
+index 0176fb6..140cda1 100644
+--- a/src/vs/workbench/contrib/markers/browser/markersTreeViewer.ts
++++ b/src/vs/workbench/contrib/markers/browser/markersTreeViewer.ts
+@@ -54,2 +54,3 @@ import type { IManagedHover } from '../../../../base/browser/ui/hover/hover.js';
+ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -101,4 +102,2 @@ export class VirtualDelegate implements IListVirtualDelegate<MarkerElement> {
+ 
+-	static LINE_HEIGHT: number = 22;
+-
+ 	constructor(private readonly markersViewState: MarkersViewModel) { }
+@@ -109,5 +108,5 @@ export class VirtualDelegate implements IListVirtualDelegate<MarkerElement> {
+ 			const noOfLines = !viewModel || viewModel.multiline ? element.lines.length : 1;
+-			return noOfLines * VirtualDelegate.LINE_HEIGHT;
++			return noOfLines * FONT.sidebarSize22;
+ 		}
+-		return VirtualDelegate.LINE_HEIGHT;
++		return FONT.sidebarSize22;
+ 	}
+@@ -377,3 +376,3 @@ class MarkerWidget extends Disposable {
+ 			if (lines[index] === '') {
+-				lineElement.style.height = `${VirtualDelegate.LINE_HEIGHT}px`;
++				lineElement.style.height = `${FONT.sidebarSize22}px`;
+ 			}
+diff --git a/src/vs/workbench/contrib/notebook/browser/contrib/notebookVariables/notebookVariablesTree.ts b/src/vs/workbench/contrib/notebook/browser/contrib/notebookVariables/notebookVariablesTree.ts
+index 4c95a37..fcb18e0 100644
+--- a/src/vs/workbench/contrib/notebook/browser/contrib/notebookVariables/notebookVariablesTree.ts
++++ b/src/vs/workbench/contrib/notebook/browser/contrib/notebookVariables/notebookVariablesTree.ts
+@@ -10,2 +10,3 @@ import { ITreeNode, ITreeRenderer } from '../../../../../../base/browser/ui/tree
+ import { FuzzyScore } from '../../../../../../base/common/filters.js';
++import { FONT } from '../../../../../../base/common/font.js';
+ import { DisposableStore } from '../../../../../../base/common/lifecycle.js';
+@@ -29,3 +30,3 @@ export class NotebookVariablesDelegate implements IListVirtualDelegate<INotebook
+ 	getHeight(element: INotebookVariableElement): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/notebook/browser/contrib/outline/notebookOutline.ts b/src/vs/workbench/contrib/notebook/browser/contrib/outline/notebookOutline.ts
+index d812034..e2affd5 100644
+--- a/src/vs/workbench/contrib/notebook/browser/contrib/outline/notebookOutline.ts
++++ b/src/vs/workbench/contrib/notebook/browser/contrib/outline/notebookOutline.ts
+@@ -56,2 +56,3 @@ import { ILanguageFeaturesService } from '../../../../../../editor/common/servic
+ import { safeIntl } from '../../../../../../base/common/date.js';
++import { FONT } from '../../../../../../base/common/font.js';
+ 
+@@ -277,3 +278,3 @@ class NotebookOutlineVirtualDelegate implements IListVirtualDelegate<OutlineEntr
+ 	getHeight(_element: OutlineEntry): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/preferences/browser/tocTree.ts b/src/vs/workbench/contrib/preferences/browser/tocTree.ts
+index 0078e1e..b40fa10 100644
+--- a/src/vs/workbench/contrib/preferences/browser/tocTree.ts
++++ b/src/vs/workbench/contrib/preferences/browser/tocTree.ts
+@@ -11,2 +11,3 @@ import { RenderIndentGuides } from '../../../../base/browser/ui/tree/abstractTre
+ import { ITreeElement, ITreeNode, ITreeRenderer } from '../../../../base/browser/ui/tree/tree.js';
++import { FONT } from '../../../../base/common/font.js';
+ import { Iterable } from '../../../../base/common/iterator.js';
+@@ -153,3 +154,3 @@ class TOCTreeDelegate implements IListVirtualDelegate<SettingsTreeElement> {
+ 	getHeight(element: SettingsTreeElement): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/processExplorer/browser/processExplorerControl.ts b/src/vs/workbench/contrib/processExplorer/browser/processExplorerControl.ts
+index b54812a..05e5f75 100644
+--- a/src/vs/workbench/contrib/processExplorer/browser/processExplorerControl.ts
++++ b/src/vs/workbench/contrib/processExplorer/browser/processExplorerControl.ts
+@@ -35,2 +35,3 @@ import { Schemas } from '../../../../base/common/network.js';
+ import { isWeb } from '../../../../base/common/platform.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -75,3 +76,3 @@ class ProcessListDelegate implements IListVirtualDelegate<IMachineProcessInforma
+ 	getHeight() {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/remote/browser/remote.ts b/src/vs/workbench/contrib/remote/browser/remote.ts
+index 530b0c4..b3c979d 100644
+--- a/src/vs/workbench/contrib/remote/browser/remote.ts
++++ b/src/vs/workbench/contrib/remote/browser/remote.ts
+@@ -57,2 +57,3 @@ import { mainWindow } from '../../../../base/browser/window.js';
+ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -65,3 +66,3 @@ class HelpTreeVirtualDelegate implements IListVirtualDelegate<IHelpItem> {
+ 	getHeight(element: IHelpItem): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/scm/browser/media/scm.css b/src/vs/workbench/contrib/scm/browser/media/scm.css
+index 20c78c3..eb5a61d 100644
+--- a/src/vs/workbench/contrib/scm/browser/media/scm.css
++++ b/src/vs/workbench/contrib/scm/browser/media/scm.css
+@@ -799 +799,207 @@
+ }
++
++.monaco-workbench .part.sidebar .scm-view .monaco-tl-contents > div, .monaco-workbench .part.auxiliarybar .scm-view .monaco-tl-contents > div {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077)
++}
++.monaco-workbench .part.sidebar .scm-view .count, .monaco-workbench .part.auxiliarybar .scm-view .count {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-provider > .codicon, .monaco-workbench .part.auxiliarybar .scm-view .scm-provider > .codicon {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-provider > .actions, .monaco-workbench .part.auxiliarybar .scm-view .scm-provider > .actions {
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 1.846154)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-provider > .actions > .monaco-toolbar > .monaco-action-bar > .actions-container > .action-item, .monaco-workbench .part.auxiliarybar .scm-view .scm-provider > .actions > .monaco-toolbar > .monaco-action-bar > .actions-container > .action-item {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-provider > .actions > .monaco-toolbar > .monaco-action-bar > .actions-container > .action-item.scm-status-bar-action, .monaco-workbench .part.auxiliarybar .scm-view .scm-provider > .actions > .monaco-toolbar > .monaco-action-bar > .actions-container > .action-item.scm-status-bar-action {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .action-label > span:not(.codicon), .monaco-workbench .part.auxiliarybar .action-label > span:not(.codicon) {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-provider > .actions > .monaco-toolbar > .monaco-action-bar > .actions-container  > .action-item > .action-label, .monaco-workbench .part.sidebar .scm-view .scm-provider > .actions > .monaco-toolbar > .monaco-action-bar > .actions-container  > .action-item > .monaco-dropdown > .dropdown-label > .action-label, .monaco-workbench .part.auxiliarybar .scm-view .scm-provider > .actions > .monaco-toolbar > .monaco-action-bar > .actions-container  > .action-item > .action-label, .monaco-workbench .part.auxiliarybar .scm-view .scm-provider > .actions > .monaco-toolbar > .monaco-action-bar > .actions-container  > .action-item > .monaco-dropdown > .dropdown-label > .action-label {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .monaco-icon-label-container, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .monaco-icon-label-container {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .monaco-tl-twistie:not(.collapsed) + .monaco-tl-contents > .history-item > .graph-container > svg > path:last-of-type, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .monaco-tl-twistie:not(.collapsed) + .monaco-tl-contents > .history-item > .graph-container > svg > path:last-of-type {
++    stroke-width: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item > .graph-container, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item > .graph-container {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item > .label-container, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item > .label-container {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
++    gap: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item > .label-container > .label, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item > .label-container > .label {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item > .label-container > .label > .count, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item > .label-container > .label > .count {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077);
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item > .label-container > .label > .codicon, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item > .label-container > .label > .codicon {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item > .label-container > .label > .codicon.codicon-git-branch, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item > .label-container > .label > .codicon.codicon-git-branch {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077);
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item > .label-container > .label > .description, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item > .label-container > .label > .description {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
++    max-width: calc(var(--vscode-workbench-sidebar-font-size) * 7.692308)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item .monaco-icon-label .icon-container, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item .monaco-icon-label .icon-container {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item .monaco-icon-label .avatar, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item .monaco-icon-label .avatar {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.076923);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.076923)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item > .actions, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item > .actions {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .resource > .name > .monaco-icon-label::after, .monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item-change > .label-container > .monaco-icon-label::after, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .resource > .name > .monaco-icon-label::after, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item-change > .label-container > .monaco-icon-label::after {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .resource > .decoration-icon, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .resource > .decoration-icon {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.384615)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .resource > .decoration-icon.codicon, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .resource > .decoration-icon.codicon {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .actions .action-label, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .actions .action-label {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-input, .monaco-workbench .part.auxiliarybar .scm-view .scm-input {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-input .scm-editor .scm-editor-toolbar, .monaco-workbench .part.auxiliarybar .scm-view .scm-input .scm-editor .scm-editor-toolbar {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) calc(var(--vscode-workbench-sidebar-font-size) * 0.230769) calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-input .scm-editor .scm-editor-toolbar.scroll-decoration, .monaco-workbench .part.auxiliarybar .scm-view .scm-input .scm-editor .scm-editor-toolbar.scroll-decoration {
++    box-shadow: var(--vscode-scrollbar-shadow) 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538) calc(var(--vscode-workbench-sidebar-font-size) * 0.461538) calc(var(--vscode-workbench-sidebar-font-size) * -0.461538) inset
++}
++.monaco-workbench .part.sidebar .scm-view .button-container, .monaco-workbench .part.auxiliarybar .scm-view .button-container {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar .scm-view .button-container .codicon.codicon-cloud-upload, .monaco-workbench .part.sidebar .scm-view .button-container .codicon.codicon-sync, .monaco-workbench .part.auxiliarybar .scm-view .button-container .codicon.codicon-cloud-upload, .monaco-workbench .part.auxiliarybar .scm-view .button-container .codicon.codicon-sync {
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.307692) 0 0
++}
++.monaco-workbench .part.sidebar .scm-view .button-container .codicon.codicon-arrow-up, .monaco-workbench .part.sidebar .scm-view .button-container .codicon.codicon-arrow-down, .monaco-workbench .part.auxiliarybar .scm-view .button-container .codicon.codicon-arrow-up, .monaco-workbench .part.auxiliarybar .scm-view .button-container .codicon.codicon-arrow-down {
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.307692) 0 0
++}
++.monaco-workbench .part.sidebar .scm-view .button-container > .monaco-button-dropdown > .monaco-dropdown-button, .monaco-workbench .part.auxiliarybar .scm-view .button-container > .monaco-button-dropdown > .monaco-dropdown-button {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .part.panel .scm-view .scm-editor-container, .monaco-workbench .part.auxiliarybar .part.panel .scm-view .scm-editor-container {
++    outline: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) solid var(--vscode-panelInput-border)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-editor.synthetic-focus, .monaco-workbench .part.sidebar .part.panel .scm-view .scm-editor.synthetic-focus, .monaco-workbench .part.auxiliarybar .scm-view .scm-editor.synthetic-focus, .monaco-workbench .part.auxiliarybar .part.panel .scm-view .scm-editor.synthetic-focus {
++    outline: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) solid var(--vscode-focusBorder);
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-editor.validation-info, .monaco-workbench .part.auxiliarybar .scm-view .scm-editor.validation-info {
++    outline: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) solid var(--vscode-inputValidation-infoBorder);
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-editor.validation-warning, .monaco-workbench .part.auxiliarybar .scm-view .scm-editor.validation-warning {
++    outline: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) solid var(--vscode-inputValidation-warningBorder);
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
++.monaco-workbench .part.sidebar .scm-view .scm-editor.validation-error, .monaco-workbench .part.auxiliarybar .scm-view .scm-editor.validation-error {
++    outline: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) solid var(--vscode-inputValidation-errorBorder);
++    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
++}
++.monaco-workbench .part.sidebar .scm-editor-validation-container, .monaco-workbench .part.auxiliarybar .scm-editor-validation-container {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .scm-editor-validation, .monaco-workbench .part.auxiliarybar .scm-editor-validation {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .scm-editor-validation-actions, .monaco-workbench .part.auxiliarybar .scm-editor-validation-actions {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++}
++.monaco-workbench .part.sidebar .scm-repositories-view .scm-artifact-group, .monaco-workbench .part.sidebar .scm-repositories-view .scm-artifact, .monaco-workbench .part.auxiliarybar .scm-repositories-view .scm-artifact-group, .monaco-workbench .part.auxiliarybar .scm-repositories-view .scm-artifact {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .icon, .monaco-workbench .part.auxiliarybar .icon {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .scm-repositories-view .scm-artifact .timestamp-container, .monaco-workbench .part.auxiliarybar .scm-repositories-view .scm-artifact .timestamp-container {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .scm-repositories-view .scm-artifact .timestamp-container.duplicate, .monaco-workbench .part.auxiliarybar .scm-repositories-view .scm-artifact .timestamp-container.duplicate {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown:first-child > p, .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown:first-child > p {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown:last-child p, .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown:last-child p {
++    margin-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown:last-child p span:not(.codicon), .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown:last-child p span:not(.codicon) {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846) 0
++}
++.monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown hr, .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown hr {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
++    margin-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown > p, .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container > .rendered-markdown > p {
++    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692) 0
++}
++.monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container div:nth-of-type(3):nth-last-of-type(2) > p, .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container div:nth-of-type(3):nth-last-of-type(2) > p {
++    gap: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container p > span > span.codicon.codicon-git-branch, .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container p > span > span.codicon.codicon-git-branch {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077);
++    margin-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container p > span > span.codicon.codicon-tag, .monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container p > span > span.codicon.codicon-target, .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container p > span > span.codicon.codicon-tag, .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container p > span > span.codicon.codicon-target {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.076923);
++    margin-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-hover.history-item-hover .history-item-hover-container p > span > span.codicon.codicon-cloud, .monaco-workbench .part.auxiliarybar .monaco-hover.history-item-hover .history-item-hover-container p > span > span.codicon.codicon-cloud {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.076923);
++    margin-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++}
++.monaco-workbench .part.sidebar .pane-header .scm-graph-view-badge-container > .scm-graph-view-badge.monaco-count-badge.long, .monaco-workbench .part.auxiliarybar .pane-header .scm-graph-view-badge-container > .scm-graph-view-badge.monaco-count-badge.long {
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538);
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846) calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .monaco-toolbar .action-item > .action-label.scm-graph-repository-picker, .monaco-workbench .part.sidebar .monaco-toolbar .action-item > .action-label.scm-graph-history-item-picker, .monaco-workbench .part.auxiliarybar .monaco-toolbar .action-item > .action-label.scm-graph-repository-picker, .monaco-workbench .part.auxiliarybar .monaco-toolbar .action-item > .action-label.scm-graph-history-item-picker {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .monaco-toolbar .action-label.scm-graph-repository-picker > .name, .monaco-workbench .part.sidebar .monaco-toolbar .action-label.scm-graph-history-item-picker > .name, .monaco-workbench .part.auxiliarybar .monaco-toolbar .action-label.scm-graph-repository-picker > .name, .monaco-workbench .part.auxiliarybar .monaco-toolbar .action-label.scm-graph-history-item-picker > .name {
++    max-width: calc(var(--vscode-workbench-sidebar-font-size) * 7.692308);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .scm-history-view .scm-provider .state-label.monaco-count-badge.long, .monaco-workbench .part.auxiliarybar .scm-history-view .scm-provider .state-label.monaco-count-badge.long {
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
++}
++.monaco-workbench .part.sidebar .scm-view .monaco-list-row .history-item-change > .graph-placeholder, .monaco-workbench .part.auxiliarybar .scm-view .monaco-list-row .history-item-change > .graph-placeholder {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .scm-history-view .history-item-load-more, .monaco-workbench .part.auxiliarybar .scm-history-view .history-item-load-more {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .scm-history-view .history-item-load-more .history-item-placeholder .monaco-highlighted-label .codicon, .monaco-workbench .part.auxiliarybar .scm-history-view .history-item-load-more .history-item-placeholder .monaco-highlighted-label .codicon {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077)
++}
++.monaco-workbench .part.sidebar .scm-history-view .history-item-load-more .history-item-placeholder.shimmer, .monaco-workbench .part.auxiliarybar .scm-history-view .history-item-load-more .history-item-placeholder.shimmer {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846) 0
++}
++.monaco-workbench .part.sidebar .scm-history-view .history-item-load-more .history-item-placeholder.shimmer .monaco-icon-label-container, .monaco-workbench .part.auxiliarybar .scm-history-view .history-item-load-more .history-item-placeholder.shimmer .monaco-icon-label-container {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/contrib/scm/browser/scmHistoryViewPane.ts b/src/vs/workbench/contrib/scm/browser/scmHistoryViewPane.ts
+index ab1900f..5ea8f3c 100644
+--- a/src/vs/workbench/contrib/scm/browser/scmHistoryViewPane.ts
++++ b/src/vs/workbench/contrib/scm/browser/scmHistoryViewPane.ts
+@@ -77,2 +77,3 @@ import { IMarkdownRendererService } from '../../../../platform/markdown/browser/
+ import { MarkdownString } from '../../../../base/common/htmlContent.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -412,3 +413,3 @@ class ListDelegate implements IListVirtualDelegate<TreeElement> {
+ 	getHeight(): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/scm/browser/scmRepositoriesViewPane.ts b/src/vs/workbench/contrib/scm/browser/scmRepositoriesViewPane.ts
+index 1523a82..fe78847 100644
+--- a/src/vs/workbench/contrib/scm/browser/scmRepositoriesViewPane.ts
++++ b/src/vs/workbench/contrib/scm/browser/scmRepositoriesViewPane.ts
+@@ -49,2 +49,3 @@ import { IActionViewItemProvider } from '../../../../base/browser/ui/actionbar/a
+ import { fromNow } from '../../../../base/common/date.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -55,3 +56,3 @@ class ListDelegate implements IListVirtualDelegate<ISCMRepository> {
+ 	getHeight(): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
+index dd3439f..2120b2f 100644
+--- a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
++++ b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
+@@ -113,2 +113,3 @@ import product from '../../../../platform/product/common/product.js';
+ import { CHAT_SETUP_SUPPORT_ANONYMOUS_ACTION_ID } from '../../chat/browser/actions/chatActions.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -179,4 +180,2 @@ interface ActionButtonTemplate {
+ export class ActionButtonRenderer implements ICompressibleTreeRenderer<ISCMActionButton, FuzzyScore, ActionButtonTemplate> {
+-	static readonly DEFAULT_HEIGHT = 28;
+-
+ 	static readonly TEMPLATE_ID = 'actionButton';
+@@ -715,5 +714,5 @@ class ListDelegate implements IListVirtualDelegate<TreeElement> {
+ 		} else if (isSCMActionButton(element)) {
+-			return ActionButtonRenderer.DEFAULT_HEIGHT + 8;
++			return FONT.sidebarSize28 + 8;
+ 		} else {
+-			return 22;
++			return FONT.sidebarSize22;
+ 		}
+@@ -2171,4 +2170,4 @@ class SCMInputWidget {
+ 		return this.toolbar.dropdownActions.length === 0 ?
+-			26 /* 22px action + 4px margin */ :
+-			39 /* 35px action + 4px margin */;
++			FONT.sidebarSize26 /* 22px action + 4px margin */ :
++			FONT.sidebarSize39 /* 35px action + 4px margin */;
+ 	}
+diff --git a/src/vs/workbench/contrib/search/browser/media/searchview.css b/src/vs/workbench/contrib/search/browser/media/searchview.css
+index e493fe3..647d2e6 100644
+--- a/src/vs/workbench/contrib/search/browser/media/searchview.css
++++ b/src/vs/workbench/contrib/search/browser/media/searchview.css
+@@ -443 +443,110 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar .search-view .search-widgets-container, .monaco-workbench .part.auxiliarybar .search-view .search-widgets-container {
++    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0) calc(var(--vscode-workbench-sidebar-font-size) * 0.923077) 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
++    padding-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538);
++    padding-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .search-view .search-widget .toggle-replace-button, .monaco-workbench .part.auxiliarybar .search-view .search-widget .toggle-replace-button {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .search-view .search-widget .search-container, .monaco-workbench .part.sidebar .search-view .search-widget .replace-container, .monaco-workbench .part.auxiliarybar .search-view .search-widget .search-container, .monaco-workbench .part.auxiliarybar .search-view .search-widget .replace-container {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615)
++}
++.monaco-workbench .part.sidebar .search-view .search-widget .monaco-inputbox > .ibwrapper > .mirror, .monaco-workbench .part.sidebar .search-view .search-widget .monaco-inputbox > .ibwrapper > textarea.input, .monaco-workbench .part.auxiliarybar .search-view .search-widget .monaco-inputbox > .ibwrapper > .mirror, .monaco-workbench .part.auxiliarybar .search-view .search-widget .monaco-inputbox > .ibwrapper > textarea.input {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769) calc(var(--vscode-workbench-sidebar-font-size) * 0) calc(var(--vscode-workbench-sidebar-font-size) * 0.230769) calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .search-view .search-widget .monaco-inputbox > .ibwrapper > textarea.input, .monaco-workbench .part.auxiliarybar .search-view .search-widget .monaco-inputbox > .ibwrapper > textarea.input {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.846153)
++}
++.monaco-workbench .part.sidebar .search-view .search-widget .replace-container, .monaco-workbench .part.auxiliarybar .search-view .search-widget .replace-container {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++}
++.monaco-workbench .part.sidebar .search-view .search-widget .replace-input > .controls, .monaco-workbench .part.auxiliarybar .search-view .search-widget .replace-input > .controls {
++    top: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769);
++    right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .search-view .search-widget .replace-container .monaco-action-bar, .monaco-workbench .part.auxiliarybar .search-view .search-widget .replace-container .monaco-action-bar {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.923077);
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .search-view .query-details, .monaco-workbench .part.auxiliarybar .search-view .query-details {
++    margin: 0 0 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.384615)
++}
++.monaco-workbench .part.sidebar .search-view .query-details .more, .monaco-workbench .part.auxiliarybar .search-view .query-details .more {
++    right: calc(var(--vscode-workbench-sidebar-font-size) * -0.153846);
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.923077);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar .search-view .query-details .file-types > .monaco-inputbox, .monaco-workbench .part.auxiliarybar .search-view .query-details .file-types > .monaco-inputbox {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.923077)
++}
++.monaco-workbench .part.sidebar .search-view .query-details.more .file-types:last-child, .monaco-workbench .part.auxiliarybar .search-view .query-details.more .file-types:last-child {
++    padding-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .search-view .query-details.more h4, .monaco-workbench .part.auxiliarybar .search-view .query-details.more h4 {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692) 0 0;
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
++.monaco-workbench .part.sidebar .search-view .messages, .monaco-workbench .part.auxiliarybar .search-view .messages {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * -0.384615)
++}
++.monaco-workbench .part.sidebar .search-view .message, .monaco-workbench .part.auxiliarybar .search-view .message {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.692308) calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .search-view .message.ai-keywords, .monaco-workbench .part.auxiliarybar .search-view .message.ai-keywords {
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.692308) calc(var(--vscode-workbench-sidebar-font-size) * 0.615385);
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0)
++}
++.monaco-workbench .part.sidebar .search-view .message p:first-child, .monaco-workbench .part.auxiliarybar .search-view .message p:first-child {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0);
++    margin-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0);
++    padding-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .search-view .message .keyword-refresh, .monaco-workbench .part.auxiliarybar .search-view .message .keyword-refresh {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .search-view .foldermatch, .monaco-workbench .part.sidebar .search-view .filematch, .monaco-workbench .part.auxiliarybar .search-view .foldermatch, .monaco-workbench .part.auxiliarybar .search-view .filematch {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .search-view .textsearchresult, .monaco-workbench .part.auxiliarybar .search-view .textsearchresult {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .search-view .textsearchresult .monaco-icon-label .codicon, .monaco-workbench .part.auxiliarybar .search-view .textsearchresult .monaco-icon-label .codicon {
++    top: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .pane-body.wide .search-view .foldermatch .badge, .monaco-workbench .part.sidebar .pane-body.wide .search-view .filematch .badge, .monaco-workbench .part.auxiliarybar .pane-body.wide .search-view .foldermatch .badge, .monaco-workbench .part.auxiliarybar .pane-body.wide .search-view .filematch .badge {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
++}
++.monaco-workbench .part.sidebar .search-view .linematch, .monaco-workbench .part.auxiliarybar .search-view .linematch {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308)
++}
++.monaco-workbench .part.sidebar .search-view .linematch .matchLineNum, .monaco-workbench .part.auxiliarybar .search-view .linematch .matchLineNum {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.538462);
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .search-view .monaco-list .monaco-list-row .monaco-action-bar .action-label, .monaco-workbench .part.auxiliarybar .search-view .monaco-list .monaco-list-row .monaco-action-bar .action-label {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench.hc-black .part.sidebar .search-view .monaco-list .monaco-list-row .monaco-action-bar .action-label, .monaco-workbench.hc-light .part.sidebar .search-view .monaco-list .monaco-list-row .monaco-action-bar .action-label, .monaco-workbench.hc-black .part.auxiliarybar .search-view .monaco-list .monaco-list-row .monaco-action-bar .action-label, .monaco-workbench.hc-light .part.auxiliarybar .search-view .monaco-list .monaco-list-row .monaco-action-bar .action-label {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .search-view .monaco-count-badge, .monaco-workbench .part.auxiliarybar .search-view .monaco-count-badge {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077)
++}
++.monaco-workbench.hc-black .part.sidebar .search-view .foldermatch, .monaco-workbench.hc-black .part.sidebar .search-view .filematch, .monaco-workbench.hc-black .part.sidebar .search-view .linematch, .monaco-workbench.hc-light .part.sidebar .search-view .foldermatch, .monaco-workbench.hc-light .part.sidebar .search-view .filematch, .monaco-workbench.hc-light .part.sidebar .search-view .linematch, .monaco-workbench.hc-black .part.auxiliarybar .search-view .foldermatch, .monaco-workbench.hc-black .part.auxiliarybar .search-view .filematch, .monaco-workbench.hc-black .part.auxiliarybar .search-view .linematch, .monaco-workbench.hc-light .part.auxiliarybar .search-view .foldermatch, .monaco-workbench.hc-light .part.auxiliarybar .search-view .filematch, .monaco-workbench.hc-light .part.auxiliarybar .search-view .linematch {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462)
++}
++.monaco-workbench .part.sidebar .text-search-provider-messages .providerMessage, .monaco-workbench .part.auxiliarybar .text-search-provider-messages .providerMessage {
++    padding-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .text-search-provider-messages .providerMessage .codicon, .monaco-workbench .part.auxiliarybar .text-search-provider-messages .providerMessage .codicon {
++    top: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .search-container .find-filter-button, .monaco-workbench .part.auxiliarybar .search-container .find-filter-button {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
+\ No newline at end of file
 diff --git a/src/vs/workbench/contrib/search/browser/searchResultsView.ts b/src/vs/workbench/contrib/search/browser/searchResultsView.ts
-index 62d5db9..e05aa2a 100644
+index 62d5db9..f86dba1 100644
 --- a/src/vs/workbench/contrib/search/browser/searchResultsView.ts
 +++ b/src/vs/workbench/contrib/search/browser/searchResultsView.ts
 @@ -36,2 +36,3 @@ import { ISearchTreeMatch, isSearchTreeMatch, RenderableMatch, ITextSearchHeadin
  import { isSearchTreeAIFileMatch } from './AISearch/aiSearchModelBase.js';
-+import { SidebarPart } from '../../../browser/parts/sidebar/sidebarPart.js';
++import { FONT } from '../../../../base/common/font.js';
  
-@@ -77,6 +78,6 @@ export class SearchDelegate implements IListVirtualDelegate<RenderableMatch> {
+@@ -77,6 +78,8 @@ export class SearchDelegate implements IListVirtualDelegate<RenderableMatch> {
  
 -	public static ITEM_HEIGHT = 22;
-+	static readonly COEFFICIENT = 22 / 13;
++	static getHeight(): number {
++		return FONT.sidebarSize22;
++	}
  
  	getHeight(element: RenderableMatch): number {
 -		return SearchDelegate.ITEM_HEIGHT;
-+		return SidebarPart.getFontSize() * SearchDelegate.COEFFICIENT;
++		return FONT.sidebarSize22;
  	}
+diff --git a/src/vs/workbench/contrib/search/browser/searchView.ts b/src/vs/workbench/contrib/search/browser/searchView.ts
+index fb52bbb..09ca311 100644
+--- a/src/vs/workbench/contrib/search/browser/searchView.ts
++++ b/src/vs/workbench/contrib/search/browser/searchView.ts
+@@ -87,2 +87,3 @@ import { ITelemetryService } from '../../../../platform/telemetry/common/telemet
+ import { forcedExpandRecursively } from './searchActionsTopBar.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -126,2 +127,3 @@ const SEARCH_CANCELLED_MESSAGE = nls.localize('searchCanceled', "Search was canc
+ const DEBOUNCE_DELAY = 75;
++
+ export class SearchView extends ViewPane {
+@@ -963,3 +965,3 @@ export class SearchView extends ViewPane {
+ 				overrideStyles: this.getLocationBasedColors().listOverrideStyles,
+-				paddingBottom: SearchDelegate.ITEM_HEIGHT,
++				paddingBottom: SearchDelegate.getHeight(),
+ 				collapseByDefault: (e: RenderableMatch) => {
+@@ -1341,6 +1343,6 @@ export class SearchView extends ViewPane {
+ 
+-		this.searchWidget.setWidth(this.size.width - 28 /* container margin */);
++		this.searchWidget.setWidth(this.size.width - FONT.sidebarSize28);
+ 
+-		this.inputPatternExcludes.setWidth(this.size.width - 28 /* container margin */);
+-		this.inputPatternIncludes.setWidth(this.size.width - 28 /* container margin */);
++		this.inputPatternExcludes.setWidth(this.size.width - FONT.sidebarSize28);
++		this.inputPatternIncludes.setWidth(this.size.width - FONT.sidebarSize28);
+ 
+@@ -1348,3 +1350,3 @@ export class SearchView extends ViewPane {
+ 		const messagesHeight = dom.getTotalHeight(this.messagesElement);
+-		this.tree.layout(this.size.height - widgetHeight - messagesHeight, this.size.width - 28);
++		this.tree.layout(this.size.height - widgetHeight - messagesHeight, this.size.width - FONT.sidebarSize28);
+ 	}
+diff --git a/src/vs/workbench/contrib/search/browser/searchWidget.ts b/src/vs/workbench/contrib/search/browser/searchWidget.ts
+index e9c0fcd..7ee6d39 100644
+--- a/src/vs/workbench/contrib/search/browser/searchWidget.ts
++++ b/src/vs/workbench/contrib/search/browser/searchWidget.ts
+@@ -47,2 +47,3 @@ import { IDisposable, MutableDisposable } from '../../../../base/common/lifecycl
+ import { NotebookFindScopeType } from '../../notebook/common/notebookCommon.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -113,3 +114,2 @@ function stopPropagationForMultiLineDownwards(event: IKeyboardEvent, value: stri
+ 
+-
+ export class SearchWidget extends Widget {
+@@ -316,3 +316,3 @@ export class SearchWidget extends Widget {
+ 		if (this.replaceInput) {
+-			this.replaceInput.width = width - 28;
++			this.replaceInput.width = width - FONT.sidebarSize28;
+ 			this.replaceInput.inputBox.layout();
+diff --git a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts b/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
+index e19fc27..56e4bbc 100644
+--- a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
++++ b/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
+@@ -16,2 +16,3 @@ import { memoize } from '../../../../base/common/decorators.js';
+ import { FuzzyScore, createMatches } from '../../../../base/common/filters.js';
++import { FONT } from '../../../../base/common/font.js';
+ import { Iterable } from '../../../../base/common/iterator.js';
+@@ -429,3 +430,3 @@ class TestCoverageTreeListDelegate implements IListVirtualDelegate<CoverageTreeE
+ 	getHeight(element: CoverageTreeElement): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/testing/browser/testResultsView/testResultsOutput.ts b/src/vs/workbench/contrib/testing/browser/testResultsView/testResultsOutput.ts
+index 631bd2a..902bb81 100644
+--- a/src/vs/workbench/contrib/testing/browser/testResultsView/testResultsOutput.ts
++++ b/src/vs/workbench/contrib/testing/browser/testResultsView/testResultsOutput.ts
+@@ -34,3 +34,2 @@ import { PANEL_BACKGROUND, SIDE_BAR_BACKGROUND } from '../../../../common/theme.
+ import { IViewDescriptorService, ViewContainerLocation } from '../../../../common/views.js';
+-import { CALL_STACK_WIDGET_HEADER_HEIGHT } from '../../../debug/browser/callStackWidget.js';
+ import { DetachedProcessInfo } from '../../../terminal/browser/detachedTerminal.js';
+@@ -45,2 +44,3 @@ import { colorizeTestMessageInEditor } from '../testMessageColorizer.js';
+ import { InspectSubject, MessageSubject, TaskSubject, TestOutputSubject } from './testResultsSubject.js';
++import { FONT } from '../../../../../base/common/font.js';
+ 
+@@ -315,3 +315,3 @@ class ScrollHelper {
+ 
+-		let delta = Math.max(0, evt.scrollTop - (this.hasMultipleFrames ? CALL_STACK_WIDGET_HEADER_HEIGHT : 0));
++		let delta = Math.max(0, evt.scrollTop - (this.hasMultipleFrames ? FONT.sidebarSize24 : 0));
+ 		delta = Math.min(Math.max(0, this.contentHeight - this.viewHeight), delta);
+diff --git a/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts b/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts
+index ef75da6..cff2356 100644
+--- a/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts
++++ b/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts
+@@ -85,2 +85,3 @@ import { DebugLastRun, ReRunLastRun } from './testExplorerActions.js';
+ import { TestingExplorerFilter } from './testingExplorerFilter.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -1421,3 +1422,3 @@ class ListDelegate implements IListVirtualDelegate<TestExplorerTreeElement> {
+ 	getHeight(element: TestExplorerTreeElement) {
+-		return element instanceof TestTreeErrorMessage ? 17 + 10 : 22;
++		return element instanceof TestTreeErrorMessage ? FONT.sidebarSize17 + 10 : FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/timeline/browser/timelinePane.ts b/src/vs/workbench/contrib/timeline/browser/timelinePane.ts
+index c7c9cc7..84510c2 100644
+--- a/src/vs/workbench/contrib/timeline/browser/timelinePane.ts
++++ b/src/vs/workbench/contrib/timeline/browser/timelinePane.ts
+@@ -59,4 +59,3 @@ import { IHoverService, WorkbenchHoverDelegate } from '../../../../platform/hove
+ import { HoverPosition } from '../../../../base/browser/ui/hover/hoverWidget.js';
+-
+-const ItemHeight = 22;
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -330,3 +329,3 @@ export class TimelinePane extends ViewPane {
+ 			// If we are paging when scrolling, then add an extra item to the end to make sure the "Load more" item is out of view
+-			pageSize = Math.max(20, Math.floor((this.tree?.renderHeight ?? 0 / ItemHeight) + (this.pageOnScroll ? 1 : -1)));
++			pageSize = Math.max(20, Math.floor((this.tree?.renderHeight ?? 0 / FONT.sidebarSize22) + (this.pageOnScroll ? 1 : -1)));
+ 		}
+@@ -1147,3 +1146,3 @@ export class TimelineListVirtualDelegate implements IListVirtualDelegate<TreeEle
+ 	getHeight(_element: TreeElement): number {
+-		return ItemHeight;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/typeHierarchy/browser/typeHierarchyTree.ts b/src/vs/workbench/contrib/typeHierarchy/browser/typeHierarchyTree.ts
+index 27c6580..0feb646 100644
+--- a/src/vs/workbench/contrib/typeHierarchy/browser/typeHierarchyTree.ts
++++ b/src/vs/workbench/contrib/typeHierarchy/browser/typeHierarchyTree.ts
+@@ -17,2 +17,3 @@ import { localize } from '../../../../nls.js';
+ import { ThemeIcon } from '../../../../base/common/themables.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -132,3 +133,3 @@ export class VirtualDelegate implements IListVirtualDelegate<Type> {
+ 	getHeight(_element: Type): number {
+-		return 22;
++		return FONT.sidebarSize22;
+ 	}
+diff --git a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
+index 34b8408..f8a72d9 100644
+--- a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
++++ b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
+@@ -49,3 +49,2 @@ import { AgentSessionsControl, IAgentSessionsControlOptions } from '../../chat/b
+ import { AgentSessionsFilter } from '../../chat/browser/agentSessions/agentSessionsFilter.js';
+-import { AgentSessionsListDelegate } from '../../chat/browser/agentSessions/agentSessionsViewer.js';
+ import { HoverPosition } from '../../../../base/browser/ui/hover/hoverWidget.js';
+@@ -62,2 +61,3 @@ import { toErrorMessage } from '../../../../base/common/errorMessage.js';
+ import { ILogService } from '../../../../platform/log/common/log.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -825,3 +825,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
+ 		);
+-		const sessionsHeight = visibleSessions * AgentSessionsListDelegate.ITEM_HEIGHT;
++		const sessionsHeight = visibleSessions * FONT.sidebarSize22;
+ 		this.sessionsControl.layout(sessionsHeight, sessionsWidth);
+@@ -830,3 +830,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
+ 		// Visual height = ceil(n/2) * ITEM_HEIGHT, so offset = floor(n/2) * ITEM_HEIGHT
+-		const marginOffset = Math.floor(visibleSessions / 2) * AgentSessionsListDelegate.ITEM_HEIGHT;
++		const marginOffset = Math.floor(visibleSessions / 2) * FONT.sidebarSize22;
+ 		this.sessionsControl.element!.style.marginBottom = `-${marginOffset}px`;
