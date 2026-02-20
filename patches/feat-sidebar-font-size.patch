@@ -423,13 +423,66 @@ diff --git a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.
 index aec3de2..e582843 100644
 --- a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
 +++ b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
-@@ -28,2 +28,6 @@
+@@ -28,2 +28,11 @@
  
 +.monaco-workbench .part.auxiliarybar > .content {
-+	font-size: var(--vscode-workbench-secondary-sidebar-font-size, 13px);
++	font-size: var(--vscode-workbench-sidebar-font-size, 13px);
++	line-height: 1.4em;
++}
++
++.monaco-workbench .part.auxiliarybar > .title > .title-label h2 {
++	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846);
 +}
 +
  .monaco-workbench .part.auxiliarybar > .title > .title-label {
+diff --git a/src/vs/workbench/browser/parts/media/paneCompositePart.css b/src/vs/workbench/browser/parts/media/paneCompositePart.css
+index fe0f2ad..0000000 100644
+--- a/src/vs/workbench/browser/parts/media/paneCompositePart.css
++++ b/src/vs/workbench/browser/parts/media/paneCompositePart.css
+@@ -369 +369,49 @@
+ }
++
++
++
++.monaco-workbench .part.sidebar > .title.has-composite-bar > .title-actions .monaco-action-bar .action-item, .monaco-workbench .part.sidebar > .title.has-composite-bar > .global-actions .monaco-action-bar .action-item, .monaco-workbench .part.sidebar > .title.has-composite-bar > .global-actions-left .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar > .title.has-composite-bar > .title-actions .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar > .title.has-composite-bar > .global-actions .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar > .title.has-composite-bar > .global-actions-left .monaco-action-bar .action-item {
++    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar, .monaco-workbench .part.sidebar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar, .monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar, .monaco-workbench .part.auxiliarybar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar {
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 2.076923)
++}
++.monaco-workbench .part.sidebar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item, .monaco-workbench .part.sidebar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231);
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
++    padding-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
++    padding-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item.icon, .monaco-workbench .part.sidebar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item.icon, .monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item.icon, .monaco-workbench .part.auxiliarybar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item.icon {
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 2.692308);
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item.icon .action-label:not(.codicon), .monaco-workbench .part.sidebar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item.icon .action-label:not(.codicon), .monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item.icon .action-label:not(.codicon), .monaco-workbench .part.auxiliarybar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item.icon .action-label:not(.codicon) {
++    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part.sidebar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label, .monaco-workbench .part.sidebar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label, .monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label, .monaco-workbench .part.auxiliarybar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .badge .badge-content, .monaco-workbench .part.sidebar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .badge .badge-content, .monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .badge .badge-content, .monaco-workbench .part.auxiliarybar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .badge .badge-content {
++    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769) calc(var(--vscode-workbench-sidebar-font-size) * 0.384615);
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231);
++    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
++}
++.monaco-workbench .part.sidebar > .header-or-footer, .monaco-workbench .part.auxiliarybar > .header-or-footer {
++    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
++.monaco-workbench .part.sidebar .empty-pane-message-area .empty-pane-message, .monaco-workbench .part.auxiliarybar .empty-pane-message-area .empty-pane-message {
++    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077)
++}
+\ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
 index decb51a..7088a97 100644
 --- a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
@@ -658,7 +711,7 @@ index b1c5637..3bcdefb 100644
 +				'default': 13,
 +				'minimum': 6,
 +				'maximum': 32,
-+				'markdownDescription': localize('sideBarFontSize', "Controls the font size used for content inside the primary side bar."),
++				'markdownDescription': localize('sideBarFontSize', "Controls the font size used for content inside the side bars."),
 +				'tags': ['accessibility', 'experimental']
 +			},
  			'workbench.panel.showLabels': {
