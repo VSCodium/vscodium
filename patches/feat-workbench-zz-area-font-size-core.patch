@@ -1,0 +1,917 @@
+diff --git a/src/vs/base/common/font.ts b/src/vs/base/common/font.ts
+index 2be97d7..8a8d60e 100644
+--- a/src/vs/base/common/font.ts
++++ b/src/vs/base/common/font.ts
+@@ -1,3 +1,27 @@
++/**
++ * Inspect a configuration value and return whether it was explicitly set by the user,
++ * along with the clamped numeric value.
++ */
++export function inspectFontSize(
++	configurationService: { inspect<T>(key: string): { userValue?: T; userLocalValue?: T; userRemoteValue?: T; workspaceValue?: T; workspaceFolderValue?: T }; getValue<T>(key: string): T },
++	key: string,
++	defaultSize: number,
++	min: number = 6,
++	max: number = 32
++): { isUserSet: boolean; size: number } {
++	const inspected = configurationService.inspect<number>(key);
++	const isUserSet = inspected.userValue !== undefined
++		|| inspected.userLocalValue !== undefined
++		|| inspected.userRemoteValue !== undefined
++		|| inspected.workspaceValue !== undefined
++		|| inspected.workspaceFolderValue !== undefined;
++
++	const raw = configurationService.getValue<number>(key);
++	const size = Math.max(min, Math.min(max, typeof raw === 'number' ? raw : defaultSize));
++
++	return { isUserSet, size };
++}
++
+ export const FONT = {
+ 	sidebarSize: 13,
+ 	sidebarSize8: 8,
+@@ -16,8 +40,29 @@ export const FONT = {
+ 	sidebarSize44: 44,
+ 	sidebarSize62: 62,
+ 	sidebarSize72: 72,
++
++	statusBarSize: 12,
++	statusBarSize22: 22,
++
++	panelSize: 13,
++	panelSize22: 22,
++
++	activityBarSize: 16,
++	activityBarSize16: 16,
++	activityBarSize24: 24,
++	activityBarSize32: 32,
++	activityBarSize36: 36,
++	activityBarSize48: 48,
++
++	tabsSize: 13,
++	tabsSize22: 22,
++	tabsSize35: 35,
++	tabsSize38: 38,
++	tabsSize80: 80,
++	tabsSize120: 120,
+ };
+ 
++// Sidebar coefficients (base 13)
+ const COEFF_8 = 8/13;
+ const COEFF_10 = 10/13;
+ const COEFF_16 = 16/13;
+@@ -54,3 +99,51 @@ export function updateSidebarSize(size: number): void {
+ 	FONT.sidebarSize62 = size * COEFF_62;
+ 	FONT.sidebarSize72 = size * COEFF_72;
+ }
++
++// Status bar coefficients (base 12)
++const SB_COEFF_22 = 22/12;
++
++export function updateStatusBarSize(size: number): void {
++	FONT.statusBarSize = size;
++	FONT.statusBarSize22 = size * SB_COEFF_22;
++}
++
++// Panel coefficients (base 13)
++const PN_COEFF_22 = 22/13;
++
++export function updatePanelSize(size: number): void {
++	FONT.panelSize = size;
++	FONT.panelSize22 = size * PN_COEFF_22;
++}
++
++// Activity bar coefficients (base 16)
++const AB_COEFF_16 = 16/16;
++const AB_COEFF_24 = 24/16;
++const AB_COEFF_32 = 32/16;
++const AB_COEFF_36 = 36/16;
++const AB_COEFF_48 = 48/16;
++
++export function updateActivityBarSize(size: number): void {
++	FONT.activityBarSize = size;
++	FONT.activityBarSize16 = size * AB_COEFF_16;
++	FONT.activityBarSize24 = size * AB_COEFF_24;
++	FONT.activityBarSize32 = size * AB_COEFF_32;
++	FONT.activityBarSize36 = size * AB_COEFF_36;
++	FONT.activityBarSize48 = size * AB_COEFF_48;
++}
++
++// Tabs coefficients (base 13)
++const TB_COEFF_22 = 22/13;
++const TB_COEFF_35 = 35/13;
++const TB_COEFF_38 = 38/13;
++const TB_COEFF_80 = 80/13;
++const TB_COEFF_120 = 120/13;
++
++export function updateTabsSize(size: number): void {
++	FONT.tabsSize = size;
++	FONT.tabsSize22 = size * TB_COEFF_22;
++	FONT.tabsSize35 = size * TB_COEFF_35;
++	FONT.tabsSize38 = size * TB_COEFF_38;
++	FONT.tabsSize80 = size * TB_COEFF_80;
++	FONT.tabsSize120 = size * TB_COEFF_120;
++}
+diff --git a/src/vs/base/test/common/font.test.ts b/src/vs/base/test/common/font.test.ts
+new file mode 100644
+index 0000000..dcde0e7
+--- /dev/null
++++ b/src/vs/base/test/common/font.test.ts
+@@ -0,0 +1,482 @@
++/*---------------------------------------------------------------------------------------------
++ *  Copyright (c) VSCodium. All rights reserved.
++ *  Licensed under the MIT License. See License.txt in the project root for license information.
++ *--------------------------------------------------------------------------------------------*/
++
++import assert from 'assert';
++import { ensureNoDisposablesAreLeakedInTestSuite } from '../../../test/common/utils.js';
++import { FONT, updateSidebarSize, updateStatusBarSize, updatePanelSize, updateActivityBarSize, updateTabsSize } from '../../common/font.js';
++
++/**
++ * Test file for src/vs/base/common/font.ts
++ *
++ * Tests all update*Size() functions for:
++ *   - Default values match upstream VS Code hardcoded constants
++ *   - Proportional scaling preserves ratios at non-default sizes
++ *   - Boundary values (minimum=6, maximum=32) produce positive values
++ *   - Reset to default restores original values
++ *   - Non-divisible sizes produce consistent coefficient-based output
++ *   - Cross-area updates do not mutate unrelated fields
++ */
++
++const EPSILON = 1e-9;
++
++/** Assert two numbers are equal within floating-point tolerance */
++function assertClose(actual: number, expected: number, message?: string): void {
++	const diff = Math.abs(actual - expected);
++	assert.ok(diff < EPSILON, `${message ?? ''} expected ${expected}, got ${actual} (diff: ${diff})`);
++}
++
++/**
++ * Snapshot all FONT fields to detect unintended mutations.
++ * Returns a plain object copy of every enumerable property.
++ */
++function snapshotFont(): Record<string, number> {
++	const snap: Record<string, number> = {};
++	for (const key of Object.keys(FONT)) {
++		snap[key] = (FONT as Record<string, number>)[key];
++	}
++	return snap;
++}
++
++/** Assert that specific fields in FONT have not changed from a snapshot */
++function assertFieldsUnchanged(snapshot: Record<string, number>, prefix: string, message: string): void {
++	for (const key of Object.keys(snapshot)) {
++		if (key.startsWith(prefix)) {
++			assertClose((FONT as Record<string, number>)[key], snapshot[key], `${message}: ${key}`);
++		}
++	}
++}
++
++suite('FONT - Sidebar Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	// Capture defaults before any test mutates them
++	const DEFAULTS = snapshotFont();
++
++	teardown(() => {
++		// Reset after each test
++		updateSidebarSize(13);
++	});
++
++	test('defaults match upstream VS Code constants', () => {
++		assert.strictEqual(FONT.sidebarSize, 13);
++		assert.strictEqual(FONT.sidebarSize8, 8);
++		assert.strictEqual(FONT.sidebarSize10, 10);
++		assert.strictEqual(FONT.sidebarSize16, 16);
++		assert.strictEqual(FONT.sidebarSize17, 17);
++		assert.strictEqual(FONT.sidebarSize18, 18);
++		assert.strictEqual(FONT.sidebarSize20, 20);
++		assert.strictEqual(FONT.sidebarSize22, 22);
++		assert.strictEqual(FONT.sidebarSize23, 23);
++		assert.strictEqual(FONT.sidebarSize24, 24);
++		assert.strictEqual(FONT.sidebarSize26, 26);
++		assert.strictEqual(FONT.sidebarSize28, 28);
++		assert.strictEqual(FONT.sidebarSize34, 34);
++		assert.strictEqual(FONT.sidebarSize39, 39);
++		assert.strictEqual(FONT.sidebarSize44, 44);
++		assert.strictEqual(FONT.sidebarSize62, 62);
++		assert.strictEqual(FONT.sidebarSize72, 72);
++	});
++
++	test('proportional scaling preserves ratios at 2x', () => {
++		updateSidebarSize(26); // 2x default
++		assert.strictEqual(FONT.sidebarSize, 26);
++		assert.strictEqual(FONT.sidebarSize8, 16);
++		assert.strictEqual(FONT.sidebarSize22, 44);
++		assert.strictEqual(FONT.sidebarSize44, 88);
++		assert.strictEqual(FONT.sidebarSize72, 144);
++	});
++
++	test('non-divisible size produces consistent coefficient-based values', () => {
++		updateSidebarSize(7);
++		assertClose(FONT.sidebarSize22, 7 * (22 / 13));
++		assertClose(FONT.sidebarSize44, 7 * (44 / 13));
++		assertClose(FONT.sidebarSize72, 7 * (72 / 13));
++	});
++
++	test('another non-divisible size (31)', () => {
++		updateSidebarSize(31);
++		assertClose(FONT.sidebarSize22, 31 * (22 / 13));
++		assertClose(FONT.sidebarSize44, 31 * (44 / 13));
++	});
++
++	test('minimum value (6) produces positive values', () => {
++		updateSidebarSize(6);
++		assert.strictEqual(FONT.sidebarSize, 6);
++		assert.ok(FONT.sidebarSize8 > 0, 'sidebarSize8 must be positive');
++		assert.ok(FONT.sidebarSize10 > 0, 'sidebarSize10 must be positive');
++		assert.ok(FONT.sidebarSize22 > 0, 'sidebarSize22 must be positive');
++		assert.ok(FONT.sidebarSize72 > 0, 'sidebarSize72 must be positive');
++	});
++
++	test('maximum value (32) produces reasonable values', () => {
++		updateSidebarSize(32);
++		assert.strictEqual(FONT.sidebarSize, 32);
++		assert.ok(FONT.sidebarSize22 > 40, 'row height should scale up');
++		assert.ok(FONT.sidebarSize22 < 80, 'row height should not be extreme');
++	});
++
++	test('reset to default restores all values', () => {
++		updateSidebarSize(20);
++		assert.notStrictEqual(FONT.sidebarSize22, DEFAULTS.sidebarSize22);
++		updateSidebarSize(13);
++		assertFieldsUnchanged(DEFAULTS, 'sidebar', 'after reset');
++	});
++
++	test('multiple updates in sequence are idempotent at same value', () => {
++		updateSidebarSize(18);
++		const snap = snapshotFont();
++		updateSidebarSize(18);
++		assertFieldsUnchanged(snap, 'sidebar', 'idempotent');
++	});
++});
++
++suite('FONT - Status Bar Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updateStatusBarSize(12);
++	});
++
++	test('defaults match upstream VS Code status bar constants', () => {
++		assert.strictEqual(FONT.statusBarSize, 12);
++		assert.strictEqual(FONT.statusBarSize22, 22); // StatusbarPart.HEIGHT
++	});
++
++	test('proportional scaling at 2x', () => {
++		updateStatusBarSize(24);
++		assert.strictEqual(FONT.statusBarSize, 24);
++		assert.strictEqual(FONT.statusBarSize22, 44);
++	});
++
++	test('non-divisible size (7)', () => {
++		updateStatusBarSize(7);
++		assertClose(FONT.statusBarSize22, 7 * (22 / 12));
++	});
++
++	test('minimum value (6) produces positive height', () => {
++		updateStatusBarSize(6);
++		assert.strictEqual(FONT.statusBarSize, 6);
++		assert.ok(FONT.statusBarSize22 > 0, 'height must be positive');
++		assertClose(FONT.statusBarSize22, 6 * (22 / 12));
++	});
++
++	test('maximum value (32) produces reasonable height', () => {
++		updateStatusBarSize(32);
++		assertClose(FONT.statusBarSize22, 32 * (22 / 12));
++		assert.ok(FONT.statusBarSize22 > 50, 'height should scale up');
++		assert.ok(FONT.statusBarSize22 < 70, 'height should not be extreme');
++	});
++
++	test('reset to default restores values', () => {
++		updateStatusBarSize(20);
++		updateStatusBarSize(12);
++		assert.strictEqual(FONT.statusBarSize, 12);
++		assert.strictEqual(FONT.statusBarSize22, 22);
++	});
++});
++
++suite('FONT - Panel Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updatePanelSize(13);
++	});
++
++	test('defaults match sidebar defaults (same base size)', () => {
++		assert.strictEqual(FONT.panelSize, 13);
++		assert.strictEqual(FONT.panelSize22, 22);
++	});
++
++	test('panel and sidebar can have independent sizes', () => {
++		updatePanelSize(18);
++		assert.strictEqual(FONT.panelSize, 18);
++		assert.notStrictEqual(FONT.panelSize22, 22);
++		// Sidebar unchanged
++		assert.strictEqual(FONT.sidebarSize, 13);
++		assert.strictEqual(FONT.sidebarSize22, 22);
++	});
++
++	test('proportional scaling at 2x', () => {
++		updatePanelSize(26);
++		assert.strictEqual(FONT.panelSize22, 44);
++	});
++
++	test('non-divisible size (7)', () => {
++		updatePanelSize(7);
++		assertClose(FONT.panelSize22, 7 * (22 / 13));
++	});
++
++	test('minimum value (6)', () => {
++		updatePanelSize(6);
++		assert.ok(FONT.panelSize22 > 0, 'row height must be positive');
++		assert.ok(FONT.panelSize22 >= 10, 'row height at minimum should be usable');
++	});
++
++	test('maximum value (32)', () => {
++		updatePanelSize(32);
++		assert.ok(FONT.panelSize22 > 50, 'row height should scale up');
++	});
++
++	test('reset to default restores values', () => {
++		updatePanelSize(20);
++		updatePanelSize(13);
++		assert.strictEqual(FONT.panelSize, 13);
++		assert.strictEqual(FONT.panelSize22, 22);
++	});
++});
++
++suite('FONT - Activity Bar Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updateActivityBarSize(16);
++	});
++
++	test('defaults match upstream VS Code activity bar constants', () => {
++		assert.strictEqual(FONT.activityBarSize, 16);
++		assert.strictEqual(FONT.activityBarSize16, 16);  // COMPACT_ICON_SIZE
++		assert.strictEqual(FONT.activityBarSize24, 24);  // ICON_SIZE
++		assert.strictEqual(FONT.activityBarSize32, 32);  // COMPACT_ACTION_HEIGHT
++		assert.strictEqual(FONT.activityBarSize36, 36);  // COMPACT_ACTIVITYBAR_WIDTH
++		assert.strictEqual(FONT.activityBarSize48, 48);  // ACTION_HEIGHT / ACTIVITYBAR_WIDTH
++	});
++
++	test('proportional scaling at 2x', () => {
++		updateActivityBarSize(32);
++		assert.strictEqual(FONT.activityBarSize, 32);
++		assert.strictEqual(FONT.activityBarSize16, 32);  // compact icon = base size
++		assert.strictEqual(FONT.activityBarSize24, 48);
++		assert.strictEqual(FONT.activityBarSize32, 64);
++		assert.strictEqual(FONT.activityBarSize36, 72);
++		assert.strictEqual(FONT.activityBarSize48, 96);
++	});
++
++	test('compact constants scale correctly', () => {
++		updateActivityBarSize(20);
++		// Compact icon size = base size * (16/16) = 20
++		assertClose(FONT.activityBarSize16, 20 * (16 / 16));
++		// Compact width = base * (36/16) = 45
++		assertClose(FONT.activityBarSize36, 20 * (36 / 16));
++		// Compact action height = base * (32/16) = 40
++		assertClose(FONT.activityBarSize32, 20 * (32 / 16));
++	});
++
++	test('non-divisible size (7)', () => {
++		updateActivityBarSize(7);
++		assertClose(FONT.activityBarSize24, 7 * (24 / 16));
++		assertClose(FONT.activityBarSize48, 7 * (48 / 16));
++		assertClose(FONT.activityBarSize36, 7 * (36 / 16));
++	});
++
++	test('minimum value (6) produces positive values', () => {
++		updateActivityBarSize(6);
++		assert.strictEqual(FONT.activityBarSize, 6);
++		assert.ok(FONT.activityBarSize16 > 0, 'compact icon size must be positive');
++		assert.ok(FONT.activityBarSize24 > 0, 'icon size must be positive');
++		assert.ok(FONT.activityBarSize36 > 0, 'compact width must be positive');
++		assert.ok(FONT.activityBarSize48 > 0, 'action height must be positive');
++	});
++
++	test('maximum value (32) produces reasonable values', () => {
++		updateActivityBarSize(32);
++		assert.strictEqual(FONT.activityBarSize48, 96);
++		assert.ok(FONT.activityBarSize48 <= 100, 'action height should be bounded');
++	});
++
++	test('reset to default restores values', () => {
++		updateActivityBarSize(24);
++		updateActivityBarSize(16);
++		assert.strictEqual(FONT.activityBarSize, 16);
++		assert.strictEqual(FONT.activityBarSize16, 16);
++		assert.strictEqual(FONT.activityBarSize24, 24);
++		assert.strictEqual(FONT.activityBarSize32, 32);
++		assert.strictEqual(FONT.activityBarSize36, 36);
++		assert.strictEqual(FONT.activityBarSize48, 48);
++	});
++});
++
++suite('FONT - Tabs Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updateTabsSize(13);
++	});
++
++	test('defaults match upstream VS Code tab constants', () => {
++		assert.strictEqual(FONT.tabsSize, 13);
++		assert.strictEqual(FONT.tabsSize22, 22);   // EDITOR_TAB_HEIGHT compact
++		assert.strictEqual(FONT.tabsSize35, 35);   // EDITOR_TAB_HEIGHT normal
++		assert.strictEqual(FONT.tabsSize38, 38);   // TAB_WIDTH compact
++		assert.strictEqual(FONT.tabsSize80, 80);   // TAB_WIDTH shrink
++		assert.strictEqual(FONT.tabsSize120, 120); // TAB_WIDTH fit
++	});
++
++	test('proportional scaling preserves tab height/width ratios at 2x', () => {
++		updateTabsSize(26);
++		assert.strictEqual(FONT.tabsSize, 26);
++		assert.strictEqual(FONT.tabsSize22, 44);
++		assert.strictEqual(FONT.tabsSize35, 70);
++		assert.strictEqual(FONT.tabsSize38, 76);
++		assert.strictEqual(FONT.tabsSize80, 160);
++		assert.strictEqual(FONT.tabsSize120, 240);
++	});
++
++	test('non-divisible size (7)', () => {
++		updateTabsSize(7);
++		assertClose(FONT.tabsSize22, 7 * (22 / 13));
++		assertClose(FONT.tabsSize35, 7 * (35 / 13));
++		assertClose(FONT.tabsSize80, 7 * (80 / 13));
++		assertClose(FONT.tabsSize120, 7 * (120 / 13));
++	});
++
++	test('minimum value (6) produces usable tab dimensions', () => {
++		updateTabsSize(6);
++		assert.strictEqual(FONT.tabsSize, 6);
++		assert.ok(FONT.tabsSize35 > 10, 'normal tab height must be clickable');
++		assert.ok(FONT.tabsSize22 > 8, 'compact tab height must be usable');
++		assert.ok(FONT.tabsSize38 > 0, 'compact tab width must be positive');
++		assert.ok(FONT.tabsSize80 > 0, 'shrink tab width must be positive');
++	});
++
++	test('maximum value (32) produces reasonable tab dimensions', () => {
++		updateTabsSize(32);
++		assert.ok(FONT.tabsSize35 > 80, 'normal tab height should scale up');
++		assert.ok(FONT.tabsSize35 < 100, 'normal tab height should be bounded');
++	});
++
++	test('reset to default restores all values', () => {
++		updateTabsSize(20);
++		updateTabsSize(13);
++		assert.strictEqual(FONT.tabsSize, 13);
++		assert.strictEqual(FONT.tabsSize22, 22);
++		assert.strictEqual(FONT.tabsSize35, 35);
++		assert.strictEqual(FONT.tabsSize38, 38);
++		assert.strictEqual(FONT.tabsSize80, 80);
++		assert.strictEqual(FONT.tabsSize120, 120);
++	});
++});
++
++suite('FONT - Cross-area independence', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updateSidebarSize(13);
++		updateStatusBarSize(12);
++		updatePanelSize(13);
++		updateActivityBarSize(16);
++		updateTabsSize(13);
++	});
++
++	test('updating sidebar does not affect any other area (full derived field check)', () => {
++		const before = snapshotFont();
++		updateSidebarSize(20);
++
++		// All non-sidebar fields must be unchanged
++		assertFieldsUnchanged(before, 'statusBar', 'after sidebar update');
++		assertFieldsUnchanged(before, 'panel', 'after sidebar update');
++		assertFieldsUnchanged(before, 'activityBar', 'after sidebar update');
++		assertFieldsUnchanged(before, 'tabs', 'after sidebar update');
++	});
++
++	test('updating statusBar does not affect any other area', () => {
++		const before = snapshotFont();
++		updateStatusBarSize(20);
++
++		assertFieldsUnchanged(before, 'sidebar', 'after statusBar update');
++		assertFieldsUnchanged(before, 'panel', 'after statusBar update');
++		assertFieldsUnchanged(before, 'activityBar', 'after statusBar update');
++		assertFieldsUnchanged(before, 'tabs', 'after statusBar update');
++	});
++
++	test('updating panel does not affect any other area', () => {
++		const before = snapshotFont();
++		updatePanelSize(20);
++
++		assertFieldsUnchanged(before, 'sidebar', 'after panel update');
++		assertFieldsUnchanged(before, 'statusBar', 'after panel update');
++		assertFieldsUnchanged(before, 'activityBar', 'after panel update');
++		assertFieldsUnchanged(before, 'tabs', 'after panel update');
++	});
++
++	test('updating activityBar does not affect any other area', () => {
++		const before = snapshotFont();
++		updateActivityBarSize(20);
++
++		assertFieldsUnchanged(before, 'sidebar', 'after activityBar update');
++		assertFieldsUnchanged(before, 'statusBar', 'after activityBar update');
++		assertFieldsUnchanged(before, 'panel', 'after activityBar update');
++		assertFieldsUnchanged(before, 'tabs', 'after activityBar update');
++	});
++
++	test('updating tabs does not affect any other area', () => {
++		const before = snapshotFont();
++		updateTabsSize(20);
++
++		assertFieldsUnchanged(before, 'sidebar', 'after tabs update');
++		assertFieldsUnchanged(before, 'statusBar', 'after tabs update');
++		assertFieldsUnchanged(before, 'panel', 'after tabs update');
++		assertFieldsUnchanged(before, 'activityBar', 'after tabs update');
++	});
++
++	test('all areas set to same value produce different derived values due to different coefficients', () => {
++		const commonSize = 18;
++		updateSidebarSize(commonSize);
++		updateStatusBarSize(commonSize);
++		updatePanelSize(commonSize);
++		updateActivityBarSize(commonSize);
++		updateTabsSize(commonSize);
++
++		assert.strictEqual(FONT.sidebarSize, commonSize);
++		assert.strictEqual(FONT.statusBarSize, commonSize);
++		assert.strictEqual(FONT.panelSize, commonSize);
++		assert.strictEqual(FONT.activityBarSize, commonSize);
++		assert.strictEqual(FONT.tabsSize, commonSize);
++
++		// sidebarSize22 = 18 * (22/13), statusBarSize22 = 18 * (22/12)
++		// Different coefficients → different results
++		assert.notStrictEqual(FONT.sidebarSize22, FONT.statusBarSize22,
++			'same base size should produce different derived values due to different coefficients');
++	});
++
++	test('sequential updates across all areas and full reset', () => {
++		updateSidebarSize(8);
++		updateStatusBarSize(10);
++		updatePanelSize(15);
++		updateActivityBarSize(20);
++		updateTabsSize(25);
++
++		// Verify all set correctly
++		assert.strictEqual(FONT.sidebarSize, 8);
++		assert.strictEqual(FONT.statusBarSize, 10);
++		assert.strictEqual(FONT.panelSize, 15);
++		assert.strictEqual(FONT.activityBarSize, 20);
++		assert.strictEqual(FONT.tabsSize, 25);
++
++		// Reset all
++		updateSidebarSize(13);
++		updateStatusBarSize(12);
++		updatePanelSize(13);
++		updateActivityBarSize(16);
++		updateTabsSize(13);
++
++		// All defaults restored
++		assert.strictEqual(FONT.sidebarSize, 13);
++		assert.strictEqual(FONT.sidebarSize22, 22);
++		assert.strictEqual(FONT.statusBarSize, 12);
++		assert.strictEqual(FONT.statusBarSize22, 22);
++		assert.strictEqual(FONT.panelSize, 13);
++		assert.strictEqual(FONT.panelSize22, 22);
++		assert.strictEqual(FONT.activityBarSize, 16);
++		assert.strictEqual(FONT.activityBarSize48, 48);
++		assert.strictEqual(FONT.tabsSize, 13);
++		assert.strictEqual(FONT.tabsSize35, 35);
++	});
++});
+diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts b/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
+index cbd14af..83153fe 100644
+--- a/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
++++ b/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
+@@ -38,11 +38,11 @@ import { IExtensionService } from '../../../services/extensions/common/extension
+ import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ import { IViewsService } from '../../../services/views/common/viewsService.js';
+ import { SwitchCompositeViewAction } from '../compositeBarActions.js';
+-import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { FONT, inspectFontSize, updateActivityBarSize } from '../../../../base/common/font.js';
+ 
+ export class ActivitybarPart extends Part {
+ 
+-	static readonly ACTION_HEIGHT = 48;
++	static get ACTION_HEIGHT() { return FONT.activityBarSize48; }
+ 
+ 	static readonly pinnedViewContainersKey = 'workbench.activity.pinnedViewlets2';
+ 	static readonly placeholderViewContainersKey = 'workbench.activity.placeholderViewlets';
+@@ -74,6 +74,9 @@ export class ActivitybarPart extends Part {
+ 			if (e.affectsConfiguration('workbench.activityBar.experimental.fontFamily')) {
+ 				this.applyActivityBarFontFamily();
+ 			}
++			if (e.affectsConfiguration('workbench.activityBar.experimental.fontSize')) {
++				this.applyActivityBarFontSize();
++			}
+ 		}));
+ 	}
+ 
+@@ -111,15 +114,34 @@ export class ActivitybarPart extends Part {
+ 		this.element = parent;
+ 		this.content = append(this.element, $('.content'));
+ 
++		// Apply font settings before show() so composite bar uses correct sizes
++		this.applyActivityBarFontFamily(parent);
++		this.applyActivityBarFontSize(parent);
++
+ 		if (this.layoutService.isVisible(Parts.ACTIVITYBAR_PART)) {
+ 			this.show();
+ 		}
+ 
+-		this.applyActivityBarFontFamily(parent);
+-
+ 		return this.content;
+ 	}
+ 
++	private applyActivityBarFontSize(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const { isUserSet, size } = inspectFontSize(this.configurationService, 'workbench.activityBar.experimental.fontSize', 16);
++
++		if (isUserSet) {
++			updateActivityBarSize(size);
++			target.style.setProperty('--vscode-workbench-activitybar-font-size', `${size}px`);
++		} else {
++			updateActivityBarSize(16);
++			target.style.removeProperty('--vscode-workbench-activitybar-font-size');
++		}
++	}
++
+ 	private applyActivityBarFontFamily(container?: HTMLElement): void {
+ 		const target = container ?? this.getContainer();
+ 		if (!target) {
+diff --git a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
+index 7cd25d0..680dc73 100644
+--- a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
++++ b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
+@@ -7,6 +7,7 @@
+ 	width: 48px;
+ 	height: 100%;
+ 	font-family: var(--vscode-workbench-activitybar-font-family, inherit);
++	font-size: var(--vscode-workbench-activitybar-font-size, var(--vscode-workbench-font-size, 16px));
+ }
+ 
+ .monaco-workbench .activitybar.bordered::before {
+diff --git a/src/vs/workbench/browser/parts/panel/media/panelpart.css b/src/vs/workbench/browser/parts/panel/media/panelpart.css
+index 76c7b07..6faf068 100644
+--- a/src/vs/workbench/browser/parts/panel/media/panelpart.css
++++ b/src/vs/workbench/browser/parts/panel/media/panelpart.css
+@@ -10,6 +10,7 @@
+ 
+ .monaco-workbench .part.panel > .content {
+ 	font-family: var(--vscode-workbench-panel-font-family, inherit);
++	font-size: var(--vscode-workbench-panel-font-size, var(--vscode-workbench-font-size, 13px));
+ }
+ 
+ .monaco-workbench .part.panel.bottom .composite.title {
+diff --git a/src/vs/workbench/browser/parts/panel/panelPart.ts b/src/vs/workbench/browser/parts/panel/panelPart.ts
+index a5d3ff4..b9b240d 100644
+--- a/src/vs/workbench/browser/parts/panel/panelPart.ts
++++ b/src/vs/workbench/browser/parts/panel/panelPart.ts
+@@ -31,6 +31,7 @@ import { getContextMenuActions } from '../../../../platform/actions/browser/menu
+ import { IPaneCompositeBarOptions } from '../paneCompositeBar.js';
+ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+ import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { FONT, inspectFontSize, updatePanelSize } from '../../../../base/common/font.js';
+ 
+ export class PanelPart extends AbstractPaneCompositePart {
+ 
+@@ -113,6 +114,9 @@ export class PanelPart extends AbstractPaneCompositePart {
+ 			if (e.affectsConfiguration('workbench.bottomPane.experimental.fontFamily')) {
+ 				this.applyPanelFontFamily();
+ 			}
++			if (e.affectsConfiguration('workbench.bottomPane.experimental.fontSize')) {
++				this.applyPanelFontSize();
++			}
+ 		}));
+ 	}
+ 
+@@ -131,6 +135,24 @@ export class PanelPart extends AbstractPaneCompositePart {
+ 		}
+ 
+ 		this.applyPanelFontFamily(container);
++		this.applyPanelFontSize(container);
++	}
++
++	private applyPanelFontSize(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const { isUserSet, size } = inspectFontSize(this.configurationService, 'workbench.bottomPane.experimental.fontSize', 13);
++
++		if (isUserSet) {
++			updatePanelSize(size);
++			target.style.setProperty('--vscode-workbench-panel-font-size', `${size}px`);
++		} else {
++			updatePanelSize(13);
++			target.style.removeProperty('--vscode-workbench-panel-font-size');
++		}
+ 	}
+ 
+ 	private applyPanelFontFamily(container?: HTMLElement): void {
+diff --git a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
+index b633ee1..7621d4e 100644
+--- a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
++++ b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
+@@ -7,8 +7,8 @@
+ 	box-sizing: border-box;
+ 	cursor: default;
+ 	width: 100%;
+-	height: 22px;
+-	font-size: 12px;
++	height: var(--vscode-workbench-statusbar-height, 22px);
++	font-size: var(--vscode-workbench-statusbar-font-size, var(--vscode-workbench-font-size, 12px));
+ 	font-family: var(--vscode-workbench-statusbar-font-family, inherit);
+ 	display: flex;
+ 	overflow: hidden;
+@@ -58,7 +58,7 @@
+ 
+ .monaco-workbench .part.statusbar > .items-container > .statusbar-item {
+ 	display: inline-block;
+-	line-height: 22px;
++	line-height: var(--vscode-workbench-statusbar-height, 22px);
+ 	height: 100%;
+ 	vertical-align: top;
+ 	max-width: 40vw;
+diff --git a/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts b/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
+index 62e78d0..d5dc64a 100644
+--- a/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
++++ b/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
+@@ -37,6 +37,7 @@ import { Emitter, Event } from '../../../../base/common/event.js';
+ import { IView } from '../../../../base/browser/ui/grid/grid.js';
+ import { isManagedHoverTooltipHTMLElement, isManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
+ import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { FONT, inspectFontSize, updateStatusBarSize } from '../../../../base/common/font.js';
+ 
+ export interface IStatusbarEntryContainer extends IDisposable {
+ 
+@@ -119,14 +120,14 @@ interface IPendingStatusbarEntry {
+ 
+ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 
+-	static readonly HEIGHT = 22;
++	static get HEIGHT() { return FONT.statusBarSize22; }
+ 
+ 	//#region IView
+ 
+ 	readonly minimumWidth: number = 0;
+ 	readonly maximumWidth: number = Number.POSITIVE_INFINITY;
+-	readonly minimumHeight: number = StatusbarPart.HEIGHT;
+-	readonly maximumHeight: number = StatusbarPart.HEIGHT;
++	get minimumHeight(): number { return FONT.statusBarSize22; }
++	get maximumHeight(): number { return FONT.statusBarSize22; }
+ 
+ 	//#endregion
+ 
+@@ -169,6 +170,9 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 			if (e.affectsConfiguration('workbench.statusBar.experimental.fontFamily')) {
+ 				this.applyStatusBarFontFamily();
+ 			}
++			if (e.affectsConfiguration('workbench.statusBar.experimental.fontSize')) {
++				this.applyStatusBarFontSize();
++			}
+ 		}));
+ 
+ 		this.viewModel = this._register(new StatusbarViewModel(storageService));
+@@ -436,10 +440,33 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 		this.createInitialStatusbarEntries();
+ 
+ 		this.applyStatusBarFontFamily(this.element);
++		this.applyStatusBarFontSize(this.element);
+ 
+ 		return this.element;
+ 	}
+ 
++	private applyStatusBarFontSize(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const { isUserSet, size } = inspectFontSize(this.configurationService, 'workbench.statusBar.experimental.fontSize', 12);
++
++		if (isUserSet) {
++			updateStatusBarSize(size);
++			target.style.setProperty('--vscode-workbench-statusbar-font-size', `${size}px`);
++			target.style.setProperty('--vscode-workbench-statusbar-height', `${FONT.statusBarSize22}px`);
++		} else {
++			updateStatusBarSize(12);
++			target.style.removeProperty('--vscode-workbench-statusbar-font-size');
++			target.style.removeProperty('--vscode-workbench-statusbar-height');
++		}
++
++		// Notify grid layout that height constraints changed
++		this._onDidChange.fire(undefined);
++	}
++
+ 	private applyStatusBarFontFamily(container?: HTMLElement): void {
+ 		const target = container ?? this.getContainer();
+ 		if (!target) {
+@@ -761,7 +788,7 @@ export class AuxiliaryStatusbarPart extends StatusbarPart implements IAuxiliaryS
+ 
+ 	private static COUNTER = 1;
+ 
+-	readonly height = StatusbarPart.HEIGHT;
++	get height() { return StatusbarPart.HEIGHT; }
+ 
+ 	constructor(
+ 		readonly container: HTMLElement,
+diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
+index 8a9eb0e..5bb0959 100644
+--- a/src/vs/workbench/browser/workbench.contribution.ts
++++ b/src/vs/workbench/browser/workbench.contribution.ts
+@@ -705,6 +705,38 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+ 				markdownDescription: localize('activityBarFontFamily', "Controls the font family in the activity bar."),
+ 				'tags': ['accessibility', 'experimental']
+ 			},
++			'workbench.statusBar.experimental.fontSize': {
++				type: 'number',
++				default: 12,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('statusBarFontSize', "Controls the font size in pixels for the status bar."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.bottomPane.experimental.fontSize': {
++				type: 'number',
++				default: 13,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('bottomPaneFontSize', "Controls the font size in pixels for the bottom panel."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.activityBar.experimental.fontSize': {
++				type: 'number',
++				default: 16,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('activityBarFontSize', "Controls the font size in pixels for the activity bar."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.tabs.experimental.fontSize': {
++				type: 'number',
++				default: 13,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('tabsFontSize', "Controls the font size in pixels for editor tabs."),
++				'tags': ['accessibility', 'experimental']
++			},
+ 			'workbench.settings.editor': {
+ 				'type': 'string',
+ 				'enum': ['ui', 'json'],
+diff --git a/src/vs/workbench/browser/workbench.ts b/src/vs/workbench/browser/workbench.ts
+index ee4cbf8..4d7a787 100644
+--- a/src/vs/workbench/browser/workbench.ts
++++ b/src/vs/workbench/browser/workbench.ts
+@@ -7,6 +7,7 @@ import './style.js';
+ import { runWhenWindowIdle } from '../../base/browser/dom.js';
+ import { Event, Emitter, setGlobalLeakWarningThreshold } from '../../base/common/event.js';
+ import { RunOnceScheduler, timeout } from '../../base/common/async.js';
++import { inspectFontSize } from '../../base/common/font.js';
+ import { isFirefox, isSafari, isChrome } from '../../base/browser/browser.js';
+ import { mark } from '../../base/common/performance.js';
+ import { onUnexpectedError, setUnexpectedErrorHandler } from '../../base/common/errors.js';
+@@ -303,15 +304,7 @@ export class Workbench extends Layout {
+ 	private fontSize: number | undefined;
+ 	private fontSizeUserSet: boolean | undefined;
+ 	private updateFontSize(configurationService: IConfigurationService) {
+-		const raw = configurationService.getValue<number>('workbench.experimental.fontSize');
+-		const size = Math.max(6, Math.min(32, typeof raw === 'number' ? raw : 13));
+-
+-		const inspected = configurationService.inspect<number>('workbench.experimental.fontSize');
+-		const isUserSet = inspected.userValue !== undefined
+-			|| inspected.userLocalValue !== undefined
+-			|| inspected.userRemoteValue !== undefined
+-			|| inspected.workspaceValue !== undefined
+-			|| inspected.workspaceFolderValue !== undefined;
++		const { isUserSet, size } = inspectFontSize(configurationService, 'workbench.experimental.fontSize', 13);
+ 
+ 		if (this.fontSize === size && this.fontSizeUserSet === isUserSet) {
+ 			return;

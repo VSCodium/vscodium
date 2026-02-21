@@ -1,0 +1,477 @@
+diff --git a/src/vs/workbench/browser/media/style.css b/src/vs/workbench/browser/media/style.css
+index 473c1f8..57ad58c 100644
+--- a/src/vs/workbench/browser/media/style.css
++++ b/src/vs/workbench/browser/media/style.css
+@@ -54,6 +54,7 @@ body {
+ 	overflow: hidden;
+ 	color: var(--vscode-foreground);
+ 	font-family: var(--vscode-workbench-font-family, var(--monaco-font));
++	font-size: var(--vscode-workbench-font-size, 13px);
+ }
+ 
+ .monaco-workbench.web {
+diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts b/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
+index 080b687..cbd14af 100644
+--- a/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
++++ b/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
+@@ -38,6 +38,7 @@ import { IExtensionService } from '../../../services/extensions/common/extension
+ import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ import { IViewsService } from '../../../services/views/common/viewsService.js';
+ import { SwitchCompositeViewAction } from '../compositeBarActions.js';
++import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+ 
+ export class ActivitybarPart extends Part {
+ 
+@@ -65,8 +66,15 @@ export class ActivitybarPart extends Part {
+ 		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+ 		@IThemeService themeService: IThemeService,
+ 		@IStorageService storageService: IStorageService,
++		@IConfigurationService private readonly configurationService: IConfigurationService,
+ 	) {
+ 		super(Parts.ACTIVITYBAR_PART, { hasTitle: false }, themeService, storageService, layoutService);
++
++		this._register(configurationService.onDidChangeConfiguration(e => {
++			if (e.affectsConfiguration('workbench.activityBar.experimental.fontFamily')) {
++				this.applyActivityBarFontFamily();
++			}
++		}));
+ 	}
+ 
+ 	private createCompositeBar(): PaneCompositeBar {
+@@ -107,9 +115,24 @@ export class ActivitybarPart extends Part {
+ 			this.show();
+ 		}
+ 
++		this.applyActivityBarFontFamily(parent);
++
+ 		return this.content;
+ 	}
+ 
++	private applyActivityBarFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++		const family = this.configurationService.getValue<string>('workbench.activityBar.experimental.fontFamily');
++		if (family) {
++			target.style.setProperty('--vscode-workbench-activitybar-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-activitybar-font-family');
++		}
++	}
++
+ 	getPinnedPaneCompositeIds(): string[] {
+ 		return this.compositeBar.value?.getPinnedPaneCompositeIds() ?? [];
+ 	}
+diff --git a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
+index abe1427..7cd25d0 100644
+--- a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
++++ b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
+@@ -6,6 +6,7 @@
+ .monaco-workbench .part.activitybar {
+ 	width: 48px;
+ 	height: 100%;
++	font-family: var(--vscode-workbench-activitybar-font-family, inherit);
+ }
+ 
+ .monaco-workbench .activitybar.bordered::before {
+diff --git a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
+index d3fa112..31d8df8 100644
+--- a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
++++ b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
+@@ -137,6 +137,9 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+ 			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
+ 				this.applyAuxiliaryBarFontSize();
+ 			}
++			if (e.affectsConfiguration('workbench.sideBar.experimental.fontFamily')) {
++				this.applyAuxiliaryBarFontFamily();
++			}
+ 		}));
+ 	}
+ 
+@@ -178,6 +181,20 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+ 		container.style.borderRightWidth = borderColor && isPositionLeft ? '1px' : '0px';
+ 
+ 		this.applyAuxiliaryBarFontSize(container);
++		this.applyAuxiliaryBarFontFamily(container);
++	}
++
++	private applyAuxiliaryBarFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++		const family = this.configurationService.getValue<string>('workbench.sideBar.experimental.fontFamily');
++		if (family) {
++			target.style.setProperty('--vscode-workbench-sidebar-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-sidebar-font-family');
++		}
+ 	}
+ 
+ 	protected getCompositeBarOptions(): IPaneCompositeBarOptions {
+diff --git a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
+index 6ec40df..398bbe1 100644
+--- a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
++++ b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
+@@ -28,6 +28,7 @@
+ 
+ .monaco-workbench .part.auxiliarybar > .content {
+ 	font-size: var(--vscode-workbench-sidebar-font-size, 13px);
++	font-family: var(--vscode-workbench-sidebar-font-family, inherit);
+ 	line-height: 1.4em;
+ }
+ 
+diff --git a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
+index b0a44e2..a946cb7 100644
+--- a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
++++ b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
+@@ -46,6 +46,7 @@ import { ServiceCollection } from '../../../../platform/instantiation/common/ser
+ import { IBaseActionViewItemOptions } from '../../../../base/browser/ui/actionbar/actionViewItems.js';
+ import { MarkdownString } from '../../../../base/common/htmlContent.js';
+ import { IManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
++import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+ import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
+ 
+ export class EditorCommandsContextActionRunner extends ActionRunner {
+@@ -140,6 +141,7 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 		@IThemeService themeService: IThemeService,
+ 		@IEditorResolverService private readonly editorResolverService: IEditorResolverService,
+ 		@IHostService private readonly hostService: IHostService,
++		@IConfigurationService protected readonly configurationService: IConfigurationService,
+ 	) {
+ 		super(themeService);
+ 
+@@ -147,6 +149,12 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 
+ 		const container = this.create(parent);
+ 
++		this._register(configurationService.onDidChangeConfiguration(e => {
++			if (e.affectsConfiguration('workbench.tabs.experimental.fontFamily')) {
++				this.applyTabsFontFamily();
++			}
++		}));
++
+ 		// Context Keys
+ 		this.contextMenuContextKeyService = this._register(this.contextKeyService.createScoped(container));
+ 		const scopedInstantiationService = this._register(this.instantiationService.createChild(new ServiceCollection(
+@@ -169,9 +177,23 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 
+ 	protected create(parent: HTMLElement): HTMLElement {
+ 		this.updateTabHeight();
++		this.applyTabsFontFamily(parent);
+ 		return parent;
+ 	}
+ 
++	private applyTabsFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.parent;
++		if (!target) {
++			return;
++		}
++		const family = this.configurationService.getValue<string>('workbench.tabs.experimental.fontFamily');
++		if (family) {
++			target.style.setProperty('--vscode-workbench-tabs-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-tabs-font-family');
++		}
++	}
++
+ 	private get editorActionsEnabled(): boolean {
+ 		return this.groupsView.partOptions.editorActionsLocation === 'default' && this.groupsView.partOptions.showTabs !== 'none';
+ 	}
+diff --git a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
+index 57ab8ca..e9e0b2b 100644
+--- a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
++++ b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
+@@ -7,6 +7,7 @@
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title {
+ 	cursor: pointer;
++	font-family: var(--vscode-workbench-tabs-font-family, inherit);
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .title-label,
+diff --git a/src/vs/workbench/browser/parts/panel/media/panelpart.css b/src/vs/workbench/browser/parts/panel/media/panelpart.css
+index e1c147d..76c7b07 100644
+--- a/src/vs/workbench/browser/parts/panel/media/panelpart.css
++++ b/src/vs/workbench/browser/parts/panel/media/panelpart.css
+@@ -8,6 +8,10 @@
+ 	visibility: hidden !important;
+ }
+ 
++.monaco-workbench .part.panel > .content {
++	font-family: var(--vscode-workbench-panel-font-family, inherit);
++}
++
+ .monaco-workbench .part.panel.bottom .composite.title {
+ 	border-top-width: 1px;
+ 	border-top-style: solid;
+diff --git a/src/vs/workbench/browser/parts/panel/panelPart.ts b/src/vs/workbench/browser/parts/panel/panelPart.ts
+index 585bc16..a5d3ff4 100644
+--- a/src/vs/workbench/browser/parts/panel/panelPart.ts
++++ b/src/vs/workbench/browser/parts/panel/panelPart.ts
+@@ -110,6 +110,9 @@ export class PanelPart extends AbstractPaneCompositePart {
+ 			if (e.affectsConfiguration('workbench.panel.showLabels')) {
+ 				this.updateCompositeBar(true);
+ 			}
++			if (e.affectsConfiguration('workbench.bottomPane.experimental.fontFamily')) {
++				this.applyPanelFontFamily();
++			}
+ 		}));
+ 	}
+ 
+@@ -126,6 +129,21 @@ export class PanelPart extends AbstractPaneCompositePart {
+ 		if (this.titleArea) {
+ 			this.titleArea.style.borderTopColor = this.getColor(PANEL_BORDER) || this.getColor(contrastBorder) || '';
+ 		}
++
++		this.applyPanelFontFamily(container);
++	}
++
++	private applyPanelFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++		const family = this.configurationService.getValue<string>('workbench.bottomPane.experimental.fontFamily');
++		if (family) {
++			target.style.setProperty('--vscode-workbench-panel-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-panel-font-family');
++		}
+ 	}
+ 
+ 	protected getCompositeBarOptions(): IPaneCompositeBarOptions {
+diff --git a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
+index 7088a97..3a5ff82 100644
+--- a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
++++ b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
+@@ -198,4 +198,8 @@
+ .monaco-workbench .part.sidebar .monaco-custom-toggle {
+ 	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.539);
+ 	width: calc(var(--vscode-workbench-sidebar-font-size) * 1.539);
+-} */
+\ No newline at end of file
++} */
++
++.monaco-workbench .part.sidebar > .content {
++	font-family: var(--vscode-workbench-sidebar-font-family, inherit);
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
+index 9b6ae18..322f69b 100644
+--- a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
++++ b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
+@@ -114,6 +114,9 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
+ 				this.applySidebarFontSize();
+ 			}
++			if (e.affectsConfiguration('workbench.sideBar.experimental.fontFamily')) {
++				this.applySidebarFontFamily();
++			}
+ 		}));
+ 
+ 		this.registerActions();
+@@ -155,6 +158,7 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 		container.style.outlineColor = this.getColor(SIDE_BAR_DRAG_AND_DROP_BACKGROUND) ?? '';
+ 
+ 		this.applySidebarFontSize(container);
++		this.applySidebarFontFamily(container);
+ 	}
+ 
+ 	override layout(width: number, height: number, top: number, left: number): void {
+@@ -297,6 +301,19 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 		target.style.setProperty('--vscode-workbench-sidebar-font-size', `${FONT.sidebarSize}px`);
+ 	}
+ 
++	private applySidebarFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++		const family = this.configurationService.getValue<string>('workbench.sideBar.experimental.fontFamily');
++		if (family) {
++			target.style.setProperty('--vscode-workbench-sidebar-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-sidebar-font-family');
++		}
++	}
++
+ 	private registerActions(): void {
+ 		const that = this;
+ 		this._register(registerAction2(class extends Action2 {
+diff --git a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
+index 7faaf9e..b633ee1 100644
+--- a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
++++ b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
+@@ -9,6 +9,7 @@
+ 	width: 100%;
+ 	height: 22px;
+ 	font-size: 12px;
++	font-family: var(--vscode-workbench-statusbar-font-family, inherit);
+ 	display: flex;
+ 	overflow: hidden;
+ }
+diff --git a/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts b/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
+index 4bd53d4..62e78d0 100644
+--- a/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
++++ b/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
+@@ -36,6 +36,7 @@ import { StatusBarFocused } from '../../../common/contextkeys.js';
+ import { Emitter, Event } from '../../../../base/common/event.js';
+ import { IView } from '../../../../base/browser/ui/grid/grid.js';
+ import { isManagedHoverTooltipHTMLElement, isManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
++import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+ 
+ export interface IStatusbarEntryContainer extends IDisposable {
+ 
+@@ -160,9 +161,16 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+ 		@IContextMenuService private readonly contextMenuService: IContextMenuService,
+ 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
++		@IConfigurationService private readonly configurationService: IConfigurationService,
+ 	) {
+ 		super(id, { hasTitle: false }, themeService, storageService, layoutService);
+ 
++		this._register(configurationService.onDidChangeConfiguration(e => {
++			if (e.affectsConfiguration('workbench.statusBar.experimental.fontFamily')) {
++				this.applyStatusBarFontFamily();
++			}
++		}));
++
+ 		this.viewModel = this._register(new StatusbarViewModel(storageService));
+ 		this.onDidChangeEntryVisibility = this.viewModel.onDidChangeEntryVisibility;
+ 
+@@ -427,9 +435,24 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 		// Initial status bar entries
+ 		this.createInitialStatusbarEntries();
+ 
++		this.applyStatusBarFontFamily(this.element);
++
+ 		return this.element;
+ 	}
+ 
++	private applyStatusBarFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++		const family = this.configurationService.getValue<string>('workbench.statusBar.experimental.fontFamily');
++		if (family) {
++			target.style.setProperty('--vscode-workbench-statusbar-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-statusbar-font-family');
++		}
++	}
++
+ 	private createInitialStatusbarEntries(): void {
+ 
+ 		// Add items in order according to alignment
+diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
+index 3eaad2e..8a9eb0e 100644
+--- a/src/vs/workbench/browser/workbench.contribution.ts
++++ b/src/vs/workbench/browser/workbench.contribution.ts
+@@ -667,6 +667,44 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+ 				description: localize('workbench.fontFamily', "Controls the font family in the workbench."),
+ 				'tags': ['experimental']
+ 			},
++			'workbench.experimental.fontSize': {
++				type: 'number',
++				default: 13,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('workbench.fontSize', "Controls the font size in pixels for the workbench."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.sideBar.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('sideBarFontFamily', "Controls the font family in the side bar."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.statusBar.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('statusBarFontFamily', "Controls the font family in the status bar."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.tabs.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('tabsFontFamily', "Controls the font family in editor tabs."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.bottomPane.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('bottomPaneFontFamily', "Controls the font family in the bottom panel."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.activityBar.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('activityBarFontFamily', "Controls the font family in the activity bar."),
++				'tags': ['accessibility', 'experimental']
++			},
+ 			'workbench.settings.editor': {
+ 				'type': 'string',
+ 				'enum': ['ui', 'json'],
+diff --git a/src/vs/workbench/browser/workbench.ts b/src/vs/workbench/browser/workbench.ts
+index 7259aff..ee4cbf8 100644
+--- a/src/vs/workbench/browser/workbench.ts
++++ b/src/vs/workbench/browser/workbench.ts
+@@ -235,9 +235,12 @@ export class Workbench extends Layout {
+ 			if (e.affectsConfiguration('workbench.fontAliasing')) {
+ 				this.updateFontAliasing(configurationService);
+ 			}
+-			else if (e.affectsConfiguration('workbench.experimental.fontFamily')) {
++			if (e.affectsConfiguration('workbench.experimental.fontFamily')) {
+ 				this.updateFontFamily(configurationService);
+ 			}
++			if (e.affectsConfiguration('workbench.experimental.fontSize')) {
++				this.updateFontSize(configurationService);
++			}
+ 		}));
+ 
+ 		// Font Info
+@@ -297,6 +300,33 @@ export class Workbench extends Layout {
+ 		}
+ 	}
+ 
++	private fontSize: number | undefined;
++	private fontSizeUserSet: boolean | undefined;
++	private updateFontSize(configurationService: IConfigurationService) {
++		const raw = configurationService.getValue<number>('workbench.experimental.fontSize');
++		const size = Math.max(6, Math.min(32, typeof raw === 'number' ? raw : 13));
++
++		const inspected = configurationService.inspect<number>('workbench.experimental.fontSize');
++		const isUserSet = inspected.userValue !== undefined
++			|| inspected.userLocalValue !== undefined
++			|| inspected.userRemoteValue !== undefined
++			|| inspected.workspaceValue !== undefined
++			|| inspected.workspaceFolderValue !== undefined;
++
++		if (this.fontSize === size && this.fontSizeUserSet === isUserSet) {
++			return;
++		}
++
++		this.fontSize = size;
++		this.fontSizeUserSet = isUserSet;
++
++		if (isUserSet) {
++			this.mainContainer.style.setProperty('--vscode-workbench-font-size', `${size}px`);
++		} else {
++			this.mainContainer.style.removeProperty('--vscode-workbench-font-size');
++		}
++	}
++
+ 	private fontFamily: string | undefined;
+ 	private updateFontFamily(configurationService: IConfigurationService) {
+ 		let family = configurationService.getValue<string>('workbench.experimental.fontFamily');
+@@ -360,6 +390,7 @@ export class Workbench extends Layout {
+ 		this.updateFontAliasing(configurationService);
+ 
+ 		this.updateFontFamily(configurationService);
++		this.updateFontSize(configurationService);
+ 
+ 		// Warm up font cache information before building up too many dom elements
+ 		this.restoreFontInfo(storageService, configurationService);

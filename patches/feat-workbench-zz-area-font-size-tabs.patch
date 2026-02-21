@@ -1,0 +1,223 @@
+diff --git a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
+index a946cb7..4db07a2 100644
+--- a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
++++ b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
+@@ -47,6 +47,7 @@ import { IBaseActionViewItemOptions } from '../../../../base/browser/ui/actionba
+ import { MarkdownString } from '../../../../base/common/htmlContent.js';
+ import { IManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
+ import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { FONT, inspectFontSize, updateTabsSize } from '../../../../base/common/font.js';
+ import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
+ 
+ export class EditorCommandsContextActionRunner extends ActionRunner {
+@@ -100,10 +101,12 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 	protected readonly groupTransfer = LocalSelectionTransfer.getInstance<DraggedEditorGroupIdentifier>();
+ 	protected readonly treeItemsTransfer = LocalSelectionTransfer.getInstance<DraggedTreeItemsIdentifier>();
+ 
+-	private static readonly EDITOR_TAB_HEIGHT = {
+-		normal: 35 as const,
+-		compact: 22 as const
+-	};
++	private static get EDITOR_TAB_HEIGHT() {
++		return {
++			normal: FONT.tabsSize35,
++			compact: FONT.tabsSize22
++		};
++	}
+ 
+ 	protected editorActionsToolbarContainer: HTMLElement | undefined;
+ 	private editorActionsToolbar: WorkbenchToolBar | undefined;
+@@ -153,6 +156,11 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 			if (e.affectsConfiguration('workbench.tabs.experimental.fontFamily')) {
+ 				this.applyTabsFontFamily();
+ 			}
++			if (e.affectsConfiguration('workbench.tabs.experimental.fontSize')) {
++				this.applyTabsFontSize();
++				this.updateTabHeight();
++				this.groupView.relayout();
++			}
+ 		}));
+ 
+ 		// Context Keys
+@@ -176,11 +184,37 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 	}
+ 
+ 	protected create(parent: HTMLElement): HTMLElement {
++		this.applyTabsFontSize(parent);
+ 		this.updateTabHeight();
+ 		this.applyTabsFontFamily(parent);
+ 		return parent;
+ 	}
+ 
++	private applyTabsFontSize(container?: HTMLElement): void {
++		const target = container ?? this.parent;
++		if (!target) {
++			return;
++		}
++
++		const { isUserSet, size } = inspectFontSize(this.configurationService, 'workbench.tabs.experimental.fontSize', 13);
++
++		if (isUserSet) {
++			updateTabsSize(size);
++			target.style.setProperty('--vscode-workbench-tabs-font-size', `${size}px`);
++			target.style.setProperty('--vscode-workbench-tabs-compact-height', `${FONT.tabsSize22}px`);
++			target.style.setProperty('--vscode-workbench-tabs-sticky-compact-width', `${FONT.tabsSize38}px`);
++			target.style.setProperty('--vscode-workbench-tabs-sticky-shrink-width', `${FONT.tabsSize80}px`);
++			target.style.setProperty('--vscode-workbench-tabs-fit-width', `${FONT.tabsSize120}px`);
++		} else {
++			updateTabsSize(13);
++			target.style.removeProperty('--vscode-workbench-tabs-font-size');
++			target.style.removeProperty('--vscode-workbench-tabs-compact-height');
++			target.style.removeProperty('--vscode-workbench-tabs-sticky-compact-width');
++			target.style.removeProperty('--vscode-workbench-tabs-sticky-shrink-width');
++			target.style.removeProperty('--vscode-workbench-tabs-fit-width');
++		}
++	}
++
+ 	private applyTabsFontFamily(container?: HTMLElement): void {
+ 		const target = container ?? this.parent;
+ 		if (!target) {
+diff --git a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
+index e9e0b2b..fc1bebe 100644
+--- a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
++++ b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
+@@ -23,7 +23,7 @@
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .title-label a,
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab .tab-label a {
+-	font-size: 13px;
++	font-size: var(--vscode-workbench-tabs-font-size, var(--vscode-workbench-font-size, 13px));
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .monaco-icon-label::before,
+diff --git a/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css b/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css
+index a24f761..8c72d17 100644
+--- a/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css
++++ b/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css
+@@ -7,23 +7,23 @@
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control {
+ 	flex: 1 100%;
+-	height: 22px;
++	height: var(--vscode-workbench-tabs-compact-height, 22px);
+ 	cursor: default;
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .monaco-icon-label {
+-	height: 22px;
+-	line-height: 22px;
++	height: var(--vscode-workbench-tabs-compact-height, 22px);
++	line-height: var(--vscode-workbench-tabs-compact-height, 22px);
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .monaco-icon-label::before {
+-	height: 22px; /* tweak the icon size of the editor labels when icons are enabled */
++	height: var(--vscode-workbench-tabs-compact-height, 22px); /* tweak the icon size of the editor labels when icons are enabled */
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .outline-element-icon {
+ 	padding-right: 3px;
+-	height: 22px; /* tweak the icon size of the editor labels when icons are enabled */
+-	line-height: 22px;
++	height: var(--vscode-workbench-tabs-compact-height, 22px); /* tweak the icon size of the editor labels when icons are enabled */
++	line-height: var(--vscode-workbench-tabs-compact-height, 22px);
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .monaco-breadcrumb-item {
+@@ -32,7 +32,7 @@
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .monaco-breadcrumb-item::before {
+ 	width: 16px;
+-	height: 22px;
++	height: var(--vscode-workbench-tabs-compact-height, 22px);
+ 	display: flex;
+ 	align-items: center;
+ 	justify-content: center;
+diff --git a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
+index 924d9b3..58efc4d 100644
+--- a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
++++ b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
+@@ -160,7 +160,7 @@
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fit {
+-	width: 120px;
++	width: var(--vscode-workbench-tabs-fit-width, 120px);
+ 	min-width: fit-content;
+ 	flex-shrink: 0;
+ }
+@@ -183,7 +183,7 @@
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink {
+-	min-width: 80px;
++	min-width: var(--vscode-workbench-tabs-sticky-shrink-width, 80px);
+ 	flex-basis: 0; /* all tabs are even */
+ 	flex-grow: 1; /* all tabs grow even */
+ 	max-width: fit-content;
+@@ -210,9 +210,9 @@
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.sticky-compact {
+ 
+ 	/** Sticky compact tabs have a fixed width of 38px */
+-	width: 38px;
+-	min-width: 38px;
+-	max-width: 38px;
++	width: var(--vscode-workbench-tabs-sticky-compact-width, 38px);
++	min-width: var(--vscode-workbench-tabs-sticky-compact-width, 38px);
++	max-width: var(--vscode-workbench-tabs-sticky-compact-width, 38px);
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fit.sticky-shrink,
+@@ -220,9 +220,9 @@
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.sticky-shrink {
+ 
+ 	/** Sticky shrink tabs have a fixed width of 80px */
+-	width: 80px;
+-	min-width: 80px;
+-	max-width: 80px;
++	width: var(--vscode-workbench-tabs-sticky-shrink-width, 80px);
++	min-width: var(--vscode-workbench-tabs-sticky-shrink-width, 80px);
++	max-width: var(--vscode-workbench-tabs-sticky-shrink-width, 80px);
+ }
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container.disable-sticky-tabs > .tab.sizing-fit.sticky-compact,
+@@ -257,7 +257,7 @@
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink.tab-actions-left,
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.tab-actions-left {
+-	min-width: 80px; /* make more room for close button when it shows to the left */
++	min-width: var(--vscode-workbench-tabs-sticky-shrink-width, 80px); /* make more room for close button when it shows to the left */
+ 	padding-right: 5px; /* we need less room when sizing is shrink/fixed */
+ }
+ 
+diff --git a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
+index b0befd9..ef06bcc 100644
+--- a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
++++ b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
+@@ -4,6 +4,7 @@
+  *--------------------------------------------------------------------------------------------*/
+ 
+ import './media/multieditortabscontrol.css';
++import { FONT } from '../../../../base/common/font.js';
+ import { isLinux, isMacintosh, isWindows } from '../../../../base/common/platform.js';
+ import { shorten } from '../../../../base/common/labels.js';
+ import { EditorResourceAccessor, Verbosity, IEditorPartOptions, SideBySideEditor, DEFAULT_EDITOR_ASSOCIATION, EditorInputCapabilities, IUntypedEditorInput, preventEditorClose, EditorCloseMethod, EditorsOrder, IToolbarActions } from '../../../common/editor.js';
+@@ -94,11 +95,13 @@ export class MultiEditorTabsControl extends EditorTabsControl {
+ 		large: 10 as const
+ 	};
+ 
+-	private static readonly TAB_WIDTH = {
+-		compact: 38 as const,
+-		shrink: 80 as const,
+-		fit: 120 as const
+-	};
++	private static get TAB_WIDTH() {
++		return {
++			compact: FONT.tabsSize38,
++			shrink: FONT.tabsSize80,
++			fit: FONT.tabsSize120
++		};
++	}
+ 
+ 	private static readonly DRAG_OVER_OPEN_TAB_THRESHOLD = 1500;
+ 
