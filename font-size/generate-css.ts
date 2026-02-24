@@ -1,40 +1,81 @@
 #!/usr/bin/env node
 
+import path from 'node:path';
 import process from 'node:process';
 import fse from '@zokugun/fs-extra-plus/async';
 import { err, OK, type Result, stringifyError, xtry } from '@zokugun/xtry';
-import fg from 'fast-glob';
 import postcss, { type Rule } from 'postcss';
 
-const PREFIX_MAIN = '.monaco-workbench .part.sidebar';
-const PREFIX_AUX = '.monaco-workbench .part.auxiliarybar';
-const DEFAULT_GLOB = '../vscode/**/*.css';
+type Area = {
+	name: string;
+	defaultSize: number;
+	files: string[];
+	prefixes: string[];
+};
+
 const PX_REGEX = /(-?\d+(\.\d+)?)px\b/g;
 const COEFF_PRECISION = 6;
+const HEADER = '/*** Generated for Custom Font Size ***/';
+
+const AREAS: Record<string, Area> = {
+	activitybar: {
+		name: 'activitybar',
+		defaultSize: 16,
+		files: ['src/vs/workbench/browser/parts/activitybar/media/activityaction.css'],
+		prefixes: ['.monaco-workbench .activitybar'],
+	},
+	bottompane: {
+		name: 'bottompane',
+		defaultSize: 13,
+		files: ['src/vs/workbench/browser/parts/panel/media/panelpart.css'],
+		prefixes: ['.monaco-workbench .part.panel'],
+	},
+	statusbar: {
+		name: 'statusbar',
+		defaultSize: 12,
+		files: ['src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css'],
+		prefixes: ['.monaco-workbench .part.statusbar'],
+	},
+	tabs: {
+		name: 'tabs',
+		defaultSize: 13,
+		files: ['src/vs/workbench/browser/parts/editor/media/editortabscontrol.css', 'src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css', 'src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css'],
+		prefixes: ['.monaco-workbench .part.editor > .content .editor-group-container'],
+	},
+};
 
 function formatCoefficient(n: number): string {
 	const fixed = n.toFixed(COEFF_PRECISION);
 	return fixed.replace(/\.?0+$/, '');
 }
 
-function replacePx(_match: string, numStr: string): string {
-	const pxValue = Number.parseFloat(numStr);
-	const coeff = formatCoefficient(pxValue / 13);
+function replacePx(area: Area) {
+	return (match: string, numStr: string): string => {
+		const pxValue = Number.parseFloat(numStr);
 
-	return `calc(var(--vscode-workbench-sidebar-font-size) * ${coeff})`;
+		if(pxValue === 1) {
+			return match;
+		}
+
+		const coeff = formatCoefficient(pxValue / area.defaultSize);
+
+		return `calc(var(--vscode-workbench-${area.name}-font-size) * ${coeff})`;
+	};
 }
 
-function transformPxValue(value: string): string {
-	return value.replaceAll(PX_REGEX, replacePx);
+function transformPxValue(value: string, area: Area): string {
+	return value.replaceAll(PX_REGEX, replacePx(area));
 }
 
-async function processFile(filePath: string): Promise<Result<void, string>> {
-	const cssResult = await fse.readFile(filePath, 'utf8');
-	if(cssResult.fails) {
-		return err(stringifyError(cssResult.error));
+async function processFile(filePath: string, area: Area): Promise<Result<void, string>> {
+	const readResult = await fse.readFile(filePath, 'utf8');
+	if(readResult.fails) {
+		return err(stringifyError(readResult.error));
 	}
 
-	const postcssResult = xtry(() => postcss.parse(cssResult.value, { from: filePath }));
+	const content = extractOriginal(readResult.value);
+
+	const postcssResult = xtry(() => postcss.parse(content, { from: filePath }));
 	if(postcssResult.fails) {
 		return err(`Failed to parse ${filePath}: ${stringifyError(postcssResult.error)}`);
 	}
@@ -47,7 +88,7 @@ async function processFile(filePath: string): Promise<Result<void, string>> {
 
 		rule.walkDecls((declaration) => {
 			if(PX_REGEX.test(declaration.value)) {
-				const newValue = transformPxValue(declaration.value);
+				const newValue = transformPxValue(declaration.value, area);
 
 				declarationsToAdd.push({ prop: declaration.prop, value: newValue });
 
@@ -57,9 +98,16 @@ async function processFile(filePath: string): Promise<Result<void, string>> {
 
 		if(hasPx && declarationsToAdd.length > 0) {
 			const selectors = (rule.selectors && rule.selectors.length > 0)	? rule.selectors : [rule.selector];
-			const mainSelectors = selectors.map((selector) => prefixSelector(selector, PREFIX_MAIN)).join(', ');
-			const auxSelectors = selectors.map((selector) => prefixSelector(selector, PREFIX_AUX)).join(', ');
-			const newRule = postcss.rule({ selector: `${mainSelectors}, ${auxSelectors}` });
+			const prefixeds: string[] = [];
+
+			for(const prefix of area.prefixes) {
+				const parts = prefix.split(' ');
+				const prefixed = selectors.map((s) => prefixSelector(s, parts)).join(', ');
+
+				prefixeds.push(prefixed);
+			}
+
+			const newRule = postcss.rule({ selector: `${prefixeds.join(', ')}` });
 
 			let length = 0;
 
@@ -77,9 +125,9 @@ async function processFile(filePath: string): Promise<Result<void, string>> {
 	});
 
 	if(generatedRoot.nodes && generatedRoot.nodes.length > 0) {
-		const writeResult = await fse.writeFile(filePath, cssResult.value + '\n\n\n' + generatedRoot.toString(), 'utf8');
+		const writeResult = await fse.writeFile(filePath, content + `\n\n\n${HEADER}\n\n` + generatedRoot.toString(), 'utf8');
 		if(writeResult.fails) {
-			return err(stringifyError(cssResult.error));
+			return err(stringifyError(readResult.error));
 		}
 
 		console.log(`Generated: ${filePath}`);
@@ -91,48 +139,77 @@ async function processFile(filePath: string): Promise<Result<void, string>> {
 	return OK;
 }
 
-async function main(): Promise<void> {
-	const pattern = process.argv[2] || DEFAULT_GLOB;
-	const entries = await fg(pattern, { dot: true, onlyFiles: true });
+function extractOriginal(content: string): string {
+	const index = content.indexOf(HEADER);
 
-	if(entries.length === 0) {
-		console.log(`No files matched pattern: ${pattern}`);
+	if(index === -1) {
+		return content;
+	}
+
+	return content.slice(0, Math.max(0, index - 3));
+}
+
+function extractStyle(selector: string): string {
+	const match = /^(\.\w+)/.exec(selector);
+
+	return match?.[1] ?? '';
+}
+
+function mergeSelector(selectors: string[], prefixes: string[], index: number): void {
+	if(index >= prefixes.length) {
 		return;
 	}
 
-	for(const file of entries) {
-		const result = await processFile(file);
-		if(result.fails) {
-			console.error(`Error processing ${file}:`, result.error);
+	const selector = selectors[index];
+	const prefix = prefixes[index];
+
+	const style = extractStyle(prefix);
+
+	if(selector === style) {
+		if(prefix.length > style.length) {
+			selectors[index] = prefix;
 		}
+
+		mergeSelector(selectors, prefixes, index + 1);
+	}
+	else if(selector.startsWith(style)) {
+		mergeSelector(selectors, prefixes, index + 1);
+	}
+	else {
+		selectors.splice(index + 1, 0, ...prefixes.slice(index));
 	}
 }
 
-function prefixSelector(selector: string, prefix: string): string {
+function prefixSelector(selector: string, prefixParts: string[]): string {
 	const parts = selector.split(' ');
-	if(parts[0].startsWith('.monaco-workbench')) {
-		if(parts[1] === '.part') {
-			parts.splice(0, 2);
-		}
-		else {
-			parts.splice(0, 1);
-		}
 
-		parts.unshift(prefix);
+	if(parts[0] === '.mac' || parts[0] === '.linux' || parts[0] === '.windows') {
+		parts[0] = `${prefixParts[0]}${parts[0]}`;
 
-		return parts.join(' ');
-	}
-	else if(parts[0] === '.mac' || parts[0] === '.linux' || parts[0] === '.windows') {
-		const prefixParts = prefix.split(' ');
-
-		parts[0] = `${prefixParts.shift()}${parts[0]}`;
-
-		parts.splice(1, 0, ...prefixParts);
-
-		return parts.join(' ');
+		parts.splice(1, 0, ...prefixParts.slice(1));
 	}
 	else {
-		return `${prefix} ${selector}`;
+		mergeSelector(parts, prefixParts, 0);
+	}
+
+	return parts.join(' ');
+}
+
+async function main(): Promise<void> {
+	const name = process.argv[2] || 'sidebar';
+	const area = AREAS[name];
+
+	if(!area) {
+		console.log(`No area found for ${name}`);
+		console.log(`\nAvailable areas:\n- ${Object.keys(AREAS).join('\n- ')}`);
+		return;
+	}
+
+	for(const file of area.files) {
+		const result = await processFile(path.join('..', 'vscode', file), area);
+		if(result.fails) {
+			console.error(`Error processing ${file}:`, result.error);
+		}
 	}
 }
 

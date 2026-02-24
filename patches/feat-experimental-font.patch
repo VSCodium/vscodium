@@ -260,11 +260,30 @@ index 0b2fcbb..6370e6f 100644
  	}
 diff --git a/src/vs/base/common/font.ts b/src/vs/base/common/font.ts
 new file mode 100644
-index 0000000..2be97d7
+index 0000000..9b2b46c
 --- /dev/null
 +++ b/src/vs/base/common/font.ts
-@@ -0,0 +1,56 @@
+@@ -0,0 +1,184 @@
++import { IConfigurationService } from '../../platform/configuration/common/configuration.js';
++
 +export const FONT = {
++	activityBarSize: 16,
++	activityBarSize16: 16,
++	activityBarSize24: 24,
++	activityBarSize32: 32,
++	activityBarSize36: 36,
++	activityBarSize48: 48,
++
++	bottomPaneSize: 13,
++	bottomPaneSize22: 22,
++
++	defaultSize: 13,
++	defaultActivityBarSize: 16,
++	defaultBottomPaneSize: 13,
++	defaultSidebarSize: 13,
++	defaultStatusBarSize: 12,
++	defaultTabsSize: 13,
++
 +	sidebarSize: 13,
 +	sidebarSize8: 8,
 +	sidebarSize10: 10,
@@ -282,44 +301,642 @@ index 0000000..2be97d7
 +	sidebarSize44: 44,
 +	sidebarSize62: 62,
 +	sidebarSize72: 72,
++
++	statusBarSize: 12,
++	statusBarSize22: 22,
++
++	tabsSize: 13,
++	tabsSize22: 22,
++	tabsSize35: 35,
++	tabsSize38: 38,
++	tabsSize80: 80,
++	tabsSize120: 120,
 +};
 +
-+const COEFF_8 = 8/13;
-+const COEFF_10 = 10/13;
-+const COEFF_16 = 16/13;
-+const COEFF_17 = 17/13;
-+const COEFF_18 = 18/13;
-+const COEFF_20 = 20/13;
-+const COEFF_22 = 22/13;
-+const COEFF_23 = 23/13;
-+const COEFF_24 = 24/13;
-+const COEFF_26 = 26/13;
-+const COEFF_28 = 28/13;
-+const COEFF_34 = 34/13;
-+const COEFF_39 = 39/13;
-+const COEFF_44 = 44/13;
-+const COEFF_62 = 62/13;
-+const COEFF_72 = 72/13;
++// Activity bar coefficients (base 16)
++const ACTIVITY_BAR_COEFF_24 = 24/16;
++const ACTIVITY_BAR_COEFF_32 = 32/16;
++const ACTIVITY_BAR_COEFF_36 = 36/16;
++const ACTIVITY_BAR_COEFF_48 = 48/16;
++
++// Panel coefficients (base 13)
++const BOTTOM_PANEL_COEFF_22 = 22/13;
++
++// Workbench coefficients (base 13)
++const DEFAULT_COEFF_12 = 12/13;
++const DEFAULT_COEFF_16 = 16/13;
++
++// Sidebar coefficients (base 13)
++const SIDE_BAR_COEFF_8 = 8/13;
++const SIDE_BAR_COEFF_10 = 10/13;
++const SIDE_BAR_COEFF_16 = 16/13;
++const SIDE_BAR_COEFF_17 = 17/13;
++const SIDE_BAR_COEFF_18 = 18/13;
++const SIDE_BAR_COEFF_20 = 20/13;
++const SIDE_BAR_COEFF_22 = 22/13;
++const SIDE_BAR_COEFF_23 = 23/13;
++const SIDE_BAR_COEFF_24 = 24/13;
++const SIDE_BAR_COEFF_26 = 26/13;
++const SIDE_BAR_COEFF_28 = 28/13;
++const SIDE_BAR_COEFF_34 = 34/13;
++const SIDE_BAR_COEFF_39 = 39/13;
++const SIDE_BAR_COEFF_44 = 44/13;
++const SIDE_BAR_COEFF_62 = 62/13;
++const SIDE_BAR_COEFF_72 = 72/13;
++
++// Status bar coefficients (base 12)
++const STATUS_BAR_COEFF_22 = 22/12;
++
++// Tabs coefficients (base 13)
++const TABS_COEFF_22 = 22/13;
++const TABS_COEFF_35 = 35/13;
++const TABS_COEFF_38 = 38/13;
++const TABS_COEFF_80 = 80/13;
++const TABS_COEFF_120 = 120/13;
++
++/**
++ * Inspect a configuration value and return whether it was explicitly set by the user,
++ * along with the clamped numeric value.
++ */
++export function inspectFontSize(
++	configurationService:IConfigurationService,
++	key: string,
++	defaultSize: number,
++	min: number = 6,
++	max: number = 32
++): { isUserSet: boolean; size: number } {
++	const inspected = configurationService.inspect<number>(key);
++	const isUserSet = inspected.userValue !== undefined
++		|| inspected.userLocalValue !== undefined
++		|| inspected.userRemoteValue !== undefined
++		|| inspected.workspaceValue !== undefined
++		|| inspected.workspaceFolderValue !== undefined;
++
++	const raw = configurationService.getValue<number>(key);
++	const size = Math.max(min, Math.min(max, typeof raw === 'number' ? raw : defaultSize));
++
++	return { isUserSet, size };
++}
++
++export function getFontSize(configurationService: IConfigurationService, key: string, defaultSize: number, min: number = 6,	max: number = 32): number {
++	const inspected = configurationService.inspect<number>(key);
++	const isUserSet = inspected.userValue !== undefined	|| inspected.userLocalValue !== undefined || inspected.userRemoteValue !== undefined || inspected.workspaceValue !== undefined || inspected.workspaceFolderValue !== undefined;
++
++	if(isUserSet) {
++		const raw = configurationService.getValue<number>(key);
++		const size = Math.max(min, Math.min(max, typeof raw === 'number' ? raw : defaultSize));
++
++		return size;
++	}
++	else {
++		return defaultSize
++	}
++}
++
++export function updateActivityBarSize(size: number): void {
++	FONT.activityBarSize = size;
++	FONT.activityBarSize24 = size * ACTIVITY_BAR_COEFF_24;
++	FONT.activityBarSize32 = size * ACTIVITY_BAR_COEFF_32;
++	FONT.activityBarSize36 = size * ACTIVITY_BAR_COEFF_36;
++	FONT.activityBarSize48 = size * ACTIVITY_BAR_COEFF_48;
++}
++
++export function updateDefaultSize(size: number): void {
++	FONT.defaultSize = size;
++	FONT.defaultActivityBarSize = size * DEFAULT_COEFF_16
++	FONT.defaultBottomPaneSize = size
++	FONT.defaultSidebarSize = size
++	FONT.defaultStatusBarSize = size * DEFAULT_COEFF_12
++	FONT.defaultTabsSize = size
++}
++
++export function updatePanelSize(size: number): void {
++	FONT.bottomPaneSize = size;
++	FONT.bottomPaneSize22 = size * BOTTOM_PANEL_COEFF_22;
++}
 +
 +export function updateSidebarSize(size: number): void {
 +	FONT.sidebarSize = size;
-+	FONT.sidebarSize8 = size * COEFF_8;
-+	FONT.sidebarSize10 = size * COEFF_10;
-+	FONT.sidebarSize16 = size * COEFF_16;
-+	FONT.sidebarSize17 = size * COEFF_17;
-+	FONT.sidebarSize18 = size * COEFF_18;
-+	FONT.sidebarSize20 = size * COEFF_20;
-+	FONT.sidebarSize22 = size * COEFF_22;
-+	FONT.sidebarSize23 = size * COEFF_23;
-+	FONT.sidebarSize24 = size * COEFF_24;
-+	FONT.sidebarSize26 = size * COEFF_26;
-+	FONT.sidebarSize28 = size * COEFF_28;
-+	FONT.sidebarSize34 = size * COEFF_34;
-+	FONT.sidebarSize39 = size * COEFF_39;
-+	FONT.sidebarSize44 = size * COEFF_44;
-+	FONT.sidebarSize62 = size * COEFF_62;
-+	FONT.sidebarSize72 = size * COEFF_72;
++	FONT.sidebarSize8 = size * SIDE_BAR_COEFF_8;
++	FONT.sidebarSize10 = size * SIDE_BAR_COEFF_10;
++	FONT.sidebarSize16 = size * SIDE_BAR_COEFF_16;
++	FONT.sidebarSize17 = size * SIDE_BAR_COEFF_17;
++	FONT.sidebarSize18 = size * SIDE_BAR_COEFF_18;
++	FONT.sidebarSize20 = size * SIDE_BAR_COEFF_20;
++	FONT.sidebarSize22 = size * SIDE_BAR_COEFF_22;
++	FONT.sidebarSize23 = size * SIDE_BAR_COEFF_23;
++	FONT.sidebarSize24 = size * SIDE_BAR_COEFF_24;
++	FONT.sidebarSize26 = size * SIDE_BAR_COEFF_26;
++	FONT.sidebarSize28 = size * SIDE_BAR_COEFF_28;
++	FONT.sidebarSize34 = size * SIDE_BAR_COEFF_34;
++	FONT.sidebarSize39 = size * SIDE_BAR_COEFF_39;
++	FONT.sidebarSize44 = size * SIDE_BAR_COEFF_44;
++	FONT.sidebarSize62 = size * SIDE_BAR_COEFF_62;
++	FONT.sidebarSize72 = size * SIDE_BAR_COEFF_72;
 +}
++
++export function updateStatusBarSize(size: number): void {
++	FONT.statusBarSize = size;
++	FONT.statusBarSize22 = size * STATUS_BAR_COEFF_22;
++}
++
++export function updateTabsSize(size: number): void {
++	FONT.tabsSize = size;
++	FONT.tabsSize22 = size * TABS_COEFF_22;
++	FONT.tabsSize35 = size * TABS_COEFF_35;
++	FONT.tabsSize38 = size * TABS_COEFF_38;
++	FONT.tabsSize80 = size * TABS_COEFF_80;
++	FONT.tabsSize120 = size * TABS_COEFF_120;
++}
+\ No newline at end of file
+diff --git a/src/vs/base/test/common/font.test.ts b/src/vs/base/test/common/font.test.ts
+new file mode 100644
+index 0000000..62a49d5
+--- /dev/null
++++ b/src/vs/base/test/common/font.test.ts
+@@ -0,0 +1,482 @@
++/*---------------------------------------------------------------------------------------------
++ *  Copyright (c) VSCodium. All rights reserved.
++ *  Licensed under the MIT License. See License.txt in the project root for license information.
++ *--------------------------------------------------------------------------------------------*/
++
++import assert from 'assert';
++import { ensureNoDisposablesAreLeakedInTestSuite } from './utils.js';
++import { FONT, updateSidebarSize, updateStatusBarSize, updatePanelSize, updateActivityBarSize, updateTabsSize } from '../../common/font.js';
++
++/**
++ * Test file for src/vs/base/common/font.ts
++ *
++ * Tests all update*Size() functions for:
++ *   - Default values match upstream VS Code hardcoded constants
++ *   - Proportional scaling preserves ratios at non-default sizes
++ *   - Boundary values (minimum=6, maximum=32) produce positive values
++ *   - Reset to default restores original values
++ *   - Non-divisible sizes produce consistent coefficient-based output
++ *   - Cross-area updates do not mutate unrelated fields
++ */
++
++const EPSILON = 1e-9;
++
++/** Assert two numbers are equal within floating-point tolerance */
++function assertClose(actual: number, expected: number, message?: string): void {
++	const diff = Math.abs(actual - expected);
++	assert.ok(diff < EPSILON, `${message ?? ''} expected ${expected}, got ${actual} (diff: ${diff})`);
++}
++
++/**
++ * Snapshot all FONT fields to detect unintended mutations.
++ * Returns a plain object copy of every enumerable property.
++ */
++function snapshotFont(): Record<string, number> {
++	const snap: Record<string, number> = {};
++	for (const key of Object.keys(FONT)) {
++		snap[key] = (FONT as Record<string, number>)[key];
++	}
++	return snap;
++}
++
++/** Assert that specific fields in FONT have not changed from a snapshot */
++function assertFieldsUnchanged(snapshot: Record<string, number>, prefix: string, message: string): void {
++	for (const key of Object.keys(snapshot)) {
++		if (key.startsWith(prefix)) {
++			assertClose((FONT as Record<string, number>)[key], snapshot[key], `${message}: ${key}`);
++		}
++	}
++}
++
++suite('FONT - Sidebar Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	// Capture defaults before any test mutates them
++	const DEFAULTS = snapshotFont();
++
++	teardown(() => {
++		// Reset after each test
++		updateSidebarSize(13);
++	});
++
++	test('defaults match upstream VS Code constants', () => {
++		assert.strictEqual(FONT.sidebarSize, 13);
++		assert.strictEqual(FONT.sidebarSize8, 8);
++		assert.strictEqual(FONT.sidebarSize10, 10);
++		assert.strictEqual(FONT.sidebarSize16, 16);
++		assert.strictEqual(FONT.sidebarSize17, 17);
++		assert.strictEqual(FONT.sidebarSize18, 18);
++		assert.strictEqual(FONT.sidebarSize20, 20);
++		assert.strictEqual(FONT.sidebarSize22, 22);
++		assert.strictEqual(FONT.sidebarSize23, 23);
++		assert.strictEqual(FONT.sidebarSize24, 24);
++		assert.strictEqual(FONT.sidebarSize26, 26);
++		assert.strictEqual(FONT.sidebarSize28, 28);
++		assert.strictEqual(FONT.sidebarSize34, 34);
++		assert.strictEqual(FONT.sidebarSize39, 39);
++		assert.strictEqual(FONT.sidebarSize44, 44);
++		assert.strictEqual(FONT.sidebarSize62, 62);
++		assert.strictEqual(FONT.sidebarSize72, 72);
++	});
++
++	test('proportional scaling preserves ratios at 2x', () => {
++		updateSidebarSize(26); // 2x default
++		assert.strictEqual(FONT.sidebarSize, 26);
++		assert.strictEqual(FONT.sidebarSize8, 16);
++		assert.strictEqual(FONT.sidebarSize22, 44);
++		assert.strictEqual(FONT.sidebarSize44, 88);
++		assert.strictEqual(FONT.sidebarSize72, 144);
++	});
++
++	test('non-divisible size produces consistent coefficient-based values', () => {
++		updateSidebarSize(7);
++		assertClose(FONT.sidebarSize22, 7 * (22 / 13));
++		assertClose(FONT.sidebarSize44, 7 * (44 / 13));
++		assertClose(FONT.sidebarSize72, 7 * (72 / 13));
++	});
++
++	test('another non-divisible size (31)', () => {
++		updateSidebarSize(31);
++		assertClose(FONT.sidebarSize22, 31 * (22 / 13));
++		assertClose(FONT.sidebarSize44, 31 * (44 / 13));
++	});
++
++	test('minimum value (6) produces positive values', () => {
++		updateSidebarSize(6);
++		assert.strictEqual(FONT.sidebarSize, 6);
++		assert.ok(FONT.sidebarSize8 > 0, 'sidebarSize8 must be positive');
++		assert.ok(FONT.sidebarSize10 > 0, 'sidebarSize10 must be positive');
++		assert.ok(FONT.sidebarSize22 > 0, 'sidebarSize22 must be positive');
++		assert.ok(FONT.sidebarSize72 > 0, 'sidebarSize72 must be positive');
++	});
++
++	test('maximum value (32) produces reasonable values', () => {
++		updateSidebarSize(32);
++		assert.strictEqual(FONT.sidebarSize, 32);
++		assert.ok(FONT.sidebarSize22 > 40, 'row height should scale up');
++		assert.ok(FONT.sidebarSize22 < 80, 'row height should not be extreme');
++	});
++
++	test('reset to default restores all values', () => {
++		updateSidebarSize(20);
++		assert.notStrictEqual(FONT.sidebarSize22, DEFAULTS.sidebarSize22);
++		updateSidebarSize(13);
++		assertFieldsUnchanged(DEFAULTS, 'sidebar', 'after reset');
++	});
++
++	test('multiple updates in sequence are idempotent at same value', () => {
++		updateSidebarSize(18);
++		const snap = snapshotFont();
++		updateSidebarSize(18);
++		assertFieldsUnchanged(snap, 'sidebar', 'idempotent');
++	});
++});
++
++suite('FONT - Status Bar Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updateStatusBarSize(12);
++	});
++
++	test('defaults match upstream VS Code status bar constants', () => {
++		assert.strictEqual(FONT.statusBarSize, 12);
++		assert.strictEqual(FONT.statusBarSize22, 22); // StatusbarPart.HEIGHT
++	});
++
++	test('proportional scaling at 2x', () => {
++		updateStatusBarSize(24);
++		assert.strictEqual(FONT.statusBarSize, 24);
++		assert.strictEqual(FONT.statusBarSize22, 44);
++	});
++
++	test('non-divisible size (7)', () => {
++		updateStatusBarSize(7);
++		assertClose(FONT.statusBarSize22, 7 * (22 / 12));
++	});
++
++	test('minimum value (6) produces positive height', () => {
++		updateStatusBarSize(6);
++		assert.strictEqual(FONT.statusBarSize, 6);
++		assert.ok(FONT.statusBarSize22 > 0, 'height must be positive');
++		assertClose(FONT.statusBarSize22, 6 * (22 / 12));
++	});
++
++	test('maximum value (32) produces reasonable height', () => {
++		updateStatusBarSize(32);
++		assertClose(FONT.statusBarSize22, 32 * (22 / 12));
++		assert.ok(FONT.statusBarSize22 > 50, 'height should scale up');
++		assert.ok(FONT.statusBarSize22 < 70, 'height should not be extreme');
++	});
++
++	test('reset to default restores values', () => {
++		updateStatusBarSize(20);
++		updateStatusBarSize(12);
++		assert.strictEqual(FONT.statusBarSize, 12);
++		assert.strictEqual(FONT.statusBarSize22, 22);
++	});
++});
++
++suite('FONT - Panel Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updatePanelSize(13);
++	});
++
++	test('defaults match sidebar defaults (same base size)', () => {
++		assert.strictEqual(FONT.bottomPaneSize, 13);
++		assert.strictEqual(FONT.bottomPaneSize22, 22);
++	});
++
++	test('panel and sidebar can have independent sizes', () => {
++		updatePanelSize(18);
++		assert.strictEqual(FONT.bottomPaneSize, 18);
++		assert.notStrictEqual(FONT.bottomPaneSize22, 22);
++		// Sidebar unchanged
++		assert.strictEqual(FONT.sidebarSize, 13);
++		assert.strictEqual(FONT.sidebarSize22, 22);
++	});
++
++	test('proportional scaling at 2x', () => {
++		updatePanelSize(26);
++		assert.strictEqual(FONT.bottomPaneSize22, 44);
++	});
++
++	test('non-divisible size (7)', () => {
++		updatePanelSize(7);
++		assertClose(FONT.bottomPaneSize22, 7 * (22 / 13));
++	});
++
++	test('minimum value (6)', () => {
++		updatePanelSize(6);
++		assert.ok(FONT.bottomPaneSize22 > 0, 'row height must be positive');
++		assert.ok(FONT.bottomPaneSize22 >= 10, 'row height at minimum should be usable');
++	});
++
++	test('maximum value (32)', () => {
++		updatePanelSize(32);
++		assert.ok(FONT.bottomPaneSize22 > 50, 'row height should scale up');
++	});
++
++	test('reset to default restores values', () => {
++		updatePanelSize(20);
++		updatePanelSize(13);
++		assert.strictEqual(FONT.bottomPaneSize, 13);
++		assert.strictEqual(FONT.bottomPaneSize22, 22);
++	});
++});
++
++suite('FONT - Activity Bar Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updateActivityBarSize(16);
++	});
++
++	test('defaults match upstream VS Code activity bar constants', () => {
++		assert.strictEqual(FONT.activityBarSize, 16);
++		assert.strictEqual(FONT.activityBarSize16, 16);  // COMPACT_ICON_SIZE
++		assert.strictEqual(FONT.activityBarSize24, 24);  // ICON_SIZE
++		assert.strictEqual(FONT.activityBarSize32, 32);  // COMPACT_ACTION_HEIGHT
++		assert.strictEqual(FONT.activityBarSize36, 36);  // COMPACT_ACTIVITYBAR_WIDTH
++		assert.strictEqual(FONT.activityBarSize48, 48);  // ACTION_HEIGHT / ACTIVITYBAR_WIDTH
++	});
++
++	test('proportional scaling at 2x', () => {
++		updateActivityBarSize(32);
++		assert.strictEqual(FONT.activityBarSize, 32);
++		assert.strictEqual(FONT.activityBarSize16, 32);  // compact icon = base size
++		assert.strictEqual(FONT.activityBarSize24, 48);
++		assert.strictEqual(FONT.activityBarSize32, 64);
++		assert.strictEqual(FONT.activityBarSize36, 72);
++		assert.strictEqual(FONT.activityBarSize48, 96);
++	});
++
++	test('compact constants scale correctly', () => {
++		updateActivityBarSize(20);
++		// Compact icon size = base size * (16/16) = 20
++		assertClose(FONT.activityBarSize16, 20 * (16 / 16));
++		// Compact width = base * (36/16) = 45
++		assertClose(FONT.activityBarSize36, 20 * (36 / 16));
++		// Compact action height = base * (32/16) = 40
++		assertClose(FONT.activityBarSize32, 20 * (32 / 16));
++	});
++
++	test('non-divisible size (7)', () => {
++		updateActivityBarSize(7);
++		assertClose(FONT.activityBarSize24, 7 * (24 / 16));
++		assertClose(FONT.activityBarSize48, 7 * (48 / 16));
++		assertClose(FONT.activityBarSize36, 7 * (36 / 16));
++	});
++
++	test('minimum value (6) produces positive values', () => {
++		updateActivityBarSize(6);
++		assert.strictEqual(FONT.activityBarSize, 6);
++		assert.ok(FONT.activityBarSize16 > 0, 'compact icon size must be positive');
++		assert.ok(FONT.activityBarSize24 > 0, 'icon size must be positive');
++		assert.ok(FONT.activityBarSize36 > 0, 'compact width must be positive');
++		assert.ok(FONT.activityBarSize48 > 0, 'action height must be positive');
++	});
++
++	test('maximum value (32) produces reasonable values', () => {
++		updateActivityBarSize(32);
++		assert.strictEqual(FONT.activityBarSize48, 96);
++		assert.ok(FONT.activityBarSize48 <= 100, 'action height should be bounded');
++	});
++
++	test('reset to default restores values', () => {
++		updateActivityBarSize(24);
++		updateActivityBarSize(16);
++		assert.strictEqual(FONT.activityBarSize, 16);
++		assert.strictEqual(FONT.activityBarSize16, 16);
++		assert.strictEqual(FONT.activityBarSize24, 24);
++		assert.strictEqual(FONT.activityBarSize32, 32);
++		assert.strictEqual(FONT.activityBarSize36, 36);
++		assert.strictEqual(FONT.activityBarSize48, 48);
++	});
++});
++
++suite('FONT - Tabs Size', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updateTabsSize(13);
++	});
++
++	test('defaults match upstream VS Code tab constants', () => {
++		assert.strictEqual(FONT.tabsSize, 13);
++		assert.strictEqual(FONT.tabsSize22, 22);   // EDITOR_TAB_HEIGHT compact
++		assert.strictEqual(FONT.tabsSize35, 35);   // EDITOR_TAB_HEIGHT normal
++		assert.strictEqual(FONT.tabsSize38, 38);   // TAB_WIDTH compact
++		assert.strictEqual(FONT.tabsSize80, 80);   // TAB_WIDTH shrink
++		assert.strictEqual(FONT.tabsSize120, 120); // TAB_WIDTH fit
++	});
++
++	test('proportional scaling preserves tab height/width ratios at 2x', () => {
++		updateTabsSize(26);
++		assert.strictEqual(FONT.tabsSize, 26);
++		assert.strictEqual(FONT.tabsSize22, 44);
++		assert.strictEqual(FONT.tabsSize35, 70);
++		assert.strictEqual(FONT.tabsSize38, 76);
++		assert.strictEqual(FONT.tabsSize80, 160);
++		assert.strictEqual(FONT.tabsSize120, 240);
++	});
++
++	test('non-divisible size (7)', () => {
++		updateTabsSize(7);
++		assertClose(FONT.tabsSize22, 7 * (22 / 13));
++		assertClose(FONT.tabsSize35, 7 * (35 / 13));
++		assertClose(FONT.tabsSize80, 7 * (80 / 13));
++		assertClose(FONT.tabsSize120, 7 * (120 / 13));
++	});
++
++	test('minimum value (6) produces usable tab dimensions', () => {
++		updateTabsSize(6);
++		assert.strictEqual(FONT.tabsSize, 6);
++		assert.ok(FONT.tabsSize35 > 10, 'normal tab height must be clickable');
++		assert.ok(FONT.tabsSize22 > 8, 'compact tab height must be usable');
++		assert.ok(FONT.tabsSize38 > 0, 'compact tab width must be positive');
++		assert.ok(FONT.tabsSize80 > 0, 'shrink tab width must be positive');
++	});
++
++	test('maximum value (32) produces reasonable tab dimensions', () => {
++		updateTabsSize(32);
++		assert.ok(FONT.tabsSize35 > 80, 'normal tab height should scale up');
++		assert.ok(FONT.tabsSize35 < 100, 'normal tab height should be bounded');
++	});
++
++	test('reset to default restores all values', () => {
++		updateTabsSize(20);
++		updateTabsSize(13);
++		assert.strictEqual(FONT.tabsSize, 13);
++		assert.strictEqual(FONT.tabsSize22, 22);
++		assert.strictEqual(FONT.tabsSize35, 35);
++		assert.strictEqual(FONT.tabsSize38, 38);
++		assert.strictEqual(FONT.tabsSize80, 80);
++		assert.strictEqual(FONT.tabsSize120, 120);
++	});
++});
++
++suite('FONT - Cross-area independence', () => {
++
++	ensureNoDisposablesAreLeakedInTestSuite();
++
++	teardown(() => {
++		updateSidebarSize(13);
++		updateStatusBarSize(12);
++		updatePanelSize(13);
++		updateActivityBarSize(16);
++		updateTabsSize(13);
++	});
++
++	test('updating sidebar does not affect any other area (full derived field check)', () => {
++		const before = snapshotFont();
++		updateSidebarSize(20);
++
++		// All non-sidebar fields must be unchanged
++		assertFieldsUnchanged(before, 'statusBar', 'after sidebar update');
++		assertFieldsUnchanged(before, 'panel', 'after sidebar update');
++		assertFieldsUnchanged(before, 'activityBar', 'after sidebar update');
++		assertFieldsUnchanged(before, 'tabs', 'after sidebar update');
++	});
++
++	test('updating statusBar does not affect any other area', () => {
++		const before = snapshotFont();
++		updateStatusBarSize(20);
++
++		assertFieldsUnchanged(before, 'sidebar', 'after statusBar update');
++		assertFieldsUnchanged(before, 'panel', 'after statusBar update');
++		assertFieldsUnchanged(before, 'activityBar', 'after statusBar update');
++		assertFieldsUnchanged(before, 'tabs', 'after statusBar update');
++	});
++
++	test('updating panel does not affect any other area', () => {
++		const before = snapshotFont();
++		updatePanelSize(20);
++
++		assertFieldsUnchanged(before, 'sidebar', 'after panel update');
++		assertFieldsUnchanged(before, 'statusBar', 'after panel update');
++		assertFieldsUnchanged(before, 'activityBar', 'after panel update');
++		assertFieldsUnchanged(before, 'tabs', 'after panel update');
++	});
++
++	test('updating activityBar does not affect any other area', () => {
++		const before = snapshotFont();
++		updateActivityBarSize(20);
++
++		assertFieldsUnchanged(before, 'sidebar', 'after activityBar update');
++		assertFieldsUnchanged(before, 'statusBar', 'after activityBar update');
++		assertFieldsUnchanged(before, 'panel', 'after activityBar update');
++		assertFieldsUnchanged(before, 'tabs', 'after activityBar update');
++	});
++
++	test('updating tabs does not affect any other area', () => {
++		const before = snapshotFont();
++		updateTabsSize(20);
++
++		assertFieldsUnchanged(before, 'sidebar', 'after tabs update');
++		assertFieldsUnchanged(before, 'statusBar', 'after tabs update');
++		assertFieldsUnchanged(before, 'panel', 'after tabs update');
++		assertFieldsUnchanged(before, 'activityBar', 'after tabs update');
++	});
++
++	test('all areas set to same value produce different derived values due to different coefficients', () => {
++		const commonSize = 18;
++		updateSidebarSize(commonSize);
++		updateStatusBarSize(commonSize);
++		updatePanelSize(commonSize);
++		updateActivityBarSize(commonSize);
++		updateTabsSize(commonSize);
++
++		assert.strictEqual(FONT.sidebarSize, commonSize);
++		assert.strictEqual(FONT.statusBarSize, commonSize);
++		assert.strictEqual(FONT.bottomPaneSize, commonSize);
++		assert.strictEqual(FONT.activityBarSize, commonSize);
++		assert.strictEqual(FONT.tabsSize, commonSize);
++
++		// sidebarSize22 = 18 * (22/13), statusBarSize22 = 18 * (22/12)
++		// Different coefficients → different results
++		assert.notStrictEqual(FONT.sidebarSize22, FONT.statusBarSize22,
++			'same base size should produce different derived values due to different coefficients');
++	});
++
++	test('sequential updates across all areas and full reset', () => {
++		updateSidebarSize(8);
++		updateStatusBarSize(10);
++		updatePanelSize(15);
++		updateActivityBarSize(20);
++		updateTabsSize(25);
++
++		// Verify all set correctly
++		assert.strictEqual(FONT.sidebarSize, 8);
++		assert.strictEqual(FONT.statusBarSize, 10);
++		assert.strictEqual(FONT.bottomPaneSize, 15);
++		assert.strictEqual(FONT.activityBarSize, 20);
++		assert.strictEqual(FONT.tabsSize, 25);
++
++		// Reset all
++		updateSidebarSize(13);
++		updateStatusBarSize(12);
++		updatePanelSize(13);
++		updateActivityBarSize(16);
++		updateTabsSize(13);
++
++		// All defaults restored
++		assert.strictEqual(FONT.sidebarSize, 13);
++		assert.strictEqual(FONT.sidebarSize22, 22);
++		assert.strictEqual(FONT.statusBarSize, 12);
++		assert.strictEqual(FONT.statusBarSize22, 22);
++		assert.strictEqual(FONT.bottomPaneSize, 13);
++		assert.strictEqual(FONT.bottomPaneSize22, 22);
++		assert.strictEqual(FONT.activityBarSize, 16);
++		assert.strictEqual(FONT.activityBarSize48, 48);
++		assert.strictEqual(FONT.tabsSize, 13);
++		assert.strictEqual(FONT.tabsSize35, 35);
++	});
++});
 diff --git a/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts b/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
 index 328285f..0735dfa 100644
 --- a/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
@@ -334,10 +951,52 @@ index 328285f..0735dfa 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/browser/media/style.css b/src/vs/workbench/browser/media/style.css
-index 13ff794..e5025e1 100644
+index 13ff794..57ad58c 100644
 --- a/src/vs/workbench/browser/media/style.css
 +++ b/src/vs/workbench/browser/media/style.css
-@@ -322 +322,41 @@ body {
+@@ -11,20 +11,20 @@
+ 
+-.monaco-workbench.mac { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+-.monaco-workbench.mac:lang(zh-Hans) { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif; }
+-.monaco-workbench.mac:lang(zh-Hant) { font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", sans-serif; }
+-.monaco-workbench.mac:lang(ja) { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic Pro", sans-serif; }
+-.monaco-workbench.mac:lang(ko) { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Nanum Gothic", "AppleGothic", sans-serif; }
+-
+-.monaco-workbench.windows { font-family: "Segoe WPC", "Segoe UI", sans-serif; }
+-.monaco-workbench.windows:lang(zh-Hans) { font-family: "Segoe WPC", "Segoe UI", "Microsoft YaHei", sans-serif; }
+-.monaco-workbench.windows:lang(zh-Hant) { font-family: "Segoe WPC", "Segoe UI", "Microsoft Jhenghei", sans-serif; }
+-.monaco-workbench.windows:lang(ja) { font-family: "Segoe WPC", "Segoe UI", "Yu Gothic UI", "Meiryo UI", sans-serif; }
+-.monaco-workbench.windows:lang(ko) { font-family: "Segoe WPC", "Segoe UI", "Malgun Gothic", "Dotom", sans-serif; }
++.monaco-workbench.mac { --monaco-font: -apple-system, BlinkMacSystemFont, sans-serif; }
++.monaco-workbench.mac:lang(zh-Hans) { --monaco-font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif; }
++.monaco-workbench.mac:lang(zh-Hant) { --monaco-font: -apple-system, BlinkMacSystemFont, "PingFang TC", sans-serif; }
++.monaco-workbench.mac:lang(ja) { --monaco-font: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic Pro", sans-serif; }
++.monaco-workbench.mac:lang(ko) { --monaco-font: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Nanum Gothic", "AppleGothic", sans-serif; }
++
++.monaco-workbench.windows { --monaco-font: "Segoe WPC", "Segoe UI", sans-serif; }
++.monaco-workbench.windows:lang(zh-Hans) { --monaco-font: "Segoe WPC", "Segoe UI", "Microsoft YaHei", sans-serif; }
++.monaco-workbench.windows:lang(zh-Hant) { --monaco-font: "Segoe WPC", "Segoe UI", "Microsoft Jhenghei", sans-serif; }
++.monaco-workbench.windows:lang(ja) { --monaco-font: "Segoe WPC", "Segoe UI", "Yu Gothic UI", "Meiryo UI", sans-serif; }
++.monaco-workbench.windows:lang(ko) { --monaco-font: "Segoe WPC", "Segoe UI", "Malgun Gothic", "Dotom", sans-serif; }
+ 
+ /* Linux: add `system-ui` as first font and not `Ubuntu` to allow other distribution pick their standard OS font */
+-.monaco-workbench.linux { font-family: system-ui, "Ubuntu", "Droid Sans", sans-serif; }
+-.monaco-workbench.linux:lang(zh-Hans) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans SC", "Source Han Sans CN", "Source Han Sans", sans-serif; }
+-.monaco-workbench.linux:lang(zh-Hant) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans TC", "Source Han Sans TW", "Source Han Sans", sans-serif; }
+-.monaco-workbench.linux:lang(ja) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", sans-serif; }
+-.monaco-workbench.linux:lang(ko) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans K", "Source Han Sans JR", "Source Han Sans", "UnDotum", "FBaekmuk Gulim", sans-serif; }
++.monaco-workbench.linux { --monaco-font: system-ui, "Ubuntu", "Droid Sans", sans-serif; }
++.monaco-workbench.linux:lang(zh-Hans) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans SC", "Source Han Sans CN", "Source Han Sans", sans-serif; }
++.monaco-workbench.linux:lang(zh-Hant) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans TC", "Source Han Sans TW", "Source Han Sans", sans-serif; }
++.monaco-workbench.linux:lang(ja) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", sans-serif; }
++.monaco-workbench.linux:lang(ko) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans K", "Source Han Sans JR", "Source Han Sans", "UnDotum", "FBaekmuk Gulim", sans-serif; }
+ 
+@@ -55,2 +55,4 @@ body {
+ 	color: var(--vscode-foreground);
++	font-family: var(--vscode-workbench-font-family, var(--monaco-font));
++	font-size: var(--vscode-workbench-font-size, 13px);
+ }
+@@ -322 +324,41 @@ body {
  }
 +
 +
@@ -380,69 +1039,574 @@ index 13ff794..e5025e1 100644
 +    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
 +}
 \ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts b/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
+index 0307cab..5e5f6f3 100644
+--- a/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
++++ b/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
+@@ -40,2 +40,3 @@ import { IViewsService } from '../../../services/views/common/viewsService.js';
+ import { SwitchCompositeViewAction } from '../compositeBarActions.js';
++import { FONT, getFontSize, updateActivityBarSize } from '../../../../base/common/font.js';
+ 
+@@ -45,2 +46,3 @@ export class ActivitybarPart extends Part {
+ 	static readonly COMPACT_ACTION_HEIGHT = 32;
++	static readonly COMPACT_ACTION_HEIGHT_RATIO = 32/48;
+ 
+@@ -48,2 +50,3 @@ export class ActivitybarPart extends Part {
+ 	static readonly COMPACT_ACTIVITYBAR_WIDTH = 36;
++	static readonly COMPACT_ACTIVITYBAR_WIDTH_RATIO = 36/48;
+ 
+@@ -51,2 +54,3 @@ export class ActivitybarPart extends Part {
+ 	static readonly COMPACT_ICON_SIZE = 16;
++	static readonly COMPACT_ICON_SIZE_RATIO = 16/24;
+ 
+@@ -58,4 +62,4 @@ export class ActivitybarPart extends Part {
+ 
+-	get minimumWidth(): number { return this._isCompact ? ActivitybarPart.COMPACT_ACTIVITYBAR_WIDTH : ActivitybarPart.ACTIVITYBAR_WIDTH; }
+-	get maximumWidth(): number { return this._isCompact ? ActivitybarPart.COMPACT_ACTIVITYBAR_WIDTH : ActivitybarPart.ACTIVITYBAR_WIDTH; }
++	get minimumWidth(): number { return this._isCompact ? FONT.activityBarSize48 * ActivitybarPart.COMPACT_ACTIVITYBAR_WIDTH_RATIO : FONT.activityBarSize48; }
++	get maximumWidth(): number { return this._isCompact ? FONT.activityBarSize48 * ActivitybarPart.COMPACT_ACTIVITYBAR_WIDTH_RATIO : FONT.activityBarSize48; }
+ 	readonly minimumHeight: number = 0;
+@@ -90,2 +94,11 @@ export class ActivitybarPart extends Part {
+ 		}));
++
++		this._register(configurationService.onDidChangeConfiguration(e => {
++			if (e.affectsConfiguration('workbench.activityBar.experimental.fontFamily') || e.affectsConfiguration('workbench.activityBar.experimental.fontSize')) {
++				this.applyActivityBarFontFamily();
++				this.applyActivityBarFontSize();
++				this.recreateCompositeBar();
++				this._onDidChange.fire(undefined); // Signal grid that size constraints changed
++			}
++		}));
+ 	}
+@@ -96,4 +109,4 @@ export class ActivitybarPart extends Part {
+ 			this.element.style.setProperty('--activity-bar-width', `${this.minimumWidth}px`);
+-			this.element.style.setProperty('--activity-bar-action-height', `${this._isCompact ? ActivitybarPart.COMPACT_ACTION_HEIGHT : ActivitybarPart.ACTION_HEIGHT}px`);
+-			this.element.style.setProperty('--activity-bar-icon-size', `${this._isCompact ? ActivitybarPart.COMPACT_ICON_SIZE : ActivitybarPart.ICON_SIZE}px`);
++			this.element.style.setProperty('--activity-bar-action-height', `${this._isCompact ? FONT.activityBarSize32 : FONT.activityBarSize48}px`);
++			this.element.style.setProperty('--activity-bar-icon-size', `${this._isCompact ? FONT.activityBarSize : FONT.activityBarSize24}px`);
+ 		}
+@@ -153,2 +166,6 @@ export class ActivitybarPart extends Part {
+ 
++		// Apply font settings before show() so composite bar uses correct sizes
++		this.applyActivityBarFontFamily(parent);
++		this.applyActivityBarFontSize(parent);
++
+ 		this.updateCompactStyle();
+@@ -162,2 +179,34 @@ export class ActivitybarPart extends Part {
+ 
++	private applyActivityBarFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const family = this.configurationService.getValue<string>('workbench.activityBar.experimental.fontFamily');
++
++		if (family) {
++			target.style.setProperty('--vscode-workbench-activitybar-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-activitybar-font-family');
++		}
++
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
++	}
++
++	private applyActivityBarFontSize(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const configuredSize = getFontSize(this.configurationService, 'workbench.activityBar.experimental.fontSize', FONT.defaultActivityBarSize);
++
++		updateActivityBarSize(configuredSize);
++
++		target.style.setProperty('--vscode-workbench-activitybar-font-size', `${FONT.activityBarSize}px`);
++
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
++	}
++
+ 	getPinnedPaneCompositeIds(): string[] {
+diff --git a/src/vs/workbench/browser/parts/activitybar/media/activityaction.css b/src/vs/workbench/browser/parts/activitybar/media/activityaction.css
+index a40a351..aeae132 100644
+--- a/src/vs/workbench/browser/parts/activitybar/media/activityaction.css
++++ b/src/vs/workbench/browser/parts/activitybar/media/activityaction.css
+@@ -230 +230,59 @@
+ }
++
++
++
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .activitybar > .content .composite-bar > .monaco-action-bar .action-item::before, .monaco-workbench .activitybar > .content .composite-bar > .monaco-action-bar .action-item::after {
++    width: var(--activity-bar-width, calc(var(--vscode-workbench-activitybar-font-size) * 3));
++    height: calc(var(--vscode-workbench-activitybar-font-size) * 0.125)
++}
++.monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .action-label {
++    width: var(--activity-bar-width, calc(var(--vscode-workbench-activitybar-font-size) * 3));
++    height: var(--activity-bar-action-height, calc(var(--vscode-workbench-activitybar-font-size) * 3))
++}
++.monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .action-label:not(.codicon) {
++    font-size: calc(var(--vscode-workbench-activitybar-font-size) * 0.9375);
++    line-height: var(--activity-bar-action-height, calc(var(--vscode-workbench-activitybar-font-size) * 3));
++    padding: 0 0 0 var(--activity-bar-width, calc(var(--vscode-workbench-activitybar-font-size) * 3))
++}
++.monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .action-label.codicon {
++    font-size: var(--activity-bar-icon-size, calc(var(--vscode-workbench-activitybar-font-size) * 1.5))
++}
++.monaco-workbench.border .activitybar.right > .content :not(.monaco-menu) > .monaco-action-bar .active-item-indicator {
++    left: calc(var(--vscode-workbench-activitybar-font-size) * -0.125)
++}
++.monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .badge .badge-content {
++    top: calc(var(--vscode-workbench-activitybar-font-size) * 1.5);
++    right: calc(var(--vscode-workbench-activitybar-font-size) * 0.5);
++    font-size: calc(var(--vscode-workbench-activitybar-font-size) * 0.5625);
++    min-width: calc(var(--vscode-workbench-activitybar-font-size) * 0.5);
++    height: calc(var(--vscode-workbench-activitybar-font-size) * 1);
++    line-height: calc(var(--vscode-workbench-activitybar-font-size) * 1);
++    padding: 0 calc(var(--vscode-workbench-activitybar-font-size) * 0.25)
++}
++.monaco-workbench .activitybar.compact > .content :not(.monaco-menu) > .monaco-action-bar .badge .badge-content {
++    top: calc(var(--vscode-workbench-activitybar-font-size) * 1.0625);
++    right: calc(var(--vscode-workbench-activitybar-font-size) * 0.375);
++    min-width: calc(var(--vscode-workbench-activitybar-font-size) * 0.5625);
++    height: calc(var(--vscode-workbench-activitybar-font-size) * 0.8125);
++    line-height: calc(var(--vscode-workbench-activitybar-font-size) * 0.8125);
++    padding: 0 calc(var(--vscode-workbench-activitybar-font-size) * 0.125)
++}
++.monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .profile-badge .profile-text-overlay {
++    font-size: calc(var(--vscode-workbench-activitybar-font-size) * 0.5625);
++    line-height: calc(var(--vscode-workbench-activitybar-font-size) * 0.625);
++    top: calc(var(--vscode-workbench-activitybar-font-size) * 1.5);
++    right: calc(var(--vscode-workbench-activitybar-font-size) * 0.375);
++    padding: calc(var(--vscode-workbench-activitybar-font-size) * 0.125) calc(var(--vscode-workbench-activitybar-font-size) * 0.1875)
++}
++.monaco-workbench .activitybar.compact > .content :not(.monaco-menu) > .monaco-action-bar .profile-badge .profile-text-overlay {
++    font-size: calc(var(--vscode-workbench-activitybar-font-size) * 0.5);
++    line-height: calc(var(--vscode-workbench-activitybar-font-size) * 0.5);
++    top: calc(var(--vscode-workbench-activitybar-font-size) * 0.875);
++    right: calc(var(--vscode-workbench-activitybar-font-size) * 0.125);
++    padding: calc(var(--vscode-workbench-activitybar-font-size) * 0.125) calc(var(--vscode-workbench-activitybar-font-size) * 0.125)
++}
++.monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .badge .codicon.badge-content {
++    font-size: calc(var(--vscode-workbench-activitybar-font-size) * 0.8125)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
+index d903883..1bf9716 100644
+--- a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
++++ b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
+@@ -8,2 +8,4 @@
+ 	height: 100%;
++	font-family: var(--vscode-workbench-activitybar-font-family, inherit);
++	font-size: var(--vscode-workbench-activitybar-font-size);
+ }
+@@ -58,3 +60,3 @@
+ 	width: 100%;
+-	height: 35px;
++	height: calc(var(--vscode-workbench-activitybar-font-size) * 2.1875);
+ }
+@@ -63,3 +65,3 @@
+ 	width: 100%;
+-	height: 35px;
++	height: calc(var(--vscode-workbench-activitybar-font-size) * 2.1875);
+ }
 diff --git a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
-index d32082b..f9272c6 100644
+index d32082b..ad7e524 100644
 --- a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
 +++ b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
 @@ -36,2 +36,4 @@ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js
  import { Extensions } from '../../panecomposite.js';
-+import { FONT, updateSidebarSize } from '../../../../base/common/font.js';
++import { FONT, getFontSize, updateSidebarSize } from '../../../../base/common/font.js';
 +import { SidebarPart } from '../sidebar/sidebarPart.js';
  
-@@ -147,2 +149,5 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+@@ -147,2 +149,8 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
  			}
 +			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
 +				this.applyAuxiliaryBarFontSize();
 +			}
++			if (e.affectsConfiguration('workbench.sideBar.experimental.fontFamily')) {
++				this.applyAuxiliaryBarFontFamily();
++			}
  		}));
-@@ -198,2 +203,4 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+@@ -198,2 +206,37 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
  		container.style.borderRightWidth = borderColor && isPositionLeft ? '1px' : '0px';
 +
 +		this.applyAuxiliaryBarFontSize(container);
- 	}
-@@ -262,2 +269,18 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
- 
++		this.applyAuxiliaryBarFontFamily(container);
++	}
++
++	private applyAuxiliaryBarFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const family = this.configurationService.getValue<string>('workbench.sideBar.experimental.fontFamily');
++
++		if (family) {
++			target.style.setProperty('--vscode-workbench-sidebar-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-sidebar-font-family');
++		}
++
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
++	}
++
 +	private applyAuxiliaryBarFontSize(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
 +		if (!target) {
 +			return;
 +		}
 +
-+		const configuredSize = this.configurationService.getValue(SidebarPart.fontSizeSettingsKey);
-+		if (typeof configuredSize === 'number' && configuredSize > 0) {
-+			updateSidebarSize(Math.trunc(configuredSize));
-+		} else {
-+			updateSidebarSize(13);
-+		}
++		const configuredSize = getFontSize(this.configurationService, SidebarPart.fontSizeSettingsKey, FONT.defaultSidebarSize);
++
++		updateSidebarSize(configuredSize);
 +
 +		target.style.setProperty('--vscode-workbench-sidebar-font-size', `${FONT.sidebarSize}px`);
-+	}
 +
- 	protected shouldShowCompositeBar(): boolean {
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
+ 	}
 diff --git a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
-index aec3de2..e582843 100644
+index aec3de2..b0e1fd8 100644
 --- a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
 +++ b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
-@@ -28,2 +28,11 @@
+@@ -28,2 +28,8 @@
  
 +.monaco-workbench .part.auxiliarybar > .content {
 +	font-size: var(--vscode-workbench-sidebar-font-size, 13px);
-+	line-height: 1.4em;
-+}
-+
-+.monaco-workbench .part.auxiliarybar > .title > .title-label h2 {
-+	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846);
++	font-family: var(--vscode-workbench-sidebar-font-family, inherit);
++ 	line-height: 1.4em;
 +}
 +
  .monaco-workbench .part.auxiliarybar > .title > .title-label {
-diff --git a/src/vs/workbench/browser/parts/media/paneCompositePart.css b/src/vs/workbench/browser/parts/media/paneCompositePart.css
-index fe0f2ad..0000000 100644
---- a/src/vs/workbench/browser/parts/media/paneCompositePart.css
-+++ b/src/vs/workbench/browser/parts/media/paneCompositePart.css
-@@ -369 +369,49 @@
+diff --git a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
+index b0a44e2..e711a80 100644
+--- a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
++++ b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
+@@ -48,2 +48,4 @@ import { MarkdownString } from '../../../../base/common/htmlContent.js';
+ import { IManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
++import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { FONT, getFontSize, updateTabsSize } from '../../../../base/common/font.js';
+ import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
+@@ -101,6 +103,8 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 
+-	private static readonly EDITOR_TAB_HEIGHT = {
+-		normal: 35 as const,
+-		compact: 22 as const
+-	};
++	private static get EDITOR_TAB_HEIGHT() {
++		return {
++			normal: FONT.tabsSize35,
++			compact: FONT.tabsSize22
++		};
++	}
+ 
+@@ -142,2 +146,3 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 		@IHostService private readonly hostService: IHostService,
++		@IConfigurationService protected readonly configurationService: IConfigurationService,
+ 	) {
+@@ -149,2 +154,13 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 
++		this._register(configurationService.onDidChangeConfiguration(e => {
++			if (e.affectsConfiguration('workbench.tabs.experimental.fontFamily')) {
++				this.applyTabsFontFamily();
++			}
++			if (e.affectsConfiguration('workbench.tabs.experimental.fontSize')) {
++				this.applyTabsFontSize();
++				this.updateTabHeight();
++				this.groupView.relayout();
++			}
++		}));
++
+ 		// Context Keys
+@@ -170,2 +186,4 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 	protected create(parent: HTMLElement): HTMLElement {
++		this.applyTabsFontSize(parent);
++		this.applyTabsFontFamily(parent);
+ 		this.updateTabHeight();
+@@ -174,2 +192,30 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 
++	private applyTabsFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.parent;
++		if (!target) {
++			return;
++		}
++
++		const family = this.configurationService.getValue<string>('workbench.tabs.experimental.fontFamily');
++
++		if (family) {
++			target.style.setProperty('--vscode-workbench-tabs-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-tabs-font-family');
++		}
++	}
++
++	private applyTabsFontSize(container?: HTMLElement): void {
++		const target = container ?? this.parent;
++		if (!target) {
++			return;
++		}
++
++		const configuredSize = getFontSize(this.configurationService, 'workbench.tabs.experimental.fontSize', FONT.defaultTabsSize);
++
++		updateTabsSize(configuredSize);
++
++		target.style.setProperty('--vscode-workbench-tabs-font-size', `${FONT.tabsSize}px`);
++	}
++
+ 	private get editorActionsEnabled(): boolean {
+diff --git a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
+index 57ab8ca..56f5996 100644
+--- a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
++++ b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
+@@ -9,2 +9,3 @@
+ 	cursor: pointer;
++	font-family: var(--vscode-workbench-tabs-font-family, inherit);
+ }
+@@ -47 +48,36 @@
  }
 +
 +
++
++/*** Handcrafted for Custom Font Size ***/
++
++.monaco-workbench .part.editor > .content .editor-group-container > .title {
++	font-size: var(--vscode-workbench-tabs-font-size);
++}
++
++.monaco-workbench .part.editor > .content .editor-group-container .monaco-icon-label::before {
++    background-size: calc(var(--vscode-workbench-tabs-font-size) * 1.2307692308);
++    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 1.2307692308);
++    width: calc(var(--vscode-workbench-tabs-font-size) * 1.2307692308);
++    height: calc(var(--vscode-workbench-tabs-font-size) * 1.6923076923);
++}
++
++.monaco-workbench .part.editor > .content .editor-group-container .show-file-icons .file-icon::before {
++	font-size: calc(var(--vscode-workbench-tabs-font-size) * 1.5);
++}
++
++.monaco-workbench .part.editor > .content .editor-group-container .codicon[class*='codicon-'] {
++    font-size: calc(var(--vscode-workbench-tabs-font-size) * 1.2307692308);
++}
++.monaco-workbench .part.editor > .content .editor-group-container .monaco-action-bar .action-item .codicon {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 1.2307692308);
++    height: calc(var(--vscode-workbench-tabs-font-size) * 1.2307692308);
++}
++
++
++
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .part.editor > .content .editor-group-container > .title .title-label a, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab .tab-label a {
++    font-size: calc(var(--vscode-workbench-tabs-font-size) * 1)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css b/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css
+index a24f761..4f3bc89 100644
+--- a/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css
++++ b/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css
+@@ -47 +47,28 @@
+ }
++
++
++
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control {
++    height: calc(var(--vscode-workbench-tabs-font-size) * 1.692308)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .monaco-icon-label {
++    height: calc(var(--vscode-workbench-tabs-font-size) * 1.692308);
++    line-height: calc(var(--vscode-workbench-tabs-font-size) * 1.692308)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .monaco-icon-label::before {
++    height: calc(var(--vscode-workbench-tabs-font-size) * 1.692308)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .outline-element-icon {
++    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 0.230769);
++    height: calc(var(--vscode-workbench-tabs-font-size) * 1.692308);
++    line-height: calc(var(--vscode-workbench-tabs-font-size) * 1.692308)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .monaco-breadcrumb-item::before {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-tabs-font-size) * 1.692308)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .monaco-breadcrumb-item:last-child {
++    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 0.615385)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
+index 924d9b3..9775338 100644
+--- a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
++++ b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
+@@ -168,4 +168,4 @@
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed {
+-	min-width: var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px));
+-	max-width: var(--tab-sizing-current-width, var(--tab-sizing-fixed-max-width, 160px));
++	min-width: 50px;
++	max-width: 160px;
+ 	flex: 1 0 0; /* all tabs are evenly sized and grow */
+@@ -177,3 +177,3 @@
+ 	 * of the tabs container */
+-	min-width: calc(var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px)) - 1px);
++	min-width: 50px - 1px;
+ }
+@@ -560 +560,109 @@
+ }
++
++
++
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .part.editor > .content .editor-group-container > .title > .tabs-and-actions-container.tabs-border-bottom::after {
++    height: 1px
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab {
++    padding-left: calc(var(--vscode-workbench-tabs-font-size) * 0.769231);
++    outline-offset: calc(var(--vscode-workbench-tabs-font-size) * -0.153846)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink.has-icon.tab-actions-right, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink.has-icon.close-action-off:not(.sticky-compact), .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.has-icon.tab-actions-right, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.has-icon.close-action-off:not(.sticky-compact) {
++    padding-left: calc(var(--vscode-workbench-tabs-font-size) * 0.384615)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fit {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 9.230769)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed {
++    min-width: calc(var(--vscode-workbench-tabs-font-size) * 3.846154);
++    max-width: calc(var(--vscode-workbench-tabs-font-size) * 12.307692)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.last-in-row {
++    min-width: calc(var(--vscode-workbench-tabs-font-size) * 3.846154) - 1px
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink {
++    min-width: calc(var(--vscode-workbench-tabs-font-size) * 6.153846)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fit.sticky-compact, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink.sticky-compact, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.sticky-compact {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 2.923077);
++    min-width: calc(var(--vscode-workbench-tabs-font-size) * 2.923077);
++    max-width: calc(var(--vscode-workbench-tabs-font-size) * 2.923077)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fit.sticky-shrink, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink.sticky-shrink, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.sticky-shrink {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 6.153846);
++    min-width: calc(var(--vscode-workbench-tabs-font-size) * 6.153846);
++    max-width: calc(var(--vscode-workbench-tabs-font-size) * 6.153846)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink.tab-actions-left .tab-fade-hider, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink.close-action-off .tab-fade-hider, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.tab-actions-left .tab-fade-hider, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.close-action-off .tab-fade-hider {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 0.384615)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink.tab-actions-left, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.tab-actions-left {
++    min-width: calc(var(--vscode-workbench-tabs-font-size) * 6.153846);
++    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 0.384615)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.tab-actions-left:not(.sticky-compact) {
++    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 0.769231)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.active.tab-border-top:not(:focus) > .tab-border-top-container, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.selected.tab-border-top:not(:focus) > .tab-border-top-container {
++    height: 1px
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.active.tab-border-bottom > .tab-border-bottom-container {
++    height: 1px
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.dirty-border-top:not(:focus) > .tab-border-top-container {
++    height: calc(var(--vscode-workbench-tabs-font-size) * 0.153846)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container >  .tab.sizing-shrink > .tab-label > .monaco-icon-label-container::after, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container >  .tab.sizing-fixed > .tab-label > .monaco-icon-label-container::after {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 0.384615);
++    top: 1px;
++    bottom: 1px;
++    height: calc(100% - calc(var(--vscode-workbench-tabs-font-size) * 0.153846))
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container >  .tab.sizing-shrink > .tab-label.tab-label-has-badge::after, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container >  .tab.sizing-fixed > .tab-label.tab-label-has-badge::after {
++    margin-right: calc(var(--vscode-workbench-tabs-font-size) * 0.384615)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink:not(.tab-actions-left):not(.close-action-off) .tab-label {
++    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 0.384615)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab > .monaco-icon-label.italic > .monaco-icon-label-container {
++    padding-right: 1px
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab > .tab-actions {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 2.153846)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab > .tab-actions > .monaco-action-bar {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 2.153846)
++}
++.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab > .tab-actions .action-label.codicon {
++    font-size: calc(var(--vscode-workbench-tabs-font-size) * 1.230769);
++    padding: calc(var(--vscode-workbench-tabs-font-size) * 0.153846);
++    width: calc(var(--vscode-workbench-tabs-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-tabs-font-size) * 1.230769)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.close-action-off {
++    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 0.769231)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-shrink.close-action-off:not(.sticky-compact), .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed.close-action-off:not(.sticky-compact) {
++    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 0.384615)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .editor-actions {
++    padding: 0 calc(var(--vscode-workbench-tabs-font-size) * 0.615385) 0 calc(var(--vscode-workbench-tabs-font-size) * 0.307692)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .editor-actions .action-item {
++    margin-right: calc(var(--vscode-workbench-tabs-font-size) * 0.307692)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.drop-target-left::after, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.drop-target-right::before {
++    width: 1px
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.drop-target-left::after {
++    right: calc(var(--vscode-workbench-tabs-font-size) * -0.076923)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.last-in-row.drop-target-left:not(:last-child)::after {
++    right: calc(var(--vscode-workbench-tabs-font-size) * 0)
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.last-in-row.drop-target-left::after, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.last-in-row + .tab.drop-target-right::before, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab:last-child.drop-target-left::after, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab:first-child.drop-target-right::before {
++    width: calc(var(--vscode-workbench-tabs-font-size) * 0.153846)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
+index b0befd9..7c25771 100644
+--- a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
++++ b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
+@@ -6,2 +6,3 @@
+ import './media/multieditortabscontrol.css';
++import { FONT } from '../../../../base/common/font.js';
+ import { isLinux, isMacintosh, isWindows } from '../../../../base/common/platform.js';
+@@ -60,2 +61,3 @@ import { BugIndicatingError } from '../../../../base/common/errors.js';
+ import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
++import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+ 
+@@ -96,7 +98,9 @@ export class MultiEditorTabsControl extends EditorTabsControl {
+ 
+-	private static readonly TAB_WIDTH = {
+-		compact: 38 as const,
+-		shrink: 80 as const,
+-		fit: 120 as const
+-	};
++	private static get TAB_WIDTH() {
++		return {
++			compact: FONT.tabsSize38,
++			shrink: FONT.tabsSize80,
++			fit: FONT.tabsSize120
++		};
++	}
+ 
+@@ -154,4 +158,5 @@ export class MultiEditorTabsControl extends EditorTabsControl {
+ 		@IHostService hostService: IHostService,
++		@IConfigurationService configurationService: IConfigurationService,
+ 	) {
+-		super(parent, editorPartsView, groupsView, groupView, tabsModel, contextMenuService, instantiationService, contextKeyService, keybindingService, notificationService, quickInputService, themeService, editorResolverService, hostService);
++		super(parent, editorPartsView, groupsView, groupView, tabsModel, contextMenuService, instantiationService, contextKeyService, keybindingService, notificationService, quickInputService, themeService, editorResolverService, hostService, configurationService);
+ 
+diff --git a/src/vs/workbench/browser/parts/media/paneCompositePart.css b/src/vs/workbench/browser/parts/media/paneCompositePart.css
+index fe0f2ad..3c8087b 100644
+--- a/src/vs/workbench/browser/parts/media/paneCompositePart.css
++++ b/src/vs/workbench/browser/parts/media/paneCompositePart.css
+@@ -369 +369,64 @@
+ }
++
++
++
++/*** Custom Font Size for SideBars ***/
 +
 +.monaco-workbench .part.sidebar > .title.has-composite-bar > .title-actions .monaco-action-bar .action-item, .monaco-workbench .part.sidebar > .title.has-composite-bar > .global-actions .monaco-action-bar .action-item, .monaco-workbench .part.sidebar > .title.has-composite-bar > .global-actions-left .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar > .title.has-composite-bar > .title-actions .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar > .title.has-composite-bar > .global-actions .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar > .title.has-composite-bar > .global-actions-left .monaco-action-bar .action-item {
 +    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
@@ -482,9 +1646,149 @@ index fe0f2ad..0000000 100644
 +.monaco-workbench .part.sidebar .empty-pane-message-area .empty-pane-message, .monaco-workbench .part.auxiliarybar .empty-pane-message-area .empty-pane-message {
 +    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077)
 +}
++
++
++
++/*** Custom Font Size for Bottom Pane ***/
++
++.monaco-workbench .pane-composite-part.bottom .monaco-action-bar .action-label,
++.monaco-workbench .pane-composite-part.bottom .monaco-action-bar .action-item .keybinding {
++    font-size: calc(var(--vscode-workbench-bottompane-font-size) * 0.8461538462);
++    padding: calc(var(--vscode-workbench-bottompane-font-size) * 0.2307692308);
++}
++
++.monaco-workbench .pane-composite-part.bottom > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .badge .badge-content,
++.monaco-workbench .pane-composite-part.bottom > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .badge .badge-content {
++	padding: calc(var(--vscode-workbench-bottompane-font-size) * 0.2307692308) calc(var(--vscode-workbench-bottompane-font-size) * 0.3846153846);
++	font-size: calc(var(--vscode-workbench-bottompane-font-size) * 0.7692307692);
++	min-width: calc(var(--vscode-workbench-bottompane-font-size) * 1.2307692308);
++	height: calc(var(--vscode-workbench-bottompane-font-size) * 1.2307692308);
++	line-height: calc(var(--vscode-workbench-bottompane-font-size) * 0.7692307692);
++	border-radius: calc(var(--vscode-workbench-bottompane-font-size) * 0.7692307692);
++}
 \ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/panel/media/panelpart.css b/src/vs/workbench/browser/parts/panel/media/panelpart.css
+index e1c147d..63d0e10 100644
+--- a/src/vs/workbench/browser/parts/panel/media/panelpart.css
++++ b/src/vs/workbench/browser/parts/panel/media/panelpart.css
+@@ -10,2 +10,7 @@
+ 
++.monaco-workbench .part.panel > .content {
++	font-family: var(--vscode-workbench-bottompane-font-family, inherit);
++	font-size: 13px;
++}
++
+ .monaco-workbench .part.panel.bottom .composite.title {
+@@ -100 +105,51 @@
+ }
++
++
++
++/*** Handcrafted for Custom Font Size ***/
++
++.monaco-workbench .part.panel.bottom {
++	font-size: var(--vscode-workbench-bottompane-font-size)
++}
++
++.monaco-workbench .pane-composite-part.bottom .monaco-action-bar .action-label,
++.monaco-workbench .pane-composite-part.bottom .monaco-action-bar .action-item .keybinding {
++    font-size: calc(var(--vscode-workbench-bottompane-font-size) * 0.8461538462);
++    padding: calc(var(--vscode-workbench-bottompane-font-size) * 0.2307692308);
++}
++
++.monaco-workbench .pane-composite-part.bottom > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item,
++.monaco-workbench .pane-composite-part.bottom > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item {
++    padding-left: calc(var(--vscode-workbench-bottompane-font-size) * 0.7692307692);
++    padding-right: calc(var(--vscode-workbench-bottompane-font-size) * 0.7692307692);
++    font-size: calc(var(--vscode-workbench-bottompane-font-size) * 0.8461538462);
++    padding-bottom: calc(var(--vscode-workbench-bottompane-font-size) * 0.1538461538);
++    padding-top: calc(var(--vscode-workbench-bottompane-font-size) * 0.1538461538);
++}
++
++.monaco-workbench .pane-composite-part.bottom > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .badge,
++.monaco-workbench .pane-composite-part.bottom > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .badge {
++    margin-left: calc(var(--vscode-workbench-bottompane-font-size) * 0.1538461538);
++	font-size: calc(var(--vscode-workbench-bottompane-font-size) * 0.8461538462);
++}
++
++.monaco-workbench .pane-composite-part.bottom .monaco-action-bar .action-item .codicon {
++    width: calc(var(--vscode-workbench-bottompane-font-size) * 1.2307692308);
++    height: calc(var(--vscode-workbench-bottompane-font-size) * 1.2307692308);
++}
++
++.monaco-workbench .pane-composite-part.bottom .codicon[class*='codicon-'] {
++    font-size: calc(var(--vscode-workbench-bottompane-font-size) * 1.2307692308);
++}
++
++.monaco-workbench .pane-composite-part.bottom .monaco-dropdown-with-primary > .dropdown-action-container > .monaco-dropdown > .dropdown-label .codicon[class*='codicon-'] {
++    font-size: calc(var(--vscode-workbench-bottompane-font-size) * 0.9230769231);
++    line-height: calc(var(--vscode-workbench-bottompane-font-size) * 1.2307692308);
++}
++
++
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .part.panel > .content {
++    font-size: calc(var(--vscode-workbench-bottompane-font-size) * 1)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/panel/panelPart.ts b/src/vs/workbench/browser/parts/panel/panelPart.ts
+index 9afcf59..a8d4c2e 100644
+--- a/src/vs/workbench/browser/parts/panel/panelPart.ts
++++ b/src/vs/workbench/browser/parts/panel/panelPart.ts
+@@ -34,2 +34,3 @@ import { IConfigurationService } from '../../../../platform/configuration/common
+ import { Extensions } from '../../panecomposite.js';
++import { FONT, getFontSize, updatePanelSize as updateBottomPaneSize } from '../../../../base/common/font.js';
+ 
+@@ -117,2 +118,8 @@ export class PanelPart extends AbstractPaneCompositePart {
+ 			}
++			if (e.affectsConfiguration('workbench.bottomPane.experimental.fontFamily')) {
++				this.applyPanelFontFamily();
++			}
++			if (e.affectsConfiguration('workbench.bottomPane.experimental.fontSize')) {
++				this.applyPanelFontSize();
++			}
+ 		}));
+@@ -133,2 +140,37 @@ export class PanelPart extends AbstractPaneCompositePart {
+ 		}
++
++		this.applyPanelFontFamily(container);
++		this.applyPanelFontSize(container);
++	}
++
++	private applyPanelFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const family = this.configurationService.getValue<string>('workbench.bottomPane.experimental.fontFamily');
++
++		if (family) {
++			target.style.setProperty('--vscode-workbench-bottompane-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-bottompane-font-family');
++		}
++
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
++	}
++
++	private applyPanelFontSize(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const configuredSize = getFontSize(this.configurationService, 'workbench.bottomPane.experimental.fontSize', FONT.defaultBottomPaneSize);
++
++		updateBottomPaneSize(configuredSize);
++
++		target.style.setProperty('--vscode-workbench-bottompane-font-size', `${FONT.bottomPaneSize}px`);
++
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
+ 	}
 diff --git a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
-index decb51a..7088a97 100644
+index decb51a..3a5ff82 100644
 --- a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
 +++ b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
 @@ -15,3 +15,3 @@
@@ -530,7 +1834,7 @@ index decb51a..7088a97 100644
 -	left: 5px; /* place icon in center */
 +	left: calc(var(--vscode-workbench-sidebar-font-size) * 0.385); /* place icon in center */
  }
-@@ -124,3 +130,72 @@
+@@ -124,3 +130,76 @@
  .monaco-workbench .sidebar.pane-composite-part > .title.has-composite-bar > .title-actions .monaco-action-bar .action-item {
 -	max-width: 150px;
 +	max-width: calc(var(--vscode-workbench-sidebar-font-size) * 11.538);
@@ -547,7 +1851,7 @@ index decb51a..7088a97 100644
 +
 +.monaco-workbench .part.sidebar .monaco-text-button {
 +	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923);
- }
++}
 +
 +.monaco-workbench .part.sidebar .monaco-icon-label::before {
 +    background-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
@@ -586,7 +1890,7 @@ index decb51a..7088a97 100644
 +
 +.monaco-workbench .part.sidebar .pane > .pane-header > .actions {
 +	margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.616);
-+}
+ }
 +.monaco-workbench .part.sidebar .monaco-pane-view .pane > .pane-header > .actions .action-item {
 +    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.308);
 +}
@@ -604,49 +1908,243 @@ index decb51a..7088a97 100644
 +	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.539);
 +	width: calc(var(--vscode-workbench-sidebar-font-size) * 1.539);
 +} */
++
++.monaco-workbench .part.sidebar > .content {
++	font-family: var(--vscode-workbench-sidebar-font-family, inherit);
++}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
-index 101b9c6..6e22f7a 100644
+index 101b9c6..970cdaa 100644
 --- a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
 +++ b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
 @@ -36,2 +36,3 @@ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js
  import { Extensions } from '../../panecomposite.js';
-+import { FONT, updateSidebarSize } from '../../../../base/common/font.js';
++import { FONT, getFontSize, updateSidebarSize } from '../../../../base/common/font.js';
  
 @@ -40,2 +41,3 @@ export class SidebarPart extends AbstractPaneCompositePart {
  	static readonly activeViewletSettingsKey = 'workbench.sidebar.activeviewletid';
 +	static readonly fontSizeSettingsKey = 'workbench.sideBar.experimental.fontSize';
  
-@@ -126,2 +128,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -126,2 +128,8 @@ export class SidebarPart extends AbstractPaneCompositePart {
  			}
 +			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
 +				this.applySidebarFontSize();
 +			}
++			if (e.affectsConfiguration('workbench.sideBar.experimental.fontFamily')) {
++				this.applySidebarFontFamily();
++			}
  		}));
-@@ -178,2 +183,4 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -178,2 +186,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
  		container.style.outlineColor = this.getColor(SIDE_BAR_DRAG_AND_DROP_BACKGROUND) ?? '';
 +
 +		this.applySidebarFontSize(container);
++		this.applySidebarFontFamily(container);
  	}
-@@ -320,2 +327,18 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -320,2 +331,34 @@ export class SidebarPart extends AbstractPaneCompositePart {
  
++	private applySidebarFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const family = this.configurationService.getValue<string>('workbench.sideBar.experimental.fontFamily');
++
++		if (family) {
++			target.style.setProperty('--vscode-workbench-sidebar-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-sidebar-font-family');
++		}
++
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
++	}
++
 +	private applySidebarFontSize(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
 +		if (!target) {
 +			return;
 +		}
 +
-+		const configuredSize = this.configurationService.getValue(SidebarPart.fontSizeSettingsKey);
-+		if (typeof configuredSize === 'number' && configuredSize > 0) {
-+			updateSidebarSize(Math.trunc(configuredSize));
-+		} else {
-+			updateSidebarSize(13);
-+		}
++		const configuredSize = getFontSize(this.configurationService, SidebarPart.fontSizeSettingsKey, FONT.defaultSidebarSize);
++
++		updateSidebarSize(configuredSize);
 +
 +		target.style.setProperty('--vscode-workbench-sidebar-font-size', `${FONT.sidebarSize}px`);
++
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
 +	}
 +
  	private registerActions(): void {
+diff --git a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
+index 7faaf9e..a29027c 100644
+--- a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
++++ b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
+@@ -11,2 +11,3 @@
+ 	font-size: 12px;
++	font-family: var(--vscode-workbench-statusbar-font-family, inherit);
+ 	display: flex;
+@@ -236 +237,64 @@
+ }
++
++
++
++/*** Handcrafted for Custom Font Size ***/
++
++.monaco-workbench .part.statusbar .codicon[class*='codicon-'] {
++    font-size: calc(var(--vscode-workbench-statusbar-font-size) * 1.333333);
++}
++
++
++
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .part.statusbar {
++    height: calc(var(--vscode-workbench-statusbar-font-size) * 1.833333);
++    font-size: calc(var(--vscode-workbench-statusbar-font-size) * 1)
++}
++.monaco-workbench .part.statusbar:not(:focus).status-border-top::after {
++    height: calc(var(--vscode-workbench-statusbar-font-size) * 0.083333)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item {
++    line-height: calc(var(--vscode-workbench-statusbar-font-size) * 1.833333)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item.has-beak > .status-bar-item-beak-container {
++    left: calc(50% - calc(var(--vscode-workbench-statusbar-font-size) * 0.416667));
++    top: calc(var(--vscode-workbench-statusbar-font-size) * -0.416667);
++    width: calc(var(--vscode-workbench-statusbar-font-size) * 0.833333);
++    height: calc(var(--vscode-workbench-statusbar-font-size) * 0.416667)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item > .statusbar-item-label {
++    margin-right: calc(var(--vscode-workbench-statusbar-font-size) * 0.25);
++    margin-left: calc(var(--vscode-workbench-statusbar-font-size) * 0.25);
++    padding: 0 calc(var(--vscode-workbench-statusbar-font-size) * 0.416667);
++    outline-width: calc(var(--vscode-workbench-statusbar-font-size) * 0)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item.compact-left > .statusbar-item-label {
++    margin-right: calc(var(--vscode-workbench-statusbar-font-size) * 0.416667);
++    padding: 0 calc(var(--vscode-workbench-statusbar-font-size) * 0.25)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item.compact-right > .statusbar-item-label {
++    margin-left: calc(var(--vscode-workbench-statusbar-font-size) * 0.416667);
++    padding: 0 calc(var(--vscode-workbench-statusbar-font-size) * 0.25)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item.left.first-visible-item > .statusbar-item-label, .monaco-workbench .part.statusbar > .items-container > .statusbar-item.right.last-visible-item > .statusbar-item-label, .monaco-workbench .part.statusbar > .items-container > .statusbar-item.has-background-color > .statusbar-item-label {
++    padding-left: calc(var(--vscode-workbench-statusbar-font-size) * 0.666667);
++    padding-right: calc(var(--vscode-workbench-statusbar-font-size) * 0.666667)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item.compact-left.has-background-color > .statusbar-item-label {
++    padding-left: calc(var(--vscode-workbench-statusbar-font-size) * 0.25);
++    padding-right: calc(var(--vscode-workbench-statusbar-font-size) * 0.833333)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item.compact-right.has-background-color > .statusbar-item-label {
++    padding-left: calc(var(--vscode-workbench-statusbar-font-size) * 0.833333);
++    padding-right: calc(var(--vscode-workbench-statusbar-font-size) * 0.25)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item a:active:not(.disabled) {
++    outline: calc(var(--vscode-workbench-statusbar-font-size) * 0.083333) solid var(--vscode-contrastActiveBorder);
++    outline-offset: calc(var(--vscode-workbench-statusbar-font-size) * -0.083333)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item a:hover:not(.disabled) {
++    outline: calc(var(--vscode-workbench-statusbar-font-size) * 0.083333) dashed var(--vscode-contrastActiveBorder);
++    outline-offset: calc(var(--vscode-workbench-statusbar-font-size) * -0.083333)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts b/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
+index 18340a8..0a33ce0 100644
+--- a/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
++++ b/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
+@@ -38,2 +38,4 @@ import { IView } from '../../../../base/browser/ui/grid/grid.js';
+ import { isManagedHoverTooltipHTMLElement, isManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
++import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { FONT, getFontSize, updateStatusBarSize } from '../../../../base/common/font.js';
+ 
+@@ -120,3 +122,3 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 
+-	static readonly HEIGHT = 22;
++	static get HEIGHT() { return FONT.statusBarSize22; }
+ 
+@@ -126,4 +128,4 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 	readonly maximumWidth: number = Number.POSITIVE_INFINITY;
+-	readonly minimumHeight: number = StatusbarPart.HEIGHT;
+-	readonly maximumHeight: number = StatusbarPart.HEIGHT;
++	get minimumHeight(): number { return FONT.statusBarSize22; }
++	get maximumHeight(): number { return FONT.statusBarSize22; }
+ 
+@@ -162,2 +164,3 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
++		@IConfigurationService private readonly configurationService: IConfigurationService,
+ 	) {
+@@ -165,2 +168,11 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 
++		this._register(configurationService.onDidChangeConfiguration(e => {
++			if (e.affectsConfiguration('workbench.statusBar.experimental.fontFamily')) {
++				this.applyStatusBarFontFamily();
++			}
++			if (e.affectsConfiguration('workbench.statusBar.experimental.fontSize')) {
++				this.applyStatusBarFontSize();
++			}
++		}));
++
+ 		this.viewModel = this._register(new StatusbarViewModel(storageService));
+@@ -429,2 +441,5 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 
++		this.applyStatusBarFontFamily(this.element);
++		this.applyStatusBarFontSize(this.element);
++
+ 		return this.element;
+@@ -432,2 +447,32 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 
++	private applyStatusBarFontFamily(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++		const family = this.configurationService.getValue<string>('workbench.statusBar.experimental.fontFamily');
++		if (family) {
++			target.style.setProperty('--vscode-workbench-statusbar-font-family', family);
++		} else {
++			target.style.removeProperty('--vscode-workbench-statusbar-font-family');
++		}
++
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
++	}
++
++	private applyStatusBarFontSize(container?: HTMLElement): void {
++		const target = container ?? this.getContainer();
++		if (!target) {
++			return;
++		}
++
++		const configuredSize = getFontSize(this.configurationService, 'workbench.statusBar.experimental.fontSize', FONT.defaultStatusBarSize);
++
++		updateStatusBarSize(configuredSize);
++
++		target.style.setProperty('--vscode-workbench-statusbar-font-size', `${FONT.statusBarSize}px`);
++
++		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
++	}
++
+ 	private createInitialStatusbarEntries(): void {
+@@ -726,4 +771,5 @@ export class MainStatusbarPart extends StatusbarPart {
+ 		@IContextKeyService contextKeyService: IContextKeyService,
++		@IConfigurationService configurationService: IConfigurationService,
+ 	) {
+-		super(Parts.STATUSBAR_PART, instantiationService, themeService, contextService, storageService, layoutService, contextMenuService, contextKeyService);
++		super(Parts.STATUSBAR_PART, instantiationService, themeService, contextService, storageService, layoutService, contextMenuService, contextKeyService, configurationService);
+ 	}
+@@ -740,3 +786,3 @@ export class AuxiliaryStatusbarPart extends StatusbarPart implements IAuxiliaryS
+ 
+-	readonly height = StatusbarPart.HEIGHT;
++	get height() { return StatusbarPart.HEIGHT; }
+ 
+@@ -751,5 +797,6 @@ export class AuxiliaryStatusbarPart extends StatusbarPart implements IAuxiliaryS
+ 		@IContextKeyService contextKeyService: IContextKeyService,
++		@IConfigurationService configurationService: IConfigurationService,
+ 	) {
+ 		const id = AuxiliaryStatusbarPart.COUNTER++;
+-		super(`workbench.parts.auxiliaryStatus.${id}`, instantiationService, themeService, contextService, storageService, layoutService, contextMenuService, contextKeyService);
++		super(`workbench.parts.auxiliaryStatus.${id}`, instantiationService, themeService, contextService, storageService, layoutService, contextMenuService, contextKeyService, configurationService);
+ 	}
 diff --git a/src/vs/workbench/browser/parts/views/media/paneviewlet.css b/src/vs/workbench/browser/parts/views/media/paneviewlet.css
 index aca98de..5bf9bf7 100644
 --- a/src/vs/workbench/browser/parts/views/media/paneviewlet.css
@@ -701,20 +2199,175 @@ index 1c9305b..6471a0d 100644
 -	static readonly ITEM_HEIGHT = 22;
  	static readonly TREE_TEMPLATE_ID = 'treeExplorer';
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index b1c5637..3bcdefb 100644
+index b1c5637..2f8c047 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -561,2 +561,10 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -675,2 +675,85 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  			},
-+			'workbench.sideBar.experimental.fontSize': {
-+				'type': 'number',
-+				'default': 13,
-+				'minimum': 6,
-+				'maximum': 32,
-+				'markdownDescription': localize('sideBarFontSize', "Controls the font size used for content inside the side bars."),
++			'workbench.experimental.fontFamily': {
++				type: 'string',
++				description: localize('workbench.fontFamily', "Controls the font family in the workbench."),
++				'tags': ['experimental']
++			},
++			'workbench.experimental.fontSize': {
++				type: 'number',
++				default: 13,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('workbench.fontSize', "Controls the font size in pixels for the workbench."),
 +				'tags': ['accessibility', 'experimental']
 +			},
- 			'workbench.panel.showLabels': {
++			'workbench.activityBar.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('activityBarFontFamily', "Controls the font family for the activity bar."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.activityBar.experimental.fontSize': {
++				type: 'number',
++				default: 16,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('activityBarFontSize', "Controls the font size in pixels for the activity bar."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.bottomPane.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('bottomPaneFontFamily', "Controls the font family for the bottom panel."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.bottomPane.experimental.fontSize': {
++				type: 'number',
++				default: 13,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('bottomPaneFontSize', "Controls the font size in pixels for the bottom panel."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.sideBar.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('sideBarFontFamily', "Controls the font family for the side bars."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.sideBar.experimental.fontSize': {
++				type: 'number',
++				default: 13,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('sideBarFontSize', "Controls the font size in pixels for the side bars."),
++				tags: ['accessibility', 'experimental']
++			},
++			'workbench.statusBar.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('statusBarFontFamily', "Controls the font family for the status bar."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.statusBar.experimental.fontSize': {
++				type: 'number',
++				default: 12,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('statusBarFontSize', "Controls the font size in pixels for the status bar."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.tabs.experimental.fontFamily': {
++				type: 'string',
++				default: '',
++				markdownDescription: localize('tabsFontFamily', "Controls the font family in editor tabs."),
++				'tags': ['accessibility', 'experimental']
++			},
++			'workbench.tabs.experimental.fontSize': {
++				type: 'number',
++				default: 13,
++				minimum: 6,
++				maximum: 32,
++				markdownDescription: localize('tabsFontSize', "Controls the font size in pixels for editor tabs."),
++				'tags': ['accessibility', 'experimental']
++			},
+ 			'workbench.settings.editor': {
+diff --git a/src/vs/workbench/browser/workbench.ts b/src/vs/workbench/browser/workbench.ts
+index 10e2c3e..74e3bbe 100644
+--- a/src/vs/workbench/browser/workbench.ts
++++ b/src/vs/workbench/browser/workbench.ts
+@@ -9,2 +9,3 @@ import { Event, Emitter, setGlobalLeakWarningThreshold } from '../../base/common
+ import { RunOnceScheduler, timeout } from '../../base/common/async.js';
++import { FONT, getFontSize, updateDefaultSize } from '../../base/common/font.js';
+ import { isFirefox, isSafari, isChrome } from '../../base/browser/browser.js';
+@@ -19,3 +20,3 @@ import { Position, Parts, IWorkbenchLayoutService, positionToString } from '../s
+ import { IStorageService, WillSaveStateReason, StorageScope, StorageTarget } from '../../platform/storage/common/storage.js';
+-import { IConfigurationChangeEvent, IConfigurationService } from '../../platform/configuration/common/configuration.js';
++import { IConfigurationService } from '../../platform/configuration/common/configuration.js';
+ import { IInstantiationService } from '../../platform/instantiation/common/instantiation.js';
+@@ -233,3 +234,13 @@ export class Workbench extends Layout {
+ 		// Configuration changes
+-		this._register(configurationService.onDidChangeConfiguration(e => this.updateFontAliasing(e, configurationService)));
++		this._register(configurationService.onDidChangeConfiguration(e => {
++			if (e.affectsConfiguration('workbench.fontAliasing')) {
++				this.updateFontAliasing(configurationService);
++			}
++			if (e.affectsConfiguration('workbench.experimental.fontFamily')) {
++				this.updateFontFamily(configurationService);
++			}
++			if (e.affectsConfiguration('workbench.experimental.fontSize')) {
++				this.updateFontSize(configurationService);
++			}
++		}));
+ 
+@@ -270,3 +281,3 @@ export class Workbench extends Layout {
+ 	private fontAliasing: 'default' | 'antialiased' | 'none' | 'auto' | undefined;
+-	private updateFontAliasing(e: IConfigurationChangeEvent | undefined, configurationService: IConfigurationService) {
++	private updateFontAliasing(configurationService: IConfigurationService) {
+ 		if (!isMacintosh) {
+@@ -275,6 +286,2 @@ export class Workbench extends Layout {
+ 
+-		if (e && !e.affectsConfiguration('workbench.fontAliasing')) {
+-			return;
+-		}
+-
+ 		const aliasing = configurationService.getValue<'default' | 'antialiased' | 'none' | 'auto'>('workbench.fontAliasing');
+@@ -296,2 +303,31 @@ export class Workbench extends Layout {
+ 
++	private fontFamily: string | undefined;
++	private updateFontFamily(configurationService: IConfigurationService) {
++		let family = configurationService.getValue<string>('workbench.experimental.fontFamily');
++
++		if (this.fontFamily === family) {
++			return;
++		}
++
++		this.fontFamily = family;
++
++		if (family) {
++			this.mainContainer.style.setProperty('--vscode-workbench-font-family', family);
++		} else {
++			this.mainContainer.style.removeProperty('--vscode-workbench-font-family');
++		}
++	}
++
++	private updateFontSize(configurationService: IConfigurationService) {
++		const configuredSize = getFontSize(configurationService, 'workbench.experimental.fontSize', 13);
++
++		if (FONT.defaultSize === configuredSize) {
++			return;
++		}
++
++		updateDefaultSize(configuredSize);
++
++		this.mainContainer.style.setProperty('--vscode-workbench-font-size', `${FONT.defaultSize}px`);
++	}
++
+ 	private restoreFontInfo(storageService: IStorageService, configurationService: IConfigurationService): void {
+@@ -339,3 +375,6 @@ export class Workbench extends Layout {
+ 		// Apply font aliasing
+-		this.updateFontAliasing(undefined, configurationService);
++		this.updateFontAliasing(configurationService);
++
++		this.updateFontFamily(configurationService);
++		this.updateFontSize(configurationService);
+ 
 diff --git a/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts b/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts
 index 6f58865..3ab0ee4 100644
 --- a/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts
@@ -2013,6 +3666,28 @@ index e9c0fcd..7ee6d39 100644
 -			this.replaceInput.width = width - 28;
 +			this.replaceInput.width = width - FONT.sidebarSize28;
  			this.replaceInput.inputBox.layout();
+diff --git a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
+index 21118dd..9c788d8 100644
+--- a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
++++ b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
+@@ -58,2 +58,3 @@ import { TerminalStorageKeys } from '../common/terminalStorageKeys.js';
+ import { isObject } from '../../../../base/common/types.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -62,3 +63,2 @@ const $ = DOM.$;
+ export const enum TerminalTabsListSizes {
+-	TabHeight = 22,
+ 	NarrowViewWidth = 46,
+@@ -99,3 +99,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
+ 			{
+-				getHeight: () => TerminalTabsListSizes.TabHeight,
++				getHeight: () => FONT.bottomPaneSize22,
+ 				getTemplateId: () => 'terminal.tabs'
+@@ -113,3 +113,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
+ 				multipleSelectionSupport: true,
+-				paddingBottom: TerminalTabsListSizes.TabHeight,
++				paddingBottom: FONT.bottomPaneSize22,
+ 				dnd: instantiationService.createInstance(TerminalTabsDragAndDrop),
 diff --git a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts b/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
 index e19fc27..56e4bbc 100644
 --- a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
