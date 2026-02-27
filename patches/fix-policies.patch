@@ -1,5 +1,5 @@
 diff --git a/build/.moduleignore b/build/.moduleignore
-index 5b040cc..8d5fd71 100644
+index ed36151..c955e07 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
 @@ -128,9 +128,11 @@ vsda/**
@@ -21,8 +21,51 @@ index 5b040cc..8d5fd71 100644
 +@vscodium/policy-watcher/index.d.ts
 +!@vscodium/policy-watcher/build/Release/vscodium-policy-watcher.node
  
+diff --git a/build/lib/policies/basePolicy.ts b/build/lib/policies/basePolicy.ts
+index 7f650ba..db927cb 100644
+--- a/build/lib/policies/basePolicy.ts
++++ b/build/lib/policies/basePolicy.ts
+@@ -38,3 +38,3 @@ export abstract class BasePolicy implements Policy {
+ 		return [
+-			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\Microsoft\\${regKey}" presentation="$(presentation.${this.name})">`,
++			`<policy name="${this.name}" class="Both" displayName="$(string.${this.name})" explainText="$(string.${this.name}_${this.description.nlsKey.replace(/\./g, '_')})" key="Software\\Policies\\!!ORG_NAME!!\\${regKey}" presentation="$(presentation.${this.name})">`,
+ 			`	<parentCategory ref="${this.category.name.nlsKey}" />`,
+diff --git a/build/lib/policies/render.ts b/build/lib/policies/render.ts
+index 47b485d..8437fd4 100644
+--- a/build/lib/policies/render.ts
++++ b/build/lib/policies/render.ts
+@@ -49,3 +49,3 @@ export function renderADMX(regKey: string, versions: string[], categories: Categ
+ 	<policyNamespaces>
+-		<target prefix="${regKey}" namespace="Microsoft.Policies.${regKey}" />
++		<target prefix="${regKey}" namespace="!!ORG_NAME!!.Policies.${regKey}" />
+ 	</policyNamespaces>
+@@ -167,3 +167,3 @@ export function renderProfileManifest(appName: string, bundleIdentifier: string,
+ 			<key>pfm_default</key>
+-			<string>Microsoft</string>
++			<string>!!ORG_NAME!!</string>
+ 			<key>pfm_name</key>
+@@ -185,3 +185,3 @@ export function renderProfileManifest(appName: string, bundleIdentifier: string,
+     <key>pfm_app_url</key>
+-    <string>https://code.visualstudio.com/</string>
++    <string>https://github.com/VSCodium/vscodium</string>
+     <key>pfm_description</key>
+@@ -189,3 +189,3 @@ export function renderProfileManifest(appName: string, bundleIdentifier: string,
+     <key>pfm_documentation_url</key>
+-    <string>https://code.visualstudio.com/docs/setup/enterprise</string>
++    <string>https://github.com/VSCodium/vscodium</string>
+     <key>pfm_domain</key>
+@@ -255,3 +255,3 @@ ${policyEntries}
+ 		<key>PayloadDescription</key>
+-		<string>This profile manages ${appName}. For more information see https://code.visualstudio.com/docs/setup/enterprise</string>
++		<string>This profile manages ${appName}. For more information see https://github.com/VSCodium/vscodium</string>
+ 		<key>PayloadDisplayName</key>
+@@ -261,3 +261,3 @@ ${policyEntries}
+ 		<key>PayloadOrganization</key>
+-		<string>Microsoft</string>
++		<string>!!ORG_NAME!!</string>
+ 		<key>PayloadType</key>
 diff --git a/eslint.config.js b/eslint.config.js
-index 1847a81..3fb3b01 100644
+index 29ffd56..dff58ed 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
 @@ -1434,3 +1434,3 @@ export default tseslint.config(
@@ -89,7 +132,7 @@ index b3e1b81..7c34f88 100644
 +    },
      "node_modules/@webassemblyjs/ast": {
 diff --git a/package.json b/package.json
-index 4e4e77c..665303a 100644
+index 67e53ae..fb81b3c 100644
 --- a/package.json
 +++ b/package.json
 @@ -90,3 +90,3 @@
@@ -197,7 +240,7 @@ index ee0a24b..881ce36 100644
 +/Users/example/node_modules/@vscodium/policy-watcher/src/windows/NumberPolicy.hh
  /Users/example/node_modules/@vscode/vscode-languagedetection/CODE_OF_CONDUCT.md
 diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
-index ca6cea2..32b22fe 100644
+index c30c6da..f4f3dea 100644
 --- a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 +++ b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 @@ -62,5 +62,5 @@ flakySuite('Native Modules (all platforms)', () => {
