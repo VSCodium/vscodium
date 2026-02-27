@@ -119,6 +119,7 @@ check_file() {
       fi
 
       while [[ -n "$( find . -name '*.rej' -print )" ]]; do
+        find . -name '*.rej' -print
         read -rp "Press any key when the conflict have been resolved..." -n1 -s
         echo
       done

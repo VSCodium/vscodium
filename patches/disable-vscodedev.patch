@@ -1,8 +1,8 @@
 diff --git a/extensions/github/package.json b/extensions/github/package.json
-index 726a882..b9a4969 100644
+index bce90fe..73debf7 100644
 --- a/extensions/github/package.json
 +++ b/extensions/github/package.json
-@@ -44,19 +44,2 @@
+@@ -45,19 +45,2 @@
        },
 -      {
 -        "command": "github.copyVscodeDevLink",
@@ -22,7 +22,7 @@ index 726a882..b9a4969 100644
 -        "icon": "$(globe)"
 -      },
        {
-@@ -72,11 +55,2 @@
+@@ -83,11 +66,2 @@
      ],
 -    "continueEditSession": [
 -      {
@@ -34,7 +34,7 @@ index 726a882..b9a4969 100644
 -      }
 -    ],
      "menus": {
-@@ -91,18 +65,2 @@
+@@ -110,18 +84,2 @@
          },
 -        {
 -          "command": "github.copyVscodeDevLink",
@@ -53,7 +53,7 @@ index 726a882..b9a4969 100644
 -          "when": "false"
 -        },
          {
-@@ -112,42 +70,2 @@
+@@ -131,42 +89,2 @@
        ],
 -      "file/share": [
 -        {
@@ -97,13 +97,15 @@ index 726a882..b9a4969 100644
 -      ],
        "scm/historyItem/context": [
 diff --git a/extensions/github/src/commands.ts b/extensions/github/src/commands.ts
-index 48e9574..aa853a5 100644
+index 33acf5a..107e94a 100644
 --- a/extensions/github/src/commands.ts
 +++ b/extensions/github/src/commands.ts
-@@ -9,28 +9,3 @@ import { publishRepository } from './publish.js';
+@@ -9,30 +9,5 @@ import { publishRepository } from './publish.js';
  import { DisposableStore, getRepositoryFromUrl } from './util.js';
 -import { LinkContext, getCommitLink, getLink, getVscodeDevHost } from './links.js';
--
++import { getCommitLink } from './links.js';
+ import { getOctokit } from './auth.js';
+ 
 -async function copyVscodeDevLink(gitAPI: GitAPI, useSelection: boolean, context: LinkContext, includeRange = true) {
 -	try {
 -		const permalink = await getLink(gitAPI, useSelection, true, getVscodeDevHost(), 'headlink', context, includeRange);
@@ -128,9 +130,9 @@ index 48e9574..aa853a5 100644
 -		return undefined;
 -	}
 -}
-+import {  getCommitLink } from './links.js';
- 
-@@ -70,14 +45,2 @@ export function registerCommands(gitAPI: GitAPI): vscode.Disposable {
+-
+ interface ResolvedSessionRepo {
+@@ -210,14 +185,2 @@ export function registerCommands(gitAPI: GitAPI): vscode.Disposable {
  
 -	disposables.add(vscode.commands.registerCommand('github.copyVscodeDevLink', async (context: LinkContext) => {
 -		return copyVscodeDevLink(gitAPI, true, context);
@@ -145,13 +147,13 @@ index 48e9574..aa853a5 100644
 -	}));
 -
  	disposables.add(vscode.commands.registerCommand('github.openOnGitHub', async (url: string, historyItemId: string) => {
-@@ -113,6 +76,2 @@ export function registerCommands(gitAPI: GitAPI): vscode.Disposable {
+@@ -253,6 +216,2 @@ export function registerCommands(gitAPI: GitAPI): vscode.Disposable {
  
 -	disposables.add(vscode.commands.registerCommand('github.openOnVscodeDev', async () => {
 -		return openVscodeDevLink(gitAPI);
 -	}));
 -
- 	return disposables;
+ 	disposables.add(vscode.commands.registerCommand('github.createPullRequest', async (sessionResource: vscode.Uri | undefined, sessionMetadata: { worktreePath?: string } | undefined) => {
 diff --git a/extensions/github/src/extension.ts b/extensions/github/src/extension.ts
 index 17906c5..86a0ca8 100644
 --- a/extensions/github/src/extension.ts
@@ -165,7 +167,7 @@ index 17906c5..86a0ca8 100644
 -						disposables.add(new VscodeDevShareProvider(gitAPI));
  						setGitHubContext(gitAPI, disposables);
 diff --git a/extensions/github/src/remoteSourceProvider.ts b/extensions/github/src/remoteSourceProvider.ts
-index 291a3f1..6304ed8 100644
+index bed2bb1..2880f97 100644
 --- a/extensions/github/src/remoteSourceProvider.ts
 +++ b/extensions/github/src/remoteSourceProvider.ts
 @@ -10,3 +10,3 @@ import { Octokit } from '@octokit/rest';
@@ -173,7 +175,7 @@ index 291a3f1..6304ed8 100644
 -import { getBranchLink, getVscodeDevHost } from './links.js';
 +import { getBranchLink } from './links.js';
  
-@@ -129,9 +129,2 @@ export class GithubRemoteSourceProvider implements RemoteSourceProvider {
+@@ -137,9 +137,2 @@ export class GithubRemoteSourceProvider implements RemoteSourceProvider {
  			}
 -		}, {
 -			label: l10n.t('Checkout on vscode.dev'),
