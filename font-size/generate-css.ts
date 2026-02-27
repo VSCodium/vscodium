@@ -36,6 +36,12 @@ const AREAS: Record<string, Area> = {
 		files: ['src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css'],
 		prefixes: ['.monaco-workbench .part.statusbar'],
 	},
+	sidebar: {
+		name: 'sidebar',
+		defaultSize: 13,
+		files: ['src/vs/base/browser/ui/button/button.css', 'src/vs/workbench/contrib/scm/browser/media/scm.css'],
+		prefixes: ['.monaco-workbench .part.sidebar', '.monaco-workbench .part.auxiliarybar'],
+	},
 	tabs: {
 		name: 'tabs',
 		defaultSize: 13,
@@ -150,7 +156,7 @@ function extractOriginal(content: string): string {
 }
 
 function extractStyle(selector: string): string {
-	const match = /^(\.\w+)/.exec(selector);
+	const match = /^(\.[\w-]+)/.exec(selector);
 
 	return match?.[1] ?? '';
 }
@@ -160,9 +166,8 @@ function mergeSelector(selectors: string[], prefixes: string[], index: number): 
 		return;
 	}
 
-	const selector = selectors[index];
 	const prefix = prefixes[index];
-
+	const selector = selectors[index];
 	const style = extractStyle(prefix);
 
 	if(selector === style) {
@@ -174,6 +179,9 @@ function mergeSelector(selectors: string[], prefixes: string[], index: number): 
 	}
 	else if(selector.startsWith(style)) {
 		mergeSelector(selectors, prefixes, index + 1);
+	}
+	else if(index === 0) {
+		selectors.unshift(...prefixes)
 	}
 	else {
 		selectors.splice(index + 1, 0, ...prefixes.slice(index));
@@ -196,7 +204,7 @@ function prefixSelector(selector: string, prefixParts: string[]): string {
 }
 
 async function main(): Promise<void> {
-	const name = process.argv[2] || 'sidebar';
+	const name = process.argv[2];
 	const area = AREAS[name];
 
 	if(!area) {
