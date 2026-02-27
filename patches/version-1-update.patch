@@ -1,5 +1,5 @@
 diff --git a/src/vs/platform/update/common/update.ts b/src/vs/platform/update/common/update.ts
-index 8e3db7c..1a3226c 100644
+index cbeb3a6..bc382cc 100644
 --- a/src/vs/platform/update/common/update.ts
 +++ b/src/vs/platform/update/common/update.ts
 @@ -54,3 +54,4 @@ export const enum UpdateType {
@@ -8,7 +8,7 @@ index 8e3db7c..1a3226c 100644
 +	Snap,
 +	WindowsInstaller,
  }
-@@ -116 +117,38 @@ export interface IUpdateService {
+@@ -120 +121,38 @@ export interface IUpdateService {
  }
 +
 +export type Architecture =
@@ -49,44 +49,47 @@ index 8e3db7c..1a3226c 100644
 +	| "user";
 \ No newline at end of file
 diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-index 05c4489..59d0bd7 100644
+index 3e5956f..b3685bb 100644
 --- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
 +++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-@@ -17,3 +17,3 @@ import { IProductService } from '../../product/common/productService.js';
+@@ -18,3 +18,3 @@ import { IProductService } from '../../product/common/productService.js';
  import { IRequestService } from '../../request/common/request.js';
 -import { AvailableForDownload, DisablementReason, IUpdateService, State, StateType, UpdateType } from '../common/update.js';
 +import { Architecture, AvailableForDownload, DisablementReason, IUpdateService, Platform, State, StateType, Target, UpdateType } from '../common/update.js';
  
-@@ -23,10 +23,8 @@ export interface IUpdateURLOptions {
+@@ -25,12 +25,8 @@ export interface IUpdateURLOptions {
  
 -export function createUpdateURL(baseUpdateUrl: string, platform: string, quality: string, commit: string, options?: IUpdateURLOptions): string {
 -	const url = new URL(`${baseUpdateUrl}/api/update/${platform}/${quality}/${commit}`);
 -
 -	if (options?.background) {
 -		url.searchParams.set('bg', 'true');
+-	}
+-
+-	url.searchParams.set('u', options?.internalOrg ?? 'none');
+-
+-	return url.toString();
 +export function createUpdateURL(productService: IProductService, quality: string, platform: Platform, architecture: Architecture, target?: Target): string {
 +	if (target) {
 +		return `${productService.updateUrl}/${quality}/${platform}/${architecture}/${target}/latest.json`;
 +	} else {
 +		return `${productService.updateUrl}/${quality}/${platform}/${architecture}/latest.json`;
- 	}
--
--	return url.toString();
++ 	}
  }
-@@ -299,3 +297,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
+@@ -315,3 +311,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
  
 -		if (mode === 'none') {
 +		if (mode === 'none' || mode === 'manual') {
  			return undefined;
 diff --git a/src/vs/platform/update/electron-main/updateService.darwin.ts b/src/vs/platform/update/electron-main/updateService.darwin.ts
-index e65a982..950291b 100644
+index 842c676..974d411 100644
 --- a/src/vs/platform/update/electron-main/updateService.darwin.ts
 +++ b/src/vs/platform/update/electron-main/updateService.darwin.ts
-@@ -21,2 +21,3 @@ import { IMeteredConnectionService } from '../../meteredConnection/common/metere
- import { AbstractUpdateService, createUpdateURL, getUpdateRequestHeaders, IUpdateURLOptions, UpdateErrorClassification } from './abstractUpdateService.js';
+@@ -22,2 +22,3 @@ import { AbstractUpdateService, createUpdateURL, getUpdateRequestHeaders, IUpdat
+ import { INodeProcess } from '../../../base/common/platform.js';
 +import * as semver from 'semver';
  
-@@ -90,16 +91,5 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+@@ -97,16 +98,5 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
  
 -	protected buildUpdateFeedUrl(quality: string, commit: string, options?: IUpdateURLOptions): string | undefined {
 -		const assetID = this.productService.darwinUniversalAssetId ?? (process.arch === 'x64' ? 'darwin' : 'darwin-arm64');
@@ -106,7 +109,7 @@ index e65a982..950291b 100644
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch);
 + 	}
  
-@@ -137,3 +127,30 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+@@ -145,3 +135,30 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
  		this.logService.trace('update#doCheckForUpdates - using Electron autoUpdater', { url, explicit, background });
 -		electron.autoUpdater.checkForUpdates();
 +		this.requestService.request({ url }, CancellationToken.None)
@@ -139,7 +142,7 @@ index e65a982..950291b 100644
 +			});
  	}
 diff --git a/src/vs/platform/update/electron-main/updateService.linux.ts b/src/vs/platform/update/electron-main/updateService.linux.ts
-index ee4b291..01d0d9d 100644
+index 3ace29f..651b38c 100644
 --- a/src/vs/platform/update/electron-main/updateService.linux.ts
 +++ b/src/vs/platform/update/electron-main/updateService.linux.ts
 @@ -16,2 +16,3 @@ import { AvailableForDownload, IUpdate, State, UpdateType } from '../common/upda
@@ -153,7 +156,7 @@ index ee4b291..01d0d9d 100644
 +	protected buildUpdateFeedUrl(quality: string, _commit: string, _options?: IUpdateURLOptions): string {
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch);
  	}
-@@ -50,5 +51,17 @@ export class LinuxUpdateService extends AbstractUpdateService {
+@@ -51,5 +52,17 @@ export class LinuxUpdateService extends AbstractUpdateService {
  					this.setState(State.Idle(UpdateType.Archive));
 -				} else {
 +
@@ -173,22 +176,23 @@ index ee4b291..01d0d9d 100644
 +				return Promise.resolve(null);
  			})
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index da4c875..fa634dc 100644
+index 25535f2..7ef2f1b 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
 @@ -14,3 +14,2 @@ import { CancellationToken, CancellationTokenSource } from '../../../base/common
  import { memoize } from '../../../base/common/decorators.js';
 -import { hash } from '../../../base/common/hash.js';
  import * as path from '../../../base/common/path.js';
-@@ -31,4 +30,5 @@ import { asJson, IRequestService } from '../../request/common/request.js';
+@@ -33,5 +32,6 @@ import { asJson, IRequestService } from '../../request/common/request.js';
  import { ITelemetryService } from '../../telemetry/common/telemetry.js';
 -import { AvailableForDownload, DisablementReason, IUpdate, State, StateType, UpdateType } from '../common/update.js';
--import { AbstractUpdateService, createUpdateURL, IUpdateURLOptions, UpdateErrorClassification } from './abstractUpdateService.js';
+-import { AbstractUpdateService, createUpdateURL, getUpdateRequestHeaders, IUpdateURLOptions, UpdateErrorClassification } from './abstractUpdateService.js';
 +import { AvailableForDownload, DisablementReason, IUpdate, State, StateType, Target, UpdateType } from '../common/update.js';
-+import { AbstractUpdateService, createUpdateURL, IUpdateURLOptions } from './abstractUpdateService.js';
++import { AbstractUpdateService, createUpdateURL, getUpdateRequestHeaders, IUpdateURLOptions } from './abstractUpdateService.js';
+ import { INodeProcess } from '../../../base/common/platform.js';
 +import * as semver from 'semver';
  
-@@ -46,5 +46,9 @@ function getUpdateType(): UpdateType {
+@@ -49,5 +49,9 @@ function getUpdateType(): UpdateType {
  	if (typeof _updateType === 'undefined') {
 -		_updateType = existsSync(path.join(path.dirname(process.execPath), 'unins000.exe'))
 -			? UpdateType.Setup
@@ -201,16 +205,12 @@ index da4c875..fa634dc 100644
 +			_updateType = UpdateType.Archive;
 +		}
  	}
-@@ -68,2 +72,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
- 		@IConfigurationService configurationService: IConfigurationService,
-+		// @ts-expect-error
- 		@ITelemetryService private readonly telemetryService: ITelemetryService,
-@@ -140,3 +145,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -162,3 +166,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  		} else {
 -			const fastUpdatesEnabled = this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
 +			const fastUpdatesEnabled = getUpdateType() === UpdateType.Setup && this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
  			// GC for background updates in system setup happens via inno_setup since it requires
-@@ -158,12 +163,22 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -180,12 +184,22 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -	protected buildUpdateFeedUrl(quality: string, commit: string, options?: IUpdateURLOptions): string | undefined {
 -		let platform = `win32-${process.arch}`;
@@ -242,7 +242,7 @@ index da4c875..fa634dc 100644
 -		return createUpdateURL(this.productService.updateUrl!, platform, quality, commit, options);
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch, target);
  	}
-@@ -200,2 +215,10 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -224,2 +238,10 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 +				const fetchedVersion = /\d+\.\d+\.\d+\.\d+/.test(update.productVersion) ? update.productVersion.replace(/(\d+\.\d+\.\d+)\.\d+(\-\w+)?/, '$1$2') : update.productVersion.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
 +				const currentVersion = this.productService.version.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3')
@@ -253,26 +253,56 @@ index da4c875..fa634dc 100644
 +				}
 +
  				if (updateType === UpdateType.Archive) {
-@@ -271,3 +294,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -295,3 +317,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  			.then(undefined, err => {
 -				this.telemetryService.publicLog2<{ messageHash: string }, UpdateErrorClassification>('update:error', { messageHash: String(hash(String(err))) });
  				this.logService.error(err);
-@@ -494,6 +516,14 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
- 		} else {
--			spawn(this.availableUpdate.packagePath, ['/silent', '/log', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
--				detached: true,
--				stdio: ['ignore', 'ignore', 'ignore']
--			});
-+			const type = getUpdateType();
-+			if (type == UpdateType.WindowsInstaller) {
-+				spawn('msiexec.exe', ['/i', this.availableUpdate.packagePath], {
+@@ -359,20 +380,31 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+ 		await pfs.Promises.writeFile(this.availableUpdate.updateFilePath, 'flag');
+-		const child = spawn(this.availableUpdate.packagePath,
+-			[
+-				'/verysilent',
+-				'/log',
+-				`/update="${this.availableUpdate.updateFilePath}"`,
+-				`/progress="${progressFilePath}"`,
+-				`/sessionend="${sessionEndFlagPath}"`,
+-				`/cancel="${cancelFilePath}"`,
+-				'/nocloseapplications',
+-				'/mergetasks=runcode,!desktopicon,!quicklaunchicon'
+-			],
+-			{
++
++		let child: ChildProcess
++
++		const type = getUpdateType();
++		if (type == UpdateType.WindowsInstaller) {
++			child = spawn('msiexec.exe', ['/i', this.availableUpdate.packagePath], {
+ 				detached: true,
+-				stdio: ['ignore', 'ignore', 'ignore'],
+-				windowsVerbatimArguments: true,
+-				env: { ...process.env, __COMPAT_LAYER: 'RunAsInvoker' }
+-			}
+-		);
++				stdio: ['ignore', 'ignore', 'ignore']
++			});
++		} else {
++			child = spawn(this.availableUpdate.packagePath,
++				[
++					'/verysilent',
++					'/log',
++					`/update="${this.availableUpdate.updateFilePath}"`,
++					`/progress="${progressFilePath}"`,
++					`/sessionend="${sessionEndFlagPath}"`,
++					`/cancel="${cancelFilePath}"`,
++					'/nocloseapplications',
++					'/mergetasks=runcode,!desktopicon,!quicklaunchicon'
++				],
++				{
 +					detached: true,
-+					stdio: ['ignore', 'ignore', 'ignore']
-+				});
-+			} else {
-+				spawn(this.availableUpdate.packagePath, ['/silent', '/log', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
-+					detached: true,
-+					stdio: ['ignore', 'ignore', 'ignore']
-+				});
-+			}
- 		}
++					stdio: ['ignore', 'ignore', 'ignore'],
++					windowsVerbatimArguments: true,
++					env: { ...process.env, __COMPAT_LAYER: 'RunAsInvoker' }
++				}
++			);
++		}
+ 

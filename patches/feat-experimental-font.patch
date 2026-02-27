@@ -110,7 +110,7 @@ index 827a19f..43a1996 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/selectBox/selectBox.css b/src/vs/base/browser/ui/selectBox/selectBox.css
-index 2b0011a..327fe0f 100644
+index fd4d00e..92ddc99 100644
 --- a/src/vs/base/browser/ui/selectBox/selectBox.css
 +++ b/src/vs/base/browser/ui/selectBox/selectBox.css
 @@ -35 +35,16 @@
@@ -951,7 +951,7 @@ index 328285f..0735dfa 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/browser/media/style.css b/src/vs/workbench/browser/media/style.css
-index 13ff794..57ad58c 100644
+index 7537f93..5a7a277 100644
 --- a/src/vs/workbench/browser/media/style.css
 +++ b/src/vs/workbench/browser/media/style.css
 @@ -11,20 +11,20 @@
@@ -996,7 +996,7 @@ index 13ff794..57ad58c 100644
 +	font-family: var(--vscode-workbench-font-family, var(--monaco-font));
 +	font-size: var(--vscode-workbench-font-size, 13px);
  }
-@@ -322 +324,41 @@ body {
+@@ -323 +325,41 @@ body {
  }
 +
 +
@@ -2199,10 +2199,10 @@ index 1c9305b..6471a0d 100644
 -	static readonly ITEM_HEIGHT = 22;
  	static readonly TREE_TEMPLATE_ID = 'treeExplorer';
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index b1c5637..2f8c047 100644
+index 058693c..ee81a59 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -675,2 +675,85 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -702,2 +702,85 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  			},
 +			'workbench.experimental.fontFamily': {
 +				type: 'string',
@@ -2382,16 +2382,16 @@ index 6f58865..3ab0ee4 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
-index 2a89832..d2cfdbf 100644
+index eb17488..1a005a7 100644
 --- a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
 +++ b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
 @@ -45,2 +45,3 @@ import { AgentSessionProviders, getAgentSessionTime } from './agentSessions.js';
  import { AgentSessionsGrouping } from './agentSessionsFilter.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -504,11 +505,8 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+@@ -508,11 +509,8 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
  
--	static readonly ITEM_HEIGHT = 44;
+-	static readonly ITEM_HEIGHT = 54;
 -	static readonly SECTION_HEIGHT = 26;
 -
  	getHeight(element: AgentSessionListItem): number {
@@ -2417,14 +2417,14 @@ index ad2c82a..6cb6bce 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
-index 4fd9d3e..fce1aad 100644
+index cc7bb15..f260d0e 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
-@@ -34,2 +34,3 @@ import { ResourcePool } from './chatCollections.js';
+@@ -33,2 +33,3 @@ import { ResourcePool } from './chatCollections.js';
  import { IChatContentPart, IChatContentPartRenderContext } from './chatContentParts.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  
-@@ -246,3 +247,3 @@ class CollapsibleChangesSummaryListDelegate implements IListVirtualDelegate<IEdi
+@@ -244,3 +245,3 @@ class CollapsibleChangesSummaryListDelegate implements IListVirtualDelegate<IEdi
  	getHeight(element: IEditSessionEntryDiff): number {
 -		return 22;
 +		return FONT.sidebarSize22;
@@ -2443,14 +2443,14 @@ index 15ae799..06a95d5 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
-index d62abbb..5d7359f 100644
+index 6ff8637..7694134 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
-@@ -49,2 +49,3 @@ import { IChatContentPartRenderContext } from './chatContentParts.js';
- import { IHoverService } from '../../../../../../platform/hover/browser/hover.js';
+@@ -50,2 +50,3 @@ import { IHoverService } from '../../../../../../platform/hover/browser/hover.js
+ import { IConfigurationService } from '../../../../../../platform/configuration/common/configuration.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  
-@@ -293,3 +294,3 @@ class CollapsibleListDelegate implements IListVirtualDelegate<IChatCollapsibleLi
+@@ -297,3 +298,3 @@ class CollapsibleListDelegate implements IListVirtualDelegate<IChatCollapsibleLi
  	getHeight(element: IChatCollapsibleListItem): number {
 -		return 22;
 +		return FONT.sidebarSize22;
@@ -2720,10 +2720,10 @@ index 090c53e..d5c4b9f 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css b/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
-index f6ca5b3..ac13e94 100644
+index 4a627af..a07c974 100644
 --- a/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
 +++ b/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
-@@ -370 +370,90 @@
+@@ -371 +371,90 @@
  }
 +
 +
@@ -2855,7 +2855,7 @@ index 3cd48a5..3238df4 100644
 +	getHeight() { return FONT.sidebarSize22; }
  	getTemplateId() { return 'extensionFeatureDescriptor'; }
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsList.ts b/src/vs/workbench/contrib/extensions/browser/extensionsList.ts
-index 95226c5..dcea716 100644
+index 42134f0..4e14bd1 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsList.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsList.ts
 @@ -27,4 +27,3 @@ import { IActionViewItemOptions } from '../../../../base/browser/ui/actionbar/ac
@@ -2883,14 +2883,14 @@ index 418cb12..fbb30c5 100644
 +		return FONT.sidebarSize62;
  	}
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts b/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts
-index 6b63799..9cec063 100644
+index 8bfac42..6430bf4 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts
-@@ -72,2 +72,3 @@ import { DEFAULT_ACCOUNT_SIGN_IN_COMMAND } from '../../../services/accounts/brow
- import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+@@ -69,2 +69,3 @@ import { URI } from '../../../../base/common/uri.js';
+ import { DEFAULT_ACCOUNT_SIGN_IN_COMMAND } from '../../../services/accounts/browser/defaultAccount.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -727,5 +728,5 @@ export class ExtensionsViewPaneContainer extends ViewPaneContainer<IExtensionsVi
+@@ -735,5 +736,5 @@ export class ExtensionsViewPaneContainer extends ViewPaneContainer<IExtensionsVi
  		}
 -		this.searchBox?.layout(new Dimension(dimension.width - 34 - /*padding*/8 - (24 * 2), 20));
 -		const searchBoxHeight = 20 + 21 /*margin*/;
@@ -2900,10 +2900,10 @@ index 6b63799..9cec063 100644
 +		const headerHeight = this.header && !!this.notificationContainer?.childNodes.length ? this.notificationContainer.clientHeight + searchBoxHeight + FONT.sidebarSize10 /*margin*/ : searchBoxHeight;
  		this.header!.style.height = `${headerHeight}px`;
 diff --git a/src/vs/workbench/contrib/extensions/browser/media/extension.css b/src/vs/workbench/contrib/extensions/browser/media/extension.css
-index d581283..7ab0492 100644
+index 8454447..bf4b116 100644
 --- a/src/vs/workbench/contrib/extensions/browser/media/extension.css
 +++ b/src/vs/workbench/contrib/extensions/browser/media/extension.css
-@@ -281 +281,83 @@
+@@ -302 +302,83 @@
  }
 +
 +
@@ -3455,19 +3455,44 @@ index 1523a82..fe78847 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
-index dd3439f..2120b2f 100644
+index a2887d4..5e81511 100644
 --- a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
 +++ b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
-@@ -113,2 +113,3 @@ import product from '../../../../platform/product/common/product.js';
- import { CHAT_SETUP_SUPPORT_ANONYMOUS_ACTION_ID } from '../../chat/browser/actions/chatActions.js';
+@@ -77,2 +77,3 @@ import { AccessibilityCommandId } from '../../accessibility/common/accessibility
+ import { SCMInputWidget } from './scmInput.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -179,4 +180,2 @@ interface ActionButtonTemplate {
+@@ -143,4 +144,2 @@ interface ActionButtonTemplate {
  export class ActionButtonRenderer implements ICompressibleTreeRenderer<ISCMActionButton, FuzzyScore, ActionButtonTemplate> {
 -	static readonly DEFAULT_HEIGHT = 28;
 -
  	static readonly TEMPLATE_ID = 'actionButton';
-@@ -715,5 +714,5 @@ class ListDelegate implements IListVirtualDelegate<TreeElement> {
+@@ -261,4 +260,2 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 
+-	static readonly DEFAULT_HEIGHT = 26;
+-
+ 	static readonly TEMPLATE_ID = 'input';
+@@ -286,3 +283,3 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 
+-		return { inputWidget, inputWidgetHeight: InputRenderer.DEFAULT_HEIGHT, elementDisposables: new DisposableStore(), templateDisposable };
++		return { inputWidget, inputWidgetHeight: FONT.sidebarSize26, elementDisposables: new DisposableStore(), templateDisposable };
+ 	}
+@@ -315,3 +312,3 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 		// Reset widget height so it's recalculated
+-		templateData.inputWidgetHeight = InputRenderer.DEFAULT_HEIGHT;
++		templateData.inputWidgetHeight = FONT.sidebarSize26;
+ 
+@@ -323,3 +320,3 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 			if (templateData.inputWidgetHeight !== contentHeight) {
+-				this.updateHeight(input, contentHeight + 10);
++				this.updateHeight(input, contentHeight + FONT.sidebarSize8);
+ 				templateData.inputWidgetHeight = contentHeight;
+@@ -357,3 +354,3 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 	getHeight(input: ISCMInput): number {
+-		return (this.contentHeights.get(input) ?? InputRenderer.DEFAULT_HEIGHT) + 10;
++		return (this.contentHeights.get(input) ?? FONT.sidebarSize26) + FONT.sidebarSize10;
+ 	}
+@@ -679,5 +676,5 @@ class ListDelegate implements IListVirtualDelegate<TreeElement> {
  		} else if (isSCMActionButton(element)) {
 -			return ActionButtonRenderer.DEFAULT_HEIGHT + 8;
 +			return FONT.sidebarSize28 + 8;
@@ -3475,15 +3500,8 @@ index dd3439f..2120b2f 100644
 -			return 22;
 +			return FONT.sidebarSize22;
  		}
-@@ -2171,4 +2170,4 @@ class SCMInputWidget {
- 		return this.toolbar.dropdownActions.length === 0 ?
--			26 /* 22px action + 4px margin */ :
--			39 /* 35px action + 4px margin */;
-+			FONT.sidebarSize26 /* 22px action + 4px margin */ :
-+			FONT.sidebarSize39 /* 35px action + 4px margin */;
- 	}
 diff --git a/src/vs/workbench/contrib/search/browser/media/searchview.css b/src/vs/workbench/contrib/search/browser/media/searchview.css
-index e493fe3..647d2e6 100644
+index 47e85d6..466cf3d 100644
 --- a/src/vs/workbench/contrib/search/browser/media/searchview.css
 +++ b/src/vs/workbench/contrib/search/browser/media/searchview.css
 @@ -443 +443,110 @@
@@ -3719,14 +3737,14 @@ index 631bd2a..902bb81 100644
 +		let delta = Math.max(0, evt.scrollTop - (this.hasMultipleFrames ? FONT.sidebarSize24 : 0));
  		delta = Math.min(Math.max(0, this.contentHeight - this.viewHeight), delta);
 diff --git a/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts b/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts
-index ef75da6..cff2356 100644
+index 9257aa6..3819205 100644
 --- a/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts
 +++ b/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts
 @@ -85,2 +85,3 @@ import { DebugLastRun, ReRunLastRun } from './testExplorerActions.js';
  import { TestingExplorerFilter } from './testingExplorerFilter.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -1421,3 +1422,3 @@ class ListDelegate implements IListVirtualDelegate<TestExplorerTreeElement> {
+@@ -1427,3 +1428,3 @@ class ListDelegate implements IListVirtualDelegate<TestExplorerTreeElement> {
  	getHeight(element: TestExplorerTreeElement) {
 -		return element instanceof TestTreeErrorMessage ? 17 + 10 : 22;
 +		return element instanceof TestTreeErrorMessage ? FONT.sidebarSize17 + 10 : FONT.sidebarSize22;
@@ -3765,7 +3783,7 @@ index 27c6580..0feb646 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
-index 34b8408..f8a72d9 100644
+index 70191ee..42cf995 100644
 --- a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
 +++ b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
 @@ -49,3 +49,2 @@ import { AgentSessionsControl, IAgentSessionsControlOptions } from '../../chat/b
@@ -3776,12 +3794,12 @@ index 34b8408..f8a72d9 100644
  import { ILogService } from '../../../../platform/log/common/log.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -825,3 +825,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
+@@ -826,3 +826,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
  		);
 -		const sessionsHeight = visibleSessions * AgentSessionsListDelegate.ITEM_HEIGHT;
 +		const sessionsHeight = visibleSessions * FONT.sidebarSize22;
  		this.sessionsControl.layout(sessionsHeight, sessionsWidth);
-@@ -830,3 +830,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
+@@ -831,3 +831,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
  		// Visual height = ceil(n/2) * ITEM_HEIGHT, so offset = floor(n/2) * ITEM_HEIGHT
 -		const marginOffset = Math.floor(visibleSessions / 2) * AgentSessionsListDelegate.ITEM_HEIGHT;
 +		const marginOffset = Math.floor(visibleSessions / 2) * FONT.sidebarSize22;
