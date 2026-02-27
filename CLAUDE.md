@@ -164,6 +164,7 @@ git apply --reject ../patches/problem.patch   # Apply with .rej files for confli
 | `dev/build.sh` | Local development build |
 | `dev/patch.sh` | Apply patches for editing a single patch |
 | `dev/update_patches.sh` | Validate/update all patches |
+| `dev/clean_codex.sh` | Remove all Codex app data from macOS user dirs (reset to clean state; macOS only) |
 | `utils.sh` | Common functions including `apply_patch` |
 
 ## Build Environment
