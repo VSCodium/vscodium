@@ -1,11 +1,13 @@
 diff --git a/src/vs/base/browser/ui/actionbar/actionbar.css b/src/vs/base/browser/ui/actionbar/actionbar.css
-index 467b1ff..91fd5a0 100644
+index 467b1ff..16e6d69 100644
 --- a/src/vs/base/browser/ui/actionbar/actionbar.css
 +++ b/src/vs/base/browser/ui/actionbar/actionbar.css
-@@ -127 +127,33 @@
+@@ -127 +127,35 @@
  }
 +
 +
++
++/*** Generated for Custom Font Size ***/
 +
 +.monaco-workbench .part.sidebar .monaco-action-bar .action-item .codicon, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .codicon {
 +    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
@@ -16,14 +18,14 @@ index 467b1ff..91fd5a0 100644
 +    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
 +}
 +.monaco-workbench .part.sidebar .monaco-action-bar.vertical .action-item .action-label.separator, .monaco-workbench .part.auxiliarybar .monaco-action-bar.vertical .action-item .action-label.separator {
-+    padding-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923);
++    padding-top: 1px;
 +    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692) .8em
 +}
 +.monaco-workbench .part.sidebar .monaco-action-bar .action-item .action-label.separator, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .action-label.separator {
-+    width: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923);
++    width: 1px;
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
 +    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.384615) calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
-+    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++    min-width: 1px
 +}
 +.monaco-workbench .part.sidebar .secondary-actions .monaco-action-bar .action-label, .monaco-workbench .part.auxiliarybar .secondary-actions .monaco-action-bar .action-label {
 +    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
@@ -34,7 +36,7 @@ index 467b1ff..91fd5a0 100644
 +    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
 +}
 +.monaco-workbench .part.sidebar .monaco-action-bar .action-item.action-dropdown-item > .action-dropdown-item-separator > div, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item.action-dropdown-item > .action-dropdown-item-separator > div {
-+    width: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++    width: 1px
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/button/button.css b/src/vs/base/browser/ui/button/button.css
@@ -1486,7 +1488,7 @@ index a24f761..4f3bc89 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
-index 924d9b3..9775338 100644
+index 924d9b3..07b29cc 100644
 --- a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
 +++ b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
 @@ -168,4 +168,4 @@
@@ -1501,7 +1503,7 @@ index 924d9b3..9775338 100644
 -	min-width: calc(var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px)) - 1px);
 +	min-width: 50px - 1px;
  }
-@@ -560 +560,109 @@
+@@ -560 +560,112 @@
  }
 +
 +
@@ -1510,6 +1512,9 @@ index 924d9b3..9775338 100644
 +
 +.monaco-workbench .part.editor > .content .editor-group-container > .title > .tabs-and-actions-container.tabs-border-bottom::after {
 +    height: 1px
++}
++.monaco-workbench .part.editor > .content .editor-group-container > .title > .tabs-and-actions-container.wrapping .tabs-container {
++    height: auto
 +}
 +.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab {
 +    padding-left: calc(var(--vscode-workbench-tabs-font-size) * 0.769231);
@@ -1956,7 +1961,7 @@ index 101b9c6..970cdaa 100644
 +
  	private registerActions(): void {
 diff --git a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
-index 7faaf9e..a29027c 100644
+index 7faaf9e..6cd8fbd 100644
 --- a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
 +++ b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
 @@ -11,2 +11,3 @@
@@ -1983,7 +1988,7 @@ index 7faaf9e..a29027c 100644
 +    font-size: calc(var(--vscode-workbench-statusbar-font-size) * 1)
 +}
 +.monaco-workbench .part.statusbar:not(:focus).status-border-top::after {
-+    height: calc(var(--vscode-workbench-statusbar-font-size) * 0.083333)
++    height: 1px
 +}
 +.monaco-workbench .part.statusbar > .items-container > .statusbar-item {
 +    line-height: calc(var(--vscode-workbench-statusbar-font-size) * 1.833333)
@@ -2021,11 +2026,11 @@ index 7faaf9e..a29027c 100644
 +    padding-right: calc(var(--vscode-workbench-statusbar-font-size) * 0.25)
 +}
 +.monaco-workbench .part.statusbar > .items-container > .statusbar-item a:active:not(.disabled) {
-+    outline: calc(var(--vscode-workbench-statusbar-font-size) * 0.083333) solid var(--vscode-contrastActiveBorder);
++    outline: 1px solid var(--vscode-contrastActiveBorder);
 +    outline-offset: calc(var(--vscode-workbench-statusbar-font-size) * -0.083333)
 +}
 +.monaco-workbench .part.statusbar > .items-container > .statusbar-item a:hover:not(.disabled) {
-+    outline: calc(var(--vscode-workbench-statusbar-font-size) * 0.083333) dashed var(--vscode-contrastActiveBorder);
++    outline: 1px dashed var(--vscode-contrastActiveBorder);
 +    outline-offset: calc(var(--vscode-workbench-statusbar-font-size) * -0.083333)
 +}
 \ No newline at end of file
@@ -2880,13 +2885,15 @@ index 8bfac42..6430bf4 100644
 +		const headerHeight = this.header && !!this.notificationContainer?.childNodes.length ? this.notificationContainer.clientHeight + searchBoxHeight + FONT.sidebarSize10 /*margin*/ : searchBoxHeight;
  		this.header!.style.height = `${headerHeight}px`;
 diff --git a/src/vs/workbench/contrib/extensions/browser/media/extension.css b/src/vs/workbench/contrib/extensions/browser/media/extension.css
-index 8454447..bf4b116 100644
+index 8454447..733b9a6 100644
 --- a/src/vs/workbench/contrib/extensions/browser/media/extension.css
 +++ b/src/vs/workbench/contrib/extensions/browser/media/extension.css
-@@ -302 +302,83 @@
+@@ -302 +302,91 @@
  }
 +
 +
++
++/*** Generated for Custom Font Size ***/
 +
 +.monaco-workbench .part.sidebar .extension-list-item, .monaco-workbench .part.auxiliarybar .extension-list-item {
 +    padding: 0 0 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
@@ -2905,13 +2912,19 @@ index 8454447..bf4b116 100644
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.461538);
 +    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
 +}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header > .restart-required, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header > .restart-required {
++    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
++}
++.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header > .restart-required > .extension-restart-required-label, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header > .restart-required > .extension-restart-required-label {
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154)
++}
 +.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header .extension-kind-indicator, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header .extension-kind-indicator {
 +    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
 +    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
 +}
 +.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header > .install-count:not(:empty), .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header > .install-count:not(:empty) {
 +    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
-+    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
++    margin: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.461538) 0 auto
 +}
 +.monaco-workbench .part.sidebar .extension-list-item > .details > .header-container > .header > .activation-status:not(:empty), .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .header-container > .header > .activation-status:not(:empty) {
 +    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846154);
@@ -2942,7 +2955,7 @@ index 8454447..bf4b116 100644
 +    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.846154)
 +}
 +.monaco-workbench .part.sidebar .extension-list-item > .details > .footer .publisher > .publisher-name:not(:first-child), .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .footer .publisher > .publisher-name:not(:first-child) {
-+    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++    padding-left: 1px
 +}
 +.monaco-workbench .part.sidebar .extension-list-item > .details > .footer > .monaco-action-bar > .actions-container .extension-action.label, .monaco-workbench .part.auxiliarybar .extension-list-item > .details > .footer > .monaco-action-bar > .actions-container .extension-action.label {
 +    max-width: calc(var(--vscode-workbench-sidebar-font-size) * 11.538462);
@@ -2952,7 +2965,7 @@ index 8454447..bf4b116 100644
 +    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
 +}
 +.monaco-workbench .part.sidebar .extension-list-item .monaco-action-bar .action-label.icon, .monaco-workbench .part.auxiliarybar .extension-list-item .monaco-action-bar .action-label.icon {
-+    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++    padding: 1px calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
 +}
 +.monaco-workbench .part.sidebar .hc-black .extension-list-item .monaco-action-bar .action-label.icon, .monaco-workbench .part.sidebar .hc-light .extension-list-item .monaco-action-bar .action-label.icon, .monaco-workbench .part.auxiliarybar .hc-black .extension-list-item .monaco-action-bar .action-label.icon, .monaco-workbench .part.auxiliarybar .hc-light .extension-list-item .monaco-action-bar .action-label.icon {
 +    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0) calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
@@ -2966,6 +2979,35 @@ index 8454447..bf4b116 100644
 +}
 +.monaco-workbench .part.sidebar .extension-list-item .monaco-action-bar > .actions-container > .action-item.action-dropdown-item > .action-dropdown-item-separator > div, .monaco-workbench .part.auxiliarybar .extension-list-item .monaco-action-bar > .actions-container > .action-item.action-dropdown-item > .action-dropdown-item-separator > div {
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
++}
+\ No newline at end of file
+diff --git a/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css b/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css
+index 6326d45..8e9a0f1 100644
+--- a/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css
++++ b/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css
+@@ -166 +166,23 @@
+ }
++
++
++
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item > .action-label.extension-action.label, .monaco-workbench .part.sidebar .monaco-action-bar .action-dropdown-item > .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item > .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-dropdown-item > .action-label.extension-action.label {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.384615)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .action-label.extension-action.label {
++    outline-offset: 1px
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item .action-label.extension-action.text, .monaco-workbench .part.sidebar .monaco-action-bar .action-item .action-label.extension-action.label, .monaco-workbench .part.sidebar .monaco-action-bar .action-dropdown-item .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .action-label.extension-action.text, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-dropdown-item .action-label.extension-action.label {
++    width: auto;
++    height: auto;
++    line-height: calc(var(--vscode-workbench-sidebar-font-size) * 1.076923)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item:not(.disabled) .action-label.extension-action.text, .monaco-workbench .part.sidebar .monaco-action-bar .action-item:not(.disabled) .action-label.extension-action.label, .monaco-workbench .part.sidebar .monaco-action-bar .action-item .action-label.extension-action.icon, .monaco-workbench .part.sidebar .monaco-action-bar .action-dropdown-item .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item:not(.disabled) .action-label.extension-action.text, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item:not(.disabled) .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .action-label.extension-action.icon, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-dropdown-item .action-label.extension-action.label {
++    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-item.disabled .action-label.extension-status-label:before, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item.disabled .action-label.extension-status-label:before {
++    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css b/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css

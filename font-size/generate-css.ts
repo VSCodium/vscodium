@@ -39,7 +39,7 @@ const AREAS: Record<string, Area> = {
 	sidebar: {
 		name: 'sidebar',
 		defaultSize: 13,
-		files: ['src/vs/base/browser/ui/button/button.css', 'src/vs/workbench/contrib/scm/browser/media/scm.css'],
+		files: ['src/vs/base/browser/ui/button/button.css', 'src/vs/workbench/contrib/scm/browser/media/scm.css', 'src/vs/base/browser/ui/actionbar/actionbar.css', 'src/vs/workbench/contrib/extensions/browser/media/extension.css', 'src/vs/workbench/contrib/extensions/browser/media/extensionActions.css'],
 		prefixes: ['.monaco-workbench .part.sidebar', '.monaco-workbench .part.auxiliarybar'],
 	},
 	tabs: {
@@ -89,7 +89,6 @@ async function processFile(filePath: string, area: Area): Promise<Result<void, s
 	const generatedRoot = postcss.root();
 
 	postcssResult.value.walkRules((rule: Rule) => {
-		let hasPx = false;
 		const declarationsToAdd: Array<{ prop: string; value: string }> = [];
 
 		rule.walkDecls((declaration) => {
@@ -97,12 +96,13 @@ async function processFile(filePath: string, area: Area): Promise<Result<void, s
 				const newValue = transformPxValue(declaration.value, area);
 
 				declarationsToAdd.push({ prop: declaration.prop, value: newValue });
-
-				hasPx = true;
+			}
+			else if(declaration.value === 'auto' && (declaration.prop === 'height' || declaration.prop === 'width')) {
+				declarationsToAdd.push({ prop: declaration.prop, value: 'auto' });
 			}
 		});
 
-		if(hasPx && declarationsToAdd.length > 0) {
+		if(declarationsToAdd.length > 0) {
 			const selectors = (rule.selectors && rule.selectors.length > 0)	? rule.selectors : [rule.selector];
 			const prefixeds: string[] = [];
 
@@ -207,17 +207,28 @@ async function main(): Promise<void> {
 	const name = process.argv[2];
 	const area = AREAS[name];
 
-	if(!area) {
+	if(area) {
+		for(const file of area.files) {
+			const result = await processFile(path.join('..', 'vscode', file), area);
+			if(result.fails) {
+				console.error(`Error processing ${file}:`, result.error);
+			}
+		}
+	}
+	else if(name === 'all') {
+		for(const area of Object.values(AREAS)) {
+			for(const file of area.files) {
+				const result = await processFile(path.join('..', 'vscode', file), area);
+				if(result.fails) {
+					console.error(`Error processing ${file}:`, result.error);
+				}
+			}
+		}
+	}
+	else {
 		console.log(`No area found for ${name}`);
 		console.log(`\nAvailable areas:\n- ${Object.keys(AREAS).join('\n- ')}`);
 		return;
-	}
-
-	for(const file of area.files) {
-		const result = await processFile(path.join('..', 'vscode', file), area);
-		if(result.fails) {
-			console.error(`Error processing ${file}:`, result.error);
-		}
 	}
 }
 
