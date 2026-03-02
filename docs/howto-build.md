@@ -46,11 +46,71 @@ see [the common dependencies](#dependencies)
 
 ### <a id="dependencies-windows"></a>Windows
 
-- powershell
-- sed
-- 7z
-- [WiX Toolset](http://wixtoolset.org/releases/)
-- 'Tools for Native Modules' from the official Node.js installer
+The build scripts are written in Bash, so on Windows you must run them inside **Git Bash** (bundled with [Git for Windows](https://gitforwindows.org/)) or **WSL2**.
+
+#### Required tools
+
+- **Git for Windows** — provides Git Bash, `sed`, and POSIX utilities used by the build scripts:
+
+  ```cmd
+  winget install --id Git.Git -e
+  ```
+
+- **Node.js** — exact version is specified in [`.nvmrc`](../.nvmrc). Use [nvm-windows](https://github.com/coreybutler/nvm-windows) to manage versions:
+
+  ```cmd
+  nvm install <version-from-.nvmrc>
+  nvm use <version-from-.nvmrc>
+  ```
+
+  Alternatively, download directly from [nodejs.org](https://nodejs.org/). During installation, enable **"Automatically install the necessary tools"** to get the C++ build tools (required for native Node addons).
+
+- **jq** — JSON processor used throughout the build scripts:
+
+  ```cmd
+  winget install --id jqlang.jq -e
+  ```
+
+- **7-Zip** — used to package `.zip` archives:
+
+  ```cmd
+  winget install --id 7zip.7zip -e
+  ```
+
+- **Python 3.11** — required by the VS Code build system:
+
+  ```cmd
+  winget install --id Python.Python.3.11 -e
+  ```
+
+  Ensure `python` / `python3` is on your `PATH` after installation.
+
+- **Rustup** — required to compile some native VS Code modules:
+
+  ```cmd
+  winget install --id Rustlang.Rustup -e
+  ```
+
+  Restart your shell afterwards so `cargo` and `rustc` are on your `PATH`.
+
+- **WiX Toolset v3** _(optional — only needed for `.msi` installer packaging, i.e., the `-p` flag)_:
+  Download from [wixtoolset.org](https://wixtoolset.org/releases/) and ensure `candle.exe` / `light.exe` are on your `PATH`.
+
+#### PATH verification
+
+After installing all tools, verify each is discoverable from Git Bash:
+
+```bash
+node --version    # should match .nvmrc
+npm --version
+jq --version
+python3 --version # should be 3.11.x
+cargo --version
+7z i 2>&1 | head -1
+git --version
+```
+
+If any command is not found, add its install directory to your `PATH` via **System Properties → Environment Variables → Path**.
 
 ## <a id="build-dev"></a>Build for Development
 
@@ -58,7 +118,10 @@ A build helper script can be found at `dev/build.sh`.
 
 - Linux: `./dev/build.sh`
 - MacOS: `./dev/build.sh`
-- Windows: `powershell -ExecutionPolicy ByPass -File .\dev\build.ps1` or `"C:\Program Files\Git\bin\bash.exe" ./dev/build.sh`
+- Windows (Git Bash — **recommended**): `"C:\Program Files\Git\bin\bash.exe" ./dev/build.sh`
+- Windows (PowerShell): `powershell -ExecutionPolicy ByPass -File .\dev\build.ps1`
+
+> **Note for Windows users**: Git Bash is the recommended shell because the build scripts rely on POSIX utilities (`sed`, `grep`, `find`, etc.) bundled with Git for Windows. If you use WSL2, follow the Linux dependencies section instead.
 
 ### Insider
 
@@ -95,6 +158,7 @@ export RELEASE_VERSION="${version}"
 ```
 
 To go further, you should look at how we build it:
+
 - Linux: https://github.com/VSCodium/vscodium/blob/master/.github/workflows/stable-linux.yml
 - macOS: https://github.com/VSCodium/vscodium/blob/master/.github/workflows/stable-macos.yml
 - Windows: https://github.com/VSCodium/vscodium/blob/master/.github/workflows/stable-windows.yml
