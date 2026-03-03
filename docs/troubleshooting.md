@@ -4,6 +4,8 @@
 
 ## Table of Contents
 
+- [macOS](#macos)
+  - [Reset all Codex application data](#macos-reset)
 - [Linux](#linux)
   - [Fonts showing up as rectangles](#linux-fonts-rectangle)
   - [Text and/or the entire interface not appearing](#linux-rendering-glitches)
@@ -11,6 +13,20 @@
   - [Flatpak most common issues](#linux-flatpak-most-common-issues)
   - [Remote SSH doesn't work](#linux-remote-ssh)
   - [The window doesn't show up](#linux-no-window)
+
+## <a id="macos"></a>macOS
+
+### <a id="macos-reset"></a>*Reset all Codex application data*
+
+If Codex is behaving unexpectedly after an upgrade (corrupted preferences, stale caches, broken saved state), you can wipe all application data and start fresh:
+
+```bash
+./dev/clean_codex.sh
+```
+
+The script lists everything it will delete with sizes and prompts for confirmation. After running it, relaunch Codex — it will start as if freshly installed.
+
+> **Note:** Requires bash 4+. macOS ships bash 3.2 — install a newer version via `brew install bash` and ensure `/opt/homebrew/bin` is first in your `$PATH`.
 
 ## <a id="linux"></a>Linux
 

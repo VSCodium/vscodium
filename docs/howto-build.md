@@ -12,6 +12,7 @@
 - [Patch Update Process](#patch-update-process)
   - [Semi-Automated](#patch-update-process-semiauto)
   - [Manual](#patch-update-process-manual)
+- [Resetting Codex App Data](#clean-state)
 
 ## <a id="dependencies"></a>Dependencies
 
@@ -161,6 +162,22 @@ review-tools.snap-review --allow-classic codex*.snap
 - run `npm run watch`
 - run `./script/code.sh` until everything is ok
 - go back to the command line running `./dev/patch.sh`, press `enter` to validate the changes and it will update the patch
+
+### <a id="clean-state"></a>Resetting Codex App Data (macOS only)
+
+If you need to wipe all Codex application data between test builds (preferences, caches, saved state), use:
+
+```bash
+./dev/clean_codex.sh
+```
+
+The script shows a list of matched paths and their sizes, then prompts for confirmation before deleting. It targets:
+
+- `~/.codex*`
+- `~/Library/Application Support/Codex`
+- macOS saved state, autosave, and recent documents entries
+
+> **Note:** Requires bash 4+ (macOS ships bash 3.2 — install via `brew install bash`).
 
 ### <a id="icons"></a>icons/build_icons.sh
 
