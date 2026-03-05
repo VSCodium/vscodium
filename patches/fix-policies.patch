@@ -1,26 +1,5 @@
 # Fix: Replace @vscode/policy-watcher with @vscodium/policy-watcher
-#
-# Context: VS Code uses @vscode/policy-watcher to enforce Group Policy Objects
-# (GPOs) on Windows. That package reads from:
-#   HKLM\SOFTWARE\Policies\Microsoft\<productName>
-#
-# VSCodium forks this into @vscodium/policy-watcher, which takes a separate
-# vendorName argument. The createWatcher() call becomes:
-#   createWatcher('VSCodium', this.productName, ...)
-#
-# Because VSCodium sets product.nameLong = 'VSCodium' (via prepare_vscode.sh),
-# this.productName resolves to 'VSCodium' at runtime. Therefore, the final
-# Windows registry key that VSCodium reads policies from is:
-#
-#   HKLM\SOFTWARE\Policies\VSCodium\VSCodium\<PolicyName>
-#   (or HKCU\SOFTWARE\Policies\VSCodium\VSCodium\<PolicyName> for per-user)
-#
-# This differs from VS Code's path (Microsoft\VSCode) and is the root cause
-# of issue #2714 where users mirror VS Code's registry structure and find
-# their GPOs ignored. Enterprise admins must use the VSCodium-specific path.
-#
-# See: https://github.com/VSCodium/vscodium/issues/2714
-# See: https://github.com/VSCodium/policy-watcher/blob/main/src/windows/RegistryPolicy.hh
+# Documentation: docs/patches.md#fix-policies
 diff --git a/build/.moduleignore b/build/.moduleignore
 index 5b040cc..8d5fd71 100644
 --- a/build/.moduleignore
