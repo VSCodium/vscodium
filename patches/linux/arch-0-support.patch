@@ -13,10 +13,10 @@ index f0d5fe6..fdb3707 100755
 +  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
  fi
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index 2714933..36396dc 100644
+index 8e7f6bb..0874203 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -235,9 +235,23 @@ function nodejs(platform: string, arch: string): NodeJS.ReadWriteStream | undefi
+@@ -239,9 +239,23 @@ function nodejs(platform: string, arch: string): NodeJS.ReadWriteStream | undefi
  		case 'linux':
 -			return (product.nodejsRepository !== 'https://nodejs.org' ?
 -				fetchGithub(product.nodejsRepository, { version: `${nodeVersion}-${internalNodeVersion}`, name: expectedName!, checksumSha256 }) :
@@ -48,10 +48,10 @@ index 2714933..36396dc 100644
 +			}
  		case 'alpine':
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 358bb3a..2cc6d9a 100644
+index 25a3600..c9402f3 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -372,2 +372,12 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -516,4 +516,15 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  
 +		const electronOverride: { repo?: string; tag?: string } = {};
 +		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
@@ -63,12 +63,10 @@ index 358bb3a..2cc6d9a 100644
 +			electronOverride.tag = process.env.VSCODE_ELECTRON_TAG;
 +		}
 +
- 		let result: NodeJS.ReadWriteStream = all
-@@ -376,3 +386,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
- 			.pipe(filter(['**', '!**/.github/**'], { dot: true })) // https://github.com/microsoft/vscode/issues/116523
--			.pipe(electron({ ...config, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
-+			.pipe(electron({ ...config, ...electronOverride, platform, arch: arch === 'armhf' ? 'arm' : arch, ffmpegChromium: false }))
- 			.pipe(filter(['**', '!LICENSE', '!version'], { dot: true }));
+ 		const electronConfig = {
+ 			...config,
++			...electronOverride,
+ 			platform,
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
 index 46c257d..78bfb66 100644
 --- a/build/linux/debian/dep-lists.ts
@@ -79,7 +77,7 @@ index 46c257d..78bfb66 100644
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index 2cab657..0d9dc55 100644
+index 0dfc69a..7b6ac8b 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
 @@ -82,3 +82,5 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
