@@ -1,14 +1,50 @@
 diff --git a/src/vs/base/browser/ui/actionbar/actionbar.css b/src/vs/base/browser/ui/actionbar/actionbar.css
-index 467b1ff..16e6d69 100644
+index 467b1ff..f3c5130 100644
 --- a/src/vs/base/browser/ui/actionbar/actionbar.css
 +++ b/src/vs/base/browser/ui/actionbar/actionbar.css
-@@ -127 +127,35 @@
+@@ -127 +127,72 @@
  }
 +
 +
 +
 +/*** Generated for Custom Font Size ***/
 +
++.monaco-workbench .part.panel .monaco-action-bar .actions-container {
++    padding: 0
++}
++.monaco-workbench .part.panel .monaco-action-bar .action-item .codicon {
++    width: calc(var(--vscode-workbench-bottompane-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-bottompane-font-size) * 1.230769)
++}
++.monaco-workbench .part.panel .monaco-action-bar .action-label, .monaco-workbench .part.panel .monaco-action-bar .action-item .keybinding {
++    font-size: calc(var(--vscode-workbench-bottompane-font-size) * 0.846154);
++    padding: calc(var(--vscode-workbench-bottompane-font-size) * 0.230769)
++}
++.monaco-workbench .part.panel .monaco-action-bar.vertical .action-item .action-label.separator {
++    padding-top: 1px;
++    margin: calc(var(--vscode-workbench-bottompane-font-size) * 0.307692) .8em
++}
++.monaco-workbench .part.panel .monaco-action-bar .action-item .action-label.separator {
++    width: 1px;
++    height: calc(var(--vscode-workbench-bottompane-font-size) * 1.230769);
++    margin: calc(var(--vscode-workbench-bottompane-font-size) * 0.384615) calc(var(--vscode-workbench-bottompane-font-size) * 0.307692);
++    min-width: 1px;
++    padding: 0
++}
++.monaco-workbench .part.panel .secondary-actions .monaco-action-bar .action-label {
++    margin-left: calc(var(--vscode-workbench-bottompane-font-size) * 0.461538)
++}
++.monaco-workbench .part.panel .monaco-action-bar .action-item.select-container {
++    max-width: calc(var(--vscode-workbench-bottompane-font-size) * 13.076923);
++    min-width: calc(var(--vscode-workbench-bottompane-font-size) * 4.615385);
++    margin-right: calc(var(--vscode-workbench-bottompane-font-size) * 0.769231)
++}
++.monaco-workbench .part.panel .monaco-action-bar .action-item.action-dropdown-item > .action-dropdown-item-separator > div {
++    width: 1px
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .actions-container, .monaco-workbench .part.auxiliarybar .monaco-action-bar .actions-container {
++    padding: 0
++}
 +.monaco-workbench .part.sidebar .monaco-action-bar .action-item .codicon, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .codicon {
 +    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
@@ -25,7 +61,8 @@ index 467b1ff..16e6d69 100644
 +    width: 1px;
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769);
 +    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.384615) calc(var(--vscode-workbench-sidebar-font-size) * 0.307692);
-+    min-width: 1px
++    min-width: 1px;
++    padding: 0
 +}
 +.monaco-workbench .part.sidebar .secondary-actions .monaco-action-bar .action-label, .monaco-workbench .part.auxiliarybar .secondary-actions .monaco-action-bar .action-label {
 +    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538)
@@ -1179,10 +1216,10 @@ index 0307cab..5e5f6f3 100644
 +
  	getPinnedPaneCompositeIds(): string[] {
 diff --git a/src/vs/workbench/browser/parts/activitybar/media/activityaction.css b/src/vs/workbench/browser/parts/activitybar/media/activityaction.css
-index a40a351..aeae132 100644
+index a40a351..51eb067 100644
 --- a/src/vs/workbench/browser/parts/activitybar/media/activityaction.css
 +++ b/src/vs/workbench/browser/parts/activitybar/media/activityaction.css
-@@ -230 +230,59 @@
+@@ -230 +230,60 @@
  }
 +
 +
@@ -1240,7 +1277,8 @@ index a40a351..aeae132 100644
 +    padding: calc(var(--vscode-workbench-activitybar-font-size) * 0.125) calc(var(--vscode-workbench-activitybar-font-size) * 0.125)
 +}
 +.monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .badge .codicon.badge-content {
-+    font-size: calc(var(--vscode-workbench-activitybar-font-size) * 0.8125)
++    font-size: calc(var(--vscode-workbench-activitybar-font-size) * 0.8125);
++    padding: 0
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
@@ -1488,7 +1526,7 @@ index a24f761..4f3bc89 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
-index 924d9b3..07b29cc 100644
+index 924d9b3..7c987f7 100644
 --- a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
 +++ b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
 @@ -168,4 +168,4 @@
@@ -1503,7 +1541,7 @@ index 924d9b3..07b29cc 100644
 -	min-width: calc(var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px)) - 1px);
 +	min-width: 50px - 1px;
  }
-@@ -560 +560,112 @@
+@@ -560 +560,113 @@
  }
 +
 +
@@ -1567,6 +1605,7 @@ index 924d9b3..07b29cc 100644
 +}
 +.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container >  .tab.sizing-shrink > .tab-label > .monaco-icon-label-container::after, .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container >  .tab.sizing-fixed > .tab-label > .monaco-icon-label-container::after {
 +    width: calc(var(--vscode-workbench-tabs-font-size) * 0.384615);
++    padding: 0;
 +    top: 1px;
 +    bottom: 1px;
 +    height: calc(100% - calc(var(--vscode-workbench-tabs-font-size) * 0.153846))
@@ -2982,10 +3021,10 @@ index 8454447..733b9a6 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css b/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css
-index 6326d45..8e9a0f1 100644
+index 6326d45..cc5242a 100644
 --- a/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css
 +++ b/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css
-@@ -166 +166,23 @@
+@@ -166 +166,26 @@
  }
 +
 +
@@ -2994,6 +3033,9 @@ index 6326d45..8e9a0f1 100644
 +
 +.monaco-workbench .part.sidebar .monaco-action-bar .action-item > .action-label.extension-action.label, .monaco-workbench .part.sidebar .monaco-action-bar .action-dropdown-item > .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item > .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-dropdown-item > .action-label.extension-action.label {
 +    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.384615)
++}
++.monaco-workbench .part.sidebar .monaco-action-bar .action-dropdown-item > .monaco-dropdown .action-label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-dropdown-item > .monaco-dropdown .action-label {
++    padding: 0
 +}
 +.monaco-workbench .part.sidebar .monaco-action-bar .action-item .action-label.extension-action.label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .action-item .action-label.extension-action.label {
 +    outline-offset: 1px
@@ -3238,10 +3280,10 @@ index 530b0c4..b3c979d 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/scm/browser/media/scm.css b/src/vs/workbench/contrib/scm/browser/media/scm.css
-index 20c78c3..54b982d 100644
+index 20c78c3..e83c322 100644
 --- a/src/vs/workbench/contrib/scm/browser/media/scm.css
 +++ b/src/vs/workbench/contrib/scm/browser/media/scm.css
-@@ -799 +799,211 @@
+@@ -799 +799,215 @@
  }
 +
 +
@@ -3375,6 +3417,10 @@ index 20c78c3..54b982d 100644
 +}
 +.monaco-workbench .part.sidebar .scm-editor-validation, .monaco-workbench .part.auxiliarybar .scm-editor-validation {
 +    padding: 1px calc(var(--vscode-workbench-sidebar-font-size) * 0.230769)
++}
++.monaco-workbench .part.sidebar .scm-editor-validation p, .monaco-workbench .part.auxiliarybar .scm-editor-validation p {
++    margin: 0;
++    padding: 0
 +}
 +.monaco-workbench .part.sidebar .scm-editor-validation-actions, .monaco-workbench .part.auxiliarybar .scm-editor-validation-actions {
 +    margin-top: 1px
@@ -3711,7 +3757,7 @@ index e9c0fcd..7ee6d39 100644
 +			this.replaceInput.width = width - FONT.sidebarSize28;
  			this.replaceInput.inputBox.layout();
 diff --git a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
-index 21118dd..9c788d8 100644
+index 21118dd..b5e53a1 100644
 --- a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
 +++ b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
 @@ -58,2 +58,3 @@ import { TerminalStorageKeys } from '../common/terminalStorageKeys.js';
@@ -3732,6 +3778,11 @@ index 21118dd..9c788d8 100644
 -				paddingBottom: TerminalTabsListSizes.TabHeight,
 +				paddingBottom: FONT.bottomPaneSize22,
  				dnd: instantiationService.createInstance(TerminalTabsDragAndDrop),
+@@ -458,3 +458,3 @@ class TerminalTabsRenderer implements IListRenderer<ITerminalInstance, ITerminal
+ 		});
+-		inputBox.element.style.height = '22px';
++		inputBox.element.style.height = `${FONT.bottomPaneSize22}px`;
+ 		inputBox.value = value;
 diff --git a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts b/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
 index e19fc27..56e4bbc 100644
 --- a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
