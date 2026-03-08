@@ -19,6 +19,16 @@ index d1232f9..51121f9 100644
 +		ChatContextKeys.Setup.disabled.negate(),
 +		ContextKeyExpr.has('config.chat.disableAIFeatures').negate()
  	)
+diff --git a/src/vs/workbench/contrib/chat/browser/actions/chatContextActions.ts b/src/vs/workbench/contrib/chat/browser/actions/chatContextActions.ts
+index b8c8e03..512e40f 100644
+--- a/src/vs/workbench/contrib/chat/browser/actions/chatContextActions.ts
++++ b/src/vs/workbench/contrib/chat/browser/actions/chatContextActions.ts
+@@ -314,3 +314,4 @@ class AttachSelectionToChatAction extends Action2 {
+ 						ResourceContextKey.Scheme.isEqualTo(Schemas.vscodeUserData)
+-					)
++					),
++					ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
+ 				)
 diff --git a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts b/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
 index d50fc45..ffc8a5b 100644
 --- a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
@@ -75,6 +85,20 @@ index 8e703e2..535b1d8 100644
 -		ChatContextKeys.Setup.installed.negate(),
 +		ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  		ChatContextKeys.Entitlement.canSignUp
+diff --git a/src/vs/workbench/contrib/inlineChat/browser/inlineChatActions.ts b/src/vs/workbench/contrib/inlineChat/browser/inlineChatActions.ts
+index ec5ac5e..5d90045 100644
+--- a/src/vs/workbench/contrib/inlineChat/browser/inlineChatActions.ts
++++ b/src/vs/workbench/contrib/inlineChat/browser/inlineChatActions.ts
+@@ -146,3 +146,8 @@ MenuRegistry.appendMenuItem(MenuId.InlineChatEditorAffordance, {
+ 	order: 1,
+-	when: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasNonEmptySelection, CTX_INLINE_CHAT_FILE_BELONGS_TO_CHAT.negate()),
++	when: ContextKeyExpr.and(
++		EditorContextKeys.writable,
++		EditorContextKeys.hasNonEmptySelection,
++		CTX_INLINE_CHAT_FILE_BELONGS_TO_CHAT.negate(),
++		ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
++	),
+ 	command: {
 diff --git a/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts b/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
 index 9e82f11..0669f45 100644
 --- a/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
