@@ -28,7 +28,7 @@ const AREAS: Record<string, Area> = {
 	bottompane: {
 		name: 'bottompane',
 		defaultSize: 13,
-		files: ['src/vs/workbench/browser/parts/panel/media/panelpart.css', 'src/vs/base/browser/ui/actionbar/actionbar.css'],
+		files: ['src/vs/workbench/browser/parts/panel/media/panelpart.css', 'src/vs/base/browser/ui/actionbar/actionbar.css', 'src/vs/workbench/browser/parts/media/paneCompositePart.css'],
 		prefixes: ['.monaco-workbench .part.panel'],
 	},
 	statusbar: {
@@ -40,14 +40,26 @@ const AREAS: Record<string, Area> = {
 	sidebar: {
 		name: 'sidebar',
 		defaultSize: 13,
-		files: ['src/vs/base/browser/ui/button/button.css', 'src/vs/workbench/contrib/scm/browser/media/scm.css', 'src/vs/base/browser/ui/actionbar/actionbar.css', 'src/vs/workbench/contrib/extensions/browser/media/extension.css', 'src/vs/workbench/contrib/extensions/browser/media/extensionActions.css'],
+		files: [
+			'src/vs/base/browser/ui/actionbar/actionbar.css',
+			'src/vs/base/browser/ui/button/button.css',
+			'src/vs/base/browser/ui/inputbox/inputBox.css',
+			'src/vs/workbench/contrib/extensions/browser/media/extension.css',
+			'src/vs/workbench/contrib/extensions/browser/media/extensionActions.css',
+			'src/vs/workbench/contrib/search/browser/media/searchview.css',
+			'src/vs/workbench/contrib/scm/browser/media/scm.css',
+		],
 		prefixes: ['.monaco-workbench .part.sidebar', '.monaco-workbench .part.auxiliarybar'],
 	},
 	tabs: {
 		name: 'tabs',
 		defaultSize: 13,
-		files: ['src/vs/workbench/browser/parts/editor/media/editortabscontrol.css', 'src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css', 'src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css'],
-		prefixes: ['.monaco-workbench .part.editor > .content .editor-group-container'],
+		files: [
+			'src/vs/workbench/browser/parts/editor/media/editortabscontrol.css',
+			'src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css',
+			'src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css'
+		],
+		prefixes: ['.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs'],
 	},
 };
 
