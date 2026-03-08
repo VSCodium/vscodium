@@ -1448,14 +1448,14 @@ index b0a44e2..e711a80 100644
 +
  	private get editorActionsEnabled(): boolean {
 diff --git a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
-index 57ab8ca..2242f5e 100644
+index 57ab8ca..72a328f 100644
 --- a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
 +++ b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
 @@ -9,2 +9,3 @@
  	cursor: pointer;
 +	font-family: var(--vscode-workbench-tabs-font-family, inherit);
  }
-@@ -47 +48,32 @@
+@@ -47 +48,37 @@
  }
 +
 +
@@ -1468,8 +1468,13 @@ index 57ab8ca..2242f5e 100644
 +
 +.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .monaco-icon-label::before {
 +    background-size: calc(var(--vscode-workbench-tabs-font-size) * 1.2307692308);
-+    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 1.2307692308);
 +    width: calc(var(--vscode-workbench-tabs-font-size) * 1.2307692308);
++    padding-right: calc(var(--vscode-workbench-tabs-font-size) * 0.4615384615);
++}
++
++.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs.show-file-icons .file-icon::before,
++.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs.show-file-icons .folder-icon::before,
++.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs.show-file-icons .rootfolder-icon::before {
 +	font-size: calc(var(--vscode-workbench-tabs-font-size) * 1.5);
 +}
 +
