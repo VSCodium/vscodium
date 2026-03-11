@@ -17,6 +17,7 @@ This page explains how VSCodium handles telemetry and how it enhances your priva
 Even though we do not pass the telemetry build flags and go out of our way to cripple the baked-in telemetry, Microsoft still can track usage by default depending on your settings.
 
 We disable all the following telemetry-related settings by default to enhance your privacy:
+
 ```
 telemetry.telemetryLevel
 telemetry.enableCrashReporter
@@ -26,28 +27,33 @@ workbench.enableExperiments
 workbench.settings.enableNaturalLanguageSearch
 workbench.commandPalette.experimental.enableNaturalLanguageSearch
 ```
+
 It is also recommended that you review all the settings that "use online services" by following [these instructions](https://code.visualstudio.com/docs/getstarted/telemetry#_managing-online-services). You can use the search filter `@tag:usesOnlineServices` to show such settings and review what to change.
 
-__Please note that some extensions send telemetry data to Microsoft as well. We have no control over this and can only recommend removing the extension.__  
+**Please note that some extensions send telemetry data to Microsoft as well. We have no control over this and can only recommend removing the extension.**  
 For example, the C# extension `ms-vscode.csharp` sends tracking data to Microsoft. Be sure to check each extension's settings page to disable their telemetry if applicable.
 
 ### Update services
+
 By default, the app periodically fetches connections to check for the latest version available to download and install.  
 Extensions are also checked for updates automatically from time to time.
 
 If you want to prevent such behaviors, modify the following preferences:
 
 For the app itself:
+
 - `update.mode` -> `manual` (or `none`)
 - `update.enableWindowsBackgroundUpdates` -> `false` (only applicable for Microsoft Windows)
 
 For extensions:
+
 - `extensions.autoUpdate` -> `false`
 - `extensions.autoCheckUpdates` -> `false`
 
-*Note: on Linux, the app update service is disabled completely at build-time even if the `update.mode` preference is configured. This is because users will more likely use their package managers to update the app rather than updating via the app itself.*
+_Note: on Linux, the app update service is disabled completely at build-time even if the `update.mode` preference is configured. This is because users will more likely use their package managers to update the app rather than updating via the app itself._
 
 ### Feedback telemetry
+
 By default, we keep the preference `telemetry.feedback.enabled` enabled. It's used to allow the button `Report Issue...` to be used on the app depending on the context. It does not send any data by having it enabled (other options already cover it). If you want, you can disable this behavior by toggling the preference value.
 
 ## <a id="replacements"></a>Replacements to Microsoft Online Services
@@ -66,7 +72,7 @@ If you want to verify that no telemetry is being sent, you can use network monit
 
 Look for connections to Microsoft domains and telemetry endpoints.
 
-## <a id="announcements"></a>VSCodium anouncements
+## <a id="announcements"></a>VSCodium announcements
 
 The welcome page in VSCodium displays announcements that are fetched via the internet from the project's GitHub repository.
 
