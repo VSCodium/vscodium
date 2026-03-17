@@ -1,18 +1,21 @@
 diff --git a/extensions/github-authentication/src/common/env.ts b/extensions/github-authentication/src/common/env.ts
-index ebc4749..18fd732 100644
+index 5456fb8..18fd732 100644
 --- a/extensions/github-authentication/src/common/env.ts
 +++ b/extensions/github-authentication/src/common/env.ts
-@@ -7,21 +7,4 @@ import { AuthProviderType } from '../github';
+@@ -7,24 +7,4 @@ import { AuthProviderType } from '../github';
  
 -const VALID_DESKTOP_CALLBACK_SCHEMES = [
 -	'vscode',
 -	'vscode-insiders',
+-	'vscode-exploration',
+-	'vscode-sessions',
+-	'vscode-sessions-insiders',
+-	'vscode-sessions-exploration',
 -	// On Windows, some browsers don't seem to redirect back to OSS properly.
 -	// As a result, you get stuck in the auth flow. We exclude this from the
 -	// list until we can figure out a way to fix this behavior in browsers.
 -	// 'code-oss',
 -	'vscode-wsl',
--	'vscode-exploration'
 -];
 -
 -export function isSupportedClient(uri: Uri): boolean {
@@ -26,7 +29,7 @@ index ebc4749..18fd732 100644
 +export function isSupportedClient(_uri: Uri): boolean {
 +	return false;
  }
-@@ -35,4 +18,4 @@ export function isSupportedTarget(type: AuthProviderType, gheUri?: Uri): boolean
+@@ -38,4 +18,4 @@ export function isSupportedTarget(type: AuthProviderType, gheUri?: Uri): boolean
  
 -export function isHostedGitHubEnterprise(uri: Uri): boolean {
 -	return /\.ghe\.com$/.test(uri.authority);

@@ -1,5 +1,5 @@
 diff --git a/src/vs/base/browser/ui/actionbar/actionbar.css b/src/vs/base/browser/ui/actionbar/actionbar.css
-index 467b1ff..f3c5130 100644
+index e9e55ad..0ce9147 100644
 --- a/src/vs/base/browser/ui/actionbar/actionbar.css
 +++ b/src/vs/base/browser/ui/actionbar/actionbar.css
 @@ -127 +127,72 @@
@@ -166,10 +166,10 @@ index d3dfd9a..cf59627 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/inputbox/inputBox.css b/src/vs/base/browser/ui/inputbox/inputBox.css
-index 827a19f..de152ec 100644
+index dc5e637..b580762 100644
 --- a/src/vs/base/browser/ui/inputbox/inputBox.css
 +++ b/src/vs/base/browser/ui/inputbox/inputBox.css
-@@ -106 +106,28 @@
+@@ -107 +107,28 @@
  }
 +
 +
@@ -222,14 +222,14 @@ index fd4d00e..92ddc99 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
-index f6c2ff1..a7da491 100644
+index b7cbca1..16f531c 100644
 --- a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
 +++ b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
 @@ -8,2 +8,3 @@ import * as arrays from '../../../common/arrays.js';
  import { Emitter, Event } from '../../../common/event.js';
 +import { FONT } from '../../../common/font.js';
  import { KeyCode, KeyCodeUtils } from '../../../common/keyCodes.js';
-@@ -164,3 +165,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+@@ -172,3 +173,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
  	getHeight(): number {
 -		return 22;
 +		return FONT.sidebarSize22;
@@ -350,10 +350,10 @@ index 0b2fcbb..6370e6f 100644
  	}
 diff --git a/src/vs/base/common/font.ts b/src/vs/base/common/font.ts
 new file mode 100644
-index 0000000..9b2b46c
+index 0000000..8b9689c
 --- /dev/null
 +++ b/src/vs/base/common/font.ts
-@@ -0,0 +1,184 @@
+@@ -0,0 +1,187 @@
 +import { IConfigurationService } from '../../platform/configuration/common/configuration.js';
 +
 +export const FONT = {
@@ -389,6 +389,7 @@ index 0000000..9b2b46c
 +	sidebarSize34: 34,
 +	sidebarSize39: 39,
 +	sidebarSize44: 44,
++	sidebarSize54: 54,
 +	sidebarSize62: 62,
 +	sidebarSize72: 72,
 +
@@ -431,6 +432,7 @@ index 0000000..9b2b46c
 +const SIDE_BAR_COEFF_34 = 34/13;
 +const SIDE_BAR_COEFF_39 = 39/13;
 +const SIDE_BAR_COEFF_44 = 44/13;
++const SIDE_BAR_COEFF_54 = 54/13;
 +const SIDE_BAR_COEFF_62 = 62/13;
 +const SIDE_BAR_COEFF_72 = 72/13;
 +
@@ -521,6 +523,7 @@ index 0000000..9b2b46c
 +	FONT.sidebarSize34 = size * SIDE_BAR_COEFF_34;
 +	FONT.sidebarSize39 = size * SIDE_BAR_COEFF_39;
 +	FONT.sidebarSize44 = size * SIDE_BAR_COEFF_44;
++	FONT.sidebarSize54 = size * SIDE_BAR_COEFF_54;
 +	FONT.sidebarSize62 = size * SIDE_BAR_COEFF_62;
 +	FONT.sidebarSize72 = size * SIDE_BAR_COEFF_72;
 +}
@@ -1041,7 +1044,7 @@ index 328285f..0735dfa 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/browser/media/style.css b/src/vs/workbench/browser/media/style.css
-index 7537f93..5a7a277 100644
+index 0d6a2da..6127a14 100644
 --- a/src/vs/workbench/browser/media/style.css
 +++ b/src/vs/workbench/browser/media/style.css
 @@ -11,20 +11,20 @@
@@ -1085,8 +1088,8 @@ index 7537f93..5a7a277 100644
  	color: var(--vscode-foreground);
 +	font-family: var(--vscode-workbench-font-family, var(--monaco-font));
 +	font-size: var(--vscode-workbench-font-size, 13px);
- }
-@@ -323 +325,41 @@ body {
+ 
+@@ -335 +337,41 @@ body {
  }
 +
 +
@@ -1284,7 +1287,7 @@ index a40a351..51eb067 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
-index d903883..1bf9716 100644
+index 568a721..b3d7e50 100644
 --- a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
 +++ b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
 @@ -8,2 +8,4 @@
@@ -1292,12 +1295,12 @@ index d903883..1bf9716 100644
 +	font-family: var(--vscode-workbench-activitybar-font-family, inherit);
 +	font-size: var(--vscode-workbench-activitybar-font-size);
  }
-@@ -58,3 +60,3 @@
+@@ -67,3 +69,3 @@
  	width: 100%;
 -	height: 35px;
 +	height: calc(var(--vscode-workbench-activitybar-font-size) * 2.1875);
  }
-@@ -63,3 +65,3 @@
+@@ -72,3 +74,3 @@
  	width: 100%;
 -	height: 35px;
 +	height: calc(var(--vscode-workbench-activitybar-font-size) * 2.1875);
@@ -1529,22 +1532,22 @@ index a24f761..6b15b9c 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
-index 924d9b3..70a14fd 100644
+index 4f9477d..b47fd85 100644
 --- a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
 +++ b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
-@@ -168,4 +168,4 @@
+@@ -176,4 +176,4 @@
  .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed {
 -	min-width: var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px));
 -	max-width: var(--tab-sizing-current-width, var(--tab-sizing-fixed-max-width, 160px));
 +	min-width: 50px;
 +	max-width: 160px;
  	flex: 1 0 0; /* all tabs are evenly sized and grow */
-@@ -177,3 +177,3 @@
+@@ -185,3 +185,3 @@
  	 * of the tabs container */
 -	min-width: calc(var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px)) - 1px);
 +	min-width: 50px - 1px;
  }
-@@ -560 +560,113 @@
+@@ -568 +568,113 @@
  }
 +
 +
@@ -2058,14 +2061,14 @@ index 101b9c6..970cdaa 100644
 +
  	private registerActions(): void {
 diff --git a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
-index 7faaf9e..6cd8fbd 100644
+index 1f3b102..0075528 100644
 --- a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
 +++ b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
 @@ -11,2 +11,3 @@
  	font-size: 12px;
 +	font-family: var(--vscode-workbench-statusbar-font-family, inherit);
  	display: flex;
-@@ -236 +237,64 @@
+@@ -239 +240,64 @@
  }
 +
 +
@@ -2464,27 +2467,28 @@ index 6f58865..3ab0ee4 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
-index eb17488..1a005a7 100644
+index bcb46c6..0aef82b 100644
 --- a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
 +++ b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
-@@ -45,2 +45,3 @@ import { AgentSessionProviders, getAgentSessionTime } from './agentSessions.js';
- import { AgentSessionsGrouping } from './agentSessionsFilter.js';
+@@ -52,2 +52,3 @@ import { BugIndicatingError } from '../../../../../base/common/errors.js';
+ import { ILogService } from '../../../../../platform/log/common/log.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -508,11 +509,8 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+@@ -638,5 +639,2 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
  
 -	static readonly ITEM_HEIGHT = 54;
 -	static readonly SECTION_HEIGHT = 26;
 -
- 	getHeight(element: AgentSessionListItem): number {
+ 	constructor(private readonly _approvalModel?: AgentSessionApprovalModel) { }
+@@ -645,6 +643,6 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
  		if (isAgentSessionSection(element)) {
 -			return AgentSessionsListDelegate.SECTION_HEIGHT;
 +			return FONT.sidebarSize26;
  		}
  
--		return AgentSessionsListDelegate.ITEM_HEIGHT;
-+		return FONT.sidebarSize44;
- 	}
+-		let height = AgentSessionsListDelegate.ITEM_HEIGHT;
++		let height = FONT.sidebarSize54;
+ 		const approval = this._approvalModel?.getApproval(element.resource).get();
 diff --git a/src/vs/workbench/contrib/chat/browser/chatManagement/chatManagementEditor.ts b/src/vs/workbench/contrib/chat/browser/chatManagement/chatManagementEditor.ts
 index ad2c82a..6cb6bce 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatManagement/chatManagementEditor.ts
@@ -2525,14 +2529,14 @@ index 15ae799..06a95d5 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
-index 6ff8637..7694134 100644
+index 8493938..50a19e4 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
 @@ -50,2 +50,3 @@ import { IHoverService } from '../../../../../../platform/hover/browser/hover.js
  import { IConfigurationService } from '../../../../../../platform/configuration/common/configuration.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  
-@@ -297,3 +298,3 @@ class CollapsibleListDelegate implements IListVirtualDelegate<IChatCollapsibleLi
+@@ -298,3 +299,3 @@ class CollapsibleListDelegate implements IListVirtualDelegate<IChatCollapsibleLi
  	getHeight(element: IChatCollapsibleListItem): number {
 -		return 22;
 +		return FONT.sidebarSize22;
@@ -2567,10 +2571,10 @@ index 703940e..e0fa9eb 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css b/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css
-index f57aca1..2c34fb8 100644
+index 83799c1..b2d3db2 100644
 --- a/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css
 +++ b/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css
-@@ -161 +161,68 @@
+@@ -169 +169,68 @@
  }
 +
 +
@@ -2773,10 +2777,10 @@ index 531c114..909a66d 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css b/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
-index 090c53e..d5c4b9f 100644
+index ca34e6f..b067902 100644
 --- a/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
 +++ b/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
-@@ -54 +54,23 @@
+@@ -55 +55,23 @@
  }
 +
 +
@@ -3338,10 +3342,10 @@ index 530b0c4..b3c979d 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/scm/browser/media/scm.css b/src/vs/workbench/contrib/scm/browser/media/scm.css
-index 20c78c3..e83c322 100644
+index 408b771..7ccc6b9 100644
 --- a/src/vs/workbench/contrib/scm/browser/media/scm.css
 +++ b/src/vs/workbench/contrib/scm/browser/media/scm.css
-@@ -799 +799,215 @@
+@@ -800 +800,215 @@
  }
 +
 +
@@ -3942,7 +3946,7 @@ index 27c6580..0feb646 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
-index 70191ee..42cf995 100644
+index 9e6ca13..478e4e7 100644
 --- a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
 +++ b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
 @@ -49,3 +49,2 @@ import { AgentSessionsControl, IAgentSessionsControlOptions } from '../../chat/b
