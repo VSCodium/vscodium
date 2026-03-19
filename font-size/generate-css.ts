@@ -44,6 +44,8 @@ const AREAS: Record<string, Area> = {
 			'src/vs/base/browser/ui/actionbar/actionbar.css',
 			'src/vs/base/browser/ui/button/button.css',
 			'src/vs/base/browser/ui/inputbox/inputBox.css',
+			'src/vs/workbench/contrib/debug/browser/media/debugToolBar.css',
+			'src/vs/workbench/contrib/debug/browser/media/debugViewlet.css',
 			'src/vs/workbench/contrib/extensions/browser/media/extension.css',
 			'src/vs/workbench/contrib/extensions/browser/media/extensionActions.css',
 			'src/vs/workbench/contrib/search/browser/media/searchview.css',

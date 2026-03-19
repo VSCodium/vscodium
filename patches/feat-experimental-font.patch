@@ -2061,14 +2061,14 @@ index 101b9c6..970cdaa 100644
 +
  	private registerActions(): void {
 diff --git a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
-index 1f3b102..0075528 100644
+index 1f3b102..42ad22c 100644
 --- a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
 +++ b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
 @@ -11,2 +11,3 @@
  	font-size: 12px;
 +	font-family: var(--vscode-workbench-statusbar-font-family, inherit);
  	display: flex;
-@@ -239 +240,64 @@
+@@ -239 +240,70 @@
  }
 +
 +
@@ -2098,6 +2098,12 @@ index 1f3b102..0075528 100644
 +    top: calc(var(--vscode-workbench-statusbar-font-size) * -0.416667);
 +    width: calc(var(--vscode-workbench-statusbar-font-size) * 0.833333);
 +    height: calc(var(--vscode-workbench-statusbar-font-size) * 0.416667)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item.left.first-visible-item {
++    padding-left: calc(var(--vscode-workbench-statusbar-font-size) * 0.166667)
++}
++.monaco-workbench .part.statusbar > .items-container > .statusbar-item.right.last-visible-item {
++    padding-right: calc(var(--vscode-workbench-statusbar-font-size) * 0.166667)
 +}
 +.monaco-workbench .part.statusbar > .items-container > .statusbar-item > .statusbar-item-label {
 +    margin-right: calc(var(--vscode-workbench-statusbar-font-size) * 0.25);
@@ -2777,44 +2783,55 @@ index 531c114..909a66d 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css b/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
-index ca34e6f..b067902 100644
+index ca34e6f..611b495 100644
 --- a/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
 +++ b/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
-@@ -55 +55,23 @@
+@@ -55 +55,25 @@
  }
 +
 +
 +
-+.monaco-workbench .part.sidebar .debug-toolbar, .monaco-workbench .part.auxiliarybar .debug-toolbar {
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .debug-toolbar .part.sidebar, .monaco-workbench .debug-toolbar .part.auxiliarybar {
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 2.153846);
 +    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
 +}
-+.monaco-workbench .part.sidebar .debug-toolbar .monaco-action-bar .action-item, .monaco-workbench .part.auxiliarybar .debug-toolbar .monaco-action-bar .action-item {
++.monaco-workbench .debug-toolbar .part.sidebar .monaco-action-bar .action-item, .monaco-workbench .debug-toolbar .part.auxiliarybar .monaco-action-bar .action-item {
 +    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
 +}
-+.monaco-workbench .part.sidebar .debug-toolbar .monaco-action-bar .action-item.select-container, .monaco-workbench .part.auxiliarybar .debug-toolbar .monaco-action-bar .action-item.select-container {
++.monaco-workbench .debug-toolbar .part.sidebar .monaco-action-bar .action-item.select-container, .monaco-workbench .debug-toolbar .part.auxiliarybar .monaco-action-bar .action-item.select-container {
 +    margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846)
 +}
-+.monaco-workbench .part.sidebar .debug-toolbar .monaco-action-bar .action-item.select-container .monaco-select-box, .monaco-workbench .part.sidebar .start-debug-action-item .select-container .monaco-select-box, .monaco-workbench .part.auxiliarybar .debug-toolbar .monaco-action-bar .action-item.select-container .monaco-select-box, .monaco-workbench .part.auxiliarybar .start-debug-action-item .select-container .monaco-select-box {
++.monaco-workbench .debug-toolbar .part.sidebar .monaco-action-bar .action-item.select-container .monaco-select-box, .monaco-workbench .start-debug-action-item .part.sidebar .select-container .monaco-select-box, .monaco-workbench .debug-toolbar .part.auxiliarybar .monaco-action-bar .action-item.select-container .monaco-select-box, .monaco-workbench .start-debug-action-item .part.auxiliarybar .select-container .monaco-select-box {
 +    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 1.846154) 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.615385)
 +}
-+.monaco-workbench .part.sidebar .debug-toolbar .drag-area, .monaco-workbench .part.auxiliarybar .debug-toolbar .drag-area {
++.monaco-workbench .debug-toolbar .part.sidebar .drag-area, .monaco-workbench .debug-toolbar .part.auxiliarybar .drag-area {
 +    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462)
 +}
-+.monaco-workbench .part.sidebar  .debug-toolbar .monaco-action-bar .action-item .action-label, .monaco-workbench .part.auxiliarybar  .debug-toolbar .monaco-action-bar .action-item .action-label {
++.monaco-workbench  .part.sidebar .debug-toolbar .monaco-action-bar .action-item .action-label, .monaco-workbench  .part.auxiliarybar .debug-toolbar .monaco-action-bar .action-item .action-label {
 +    background-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css b/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
-index 4a627af..a07c974 100644
+index 4a627af..86f37c5 100644
 --- a/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
 +++ b/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
-@@ -371 +371,90 @@
+@@ -371 +371,103 @@
  }
 +
++/*** Handcrafted for Custom Font Size ***/
++
++.monaco-workbench .part.sidebar .debug-pane .debug-breakpoints .breakpoint-folder,
++.monaco-workbench .part.sidebar .debug-pane .debug-breakpoints .exception  {
++	margin-left: 0 !important;
++}
 +
 +
-+.monaco-workbench .part.sidebar .debug-action.notification:after, .monaco-workbench .part.auxiliarybar .debug-action.notification:after {
++
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .debug-action.notification:after .part.sidebar, .monaco-workbench .debug-action.notification:after .part.auxiliarybar {
 +    width: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538);
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 0.461538);
 +    top: calc(var(--vscode-workbench-sidebar-font-size) * 0.769231);
@@ -2827,14 +2844,14 @@ index 4a627af..a07c974 100644
 +    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692308);
 +    padding-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
-+    padding-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923);
-+    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++    padding-right: 1px;
++    margin-left: 1px
 +}
-+.monaco-workbench .part.sidebar .monaco-action-bar .start-debug-action-item .configuration .monaco-select-box, .monaco-workbench .part.auxiliarybar .monaco-action-bar .start-debug-action-item .configuration .monaco-select-box {
++.monaco-workbench .monaco-action-bar .part.sidebar .start-debug-action-item .configuration .monaco-select-box, .monaco-workbench .monaco-action-bar .part.auxiliarybar .start-debug-action-item .configuration .monaco-select-box {
 +    margin-top: calc(var(--vscode-workbench-sidebar-font-size) * 0);
 +    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 6.923077)
 +}
-+.monaco-workbench .part.sidebar .monaco-action-bar .start-debug-action-item .configuration .monaco-select-box, .monaco-workbench .part.auxiliarybar .monaco-action-bar .start-debug-action-item .configuration .monaco-select-box {
++.monaco-workbench.safari .monaco-action-bar .part.sidebar .start-debug-action-item .configuration .monaco-select-box, .monaco-workbench.safari .monaco-action-bar .part.auxiliarybar .start-debug-action-item .configuration .monaco-select-box {
 +    margin-bottom: calc(var(--vscode-workbench-sidebar-font-size) * 0)
 +}
 +.monaco-workbench .part.sidebar .debug-pane .line-number, .monaco-workbench .part.auxiliarybar .debug-pane .line-number {
@@ -2845,7 +2862,7 @@ index 4a627af..a07c974 100644
 +    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0) calc(var(--vscode-workbench-sidebar-font-size) * 0.769231)
 +}
 +.monaco-workbench .part.sidebar .debug-pane .call-stack-state-message > .label, .monaco-workbench .part.auxiliarybar .debug-pane .call-stack-state-message > .label {
-+    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
++    padding: 1px calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
 +    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.692308)
 +}
 +.monaco-workbench .part.sidebar .debug-pane .debug-call-stack .thread, .monaco-workbench .part.sidebar .debug-pane .debug-call-stack .session, .monaco-workbench .part.sidebar .debug-pane .debug-call-stack .stack-frame, .monaco-workbench .part.auxiliarybar .debug-pane .debug-call-stack .thread, .monaco-workbench .part.auxiliarybar .debug-pane .debug-call-stack .session, .monaco-workbench .part.auxiliarybar .debug-pane .debug-call-stack .stack-frame {
@@ -2874,7 +2891,7 @@ index 4a627af..a07c974 100644
 +    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0)
 +}
 +.monaco-workbench .part.sidebar .debug-view-content .monaco-tl-contents .highlight, .monaco-workbench .part.auxiliarybar .debug-view-content .monaco-tl-contents .highlight {
-+    outline: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923) dotted var(--vscode-list-filterMatchBorder);
++    outline: 1px dotted var(--vscode-list-filterMatchBorder);
 +    outline-offset: calc(var(--vscode-workbench-sidebar-font-size) * -0.076923)
 +}
 +.monaco-workbench .part.sidebar .debug-pane .monaco-list-row, .monaco-workbench .part.auxiliarybar .debug-pane .monaco-list-row {
@@ -2890,7 +2907,11 @@ index 4a627af..a07c974 100644
 +    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
 +    min-width: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
 +    max-width: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
-+    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615)
++    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
++    padding: 0
++}
++.monaco-workbench .part.sidebar .debug-pane .debug-breakpoints .breakpoint .monaco-custom-toggle.monaco-checkbox::before, .monaco-workbench .part.auxiliarybar .debug-pane .debug-breakpoints .breakpoint .monaco-custom-toggle.monaco-checkbox::before {
++    margin: 0
 +}
 +.monaco-workbench .part.sidebar .debug-pane .debug-breakpoints .breakpoint > .codicon, .monaco-workbench .part.auxiliarybar .debug-pane .debug-breakpoints .breakpoint > .codicon {
 +    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.461538);
