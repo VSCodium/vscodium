@@ -50,13 +50,13 @@ elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
-  NODE_VERSION="20.16.0"
+  NODE_VERSION="22.21.1"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
 
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
 elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
-  NODE_VERSION="20.16.0"
+  NODE_VERSION="22.21.1"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:beige-devtoolset-loong64"
 
   export VSCODE_SKIP_SETUPENV=1
