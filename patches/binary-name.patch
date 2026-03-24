@@ -1,22 +1,22 @@
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index d3ab651..63cd71f 100644
+index a103f11..cc95785 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -369,3 +369,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
- 				.pipe(replace('@@APPNAME@@', product.applicationName))
+@@ -466,3 +466,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 				.pipe(replace('@@NAME@@', product.nameShort))
 -				.pipe(rename('bin/code'));
 +				.pipe(rename('bin/' + product.applicationName));
  			const policyDest = gulp.src('.build/policies/darwin/**', { base: '.build/policies/darwin' })
 diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-index 2c3b710..8041f08 100644
+index 93d0008..a04d296 100644
 --- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
 +++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-@@ -503,3 +503,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -539,3 +539,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  	private async getShellCommandLink(): Promise<{ readonly source: string; readonly target: string }> {
 -		const target = resolve(this.environmentMainService.appRoot, 'bin', 'code');
 +		const target = resolve(this.environmentMainService.appRoot, 'bin', this.productService.applicationName);
  		const source = `/usr/local/bin/${this.productService.applicationName}`;
-@@ -772,3 +772,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -808,3 +808,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
  		if (this.environmentMainService.isBuilt) {
 -			return join(this.environmentMainService.appRoot, 'bin', 'code');
 +			return join(this.environmentMainService.appRoot, 'bin', `${this.productService.applicationName}`);

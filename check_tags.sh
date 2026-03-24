@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2129
 
+# Env Paramaters
+# CHECK_ALL: yes | no
+# CHECK_REH: yes | no
+# CHECK_ONLY_REH: yes | no
+# FORCE_LINUX_SNAP: true
+
 set -e
 
 if [[ -z "${GH_TOKEN}" ]] && [[ -z "${GITHUB_TOKEN}" ]] && [[ -z "${GH_ENTERPRISE_TOKEN}" ]] && [[ -z "${GITHUB_ENTERPRISE_TOKEN}" ]]; then
@@ -265,7 +271,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_TAR="no"
           fi
 
-          if [[ -z $( contains "arm64.snap" ) ]]; then
+          if [[ -z $( contains "arm64.snap" ) || "${FORCE_LINUX_SNAP}" == "true" ]]; then
             echo "Building on Linux arm64 because we have no SNAP"
             export SHOULD_BUILD="yes"
           else
@@ -516,7 +522,7 @@ elif [[ "${ASSETS}" != "null" ]]; then
             export SHOULD_BUILD_APPIMAGE="no"
           fi
 
-          if [[ -z $( contains "amd64.snap" ) ]]; then
+          if [[ -z $( contains "amd64.snap" ) || "${FORCE_LINUX_SNAP}" == "true" ]]; then
             echo "Building on Linux x64 because we have no SNAP"
             export SHOULD_BUILD="yes"
           else

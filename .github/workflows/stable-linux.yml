@@ -9,6 +9,9 @@ on:
       generate_assets:
         type: boolean
         description: Generate assets
+      force_snap:
+        type: boolean
+        description: Force Snap
       checkout_pr:
         type: string
         description: Checkout PR
@@ -68,6 +71,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ALL: 'yes'
+          FORCE_LINUX_SNAP: ${{ github.event.inputs.force_snap }}
         run: ./check_tags.sh
 
   compile:
@@ -138,7 +142,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload vscode artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: vscode
           path: ./vscode.tar.gz
@@ -226,7 +230,7 @@ jobs:
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: vscode
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
@@ -261,7 +265,7 @@ jobs:
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/
@@ -356,7 +360,7 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: vscode
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
@@ -376,7 +380,7 @@ jobs:
         if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Upload assets
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: reh-linux-${{ matrix.vscode_arch }}
           path: assets/
@@ -446,7 +450,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: vscode
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
@@ -466,7 +470,7 @@ jobs:
         if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Upload assets
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: reh-alpine-${{ matrix.vscode_arch }}
           path: assets/
@@ -506,6 +510,7 @@ jobs:
     env:
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
       SNAP_NAME: codium
+      SNAP_PUBLISHER: vscodium
     strategy:
       fail-fast: false
       matrix:
@@ -532,7 +537,7 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         run: ./stores/snapcraft/check_version.sh
 
-      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-qemu-action@v4
         if: env.SHOULD_BUILD == 'yes'
 
       - uses: diddlesnaps/snapcraft-multiarch-action@v1

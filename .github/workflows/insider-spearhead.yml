@@ -20,7 +20,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-15
     env:
       APP_NAME: VSCodium
       ASSETS_REPOSITORY: ${{ github.repository }}-insiders
@@ -61,7 +61,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}

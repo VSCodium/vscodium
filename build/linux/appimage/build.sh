@@ -22,8 +22,11 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   ./pkg2appimage.AppImage --appimage-extract && mv ./squashfs-root ./pkg2appimage.AppDir
 
   # add update's url
-  sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"/' pkg2appimage.AppDir/AppRun
-
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+    sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium-insiders|latest|*.AppImage.zsync"/' pkg2appimage.AppDir/AppRun
+  else
+    sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"/' pkg2appimage.AppDir/AppRun
+  fi
   # remove check so build in docker can succeed
   sed -i 's/grep docker/# grep docker/' pkg2appimage.AppDir/usr/share/pkg2appimage/functions.sh
 
