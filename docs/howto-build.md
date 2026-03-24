@@ -93,7 +93,10 @@ The build scripts are written in Bash, so on Windows you must run them inside **
 
   Restart your shell afterwards so `cargo` and `rustc` are on your `PATH`.
 
-- **WiX Toolset v3** _(optional — only needed for `.msi` installer packaging, i.e., the `-p` flag)_:
+#### Optional tools
+
+- **WiX Toolset v3** _(only needed for `.msi` installer packaging, i.e., the `-p` flag)_:
+
   Download from [wixtoolset.org](https://wixtoolset.org/releases/) and ensure `candle.exe` / `light.exe` are on your `PATH`.
 
 #### PATH verification
