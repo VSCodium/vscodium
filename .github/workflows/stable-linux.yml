@@ -9,6 +9,9 @@ on:
       generate_assets:
         type: boolean
         description: Generate assets
+      force_snap:
+        type: boolean
+        description: Force SNAP
       checkout_pr:
         type: string
         description: Checkout PR
@@ -68,6 +71,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ALL: 'yes'
+          FORCE_LINUX_SNAP: ${{ github.event.inputs.force_snap }}
         run: ./check_tags.sh
 
   compile:
@@ -506,6 +510,7 @@ jobs:
     env:
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
       SNAP_NAME: codium
+      SNAP_PUBLISHER: vscodium
     strategy:
       fail-fast: false
       matrix:
