@@ -1,0 +1,112 @@
+diff --git a/extensions/emmet/package.json b/extensions/emmet/package.json
+index 5b5d374..b85fc2a 100644
+--- a/extensions/emmet/package.json
++++ b/extensions/emmet/package.json
+@@ -384,2 +384,6 @@
+       "commandPalette": [
++        {
++          "command": "emmet.expandAbbreviation",
++          "when": "isDevelopment && !activeEditorIsReadonly"
++        },
+         {
+diff --git a/src/vs/editor/contrib/comment/browser/comment.ts b/src/vs/editor/contrib/comment/browser/comment.ts
+index 4b2a146..a502cb7 100644
+--- a/src/vs/editor/contrib/comment/browser/comment.ts
++++ b/src/vs/editor/contrib/comment/browser/comment.ts
+@@ -8,2 +8,4 @@ import * as nls from '../../../../nls.js';
+ import { MenuId } from '../../../../platform/actions/common/actions.js';
++import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { KeybindingWeight } from '../../../../platform/keybinding/common/keybindingsRegistry.js';
+@@ -85,5 +87,5 @@ class ToggleCommentLineAction extends CommentLineAction {
+ 			label: nls.localize2('comment.line', "Toggle Line Comment"),
+-			precondition: EditorContextKeys.writable,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.writable),
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.editorTextFocus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 				primary: KeyMod.CtrlCmd | KeyCode.Slash,
+@@ -95,3 +97,4 @@ class ToggleCommentLineAction extends CommentLineAction {
+ 				title: nls.localize({ key: 'miToggleLineComment', comment: ['&& denotes a mnemonic'] }, "&&Toggle Line Comment"),
+-				order: 1
++				order: 1,
++				when: IsDevelopmentContext
+ 			},
+@@ -140,5 +143,5 @@ class BlockCommentAction extends EditorAction {
+ 			label: nls.localize2('comment.block', "Toggle Block Comment"),
+-			precondition: EditorContextKeys.writable,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.writable),
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.editorTextFocus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KeyA,
+@@ -151,3 +154,4 @@ class BlockCommentAction extends EditorAction {
+ 				title: nls.localize({ key: 'miToggleBlockComment', comment: ['&& denotes a mnemonic'] }, "Toggle &&Block Comment"),
+-				order: 2
++				order: 2,
++				when: IsDevelopmentContext
+ 			},
+diff --git a/src/vs/workbench/contrib/search/browser/searchActionsFind.ts b/src/vs/workbench/contrib/search/browser/searchActionsFind.ts
+index 2453e14..1558adf 100644
+--- a/src/vs/workbench/contrib/search/browser/searchActionsFind.ts
++++ b/src/vs/workbench/contrib/search/browser/searchActionsFind.ts
+@@ -18,2 +18,3 @@ import { URI } from '../../../../base/common/uri.js';
+ import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { Action2, MenuId, registerAction2 } from '../../../../platform/actions/common/actions.js';
+@@ -35,2 +36,3 @@ import { IEditorGroupsService } from '../../../services/editor/common/editorGrou
+ import { IEditorService } from '../../../services/editor/common/editorService.js';
++import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ import { forcedExpandRecursively } from './searchActionsTopBar.js';
+@@ -258,4 +260,6 @@ registerAction2(class FindInFilesAction extends Action2 {
+ 			category,
++			precondition: IsDevelopmentContext,
+ 			keybinding: {
+ 				weight: KeybindingWeight.WorkbenchContrib,
++				when: IsDevelopmentContext,
+ 				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyF,
+@@ -266,2 +270,3 @@ registerAction2(class FindInFilesAction extends Action2 {
+ 				order: 1,
++				when: IsDevelopmentContext
+ 			}],
+@@ -273,2 +278,7 @@ registerAction2(class FindInFilesAction extends Action2 {
+ 	override async run(accessor: ServicesAccessor, args: IFindInFilesArgs = {}): Promise<any> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		findInFilesCommand(accessor, args);
+diff --git a/src/vs/workbench/contrib/search/browser/searchActionsNav.ts b/src/vs/workbench/contrib/search/browser/searchActionsNav.ts
+index 97186a8..fdda34a 100644
+--- a/src/vs/workbench/contrib/search/browser/searchActionsNav.ts
++++ b/src/vs/workbench/contrib/search/browser/searchActionsNav.ts
+@@ -18,2 +18,3 @@ import { IEditorService } from '../../../services/editor/common/editorService.js
+ import { ContextKeyExpr, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { assertReturnsDefined } from '../../../../base/common/types.js';
+@@ -27,2 +28,3 @@ import { getActiveElement } from '../../../../base/browser/dom.js';
+ import { FileMatchOrMatch, RenderableMatch, ISearchResult, isSearchTreeFolderMatch } from './searchTreeModel/searchTreeCommon.js';
++import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ 
+@@ -399,4 +401,6 @@ registerAction2(class ReplaceInFilesAction extends Action2 {
+ 			title: nls.localize2('replaceInFiles', "Replace in Files"),
++			precondition: IsDevelopmentContext,
+ 			keybinding: [{
+ 				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyH,
++				when: IsDevelopmentContext,
+ 				weight: KeybindingWeight.WorkbenchContrib,
+@@ -408,3 +412,4 @@ registerAction2(class ReplaceInFilesAction extends Action2 {
+ 				group: '4_find_global',
+-				order: 2
++				order: 2,
++				when: IsDevelopmentContext
+ 			}],
+@@ -414,2 +419,7 @@ registerAction2(class ReplaceInFilesAction extends Action2 {
+ 	override async run(accessor: ServicesAccessor): Promise<any> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		return await findOrReplaceInFiles(accessor, true);

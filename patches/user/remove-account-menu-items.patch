@@ -1,0 +1,55 @@
+diff --git a/src/vs/workbench/contrib/authentication/browser/actions/manageAccountPreferencesForExtensionAction.ts b/src/vs/workbench/contrib/authentication/browser/actions/manageAccountPreferencesForExtensionAction.ts
+index 1593707..a6728b6 100644
+--- a/src/vs/workbench/contrib/authentication/browser/actions/manageAccountPreferencesForExtensionAction.ts
++++ b/src/vs/workbench/contrib/authentication/browser/actions/manageAccountPreferencesForExtensionAction.ts
+@@ -9,2 +9,3 @@ import { localize, localize2 } from '../../../../../nls.js';
+ import { Action2, MenuId } from '../../../../../platform/actions/common/actions.js';
++import { IsDevelopmentContext } from '../../../../../platform/contextkey/common/contextkeys.js';
+ import { IDialogService } from '../../../../../platform/dialogs/common/dialogs.js';
+@@ -23,2 +24,3 @@ export class ManageAccountPreferencesForExtensionAction extends Action2 {
+ 			category: localize2('accounts', "Accounts"),
++			precondition: IsDevelopmentContext,
+ 			f1: true,
+@@ -27,2 +29,3 @@ export class ManageAccountPreferencesForExtensionAction extends Action2 {
+ 				order: 100,
++				when: IsDevelopmentContext,
+ 			}],
+diff --git a/src/vs/workbench/contrib/chat/browser/actions/chatLanguageModelActions.ts b/src/vs/workbench/contrib/chat/browser/actions/chatLanguageModelActions.ts
+index 4a2e78a..adf95ec 100644
+--- a/src/vs/workbench/contrib/chat/browser/actions/chatLanguageModelActions.ts
++++ b/src/vs/workbench/contrib/chat/browser/actions/chatLanguageModelActions.ts
+@@ -6,2 +6,4 @@
+ import { Action2, MenuId, registerAction2 } from '../../../../../platform/actions/common/actions.js';
++import { ContextKeyExpr } from '../../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../../platform/contextkey/common/contextkeys.js';
+ import { ServicesAccessor } from '../../../../../platform/instantiation/common/instantiation.js';
+@@ -29,3 +31,3 @@ class ManageLanguageModelAuthenticationAction extends Action2 {
+ 			category: CHAT_CATEGORY,
+-			precondition: ChatContextKeys.enabled,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, ChatContextKeys.enabled),
+ 			menu: [{
+@@ -33,2 +35,3 @@ class ManageLanguageModelAuthenticationAction extends Action2 {
+ 				order: 100,
++				when: IsDevelopmentContext,
+ 			}],
+diff --git a/src/vs/workbench/contrib/remoteTunnel/electron-browser/remoteTunnel.contribution.ts b/src/vs/workbench/contrib/remoteTunnel/electron-browser/remoteTunnel.contribution.ts
+index 0eaa650..7ce4fe2 100644
+--- a/src/vs/workbench/contrib/remoteTunnel/electron-browser/remoteTunnel.contribution.ts
++++ b/src/vs/workbench/contrib/remoteTunnel/electron-browser/remoteTunnel.contribution.ts
+@@ -18,2 +18,3 @@ import { Extensions as ConfigurationExtensions, ConfigurationScope, IConfigurati
+ import { ContextKeyExpr, IContextKey, IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
+@@ -497,5 +498,6 @@ export class RemoteTunnelWorkbenchContribution extends Disposable implements IWo
+ 					category: REMOTE_TUNNEL_CATEGORY,
+-					precondition: ContextKeyExpr.equals(REMOTE_TUNNEL_CONNECTION_STATE_KEY, 'disconnected'),
++					precondition: ContextKeyExpr.and(IsDevelopmentContext, ContextKeyExpr.equals(REMOTE_TUNNEL_CONNECTION_STATE_KEY, 'disconnected')),
+ 					menu: [{
+ 						id: MenuId.CommandPalette,
++						when: IsDevelopmentContext,
+ 					},
+@@ -504,3 +506,3 @@ export class RemoteTunnelWorkbenchContribution extends Disposable implements IWo
+ 						group: '2_remoteTunnel',
+-						when: ContextKeyExpr.equals(REMOTE_TUNNEL_CONNECTION_STATE_KEY, 'disconnected'),
++						when: ContextKeyExpr.and(IsDevelopmentContext, ContextKeyExpr.equals(REMOTE_TUNNEL_CONNECTION_STATE_KEY, 'disconnected')),
+ 					}]

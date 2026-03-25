@@ -1,0 +1,149 @@
+diff --git a/src/vs/workbench/contrib/debug/browser/debug.contribution.ts b/src/vs/workbench/contrib/debug/browser/debug.contribution.ts
+--- a/src/vs/workbench/contrib/debug/browser/debug.contribution.ts
++++ b/src/vs/workbench/contrib/debug/browser/debug.contribution.ts
+@@ -16,2 +16,3 @@ import { Extensions as ConfigurationExtensions, ConfigurationScope, IConfigurationRegistry } from '../../../../platform/configuration/common/configurationRegistry.js';
+ import { ContextKeyExpr, ContextKeyExpression } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { SyncDescriptor } from '../../../../platform/instantiation/common/descriptors.js';
+@@ -116,2 +117,2 @@ const registerDebugCommandPaletteItem = (id: string, title: ICommandActionTitle, when?: ContextKeyExpression, precondition?: ContextKeyExpression) => {
+-		when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, when),
++		when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE, when),
+ 		group: debugCategory,
+@@ -268,2 +269,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarMainMenu, {
+-	order: 6
++	order: 6,
++	when: IsDevelopmentContext
+ });
+@@ -278,3 +280,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 1,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -288,3 +290,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 2,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -299,3 +301,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 3,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -310,3 +312,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 4,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -322,3 +324,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 2,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -334,3 +336,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 1,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -345,3 +347,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 2,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -356,3 +358,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 3,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -367,3 +369,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 4,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -379,3 +381,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarNewBreakpointMenu, {
+ 	order: 2,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -387,3 +389,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	order: 2,
+-	when: CONTEXT_DEBUGGERS_AVAILABLE
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE)
+ });
+@@ -421,3 +423,4 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
+ 	},
+-	order: 1
++	order: 1,
++	when: IsDevelopmentContext
+ });
+diff --git a/src/vs/workbench/contrib/debug/browser/debugCommands.ts b/src/vs/workbench/contrib/debug/browser/debugCommands.ts
+--- a/src/vs/workbench/contrib/debug/browser/debugCommands.ts
++++ b/src/vs/workbench/contrib/debug/browser/debugCommands.ts
+@@ -24,3 +24,3 @@ import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+ import { ContextKeyExpr, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
+-import { InputFocusedContext } from '../../../../platform/contextkey/common/contextkeys.js';
++import { InputFocusedContext, IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { IExtensionHostDebugService } from '../../../../platform/debug/common/extensionHostDebug.js';
+@@ -475,3 +475,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: KeyMod.Shift | KeyMod.CtrlCmd | KeyCode.F5,
+-	when: CONTEXT_IN_DEBUG_MODE,
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_IN_DEBUG_MODE),
+ 	handler: async (accessor: ServicesAccessor, _: string, context: CallStackContext | unknown) => {
+@@ -505,3 +505,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: KeyCode.F10,
+-	when: CONTEXT_DEBUG_STATE.isEqualTo('stopped'),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUG_STATE.isEqualTo('stopped')),
+ 	handler: async (accessor: ServicesAccessor, _: string, context: CallStackContext | unknown) => {
+@@ -524,3 +524,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	// Use a more flexible when clause to not allow full screen command to take over when F11 pressed a lot of times
+-	when: CONTEXT_DEBUG_STATE.notEqualsTo('inactive'),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUG_STATE.notEqualsTo('inactive')),
+ 	handler: async (accessor: ServicesAccessor, _: string, context: CallStackContext | unknown) => {
+@@ -539,3 +539,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: KeyMod.Shift | KeyCode.F11,
+-	when: CONTEXT_DEBUG_STATE.isEqualTo('stopped'),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUG_STATE.isEqualTo('stopped')),
+ 	handler: async (accessor: ServicesAccessor, _: string, context: CallStackContext | unknown) => {
+@@ -554,3 +554,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: KeyCode.F6,
+-	when: CONTEXT_DEBUG_STATE.isEqualTo('running'),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUG_STATE.isEqualTo('running')),
+ 	handler: async (accessor: ServicesAccessor, _: string, context: CallStackContext | unknown) => {
+@@ -564,3 +564,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: STEP_INTO_KEYBINDING | KeyMod.CtrlCmd,
+-	when: ContextKeyExpr.and(CONTEXT_STEP_INTO_TARGETS_SUPPORTED, CONTEXT_IN_DEBUG_MODE, CONTEXT_DEBUG_STATE.isEqualTo('stopped')),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_STEP_INTO_TARGETS_SUPPORTED, CONTEXT_IN_DEBUG_MODE, CONTEXT_DEBUG_STATE.isEqualTo('stopped')),
+ 	weight: KeybindingWeight.WorkbenchContrib,
+@@ -651,3 +651,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: KeyMod.Shift | KeyCode.F5,
+-	when: ContextKeyExpr.and(CONTEXT_FOCUSED_SESSION_IS_ATTACH, CONTEXT_IN_DEBUG_MODE),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_FOCUSED_SESSION_IS_ATTACH, CONTEXT_IN_DEBUG_MODE),
+ 	handler: (accessor, _, context) => stopHandler(accessor, _, context, true)
+@@ -664,3 +664,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: KeyMod.Shift | KeyCode.F5,
+-	when: ContextKeyExpr.and(CONTEXT_FOCUSED_SESSION_IS_ATTACH.toNegated(), CONTEXT_IN_DEBUG_MODE),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_FOCUSED_SESSION_IS_ATTACH.toNegated(), CONTEXT_IN_DEBUG_MODE),
+ 	handler: (accessor, _, context) => stopHandler(accessor, _, context, false)
+@@ -688,3 +688,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: KeyCode.F5,
+-	when: CONTEXT_DEBUG_STATE.isEqualTo('stopped'),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUG_STATE.isEqualTo('stopped')),
+ 	handler: async (accessor: ServicesAccessor, _: string, context: CallStackContext | unknown) => {
+@@ -768,3 +768,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: KeyCode.F5,
+-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, CONTEXT_DEBUG_STATE.isEqualTo('inactive')),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE, CONTEXT_DEBUG_STATE.isEqualTo('inactive')),
+ 	handler: async (accessor: ServicesAccessor, debugStartOptions?: { config?: Partial<IConfig>; noDebug?: boolean }) => {
+@@ -784,3 +784,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	mac: { primary: KeyMod.WinCtrl | KeyCode.F5 },
+-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, CONTEXT_DEBUG_STATE.notEqualsTo(getStateLabel(State.Initializing))),
++	when: ContextKeyExpr.and(IsDevelopmentContext, CONTEXT_DEBUGGERS_AVAILABLE, CONTEXT_DEBUG_STATE.notEqualsTo(getStateLabel(State.Initializing))),
+ 	handler: async (accessor: ServicesAccessor) => {
+@@ -993,2 +993,3 @@ registerAction2(class AddConfigurationAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -1040,3 +1041,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	primary: KeyMod.Shift | KeyCode.F9,
+-	when: EditorContextKeys.editorTextFocus,
++	when: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 	id: TOGGLE_INLINE_BREAKPOINT_ID,

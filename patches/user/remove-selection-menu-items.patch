@@ -1,0 +1,135 @@
+diff --git a/src/vs/editor/contrib/linesOperations/browser/linesOperations.ts b/src/vs/editor/contrib/linesOperations/browser/linesOperations.ts
+index 8e69736..510a38b 100644
+--- a/src/vs/editor/contrib/linesOperations/browser/linesOperations.ts
++++ b/src/vs/editor/contrib/linesOperations/browser/linesOperations.ts
+@@ -9,2 +9,4 @@ import { MenuId } from '../../../../platform/actions/common/actions.js';
+ import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { KeybindingWeight } from '../../../../platform/keybinding/common/keybindingsRegistry.js';
+@@ -82,5 +84,5 @@ class CopyLinesUpAction extends AbstractCopyLinesAction {
+ 			label: nls.localize2('lines.copyUp', "Copy Line Up"),
+-			precondition: EditorContextKeys.writable,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.writable),
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.editorTextFocus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 				primary: KeyMod.Alt | KeyMod.Shift | KeyCode.UpArrow,
+@@ -105,5 +107,5 @@ class CopyLinesDownAction extends AbstractCopyLinesAction {
+ 			label: nls.localize2('lines.copyDown', "Copy Line Down"),
+-			precondition: EditorContextKeys.writable,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.writable),
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.editorTextFocus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 				primary: KeyMod.Alt | KeyMod.Shift | KeyCode.DownArrow,
+@@ -129,3 +131,3 @@ export class DuplicateSelectionAction extends EditorAction {
+ 			label: nls.localize2('duplicateSelection', "Duplicate Selection"),
+-			precondition: EditorContextKeys.writable,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.writable),
+ 			menuOpts: {
+@@ -197,5 +199,5 @@ class MoveLinesUpAction extends AbstractMoveLinesAction {
+ 			label: nls.localize2('lines.moveUp', "Move Line Up"),
+-			precondition: EditorContextKeys.writable,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.writable),
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.editorTextFocus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 				primary: KeyMod.Alt | KeyCode.UpArrow,
+@@ -220,5 +222,5 @@ class MoveLinesDownAction extends AbstractMoveLinesAction {
+ 			label: nls.localize2('lines.moveDown', "Move Line Down"),
+-			precondition: EditorContextKeys.writable,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.writable),
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.editorTextFocus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 				primary: KeyMod.Alt | KeyCode.DownArrow,
+diff --git a/src/vs/editor/contrib/multicursor/browser/multicursor.ts b/src/vs/editor/contrib/multicursor/browser/multicursor.ts
+index a144dce..88fd114 100644
+--- a/src/vs/editor/contrib/multicursor/browser/multicursor.ts
++++ b/src/vs/editor/contrib/multicursor/browser/multicursor.ts
+@@ -26,2 +26,3 @@ import { MenuId } from '../../../../platform/actions/common/actions.js';
+ import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { KeybindingWeight } from '../../../../platform/keybinding/common/keybindingsRegistry.js';
+@@ -51,5 +52,5 @@ export class InsertCursorAbove extends EditorAction {
+ 			label: nls.localize2('mutlicursor.insertAbove', "Add Cursor Above"),
+-			precondition: undefined,
++			precondition: IsDevelopmentContext,
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.editorTextFocus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 				primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.UpArrow,
+@@ -103,5 +104,5 @@ export class InsertCursorBelow extends EditorAction {
+ 			label: nls.localize2('mutlicursor.insertBelow', "Add Cursor Below"),
+-			precondition: undefined,
++			precondition: IsDevelopmentContext,
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.editorTextFocus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 				primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.DownArrow,
+@@ -155,5 +156,5 @@ class InsertCursorAtEndOfEachLineSelected extends EditorAction {
+ 			label: nls.localize2('mutlicursor.insertAtEndOfEachLineSelected', "Add Cursors to Line Ends"),
+-			precondition: undefined,
++			precondition: IsDevelopmentContext,
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.editorTextFocus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.editorTextFocus),
+ 				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KeyI,
+@@ -694,5 +695,5 @@ export class AddSelectionToNextFindMatchAction extends MultiCursorSelectionContr
+ 			label: nls.localize2('addSelectionToNextFindMatch', "Add Selection to Next Find Match"),
+-			precondition: undefined,
++			precondition: IsDevelopmentContext,
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.focus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.focus),
+ 				primary: KeyMod.CtrlCmd | KeyCode.KeyD,
+@@ -718,3 +719,3 @@ export class AddSelectionToPreviousFindMatchAction extends MultiCursorSelectionC
+ 			label: nls.localize2('addSelectionToPreviousFindMatch', "Add Selection to Previous Find Match"),
+-			precondition: undefined,
++			precondition: IsDevelopmentContext,
+ 			menuOpts: {
+@@ -768,5 +769,5 @@ export class SelectHighlightsAction extends MultiCursorSelectionControllerAction
+ 			label: nls.localize2('selectAllOccurrencesOfFindMatch', "Select All Occurrences of Find Match"),
+-			precondition: undefined,
++			precondition: IsDevelopmentContext,
+ 			kbOpts: {
+-				kbExpr: EditorContextKeys.focus,
++				kbExpr: ContextKeyExpr.and(IsDevelopmentContext, EditorContextKeys.focus),
+ 				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyL,
+diff --git a/src/vs/workbench/contrib/codeEditor/browser/toggleColumnSelection.ts b/src/vs/workbench/contrib/codeEditor/browser/toggleColumnSelection.ts
+index 913b554..ceff596 100644
+--- a/src/vs/workbench/contrib/codeEditor/browser/toggleColumnSelection.ts
++++ b/src/vs/workbench/contrib/codeEditor/browser/toggleColumnSelection.ts
+@@ -9,2 +9,3 @@ import { IConfigurationService } from '../../../../platform/configuration/common
+ import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { ICodeEditorService } from '../../../../editor/browser/services/codeEditorService.js';
+@@ -29,2 +30,3 @@ export class ToggleColumnSelectionAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			toggled: ContextKeyExpr.equals('config.editor.columnSelection', true),
+diff --git a/src/vs/workbench/contrib/codeEditor/browser/toggleMultiCursorModifier.ts b/src/vs/workbench/contrib/codeEditor/browser/toggleMultiCursorModifier.ts
+index 3f5f577..0dd99cd 100644
+--- a/src/vs/workbench/contrib/codeEditor/browser/toggleMultiCursorModifier.ts
++++ b/src/vs/workbench/contrib/codeEditor/browser/toggleMultiCursorModifier.ts
+@@ -10,3 +10,5 @@ import { Action2, MenuId, MenuRegistry, registerAction2 } from '../../../../plat
+ import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
+ import { IContextKey, IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
+@@ -26,2 +28,3 @@ export class ToggleMultiCursorModifierAction extends Action2 {
+ 			title: localize2('toggleLocation', 'Toggle Multi-Cursor Modifier'),
++			precondition: IsDevelopmentContext,
+ 			f1: true
+@@ -78,3 +81,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarSelectionMenu, {
+ 	},
+-	when: multiCursorModifier.isEqualTo('ctrlCmd'),
++	when: ContextKeyExpr.and(IsDevelopmentContext, multiCursorModifier.isEqualTo('ctrlCmd')),
+ 	order: 1
+@@ -91,3 +94,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarSelectionMenu, {
+ 	},
+-	when: multiCursorModifier.isEqualTo('altKey'),
++	when: ContextKeyExpr.and(IsDevelopmentContext, multiCursorModifier.isEqualTo('altKey')),
+ 	order: 1

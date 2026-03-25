@@ -1,0 +1,64 @@
+diff --git a/src/vs/workbench/browser/parts/titlebar/menubarControl.ts b/src/vs/workbench/browser/parts/titlebar/menubarControl.ts
+index 07137d3..0b999ec 100644
+--- a/src/vs/workbench/browser/parts/titlebar/menubarControl.ts
++++ b/src/vs/workbench/browser/parts/titlebar/menubarControl.ts
+@@ -35,3 +35,3 @@ import { KeyCode, KeyMod } from '../../../../base/common/keyCodes.js';
+ import { KeybindingWeight } from '../../../../platform/keybinding/common/keybindingsRegistry.js';
+-import { IsMacNativeContext, IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
++import { IsDevelopmentContext, IsMacNativeContext, IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { ICommandService } from '../../../../platform/commands/common/commands.js';
+@@ -104,3 +104,4 @@ MenuRegistry.appendMenuItem(MenuId.MenubarMainMenu, {
+ 	},
+-	order: 7
++	order: 7,
++	when: IsDevelopmentContext
+ });
+diff --git a/src/vs/workbench/contrib/terminal/browser/terminalActions.ts b/src/vs/workbench/contrib/terminal/browser/terminalActions.ts
+index 79023c4..0ee90df 100644
+--- a/src/vs/workbench/contrib/terminal/browser/terminalActions.ts
++++ b/src/vs/workbench/contrib/terminal/browser/terminalActions.ts
+@@ -30,2 +30,3 @@ import { IConfigurationService } from '../../../../platform/configuration/common
+ import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { FileKind } from '../../../../platform/files/common/files.js';
+@@ -358,3 +359,3 @@ export function registerTerminalActions() {
+ 		title: terminalStrings.newInNewWindow,
+-		precondition: sharedWhenClause.terminalAvailable,
++		precondition: ContextKeyExpr.and(IsDevelopmentContext, sharedWhenClause.terminalAvailable),
+ 		keybinding: {
+@@ -362,3 +363,4 @@ export function registerTerminalActions() {
+ 			mac: { primary: KeyMod.WinCtrl | KeyMod.Shift | KeyMod.Alt | KeyCode.Backquote },
+-			weight: KeybindingWeight.WorkbenchContrib
++			weight: KeybindingWeight.WorkbenchContrib,
++			when: IsDevelopmentContext
+ 		},
+@@ -566,2 +568,3 @@ export function registerTerminalActions() {
+ 		title: localize2('workbench.action.terminal.runSelectedText', 'Run Selected Text In Active Terminal'),
++		precondition: IsDevelopmentContext,
+ 		run: async (c, accessor) => {
+@@ -589,3 +592,3 @@ export function registerTerminalActions() {
+ 		title: localize2('workbench.action.terminal.runActiveFile', 'Run Active File In Active Terminal'),
+-		precondition: sharedWhenClause.terminalAvailable,
++		precondition: ContextKeyExpr.and(IsDevelopmentContext, sharedWhenClause.terminalAvailable),
+ 		run: async (c, accessor) => {
+@@ -1055,3 +1058,3 @@ export function registerTerminalActions() {
+ 		title: terminalStrings.split,
+-		precondition: ContextKeyExpr.or(TerminalContextKeys.processSupported, TerminalContextKeys.webExtensionContributedProfile),
++		precondition: ContextKeyExpr.and(IsDevelopmentContext, ContextKeyExpr.or(TerminalContextKeys.processSupported, TerminalContextKeys.webExtensionContributedProfile)),
+ 		keybinding: {
+@@ -1063,3 +1066,3 @@ export function registerTerminalActions() {
+ 			},
+-			when: TerminalContextKeys.focus
++			when: ContextKeyExpr.and(IsDevelopmentContext, TerminalContextKeys.focus)
+ 		},
+@@ -1215,3 +1218,3 @@ export function registerTerminalActions() {
+ 		title: localize2('workbench.action.terminal.new', 'Create New Terminal'),
+-		precondition: ContextKeyExpr.or(TerminalContextKeys.processSupported, TerminalContextKeys.webExtensionContributedProfile),
++		precondition: ContextKeyExpr.and(IsDevelopmentContext, ContextKeyExpr.or(TerminalContextKeys.processSupported, TerminalContextKeys.webExtensionContributedProfile)),
+ 		icon: newTerminalIcon,
+@@ -1220,3 +1223,4 @@ export function registerTerminalActions() {
+ 			mac: { primary: KeyMod.WinCtrl | KeyMod.Shift | KeyCode.Backquote },
+-			weight: KeybindingWeight.WorkbenchContrib
++			weight: KeybindingWeight.WorkbenchContrib,
++			when: IsDevelopmentContext
+ 		},

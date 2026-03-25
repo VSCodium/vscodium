@@ -1,0 +1,521 @@
+diff --git a/src/vs/workbench/browser/actions/windowActions.ts b/src/vs/workbench/browser/actions/windowActions.ts
+index 9e9423f..7ed4a12 100644
+--- a/src/vs/workbench/browser/actions/windowActions.ts
++++ b/src/vs/workbench/browser/actions/windowActions.ts
+@@ -37,2 +37,3 @@ import { isFolderBackupInfo, isWorkspaceBackupInfo } from '../../../platform/bac
+ import { getActiveElement, getActiveWindow, isHTMLElement } from '../../../base/browser/dom.js';
++import { IWorkbenchEnvironmentService } from '../../services/environment/common/environmentService.js';
+ 
+@@ -89,2 +90,7 @@ abstract class BaseOpenRecentAction extends Action2 {
+ 	override async run(accessor: ServicesAccessor): Promise<void> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const workspacesService = accessor.get(IWorkspacesService);
+@@ -292,3 +298,5 @@ export class OpenRecentAction extends BaseOpenRecentAction {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			keybinding: {
++				when: IsDevelopmentContext,
+ 				weight: KeybindingWeight.WorkbenchContrib,
+@@ -518,3 +526,4 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	group: '2_open',
+-	order: 4
++	order: 4,
++	when: IsDevelopmentContext
+ });
+diff --git a/src/vs/workbench/browser/actions/workspaceActions.ts b/src/vs/workbench/browser/actions/workspaceActions.ts
+index 96861a6..141cfe3 100644
+--- a/src/vs/workbench/browser/actions/workspaceActions.ts
++++ b/src/vs/workbench/browser/actions/workspaceActions.ts
+@@ -22,3 +22,3 @@ import { IWorkspacesService } from '../../../platform/workspaces/common/workspac
+ import { KeybindingWeight } from '../../../platform/keybinding/common/keybindingsRegistry.js';
+-import { IsMacNativeContext } from '../../../platform/contextkey/common/contextkeys.js';
++import { IsDevelopmentContext, IsMacNativeContext } from '../../../platform/contextkey/common/contextkeys.js';
+ import { ILocalizedString } from '../../../platform/action/common/action.js';
+@@ -47,2 +47,7 @@ export class OpenFileAction extends Action2 {
+ 	override async run(accessor: ServicesAccessor, data?: ITelemetryData): Promise<void> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const fileDialogService = accessor.get(IFileDialogService);
+@@ -63,4 +68,5 @@ export class OpenFolderAction extends Action2 {
+ 			f1: true,
+-			precondition: OpenFolderWorkspaceSupportContext,
++			precondition: ContextKeyExpr.and(OpenFolderWorkspaceSupportContext, IsDevelopmentContext),
+ 			keybinding: {
++				when: IsDevelopmentContext,
+ 				weight: KeybindingWeight.WorkbenchContrib,
+@@ -78,2 +84,7 @@ export class OpenFolderAction extends Action2 {
+ 	override async run(accessor: ServicesAccessor, data?: ITelemetryData): Promise<void> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const fileDialogService = accessor.get(IFileDialogService);
+@@ -99,4 +110,5 @@ export class OpenFolderViaWorkspaceAction extends Action2 {
+ 			f1: true,
+-			precondition: ContextKeyExpr.and(OpenFolderWorkspaceSupportContext.toNegated(), WorkbenchStateContext.isEqualTo('workspace')),
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, OpenFolderWorkspaceSupportContext.toNegated(), WorkbenchStateContext.isEqualTo('workspace')),
+ 			keybinding: {
++				when: IsDevelopmentContext,
+ 				weight: KeybindingWeight.WorkbenchContrib,
+@@ -108,2 +120,7 @@ export class OpenFolderViaWorkspaceAction extends Action2 {
+ 	override run(accessor: ServicesAccessor): Promise<void> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return Promise.resolve();
++		}
++
+ 		const commandService = accessor.get(ICommandService);
+@@ -125,4 +142,5 @@ export class OpenFileFolderAction extends Action2 {
+ 			f1: true,
+-			precondition: ContextKeyExpr.and(IsMacNativeContext, OpenFolderWorkspaceSupportContext),
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, IsMacNativeContext, OpenFolderWorkspaceSupportContext),
+ 			keybinding: {
++				when: IsDevelopmentContext,
+ 				weight: KeybindingWeight.WorkbenchContrib,
+@@ -134,2 +152,7 @@ export class OpenFileFolderAction extends Action2 {
+ 	override async run(accessor: ServicesAccessor, data?: ITelemetryData): Promise<void> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const fileDialogService = accessor.get(IFileDialogService);
+@@ -150,3 +173,3 @@ class OpenWorkspaceAction extends Action2 {
+ 			f1: true,
+-			precondition: EnterMultiRootWorkspaceSupportContext
++			precondition: ContextKeyExpr.and(EnterMultiRootWorkspaceSupportContext, IsDevelopmentContext)
+ 		});
+@@ -155,2 +178,7 @@ class OpenWorkspaceAction extends Action2 {
+ 	override async run(accessor: ServicesAccessor, data?: ITelemetryData): Promise<void> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const fileDialogService = accessor.get(IFileDialogService);
+@@ -222,3 +250,3 @@ export class AddRootFolderAction extends Action2 {
+ 			f1: true,
+-			precondition: ContextKeyExpr.or(EnterMultiRootWorkspaceSupportContext, WorkbenchStateContext.isEqualTo('workspace'))
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, ContextKeyExpr.or(EnterMultiRootWorkspaceSupportContext, WorkbenchStateContext.isEqualTo('workspace')))
+ 		});
+@@ -227,2 +255,7 @@ export class AddRootFolderAction extends Action2 {
+ 	override run(accessor: ServicesAccessor): Promise<void> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return Promise.resolve();
++		}
++
+ 		const commandService = accessor.get(ICommandService);
+@@ -268,3 +301,3 @@ class SaveWorkspaceAsAction extends Action2 {
+ 			f1: true,
+-			precondition: EnterMultiRootWorkspaceSupportContext
++			precondition: ContextKeyExpr.and(EnterMultiRootWorkspaceSupportContext, IsDevelopmentContext)
+ 		});
+@@ -273,2 +306,7 @@ class SaveWorkspaceAsAction extends Action2 {
+ 	override async run(accessor: ServicesAccessor): Promise<void> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const workspaceEditingService = accessor.get(IWorkspaceEditingService);
+@@ -301,3 +339,3 @@ class DuplicateWorkspaceInNewWindowAction extends Action2 {
+ 			f1: true,
+-			precondition: EnterMultiRootWorkspaceSupportContext
++			precondition: ContextKeyExpr.and(EnterMultiRootWorkspaceSupportContext, IsDevelopmentContext)
+ 		});
+@@ -311,2 +349,5 @@ class DuplicateWorkspaceInNewWindowAction extends Action2 {
+ 		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
+ 
+@@ -355,3 +396,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	order: 2,
+-	when: OpenFolderWorkspaceSupportContext
++	when: ContextKeyExpr.and(OpenFolderWorkspaceSupportContext, IsDevelopmentContext)
+ });
+@@ -365,3 +406,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	order: 2,
+-	when: ContextKeyExpr.and(OpenFolderWorkspaceSupportContext.toNegated(), WorkbenchStateContext.isEqualTo('workspace'))
++	when: ContextKeyExpr.and(IsDevelopmentContext, OpenFolderWorkspaceSupportContext.toNegated(), WorkbenchStateContext.isEqualTo('workspace'))
+ });
+@@ -375,3 +416,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	order: 1,
+-	when: ContextKeyExpr.and(IsMacNativeContext, OpenFolderWorkspaceSupportContext)
++	when: ContextKeyExpr.and(IsDevelopmentContext, IsMacNativeContext, OpenFolderWorkspaceSupportContext)
+ });
+@@ -385,3 +426,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	order: 3,
+-	when: EnterMultiRootWorkspaceSupportContext
++	when: ContextKeyExpr.and(EnterMultiRootWorkspaceSupportContext, IsDevelopmentContext)
+ });
+@@ -394,3 +435,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	},
+-	when: ContextKeyExpr.or(EnterMultiRootWorkspaceSupportContext, WorkbenchStateContext.isEqualTo('workspace')),
++	when: ContextKeyExpr.and(IsDevelopmentContext, ContextKeyExpr.or(EnterMultiRootWorkspaceSupportContext, WorkbenchStateContext.isEqualTo('workspace'))),
+ 	order: 1
+@@ -405,3 +446,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	order: 2,
+-	when: EnterMultiRootWorkspaceSupportContext
++	when: ContextKeyExpr.and(EnterMultiRootWorkspaceSupportContext, IsDevelopmentContext)
+ });
+@@ -415,3 +456,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	order: 3,
+-	when: EnterMultiRootWorkspaceSupportContext
++	when: ContextKeyExpr.and(EnterMultiRootWorkspaceSupportContext, IsDevelopmentContext)
+ });
+diff --git a/src/vs/workbench/browser/actions/workspaceCommands.ts b/src/vs/workbench/browser/actions/workspaceCommands.ts
+index f483cdb..5334b21 100644
+--- a/src/vs/workbench/browser/actions/workspaceCommands.ts
++++ b/src/vs/workbench/browser/actions/workspaceCommands.ts
+@@ -26,2 +26,3 @@ import { IPathService } from '../../services/path/common/pathService.js';
+ import { ILocalizedString } from '../../../platform/action/common/action.js';
++import { IEnvironmentService } from '../../../platform/environment/common/environment.js';
+ 
+@@ -38,3 +39,10 @@ CommandsRegistry.registerCommand({
+ 	id: 'workbench.action.files.openFileFolderInNewWindow',
+-	handler: (accessor: ServicesAccessor) => accessor.get(IFileDialogService).pickFileFolderAndOpen({ forceNewWindow: true })
++	handler: (accessor: ServicesAccessor) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
++		return accessor.get(IFileDialogService).pickFileFolderAndOpen({ forceNewWindow: true });
++	}
+ });
+@@ -43,3 +51,10 @@ CommandsRegistry.registerCommand({
+ 	id: '_files.pickFolderAndOpen',
+-	handler: (accessor: ServicesAccessor, options: { forceNewWindow: boolean }) => accessor.get(IFileDialogService).pickFolderAndOpen(options)
++	handler: (accessor: ServicesAccessor, options: { forceNewWindow: boolean }) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
++		return accessor.get(IFileDialogService).pickFolderAndOpen(options);
++	}
+ });
+@@ -48,3 +63,10 @@ CommandsRegistry.registerCommand({
+ 	id: 'workbench.action.files.openFolderInNewWindow',
+-	handler: (accessor: ServicesAccessor) => accessor.get(IFileDialogService).pickFolderAndOpen({ forceNewWindow: true })
++	handler: (accessor: ServicesAccessor) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
++		return accessor.get(IFileDialogService).pickFolderAndOpen({ forceNewWindow: true });
++	}
+ });
+@@ -53,3 +75,10 @@ CommandsRegistry.registerCommand({
+ 	id: 'workbench.action.files.openFileInNewWindow',
+-	handler: (accessor: ServicesAccessor) => accessor.get(IFileDialogService).pickFileAndOpen({ forceNewWindow: true })
++	handler: (accessor: ServicesAccessor) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
++		return accessor.get(IFileDialogService).pickFileAndOpen({ forceNewWindow: true });
++	}
+ });
+@@ -58,3 +87,10 @@ CommandsRegistry.registerCommand({
+ 	id: 'workbench.action.openWorkspaceInNewWindow',
+-	handler: (accessor: ServicesAccessor) => accessor.get(IFileDialogService).pickWorkspaceAndOpen({ forceNewWindow: true })
++	handler: (accessor: ServicesAccessor) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
++		return accessor.get(IFileDialogService).pickWorkspaceAndOpen({ forceNewWindow: true });
++	}
+ });
+@@ -64,2 +100,7 @@ CommandsRegistry.registerCommand({
+ 	handler: async (accessor) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const workspaceEditingService = accessor.get(IWorkspaceEditingService);
+@@ -78,2 +119,7 @@ CommandsRegistry.registerCommand({
+ 	handler: async (accessor) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const workspaceEditingService = accessor.get(IWorkspaceEditingService);
+@@ -168,2 +214,7 @@ CommandsRegistry.registerCommand({
+ 	handler: (accessor: ServicesAccessor, uriComponents?: UriComponents, arg?: boolean | IOpenFolderAPICommandOptions) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const commandService = accessor.get(ICommandService);
+@@ -240,2 +291,7 @@ CommandsRegistry.registerCommand({
+ 	handler: (accessor: ServicesAccessor, options?: INewWindowAPICommandOptions) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const commandService = accessor.get(ICommandService);
+diff --git a/src/vs/workbench/browser/parts/editor/editor.contribution.ts b/src/vs/workbench/browser/parts/editor/editor.contribution.ts
+index 1423548..454ac2e 100644
+--- a/src/vs/workbench/browser/parts/editor/editor.contribution.ts
++++ b/src/vs/workbench/browser/parts/editor/editor.contribution.ts
+@@ -75,2 +75,3 @@ import { getFontSnippets } from '../../../../base/browser/fonts.js';
+ import { registerEditorFontConfigurations } from '../../../../editor/common/config/editorConfigurationSchema.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ 
+@@ -686,2 +687,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	order: 1,
++	when: IsDevelopmentContext
+ });
+diff --git a/src/vs/workbench/contrib/files/browser/fileActions.contribution.ts b/src/vs/workbench/contrib/files/browser/fileActions.contribution.ts
+index 6cd0433..471d8dd 100644
+--- a/src/vs/workbench/contrib/files/browser/fileActions.contribution.ts
++++ b/src/vs/workbench/contrib/files/browser/fileActions.contribution.ts
+@@ -23,3 +23,3 @@ import { Schemas } from '../../../../base/common/network.js';
+ import { DirtyWorkingCopiesContext, EnterMultiRootWorkspaceSupportContext, HasWebFileSystemAccess, WorkbenchStateContext, WorkspaceFolderCountContext, SidebarFocusContext, ActiveEditorCanRevertContext, ActiveEditorContext, ResourceContextKey, ActiveEditorAvailableEditorIdsContext, MultipleEditorsSelectedInGroupContext, TwoEditorsSelectedInGroupContext, SelectedEditorsInGroupFileOrUntitledResourceContextKey } from '../../../common/contextkeys.js';
+-import { IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
++import { IsDevelopmentContext, IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
+@@ -249,3 +249,3 @@ appendToCommandPalette({
+ 	category: Categories.File
+-});
++}, IsDevelopmentContext);
+ 
+@@ -283,3 +283,3 @@ appendToCommandPalette({
+ 	category: Categories.File
+-});
++}, IsDevelopmentContext);
+ 
+@@ -671,3 +671,8 @@ MenuRegistry.appendMenuItem(MenuId.ExplorerContext, {
+ for (const menuId of [MenuId.EmptyEditorGroupContext, MenuId.EditorTabsBarContext]) {
+-	MenuRegistry.appendMenuItem(menuId, { command: { id: NEW_UNTITLED_FILE_COMMAND_ID, title: nls.localize('newFile', "New Text File") }, group: '1_file', order: 10 });
++	MenuRegistry.appendMenuItem(menuId, {
++		command: { id: NEW_UNTITLED_FILE_COMMAND_ID, title: nls.localize('newFile', "New Text File") },
++		group: '1_file',
++		order: 10,
++		when: IsDevelopmentContext
++	});
+ 	MenuRegistry.appendMenuItem(menuId, { command: { id: 'workbench.action.quickOpen', title: nls.localize('openFile', "Open File...") }, group: '1_file', order: 20 });
+@@ -683,3 +688,4 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	},
+-	order: 1
++	order: 1,
++	when: IsDevelopmentContext
+ });
+@@ -723,3 +729,4 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	},
+-	order: 1
++	order: 1,
++	when: IsDevelopmentContext
+ });
+@@ -738,3 +745,4 @@ MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+ 	},
+-	order: 1
++	order: 1,
++	when: IsDevelopmentContext
+ });
+diff --git a/src/vs/workbench/contrib/files/browser/fileActions.ts b/src/vs/workbench/contrib/files/browser/fileActions.ts
+index 0a50789..156d528 100644
+--- a/src/vs/workbench/contrib/files/browser/fileActions.ts
++++ b/src/vs/workbench/contrib/files/browser/fileActions.ts
+@@ -57,2 +57,3 @@ import { Action2 } from '../../../../platform/actions/common/actions.js';
+ import { ActiveEditorCanToggleReadonlyContext, ActiveEditorContext, EmptyWorkspaceSupportContext } from '../../../common/contextkeys.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { KeybindingWeight } from '../../../../platform/keybinding/common/keybindingsRegistry.js';
+@@ -63,2 +64,3 @@ import { VSBuffer } from '../../../../base/common/buffer.js';
+ import { getPathForFile } from '../../../../platform/dnd/browser/dnd.js';
++import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ 
+@@ -546,2 +548,3 @@ export class ToggleAutoSaveAction extends Action2 {
+ 			category: Categories.File,
++			precondition: IsDevelopmentContext,
+ 			metadata: { description: nls.localize2('toggleAutoSaveDescription', "Toggle the ability to save files automatically after typing") }
+@@ -551,2 +554,7 @@ export class ToggleAutoSaveAction extends Action2 {
+ 	override run(accessor: ServicesAccessor): Promise<void> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return Promise.resolve();
++		}
++
+ 		const filesConfigurationService = accessor.get(IFilesConfigurationService);
+diff --git a/src/vs/workbench/contrib/files/browser/fileCommands.ts b/src/vs/workbench/contrib/files/browser/fileCommands.ts
+index c8fc8aa..530e336 100644
+--- a/src/vs/workbench/contrib/files/browser/fileCommands.ts
++++ b/src/vs/workbench/contrib/files/browser/fileCommands.ts
+@@ -54,7 +54,12 @@ import { ExplorerView } from './views/explorerView.js';
+ import { IListService } from '../../../../platform/list/browser/listService.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ 
+ export const openWindowCommand = (accessor: ServicesAccessor, toOpen: IWindowOpenable[], options?: IOpenWindowOptions) => {
++	const environmentService = accessor.get(IEnvironmentService);
++	if (environmentService.isBuilt) {
++		return;
++	}
++
+ 	if (Array.isArray(toOpen)) {
+ 		const hostService = accessor.get(IHostService);
+-		const environmentService = accessor.get(IEnvironmentService);
+ 
+@@ -76,2 +81,7 @@ export const openWindowCommand = (accessor: ServicesAccessor, toOpen: IWindowOpe
+ export const newWindowCommand = (accessor: ServicesAccessor, options?: IOpenEmptyWindowOptions) => {
++	const environmentService = accessor.get(IEnvironmentService);
++	if (environmentService.isBuilt) {
++		return;
++	}
++
+ 	const hostService = accessor.get(IHostService);
+@@ -537,2 +547,7 @@ CommandsRegistry.registerCommand({
+ 	handler: async accessor => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const editorGroupService = accessor.get(IEditorGroupsService);
+@@ -663,3 +678,3 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	weight: KeybindingWeight.WorkbenchContrib,
+-	when: null,
++	when: IsDevelopmentContext,
+ 	primary: isWeb ? (isWindows ? KeyChord(KeyMod.CtrlCmd | KeyCode.KeyK, KeyCode.KeyN) : KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KeyN) : KeyMod.CtrlCmd | KeyCode.KeyN,
+@@ -689,2 +704,7 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
+ 	handler: async (accessor, args?: { languageId?: string; viewType?: string }) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const editorService = accessor.get(IEditorService);
+@@ -705,2 +725,7 @@ CommandsRegistry.registerCommand({
+ 	handler: async (accessor, args?: { languageId?: string; viewType?: string; fileName?: string }) => {
++		const environmentService = accessor.get(IEnvironmentService);
++		if (environmentService.isBuilt) {
++			return;
++		}
++
+ 		const editorService = accessor.get(IEditorService);
+diff --git a/src/vs/workbench/contrib/files/browser/files.contribution.ts b/src/vs/workbench/contrib/files/browser/files.contribution.ts
+index 87030a8..9a5b1db 100644
+--- a/src/vs/workbench/contrib/files/browser/files.contribution.ts
++++ b/src/vs/workbench/contrib/files/browser/files.contribution.ts
+@@ -269,3 +269,3 @@ configurationRegistry.registerConfiguration({
+ 			],
+-			'default': isWeb ? AutoSaveConfiguration.AFTER_DELAY : AutoSaveConfiguration.OFF,
++			'default': AutoSaveConfiguration.AFTER_DELAY,
+ 			'markdownDescription': nls.localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'autoSave' }, "Controls [auto save](https://code.visualstudio.com/docs/editor/codebasics#_save-auto-save) of editors that have unsaved changes.", AutoSaveConfiguration.OFF, AutoSaveConfiguration.AFTER_DELAY, AutoSaveConfiguration.ON_FOCUS_CHANGE, AutoSaveConfiguration.ON_WINDOW_CHANGE, AutoSaveConfiguration.AFTER_DELAY),
+diff --git a/src/vs/workbench/contrib/share/browser/share.contribution.ts b/src/vs/workbench/contrib/share/browser/share.contribution.ts
+index 66b56f9..339156a 100644
+--- a/src/vs/workbench/contrib/share/browser/share.contribution.ts
++++ b/src/vs/workbench/contrib/share/browser/share.contribution.ts
+@@ -35,2 +35,4 @@ import { workbenchConfigurationNodeBase } from '../../../common/configuration.js
+ import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
++import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ 
+@@ -94,4 +96,5 @@ class ShareWorkbenchContribution extends Disposable {
+ 						icon: Codicon.linkExternal,
+-						precondition: ContextKeyExpr.and(ShareProviderCountContext.notEqualsTo(0), WorkspaceFolderCountContext.notEqualsTo(0)),
++						precondition: ContextKeyExpr.and(IsDevelopmentContext, ShareProviderCountContext.notEqualsTo(0), WorkspaceFolderCountContext.notEqualsTo(0)),
+ 						keybinding: {
++							when: IsDevelopmentContext,
+ 							weight: KeybindingWeight.WorkbenchContrib,
+@@ -106,2 +109,7 @@ class ShareWorkbenchContribution extends Disposable {
+ 				override async run(accessor: ServicesAccessor, ...args: unknown[]): Promise<void> {
++					const environmentService = accessor.get(IWorkbenchEnvironmentService);
++					if (environmentService.isBuilt) {
++						return;
++					}
++
+ 					const shareService = accessor.get(IShareService);
+diff --git a/src/vs/workbench/contrib/userDataProfile/browser/userDataProfile.ts b/src/vs/workbench/contrib/userDataProfile/browser/userDataProfile.ts
+index f8ea86c..7daafd0 100644
+--- a/src/vs/workbench/contrib/userDataProfile/browser/userDataProfile.ts
++++ b/src/vs/workbench/contrib/userDataProfile/browser/userDataProfile.ts
+@@ -36,2 +36,4 @@ import { Extensions as DndExtensions, IDragAndDropContributionRegistry, IResourc
+ import { IUriIdentityService } from '../../../../platform/uriIdentity/common/uriIdentity.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
++import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ 
+@@ -193,2 +195,3 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
+ 			order: 4,
++			when: IsDevelopmentContext
+ 		});
+@@ -241,3 +244,3 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
+ 					category: PROFILES_CATEGORY,
+-					precondition: HAS_PROFILES_CONTEXT,
++					precondition: ContextKeyExpr.and(HAS_PROFILES_CONTEXT, IsDevelopmentContext),
+ 					f1: true,
+@@ -246,2 +249,7 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
+ 			async run(accessor: ServicesAccessor) {
++				const environmentService = accessor.get(IWorkbenchEnvironmentService);
++				if (environmentService.isBuilt) {
++					return;
++				}
++
+ 				const quickInputService = accessor.get(IQuickInputService);
+@@ -284,3 +292,3 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
+ 						group: '0_profiles',
+-						when: HAS_PROFILES_CONTEXT
++						when: ContextKeyExpr.and(HAS_PROFILES_CONTEXT, IsDevelopmentContext)
+ 					}
+@@ -290,2 +298,7 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
+ 			override run(accessor: ServicesAccessor): Promise<void> {
++				const environmentService = accessor.get(IWorkbenchEnvironmentService);
++				if (environmentService.isBuilt) {
++					return Promise.resolve();
++				}
++
+ 				const hostService = accessor.get(IHostService);
+@@ -300,3 +313,3 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
+ 				title: localize2('open', "Open {0} Profile", profile.name),
+-				precondition: HAS_PROFILES_CONTEXT
++				precondition: ContextKeyExpr.and(HAS_PROFILES_CONTEXT, IsDevelopmentContext)
+ 			},
+diff --git a/src/vs/workbench/contrib/welcomeViews/common/newFile.contribution.ts b/src/vs/workbench/contrib/welcomeViews/common/newFile.contribution.ts
+index a92f90b..293e713 100644
+--- a/src/vs/workbench/contrib/welcomeViews/common/newFile.contribution.ts
++++ b/src/vs/workbench/contrib/welcomeViews/common/newFile.contribution.ts
+@@ -19,4 +19,6 @@ import { IQuickInputService, IQuickPickItem, IQuickPickSeparator } from '../../.
+ import { Registry } from '../../../../platform/registry/common/platform.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from '../../../common/contributions.js';
+ import { LifecyclePhase } from '../../../services/lifecycle/common/lifecycle.js';
++import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ 
+@@ -32,3 +34,5 @@ registerAction2(class extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			keybinding: {
++				when: IsDevelopmentContext,
+ 				primary: KeyMod.Alt + KeyMod.CtrlCmd + KeyMod.WinCtrl + KeyCode.KeyN,
+@@ -39,3 +43,4 @@ registerAction2(class extends Action2 {
+ 				group: '1_new',
+-				order: 2
++				order: 2,
++				when: IsDevelopmentContext
+ 			}
+@@ -45,2 +50,7 @@ registerAction2(class extends Action2 {
+ 	async run(accessor: ServicesAccessor): Promise<boolean> {
++		const environmentService = accessor.get(IWorkbenchEnvironmentService);
++		if (environmentService.isBuilt) {
++			return false;
++		}
++
+ 		return assertReturnsDefined(NewFileTemplatesManager.Instance).run();

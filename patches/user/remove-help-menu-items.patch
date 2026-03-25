@@ -1,0 +1,304 @@
+diff --git a/src/vs/workbench/browser/actions/helpActions.ts b/src/vs/workbench/browser/actions/helpActions.ts
+index 2487213..156a3b7 100644
+--- a/src/vs/workbench/browser/actions/helpActions.ts
++++ b/src/vs/workbench/browser/actions/helpActions.ts
+@@ -19,2 +19,3 @@ import { ICommandService } from '../../../platform/commands/common/commands.js';
+ import { ContextKeyExpr } from '../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../platform/contextkey/common/contextkeys.js';
+ 
+@@ -34,5 +35,6 @@ class KeybindingsReferenceAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			keybinding: {
+ 				weight: KeybindingWeight.WorkbenchContrib,
+-				when: null,
++				when: IsDevelopmentContext,
+ 				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KeyK, KeyMod.CtrlCmd | KeyCode.KeyR)
+@@ -42,3 +44,4 @@ class KeybindingsReferenceAction extends Action2 {
+ 				group: '2_reference',
+-				order: 1
++				order: 1,
++				when: IsDevelopmentContext
+ 			}
+@@ -72,2 +75,3 @@ class OpenIntroductoryVideosUrlAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -75,3 +79,4 @@ class OpenIntroductoryVideosUrlAction extends Action2 {
+ 				group: '2_reference',
+-				order: 2
++				order: 2,
++				when: IsDevelopmentContext
+ 			}
+@@ -104,2 +109,3 @@ class OpenTipsAndTricksUrlAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -107,3 +113,4 @@ class OpenTipsAndTricksUrlAction extends Action2 {
+ 				group: '2_reference',
+-				order: 3
++				order: 3,
++				when: IsDevelopmentContext
+ 			}
+@@ -125,3 +132,3 @@ class OpenDocumentationUrlAction extends Action2 {
+ 	static readonly ID = 'workbench.action.openDocumentationUrl';
+-	static readonly AVAILABLE = !!(isWeb ? product.serverDocumentationUrl : product.documentationUrl);
++	static readonly AVAILABLE = true;
+ 
+@@ -133,4 +140,4 @@ class OpenDocumentationUrlAction extends Action2 {
+ 			title: {
+-				...localize2('openDocumentationUrl', "Documentation"),
+-				mnemonicTitle: localize({ key: 'miDocumentation', comment: ['&& denotes a mnemonic'] }, "&&Documentation"),
++				...localize2('openDocumentationUrl', "User Guide"),
++				mnemonicTitle: localize({ key: 'miDocumentation', comment: ['&& denotes a mnemonic'] }, "&&User Guide"),
+ 			},
+@@ -139,3 +146,3 @@ class OpenDocumentationUrlAction extends Action2 {
+ 				group: '1_welcome',
+-				order: 3
++				order: 1
+ 			}
+@@ -145,9 +152,32 @@ class OpenDocumentationUrlAction extends Action2 {
+ 	run(accessor: ServicesAccessor): void {
+-		const productService = accessor.get(IProductService);
+ 		const openerService = accessor.get(IOpenerService);
+-		const url = isWeb ? productService.serverDocumentationUrl : productService.documentationUrl;
++		openerService.open(URI.parse('https://docs.codexeditor.app/docs'));
++	}
++}
+ 
+-		if (url) {
+-			openerService.open(URI.parse(url));
+-		}
++class OpenTroubleshootingUrlAction extends Action2 {
++
++	static readonly ID = 'workbench.action.openTroubleshootingUrl';
++	static readonly AVAILABLE = true;
++
++	constructor() {
++		super({
++			id: OpenTroubleshootingUrlAction.ID,
++			title: {
++				...localize2('openTroubleshootingUrl', "Troubleshooting"),
++				mnemonicTitle: localize({ key: 'miTroubleshooting', comment: ['&& denotes a mnemonic'] }, "&&Troubleshooting"),
++			},
++			category: Categories.Help,
++			f1: true,
++			menu: {
++				id: MenuId.MenubarHelpMenu,
++				group: '1_welcome',
++				order: 2
++			}
++		});
++	}
++
++	run(accessor: ServicesAccessor): void {
++		const openerService = accessor.get(IOpenerService);
++		openerService.open(URI.parse('https://docs.codexeditor.app/docs/troubleshooting'));
+ 	}
+@@ -191,2 +221,3 @@ class OpenYouTubeUrlAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -194,3 +225,4 @@ class OpenYouTubeUrlAction extends Action2 {
+ 				group: '3_feedback',
+-				order: 1
++				order: 1,
++				when: IsDevelopmentContext
+ 			}
+@@ -223,2 +255,3 @@ class OpenRequestFeatureUrlAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -226,3 +259,4 @@ class OpenRequestFeatureUrlAction extends Action2 {
+ 				group: '3_feedback',
+-				order: 2
++				order: 2,
++				when: IsDevelopmentContext
+ 			}
+@@ -293,2 +327,3 @@ class OpenPrivacyStatementUrlAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -296,3 +331,4 @@ class OpenPrivacyStatementUrlAction extends Action2 {
+ 				group: '4_legal',
+-				order: 2
++				order: 2,
++				when: IsDevelopmentContext
+ 			}
+@@ -321,2 +357,3 @@ class GetStartedWithAccessibilityFeatures extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -324,3 +361,4 @@ class GetStartedWithAccessibilityFeatures extends Action2 {
+ 				group: '1_welcome',
+-				order: 6
++				order: 6,
++				when: IsDevelopmentContext
+ 			}
+@@ -343,3 +381,3 @@ class AskVSCodeCopilot extends Action2 {
+ 			f1: true,
+-			precondition: ContextKeyExpr.equals('chatSetupHidden', false)
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, ContextKeyExpr.equals('chatSetupHidden', false))
+ 		});
+@@ -360,3 +398,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+ 	group: '1_welcome',
+-	when: ContextKeyExpr.equals('chatSetupHidden', false)
++	when: ContextKeyExpr.and(IsDevelopmentContext, ContextKeyExpr.equals('chatSetupHidden', false))
+ });
+@@ -377,5 +415,5 @@ if (OpenTipsAndTricksUrlAction.AVAILABLE) {
+ 
+-if (OpenDocumentationUrlAction.AVAILABLE) {
+-	registerAction2(OpenDocumentationUrlAction);
+-}
++registerAction2(OpenDocumentationUrlAction);
++
++registerAction2(OpenTroubleshootingUrlAction);
+ 
+diff --git a/src/vs/workbench/browser/actions/windowActions.ts b/src/vs/workbench/browser/actions/windowActions.ts
+index 9e9423f..0c27ac7 100644
+--- a/src/vs/workbench/browser/actions/windowActions.ts
++++ b/src/vs/workbench/browser/actions/windowActions.ts
+@@ -397,2 +397,3 @@ class ShowAboutDialogAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -401,3 +402,3 @@ class ShowAboutDialogAction extends Action2 {
+ 				order: 1,
+-				when: IsMacNativeContext.toNegated()
++				when: ContextKeyExpr.and(IsDevelopmentContext, IsMacNativeContext.toNegated())
+ 			}
+diff --git a/src/vs/workbench/contrib/issue/common/issue.contribution.ts b/src/vs/workbench/contrib/issue/common/issue.contribution.ts
+index 0c1effb..dde174b 100644
+--- a/src/vs/workbench/contrib/issue/common/issue.contribution.ts
++++ b/src/vs/workbench/contrib/issue/common/issue.contribution.ts
+@@ -10,2 +10,3 @@ import { Categories } from '../../../../platform/action/common/actionCommonCateg
+ import { MenuId, MenuRegistry } from '../../../../platform/actions/common/actions.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { CommandsRegistry, ICommandMetadata } from '../../../../platform/commands/common/commands.js';
+@@ -120,3 +122,3 @@ export class BaseIssueContribution extends Disposable implements IWorkbenchContr
+ 
+-		this._register(MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: reportIssue }));
++		this._register(MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: reportIssue, when: IsDevelopmentContext }));
+ 
+@@ -128,3 +130,4 @@ export class BaseIssueContribution extends Disposable implements IWorkbenchContr
+ 			},
+-			order: 3
++			order: 3,
++			when: IsDevelopmentContext
+ 		}));
+diff --git a/src/vs/workbench/contrib/processExplorer/browser/processExplorer.contribution.ts b/src/vs/workbench/contrib/processExplorer/browser/processExplorer.contribution.ts
+index cab5708..7bab06f 100644
+--- a/src/vs/workbench/contrib/processExplorer/browser/processExplorer.contribution.ts
++++ b/src/vs/workbench/contrib/processExplorer/browser/processExplorer.contribution.ts
+@@ -21,3 +21,3 @@ import { IEditorGroupsService } from '../../../services/editor/common/editorGrou
+ import { RemoteNameContext } from '../../../common/contextkeys.js';
+-import { IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
++import { IsDevelopmentContext, IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { ContextKeyExpr } from '../../../../platform/contextkey/common/contextkey.js';
+@@ -100,3 +100,3 @@ class OpenProcessExplorer extends Action2 {
+ 			category: Categories.Developer,
+-			precondition: supported,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, supported),
+ 			f1: true
+@@ -168,3 +168,3 @@ MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+ 	},
+-	when: supported,
++	when: ContextKeyExpr.and(IsDevelopmentContext, supported),
+ 	order: 2
+diff --git a/src/vs/workbench/contrib/quickaccess/browser/quickAccess.contribution.ts b/src/vs/workbench/contrib/quickaccess/browser/quickAccess.contribution.ts
+index 051836b..91a98ef 100644
+--- a/src/vs/workbench/contrib/quickaccess/browser/quickAccess.contribution.ts
++++ b/src/vs/workbench/contrib/quickaccess/browser/quickAccess.contribution.ts
+@@ -69,3 +70,4 @@ MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+ 	},
+-	order: 2
++	order: 2,
++	when: IsDevelopmentContext
+ });
+diff --git a/src/vs/workbench/contrib/update/browser/update.contribution.ts b/src/vs/workbench/contrib/update/browser/update.contribution.ts
+index 4baf8e8..cc9ca60 100644
+--- a/src/vs/workbench/contrib/update/browser/update.contribution.ts
++++ b/src/vs/workbench/contrib/update/browser/update.contribution.ts
+@@ -20,3 +20,3 @@ import { mnemonicButtonLabel } from '../../../../base/common/labels.js';
+ import { ShowCurrentReleaseNotesActionId, ShowCurrentReleaseNotesFromCurrentFileActionId } from '../common/update.js';
+-import { IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
++import { IsDevelopmentContext, IsWebContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { IOpenerService } from '../../../../platform/opener/common/opener.js';
+@@ -45,3 +45,3 @@ export class ShowCurrentReleaseNotesAction extends Action2 {
+ 			f1: true,
+-			precondition: RELEASE_NOTES_URL,
++			precondition: ContextKeyExpr.and(IsDevelopmentContext, RELEASE_NOTES_URL),
+ 			menu: [{
+@@ -50,3 +50,3 @@ export class ShowCurrentReleaseNotesAction extends Action2 {
+ 				order: 5,
+-				when: RELEASE_NOTES_URL,
++				when: ContextKeyExpr.and(IsDevelopmentContext, RELEASE_NOTES_URL),
+ 			}]
+diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
+index b63e894..3e05b00 100644
+--- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
++++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
+@@ -12,2 +12,3 @@ import { ServicesAccessor } from '../../../../platform/instantiation/common/inst
+ import { ContextKeyExpr, IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { IEditorService, SIDE_GROUP } from '../../../services/editor/common/editorService.js';
+@@ -43,2 +44,3 @@ registerAction2(class extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -47,2 +49,3 @@ registerAction2(class extends Action2 {
+ 				order: 1,
++				when: IsDevelopmentContext,
+ 			},
+@@ -195,2 +198,3 @@ registerAction2(class extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			menu: {
+@@ -199,2 +203,3 @@ registerAction2(class extends Action2 {
+ 				order: 3,
++				when: IsDevelopmentContext,
+ 			},
+diff --git a/src/vs/workbench/contrib/welcomeWalkthrough/browser/walkThrough.contribution.ts b/src/vs/workbench/contrib/welcomeWalkthrough/browser/walkThrough.contribution.ts
+index 1a1f1e1..2316dd6 100644
+--- a/src/vs/workbench/contrib/welcomeWalkthrough/browser/walkThrough.contribution.ts
++++ b/src/vs/workbench/contrib/welcomeWalkthrough/browser/walkThrough.contribution.ts
+@@ -15,2 +15,3 @@ import { SyncDescriptor } from '../../../../platform/instantiation/common/descri
+ import { MenuRegistry, MenuId, registerAction2 } from '../../../../platform/actions/common/actions.js';
++import { IsDevelopmentContext } from '../../../../platform/contextkey/common/contextkeys.js';
+ import { registerWorkbenchContribution2 } from '../../../common/contributions.js';
+@@ -47,3 +48,4 @@ MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+ 	},
+-	order: 3
++	order: 3,
++	when: IsDevelopmentContext
+ });
+diff --git a/src/vs/platform/menubar/electron-main/menubar.ts b/src/vs/platform/menubar/electron-main/menubar.ts
+index 772e21d..85d39cd 100644
+--- a/src/vs/platform/menubar/electron-main/menubar.ts
++++ b/src/vs/platform/menubar/electron-main/menubar.ts
+@@ -366,3 +366,3 @@ export class Menubar extends Disposable {
+ 			const helpMenu = new Menu();
+-			const helpMenuItem = new MenuItem({ label: this.mnemonicLabel(nls.localize({ key: 'mHelp', comment: ['&& denotes a mnemonic'] }, "&&Help")), submenu: helpMenu, role: 'help' });
++			const helpMenuItem = new MenuItem({ label: this.mnemonicLabel(nls.localize({ key: 'mHelp', comment: ['&& denotes a mnemonic'] }, "&&Help")), submenu: helpMenu });
+ 			this.setMenuById(helpMenu, 'Help');
+@@ -395,2 +395,6 @@ export class Menubar extends Disposable {
+ 		Menu.setApplicationMenu(menu);
++
++		if (isMacintosh && this.environmentMainService.isBuilt) {
++			(app as any).helpMenu = null;
++		}
+ 
+diff --git a/src/vs/workbench/electron-browser/actions/developerActions.ts b/src/vs/workbench/electron-browser/actions/developerActions.ts
+index 85d84a9..de9af3d 100644
+--- a/src/vs/workbench/electron-browser/actions/developerActions.ts
++++ b/src/vs/workbench/electron-browser/actions/developerActions.ts
+@@ -30,2 +30,3 @@ export class ToggleDevToolsAction extends Action2 {
+ 			f1: true,
++			precondition: IsDevelopmentContext,
+ 			keybinding: {
+@@ -39,3 +40,4 @@ export class ToggleDevToolsAction extends Action2 {
+ 				group: '5_tools',
+-				order: 1
++				order: 1,
++				when: IsDevelopmentContext
+ 			}
