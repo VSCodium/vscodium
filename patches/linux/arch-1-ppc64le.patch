@@ -137,9 +137,10 @@ diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-
 index 7b6ac8b..dde47ba 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -158,2 +158,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
+@@ -158,2 +158,7 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
  			break;
 +		case 'ppc64le':
++		case 'ppc64el':
 +			expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
 +			triple = `powerpc64le-linux-gnu`;
 +			break;
