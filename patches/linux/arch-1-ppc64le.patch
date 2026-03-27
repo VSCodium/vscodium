@@ -312,6 +312,11 @@ index 44c8597..679aacb 100644
 +				} else if cfg!(target_arch = "powerpc64") {
 +					Platform::LinuxPPC64LE
  				} else {
+@@ -213,2 +215,4 @@ async fn check_glibcxx_version() -> Result<bool, String> {
+ 	const DEFAULT_LIB_PATH: &str = "/usr/lib64/libstdc++.so.6";
++	#[cfg(target_arch = "powerpc64")]
++	const DEFAULT_LIB_PATH: &str = "/usr/lib64/libstdc++.so.6";
+ 	#[cfg(any(target_arch = "x86", target_arch = "arm"))]
 diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
 index 8ea4c0b..94028e3 100644
 --- a/resources/server/bin/helpers/check-requirements-linux.sh
