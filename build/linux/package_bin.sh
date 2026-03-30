@@ -30,6 +30,7 @@ elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_ELECTRON_REPOSITORY='lex-ibm/electron-ppc64le-build-scripts'
+  export IGNORE_ELECTRON_VERSION="yes"
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export VSCODE_ELECTRON_REPOSITORY='riscv-forks/electron-riscv-releases'
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
@@ -56,7 +57,7 @@ if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
   TARGET=$( npm config get target )
 
   # Only fails at different major versions
-  if [[ "${ELECTRON_VERSION%%.*}" != "${TARGET%%.*}" ]]; then
+  if [[ "${ELECTRON_VERSION%%.*}" != "${TARGET%%.*}" ]] && [[ "${IGNORE_ELECTRON_VERSION}" != "yes" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
     echo "Electron ${VSCODE_ARCH} binary version doesn't match target electron version!"
     echo "Releases available at: https://github.com/${VSCODE_ELECTRON_REPOSITORY}/releases"

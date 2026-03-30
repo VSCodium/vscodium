@@ -351,3 +351,20 @@ index 021ad01..60cd058 100644
  	LINUX_ARMHF = 'linux-armhf',
 +	LINUX_PPC64LE = 'linux-ppc64le',
  
+diff --git a/build/npm/preinstall.ts b/build/npm/preinstall.ts
+index dd53ff4..0bca5e8 100644
+--- a/build/npm/preinstall.ts
++++ b/build/npm/preinstall.ts
+@@ -147,7 +147,11 @@ function installHeaders() {
+                                        cwd: localHeaderPath
+                                });
+                        } catch (error) {
+-                               throw new Error(`Error applying v8-source-location.patch: ${(error as Error).message}`);
++                               if (process.env['VSCODE_ARCH'] === 'ppc64le') {
++                                       console.log('Ignoring patch error for ppc64le architecture');
++                               } else {
++                                       throw new Error(`Error applying v8-source-location.patch: ${(error as Error).message}`);
++                               }
+                        }
+                }
+        }
