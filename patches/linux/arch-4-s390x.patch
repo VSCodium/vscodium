@@ -1,5 +1,5 @@
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index 6ff90d4..381150d 100755
+index 67bc741..4f0521b 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
 @@ -88,2 +88,14 @@ elif [ "$npm_config_arch" == "ppc64" ]; then
@@ -18,17 +18,17 @@ index 6ff90d4..381150d 100755
 +	export VSCODE_REMOTE_LDFLAGS="--sysroot=$VSCODE_REMOTE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot -L$VSCODE_REMOTE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/usr/lib/s390x-linux-gnu -L$VSCODE_REMOTE_SYSROOT_DIR/s390x-linux-gnu/s390x-linux-gnu/sysroot/lib/s390x-linux-gnu"
  fi
 diff --git a/build/checksums/vscode-sysroot.txt b/build/checksums/vscode-sysroot.txt
-index 3fedbe9..3c4e291 100644
+index dd159f8..8e8cbe9 100644
 --- a/build/checksums/vscode-sysroot.txt
 +++ b/build/checksums/vscode-sysroot.txt
-@@ -8 +8,2 @@ f82c8dacbb9dd85819e4801909eb4e842ac12c899632aa75b4839383a18c7501  arm-rpi-linux-
- fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
+@@ -8 +8,2 @@ ac4b6b14b4cec027a22a51bbbb049b3504958a78106c8a8d5cec144206b767d1  x86_64-linux-g
+ bdab0a372cf5bfdc154226cc5ed72d417096c725085d193509d1f12e0debec66  powerpc64le-linux-gnu-glibc-2.28-gcc-10.5.0.tar.gz
 +7055f3d40e7195fb1e13f0fbaf5ffadf781bddaca5fd5e0d9972f4157a203fb5  s390x-linux-gnu-glibc-2.28.tar.gz
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index af8403a..a697f8c 100644
+index e6ff02c..65f7efe 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -55,2 +55,3 @@ const BUILD_TARGETS = [
+@@ -59,2 +59,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'loong64' },
 +	{ platform: 'linux', arch: 's390x' },
  	{ platform: 'alpine', arch: 'arm64' },
@@ -57,10 +57,10 @@ index e146586..ca18865 100644
 +	{ arch: 's390x' },
  ];
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index d5f3ed8..ac87a54 100644
+index e1e5265..295a755 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -520,2 +520,3 @@ const BUILD_TARGETS = [
+@@ -705,2 +705,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'loong64' },
 +	{ platform: 'linux', arch: 's390x' },
  ];
@@ -78,7 +78,7 @@ index 5ee005e..71fb92e 100644
 +			break;
  	}
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index 7ea5910..9498993 100644
+index 0e28f90..6e81b12 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
 @@ -221,2 +221,42 @@ export const referenceGeneratedDepsByArch = {
@@ -125,10 +125,10 @@ index 7ea5910..9498993 100644
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index 6e5246c..89fac34 100644
+index aece9b9..52a25ce 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -166,2 +166,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
+@@ -167,2 +167,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
  			break;
 +		case 's390x':
 +			expectedName = `s390x-linux-gnu${prefix}.tar.gz`;
@@ -149,10 +149,10 @@ index 5d63ed2..5f793e2 100644
 +	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'ppc64le', 'riscv64', 's390x'].includes(s);
  }
 diff --git a/build/linux/rpm/dep-lists.ts b/build/linux/rpm/dep-lists.ts
-index fba6ee4..33efc80 100644
+index c7e0820..03528c0 100644
 --- a/build/linux/rpm/dep-lists.ts
 +++ b/build/linux/rpm/dep-lists.ts
-@@ -416,2 +416,102 @@ export const referenceGeneratedDepsByArch = {
+@@ -418,2 +418,102 @@ export const referenceGeneratedDepsByArch = {
  		'xdg-utils'
 +	],
 +	"s390x": [
@@ -277,7 +277,7 @@ index dc9faac..9078cc9 100644
 +    s390x)   LDCONFIG_ARCH="64bit";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index 7162d83..f6bb8fd 100644
+index 9a67e9d..aeb7dc0 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
 @@ -51,2 +51,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
@@ -295,10 +295,10 @@ index 7162d83..f6bb8fd 100644
 +			}
  			return TargetPlatform.UNKNOWN;
 diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
-index f93e0ca..c4cc8c9 100644
+index 7b11edb..b8a6193 100644
 --- a/src/vs/platform/extensions/common/extensions.ts
 +++ b/src/vs/platform/extensions/common/extensions.ts
-@@ -334,2 +334,3 @@ export const enum TargetPlatform {
+@@ -346,2 +346,3 @@ export const enum TargetPlatform {
  	LINUX_LOONG64 = 'linux-loong64',
 +	LINUX_S390X = 'linux-s390x',
  
