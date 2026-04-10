@@ -2,6 +2,18 @@
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+if [[ -z "${VSCODE_SYSROOT_REPOSITORY}" ]]; then
+  unset VSCODE_SYSROOT_REPOSITORY
+fi
+
+if [[ -z "${VSCODE_SYSROOT_VERSION}" ]]; then
+  unset VSCODE_SYSROOT_VERSION
+fi
+
+if [[ -z "${VSCODE_SYSROOT_PREFIX}" ]]; then
+  unset VSCODE_SYSROOT_PREFIX
+fi
+
 if [[ "${SHOULD_BUILD_APPIMAGE}" != "no" && "${VSCODE_ARCH}" != "x64" ]]; then
   SHOULD_BUILD_APPIMAGE="no"
 fi
