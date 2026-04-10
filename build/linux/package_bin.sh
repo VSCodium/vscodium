@@ -145,4 +145,10 @@ find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
 
 . ../build_cli.sh
 
+if [[ -n "${GITHUB_OUTPUT}" ]]; then
+  echo "VSCODE_SYSROOT_REPOSITORY=${VSCODE_SYSROOT_REPOSITORY:-}" >> "${GITHUB_OUTPUT}"
+  echo "VSCODE_SYSROOT_VERSION=${VSCODE_SYSROOT_VERSION:-}" >> "${GITHUB_OUTPUT}"
+  echo "VSCODE_SYSROOT_PREFIX=${VSCODE_SYSROOT_PREFIX:-}" >> "${GITHUB_OUTPUT}"
+fi
+
 cd ..
