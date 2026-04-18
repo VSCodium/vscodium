@@ -1,5 +1,5 @@
 diff --git a/build/.moduleignore b/build/.moduleignore
-index ed36151..022d6ed 100644
+index f83624f8..00779f06 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
 @@ -82,7 +82,7 @@ native-is-elevated/deps/**
@@ -16,30 +16,30 @@ index ed36151..022d6ed 100644
 +!@vscodium/vsce-sign/bin/**
  
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 187726c..076f08b 100644
+index 080d97f3..180177c5 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -449,3 +449,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -460,3 +460,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  				'**/*.wasm',
 -				'**/@vscode/vsce-sign/bin/*',
 +				'**/@vscodium/vsce-sign/bin/*',
  			], [
 diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
-index aacf25c..c4b0391 100644
+index a25395c9..d87ff9aa 100644
 --- a/build/lib/extensions.ts
 +++ b/build/lib/extensions.ts
-@@ -116,3 +116,3 @@ export function typeCheckExtensionStream(extensionPath: string, forWeb: boolean)
+@@ -126,3 +126,3 @@ export function typeCheckExtensionStream(extensionPath: string, forWeb: boolean)
  function fromLocalNormal(extensionPath: string): Stream {
 -	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const result = es.through();
-@@ -138,3 +138,3 @@ function fromLocalNormal(extensionPath: string): Stream {
+@@ -148,3 +148,3 @@ function fromLocalNormal(extensionPath: string): Stream {
  function fromLocalEsbuild(extensionPath: string, esbuildConfigFileName: string): Stream {
 -	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const result = es.through();
 diff --git a/build/package-lock.json b/build/package-lock.json
-index 644e16f..fac5de0 100644
+index 92f3b6a4..420464b0 100644
 --- a/build/package-lock.json
 +++ b/build/package-lock.json
 @@ -51,3 +51,3 @@
@@ -64,9 +64,9 @@ index 644e16f..fac5de0 100644
 +      }
 +    },
 +    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
-+      "version": "5.0.4",
-+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.4.tgz",
-+      "integrity": "sha512-h+DEnpVvxmfVefa4jFbCf5HdH5YMDXRsmKflpf1pILZWRFlTbJpxeU55nJl4Smt5HQaGzg1o6RHFPJaOqnmBDg==",
++      "version": "5.0.5",
++      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.5.tgz",
++      "integrity": "sha512-VZznLgtwhn+Mact9tfiwx64fA9erHH/MCXEUfB/0bX/6Fz6ny5EGTXYltMocqg4xFAQZtnO3DHWWXi8RiuN7cQ==",
 +      "extraneous": true,
 +      "license": "MIT",
 +      "dependencies": {
@@ -260,7 +260,7 @@ index 644e16f..fac5de0 100644
      },
 -    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
 +    "node_modules/@vscodium/vsce/node_modules/brace-expansion": {
-       "version": "5.0.4",
+       "version": "5.0.5",
 @@ -2172,3 +2065,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/chalk": {
@@ -331,7 +331,7 @@ index 644e16f..fac5de0 100644
 -      }
 -    },
      "node_modules/@xmldom/xmldom": {
-@@ -7001,2 +6886,12 @@
+@@ -7022,2 +6907,12 @@
      },
 +    "node_modules/yazl": {
 +      "version": "2.5.1",
@@ -345,7 +345,7 @@ index 644e16f..fac5de0 100644
 +    },
      "node_modules/yocto-queue": {
 diff --git a/build/package.json b/build/package.json
-index 8a65120..a36d5c4 100644
+index 4746ea2f..49867df9 100644
 --- a/build/package.json
 +++ b/build/package.json
 @@ -45,3 +45,3 @@
@@ -354,7 +354,7 @@ index 8a65120..a36d5c4 100644
 +    "@vscodium/vsce": "3.6.1-258428",
      "ansi-colors": "^3.2.3",
 diff --git a/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts b/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
-index 98535c5..cc37d7b 100644
+index 98535c5e..cc37d7b4 100644
 --- a/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
 +++ b/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
 @@ -69,3 +69,3 @@ export class ExtensionSignatureVerificationService implements IExtensionSignatur

@@ -1,8 +1,8 @@
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index d3ab651..d067b5b 100644
+index 080d97f3..6b1b4032 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -432,19 +432,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -620,19 +620,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  				.pipe(rename(f => f.dirname = `policies/${f.dirname}`)));
 -
 -			if (quality === 'stable' || quality === 'insider') {
@@ -23,10 +23,10 @@ index d3ab651..d067b5b 100644
 -			}
  		} else if (platform === 'linux') {
 diff --git a/build/gulpfile.vscode.win32.ts b/build/gulpfile.vscode.win32.ts
-index a7b01f0..43c93b8 100644
+index 7a711276..e6a838e2 100644
 --- a/build/gulpfile.vscode.win32.ts
 +++ b/build/gulpfile.vscode.win32.ts
-@@ -117,8 +117,2 @@ function buildWin32Setup(arch: string, target: string): task.CallbackTask {
+@@ -133,8 +133,2 @@ function buildWin32Setup(arch: string, target: string): task.CallbackTask {
  
 -		if (quality === 'stable' || quality === 'insider') {
 -			definitions['AppxPackage'] = `${quality === 'stable' ? 'code' : 'code_insider'}_${arch}.appx`;
@@ -34,4 +34,4 @@ index a7b01f0..43c93b8 100644
 -			definitions['AppxPackageName'] = `${product.win32AppUserModelId}`;
 -		}
 -
- 		packageInnoSetup(issPath, { definitions }, cb as (err?: Error | null) => void);
+ 		fs.writeFileSync(productJsonPath, JSON.stringify(productJson, undefined, '\t'));
