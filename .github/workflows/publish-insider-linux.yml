@@ -1,7 +1,7 @@
 name: Publish - Insider - Linux
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   repository_dispatch:
     types:
       - publish-insider
@@ -125,7 +125,8 @@ jobs:
       - compile
     runs-on: ubuntu-latest
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -221,8 +222,6 @@ jobs:
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Release
-        permissions:
-          contents: write
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
@@ -242,7 +241,8 @@ jobs:
       - compile
     runs-on: ubuntu-22.04
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -334,8 +334,6 @@ jobs:
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Release
-        permissions:
-          contents: write
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
@@ -348,7 +346,8 @@ jobs:
       - compile
     runs-on: ubuntu-22.04
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -416,8 +415,6 @@ jobs:
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Release
-        permissions:
-          contents: write
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
@@ -460,7 +457,8 @@ jobs:
       - build
     runs-on: ubuntu-latest
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     env:
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
       SNAP_NAME: codium-insiders
@@ -492,8 +490,6 @@ jobs:
       #     isClassic: 'true'
 
       - uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # latest
-        permissions:
-          contents: write
         with:
           repo_name: ${{ env.ASSETS_REPOSITORY }}
           repo_token: ${{ secrets.STRONGER_GITHUB_TOKEN }}

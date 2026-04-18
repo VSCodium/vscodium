@@ -1,7 +1,7 @@
 name: Publish - Stable - Linux
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   repository_dispatch:
     types:
       - publish-stable
@@ -126,7 +126,8 @@ jobs:
       - compile
     runs-on: ubuntu-latest
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -222,8 +223,6 @@ jobs:
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Release
-        permissions:
-          contents: write
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
@@ -243,7 +242,8 @@ jobs:
       - compile
     runs-on: ubuntu-22.04
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -335,8 +335,6 @@ jobs:
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Release
-        permissions:
-          contents: write
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
@@ -349,7 +347,8 @@ jobs:
       - compile
     runs-on: ubuntu-22.04
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -417,8 +416,6 @@ jobs:
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Release
-        permissions:
-          contents: write
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}

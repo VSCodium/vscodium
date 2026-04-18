@@ -1,7 +1,7 @@
 name: Publish - Stable - macOS
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   repository_dispatch:
     types:
       - publish-stable
@@ -21,7 +21,8 @@ jobs:
   build:
     runs-on: ${{ matrix.runner }}
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     env:
       SHOULD_BUILD: yes
       SHOULD_DEPLOY: yes

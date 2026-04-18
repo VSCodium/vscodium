@@ -182,7 +182,7 @@ jobs:
 
       - name: Prepare assets
         env:
-          SHOULD_BUILD_APPIMAGE: ${{ (vars[format('DISABLE_{0}_APPIMAGE', ((github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'INSIDER' || 'STABLE'))] == 'yes' && 'no' || 'yes' }}
+          SHOULD_BUILD_APPIMAGE: ${{ vars[format('DISABLE_{0}_APPIMAGE', ((github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'INSIDER' || 'STABLE'))] == 'yes' && 'no' || 'yes' }}
           SHOULD_BUILD_REH: 'no'
           SHOULD_BUILD_REH_WEB: 'no'
           VSCODE_SYSROOT_REPOSITORY: ${{ steps.build.outputs.VSCODE_SYSROOT_REPOSITORY }}

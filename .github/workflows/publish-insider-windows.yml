@@ -1,7 +1,7 @@
 name: Publish - Insider - Windows
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   repository_dispatch:
     types:
       - publish-insider
@@ -115,7 +115,8 @@ jobs:
       - compile
     runs-on: windows-2022
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -229,7 +230,8 @@ jobs:
     needs: build
     runs-on: windows-2022
     environment: publish
-    permissions: {}
+    permissions:
+      contents: write
     defaults:
       run:
         shell: bash

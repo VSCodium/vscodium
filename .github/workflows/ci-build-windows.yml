@@ -140,7 +140,7 @@ jobs:
 
       - name: Build
         env:
-          DISABLE_MSI: ${{ vars[format('DISABLE_{0}_MSI', ((github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'INSIDER' || 'STABLE')] }}
+          DISABLE_MSI: ${{ vars[format('DISABLE_{0}_MSI', ((github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'INSIDER' || 'STABLE'))] }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.vscode_arch }}
           npm_config_target_arch: ${{ matrix.vscode_arch }}
