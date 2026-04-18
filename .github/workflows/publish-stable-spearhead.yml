@@ -6,9 +6,6 @@ on:
       new_release:
         type: boolean
         description: Force new Release
-      force_dispatch:
-        type: boolean
-        description: Force dispatch
       dont_update:
         type: boolean
         description: Don't update VSCode
@@ -18,24 +15,57 @@ on:
   schedule:
     - cron: 0 18 * * *
 
+env:
+  APP_NAME: VSCodium
+  ASSETS_REPOSITORY: ${{ github.repository }}
+  BINARY_NAME: codium
+  GH_REPO_PATH: ${{ github.repository }}
+  ORG_NAME: ${{ github.repository_owner }}
+  OS_NAME: osx
+  SOURCEMAPS_REPOSITORY: ${{ github.repository_owner }}/sourcemaps
+  VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
+  VSCODE_ARCH: arm64
+  VSCODE_LATEST: ${{ github.event.inputs.dont_update == 'true' && 'no' || 'yes' }}
+  VSCODE_QUALITY: stable
+
 jobs:
+  check:
+    runs-on: macos-15
+    outputs:
+      MS_COMMIT: ${{ env.MS_COMMIT }}
+      MS_TAG: ${{ env.MS_TAG }}
+      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: master
+          persist-credentials: false
+
+      - name: Clone VSCode repo
+        run: . get_repo.sh
+
+      - name: Check existing VSCodium tags/releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_RELEASE: ${{ github.event.inputs.new_release }}
+          IS_SPEARHEAD: 'yes'
+        run: . check_tags.sh
+
   build:
+    needs:
+      - check
     runs-on: macos-15
     environment: publish
     permissions:
       contents: write   # Release
     env:
-      APP_NAME: VSCodium
-      ASSETS_REPOSITORY: ${{ github.repository }}
-      BINARY_NAME: codium
-      GH_REPO_PATH: ${{ github.repository }}
-      ORG_NAME: ${{ github.repository_owner }}
-      OS_NAME: osx
-      SOURCEMAPS_REPOSITORY: ${{ github.repository_owner }}/sourcemaps
-      VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
-      VSCODE_ARCH: arm64
-      VSCODE_LATEST: ${{ github.event.inputs.dont_update == 'true' && 'no' || 'yes' }}
-      VSCODE_QUALITY: stable
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+    if: needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -51,18 +81,10 @@ jobs:
       - name: Clone VSCode repo
         run: . get_repo.sh
 
-      - name: Check existing VSCodium tags/releases
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_RELEASE: ${{ github.event.inputs.new_release }}
-          IS_SPEARHEAD: 'yes'
-        run: . check_tags.sh
-
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./build.sh
-        if: env.SHOULD_BUILD == 'yes'
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
@@ -71,32 +93,29 @@ jobs:
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
           git_user_signingkey: true
           git_commit_gpgsign: true
-        if: env.SHOULD_BUILD == 'yes' && github.event.inputs.dont_update != 'true'
+        if: github.event.inputs.dont_update != 'true'
 
       - name: Update upstream version
         run: ./update_upstream.sh
-        if: env.SHOULD_BUILD == 'yes' && github.event.inputs.dont_update != 'true'
+        if: github.event.inputs.dont_update != 'true'
 
       - name: Prepare source
         run: ./prepare_src.sh
-        if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload sourcemaps
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./upload_sourcemaps.sh
-        if: env.SHOULD_BUILD == 'yes'
 
       - name: Release source
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_BUILD == 'yes'
 
       - name: Dispatch builds
         uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
         with:
           event-type: publish-stable
-        if: github.event.inputs.dont_dispatch != 'true' && (env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true')
+        if: github.event.inputs.dont_dispatch != 'true'
