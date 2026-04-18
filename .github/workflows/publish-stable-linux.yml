@@ -1,39 +1,19 @@
-name: stable-linux
+name: Publish - Stable - Linux
 
 on:
   workflow_dispatch:
-    inputs:
-      force_version:
-        type: boolean
-        description: Force update version
-      generate_assets:
-        type: boolean
-        description: Generate assets
-      force_snap:
-        type: boolean
-        description: Force Snap
-      checkout_pr:
-        type: string
-        description: Checkout PR
   repository_dispatch:
-    types: [stable]
-  push:
-    branches: [ master ]
-    paths-ignore:
-    - '**/*.md'
-    - 'upstream/*.json'
-  pull_request:
-    branches: [ master ]
-    paths-ignore:
-    - '**/*.md'
+    types:
+      - publish-stable
 
 env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
   APP_NAME: VSCodium
   ASSETS_REPOSITORY: ${{ github.repository }}
   BINARY_NAME: codium
-  DISABLE_UPDATE: 'yes'
+  DISABLE_UPDATE: yes
   GH_REPO_PATH: ${{ github.repository }}
+  GITHUB_BRANCH: master
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: linux
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
@@ -42,6 +22,10 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions: {}
+    env:
+      SHOULD_BUILD: yes
+      SHOULD_DEPLOY: yes
     outputs:
       MS_COMMIT: ${{ env.MS_COMMIT }}
       MS_TAG: ${{ env.MS_TAG }}
@@ -50,27 +34,18 @@ jobs:
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_pr.sh
+          persist-credentials: false
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
-      - name: Check PR or cron
-        env:
-          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
-        run: ./check_cron_or_pr.sh
-
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CHECK_ALL: 'yes'
+          CHECK_ALL: yes
           FORCE_LINUX_SNAP: ${{ github.event.inputs.force_snap }}
         run: ./check_tags.sh
 
@@ -78,44 +53,40 @@ jobs:
     needs:
       - check
     runs-on: ubuntu-22.04
+    permissions: {}
     env:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
-      VSCODE_ARCH: 'x64'
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+      VSCODE_ARCH: x64
     outputs:
       BUILD_SOURCEVERSION: ${{ env.BUILD_SOURCEVERSION }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_pr.sh
+          persist-credentials: false
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup GCC
-        uses: egor-tensin/setup-gcc@v2
+        uses: egor-tensin/setup-gcc@a2861a8b8538f49cf2850980acccf6b05a1b2ae4 # v2.0
         with:
           version: 10
           platform: x64
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: .nvmrc
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: '3.11'
+          python-version: "3.11"
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install libkrb5-dev
@@ -128,8 +99,8 @@ jobs:
 
       - name: Build
         env:
-          SHOULD_BUILD_REH: 'no'
-          SHOULD_BUILD_REH_WEB: 'no'
+          SHOULD_BUILD_REH: no
+          SHOULD_BUILD_REH_WEB: no
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
@@ -142,7 +113,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload vscode artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: vscode
           path: ./vscode.tar.gz
@@ -154,6 +125,8 @@ jobs:
       - check
       - compile
     runs-on: ubuntu-latest
+    environment: publish
+    permissions: {}
     strategy:
       fail-fast: false
       matrix:
@@ -190,7 +163,7 @@ jobs:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
     outputs:
@@ -199,16 +172,11 @@ jobs:
       SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+          persist-credentials: false
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
-
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_pr.sh
-        if: env.DISABLED != 'yes'
 
       - name: Install GH
         run: ./build/linux/install_gh.sh
@@ -226,11 +194,11 @@ jobs:
         run: ./build/linux/deps.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1.16.0
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: vscode
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
@@ -251,9 +219,11 @@ jobs:
           VSCODE_SYSROOT_VERSION: ${{ steps.build.outputs.VSCODE_SYSROOT_VERSION }}
           VSCODE_SYSROOT_PREFIX: ${{ steps.build.outputs.VSCODE_SYSROOT_PREFIX }}
         run: ./prepare_assets.sh
-        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Release
+        permissions:
+          contents: write
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
@@ -262,25 +232,18 @@ jobs:
 
       - name: Update versions repo
         env:
-          FORCE_UPDATE: ${{ github.event.inputs.force_version }}
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-
-      - name: Upload assets
-        uses: actions/upload-artifact@v7
-        with:
-          name: bin-${{ matrix.vscode_arch }}
-          path: assets/
-          retention-days: 3
-        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   reh_linux:
     needs:
       - check
       - compile
     runs-on: ubuntu-22.04
+    environment: publish
+    permissions: {}
     strategy:
       fail-fast: false
       matrix:
@@ -315,35 +278,30 @@ jobs:
       SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+    if: needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-        if: env.DISABLED != 'yes'
-
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_pr.sh
+          persist-credentials: false
         if: env.DISABLED != 'yes'
 
       - name: Setup GCC
-        uses: egor-tensin/setup-gcc@v2
+        uses: egor-tensin/setup-gcc@a2861a8b8538f49cf2850980acccf6b05a1b2ae4 # v2.0
         with:
           version: 10
           platform: x64
         if: env.DISABLED != 'yes'
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: '.nvmrc'
         if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.11'
         if: env.DISABLED != 'yes'
@@ -364,38 +322,34 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: vscode
-        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./build/linux/package_reh.sh
-        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Release
+        permissions:
+          contents: write
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
         if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
-      - name: Upload assets
-        uses: actions/upload-artifact@v7
-        with:
-          name: reh-linux-${{ matrix.vscode_arch }}
-          path: assets/
-          retention-days: 3
-        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
-
   reh_alpine:
     needs:
       - check
       - compile
     runs-on: ubuntu-22.04
+    environment: publish
+    permissions: {}
     strategy:
       fail-fast: false
       matrix:
@@ -416,26 +370,22 @@ jobs:
       SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
       SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+    if: needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_pr.sh
+          persist-credentials: false
 
       - name: Setup GCC
-        uses: egor-tensin/setup-gcc@v2
+        uses: egor-tensin/setup-gcc@a2861a8b8538f49cf2850980acccf6b05a1b2ae4 # v2.0
         with:
           version: 10
           platform: x64
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: '.nvmrc'
 
@@ -454,51 +404,45 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: vscode
-        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./build/alpine/package_reh.sh
-        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no' || github.event.inputs.generate_assets == 'true')
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Release
+        permissions:
+          contents: write
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
         if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
-      - name: Upload assets
-        uses: actions/upload-artifact@v7
-        with:
-          name: reh-alpine-${{ matrix.vscode_arch }}
-          path: assets/
-          retention-days: 3
-        if: env.DISABLED != 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
-
   aur:
     needs:
       - check
       - build
     runs-on: ubuntu-latest
+    environment: publish
+    permissions: {}
     strategy:
       fail-fast: false
       matrix:
         include:
         - package_name: vscodium
           package_type: stable
-        # - package_name: vscodium-git
-        #   package_type: rolling
     if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - name: Publish ${{ matrix.package_name }}
-        uses: zokugun/github-actions-aur-releaser@v1
+        uses: zokugun/github-actions-aur-releaser@4348c8a4124434a85d0a5e7457d0ef4079dab490 # v1
         with:
           package_name: ${{ matrix.package_name }}
           package_type: ${{ matrix.package_type }}
@@ -511,6 +455,8 @@ jobs:
       - check
       - build
     runs-on: ubuntu-latest
+    environment: publish
+    permissions: {}
     env:
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
       SNAP_NAME: codium
@@ -524,14 +470,10 @@ jobs:
     if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && needs.check.outputs.SHOULD_BUILD_SNAP != 'no' && vars.DISABLE_STABLE_SNAP != 'yes'
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_pr.sh
+          persist-credentials: false
 
       - name: Check version
         env:
@@ -541,23 +483,23 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         run: ./stores/snapcraft/check_version.sh
 
-      - uses: docker/setup-qemu-action@v4
+      - uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
         if: env.SHOULD_BUILD == 'yes'
 
-      - uses: diddlesnaps/snapcraft-multiarch-action@v1
+      - uses: diddlesnaps/snapcraft-multiarch-action@cfd7a246fad6bea65bb92f69a1c8d07898c231e5 # v1.9.0
         with:
           path: stores/snapcraft/stable
           architecture: ${{ matrix.platform }}
         id: build
         if: env.SHOULD_BUILD == 'yes'
 
-      - uses: diddlesnaps/snapcraft-review-action@v1
+      - uses: diddlesnaps/snapcraft-review-action@40554b42331cf84dab19ef98c382620427f13482 # v1.3.1
         with:
           snap: ${{ steps.build.outputs.snap }}
           isClassic: 'true'
         if: env.SHOULD_DEPLOY_TO_RELEASE == 'yes' || env.SHOULD_DEPLOY_TO_STORE == 'yes'
 
-      - uses: svenstaro/upload-release-action@v2
+      - uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # latest
         with:
           repo_name: ${{ env.ASSETS_REPOSITORY }}
           repo_token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
@@ -565,7 +507,7 @@ jobs:
           tag: ${{ env.RELEASE_VERSION }}
         if: env.SHOULD_DEPLOY_TO_RELEASE == 'yes'
 
-      - uses: snapcore/action-publish@master
+      - uses: snapcore/action-publish@214b86e5ca036ead1668c79afb81e550e6c54d40
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         with:
@@ -578,7 +520,9 @@ jobs:
       - check
       - build
     runs-on: ubuntu-latest
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
+    environment: publish
+    permissions: {}
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - name: Trigger repository rebuild
@@ -591,11 +535,13 @@ jobs:
       - check
       - build
     runs-on: ubuntu-latest
-    if: needs.check.outputs.SHOULD_DEPLOY == 'yes' && github.event.inputs.generate_assets != 'true'
+    environment: publish
+    permissions: {}
+    if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
     steps:
       - name: Trigger repository rebuild
-        uses: peter-evans/repository-dispatch@v4
+        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
         with:
           token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           repository: VSCodium/repositories-linux

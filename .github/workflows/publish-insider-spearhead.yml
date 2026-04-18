@@ -1,4 +1,4 @@
-name: insider-spearhead
+name: Publish - Insider - Spearhead
 
 on:
   workflow_dispatch:
@@ -16,11 +16,14 @@ on:
         type: boolean
         description: Disable dispatch
   schedule:
-    - cron: '0 7 * * *'
+    - cron: 0 7 * * *
 
 jobs:
   build:
     runs-on: macos-15
+    environment: publish
+    permissions:
+      contents: write   # Release
     env:
       APP_NAME: VSCodium
       ASSETS_REPOSITORY: ${{ github.repository }}-insiders
@@ -35,12 +38,13 @@ jobs:
       VSCODE_QUALITY: insider
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: insider
+          persist-credentials: false
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: '.nvmrc'
 
@@ -61,7 +65,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v7
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -92,7 +96,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Dispatch builds
-        uses: peter-evans/repository-dispatch@v4
+        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
         with:
-          event-type: insider
+          event-type: publish-insider
         if: github.event.inputs.dont_dispatch != 'true' && (env.SHOULD_BUILD == 'yes' || github.event.inputs.force_dispatch == 'true')
