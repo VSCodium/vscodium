@@ -193,6 +193,9 @@ mv .npmrc.bak .npmrc
 
 node build/azure-pipelines/distro/mixin-npm.ts
 
+# compile copilot extension
+VSCODE_PUBLISH_COUNTER=1 npm run gulp compile-copilot-extension-build
+
 export VSCODE_NODE_GLIBC="-glibc-${GLIBC_VERSION}"
 
 if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
