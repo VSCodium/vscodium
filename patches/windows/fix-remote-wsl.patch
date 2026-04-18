@@ -1,0 +1,73 @@
+diff --git i/resources/win32/bin/code.sh w/resources/win32/bin/code.sh
+index bcf31892c23..f19cde6b9e1 100644
+--- i/resources/win32/bin/code.sh
++++ w/resources/win32/bin/code.sh
+@@ -11,6 +11,7 @@ APP_NAME="@@APPNAME@@"
+ QUALITY="@@QUALITY@@"
+ NAME="@@NAME@@"
+ SERVERDATAFOLDER="@@SERVERDATAFOLDER@@"
++VERSION="@@VERSION@@"
+ VSCODE_PATH="$(dirname "$(dirname "$(realpath "$0")")")"
+ ELECTRON="$VSCODE_PATH/$NAME.exe"
+ 
+@@ -41,7 +42,7 @@ if [ $IN_WSL = true ]; then
+ 	CLI=$(wslpath -m "$VSCODE_PATH/resources/app/out/cli.js")
+ 
+ 	# use the Remote WSL extension if installed
+-	WSL_EXT_ID="ms-vscode-remote.remote-wsl"
++	WSL_EXT_ID="${WSL_EXT_ID:-jeanp413.open-remote-wsl}"
+ 
+ 	ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" --locate-extension $WSL_EXT_ID >/tmp/remote-wsl-loc.txt 2>/dev/null </dev/null
+ 	WSL_EXT_WLOC=$(cat /tmp/remote-wsl-loc.txt)
+@@ -49,7 +50,7 @@ if [ $IN_WSL = true ]; then
+ 	if [ -n "$WSL_EXT_WLOC" ]; then
+ 		# replace \r\n with \n in WSL_EXT_WLOC
+ 		WSL_CODE=$(wslpath -u "${WSL_EXT_WLOC%%[[:cntrl:]]}")/scripts/wslCode.sh
+-		"$WSL_CODE" "$COMMIT" "$QUALITY" "$ELECTRON" "$APP_NAME" "$SERVERDATAFOLDER" "$@"
++		"$WSL_CODE" "$COMMIT" "$QUALITY" "$ELECTRON" "$APP_NAME" "$SERVERDATAFOLDER" "$VERSION" "$@"
+ 		exit $?
+ 	fi
+ 
+diff --git i/resources/win32/versioned/bin/code.sh w/resources/win32/versioned/bin/code.sh
+index 2443d965ca7..82793e2a540 100644
+--- i/resources/win32/versioned/bin/code.sh
++++ w/resources/win32/versioned/bin/code.sh
+@@ -11,6 +11,7 @@ APP_NAME="@@APPNAME@@"
+ QUALITY="@@QUALITY@@"
+ NAME="@@NAME@@"
+ SERVERDATAFOLDER="@@SERVERDATAFOLDER@@"
++VERSION="@@VERSION@@"
+ VERSIONFOLDER="@@VERSIONFOLDER@@"
+ VSCODE_PATH="$(dirname "$(dirname "$(realpath "$0")")")"
+ ELECTRON="$VSCODE_PATH/$NAME.exe"
+@@ -42,7 +43,7 @@ if [ $IN_WSL = true ]; then
+ 	CLI=$(wslpath -m "$VSCODE_PATH/$VERSIONFOLDER/resources/app/out/cli.js")
+ 
+ 	# use the Remote WSL extension if installed
+-	WSL_EXT_ID="ms-vscode-remote.remote-wsl"
++	WSL_EXT_ID="${WSL_EXT_ID:-jeanp413.open-remote-wsl}"
+ 
+ 	ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" --locate-extension $WSL_EXT_ID >/tmp/remote-wsl-loc.txt 2>/dev/null </dev/null
+ 	WSL_EXT_WLOC=$(cat /tmp/remote-wsl-loc.txt)
+@@ -50,7 +51,7 @@ if [ $IN_WSL = true ]; then
+ 	if [ -n "$WSL_EXT_WLOC" ]; then
+ 		# replace \r\n with \n in WSL_EXT_WLOC
+ 		WSL_CODE=$(wslpath -u "${WSL_EXT_WLOC%%[[:cntrl:]]}")/scripts/wslCode.sh
+-		"$WSL_CODE" "$COMMIT" "$QUALITY" "$ELECTRON" "$APP_NAME" "$SERVERDATAFOLDER" "$@"
++		"$WSL_CODE" "$COMMIT" "$QUALITY" "$ELECTRON" "$APP_NAME" "$SERVERDATAFOLDER" "$VERSION" "$@"
+ 		exit $?
+ 	fi
+ 
+diff --git i/scripts/code.sh w/scripts/code.sh
+index 16fdefde552..3053abb8d37 100755
+--- i/scripts/code.sh
++++ w/scripts/code.sh
+@@ -63,7 +63,7 @@ function code-wsl()
+ 		local CWD=$(pwd)
+ 		cd $ROOT
+ 		export WSLENV=ELECTRON_RUN_AS_NODE/w:VSCODE_DEV/w:$WSLENV
+-		local WSL_EXT_ID="ms-vscode-remote.remote-wsl"
++		local WSL_EXT_ID="${WSL_EXT_ID:-jeanp413.open-remote-wsl}"
+ 		local WSL_EXT_WLOC=$(echo "" | VSCODE_DEV=1 ELECTRON_RUN_AS_NODE=1 "$ROOT/.build/electron/Code - OSS.exe" "out/cli.js" --locate-extension $WSL_EXT_ID)
+ 		cd $CWD
+ 		if [ -n "$WSL_EXT_WLOC" ]; then
