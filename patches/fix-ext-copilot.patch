@@ -1,0 +1,17 @@
+diff --git a/build/lib/copilot.ts b/build/lib/copilot.ts
+index f0e50ce9..9cc8e3db 100644
+--- a/build/lib/copilot.ts
++++ b/build/lib/copilot.ts
+@@ -7,2 +7,3 @@ import * as fs from 'fs';
+ import * as path from 'path';
++import rimraf from 'rimraf';
+ 
+@@ -156,2 +157,8 @@ export function prepareBuiltInCopilotExtensionShims(platform: string, arch: stri
+ 
++		const nonTargetPlatforms = copilotPlatforms.filter((platform) => platform !== platformArch);
++
++		for(const platform of nonTargetPlatforms) {
++			rimraf.sync(path.join(copilotSdkBase, 'prebuilds', platform));
++		}
++
+ 		fs.writeFileSync(shimMarkerPath, 'Shims created successfully');
