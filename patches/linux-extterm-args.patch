@@ -1,0 +1,20 @@
+diff --git a/src/vs/platform/externalTerminal/node/externalTerminalService.ts b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
+index e7cf3f54588..42647c50d01 100644
+--- a/src/vs/platform/externalTerminal/node/externalTerminalService.ts
++++ b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
+@@ -325,9 +325,12 @@ export class LinuxExternalTerminalService extends ExternalTerminalService implem
+ 		return new Promise<void>((c, e) => {
+ 			execPromise.then(exec => {
+ 				const env = getSanitizedEnvironment(process);
+-				const basename = path.basename(exec).toLowerCase();
+-				const args = basename === 'ghostty' && cwd ? [`--working-directory=${cwd}`] : [];
+-				const child = spawner.spawn(exec, args, { cwd, env });
++				const args: string[] = exec.split(/(?<!\\)\s/);
++				const cmd: string = args.shift() ?? "";
++				const basename = path.basename(cmd).toLowerCase();
++				if (basename === 'ghostty' && cwd )
++					args.push(`--working-directory=${cwd}`);
++				const child = spawner.spawn(cmd, args, { cwd, env });
+ 				child.on('error', e);
+ 				child.on('exit', () => c());
+ 			});
