@@ -7,6 +7,9 @@ if [[ "${CI_BUILD}" == "no" ]]; then
   exit 1
 fi
 
+npm -v
+node -v
+
 # include common functions
 . ./utils.sh
 
@@ -136,7 +139,7 @@ find .build/extensions -type f -name '*.node' -print -delete
 npm run copy-policy-dto --prefix build
 node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc linux
 
-npm run gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
+npm run gulp "vscode-linux-${VSCODE_ARCH}-min-packing"
 
 if [[ -f "../build/linux/${VSCODE_ARCH}/ripgrep.sh" ]]; then
   bash "../build/linux/${VSCODE_ARCH}/ripgrep.sh" "../VSCode-linux-${VSCODE_ARCH}/resources/app/node_modules"
