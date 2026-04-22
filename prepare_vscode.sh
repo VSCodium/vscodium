@@ -146,7 +146,7 @@ echo "ORG_NAME=\"${ORG_NAME}\""
 echo "TUNNEL_APP_NAME=\"${TUNNEL_APP_NAME}\""
 
 if [[ "${DISABLE_UPDATE}" == "yes" ]]; then
-  mv ../patches/disable-update.patch.yet ../patches/disable-update.patch
+  mv ../patches/00-update-disable.patch.yet ../patches/00-update-disable.patch
 fi
 
 for file in ../patches/*.patch; do
