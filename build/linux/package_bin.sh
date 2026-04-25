@@ -7,6 +7,9 @@ if [[ "${CI_BUILD}" == "no" ]]; then
   exit 1
 fi
 
+npm -v
+node -v
+
 # include common functions
 . ./utils.sh
 
@@ -26,10 +29,12 @@ if [[ "${VSCODE_ARCH}" == "arm64" || "${VSCODE_ARCH}" == "armhf" ]]; then
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20240129-253798'
+  export VSCODE_SYSROOT_PREFIX="-glibc-2.28"
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_ELECTRON_REPOSITORY='lex-ibm/electron-ppc64le-build-scripts'
+  export IGNORE_ELECTRON_VERSION="yes"
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export VSCODE_ELECTRON_REPOSITORY='riscv-forks/electron-riscv-releases'
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
@@ -56,7 +61,7 @@ if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
   TARGET=$( npm config get target )
 
   # Only fails at different major versions
-  if [[ "${ELECTRON_VERSION%%.*}" != "${TARGET%%.*}" ]]; then
+  if [[ "${ELECTRON_VERSION%%.*}" != "${TARGET%%.*}" ]] && [[ "${IGNORE_ELECTRON_VERSION}" != "yes" ]]; then
     # Fail the pipeline if electron target doesn't match what is used.
     echo "Electron ${VSCODE_ARCH} binary version doesn't match target electron version!"
     echo "Releases available at: https://github.com/${VSCODE_ELECTRON_REPOSITORY}/releases"
@@ -134,7 +139,7 @@ find .build/extensions -type f -name '*.node' -print -delete
 npm run copy-policy-dto --prefix build
 node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc linux
 
-npm run gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
+npm run gulp "vscode-linux-${VSCODE_ARCH}-min-packing"
 
 if [[ -f "../build/linux/${VSCODE_ARCH}/ripgrep.sh" ]]; then
   bash "../build/linux/${VSCODE_ARCH}/ripgrep.sh" "../VSCode-linux-${VSCODE_ARCH}/resources/app/node_modules"
@@ -143,5 +148,11 @@ fi
 find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
 
 . ../build_cli.sh
+
+if [[ -n "${GITHUB_OUTPUT}" ]]; then
+  echo "VSCODE_SYSROOT_REPOSITORY=${VSCODE_SYSROOT_REPOSITORY:-}" >> "${GITHUB_OUTPUT}"
+  echo "VSCODE_SYSROOT_VERSION=${VSCODE_SYSROOT_VERSION:-}" >> "${GITHUB_OUTPUT}"
+  echo "VSCODE_SYSROOT_PREFIX=${VSCODE_SYSROOT_PREFIX:-}" >> "${GITHUB_OUTPUT}"
+fi
 
 cd ..

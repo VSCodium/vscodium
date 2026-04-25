@@ -27,17 +27,18 @@ index 5294177..1e33aeb 100755
 +  TRIPLE="powerpc64le-linux-gnu"
  fi
 diff --git a/build/checksums/vscode-sysroot.txt b/build/checksums/vscode-sysroot.txt
-index 847383e..37186f4 100644
+index 847383e..04962e7 100644
 --- a/build/checksums/vscode-sysroot.txt
 +++ b/build/checksums/vscode-sysroot.txt
-@@ -7 +7,2 @@ ac4b6b14b4cec027a22a51bbbb049b3504958a78106c8a8d5cec144206b767d1  x86_64-linux-g
+@@ -7 +7,3 @@ ac4b6b14b4cec027a22a51bbbb049b3504958a78106c8a8d5cec144206b767d1  x86_64-linux-g
  1ebb6ef1fe2983269fd0855a88f9c9a37f9b515d16524a9146198e4cabdf34f7  x86_64-linux-gnu-glibc-2.28-gcc-8.5.0.tar.gz
 +fa8176d27be18bb0eeb7f55b0fa22255050b430ef68c29136599f02976eb0b1b  powerpc64le-linux-gnu-glibc-2.28.tar.gz
++bdab0a372cf5bfdc154226cc5ed72d417096c725085d193509d1f12e0debec66  powerpc64le-linux-gnu-glibc-2.28-gcc-10.5.0.tar.gz
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index 012df0b..a7da071 100644
+index 904130f..42888f0 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -52,2 +52,3 @@ const BUILD_TARGETS = [
+@@ -56,2 +56,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'arm64' },
 +	{ platform: 'linux', arch: 'ppc64le' },
  	{ platform: 'alpine', arch: 'arm64' },
@@ -66,10 +67,10 @@ index c5d2163..da4fc1f 100644
 +	{ arch: 'ppc64le' },
  ];
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index ce46a41..3389ede 100644
+index 5e373f6..4e1fcf6 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -614,2 +614,3 @@ const BUILD_TARGETS = [
+@@ -702,2 +702,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'arm64' },
 +	{ platform: 'linux', arch: 'ppc64le' },
  ];
@@ -134,12 +135,13 @@ index 78bfb66..5acd3a0 100644
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index 7b6ac8b..dde47ba 100644
+index 7b6ac8b..ef7dd2b 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -158,2 +158,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
+@@ -158,2 +158,7 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
  			break;
 +		case 'ppc64le':
++		case 'ppc64el':
 +			expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
 +			triple = `powerpc64le-linux-gnu`;
 +			break;
@@ -277,6 +279,19 @@ index c6a01da..3f3c3f5 100644
 -	return ['x86_64', 'armv7hl', 'aarch64'].includes(s);
 +	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le'].includes(s);
  }
+diff --git a/build/npm/preinstall.ts b/build/npm/preinstall.ts
+index dd53ff4..ca427d9 100644
+--- a/build/npm/preinstall.ts
++++ b/build/npm/preinstall.ts
+@@ -149,3 +149,7 @@ function installHeaders() {
+ 			} catch (error) {
+-				throw new Error(`Error applying v8-source-location.patch: ${(error as Error).message}`);
++				if (process.env['VSCODE_ARCH'] === 'ppc64le') {
++						console.log('Ignoring patch error for ppc64le architecture');
++				} else {
++						throw new Error(`Error applying v8-source-location.patch: ${(error as Error).message}`);
++				}
+ 			}
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
 index 3b7ef5c..ec97760 100644
 --- a/cli/src/update_service.rs
@@ -303,7 +318,7 @@ index 3b7ef5c..ec97760 100644
 +			Platform::LinuxPPC64LE => "LinuxPPC64LE",
  			Platform::DarwinX64 => "DarwinX64",
 diff --git a/cli/src/util/prereqs.rs b/cli/src/util/prereqs.rs
-index 44c8597..679aacb 100644
+index 44c8597..205c274 100644
 --- a/cli/src/util/prereqs.rs
 +++ b/cli/src/util/prereqs.rs
 @@ -82,2 +82,4 @@ impl PreReqChecker {
@@ -311,6 +326,11 @@ index 44c8597..679aacb 100644
 +				} else if cfg!(target_arch = "powerpc64") {
 +					Platform::LinuxPPC64LE
  				} else {
+@@ -207,2 +209,4 @@ async fn check_glibcxx_version() -> Result<bool, String> {
+ 	const DEFAULT_LIB_PATH: &str = "/usr/lib64/libstdc++.so.6";
++	#[cfg(target_arch = "powerpc64")]
++	const DEFAULT_LIB_PATH: &str = "/usr/lib64/libstdc++.so.6";
+ 	#[cfg(any(target_arch = "x86", target_arch = "arm"))]
 diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
 index 8ea4c0b..94028e3 100644
 --- a/resources/server/bin/helpers/check-requirements-linux.sh
@@ -338,10 +358,10 @@ index ab11f6b..fd1ec31 100644
 +			}
  			return TargetPlatform.UNKNOWN;
 diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
-index 021ad01..60cd058 100644
+index 3e5b309..0fbbb67 100644
 --- a/src/vs/platform/extensions/common/extensions.ts
 +++ b/src/vs/platform/extensions/common/extensions.ts
-@@ -342,2 +342,3 @@ export const enum TargetPlatform {
+@@ -343,2 +343,3 @@ export const enum TargetPlatform {
  	LINUX_ARMHF = 'linux-armhf',
 +	LINUX_PPC64LE = 'linux-ppc64le',
  

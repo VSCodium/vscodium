@@ -31,7 +31,7 @@ find .build/extensions -type f -name '*.node' -print -delete
 npm run copy-policy-dto --prefix build
 node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc win32
 
-npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+npm run gulp "vscode-win32-${VSCODE_ARCH}-min-packing"
 
 . ../build_cli.sh
 

@@ -1,0 +1,22 @@
+name: Moderation - Lock Closed Threads
+
+on:
+  schedule:
+    - cron: 0 2 * * *
+
+permissions:
+  issues: write
+  pull-requests: write
+  discussions: write
+
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/lock-threads@7266a7ce5c1df01b1c6db85bf8cd86c737dadbe7 # v6.0.0
+        with:
+          github-token: ${{ github.token }}
+          issue-inactive-days: "90"
+          pr-inactive-days: "90"
+          discussion-inactive-days: "90"
+          log-output: true

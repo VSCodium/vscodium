@@ -13,14 +13,9 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
   export NODE_OPTIONS="--max-old-space-size=8192"
+  export VSCODE_PUBLISH_COUNTER=1
 
-  npm run monaco-compile-check
-  npm run valid-layers-check
-
-  npm run gulp compile-build-without-mangling
-  npm run gulp compile-extension-media
-  npm run gulp compile-extensions-build
-  npm run gulp minify-vscode
+  npm run gulp vscode-min-prepack
 
   if [[ "${OS_NAME}" == "osx" ]]; then
     # remove win32 node modules
@@ -30,7 +25,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     npm run copy-policy-dto --prefix build
     node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc darwin
 
-    npm run gulp "vscode-darwin-${VSCODE_ARCH}-min-ci"
+    npm run gulp "vscode-darwin-${VSCODE_ARCH}-min-packing"
 
     find "../VSCode-darwin-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
 
@@ -46,7 +41,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
       npm run copy-policy-dto --prefix build
       node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc win32
 
-      npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+      npm run gulp "vscode-win32-${VSCODE_ARCH}-min-packing"
 
       if [[ "${VSCODE_ARCH}" != "x64" ]]; then
         SHOULD_BUILD_REH="no"
@@ -67,7 +62,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
       npm run copy-policy-dto --prefix build
       node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc linux
 
-      npm run gulp "vscode-linux-${VSCODE_ARCH}-min-ci"
+      npm run gulp "vscode-linux-${VSCODE_ARCH}-min-packing"
 
       find "../VSCode-linux-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
 
