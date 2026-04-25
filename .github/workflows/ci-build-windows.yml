@@ -1,0 +1,164 @@
+name: CI - Build - Windows
+
+on:
+  workflow_dispatch:
+    inputs:
+      generate_assets:
+        type: boolean
+        description: Generate assets
+      checkout_pr:
+        type: string
+        description: Checkout PR
+  push:
+    branches:
+      - master
+      - insider
+    paths-ignore:
+      - "**/*.md"
+  pull_request:
+    branches:
+      - "**"
+    paths-ignore:
+      - "**/*.md"
+
+env:
+  APP_NAME: VSCodium
+  BINARY_NAME: ${{ (github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'codium-insiders' || 'codium' }}
+  GH_REPO_PATH: ${{ github.repository }}
+  GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event.head }}
+  ORG_NAME: ${{ github.repository_owner }}
+  OS_NAME: windows
+  VSCODE_QUALITY: ${{ (github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'insider' || 'stable' }}
+
+permissions: {}
+
+jobs:
+  compile:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
+    env:
+      VSCODE_ARCH: 'x64'
+    outputs:
+      BUILD_SOURCEVERSION: ${{ env.BUILD_SOURCEVERSION }}
+      MS_COMMIT: ${{ env.MS_COMMIT }}
+      MS_TAG: ${{ env.MS_TAG }}
+      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+          persist-credentials: false
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Setup Python 3
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.11'
+
+      - name: Clone VSCode repo
+        run: ./get_repo.sh
+
+      - name: Build
+        env:
+          SHOULD_BUILD: yes
+          SHOULD_BUILD_REH: no
+          SHOULD_BUILD_REH_WEB: no
+        run: ./build.sh
+
+      - name: Compress vscode artifact
+        run: |
+          find vscode -type f -not -path "*/node_modules/*" -not -path "vscode/.build/node/*" -not -path "vscode/.git/*" > vscode.txt
+          echo "vscode/.build/extensions/node_modules" >> vscode.txt
+          echo "vscode/.git" >> vscode.txt
+          tar -czf vscode.tar.gz -T vscode.txt
+
+      - name: Upload vscode artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: vscode
+          path: ./vscode.tar.gz
+          retention-days: 1
+
+  build:
+    needs:
+      - compile
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        vscode_arch:
+          - x64
+          - arm64
+    defaults:
+      run:
+        shell: bash
+    env:
+      BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
+    outputs:
+      RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+          persist-credentials: false
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: ./get_pr.sh
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Setup Python 3
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.11'
+
+      - name: Download vscode artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: vscode
+
+      - name: Build
+        env:
+          DISABLE_MSI: ${{ vars[format('DISABLE_{0}_MSI', ((github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'INSIDER' || 'STABLE'))] }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_arch: ${{ matrix.vscode_arch }}
+          npm_config_target_arch: ${{ matrix.vscode_arch }}
+        run: ./build/windows/package.sh
+
+      - name: Prepare assets
+        run: ./prepare_assets.sh
+        if: github.event.inputs.generate_assets == 'true'
+
+      - name: Prepare checksums
+        run: ./prepare_checksums.sh
+        if: github.event.inputs.generate_assets == 'true'
+
+      - name: Upload assets
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: bin-${{ matrix.vscode_arch }}
+          path: assets/
+          retention-days: 3
+        if: github.event.inputs.generate_assets == 'true'

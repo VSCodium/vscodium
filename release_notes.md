@@ -221,7 +221,15 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
 
 <table>
   <tr>
-    <td rowspan="3">Linux</td>
+    <td rowspan="6">Linux</td>
+    <td>.deb</td>
+    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@_@@VERSION@@_ppc64el.deb">@@BINARY_NAME@@_@@VERSION@@_ppc64el.deb</a></td>
+  </tr>
+  <tr>
+    <td>.rpm</td>
+    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@-@@VERSION@@-el8.ppc64le.rpm">@@BINARY_NAME@@-@@VERSION@@-el8.ppc64le.rpm</a></td>
+  </tr>
+  <tr>
     <td>.tar.gz</td>
     <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME@@-linux-ppc64le-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME@@-linux-ppc64le-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
   </tr>
@@ -232,6 +240,10 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
   <tr>
     <td>Web Host</td>
     <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-web-linux-ppc64le-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-web-linux-ppc64le-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
+  </tr>
+  <tr>
+    <td>CLI</td>
+    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-cli-linux-ppc64le-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-cli-linux-ppc64le-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
   </tr>
 </table>
 

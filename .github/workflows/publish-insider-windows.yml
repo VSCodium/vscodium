@@ -1,77 +1,52 @@
-name: stable-windows
+name: Publish - Insider - Windows
 
 on:
-  workflow_dispatch:
-    inputs:
-      force_version:
-        type: boolean
-        description: Force update version
-      generate_assets:
-        type: boolean
-        description: Generate assets
-      checkout_pr:
-        type: string
-        description: Checkout PR
+  workflow_dispatch: {}
   repository_dispatch:
-    types: [stable]
-  push:
-    branches: [ master ]
-    paths-ignore:
-    - '**/*.md'
-    - 'upstream/*.json'
-  pull_request:
-    branches: [ master ]
-    paths-ignore:
-    - '**/*.md'
+    types:
+      - publish-insider
 
 env:
   APP_NAME: VSCodium
-  ASSETS_REPOSITORY: ${{ github.repository }}
-  BINARY_NAME: codium
+  ASSETS_REPOSITORY: ${{ github.repository }}-insiders
+  BINARY_NAME: codium-insiders
   GH_REPO_PATH: ${{ github.repository }}
+  GITHUB_BRANCH: insider
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: windows
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
-  VSCODE_QUALITY: stable
+  VSCODE_QUALITY: insider
 
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions: {}
     outputs:
       MS_COMMIT: ${{ env.MS_COMMIT }}
       MS_TAG: ${{ env.MS_TAG }}
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
-      SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_pr.sh
+          persist-credentials: false
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
-      - name: Check PR or cron
-        env:
-          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
-        run: ./check_cron_or_pr.sh
-
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CHECK_ALL: 'yes'
+          CHECK_ALL: yes
         run: ./check_tags.sh
 
   compile:
     needs:
       - check
     runs-on: windows-2022
+    permissions: {}
     defaults:
       run:
         shell: bash
@@ -79,43 +54,29 @@ jobs:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
-      VSCODE_ARCH: 'x64'
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+      VSCODE_ARCH: x64
     outputs:
       BUILD_SOURCEVERSION: ${{ env.BUILD_SOURCEVERSION }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+          persist-credentials: false
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_pr.sh
-
-      # - name: Setup GCC
-      #   uses: egor-tensin/setup-gcc@v1
-      #   with:
-      #     version: 10
-      #     platform: x64
-
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: .nvmrc
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: '3.11'
+          python-version: "3.11"
         if: env.SHOULD_BUILD == 'yes'
-
-      # - name: Install libkrb5-dev
-      #   run: sudo apt-get update -y && sudo apt-get install -y libkrb5-dev
-      #   if: env.SHOULD_BUILD == 'yes'
 
       - name: Clone VSCode repo
         run: ./get_repo.sh
@@ -123,8 +84,8 @@ jobs:
 
       - name: Build
         env:
-          SHOULD_BUILD_REH: 'no'
-          SHOULD_BUILD_REH_WEB: 'no'
+          SHOULD_BUILD_REH: no
+          SHOULD_BUILD_REH_WEB: no
         run: ./build.sh
         if: env.SHOULD_BUILD == 'yes'
 
@@ -137,11 +98,11 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload vscode artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: vscode
           path: ./vscode.tar.gz
-          retention-days: ${{ needs.check.outputs.SHOULD_DEPLOY == 'yes' && 30 || 1 }}
+          retention-days: 30
         if: env.SHOULD_BUILD == 'yes'
 
   build:
@@ -149,6 +110,9 @@ jobs:
       - check
       - compile
     runs-on: windows-2022
+    environment: publish
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -163,46 +127,39 @@ jobs:
       MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
       MS_TAG: ${{ needs.check.outputs.MS_TAG }}
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SHOULD_BUILD: ${{ (needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true') && 'yes' || 'no' }}
-      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
     outputs:
       RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
-      SHOULD_DEPLOY: ${{ env.SHOULD_DEPLOY }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-        if: env.SHOULD_BUILD == 'yes'
-
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_pr.sh
+          persist-credentials: false
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: '.nvmrc'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.11'
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Check existing VSCodium tags/releases
         env:
-          DISABLE_MSI: ${{ vars.DISABLE_STABLE_MSI }}
+          DISABLE_MSI: ${{ vars.DISABLE_INSIDER_MSI }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: vscode
         if: env.SHOULD_BUILD == 'yes'
@@ -217,21 +174,21 @@ jobs:
 
       - name: Prepare assets
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Upload unsigned artifacts
         id: upload-unsigned-artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: unsigned-${{ matrix.vscode_arch }}
           path: |
             assets/*.exe
             assets/*.msi
           retention-days: 1
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes' && vars.DISABLE_INSIDER_WINDOWS_SIGNING != 'yes'
 
       - name: Signing
-        uses: signpath/github-action-submit-signing-request@v2
+        uses: signpath/github-action-submit-signing-request@b9d91eadd323de506c0c81cf0c7fe7438f3360fd # v2.2
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
@@ -240,51 +197,47 @@ jobs:
           github-artifact-id: ${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}
           artifact-configuration-slug: ${{ matrix.vscode_arch }}
           wait-for-completion: true
-          # 8h to manually approve the request
+          # 3h to manually approve the request
           wait-for-completion-timeout-in-seconds: 28800
           output-artifact-directory: assets/
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes' && vars.DISABLE_INSIDER_WINDOWS_SIGNING != 'yes'
 
       - name: Prepare checksums
         run: ./prepare_checksums.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Update versions repo
         env:
-          FORCE_UPDATE: ${{ github.event.inputs.force_version }}
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-
-      - name: Upload assets
-        uses: actions/upload-artifact@v7
-        with:
-          name: bin-${{ matrix.vscode_arch }}
-          path: assets/
-          retention-days: 3
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD == 'yes'
 
   winget:
     needs: build
     runs-on: windows-2022
+    environment: publish
+    permissions:
+      contents: write
     defaults:
       run:
         shell: bash
     env:
-      APP_IDENTIFIER: VSCodium.VSCodium
-    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+      APP_IDENTIFIER: VSCodium.VSCodium.Insiders
+      ASSETS_REPOSITORY: vscodium-insiders
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
+          persist-credentials: false
 
       - name: Check version
         run: ./stores/winget/check_version.sh
@@ -292,11 +245,12 @@ jobs:
           RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
 
       - name: Release to WinGet
-        uses: vedantmgoyal9/winget-releaser@main
+        uses: vedantmgoyal9/winget-releaser@4ffc7888bffd451b357355dc214d43bb9f23917e
         with:
           identifier: ${{ env.APP_IDENTIFIER }}
           version: ${{ env.RELEASE_VERSION }}
-          release-tag: ${{ env.RELEASE_VERSION }}
+          release-repository: ${{ env.ASSETS_REPOSITORY }}
+          release-tag: ${{ env.RELEASE_VERSION }}-insider
           installers-regex: '\.exe$' # only .exe files
           token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
         if: env.SHOULD_DEPLOY == 'yes'

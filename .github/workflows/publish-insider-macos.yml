@@ -1,35 +1,17 @@
-name: insider-macos
+name: Publish - Insider - macOS
 
 on:
-  workflow_dispatch:
-    inputs:
-      force_version:
-        type: boolean
-        description: Force update version
-      generate_assets:
-        type: boolean
-        description: Generate assets
-      checkout_pr:
-        type: string
-        description: Checkout PR
+  workflow_dispatch: {}
   repository_dispatch:
-    types: [insider]
-  push:
-    branches: [ insider ]
-    paths-ignore:
-    - '**/*.md'
-    - 'upstream/*.json'
-  pull_request:
-    branches: [ insider ]
-    paths-ignore:
-    - '**/*.md'
+    types:
+      - publish-insider
 
 env:
   APP_NAME: VSCodium
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
   BINARY_NAME: codium-insiders
-  GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'insider' }}
   GH_REPO_PATH: ${{ github.repository }}
+  GITHUB_BRANCH: insider
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: osx
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
@@ -38,6 +20,9 @@ env:
 jobs:
   build:
     runs-on: ${{ matrix.runner }}
+    environment: publish
+    permissions:
+      contents: write
     env:
       VSCODE_ARCH: ${{ matrix.vscode_arch }}
     strategy:
@@ -50,39 +35,29 @@ jobs:
             vscode_arch: arm64
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-
-      - name: Switch to relevant branch
-        env:
-          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: . get_pr.sh
+          persist-credentials: false
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: .nvmrc
 
       - name: Setup Python 3
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: '3.11'
+          python-version: "3.11"
         if: env.VSCODE_ARCH == 'x64'
 
       - name: Clone VSCode repo
         run: . get_repo.sh
 
-      - name: Check PR or cron
-        env:
-          GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
-        run: . check_cron_or_pr.sh
-
       - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: . check_tags.sh
-        if: env.SHOULD_DEPLOY == 'yes'
 
       - name: Build
         env:
@@ -98,30 +73,21 @@ jobs:
           CERTIFICATE_OSX_P12_PASSWORD: ${{ secrets.CERTIFICATE_OSX_NEW_P12_PASSWORD }}
           CERTIFICATE_OSX_TEAM_ID: ${{ secrets.CERTIFICATE_OSX_NEW_TEAM_ID }}
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Update versions repo
         env:
-          FORCE_UPDATE: ${{ github.event.inputs.force_version }}
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-
-      - name: Upload assets
-        uses: actions/upload-artifact@v7
-        with:
-          name: bin-${{ matrix.vscode_arch }}
-          path: assets/
-          retention-days: 3
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD == 'yes'
 
       - name: Clean up keychain
         if: always()

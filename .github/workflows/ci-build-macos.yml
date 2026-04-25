@@ -1,0 +1,90 @@
+name: CI - Build - macOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      generate_assets:
+        type: boolean
+        description: Generate assets
+      checkout_pr:
+        type: string
+        description: Checkout PR
+  push:
+    branches:
+      - master
+      - insider
+    paths-ignore:
+      - "**/*.md"
+  pull_request:
+    branches:
+      - "**"
+    paths-ignore:
+      - "**/*.md"
+
+env:
+  APP_NAME: VSCodium
+  BINARY_NAME: ${{ (github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'codium-insiders' || 'codium' }}
+  GH_REPO_PATH: ${{ github.repository }}
+  GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event.head }}
+  ORG_NAME: ${{ github.repository_owner }}
+  OS_NAME: osx
+  VSCODE_QUALITY: ${{ (github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'insider' || 'stable' }}
+
+permissions: {}
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+    env:
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15-intel
+            vscode_arch: x64
+          - runner: [self-hosted, macOS, ARM64]
+            vscode_arch: arm64
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+          persist-credentials: false
+
+      - name: Switch to relevant branch
+        env:
+          PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
+        run: . get_pr.sh
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Setup Python 3
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.11'
+        if: env.VSCODE_ARCH == 'x64'
+
+      - name: Clone VSCode repo
+        run: . get_repo.sh
+
+      - name: Build
+        env:
+          SHOULD_BUILD: yes
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./build.sh
+
+      - name: Prepare assets
+        run: ./prepare_assets.sh
+        if: env.SHOULD_BUILD == 'yes' && github.event.inputs.generate_assets == 'true'
+
+      - name: Upload assets
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: bin-${{ matrix.vscode_arch }}
+          path: assets/
+          retention-days: 3
+        if: env.SHOULD_BUILD == 'yes' && github.event.inputs.generate_assets == 'true'

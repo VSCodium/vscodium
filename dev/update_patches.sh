@@ -119,6 +119,7 @@ check_file() {
       fi
 
       while [[ -n "$( find . -name '*.rej' -print )" ]]; do
+        echo "patch: ${1}"
         find . -name '*.rej' -print
         read -rp "Press any key when the conflict have been resolved..." -n1 -s
         echo
@@ -144,8 +145,26 @@ while [[ -n "$( git log -1 | grep "VSCODIUM HELPER" )" ]]; do
 done
 
 for FILE in ../patches/*.patch; do
-  if [[ "${FILE}" == *"/fix-policies.patch" ]]; then
-    check_file "../patches/fix-keymap.patch" "../patches/fix-policies.patch"
+  ADDITIONAL_FILES=()
+  BASENAME=$(basename "${FILE}")
+  DIRNAME=$(dirname "${FILE}")
+
+  if [[ "${BASENAME}" =~ ^([0-9])([1-9])(-.*)\.patch$ ]]; then
+    GROUP_ID="${BASH_REMATCH[1]}"
+    INDEX="${BASH_REMATCH[2]}"
+    ENDNAME="${BASH_REMATCH[3]}"
+
+    for ((I = 0; I < INDEX; I++)); do
+      for CANDIDATE in "${DIRNAME}/${GROUP_ID}${I}-"*.patch; do
+        if [[ -f "$CANDIDATE" ]]; then
+          ADDITIONAL_FILES+=("$CANDIDATE")
+        fi
+      done
+    done
+  fi
+
+  if [[ ${#ADDITIONAL_FILES[@]} -gt 0 ]]; then
+    check_file ${ADDITIONAL_FILES[@]} "${FILE}"
   else
     check_file "${FILE}"
   fi
@@ -159,24 +178,43 @@ fi
 
 for ARCH in alpine linux osx windows; do
   for FILE in "../patches/${ARCH}/"*.patch; do
-    if [[ "${ARCH}" == "linux" && "${FILE}" == *"/arch-"* ]] || [[ "${ARCH}" == "linux" && "${FILE}" == *"/fix-dependencies.patch" ]] || [[ "${ARCH}" == "windows" && "${FILE}" == *"/cli"* ]]; then
-      echo "skip ${FILE}"
+    ADDITIONAL_FILES=()
+    BASENAME=$(basename "${FILE}")
+    DIRNAME=$(dirname "${FILE}")
+
+    if [[ "${BASENAME}" =~ ^([0-9])([1-9])(-.*)\.patch$ ]]; then
+      GROUP_ID="${BASH_REMATCH[1]}"
+      INDEX="${BASH_REMATCH[2]}"
+      ENDNAME="${BASH_REMATCH[3]}"
+
+      for ((I = 0; I < INDEX; I++)); do
+        NOT_FOUND=1
+
+        for CANDIDATE in "${DIRNAME}/${GROUP_ID}${I}-"*.patch; do
+          if [[ -f "$CANDIDATE" ]]; then
+            ADDITIONAL_FILES+=("$CANDIDATE")
+            NOT_FOUND=0
+          fi
+        done
+
+        if (( $NOT_FOUND )); then
+          for CANDIDATE in "${DIRNAME}/../${GROUP_ID}${I}-"*.patch; do
+            if [[ -f "$CANDIDATE" ]]; then
+              ADDITIONAL_FILES+=("$CANDIDATE")
+            fi
+          done
+        fi
+      done
+
+      if [[ ${#ADDITIONAL_FILES[@]} -gt 0 ]]; then
+        check_file ${ADDITIONAL_FILES[@]} "${FILE}"
+      else
+        check_file "${FILE}"
+      fi
     else
       check_file "${FILE}"
     fi
   done
-
-  if [[ "${ARCH}" == "linux" ]]; then
-    check_file "../patches/optional-tree-sitter.patch" "../patches/linux/fix-dependencies.patch"
-
-    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch"
-    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch"
-    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch" "../patches/linux/arch-2-riscv64.patch"
-    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch" "../patches/linux/arch-2-riscv64.patch" "../patches/linux/arch-3-loong64.patch"
-    check_file "../patches/cli.patch" "../patches/linux/arch-0-support.patch" "../patches/linux/arch-1-ppc64le.patch" "../patches/linux/arch-2-riscv64.patch" "../patches/linux/arch-3-loong64.patch" "../patches/linux/arch-4-s390x.patch"
-  elif [[ "${ARCH}" == "windows" ]]; then
-    check_file "../patches/cli.patch" "../patches/windows/cli.patch"
-  fi
 
   for TARGET in client reh; do
     for FILE in "../patches/${ARCH}/${TARGET}/"*.patch; do
