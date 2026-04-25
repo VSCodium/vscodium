@@ -28,7 +28,7 @@ By default, the `product.json` file is set up to use [open-vsx.org](https://open
 ## <a id="howto-openvsx-marketplace"></a>How to use the Open VSX Registry
 
 As noted above, the [Open VSX Registry](https://open-vsx.org/) is the pre-set extension gallery in VSCodium. Using the extension view in VSCodium will therefore by default use it.
-See [this article](https://www.gitpod.io/blog/open-vsx/) for more information on the motivation behind Open VSX.
+See [this article](https://web.archive.org/web/20200423131829/https://www.gitpod.io/blog/open-vsx/) for more information on the motivation behind Open VSX.
 
 ## <a id="howto-switch-marketplace"></a>How to use a different extension gallery
 
