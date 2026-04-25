@@ -80,12 +80,12 @@ if [[ "${FILE}" != "../patches/helper/settings.patch" ]]; then
           done
         fi
       done
-
-      git add .
-      git commit --no-verify -q -m "VSCODIUM HELPER"
-
-      normalize_file "${1}"
     fi
+
+    git add .
+    git commit --no-verify -q -m "VSCODIUM HELPER"
+
+    normalize_file "${1}"
   fi
 fi
 
