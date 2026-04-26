@@ -13,11 +13,10 @@
 		"audit:fix": "npm audit fix --min-release-age=0",
 		"ci:lint": "zizmor .",
 		"ci:lint:fix": "zizmor . --fix=all",
-		"clean": "rimraf lib",
 		"lint": "xo",
 		"lint:all": "fixpack && npm audit && npm run ci:lint && npm run lint",
 		"lint:fix": "xo --fix",
-		"prepare": "fixpack || true; husky",
+		"prepare": "fixpack || true",
 		"update:artifacts": "artifact update",
 		"update:deps": "taze"
 	},
@@ -28,12 +27,8 @@
 		"postcss": "8.5.10"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "19.8.1",
-		"@commitlint/config-conventional": "19.8.1",
 		"@types/node": "22.19.17",
 		"fixpack": "4.0.0",
-		"husky": "9.1.7",
-		"lint-staged": "16.4.0",
 		"taze": "19.11.0",
 		"typescript": "5.9.3",
 		"xo": "0.60.0"
