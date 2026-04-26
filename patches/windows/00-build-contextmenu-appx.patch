@@ -1,0 +1,37 @@
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index 080d97f3..b01d710a 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -624,3 +624,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 				const rawVersion = version.replace(/-\w+$/, '').split('.');
+-				const appxVersion = `${rawVersion[0]}.0.${rawVersion[1]}.${rawVersion[2]}`;
++				const appxVersion = `${rawVersion[0]}.0.${rawVersion[1]}.${rawVersion[2].slice(1)}`;
+ 				result = es.merge(result, gulp.src('resources/win32/appx/AppxManifest.xml', { base: '.' })
+diff --git a/build/gulpfile.vscode.win32.ts b/build/gulpfile.vscode.win32.ts
+index 7a711276..2675bd85 100644
+--- a/build/gulpfile.vscode.win32.ts
++++ b/build/gulpfile.vscode.win32.ts
+@@ -134,4 +134,4 @@ function buildWin32Setup(arch: string, target: string): task.CallbackTask {
+ 		if (quality === 'stable' || quality === 'insider') {
+-			definitions['AppxPackage'] = `${quality === 'stable' ? 'code' : 'code_insider'}_${arch}.appx`;
+-			definitions['AppxPackageDll'] = `${quality === 'stable' ? 'code' : 'code_insider'}_explorer_command_${arch}.dll`;
++			definitions['AppxPackage'] = `${product.applicationName.replaceAll('-', '_')}_${arch}.appx`;
++			definitions['AppxPackageDll'] = `${product.applicationName.replaceAll('-', '_')}_explorer_command_${arch}.dll`;
+ 			definitions['AppxPackageName'] = `${product.win32AppUserModelId}`;
+diff --git a/build/win32/explorer-dll-fetcher.ts b/build/win32/explorer-dll-fetcher.ts
+index 33603ef9..ead89fe4 100644
+--- a/build/win32/explorer-dll-fetcher.ts
++++ b/build/win32/explorer-dll-fetcher.ts
+@@ -11,2 +11,3 @@ import productJson from '../../product.json' with { type: 'json' };
+ interface ProductConfiguration {
++	applicationName: string;
+ 	quality?: string;
+@@ -55,4 +56,6 @@ export async function downloadExplorerDll(outDir: string, quality: string = 'sta
+ 
+-	d(`moving ${artifact} to ${outDir}`);
+-	await fs.copyFileSync(artifact, path.join(outDir, fileName));
++	const outFilePath = path.join(outDir, `${product.applicationName.replaceAll('-', '_')}_explorer_command_${targetArch}.dll`);
++
++	d(`moving ${artifact} as ${outFilePath}`);
++	await fs.copyFileSync(artifact, outFilePath);
+ }

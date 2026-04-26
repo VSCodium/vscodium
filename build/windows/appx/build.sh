@@ -8,7 +8,7 @@ export PATH="${SDK}:${PATH}"
 
 APPX_NAME="${BINARY_NAME//-/_}"
 
-makeappx pack /d "../../../VSCode-win32-${VSCODE_ARCH}/appx/manifest" /p "../../../VSCode-win32-${VSCODE_ARCH}/appx/${APPX_NAME}_${VSCODE_ARCH}.appx" /nv
+powershell "makeappx pack /d ..\\VSCode-win32-${VSCODE_ARCH}\\appx\\manifest /p ..\\VSCode-win32-${VSCODE_ARCH}\\appx\\${APPX_NAME}_${VSCODE_ARCH}.appx /nv"
 
 # Remove the raw manifest folder
-rm -rf "../../../VSCode-win32-${VSCODE_ARCH}/appx/manifest"
+rm -rf "../VSCode-win32-${VSCODE_ARCH}/appx/manifest"
