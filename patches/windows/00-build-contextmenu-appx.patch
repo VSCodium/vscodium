@@ -1,3 +1,12 @@
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index 080d97f3..b01d710a 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -624,3 +624,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 				const rawVersion = version.replace(/-\w+$/, '').split('.');
+-				const appxVersion = `${rawVersion[0]}.0.${rawVersion[1]}.${rawVersion[2]}`;
++				const appxVersion = `${rawVersion[0]}.0.${rawVersion[1]}.${rawVersion[2].slice(1)}`;
+ 				result = es.merge(result, gulp.src('resources/win32/appx/AppxManifest.xml', { base: '.' })
 diff --git a/build/gulpfile.vscode.win32.ts b/build/gulpfile.vscode.win32.ts
 index 7a711276..2675bd85 100644
 --- a/build/gulpfile.vscode.win32.ts
