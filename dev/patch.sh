@@ -30,19 +30,63 @@ normalize_file "${1}"
 if [[ "${FILE}" != "../patches/helper/settings.patch" ]]; then
   git apply --reject "../patches/helper/settings.patch"
 
-  while [ $# -gt 1 ]; do
-    echo "Parameter: $1"
+  if [[ $# -gt 1 ]]; then
+    while [ $# -gt 1 ]; do
+      echo "Parameter: $1"
+      normalize_file "${1}"
+
+      git apply --reject "${FILE}"
+
+      shift
+    done
+
+    git add .
+    git commit --no-verify -q -m "VSCODIUM HELPER"
+
+    normalize_file "${1}"
+  else
     normalize_file "${1}"
 
-    git apply --reject "${FILE}"
+    BASENAME=$(basename "${FILE}")
+    DIRNAME=$(dirname "${FILE}")
 
-    shift
-  done
+    if [[ "${BASENAME}" =~ ^([0-9])([1-9])(-.*)\.patch$ ]]; then
+      GROUP_ID="${BASH_REMATCH[1]}"
+      INDEX="${BASH_REMATCH[2]}"
+      ENDNAME="${BASH_REMATCH[3]}"
 
-  git add .
-  git commit --no-verify -q -m "VSCODIUM HELPER"
+      for ((I = 0; I < INDEX; I++)); do
+        NOT_FOUND=1
 
-  normalize_file "${1}"
+        for CANDIDATE in "${DIRNAME}/${GROUP_ID}${I}-"*.patch; do
+          if [[ -f "$CANDIDATE" ]]; then
+            echo "Candidate: ${CANDIDATE}"
+            normalize_file "${CANDIDATE}"
+
+            git apply --reject "${FILE}"
+
+            NOT_FOUND=0
+          fi
+        done
+
+        if (( $NOT_FOUND )); then
+          for CANDIDATE in "${DIRNAME}/../${GROUP_ID}${I}-"*.patch; do
+            if [[ -f "$CANDIDATE" ]]; then
+              echo "Candidate: ${CANDIDATE}"
+              normalize_file "${CANDIDATE}"
+
+              git apply --reject "${FILE}"
+            fi
+          done
+        fi
+      done
+    fi
+
+    git add .
+    git commit --no-verify -q -m "VSCODIUM HELPER"
+
+    normalize_file "${1}"
+  fi
 fi
 
 echo "FILE: ${FILE}"

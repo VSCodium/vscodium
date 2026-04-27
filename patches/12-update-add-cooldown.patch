@@ -1,0 +1,52 @@
+diff --git a/src/vs/platform/update/common/update.config.contribution.ts b/src/vs/platform/update/common/update.config.contribution.ts
+index 6061e15b..84246033 100644
+--- a/src/vs/platform/update/common/update.config.contribution.ts
++++ b/src/vs/platform/update/common/update.config.contribution.ts
+@@ -65,2 +65,8 @@ configurationRegistry.registerConfiguration({
+ 		},
++		'update.minReleaseAge': {
++			type: 'integer',
++			default: 7,
++			scope: ConfigurationScope.APPLICATION,
++			description: localize('update.cooldown', "Configure how old an update need to be before installing it (in days)."),
++		},
+ 		'update.enableWindowsBackgroundUpdates': {
+diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
+index 3767c907..9b3c17bf 100644
+--- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
++++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
+@@ -470,3 +470,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
+ 
+-				this.logService.info('update#isLatestVersion() - found version', fetchedVersion, currentVersion);
++				this.logService.info(`update#isLatestVersion() - found: ${fetchedVersion}, current: ${currentVersion}`);
+ 
+@@ -474,3 +474,28 @@ export abstract class AbstractUpdateService implements IUpdateService {
+ 
+-				return Promise.resolve({ lastest, update });
++				const minReleaseAge = this.configurationService.getValue<number>('update.minReleaseAge');
++
++				if(minReleaseAge === 0) {
++					return Promise.resolve({ lastest, update });
++				}
++
++				this.logService.info(`update#isLatestVersion() - ${update.timestamp} ${typeof update.timestamp}`);
++
++				const releaseDate = update.timestamp ? new Date(Number.parseInt(String(update.timestamp), 10)) : null;
++
++				this.logService.info(`update#isLatestVersion() - releaseDate: ${releaseDate}`);
++
++				if(!releaseDate || isNaN(releaseDate.getTime())) {
++					return Promise.resolve(undefined);
++				}
++
++				const age = Math.round(Math.abs(Date.now() - releaseDate.getTime()) / (1000 * 60 * 60 * 24));
++
++				this.logService.info(`update#isLatestVersion() - releaseAge: ${age}, minReleaseAge: ${minReleaseAge}`);
++
++				if(age >= minReleaseAge) {
++					return Promise.resolve({ lastest, update });
++				}
++				else {
++					return Promise.resolve(undefined);
++				}
+ 			})

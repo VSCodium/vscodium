@@ -1,13 +1,13 @@
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index 150908a..0759a8d 100644
+index 58422886..a1eac31e 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-@@ -104,2 +104,3 @@ export class Extension implements IExtension {
+@@ -112,2 +112,3 @@ export class Extension implements IExtension {
  		@IFileService private readonly fileService: IFileService,
 +		// @ts-ignore
  		@IProductService private readonly productService: IProductService
-@@ -325,3 +326,3 @@ export class Extension implements IExtension {
+@@ -341,3 +342,3 @@ export class Extension implements IExtension {
  			// Do not allow updating system extensions in stable
--			if (this.type === ExtensionType.System && this.productService.quality === 'stable') {
-+			if (this.type === ExtensionType.System) {
+-			if (this.type === ExtensionType.System && this.productService.quality === 'stable' && !this.productService.builtInExtensionsEnabledWithAutoUpdates?.some(id => id.toLowerCase() === this.identifier.id.toLowerCase())) {
++			if (this.type === ExtensionType.System && !this.productService.builtInExtensionsEnabledWithAutoUpdates?.some(id => id.toLowerCase() === this.identifier.id.toLowerCase())) {
  				return false;
