@@ -67,7 +67,7 @@ index 9d1f240c..2e67da43 100644
 +				.join(release.quality.server_entrypoint().unwrap())
  		};
 diff --git a/cli/src/tunnels/code_server.rs b/cli/src/tunnels/code_server.rs
-index bbabadcf..b454d0ea 100644
+index ffabbad1..62f7d3cc 100644
 --- a/cli/src/tunnels/code_server.rs
 +++ b/cli/src/tunnels/code_server.rs
 @@ -462,3 +462,3 @@ impl<'a> ServerBuilder<'a> {
@@ -85,14 +85,14 @@ index 3d7d718a..98529bc6 100644
 +					.join(self.quality.server_entrypoint().unwrap())
  			},
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 55f1dadc..3b7ef5c4 100644
+index de977b73..97b8b5fa 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
 @@ -10,3 +10,3 @@ use serde::{Deserialize, Serialize};
  use crate::{
 -	constants::VSCODE_CLI_UPDATE_ENDPOINT,
 +	constants::{VSCODE_CLI_APP_NAME, VSCODE_CLI_DOWNLOAD_ENDPOINT, VSCODE_CLI_UPDATE_ENDPOINT},
- 	debug, log, options, spanf,
+ 	log, options,
 @@ -18,3 +18,3 @@ use crate::{
  		zipper,
 -	},
