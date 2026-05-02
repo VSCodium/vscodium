@@ -222,13 +222,6 @@ jobs:
         run: ./release.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - name: Update versions repo
-        env:
-          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository_owner }}
-        run: ./update_version.sh
-        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
-
   reh_linux:
     needs:
       - check

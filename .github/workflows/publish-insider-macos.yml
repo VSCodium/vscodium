@@ -82,13 +82,6 @@ jobs:
         run: ./release.sh
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Update versions repo
-        env:
-          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository_owner }}
-        run: ./update_version.sh
-        if: env.SHOULD_BUILD == 'yes'
-
       - name: Clean up keychain
         if: always()
         run: |
