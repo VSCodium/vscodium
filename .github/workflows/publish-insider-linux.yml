@@ -8,9 +8,9 @@ on:
 
 env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-  APP_NAME: VSCodium
+  APP_NAME: ShadowIDE
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-  BINARY_NAME: codium-insiders
+  BINARY_NAME: shadow-insiders
   DISABLE_UPDATE: yes
   GH_REPO_PATH: ${{ github.repository }}
   GITHUB_BRANCH: insider
@@ -38,7 +38,7 @@ jobs:
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ALL: yes
@@ -176,7 +176,7 @@ jobs:
         run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           CHECK_REH: 'no'
           DISABLE_APPIMAGE: ${{ vars.DISABLE_INSIDER_APPIMAGE }}
@@ -306,7 +306,7 @@ jobs:
         run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
@@ -382,7 +382,7 @@ jobs:
       - name: Install GH
         run: ./build/linux/install_gh.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
@@ -423,8 +423,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - package_name: vscodium-insiders-bin
-        - package_name: vscodium-insiders
+        - package_name: shadowide-insiders-bin
+        - package_name: shadowide-insiders
 
     steps:
       - name: Get version
@@ -451,7 +451,7 @@ jobs:
       contents: write
     env:
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SNAP_NAME: codium-insiders
+      SNAP_NAME: shadow-insiders
     strategy:
       fail-fast: false
       matrix:

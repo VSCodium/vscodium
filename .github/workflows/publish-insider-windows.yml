@@ -7,9 +7,9 @@ on:
       - publish-insider
 
 env:
-  APP_NAME: VSCodium
+  APP_NAME: ShadowIDE
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-  BINARY_NAME: codium-insiders
+  BINARY_NAME: shadow-insiders
   GH_REPO_PATH: ${{ github.repository }}
   GITHUB_BRANCH: insider
   ORG_NAME: ${{ github.repository_owner }}
@@ -36,7 +36,7 @@ jobs:
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ALL: yes
@@ -151,7 +151,7 @@ jobs:
           python-version: '3.11'
         if: env.SHOULD_BUILD == 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           DISABLE_MSI: ${{ vars.DISABLE_INSIDER_MSI }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -230,8 +230,8 @@ jobs:
       run:
         shell: bash
     env:
-      APP_IDENTIFIER: VSCodium.VSCodium.Insiders
-      ASSETS_REPOSITORY: vscodium-insiders
+      APP_IDENTIFIER: Shadowtrack.ShadowIDE.Insiders
+      ASSETS_REPOSITORY: shadowide-insiders
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

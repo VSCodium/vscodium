@@ -8,9 +8,9 @@ on:
 
 env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-  APP_NAME: VSCodium
+  APP_NAME: ShadowIDE
   ASSETS_REPOSITORY: ${{ github.repository }}
-  BINARY_NAME: codium
+  BINARY_NAME: shadow
   DISABLE_UPDATE: yes
   GH_REPO_PATH: ${{ github.repository }}
   GITHUB_BRANCH: master
@@ -38,7 +38,7 @@ jobs:
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ALL: yes
@@ -177,7 +177,7 @@ jobs:
         run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           CHECK_REH: 'no'
           DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
@@ -307,7 +307,7 @@ jobs:
         run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
@@ -383,7 +383,7 @@ jobs:
       - name: Install GH
         run: ./build/linux/install_gh.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
@@ -424,7 +424,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - package_name: vscodium
+        - package_name: shadowide
           package_type: stable
 
     steps:
@@ -446,8 +446,8 @@ jobs:
     permissions: {}
     env:
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SNAP_NAME: codium
-      SNAP_PUBLISHER: vscodium
+      SNAP_NAME: shadow
+      SNAP_PUBLISHER: shadowtrack
     strategy:
       fail-fast: false
       matrix:
