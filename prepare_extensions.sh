@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 # Pre-bundle Shadowtrack default extensions into the ShadowIDE build.
 #
-# Currently bundles: Cline (saoudrizwan.claude-dev) from open-vsx.org
+# Currently bundles upstream Cline (saoudrizwan.claude-dev) from open-vsx.
+# We will swap to a Shadowtrack fork ("Shadow Agent") once it exists; this
+# script is the integration point.
 #
-# Run from the repo root, after prepare_vscode.sh has prepared ./vscode/.
-# Sets exit code 0 on success, non-zero on any failure (network, hash mismatch).
+# Run from repo root, AFTER prepare_vscode.sh has finished (so vscode/ exists
+# and npm ci has run) and BEFORE the gulp packaging step.
 
 set -euo pipefail
 
-# {{{ pinned versions
-CLINE_PUBLISHER="saoudrizwan"
-CLINE_NAME="claude-dev"
-CLINE_VERSION="${CLINE_VERSION:-3.17.5}"  # bump deliberately; verify on open-vsx.org first
+# {{{ pinned versions — bump deliberately, verify on open-vsx.org first
+SHADOW_AGENT_PUBLISHER="saoudrizwan"
+SHADOW_AGENT_NAME="claude-dev"
+SHADOW_AGENT_VERSION="${SHADOW_AGENT_VERSION:-3.17.5}"
 # }}}
 
 EXT_CACHE_DIR="${EXT_CACHE_DIR:-./.build/shadowide-extensions}"
+VSCODE_EXT_DIR="${VSCODE_EXT_DIR:-./vscode/.build/extensions}"
 mkdir -p "${EXT_CACHE_DIR}"
 
 download_vsix() {
@@ -23,27 +26,43 @@ download_vsix() {
   local url="https://open-vsx.org/api/${publisher}/${name}/${version}/file/${publisher}.${name}-${version}.vsix"
 
   if [[ -f "${out}" ]]; then
-    echo "[ext] cached: ${out}"
+    echo "[ext] cached: ${out}" >&2
+    echo "${out}"
     return 0
   fi
 
-  echo "[ext] downloading ${publisher}.${name}@${version} from open-vsx"
+  echo "[ext] downloading ${publisher}.${name}@${version} from open-vsx" >&2
   if ! curl -fL --retry 3 --retry-delay 2 -o "${out}" "${url}"; then
     echo "[ext] ERROR: download failed for ${url}" >&2
     rm -f "${out}"
     return 1
   fi
-  echo "[ext] downloaded: ${out} ($( wc -c < "${out}" ) bytes)"
+  echo "[ext] downloaded: ${out} ($( wc -c < "${out}" ) bytes)" >&2
+  echo "${out}"
 }
 
-download_vsix "${CLINE_PUBLISHER}" "${CLINE_NAME}" "${CLINE_VERSION}"
+extract_vsix() {
+  local vsix="$1" target_id="$2"
+  local target="${VSCODE_EXT_DIR}/${target_id}"
 
-# TODO(phase3-wire): integrate the downloaded .vsix into the build.
-# Two options under evaluation:
-#   1. Add to vscode/product.json builtInExtensions[] with sha256 + metadata,
-#      so vscode's standard pre-install pipeline picks it up.
-#   2. Extract into vscode/.build/builtInExtensions/<id>/ directly, bypassing
-#      the marketplace download step.
-# Option 1 is more idiomatic; option 2 is more deterministic. Picking once
-# we have a forked Cline repo to point at instead of upstream open-vsx.
-echo "[ext] scaffold complete; integration into build pipeline pending"
+  mkdir -p "${VSCODE_EXT_DIR}"
+  rm -rf "${target}"
+  local tmp
+  tmp="$( mktemp -d )"
+
+  unzip -q "${vsix}" -d "${tmp}"
+  if [[ ! -d "${tmp}/extension" ]]; then
+    echo "[ext] ERROR: ${vsix} has no extension/ subdir" >&2
+    rm -rf "${tmp}"
+    return 1
+  fi
+
+  mv "${tmp}/extension" "${target}"
+  rm -rf "${tmp}"
+  echo "[ext] installed: ${target}"
+}
+
+vsix_path="$( download_vsix "${SHADOW_AGENT_PUBLISHER}" "${SHADOW_AGENT_NAME}" "${SHADOW_AGENT_VERSION}" )"
+extract_vsix "${vsix_path}" "${SHADOW_AGENT_PUBLISHER}.${SHADOW_AGENT_NAME}"
+
+echo "[ext] Shadow Agent (Cline) bundled into ${VSCODE_EXT_DIR}"
