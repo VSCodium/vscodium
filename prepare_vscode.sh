@@ -44,21 +44,21 @@ setpath "product" "introductoryVideosUrl" "https://go.microsoft.com/fwlink/?link
 setpath "product" "keyboardShortcutsUrlLinux" "https://go.microsoft.com/fwlink/?linkid=832144"
 setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?linkid=832143"
 setpath "product" "keyboardShortcutsUrlWin" "https://go.microsoft.com/fwlink/?linkid=832145"
-setpath "product" "licenseUrl" "https://github.com/VSCodium/vscodium/blob/master/LICENSE"
+setpath "product" "licenseUrl" "https://shadowtrack.example.com/license"
 setpath_json "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
 setpath "product" "releaseNotesUrl" "https://go.microsoft.com/fwlink/?LinkID=533483#vscode"
-setpath "product" "reportIssueUrl" "https://github.com/VSCodium/vscodium/issues/new"
+setpath "product" "reportIssueUrl" "https://shadowtrack.example.com/issues/new"
 setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
 setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=852118"
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
 
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
-  setpath "product" "updateUrl" "https://raw.githubusercontent.com/VSCodium/versions/refs/heads/master"
+  setpath "product" "updateUrl" "https://shadowtrack.example.com/updates"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    setpath "product" "downloadUrl" "https://github.com/VSCodium/vscodium-insiders/releases"
+    setpath "product" "downloadUrl" "https://shadowtrack.example.com/download/insider"
   else
-    setpath "product" "downloadUrl" "https://github.com/VSCodium/vscodium/releases"
+    setpath "product" "downloadUrl" "https://shadowtrack.example.com/download"
   fi
 
   # if [[ "${OS_NAME}" == "windows" ]]; then
@@ -95,32 +95,33 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   setpath "product" "win32ContextMenu.x64.clsid" "90AAD229-85FD-43A3-B82D-8598A88829CF"
   setpath "product" "win32ContextMenu.arm64.clsid" "7544C31C-BDBF-4DDF-B15E-F73A46D6723D"
 else
-  setpath "product" "nameShort" "VSCodium"
-  setpath "product" "nameLong" "VSCodium"
-  setpath "product" "applicationName" "codium"
+  setpath "product" "nameShort" "ShadowIDE"
+  setpath "product" "nameLong" "ShadowIDE"
+  setpath "product" "applicationName" "shadow"
+  setpath "product" "dataFolderName" ".shadowide"
   setpath "product" "linuxIconName" "vscodium"
   setpath "product" "quality" "stable"
-  setpath "product" "urlProtocol" "vscodium"
-  setpath "product" "serverApplicationName" "codium-server"
-  setpath "product" "serverDataFolderName" ".vscodium-server"
-  setpath "product" "darwinBundleIdentifier" "com.vscodium"
-  setpath "product" "win32AppUserModelId" "VSCodium.VSCodium"
-  setpath "product" "win32DirName" "VSCodium"
-  setpath "product" "win32MutexName" "vscodium"
-  setpath "product" "win32NameVersion" "VSCodium"
-  setpath "product" "win32RegValueName" "VSCodium"
-  setpath "product" "win32ShellNameShort" "VSCodium"
-  setpath "product" "win32AppId" "{{763CBF88-25C6-4B10-952F-326AE657F16B}"
-  setpath "product" "win32x64AppId" "{{88DA3577-054F-4CA1-8122-7D820494CFFB}"
-  setpath "product" "win32arm64AppId" "{{67DEE444-3D04-4258-B92A-BC1F0FF2CAE4}"
-  setpath "product" "win32UserAppId" "{{0FD05EB4-651E-4E78-A062-515204B47A3A}"
-  setpath "product" "win32x64UserAppId" "{{2E1F05D1-C245-4562-81EE-28188DB6FD17}"
-  setpath "product" "win32arm64UserAppId" "{{57FD70A5-1B8D-4875-9F40-C5553F094828}"
-  setpath "product" "tunnelApplicationName" "codium-tunnel"
-  setpath "product" "win32TunnelServiceMutex" "vscodium-tunnelservice"
-  setpath "product" "win32TunnelMutex" "vscodium-tunnel"
-  setpath "product" "win32ContextMenu.x64.clsid" "D910D5E6-B277-4F4A-BDC5-759A34EEE25D"
-  setpath "product" "win32ContextMenu.arm64.clsid" "4852FC55-4A84-4EA1-9C86-D53BE3DF83C0"
+  setpath "product" "urlProtocol" "shadowide"
+  setpath "product" "serverApplicationName" "shadow-server"
+  setpath "product" "serverDataFolderName" ".shadowide-server"
+  setpath "product" "darwinBundleIdentifier" "com.shadowtrack.shadowide"
+  setpath "product" "win32AppUserModelId" "Shadowtrack.ShadowIDE"
+  setpath "product" "win32DirName" "ShadowIDE"
+  setpath "product" "win32MutexName" "shadowide"
+  setpath "product" "win32NameVersion" "ShadowIDE"
+  setpath "product" "win32RegValueName" "ShadowIDE"
+  setpath "product" "win32ShellNameShort" "ShadowIDE"
+  setpath "product" "win32AppId" "{{12F325DD-8408-4308-854D-6A4A77239FC3}"
+  setpath "product" "win32x64AppId" "{{789079B5-774D-4378-A14C-9610BA2829BD}"
+  setpath "product" "win32arm64AppId" "{{591ECF01-4478-4B4C-9D63-40BA0A536931}"
+  setpath "product" "win32UserAppId" "{{EFB722C5-AFF4-439A-AFE2-668FAEEFEC74}"
+  setpath "product" "win32x64UserAppId" "{{D35DDAF4-EA83-4F1E-B77E-D3B0DDC88529}"
+  setpath "product" "win32arm64UserAppId" "{{AA0D0D08-78EE-4CED-8710-6F1D94E5395B}"
+  setpath "product" "tunnelApplicationName" "shadow-tunnel"
+  setpath "product" "win32TunnelServiceMutex" "shadowide-tunnelservice"
+  setpath "product" "win32TunnelMutex" "shadowide-tunnel"
+  setpath "product" "win32ContextMenu.x64.clsid" "8B94CDDA-1CFB-454D-B6E4-C17D69E7F16C"
+  setpath "product" "win32ContextMenu.arm64.clsid" "51A4069E-5124-45B1-8900-CDD1773AFF92"
 fi
 
 setpath_json "product" "tunnelApplicationConfig" '{}'
@@ -229,16 +230,16 @@ cp package.json{,.bak}
 
 setpath "package" "version" "${RELEASE_VERSION%-insider}"
 
-replace 's|Microsoft Corporation|VSCodium|' package.json
+replace 's|Microsoft Corporation|Shadowtrack|' package.json
 
 cp resources/server/manifest.json{,.bak}
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  setpath "resources/server/manifest" "name" "VSCodium - Insiders"
-  setpath "resources/server/manifest" "short_name" "VSCodium - Insiders"
+  setpath "resources/server/manifest" "name" "ShadowIDE - Insiders"
+  setpath "resources/server/manifest" "short_name" "ShadowIDE - Insiders"
 else
-  setpath "resources/server/manifest" "name" "VSCodium"
-  setpath "resources/server/manifest" "short_name" "VSCodium"
+  setpath "resources/server/manifest" "name" "ShadowIDE"
+  setpath "resources/server/manifest" "short_name" "ShadowIDE"
 fi
 
 # announcements
@@ -246,8 +247,8 @@ replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( tr -d '\n' < ../announce
 
 ../undo_telemetry.sh
 
-replace 's|Microsoft Corporation|VSCodium|' build/lib/electron.ts
-replace 's|([0-9]) Microsoft|\1 VSCodium|' build/lib/electron.ts
+replace 's|Microsoft Corporation|Shadowtrack|' build/lib/electron.ts
+replace 's|([0-9]) Microsoft|\1 Shadowtrack|' build/lib/electron.ts
 
 if [[ "${OS_NAME}" == "linux" ]]; then
   # microsoft adds their apt repo to sources
@@ -255,37 +256,50 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   # as we are renaming the application to vscodium
   # we need to edit a line in the post install template
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    sed -i "s/code-oss/codium-insiders/" resources/linux/debian/postinst.template
+    sed -i "s/code-oss/shadow-insiders/" resources/linux/debian/postinst.template
   else
-    sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template
+    sed -i "s/code-oss/shadow/" resources/linux/debian/postinst.template
   fi
 
   # fix the packages metadata
   # code.appdata.xml
-  sed -i 's|Visual Studio Code|VSCodium|g' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://vscodium.com/img/vscodium.png|' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/code.appdata.xml
+  sed -i 's|Visual Studio Code|ShadowIDE|g' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://shadowtrack.example.com/install|' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://shadowtrack.example.com/img/shadowide.png|' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com|https://shadowtrack.example.com|' resources/linux/code.appdata.xml
 
   # control.template
-  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|VSCodium Team https://github.com/VSCodium/vscodium/graphs/contributors|'  resources/linux/debian/control.template
-  sed -i 's|Visual Studio Code|VSCodium|g' resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/debian/control.template
+  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|Shadowtrack <hello@shadowtrack.example.com>|'  resources/linux/debian/control.template
+  sed -i 's|Visual Studio Code|ShadowIDE|g' resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://shadowtrack.example.com/install|' resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com|https://shadowtrack.example.com|' resources/linux/debian/control.template
 
   # code.spec.template
-  sed -i 's|Microsoft Corporation|VSCodium Team|' resources/linux/rpm/code.spec.template
-  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|VSCodium Team https://github.com/VSCodium/vscodium/graphs/contributors|' resources/linux/rpm/code.spec.template
-  sed -i 's|Visual Studio Code|VSCodium|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/rpm/code.spec.template
+  sed -i 's|Microsoft Corporation|Shadowtrack|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|Shadowtrack <hello@shadowtrack.example.com>|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code|ShadowIDE|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://shadowtrack.example.com/install|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com|https://shadowtrack.example.com|' resources/linux/rpm/code.spec.template
 
   # snapcraft.yaml
-  sed -i 's|Visual Studio Code|VSCodium|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code|ShadowIDE|' resources/linux/rpm/code.spec.template
 elif [[ "${OS_NAME}" == "windows" ]]; then
   # code.iss
-  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' build/win32/code.iss
-  sed -i 's|Microsoft Corporation|VSCodium|' build/win32/code.iss
+  sed -i 's|https://code.visualstudio.com|https://shadowtrack.example.com|' build/win32/code.iss
+  sed -i 's|Microsoft Corporation|Shadowtrack|' build/win32/code.iss
 fi
+
+
+# Rebrand any leftover VSCodium strings (from VSCodium's own
+# Visual-Studio-Code → VSCodium patches) to ShadowIDE. Scoped to
+# user-visible source files; case-sensitive so we don't double-replace
+# identifiers we already handled via setpath above.
+find . -type f \( -name "*.ts" -o -name "*.json" -o -name "*.md" \
+  -o -name "*.ps1" -o -name "*.zsh" -o -name "*.sh" -o -name "*.fish" \) \
+  -not -path "./node_modules/*" -not -path "*/node_modules/*" \
+  -not -path "./.git/*" -not -path "./.build/*" \
+  -exec grep -l "VSCodium" {} + 2>/dev/null \
+  | xargs -r sed -i.shadowbak 's/VSCodium/ShadowIDE/g' || true
+find . -name "*.shadowbak" -not -path "./node_modules/*" -delete
 
 cd ..

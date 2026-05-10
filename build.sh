@@ -17,6 +17,11 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
   npm run gulp vscode-min-prepack
 
+  # Bundle Shadowtrack default extensions (Shadow Agent / Cline) into
+  # .build/extensions AFTER prepack (which recreates the dir) and BEFORE
+  # the platform-specific packing step.
+  ( cd .. && . ./prepare_extensions.sh )
+
   if [[ "${OS_NAME}" == "osx" ]]; then
     # remove win32 node modules
     rm -f .build/extensions/ms-vscode.js-debug/src/win32-app-container-tokens.*.node

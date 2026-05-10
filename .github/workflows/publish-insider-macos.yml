@@ -7,9 +7,9 @@ on:
       - publish-insider
 
 env:
-  APP_NAME: VSCodium
+  APP_NAME: ShadowIDE
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-  BINARY_NAME: codium-insiders
+  BINARY_NAME: shadow-insiders
   GH_REPO_PATH: ${{ github.repository }}
   GITHUB_BRANCH: insider
   ORG_NAME: ${{ github.repository_owner }}
@@ -54,7 +54,7 @@ jobs:
       - name: Clone VSCode repo
         run: . get_repo.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: . check_tags.sh

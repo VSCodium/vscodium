@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shadow Agents — Design Preview</title>
+<style>
+  :root {
+    --bg: #0e1116;
+    --panel: #161b22;
+    --panel-2: #1c2230;
+    --border: #262d3a;
+    --text: #e6e8eb;
+    --text-dim: #8b95a5;
+    --text-faint: #5a6473;
+    --accent: #4f8bff;
+    --accent-2: #7e57ff;
+    --green: #3fb950;
+    --amber: #d29922;
+    --red: #f85149;
+    --shadow: 0 6px 24px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; font-size: 13px; }
+  button { background: none; border: 0; color: inherit; font: inherit; cursor: pointer; }
+  button:focus { outline: 1px solid var(--accent); outline-offset: 2px; }
+  .row { display: flex; }
+  .col { display: flex; flex-direction: column; }
+
+  /* shell */
+  .app { height: 100vh; display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 44px 1fr 28px; grid-template-areas:
+    "topbar topbar"
+    "sidebar main"
+    "statusbar statusbar";
+  }
+  .topbar { grid-area: topbar; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 16px; gap: 12px; background: var(--panel); }
+  .topbar .brand { font-weight: 600; letter-spacing: 0.2px; }
+  .topbar .brand .accent { color: var(--accent); }
+  .topbar .grow { flex: 1; }
+  .topbar .pill { padding: 4px 10px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--border); color: var(--text-dim); font-size: 12px; }
+  .topbar .pill strong { color: var(--text); }
+  .topbar .new-task { background: var(--accent); color: white; padding: 6px 12px; border-radius: 6px; font-weight: 600; }
+  .topbar .new-task:hover { filter: brightness(1.1); }
+
+  /* sidebar */
+  .sidebar { grid-area: sidebar; border-right: 1px solid var(--border); background: var(--panel); overflow: auto; }
+  .sidebar h3 { margin: 0; padding: 12px 16px 6px; font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-faint); font-weight: 600; }
+  .agent-item { padding: 10px 16px; border-left: 3px solid transparent; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+  .agent-item:hover { background: rgba(255,255,255,0.02); }
+  .agent-item.active { background: rgba(79,139,255,0.08); border-left-color: var(--accent); }
+  .agent-item .title { font-size: 13px; }
+  .agent-item .meta { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); }
+  .status-dot { width: 8px; height: 8px; border-radius: 999px; flex-shrink: 0; }
+  .status-dot.in-progress { background: var(--amber); box-shadow: 0 0 8px rgba(210, 153, 34, 0.5); animation: pulse 1.6s ease-in-out infinite; }
+  .status-dot.review { background: var(--accent); }
+  .status-dot.done { background: var(--green); }
+  .status-dot.queued { background: var(--text-faint); }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .model-badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; background: var(--panel-2); border: 1px solid var(--border); color: var(--text-dim); }
+
+  /* main */
+  .main { grid-area: main; display: grid; grid-template-rows: auto 1fr; min-height: 0; }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--panel); padding: 0 8px; height: 36px; align-items: stretch; }
+  .tab { padding: 0 14px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-dim); border-right: 1px solid var(--border); }
+  .tab.active { color: var(--text); background: var(--bg); border-bottom: 2px solid var(--accent); }
+  .tab .close { color: var(--text-faint); padding: 2px 4px; border-radius: 3px; }
+  .tab .close:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+  .layout-toggle { margin-left: auto; display: flex; align-items: center; gap: 4px; padding: 0 8px; }
+  .layout-toggle button { padding: 4px 8px; border-radius: 4px; color: var(--text-dim); }
+  .layout-toggle button.active { background: var(--panel-2); color: var(--text); }
+
+  /* canvas (single or grid) */
+  .canvas { padding: 16px; overflow: auto; min-height: 0; }
+  .canvas.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .agent-pane { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); display: grid; grid-template-rows: auto 1fr auto; min-height: 0; }
+  .canvas:not(.grid) .agent-pane { height: 100%; }
+  .canvas.grid .agent-pane { min-height: 320px; }
+  .pane-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .pane-header .title { font-weight: 600; font-size: 14px; }
+  .pane-header .grow { flex: 1; }
+  .pane-header select { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; font: inherit; }
+  .pane-header .cost { font-size: 11px; color: var(--text-dim); padding: 3px 8px; background: var(--panel-2); border-radius: 4px; }
+
+  .pane-body { overflow: auto; padding: 12px 16px; }
+  .msg { margin: 12px 0; }
+  .msg .who { font-size: 11px; color: var(--text-faint); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .msg.user .body { background: rgba(79, 139, 255, 0.08); border-left: 2px solid var(--accent); padding: 8px 12px; border-radius: 4px; }
+  .msg.agent .body { padding: 8px 0; }
+  .msg.tool .body { background: var(--panel-2); border-radius: 6px; padding: 10px 12px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; color: var(--text-dim); }
+  .msg.tool .body code { color: var(--text); }
+  .pane-footer { border-top: 1px solid var(--border); padding: 10px 12px; display: flex; gap: 8px; }
+  .pane-footer input { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 8px 10px; font: inherit; }
+  .pane-footer .send { padding: 8px 14px; background: var(--accent); color: white; border-radius: 6px; font-weight: 600; }
+
+  /* review actions inline */
+  .review-actions { display: flex; gap: 8px; padding: 12px 16px; background: rgba(63, 185, 80, 0.04); border-top: 1px solid var(--border); }
+  .review-actions .approve { background: var(--green); color: white; padding: 6px 14px; border-radius: 6px; font-weight: 600; }
+  .review-actions .discard { background: var(--panel-2); color: var(--text); padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); }
+  .review-actions .open-pr { background: var(--accent-2); color: white; padding: 6px 14px; border-radius: 6px; font-weight: 600; }
+
+  /* status bar */
+  .statusbar { grid-area: statusbar; background: var(--accent); color: white; font-size: 11px; display: flex; align-items: center; padding: 0 12px; gap: 16px; }
+
+  /* new-task modal */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; width: 540px; max-width: 90%; box-shadow: var(--shadow); }
+  .modal h2 { margin: 0 0 14px; font-size: 16px; }
+  .modal label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-faint); margin: 12px 0 4px; }
+  .modal textarea { width: 100%; min-height: 90px; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font: inherit; resize: vertical; }
+  .modal .selectors { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal .selectors select { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font: inherit; }
+  .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+  .modal .actions .cancel { padding: 8px 14px; background: var(--panel-2); color: var(--text); border-radius: 6px; border: 1px solid var(--border); }
+  .modal .actions .create { padding: 8px 18px; background: var(--accent); color: white; border-radius: 6px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand"><span class="accent">◉</span> Shadow Agents</div>
+    <span class="pill"><strong id="active-count">3</strong> running · <strong id="queued-count">1</strong> queued</span>
+    <span class="grow"></span>
+    <span class="pill" title="Connected workspace">📁 stoic-davinci-b0cc8e</span>
+    <button class="new-task" onclick="openNewTask()">+ New Task</button>
+  </header>
+
+  <aside class="sidebar">
+    <h3>In progress</h3>
+    <div class="agent-list" data-section="in-progress"></div>
+    <h3>Awaiting review</h3>
+    <div class="agent-list" data-section="review"></div>
+    <h3>Done</h3>
+    <div class="agent-list" data-section="done"></div>
+    <h3>Queued</h3>
+    <div class="agent-list" data-section="queued"></div>
+  </aside>
+
+  <main class="main">
+    <div class="tabs">
+      <div class="tab-list" id="tab-list"></div>
+      <div class="layout-toggle">
+        <button class="active" data-layout="single" onclick="setLayout('single')">⬛ Single</button>
+        <button data-layout="grid" onclick="setLayout('grid')">⊞ Grid</button>
+      </div>
+    </div>
+    <div class="canvas" id="canvas"></div>
+  </main>
+
+  <footer class="statusbar">
+    <span>Cline 3.82.0</span>
+    <span>·</span>
+    <span>Today's spend: $0.42</span>
+    <span>·</span>
+    <span>Worktrees active: 3</span>
+    <span style="margin-left: auto;">design-preview · not connected to live kanban</span>
+  </footer>
+
+</div>
+
+<div class="modal-backdrop" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2>New agent task</h2>
+    <label>Prompt</label>
+    <textarea placeholder="Describe what the agent should do…"></textarea>
+    <div class="selectors">
+      <div>
+        <label>Agent</label>
+        <select>
+          <option>Cline</option>
+          <option>Claude Code</option>
+          <option>Codex</option>
+          <option>Gemini CLI</option>
+          <option>opencode</option>
+        </select>
+      </div>
+      <div>
+        <label>Model</label>
+        <select>
+          <option>claude-sonnet-4-6</option>
+          <option>claude-opus-4-7</option>
+          <option>gpt-5-codex</option>
+          <option>gemini-2.5-pro</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="cancel" onclick="closeModal()">Cancel</button>
+      <button class="create" onclick="createTask()">Create task</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- mock data ----
+const agents = [
+  {
+    id: 'a1', title: 'Add OAuth callback handler', section: 'in-progress',
+    agent: 'Cline', model: 'claude-sonnet-4-6', cost: '$0.18',
+    messages: [
+      { role: 'user', text: 'Add an OAuth callback handler at /auth/callback that stores the token and redirects to /dashboard.' },
+      { role: 'agent', text: 'I\'ll add the route handler in `routes/auth.ts` and wire token storage through the existing session store.' },
+      { role: 'tool', text: '<code>read_file routes/auth.ts</code> → 142 lines' },
+      { role: 'tool', text: '<code>write_file routes/auth.ts</code> → +38 lines' },
+      { role: 'agent', text: 'Handler added. Running tests now.' },
+      { role: 'tool', text: '<code>npm test -- routes/auth</code> → ✓ 7 passing, 0 failing' },
+    ],
+  },
+  {
+    id: 'a2', title: 'Refactor User model to use UUIDs', section: 'review',
+    agent: 'Cline', model: 'gpt-5-codex', cost: '$0.31',
+    messages: [
+      { role: 'user', text: 'Migrate the User model from auto-increment integers to UUIDs. Add a migration.' },
+      { role: 'agent', text: 'Done. 14 files changed, migration written, all tests pass.' },
+    ],
+  },
+  {
+    id: 'a3', title: 'Write integration tests for /reports', section: 'done',
+    agent: 'Cline', model: 'gemini-2.5-pro', cost: '$0.06',
+    messages: [
+      { role: 'user', text: 'Write integration tests covering the /reports endpoint.' },
+      { role: 'agent', text: 'Wrote 9 test cases. All pass. Merged to main.' },
+    ],
+  },
+  {
+    id: 'a4', title: 'Investigate slow query on dashboard', section: 'queued',
+    agent: 'Cline', model: 'claude-opus-4-7', cost: '—',
+    messages: [],
+  },
+];
+
+// ---- state ----
+let openTabs = ['a1'];
+let activeTab = 'a1';
+let layout = 'single';
+
+// ---- render ----
+function renderSidebar() {
+  for (const section of ['in-progress', 'review', 'done', 'queued']) {
+    const el = document.querySelector(`[data-section="${section}"]`);
+    el.innerHTML = '';
+    const filtered = agents.filter(a => a.section === section);
+    for (const a of filtered) {
+      const item = document.createElement('div');
+      item.className = 'agent-item' + (a.id === activeTab ? ' active' : '');
+      item.onclick = () => openAgent(a.id);
+      item.innerHTML = `
+        <div class="title">${a.title}</div>
+        <div class="meta">
+          <span class="status-dot ${section}"></span>
+          <span class="model-badge">${a.model}</span>
+          <span>${a.cost}</span>
+        </div>`;
+      el.appendChild(item);
+    }
+  }
+  document.getElementById('active-count').textContent = agents.filter(a => a.section === 'in-progress').length;
+  document.getElementById('queued-count').textContent = agents.filter(a => a.section === 'queued').length;
+}
+
+function renderTabs() {
+  const tl = document.getElementById('tab-list');
+  tl.innerHTML = '';
+  for (const id of openTabs) {
+    const a = agents.find(x => x.id === id);
+    if (!a) continue;
+    const t = document.createElement('div');
+    t.className = 'tab' + (id === activeTab ? ' active' : '');
+    t.onclick = () => { activeTab = id; renderAll(); };
+    t.innerHTML = `<span>${a.title}</span><span class="close" onclick="event.stopPropagation();closeTab('${id}')">×</span>`;
+    tl.appendChild(t);
+  }
+}
+
+function renderCanvas() {
+  const canvas = document.getElementById('canvas');
+  canvas.className = 'canvas' + (layout === 'grid' ? ' grid' : '');
+  canvas.innerHTML = '';
+  const tabsToShow = layout === 'grid' ? openTabs : [activeTab];
+  for (const id of tabsToShow) {
+    const a = agents.find(x => x.id === id);
+    if (!a) continue;
+    canvas.appendChild(renderPane(a));
+  }
+}
+
+function renderPane(a) {
+  const pane = document.createElement('div');
+  pane.className = 'agent-pane';
+  const messagesHtml = a.messages.map(m => `
+    <div class="msg ${m.role}">
+      <div class="who">${m.role === 'tool' ? 'tool call' : m.role}</div>
+      <div class="body">${m.text}</div>
+    </div>`).join('') || '<div style="color: var(--text-faint); padding: 24px; text-align: center;">Queued — agent will start when previous task finishes.</div>';
+
+  const reviewBlock = a.section === 'review'
+    ? `<div class="review-actions"><button class="approve">✓ Approve & merge</button><button class="open-pr">↗ Open PR</button><button class="discard">✗ Discard</button></div>`
+    : '';
+
+  pane.innerHTML = `
+    <div class="pane-header">
+      <div class="title">${a.title}</div>
+      <span class="cost">${a.cost}</span>
+      <span class="grow"></span>
+      <select><option>${a.agent}</option></select>
+      <select><option>${a.model}</option><option>claude-opus-4-7</option><option>gpt-5-codex</option><option>gemini-2.5-pro</option></select>
+    </div>
+    <div class="pane-body">${messagesHtml}</div>
+    ${reviewBlock || `<div class="pane-footer"><input placeholder="Continue the task — type a follow-up message…" /><button class="send">Send</button></div>`}
+  `;
+  return pane;
+}
+
+function renderAll() { renderSidebar(); renderTabs(); renderCanvas(); }
+
+// ---- interactions ----
+function openAgent(id) {
+  if (!openTabs.includes(id)) openTabs.push(id);
+  activeTab = id;
+  renderAll();
+}
+function closeTab(id) {
+  openTabs = openTabs.filter(x => x !== id);
+  if (activeTab === id) activeTab = openTabs[0] || null;
+  renderAll();
+}
+function setLayout(l) {
+  layout = l;
+  document.querySelectorAll('.layout-toggle button').forEach(b => b.classList.toggle('active', b.dataset.layout === l));
+  renderCanvas();
+}
+function openNewTask() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function createTask() {
+  const id = 'a' + (agents.length + 1);
+  agents.push({ id, title: 'New task (mock)', section: 'queued', agent: 'Cline', model: 'claude-sonnet-4-6', cost: '—', messages: [] });
+  closeModal();
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{
+  "name": "shadowide-agents",
+  "displayName": "ShadowIDE Agents Window",
+  "description": "Embeds the Cline Kanban as a graphical Agents Window inside ShadowIDE.",
+  "version": "0.1.0",
+  "publisher": "shadowtrack",
+  "engines": { "vscode": "^1.0.0" },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onCommand:shadowide.openAgentsWindow",
+    "onCommand:shadowide.previewAgentsDesign",
+    "onView:shadowide.agentsView",
+    "onStartupFinished"
+  ],
+  "categories": ["Other"],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "shadowide-agents-bar",
+          "title": "Shadow Agents",
+          "icon": "icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "shadowide-agents-bar": [
+        {
+          "type": "webview",
+          "id": "shadowide.agentsView",
+          "name": "Agents"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "shadowide.openAgentsWindow",
+        "title": "Shadow Agents: Open Agents Window",
+        "category": "Shadow Agents",
+        "icon": "$(robot)"
+      },
+      {
+        "command": "shadowide.previewAgentsDesign",
+        "title": "Shadow Agents: Preview New Design",
+        "category": "Shadow Agents"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "shadowide.openAgentsWindow",
+          "group": "navigation",
+          "when": "true"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "ShadowIDE Agents",
+      "properties": {
+        "shadowide.agentsWindowTarget": {
+          "type": "string",
+          "enum": ["ask", "simpleBrowser", "externalBrowser"],
+          "enumDescriptions": [
+            "Always ask which target to use (show a picker each time)",
+            "Always open inside ShadowIDE using the built-in Simple Browser panel",
+            "Always open in the system's default browser"
+          ],
+          "default": "ask",
+          "markdownDescription": "Where to open the **Shadow Agents Window**. You can also change this from the sidebar panel."
+        }
+      }
+    }
+  }
+}

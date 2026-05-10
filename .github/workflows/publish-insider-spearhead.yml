@@ -14,9 +14,9 @@ on:
         description: Disable dispatch
 
 env:
-  APP_NAME: VSCodium
+  APP_NAME: ShadowIDE
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
-  BINARY_NAME: codium-insiders
+  BINARY_NAME: shadow-insiders
   GH_REPO_PATH: ${{ github.repository }}
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: osx
@@ -45,7 +45,7 @@ jobs:
       - name: Clone VSCode repo
         run: . get_repo.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing ShadowIDE tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_RELEASE: ${{ github.event.inputs.new_release }}
