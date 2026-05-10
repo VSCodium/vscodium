@@ -25,6 +25,7 @@ graph TD
     ROOT --> DEV["dev/"]
     ROOT --> PATCHES["patches/"]
     ROOT --> SRC["src/"]
+    ROOT --> EXT["extensions/"]
     ROOT --> ICONS["icons/"]
     ROOT --> STORES["stores/"]
     ROOT --> FONT["font-size/"]
@@ -53,6 +54,7 @@ graph TD
 | `version.sh` | Generates `BUILD_SOURCEVERSION` when one is not provided. |
 | `build.sh` | Orchestrates prepare, minified desktop build, CLI build, and optional REH/REH-web build. |
 | `prepare_vscode.sh` | Copies overlays, mutates product metadata, applies patches, installs dependencies, and rewrites platform metadata. |
+| `prepare_extensions.sh` | Bundles Shadowtrack default extensions (Cline bootstrap + source-tree extensions) into `vscode/.build/extensions/` between prepack and packing. See [[components/shadowide-extensions-bundling]]. |
 | `prepare_assets.sh` | Delegates packaging assets to platform scripts and creates CLI/REH archives and checksums. |
 | `prepare_checksums.sh` | Generates sha1 and sha256 checksum files for release assets. |
 | `release.sh` | Creates or updates GitHub releases and uploads assets with checksums. |
@@ -75,6 +77,7 @@ graph TD
 | `icons/` | Source SVG/PNG assets and the icon generation pipeline. |
 | `patches/` | Ordered patch inventory applied to upstream VS Code. Shared patches live at the root; platform-specific patches live in subdirectories. |
 | `src/stable` and `src/insider` | Overlay resources copied into the upstream `vscode/` checkout before patching and building. |
+| `extensions/` | Source for first-party Shadowtrack-bundled built-in extensions (e.g. `shadowide-agents`). Each subdirectory is `cp -R`'d into `vscode/.build/extensions/` by `prepare_extensions.sh`. |
 | `stores/` | Snapcraft and WinGet metadata/check scripts. |
 | `upstream/` | Stable and insider VS Code tag/commit pins. |
 | `wiki/` | This kbmap knowledge base. |

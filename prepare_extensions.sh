@@ -135,4 +135,19 @@ rm -rf "${VSCODE_EXT_DIR}/${SHADOW_AGENT_PUBLISHER}.${SHADOW_AGENT_NAME}"
 vsix_path="$( download_vsix "${SHADOW_AGENT_PUBLISHER}" "${SHADOW_AGENT_NAME}" "${SHADOW_AGENT_VERSION}" )"
 build_bootstrap_extension "${vsix_path}"
 
+# Copy any source-tree extensions (e.g. shadowide-agents) into the build's
+# bundled extensions dir. Each subdirectory of ./extensions/ becomes a built-in
+# extension in the resulting .app.
+SOURCE_EXT_DIR="${SOURCE_EXT_DIR:-./extensions}"
+if [[ -d "${SOURCE_EXT_DIR}" ]]; then
+  for ext_dir in "${SOURCE_EXT_DIR}"/*/; do
+    [[ -d "${ext_dir}" ]] || continue
+    ext_name="$( basename "${ext_dir}" )"
+    target="${VSCODE_EXT_DIR}/${ext_name}"
+    rm -rf "${target}"
+    cp -R "${ext_dir}" "${target}"
+    echo "[ext] copied source extension ${ext_name} → ${target}"
+  done
+fi
+
 echo "[ext] Shadow Agent bootstrap (Cline ${SHADOW_AGENT_VERSION}) bundled into ${VSCODE_EXT_DIR}"

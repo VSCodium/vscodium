@@ -31,8 +31,9 @@ Repository root.
 |------|---------|
 | `get_repo.sh` | Resolves and checks out upstream VS Code. |
 | `version.sh` | Produces `BUILD_SOURCEVERSION`. |
-| `build.sh` | Runs prepare, gulp packaging, CLI, and REH build phases. |
+| `build.sh` | Runs prepare, gulp packaging, CLI, and REH build phases. After `vscode-min-prepack` and before platform-specific packing, sources `prepare_extensions.sh` to drop Shadowtrack-bundled extensions into `vscode/.build/extensions/`. |
 | `prepare_vscode.sh` | Applies overlays, product metadata, patches, deps, and telemetry cleanup. |
+| `prepare_extensions.sh` | Bundles Shadowtrack default extensions (Cline bootstrap + source-tree extensions like `shadowide-agents`) into the build. See [[components/shadowide-extensions-bundling]]. |
 | `prepare_assets.sh` | Creates release assets and checksums. |
 | `release.sh` | Creates GitHub releases and uploads assets. |
 | `update_version.sh` | Writes update metadata to the versions repo. |
@@ -55,6 +56,7 @@ Scripts use `set -e` or `set -ex`, so failures usually abort the pipeline. Netwo
 - [[components/vscode-overlay-and-product-metadata]]
 - [[components/patch-set]]
 - [[components/platform-build-packaging]]
+- [[components/shadowide-extensions-bundling]]
 
 ### Used By
 

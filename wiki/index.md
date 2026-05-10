@@ -38,6 +38,7 @@ tags: [index, navigation, shadow-ide]
 - [[features/release-and-update-distribution]] - Publish assets and update metadata.
 - [[features/developer-local-build-flow]] - Run local development builds and patch repair workflows.
 - [[features/knowledge-base-read-side-access]] - Query this wiki through the generated read-only MCP server.
+- [[features/agents-window]] - In-IDE Cline Kanban dashboard for managing parallel agents.
 
 ## Components
 
@@ -52,6 +53,7 @@ tags: [index, navigation, shadow-ide]
 - [[components/font-size-generator]] - TypeScript helper for UI font-size patch generation.
 - [[components/stores-and-package-managers]] - Snapcraft, WinGet, MSI, AppImage, deb/rpm, tar, zip, and dmg metadata.
 - [[components/wiki-mcp-server]] - Installed read-only MCP server for this knowledge base.
+- [[components/shadowide-extensions-bundling]] - `prepare_extensions.sh` and `extensions/` — bundles Shadowtrack default extensions into the build.
 
 ## Workflows
 
@@ -69,6 +71,7 @@ tags: [index, navigation, shadow-ide]
 - [[integrations/electron-and-node-build-assets]] - Electron, Node, npm, Playwright, ffmpeg, and platform build assets.
 - [[integrations/signpath-and-codesigning]] - Windows SignPath and macOS certificate signing.
 - [[integrations/package-manager-ecosystem]] - External package manager metadata and stores.
+- [[integrations/cline-kanban]] - The Cline `kanban` npm package — embedded as the Agents Window UI.
 
 ## Actions
 
@@ -77,6 +80,7 @@ tags: [index, navigation, shadow-ide]
 - [[actions/run-release-pipeline]] - CLI contract for `./release.sh`.
 - [[actions/generate-icons]] - CLI contract for `./icons/build_icons.sh`.
 - [[actions/query-wiki-mcp]] - Read-only MCP query contract for this wiki.
+- [[actions/open-agents-window]] - VS Code command contract for the Agents Window.
 
 ## Glossary
 
