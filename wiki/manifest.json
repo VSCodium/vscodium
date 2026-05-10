@@ -1,0 +1,2530 @@
+{
+  "manifest_version": 1,
+  "generated_at": "2026-05-10T20:00:46Z",
+  "project_slug": "shadow-ide",
+  "kbmap_version": "1.0.0",
+  "page_count": 65,
+  "pages": [
+    {
+      "slug": "shadow-ide/action/generate-icons",
+      "kind": "action",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/actions/generate-icons.md",
+      "frontmatter_excerpt": {
+        "endpoint": "./icons/build_icons.sh [flags]",
+        "endpoint_kind": "cli",
+        "auth_required": false,
+        "confirmation_required": true,
+        "idempotent": true,
+        "side_effects": [
+          "filesystem_write",
+          "local_execution",
+          "network"
+        ],
+        "feature": "shadow-ide/feature/product-branding-and-assets",
+        "tags": [
+          "branding",
+          "cli",
+          "icons"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/feature/product-branding-and-assets"
+      ]
+    },
+    {
+      "slug": "shadow-ide/action/query-wiki-mcp",
+      "kind": "action",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/actions/query-wiki-mcp.md",
+      "frontmatter_excerpt": {
+        "endpoint": "mcp_tool:retrieve_context",
+        "endpoint_kind": "mcp_tool",
+        "auth_required": false,
+        "confirmation_required": false,
+        "idempotent": true,
+        "side_effects": [
+          "none"
+        ],
+        "feature": "shadow-ide/feature/knowledge-base-read-side-access",
+        "tags": [
+          "mcp",
+          "read-only",
+          "wiki"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/wiki-mcp-server",
+        "shadow-ide/feature/knowledge-base-read-side-access",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/knowledge-base-maintenance"
+      ],
+      "links_out": [
+        "shadow-ide/feature/knowledge-base-read-side-access"
+      ]
+    },
+    {
+      "slug": "shadow-ide/action/run-dev-build",
+      "kind": "action",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/actions/run-dev-build.md",
+      "frontmatter_excerpt": {
+        "endpoint": "./dev/build.sh [flags]",
+        "endpoint_kind": "cli",
+        "auth_required": false,
+        "confirmation_required": true,
+        "idempotent": false,
+        "side_effects": [
+          "filesystem_write",
+          "local_execution",
+          "network"
+        ],
+        "feature": "shadow-ide/feature/developer-local-build-flow",
+        "tags": [
+          "build",
+          "cli",
+          "local"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/developer-local-build-flow",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/feature/developer-local-build-flow"
+      ]
+    },
+    {
+      "slug": "shadow-ide/action/run-release-pipeline",
+      "kind": "action",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/actions/run-release-pipeline.md",
+      "frontmatter_excerpt": {
+        "endpoint": "./release.sh && ./update_version.sh",
+        "endpoint_kind": "cli",
+        "auth_required": true,
+        "confirmation_required": true,
+        "idempotent": false,
+        "side_effects": [
+          "external_write",
+          "filesystem_write",
+          "local_execution",
+          "network"
+        ],
+        "feature": "shadow-ide/feature/release-and-update-distribution",
+        "tags": [
+          "github",
+          "release",
+          "updates"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/feature/release-and-update-distribution"
+      ]
+    },
+    {
+      "slug": "shadow-ide/action/run-upstream-fetch",
+      "kind": "action",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/actions/run-upstream-fetch.md",
+      "frontmatter_excerpt": {
+        "endpoint": ". ./get_repo.sh",
+        "endpoint_kind": "cli",
+        "auth_required": false,
+        "confirmation_required": true,
+        "idempotent": false,
+        "side_effects": [
+          "filesystem_write",
+          "local_execution",
+          "network"
+        ],
+        "feature": "shadow-ide/feature/upstream-vscode-synchronization",
+        "tags": [
+          "cli",
+          "git",
+          "upstream"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/feature/upstream-vscode-synchronization",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/feature/upstream-vscode-synchronization"
+      ]
+    },
+    {
+      "slug": "shadow-ide/architecture/overview",
+      "kind": "architecture",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/architecture/overview.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "architecture",
+          "build-pipeline",
+          "distribution"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/glossary/overlay",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/action/run-release-pipeline",
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/decision/track-upstream-vscode-by-scripted-overlay",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/architecture/tech-stack",
+      "kind": "architecture",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/architecture/tech-stack.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "dependencies",
+          "tech-stack",
+          "tooling"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/integration/electron-and-node-build-assets",
+        "shadow-ide/integration/github-releases-and-actions",
+        "shadow-ide/integration/microsoft-vscode-source",
+        "shadow-ide/integration/open-vsx-registry",
+        "shadow-ide/integration/package-manager-ecosystem",
+        "shadow-ide/integration/signpath-and-codesigning",
+        "shadow-ide/overview/index"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/assets-icons-and-branding",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/assets-icons-and-branding.md",
+      "frontmatter_excerpt": {
+        "source_path": "icons/, src/*/resources/",
+        "features": [
+          "shadow-ide/feature/product-branding-and-assets"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/local-development-build",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "assets",
+          "branding",
+          "icons"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/action/generate-icons",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/overview/index"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/documentation-site",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/documentation-site.md",
+      "frontmatter_excerpt": {
+        "source_path": "docs/",
+        "features": [
+          "shadow-ide/feature/developer-local-build-flow",
+          "shadow-ide/feature/extension-marketplace-control",
+          "shadow-ide/feature/telemetry-and-service-hardening"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/local-development-build",
+          "shadow-ide/workflow/patch-refresh-after-upstream-change"
+        ],
+        "tags": [
+          "docs",
+          "operator-guide",
+          "support"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/decision/use-open-vsx-gallery-by-default",
+        "shadow-ide/feature/developer-local-build-flow",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/telemetry-and-service-hardening",
+        "shadow-ide/integration/open-vsx-registry",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ],
+      "links_out": [
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/developer-local-build-flow",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/font-size-generator",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/font-size-generator.md",
+      "frontmatter_excerpt": {
+        "source_path": "font-size/",
+        "features": [
+          "shadow-ide/feature/product-branding-and-assets"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/patch-refresh-after-upstream-change"
+        ],
+        "tags": [
+          "css",
+          "typescript",
+          "ui"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ],
+      "links_out": [
+        "shadow-ide/component/patch-set",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/github-actions-pipelines",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/github-actions-pipelines.md",
+      "frontmatter_excerpt": {
+        "source_path": ".github/workflows/",
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging",
+          "shadow-ide/feature/release-and-update-distribution"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/update-service-metadata-publish",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "ci",
+          "github-actions",
+          "release"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/integration/github-releases-and-actions",
+        "shadow-ide/integration/signpath-and-codesigning",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/update-service-metadata-publish",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/integration/github-releases-and-actions",
+        "shadow-ide/integration/signpath-and-codesigning",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/patch-set",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/patch-set.md",
+      "frontmatter_excerpt": {
+        "source_path": "patches/",
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging",
+          "shadow-ide/feature/extension-marketplace-control",
+          "shadow-ide/feature/telemetry-and-service-hardening"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/patch-refresh-after-upstream-change",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "maintenance",
+          "patches",
+          "upstream"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/font-size-generator",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/decision/track-upstream-vscode-by-scripted-overlay",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/telemetry-and-service-hardening",
+        "shadow-ide/glossary/patch-set",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ],
+      "links_out": [
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/telemetry-and-service-hardening",
+        "shadow-ide/glossary/patch-set",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/platform-build-packaging",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/platform-build-packaging.md",
+      "frontmatter_excerpt": {
+        "source_path": "build/",
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging",
+          "shadow-ide/feature/release-and-update-distribution"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "linux",
+          "macos",
+          "packaging",
+          "windows"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/glossary/reh",
+        "shadow-ide/integration/electron-and-node-build-assets",
+        "shadow-ide/integration/package-manager-ecosystem",
+        "shadow-ide/integration/signpath-and-codesigning",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/glossary/reh",
+        "shadow-ide/integration/electron-and-node-build-assets",
+        "shadow-ide/integration/signpath-and-codesigning",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/root-build-orchestration",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/root-build-orchestration.md",
+      "frontmatter_excerpt": {
+        "source_path": "./",
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging",
+          "shadow-ide/feature/developer-local-build-flow",
+          "shadow-ide/feature/release-and-update-distribution",
+          "shadow-ide/feature/upstream-vscode-synchronization"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/local-development-build",
+          "shadow-ide/workflow/update-service-metadata-publish",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "bash",
+          "build",
+          "orchestration"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/decision/track-upstream-vscode-by-scripted-overlay",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/developer-local-build-flow",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/feature/upstream-vscode-synchronization",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/integration/electron-and-node-build-assets",
+        "shadow-ide/integration/github-releases-and-actions",
+        "shadow-ide/integration/microsoft-vscode-source",
+        "shadow-ide/integration/package-manager-ecosystem",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change",
+        "shadow-ide/workflow/update-service-metadata-publish",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/action/run-dev-build",
+        "shadow-ide/action/run-release-pipeline",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/stores-and-package-managers",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/stores-and-package-managers.md",
+      "frontmatter_excerpt": {
+        "source_path": "stores/",
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging",
+          "shadow-ide/feature/release-and-update-distribution"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "packages",
+          "snapcraft",
+          "winget"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/integration/package-manager-ecosystem",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/integration/package-manager-ecosystem",
+        "shadow-ide/overview/index"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/upstream-version-metadata",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/upstream-version-metadata.md",
+      "frontmatter_excerpt": {
+        "source_path": "upstream/",
+        "features": [
+          "shadow-ide/feature/release-and-update-distribution",
+          "shadow-ide/feature/upstream-vscode-synchronization"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "upstream",
+          "versioning",
+          "vscode"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/feature/upstream-vscode-synchronization",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/integration/microsoft-vscode-source",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/update-service-metadata-publish",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/integration/microsoft-vscode-source",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/vscode-overlay-and-product-metadata",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/vscode-overlay-and-product-metadata.md",
+      "frontmatter_excerpt": {
+        "source_path": "src/, product.json, announcements-*.json",
+        "features": [
+          "shadow-ide/feature/extension-marketplace-control",
+          "shadow-ide/feature/product-branding-and-assets",
+          "shadow-ide/feature/telemetry-and-service-hardening"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/local-development-build",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "branding",
+          "overlay",
+          "product-json"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/decision/track-upstream-vscode-by-scripted-overlay",
+        "shadow-ide/decision/use-open-vsx-gallery-by-default",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/feature/telemetry-and-service-hardening",
+        "shadow-ide/glossary/overlay",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/integration/open-vsx-registry",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/local-development-build"
+      ],
+      "links_out": [
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/glossary/overlay",
+        "shadow-ide/integration/open-vsx-registry",
+        "shadow-ide/overview/index"
+      ]
+    },
+    {
+      "slug": "shadow-ide/component/wiki-mcp-server",
+      "kind": "component",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/components/wiki-mcp-server.md",
+      "frontmatter_excerpt": {
+        "source_path": "mcp-server/",
+        "features": [
+          "shadow-ide/feature/knowledge-base-read-side-access"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/knowledge-base-maintenance"
+        ],
+        "tags": [
+          "knowledge-base",
+          "mcp",
+          "read-only"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/decision/adopt-kbmap-in-repo",
+        "shadow-ide/feature/knowledge-base-read-side-access",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/knowledge-base-maintenance"
+      ],
+      "links_out": [
+        "shadow-ide/action/query-wiki-mcp",
+        "shadow-ide/feature/knowledge-base-read-side-access",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/knowledge-base-maintenance"
+      ]
+    },
+    {
+      "slug": "shadow-ide/decision/adopt-kbmap-in-repo",
+      "kind": "decision",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/decisions/adopt-kbmap-in-repo.md",
+      "frontmatter_excerpt": {
+        "decision_status": "accepted",
+        "superseded_by": "",
+        "components": [
+          "shadow-ide/component/wiki-mcp-server"
+        ],
+        "tags": [
+          "adr",
+          "kbmap",
+          "knowledge-base"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/component/wiki-mcp-server",
+        "shadow-ide/feature/knowledge-base-read-side-access"
+      ]
+    },
+    {
+      "slug": "shadow-ide/decision/track-upstream-vscode-by-scripted-overlay",
+      "kind": "decision",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/decisions/track-upstream-vscode-by-scripted-overlay.md",
+      "frontmatter_excerpt": {
+        "decision_status": "accepted",
+        "superseded_by": "",
+        "components": [
+          "shadow-ide/component/patch-set",
+          "shadow-ide/component/root-build-orchestration",
+          "shadow-ide/component/vscode-overlay-and-product-metadata"
+        ],
+        "tags": [
+          "overlay",
+          "patches",
+          "upstream"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/glossary/overlay",
+        "shadow-ide/glossary/patch-set",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/vscode-overlay-and-product-metadata"
+      ]
+    },
+    {
+      "slug": "shadow-ide/decision/use-open-vsx-gallery-by-default",
+      "kind": "decision",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/decisions/use-open-vsx-gallery-by-default.md",
+      "frontmatter_excerpt": {
+        "decision_status": "accepted",
+        "superseded_by": "",
+        "components": [
+          "shadow-ide/component/documentation-site",
+          "shadow-ide/component/vscode-overlay-and-product-metadata"
+        ],
+        "tags": [
+          "extensions",
+          "marketplace",
+          "open-vsx"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/glossary/open-vsx",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/integration/open-vsx-registry"
+      ]
+    },
+    {
+      "slug": "shadow-ide/feature/cross-platform-build-and-packaging",
+      "kind": "feature",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/features/cross-platform-build-and-packaging.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/github-actions-pipelines",
+          "shadow-ide/component/platform-build-packaging",
+          "shadow-ide/component/root-build-orchestration",
+          "shadow-ide/component/stores-and-package-managers"
+        ],
+        "actions": [
+          "shadow-ide/action/run-dev-build"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/local-development-build",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "build",
+          "linux",
+          "macos",
+          "packaging",
+          "windows"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/glossary/reh",
+        "shadow-ide/integration/electron-and-node-build-assets",
+        "shadow-ide/integration/github-releases-and-actions",
+        "shadow-ide/integration/signpath-and-codesigning",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/action/run-dev-build",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/feature/developer-local-build-flow",
+      "kind": "feature",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/features/developer-local-build-flow.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/documentation-site",
+          "shadow-ide/component/root-build-orchestration"
+        ],
+        "actions": [
+          "shadow-ide/action/run-dev-build"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/local-development-build",
+          "shadow-ide/workflow/patch-refresh-after-upstream-change"
+        ],
+        "tags": [
+          "developer",
+          "local-build",
+          "patching"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/action/run-dev-build",
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ],
+      "links_out": [
+        "shadow-ide/action/run-dev-build",
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ]
+    },
+    {
+      "slug": "shadow-ide/feature/extension-marketplace-control",
+      "kind": "feature",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/features/extension-marketplace-control.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/documentation-site",
+          "shadow-ide/component/patch-set",
+          "shadow-ide/component/vscode-overlay-and-product-metadata"
+        ],
+        "actions": [],
+        "workflows": [
+          "shadow-ide/workflow/patch-refresh-after-upstream-change",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "extensions",
+          "marketplace",
+          "open-vsx"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/glossary/open-vsx",
+        "shadow-ide/integration/open-vsx-registry",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ],
+      "links_out": [
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/feature/knowledge-base-read-side-access",
+      "kind": "feature",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/features/knowledge-base-read-side-access.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/wiki-mcp-server"
+        ],
+        "actions": [
+          "shadow-ide/action/query-wiki-mcp"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/knowledge-base-maintenance"
+        ],
+        "tags": [
+          "kbmap",
+          "mcp",
+          "wiki"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/action/query-wiki-mcp",
+        "shadow-ide/component/wiki-mcp-server",
+        "shadow-ide/decision/adopt-kbmap-in-repo",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/knowledge-base-maintenance"
+      ],
+      "links_out": [
+        "shadow-ide/action/query-wiki-mcp",
+        "shadow-ide/component/wiki-mcp-server",
+        "shadow-ide/workflow/knowledge-base-maintenance"
+      ]
+    },
+    {
+      "slug": "shadow-ide/feature/product-branding-and-assets",
+      "kind": "feature",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/features/product-branding-and-assets.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/assets-icons-and-branding",
+          "shadow-ide/component/font-size-generator",
+          "shadow-ide/component/vscode-overlay-and-product-metadata"
+        ],
+        "actions": [
+          "shadow-ide/action/generate-icons"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/local-development-build",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "branding",
+          "icons",
+          "product"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/action/generate-icons",
+        "shadow-ide/architecture/overview",
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/component/font-size-generator",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/action/generate-icons",
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/component/font-size-generator",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/feature/release-and-update-distribution",
+      "kind": "feature",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/features/release-and-update-distribution.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/github-actions-pipelines",
+          "shadow-ide/component/root-build-orchestration",
+          "shadow-ide/component/stores-and-package-managers",
+          "shadow-ide/component/upstream-version-metadata"
+        ],
+        "actions": [
+          "shadow-ide/action/run-release-pipeline"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/update-service-metadata-publish",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "github",
+          "release",
+          "updates"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/action/run-release-pipeline",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/integration/github-releases-and-actions",
+        "shadow-ide/integration/package-manager-ecosystem",
+        "shadow-ide/integration/signpath-and-codesigning",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/update-service-metadata-publish",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/action/run-release-pipeline",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/workflow/update-service-metadata-publish",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/feature/telemetry-and-service-hardening",
+      "kind": "feature",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/features/telemetry-and-service-hardening.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/documentation-site",
+          "shadow-ide/component/patch-set",
+          "shadow-ide/component/vscode-overlay-and-product-metadata"
+        ],
+        "actions": [],
+        "workflows": [
+          "shadow-ide/workflow/patch-refresh-after-upstream-change",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "privacy",
+          "services",
+          "telemetry"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/patch-set",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ],
+      "links_out": [
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/feature/upstream-vscode-synchronization",
+      "kind": "feature",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/features/upstream-vscode-synchronization.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/root-build-orchestration",
+          "shadow-ide/component/upstream-version-metadata"
+        ],
+        "actions": [
+          "shadow-ide/action/run-upstream-fetch"
+        ],
+        "workflows": [
+          "shadow-ide/workflow/local-development-build",
+          "shadow-ide/workflow/upstream-release-publish"
+        ],
+        "tags": [
+          "release",
+          "upstream",
+          "vscode"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/action/run-upstream-fetch",
+        "shadow-ide/integration/microsoft-vscode-source",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/action/run-upstream-fetch",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/glossary/open-vsx",
+      "kind": "glossary",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/glossary/open-vsx.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "extensions",
+          "open-vsx"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/decision/use-open-vsx-gallery-by-default",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/integration/open-vsx-registry"
+      ]
+    },
+    {
+      "slug": "shadow-ide/glossary/overlay",
+      "kind": "glossary",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/glossary/overlay.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "overlay",
+          "source"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/glossary/patch-set",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/decision/track-upstream-vscode-by-scripted-overlay",
+        "shadow-ide/glossary/patch-set",
+        "shadow-ide/glossary/quality"
+      ]
+    },
+    {
+      "slug": "shadow-ide/glossary/patch-set",
+      "kind": "glossary",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/glossary/patch-set.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "patches",
+          "upstream"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/patch-set",
+        "shadow-ide/glossary/overlay",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/component/patch-set",
+        "shadow-ide/decision/track-upstream-vscode-by-scripted-overlay",
+        "shadow-ide/glossary/overlay",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ]
+    },
+    {
+      "slug": "shadow-ide/glossary/quality",
+      "kind": "glossary",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/glossary/quality.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "insider",
+          "quality",
+          "stable"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/glossary/open-vsx",
+        "shadow-ide/glossary/overlay",
+        "shadow-ide/glossary/reh",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/glossary/reh",
+      "kind": "glossary",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/glossary/reh.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "reh",
+          "remote"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/glossary/release-version",
+      "kind": "glossary",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/glossary/release-version.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "release",
+          "versioning"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/glossary/reh",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/workflow/update-service-metadata-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/glossary/upstream-commit",
+      "kind": "glossary",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/glossary/upstream-commit.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "commit",
+          "upstream",
+          "vscode"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/feature/upstream-vscode-synchronization",
+        "shadow-ide/glossary/patch-set",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/integration/electron-and-node-build-assets",
+      "kind": "integration",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/integrations/electron-and-node-build-assets.md",
+      "frontmatter_excerpt": {
+        "vendor": "Electron, npm, Node.js, VS Code build assets",
+        "protocol": "https",
+        "auth_via": "public package/download endpoints",
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging"
+        ],
+        "components": [
+          "shadow-ide/component/platform-build-packaging",
+          "shadow-ide/component/root-build-orchestration"
+        ],
+        "tags": [
+          "build-assets",
+          "electron",
+          "node",
+          "npm"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/cross-platform-build-and-packaging"
+      ]
+    },
+    {
+      "slug": "shadow-ide/integration/github-releases-and-actions",
+      "kind": "integration",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/integrations/github-releases-and-actions.md",
+      "frontmatter_excerpt": {
+        "vendor": "GitHub",
+        "protocol": "https",
+        "auth_via": "GITHUB_TOKEN, GH_TOKEN, or stronger repository token in CI secrets",
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging",
+          "shadow-ide/feature/release-and-update-distribution"
+        ],
+        "components": [
+          "shadow-ide/component/github-actions-pipelines",
+          "shadow-ide/component/root-build-orchestration"
+        ],
+        "tags": [
+          "artifacts",
+          "github-actions",
+          "releases"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/update-service-metadata-publish",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/release-and-update-distribution"
+      ]
+    },
+    {
+      "slug": "shadow-ide/integration/microsoft-vscode-source",
+      "kind": "integration",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/integrations/microsoft-vscode-source.md",
+      "frontmatter_excerpt": {
+        "vendor": "Microsoft",
+        "protocol": "https",
+        "auth_via": "public git and public update API",
+        "features": [
+          "shadow-ide/feature/upstream-vscode-synchronization"
+        ],
+        "components": [
+          "shadow-ide/component/root-build-orchestration",
+          "shadow-ide/component/upstream-version-metadata"
+        ],
+        "tags": [
+          "git",
+          "upstream",
+          "vscode"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/feature/upstream-vscode-synchronization"
+      ]
+    },
+    {
+      "slug": "shadow-ide/integration/open-vsx-registry",
+      "kind": "integration",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/integrations/open-vsx-registry.md",
+      "frontmatter_excerpt": {
+        "vendor": "Eclipse Open VSX",
+        "protocol": "https",
+        "auth_via": "public extension gallery endpoints for client reads",
+        "features": [
+          "shadow-ide/feature/extension-marketplace-control"
+        ],
+        "components": [
+          "shadow-ide/component/documentation-site",
+          "shadow-ide/component/vscode-overlay-and-product-metadata"
+        ],
+        "tags": [
+          "extensions",
+          "marketplace",
+          "open-vsx"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/decision/use-open-vsx-gallery-by-default",
+        "shadow-ide/glossary/open-vsx",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/feature/extension-marketplace-control"
+      ]
+    },
+    {
+      "slug": "shadow-ide/integration/package-manager-ecosystem",
+      "kind": "integration",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/integrations/package-manager-ecosystem.md",
+      "frontmatter_excerpt": {
+        "vendor": "Snapcraft, WinGet, package managers",
+        "protocol": "https",
+        "auth_via": "store-specific credentials outside the core scripts",
+        "features": [
+          "shadow-ide/feature/release-and-update-distribution"
+        ],
+        "components": [
+          "shadow-ide/component/platform-build-packaging",
+          "shadow-ide/component/stores-and-package-managers"
+        ],
+        "tags": [
+          "package-managers",
+          "snapcraft",
+          "winget"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/feature/release-and-update-distribution"
+      ]
+    },
+    {
+      "slug": "shadow-ide/integration/signpath-and-codesigning",
+      "kind": "integration",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/integrations/signpath-and-codesigning.md",
+      "frontmatter_excerpt": {
+        "vendor": "SignPath, Apple code signing",
+        "protocol": "https",
+        "auth_via": "GitHub Actions secrets and signing certificates",
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging",
+          "shadow-ide/feature/release-and-update-distribution"
+        ],
+        "components": [
+          "shadow-ide/component/github-actions-pipelines",
+          "shadow-ide/component/platform-build-packaging"
+        ],
+        "tags": [
+          "macos",
+          "signing",
+          "windows"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/release-and-update-distribution"
+      ]
+    },
+    {
+      "slug": "shadow-ide/mapping-log/mapping-log",
+      "kind": "mapping-log",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/mapping-log.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "kbmap",
+          "mapping-log"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/workflow/knowledge-base-maintenance"
+      ]
+    },
+    {
+      "slug": "shadow-ide/overview/code-structure",
+      "kind": "overview",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/code-structure.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "code-structure",
+          "file-inventory"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/knowledge-base-read-side-access",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ]
+    },
+    {
+      "slug": "shadow-ide/overview/index",
+      "kind": "overview",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/index.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "index",
+          "navigation",
+          "shadow-ide"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/font-size-generator",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/component/wiki-mcp-server",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/action/generate-icons",
+        "shadow-ide/action/query-wiki-mcp",
+        "shadow-ide/action/run-dev-build",
+        "shadow-ide/action/run-release-pipeline",
+        "shadow-ide/action/run-upstream-fetch",
+        "shadow-ide/architecture/overview",
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/assets-icons-and-branding",
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/font-size-generator",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/component/wiki-mcp-server",
+        "shadow-ide/decision/adopt-kbmap-in-repo",
+        "shadow-ide/decision/track-upstream-vscode-by-scripted-overlay",
+        "shadow-ide/decision/use-open-vsx-gallery-by-default",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/developer-local-build-flow",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/knowledge-base-read-side-access",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/feature/telemetry-and-service-hardening",
+        "shadow-ide/feature/upstream-vscode-synchronization",
+        "shadow-ide/glossary/open-vsx",
+        "shadow-ide/glossary/overlay",
+        "shadow-ide/glossary/patch-set",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/glossary/reh",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/integration/electron-and-node-build-assets",
+        "shadow-ide/integration/github-releases-and-actions",
+        "shadow-ide/integration/microsoft-vscode-source",
+        "shadow-ide/integration/open-vsx-registry",
+        "shadow-ide/integration/package-manager-ecosystem",
+        "shadow-ide/integration/signpath-and-codesigning",
+        "shadow-ide/mapping-log/mapping-log",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/project-discovery",
+        "shadow-ide/workflow/knowledge-base-maintenance",
+        "shadow-ide/workflow/local-development-build",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change",
+        "shadow-ide/workflow/update-service-metadata-publish",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/overview/project-discovery",
+      "kind": "overview",
+      "audience": [
+        "agent",
+        "dev",
+        "user"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/project-discovery.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "discovery",
+          "overview",
+          "shadow-ide"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/index"
+      ],
+      "links_out": [
+        "shadow-ide/action/run-upstream-fetch",
+        "shadow-ide/architecture/overview",
+        "shadow-ide/architecture/tech-stack",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/feature/telemetry-and-service-hardening",
+        "shadow-ide/glossary/patch-set",
+        "shadow-ide/glossary/reh",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/upstream-release-publish"
+      ]
+    },
+    {
+      "slug": "shadow-ide/schema/app-actions-adoption-checklist",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-04",
+      "mapped_date": "2026-05-04",
+      "status": "complete",
+      "path": "wiki/app-actions-adoption-checklist.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "adoption",
+          "app-actions",
+          "checklist",
+          "ci",
+          "dry-run",
+          "mcp"
+        ]
+      },
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/app-actions-dogfood-template",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "complete",
+      "path": "wiki/app-actions-dogfood-template.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "app-actions",
+          "ci",
+          "dogfood",
+          "dry-run",
+          "mcp",
+          "work-modes"
+        ]
+      },
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/frontmatter-schema",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "stub",
+      "path": "wiki/frontmatter-schema.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/ingest",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 2,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "stub",
+      "path": "wiki/prompts/ingest.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/ingest-schema",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "stub",
+      "path": "wiki/ingest-schema.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/lint",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "stub",
+      "path": "wiki/prompts/lint.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/lint-schema",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "stub",
+      "path": "wiki/lint-schema.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/manifest-schema",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "stub",
+      "path": "wiki/manifest-schema.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/query",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "stub",
+      "path": "wiki/prompts/query.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/query-schema",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "stub",
+      "path": "wiki/query-schema.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/schema",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "YYYY-MM-DD",
+      "mapped_date": "YYYY-MM-DD",
+      "status": "complete",
+      "path": "wiki/_schema.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/work-mode-examples",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "complete",
+      "path": "wiki/work-mode-examples.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "agents",
+          "examples",
+          "work-modes"
+        ]
+      },
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/work-modes",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "complete",
+      "path": "wiki/work-modes.md",
+      "frontmatter_excerpt": {
+        "tags": [
+          "agents",
+          "permissions",
+          "work-modes"
+        ]
+      },
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/schema/work-modes-schema",
+      "kind": "schema",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "",
+      "mapped_date": "",
+      "status": "stub",
+      "path": "wiki/work-modes-schema.md",
+      "frontmatter_excerpt": {},
+      "links_in": [],
+      "links_out": []
+    },
+    {
+      "slug": "shadow-ide/workflow/knowledge-base-maintenance",
+      "kind": "workflow",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/workflows/knowledge-base-maintenance.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/wiki-mcp-server"
+        ],
+        "features": [
+          "shadow-ide/feature/knowledge-base-read-side-access"
+        ],
+        "actions": [
+          "shadow-ide/action/query-wiki-mcp"
+        ],
+        "tags": [
+          "kbmap",
+          "maintenance",
+          "wiki"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/wiki-mcp-server",
+        "shadow-ide/feature/knowledge-base-read-side-access",
+        "shadow-ide/mapping-log/mapping-log",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ],
+      "links_out": [
+        "shadow-ide/action/query-wiki-mcp",
+        "shadow-ide/component/wiki-mcp-server",
+        "shadow-ide/feature/knowledge-base-read-side-access"
+      ]
+    },
+    {
+      "slug": "shadow-ide/workflow/local-development-build",
+      "kind": "workflow",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/workflows/local-development-build.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/patch-set",
+          "shadow-ide/component/platform-build-packaging",
+          "shadow-ide/component/root-build-orchestration",
+          "shadow-ide/component/vscode-overlay-and-product-metadata"
+        ],
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging",
+          "shadow-ide/feature/developer-local-build-flow",
+          "shadow-ide/feature/upstream-vscode-synchronization"
+        ],
+        "actions": [
+          "shadow-ide/action/run-dev-build",
+          "shadow-ide/action/run-upstream-fetch"
+        ],
+        "tags": [
+          "developer",
+          "local-build"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/developer-local-build-flow",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/feature/upstream-vscode-synchronization",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ],
+      "links_out": [
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/component/vscode-overlay-and-product-metadata",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/developer-local-build-flow",
+        "shadow-ide/feature/upstream-vscode-synchronization",
+        "shadow-ide/workflow/patch-refresh-after-upstream-change"
+      ]
+    },
+    {
+      "slug": "shadow-ide/workflow/patch-refresh-after-upstream-change",
+      "kind": "workflow",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/workflows/patch-refresh-after-upstream-change.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/documentation-site",
+          "shadow-ide/component/font-size-generator",
+          "shadow-ide/component/patch-set",
+          "shadow-ide/component/root-build-orchestration"
+        ],
+        "features": [
+          "shadow-ide/feature/developer-local-build-flow",
+          "shadow-ide/feature/extension-marketplace-control",
+          "shadow-ide/feature/telemetry-and-service-hardening"
+        ],
+        "actions": [
+          "shadow-ide/action/run-dev-build"
+        ],
+        "tags": [
+          "maintenance",
+          "patches",
+          "upstream"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/font-size-generator",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/feature/developer-local-build-flow",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/telemetry-and-service-hardening",
+        "shadow-ide/glossary/patch-set",
+        "shadow-ide/overview/code-structure",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/local-development-build"
+      ],
+      "links_out": [
+        "shadow-ide/component/documentation-site",
+        "shadow-ide/component/font-size-generator",
+        "shadow-ide/component/patch-set",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/developer-local-build-flow",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/telemetry-and-service-hardening",
+        "shadow-ide/workflow/knowledge-base-maintenance",
+        "shadow-ide/workflow/local-development-build"
+      ]
+    },
+    {
+      "slug": "shadow-ide/workflow/update-service-metadata-publish",
+      "kind": "workflow",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/workflows/update-service-metadata-publish.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/github-actions-pipelines",
+          "shadow-ide/component/root-build-orchestration",
+          "shadow-ide/component/upstream-version-metadata"
+        ],
+        "features": [
+          "shadow-ide/feature/release-and-update-distribution"
+        ],
+        "actions": [
+          "shadow-ide/action/run-release-pipeline"
+        ],
+        "tags": [
+          "metadata",
+          "updates",
+          "versions"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/glossary/release-version",
+        "shadow-ide/overview/index",
+        "shadow-ide/workflow/upstream-release-publish"
+      ],
+      "links_out": [
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/integration/github-releases-and-actions"
+      ]
+    },
+    {
+      "slug": "shadow-ide/workflow/upstream-release-publish",
+      "kind": "workflow",
+      "audience": [
+        "agent",
+        "dev"
+      ],
+      "version": 1,
+      "last_updated": "2026-05-10",
+      "mapped_date": "2026-05-10",
+      "status": "complete",
+      "path": "wiki/workflows/upstream-release-publish.md",
+      "frontmatter_excerpt": {
+        "components": [
+          "shadow-ide/component/github-actions-pipelines",
+          "shadow-ide/component/platform-build-packaging",
+          "shadow-ide/component/root-build-orchestration",
+          "shadow-ide/component/stores-and-package-managers"
+        ],
+        "features": [
+          "shadow-ide/feature/cross-platform-build-and-packaging",
+          "shadow-ide/feature/release-and-update-distribution",
+          "shadow-ide/feature/upstream-vscode-synchronization"
+        ],
+        "actions": [
+          "shadow-ide/action/run-release-pipeline"
+        ],
+        "tags": [
+          "ci",
+          "publish",
+          "release"
+        ]
+      },
+      "links_in": [
+        "shadow-ide/architecture/overview",
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/extension-marketplace-control",
+        "shadow-ide/feature/product-branding-and-assets",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/feature/telemetry-and-service-hardening",
+        "shadow-ide/feature/upstream-vscode-synchronization",
+        "shadow-ide/glossary/quality",
+        "shadow-ide/glossary/reh",
+        "shadow-ide/glossary/upstream-commit",
+        "shadow-ide/overview/index",
+        "shadow-ide/overview/project-discovery"
+      ],
+      "links_out": [
+        "shadow-ide/component/github-actions-pipelines",
+        "shadow-ide/component/platform-build-packaging",
+        "shadow-ide/component/root-build-orchestration",
+        "shadow-ide/component/stores-and-package-managers",
+        "shadow-ide/component/upstream-version-metadata",
+        "shadow-ide/feature/cross-platform-build-and-packaging",
+        "shadow-ide/feature/release-and-update-distribution",
+        "shadow-ide/feature/upstream-vscode-synchronization",
+        "shadow-ide/integration/github-releases-and-actions",
+        "shadow-ide/integration/signpath-and-codesigning",
+        "shadow-ide/workflow/update-service-metadata-publish"
+      ]
+    }
+  ]
+}
