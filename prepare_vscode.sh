@@ -289,4 +289,17 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   sed -i 's|Microsoft Corporation|Shadowtrack|' build/win32/code.iss
 fi
 
+
+# Rebrand any leftover VSCodium strings (from VSCodium's own
+# Visual-Studio-Code → VSCodium patches) to ShadowIDE. Scoped to
+# user-visible source files; case-sensitive so we don't double-replace
+# identifiers we already handled via setpath above.
+find . -type f \( -name "*.ts" -o -name "*.json" -o -name "*.md" \
+  -o -name "*.ps1" -o -name "*.zsh" -o -name "*.sh" -o -name "*.fish" \) \
+  -not -path "./node_modules/*" -not -path "*/node_modules/*" \
+  -not -path "./.git/*" -not -path "./.build/*" \
+  -exec grep -l "VSCodium" {} + 2>/dev/null \
+  | xargs -r sed -i.shadowbak 's/VSCodium/ShadowIDE/g' || true
+find . -name "*.shadowbak" -not -path "./node_modules/*" -delete
+
 cd ..
