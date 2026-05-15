@@ -43,7 +43,7 @@ if [[ -n "${CERTIFICATE_OSX_P12_DATA}" ]]; then
 
   zip -r -X -y "${ZIP_FILE}" ./*.app
 
-  xcrun notarytool store-credentials "${APP_NAME}" --apple-id "${CERTIFICATE_OSX_ID}" --team-id "${CERTIFICATE_OSX_TEAM_ID}" --password "${CERTIFICATE_OSX_APP_PASSWORD}" --keychain "${KEYCHAIN}"
+  xcrun notarytool store-credentials "${APP_NAME}" --apple-id "${CERTIFICATE_OSX_APPLE_ID}" --team-id "${CERTIFICATE_OSX_TEAM_ID}" --password "${CERTIFICATE_OSX_APP_PASSWORD}" --keychain "${KEYCHAIN}"
   # xcrun notarytool history --keychain-profile "${APP_NAME}" --keychain "${KEYCHAIN}"
   xcrun notarytool submit "${ZIP_FILE}" --keychain-profile "${APP_NAME}" --wait --keychain "${KEYCHAIN}"
 
