@@ -155,7 +155,7 @@ if [[ "${SKIP_ASSETS}" == "no" ]]; then
   if [[ "${OS_NAME}" == "osx" && -f "dev/osx/codesign.env" ]]; then
     . dev/osx/macos-codesign.env
 
-    echo "CERTIFICATE_OSX_ID: ${CERTIFICATE_OSX_ID}"
+    echo "CERTIFICATE_OSX_APPLE_ID: ${CERTIFICATE_OSX_APPLE_ID}"
   fi
 
   . prepare_assets.sh
