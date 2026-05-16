@@ -23,6 +23,8 @@ apply_actions() {
     case "${ENTRY_ACTION}" in
       remove)
         jq -r '.paths[]' <<< "${ENTRY}" | while IFS= read -r ENTRY_PATH; do
+          ENTRY_PATH="${ENTRY_PATH%$'\r'}"
+
           if [[ -e "${ENTRY_PATH}" ]]; then
             if rm -rf -- "${ENTRY_PATH}"; then
               echo "Removed: ${ENTRY_PATH}"
