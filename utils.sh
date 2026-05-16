@@ -16,6 +16,32 @@ fi
 
 # All common functions can be added to this file
 
+apply_actions() {
+  jq -c '.[]' "$1" | while IFS= read -r ENTRY; do
+    ENTRY_ACTION=$( jq -r '.action // empty' <<< "${ENTRY}" )
+
+    case "${ENTRY_ACTION}" in
+      remove)
+        jq -r '.paths[]' <<< "${ENTRY}" | while IFS= read -r ENTRY_PATH; do
+          ENTRY_PATH="${ENTRY_PATH%$'\r'}"
+
+          if [[ -e "${ENTRY_PATH}" ]]; then
+            if rm -rf -- "${ENTRY_PATH}"; then
+              echo "Removed: ${ENTRY_PATH}"
+            else
+              echo "Failed to remove: ${ENTRY_PATH}" >&2
+              exit 4
+            fi
+          else
+            echo "Not found: ${ENTRY_PATH}" >&2
+            exit 4
+          fi
+        done
+      ;;
+    esac
+  done
+}
+
 apply_patch() {
   if [[ -z "$2" ]]; then
     echo applying patch: "$1";

@@ -18,6 +18,9 @@ normalize_file() {
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+# include common functions
+. ../utils.sh
+
 git add .
 git reset -q --hard HEAD
 
@@ -68,6 +71,18 @@ if [[ "${FILE}" != "../patches/helper/settings.patch" ]]; then
             NOT_FOUND=0
           fi
         done
+
+        if (( $NOT_FOUND )); then
+          for CANDIDATE in "${DIRNAME}/${GROUP_ID}${I}-"*.json; do
+            if [[ -f "$CANDIDATE" ]]; then
+              echo "Candidate: ${CANDIDATE}"
+
+              apply_actions "${CANDIDATE}"
+
+              NOT_FOUND=0
+            fi
+          done
+        fi
 
         if (( $NOT_FOUND )); then
           for CANDIDATE in "${DIRNAME}/../${GROUP_ID}${I}-"*.patch; do
