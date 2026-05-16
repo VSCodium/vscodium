@@ -137,6 +137,9 @@ check_file() {
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+# include common functions
+. ../utils.sh
+
 git add .
 git reset -q --hard HEAD
 
@@ -192,15 +195,23 @@ for ARCH in alpine linux osx windows; do
 
         for CANDIDATE in "${DIRNAME}/${GROUP_ID}${I}-"*.patch; do
           if [[ -f "$CANDIDATE" ]]; then
-            ADDITIONAL_FILES+=("$CANDIDATE")
+            ADDITIONAL_FILES+=( "${CANDIDATE}" )
             NOT_FOUND=0
           fi
         done
 
         if (( $NOT_FOUND )); then
+          for CANDIDATE in "${DIRNAME}/../${GROUP_ID}${I}-"*.json; do
+            if [[ -f "$CANDIDATE" ]]; then
+              apply_actions "${CANDIDATE}"
+            fi
+          done
+        fi
+
+        if (( $NOT_FOUND )); then
           for CANDIDATE in "${DIRNAME}/../${GROUP_ID}${I}-"*.patch; do
             if [[ -f "$CANDIDATE" ]]; then
-              ADDITIONAL_FILES+=("$CANDIDATE")
+              ADDITIONAL_FILES+=( "${CANDIDATE}" )
             fi
           done
         fi
