@@ -43,7 +43,6 @@ const AREAS: Record<string, Area> = {
 		files: [
 			'src/vs/base/browser/ui/actionbar/actionbar.css',
 			'src/vs/base/browser/ui/button/button.css',
-			'src/vs/base/browser/ui/codicons/codicon/codicon.css',
 			'src/vs/base/browser/ui/inputbox/inputBox.css',
 			'src/vs/base/browser/ui/toggle/toggle.css',
 			'src/vs/workbench/contrib/debug/browser/media/debugToolBar.css',
@@ -69,7 +68,6 @@ const AREAS: Record<string, Area> = {
 		name: 'workbench',
 		defaultSize: 13,
 		files: [
-			'src/vs/base/browser/ui/codicons/codicon/codicon.css',
 			'src/vs/base/browser/ui/toggle/toggle.css',
 			'src/vs/editor/contrib/find/browser/findWidget.css',
 		],
