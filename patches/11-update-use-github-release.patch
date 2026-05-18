@@ -130,7 +130,7 @@ index 8cf5dceb..49720f6a 100644
 +				const fetchedVersion = /\d+\.\d+\.\d+\.\d+/.test(update.productVersion) ? update.productVersion.replace(/(\d+\.\d+\.\d+)\.\d+(\-\w+)?/, '$1$2') : update.productVersion.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3');
 +				const currentVersion = this.productService.version.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3');
 +
-+				this.logService.info('update#isLatestVersion() - found version', fetchedVersion, currentVersion);
++				this.logService.info(`update#isLatestVersion() - found: ${fetchedVersion}, current: ${currentVersion}`);
 +
 +				const lastest = semver.compareBuild(currentVersion, fetchedVersion) >= 0;
 +
