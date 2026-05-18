@@ -179,8 +179,8 @@ The builds are run every day, but exit early if there isn't a new release from M
 
 The minimal version is limited by the core component Electron, you may want to check its [platform prerequisites](https://www.electronjs.org/docs/latest/development/build-instructions-gn#platform-prerequisites).
 
-- [x] macOS (`zip`, `dmg`) macOS 10.15 or newer x64
-- [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64
+- [x] macOS (`zip`, `dmg`) macOS 12 or newer x64
+- [x] macOS (`zip`, `dmg`) macOS 12 or newer arm64
 - [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `snap`, `tar.gz`)
 - [x] GNU/Linux arm64 (`deb`, `rpm`, `snap`, `tar.gz`)
 - [x] GNU/Linux armhf (`deb`, `rpm`, `tar.gz`)
