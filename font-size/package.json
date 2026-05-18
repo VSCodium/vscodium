@@ -11,25 +11,27 @@
 	"main": "generate-css.ts",
 	"scripts": {
 		"audit:fix": "npm audit fix --min-release-age=0",
-		"ci:lint": "zizmor .",
-		"ci:lint:fix": "zizmor . --fix=all",
+		"clean": "rimraf lib",
+		"compile:src": "tsc -p src",
 		"lint": "xo",
-		"lint:all": "fixpack && npm audit && npm run ci:lint && npm run lint",
+		"lint:all": "npm audit && npm run lint:package && npm run lint",
 		"lint:fix": "xo --fix",
-		"prepare": "fixpack || true",
+		"lint:package": "fixpack || true",
+		"run": "node generate-css.ts",
 		"update:artifacts": "artifact update",
-		"update:deps": "taze"
+		"update:deps": "taze --all"
 	},
 	"dependencies": {
-		"@zokugun/fs-extra-plus": "0.3.8",
-		"@zokugun/xtry": "0.10.1",
+		"@zokugun/fs-extra-plus": "0.4.1",
+		"@zokugun/xtry": "0.11.6",
 		"fast-glob": "3.3.3",
-		"postcss": "8.5.10"
+		"postcss": "8.5.14"
 	},
 	"devDependencies": {
-		"@types/node": "22.19.17",
+		"@types/node": "22.19.18",
 		"fixpack": "4.0.0",
-		"taze": "19.11.0",
+		"rimraf": "6.1.3",
+		"taze": "19.12.0",
 		"typescript": "5.9.3",
 		"xo": "0.60.0"
 	},
