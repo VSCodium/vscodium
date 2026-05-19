@@ -1,11 +1,16 @@
 diff --git a/src/vs/server/node/remoteExtensionHostAgentServer.ts b/src/vs/server/node/remoteExtensionHostAgentServer.ts
-index 5c4f3c2a..3c5d8268 100644
+index 5c4f3c2a..91010c0b 100644
 --- a/src/vs/server/node/remoteExtensionHostAgentServer.ts
 +++ b/src/vs/server/node/remoteExtensionHostAgentServer.ts
 @@ -77,2 +77,3 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
  		serverBasePath: string | undefined,
 +		private readonly _disableClientValidation: boolean | undefined,
  		@IServerEnvironmentService private readonly _environmentService: IServerEnvironmentService,
+@@ -100,3 +101,3 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+ 		);
+-		this._logService.info(`Extension host agent started.`);
++		this._logService.info(`Extension host agent started. (validation: ${!this._disableClientValidation})`);
+ 		this._reconnectionGraceTime = this._environmentService.reconnectionGraceTime;
 @@ -334,8 +335,10 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
  
 -				const rendererCommit = msg2.commit;
