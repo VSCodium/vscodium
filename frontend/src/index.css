@@ -1,62 +1,62 @@
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg-base: #0B1120;
-  --bg-surface: #131B2E;
-  --bg-elevated: #1B2A4A;
-  --bg-editor: #0E1726;
-  --bg-titlebar: #0A0F1C;
-  --bg-activitybar: #0A0F1C;
-  --bg-statusbar: #05A0F0;
-  --bg-tab-active: #0E1726;
-  --bg-tab-inactive: #0B1120;
-  --bg-input: #0E1726;
-  --accent: #05A0F0;
-  --accent-hover: #0486C9;
-  --accent-dim: rgba(5, 160, 240, 0.15);
-  --text-primary: #D4D8E0;
-  --text-muted: #6B7A99;
-  --text-bright: #F1F5F9;
-  --text-dimmed: #3E4F6E;
-  --border: #1A2642;
-  --border-strong: #253456;
-  --success: #10B981;
-  --warning: #F59E0B;
-  --error: #EF4444;
-  --diff-add-bg: rgba(16, 185, 129, 0.12);
-  --diff-add-text: #34D399;
-  --diff-remove-bg: rgba(239, 68, 68, 0.12);
-  --diff-remove-text: #F87171;
-  --line-number: #3E4F6E;
-  --selection: rgba(5, 160, 240, 0.2);
-  --font-ui: 'IBM Plex Sans', -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-  --font-heading: 'IBM Plex Mono', monospace;
+  /* IDE Dark Theme */
+  --ide-bg: #0D1117;
+  --ide-surface: #161B22;
+  --ide-elevated: #1C2333;
+  --ide-editor: #0D1117;
+  --ide-titlebar: #010409;
+  --ide-actbar: #010409;
+  --ide-statusbar: #0969DA;
+  --ide-tab-active: #0D1117;
+  --ide-tab-inactive: #010409;
+  --ide-input: #0D1117;
+  --ide-accent: #58A6FF;
+  --ide-accent-dim: rgba(88,166,255,0.1);
+  --ide-text: #C9D1D9;
+  --ide-text-muted: #8B949E;
+  --ide-text-dim: #484F58;
+  --ide-text-bright: #F0F6FC;
+  --ide-border: #21262D;
+  --ide-success: #3FB950;
+  --ide-warning: #D29922;
+  --ide-error: #F85149;
+  --ide-add-bg: rgba(63,185,80,0.15);
+  --ide-add: #3FB950;
+  --ide-del-bg: rgba(248,81,73,0.15);
+  --ide-del: #F85149;
+  --ide-line: #484F58;
+  --ide-highlight: rgba(88,166,255,0.08);
+
+  /* Web Portal Light Theme */
+  --web-bg: #FAFBFC;
+  --web-surface: #FFFFFF;
+  --web-sidebar: #F6F8FA;
+  --web-accent: #0969DA;
+  --web-accent-light: #DDF4FF;
+  --web-text: #1F2328;
+  --web-text-muted: #656D76;
+  --web-text-dim: #8C959F;
+  --web-border: #D8DEE4;
+  --web-border-light: #EAEEF2;
+  --web-success: #1A7F37;
+  --web-card-hover: #F3F8FF;
+
+  --font-ui: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-html, body, #root {
-  height: 100%;
-  overflow: hidden;
-}
+html, body, #root { height: 100%; overflow: hidden; }
 
 body {
-  background: var(--bg-base);
-  color: var(--text-primary);
   font-family: var(--font-ui);
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar { width: 7px; height: 7px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 0; }
-::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
-::-webkit-scrollbar-corner { background: transparent; }
-
-::selection { background: var(--selection); }
+::-webkit-scrollbar-thumb { background: var(--ide-border); border-radius: 0; }
+::selection { background: var(--ide-accent-dim); }
