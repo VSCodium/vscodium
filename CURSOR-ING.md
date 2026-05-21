@@ -86,6 +86,8 @@ Cross-platform release (Windows/macOS/Linux builds, CI matrix, signing) is **fut
 |       +-- maps/architecture.md
 |       +-- runbooks/phase1-setup.md
 +-- extensions/cursor-ing-ai/      # VS Code extension skeleton
++-- extensions/cursor-ing-design-studio/ # Design Studio extension
++-- extensions/cursor-ing-artifacts/     # Artifact Preview extension      # VS Code extension skeleton
 |   +-- package.json, tsconfig.json
 |   +-- src/
 |       +-- extension.ts
@@ -150,3 +152,18 @@ npm run compile
 3. Working diff application with file writes
 4. Terminal command approval flow
 5. Editor decorations for agent visualization
+
+## Design Studio & Artifacts
+
+Cursor ING includes a dedicated "Design Studio" for prompt-first UI and artifact generation, adapted from Open Design.
+
+### Architecture
+- **Design Studio**: Extension providing a generation panel with skill and design system selection.
+- **Artifact Preview**: Extension providing a sandboxed webview for rendering and exporting generated HTML.
+- **Design Sidecar**: Isolated runtime (mocked in Phase 1) for generation logic.
+
+### Integration Model
+1. **Prompt-first**: User describes the UI in the Design Studio panel.
+2. **Skill-driven**: Agent selects appropriate design skill (landing-page, dashboard, etc.).
+3. **System-aligned**: User/Agent selects a design system (minimal, apple, vercel).
+4. **Sandboxed**: Generated artifacts are previewed safely and stored in `.cursor-ing/design-projects/`.
