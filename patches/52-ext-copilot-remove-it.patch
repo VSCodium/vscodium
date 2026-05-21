@@ -88,7 +88,7 @@ index 25aa6a57..7615c27a 100644
 -				compileCopilotExtensionBuildTask,
  				compileExtensionMediaBuildTask,
 diff --git a/build/npm/dirs.ts b/build/npm/dirs.ts
-index 468d2df8..64b1c19d 100644
+index 289a4697..8c6df6f7 100644
 --- a/build/npm/dirs.ts
 +++ b/build/npm/dirs.ts
 @@ -17,3 +17,2 @@ export const dirs = [
@@ -134,7 +134,7 @@ index dc154d4b..834a4a78 100644
 -	}
  }
 diff --git a/package-lock.json b/package-lock.json
-index 96150298..752530f6 100644
+index 68f23433..eea135bb 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -12,5 +12,2 @@
@@ -330,7 +330,7 @@ index 96150298..752530f6 100644
 -    },
      "node_modules/vscode-oniguruma": {
 diff --git a/package.json b/package.json
-index 79f619ca..5c2bcea8 100644
+index 5defb1ef..04990246 100644
 --- a/package.json
 +++ b/package.json
 @@ -23,3 +23,3 @@
@@ -356,7 +356,7 @@ index 79f619ca..5c2bcea8 100644
 -    "@github/copilot-sdk": "^0.3.0",
      "@microsoft/1ds-core-js": "^3.2.13",
 diff --git a/remote/package.json b/remote/package.json
-index 1544b4c9..b3c51d2f 100644
+index 92eed6c1..a7cebde8 100644
 --- a/remote/package.json
 +++ b/remote/package.json
 @@ -5,4 +5,2 @@
@@ -365,7 +365,7 @@ index 1544b4c9..b3c51d2f 100644
 -    "@github/copilot-sdk": "^0.3.0",
      "@microsoft/1ds-core-js": "^3.2.13",
 diff --git a/src/vs/platform/agentHost/node/agentHostMain.ts b/src/vs/platform/agentHost/node/agentHostMain.ts
-index 0232f81b..e6758b6b 100644
+index 2dc1125a..6a2107fc 100644
 --- a/src/vs/platform/agentHost/node/agentHostMain.ts
 +++ b/src/vs/platform/agentHost/node/agentHostMain.ts
 @@ -17,3 +17,3 @@ import * as os from 'os';
@@ -373,15 +373,17 @@ index 0232f81b..e6758b6b 100644
 -import { AgentHostClaudeSdkPathEnvVar, AgentHostIpcChannels, IAgentHostInspectInfo, IAgentHostSocketInfo, IConnectionTrackerService } from '../common/agentService.js';
 +import { AgentHostIpcChannels, IAgentHostInspectInfo, IAgentHostSocketInfo, IConnectionTrackerService } from '../common/agentService.js';
  import { AgentService } from './agentService.js';
-@@ -21,7 +21,2 @@ import { IAgentConfigurationService } from './agentConfigurationService.js';
+@@ -22,9 +22,2 @@ import { IAgentHostCompletions } from './agentHostCompletions.js';
  import { IAgentHostTerminalManager } from './agentHostTerminalManager.js';
 -import { CopilotAgent } from './copilot/copilotAgent.js';
 -import { CopilotApiService, ICopilotApiService } from './shared/copilotApiService.js';
 -import { ClaudeAgent } from './claude/claudeAgent.js';
 -import { ClaudeAgentSdkService, IClaudeAgentSdkService } from './claude/claudeAgentSdkService.js';
 -import { ClaudeProxyService, IClaudeProxyService } from './claude/claudeProxyService.js';
+-import { IAgentHostOTelService } from '../common/otel/agentHostOTelService.js';
+-import { AgentHostOTelService } from './otel/agentHostOTelService.js';
  import { ProtocolServerHandler } from './protocolServerHandler.js';
-@@ -115,8 +110,2 @@ function startAgentHost(): void {
+@@ -125,10 +118,2 @@ async function startAgentHost(): Promise<void> {
  		diServices.set(IAgentHostGitService, gitService);
 -		const copilotApiService = instantiationService.createInstance(CopilotApiService, undefined);
 -		diServices.set(ICopilotApiService, copilotApiService);
@@ -389,9 +391,11 @@ index 0232f81b..e6758b6b 100644
 -		diServices.set(IClaudeProxyService, claudeProxyService);
 -		const claudeAgentSdkService = instantiationService.createInstance(ClaudeAgentSdkService);
 -		diServices.set(IClaudeAgentSdkService, claudeAgentSdkService);
- 		agentService = new AgentService(logService, fileService, sessionDataService, productService, gitService, rootConfigResource);
-@@ -129,11 +118,2 @@ function startAgentHost(): void {
- 		diServices.set(IAgentConfigurationService, agentService.configurationService);
+-		const agentHostOTelService = disposables.add(instantiationService.createInstance(AgentHostOTelService));
+-		diServices.set(IAgentHostOTelService, agentHostOTelService);
+ 		agentService = new AgentService(logService, fileService, sessionDataService, productService, gitService, rootConfigResource, telemetryService);
+@@ -142,11 +127,2 @@ async function startAgentHost(): Promise<void> {
+ 		diServices.set(IAgentHostCompletions, agentService.completionsService);
 -		agentService.registerProvider(instantiationService.createInstance(CopilotAgent));
 -		// The Claude agent provider is opt-in. Gated on the
 -		// `chat.agentHost.claudeAgent.path` workbench setting being non-empty,
@@ -403,18 +407,20 @@ index 0232f81b..e6758b6b 100644
 -		}
  	} catch (err) {
 diff --git a/src/vs/platform/agentHost/node/agentHostServerMain.ts b/src/vs/platform/agentHost/node/agentHostServerMain.ts
-index 26cbf179..bd83ddf3 100644
+index 5f8f2c88..89b918a2 100644
 --- a/src/vs/platform/agentHost/node/agentHostServerMain.ts
 +++ b/src/vs/platform/agentHost/node/agentHostServerMain.ts
-@@ -33,7 +33,2 @@ import { InstantiationService } from '../../instantiation/common/instantiationSe
+@@ -33,9 +33,2 @@ import { InstantiationService } from '../../instantiation/common/instantiationSe
  import { ServiceCollection } from '../../instantiation/common/serviceCollection.js';
 -import { CopilotAgent } from './copilot/copilotAgent.js';
 -import { CopilotApiService, ICopilotApiService } from './shared/copilotApiService.js';
 -import { ClaudeAgent } from './claude/claudeAgent.js';
 -import { ClaudeAgentSdkService, IClaudeAgentSdkService } from './claude/claudeAgentSdkService.js';
 -import { ClaudeProxyService, IClaudeProxyService } from './claude/claudeProxyService.js';
+-import { IAgentHostOTelService } from '../common/otel/agentHostOTelService.js';
+-import { AgentHostOTelService } from './otel/agentHostOTelService.js';
  import { AgentService } from './agentService.js';
-@@ -207,21 +202,2 @@ async function main(): Promise<void> {
+@@ -215,23 +208,2 @@ async function main(): Promise<void> {
  		diServices.set(IAgentHostGitService, gitService);
 -		// Register `ICopilotApiService` BEFORE `IClaudeProxyService` —
 -		// the proxy service constructor requires it.
@@ -424,6 +430,8 @@ index 26cbf179..bd83ddf3 100644
 -		diServices.set(IClaudeProxyService, claudeProxyService);
 -		const claudeAgentSdkService = instantiationService.createInstance(ClaudeAgentSdkService);
 -		diServices.set(IClaudeAgentSdkService, claudeAgentSdkService);
+-		const agentHostOTelService = disposables.add(instantiationService.createInstance(AgentHostOTelService));
+-		diServices.set(IAgentHostOTelService, agentHostOTelService);
 -		const copilotAgent = disposables.add(instantiationService.createInstance(CopilotAgent));
 -		agentService.registerProvider(copilotAgent);
 -		log('CopilotAgent registered');
@@ -437,7 +445,7 @@ index 26cbf179..bd83ddf3 100644
 -		}
  	}
 diff --git a/src/vs/platform/agentHost/test/node/mockAgent.ts b/src/vs/platform/agentHost/test/node/mockAgent.ts
-index 1c48abc3..71258ee8 100644
+index 249aa4bc..6c110b8e 100644
 --- a/src/vs/platform/agentHost/test/node/mockAgent.ts
 +++ b/src/vs/platform/agentHost/test/node/mockAgent.ts
 @@ -12,3 +12,2 @@ import { type ISyncedCustomization } from '../../common/agentPluginManager.js';
@@ -446,8 +454,8 @@ index 1c48abc3..71258ee8 100644
  import { ProtectedResourceMetadata, type MessageAttachment, type ModelSelection } from '../../common/state/protocol/state.js';
 @@ -16,3 +15,3 @@ import type { ResolveSessionConfigResult, SessionConfigCompletionsResult } from
  import { ActionType } from '../../common/state/sessionActions.js';
--import { CustomizationStatus, ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, parseSubagentSessionUri, type CustomizationRef, type PendingMessage, type SessionCustomization, type StringOrMarkdown, type ToolCallResult, type Turn } from '../../common/state/sessionState.js';
-+import { CustomizationStatus, ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, type CustomizationRef, type PendingMessage, type SessionCustomization, type StringOrMarkdown, type ToolCallResult, type Turn } from '../../common/state/sessionState.js';
+-import { CustomizationStatus, ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, parseSubagentSessionUri, type CustomizationRef, type PendingMessage, type SessionCustomization, type StringOrMarkdown, type ToolCallResult, type Turn, type UsageInfo } from '../../common/state/sessionState.js';
++import { CustomizationStatus, ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, type CustomizationRef, type PendingMessage, type SessionCustomization, type StringOrMarkdown, type ToolCallResult, type Turn, type UsageInfo } from '../../common/state/sessionState.js';
  import { hasKey } from '../../../../base/common/types.js';
 @@ -65,10 +64,2 @@ export class MockAgent implements IAgent {
  
@@ -479,7 +487,7 @@ index 1c48abc3..71258ee8 100644
 -	];
 -
  	// Track pending permission requests
-@@ -684,9 +664,2 @@ export class ScriptedMockAgent implements IAgent {
+@@ -685,9 +665,2 @@ export class ScriptedMockAgent implements IAgent {
  	async getSessionMessages(session: URI): Promise<readonly Turn[]> {
 -		const subagentInfo = parseSubagentSessionUri(session);
 -		if (subagentInfo) {

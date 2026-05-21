@@ -1,27 +1,27 @@
 diff --git a/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts b/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
-index 27d6be94..ddb504b4 100644
+index 55b877bd..9ba4d627 100644
 --- a/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
 +++ b/src/vs/workbench/contrib/chat/browser/actions/chatActions.ts
-@@ -1168,3 +1168,3 @@ export function registerChatActions() {
+@@ -1169,3 +1169,3 @@ export function registerChatActions() {
  				precondition: ContextKeyExpr.and(
 -					ChatContextKeys.Setup.installed,
 +					ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  					ChatContextKeys.Setup.disabled.negate(),
 diff --git a/src/vs/workbench/contrib/chat/browser/actions/chatContextActions.ts b/src/vs/workbench/contrib/chat/browser/actions/chatContextActions.ts
-index d2fccfb3..cd0bb779 100644
+index 00c445ab..f1e87408 100644
 --- a/src/vs/workbench/contrib/chat/browser/actions/chatContextActions.ts
 +++ b/src/vs/workbench/contrib/chat/browser/actions/chatContextActions.ts
-@@ -318,3 +318,4 @@ class AttachSelectionToChatAction extends Action2 {
+@@ -319,3 +319,4 @@ class AttachSelectionToChatAction extends Action2 {
  						ResourceContextKey.Scheme.isEqualTo(Schemas.vscodeUserData)
 -					)
 +					),
 +					ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  				)
-diff --git a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts b/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
-index 883cd676..dc50ad73 100644
---- a/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
-+++ b/src/vs/workbench/contrib/chat/browser/chat.contribution.ts
-@@ -1491,3 +1491,3 @@ configurationRegistry.registerConfiguration({
+diff --git a/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts b/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts
+index 74a6b479..3c5ac6bc 100644
+--- a/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts
++++ b/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts
+@@ -1615,3 +1615,3 @@ configurationRegistry.registerConfiguration({
  			description: nls.localize('chat.disableAIFeatures', "Disable and hide built-in AI features provided by GitHub Copilot, including chat and inline suggestions."),
 -			default: false,
 +			default: true,
@@ -35,10 +35,10 @@ index 8fb472b3..7b26c605 100644
 +				ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  				ChatContextKeys.Setup.hidden.negate(),
 diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupContributions.ts b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupContributions.ts
-index 6df31b5e..3cdad208 100644
+index 90d39a49..72455fa4 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupContributions.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupContributions.ts
-@@ -231,8 +231,9 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+@@ -232,8 +232,9 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
  					f1: true,
 -					precondition: ContextKeyExpr.or(
 -						ChatContextKeys.Setup.hidden,
@@ -54,27 +54,27 @@ index 6df31b5e..3cdad208 100644
 +						ChatContextKeys.Setup.completed,
 +						ChatContextKeys.Entitlement.canSignUp.negate()
  					)
-@@ -352,2 +353,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+@@ -370,2 +371,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
  						when: ContextKeyExpr.and(
 +							ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  							ChatContextKeys.Setup.hidden.negate(),
-@@ -384,2 +386,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+@@ -403,2 +405,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
  						when: ContextKeyExpr.and(
 +							ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  							IsWebContext.negate(),
-@@ -414,2 +417,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+@@ -452,2 +455,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
  					precondition: ContextKeyExpr.and(
 +						ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  						ChatContextKeys.Setup.hidden.negate(),
-@@ -471,2 +475,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+@@ -511,2 +515,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
  					precondition: ContextKeyExpr.and(
 +						ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  						ChatContextKeys.Setup.hidden.negate(),
-@@ -563,2 +568,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
+@@ -609,2 +614,3 @@ export class ChatSetupContribution extends Disposable implements IWorkbenchContr
  		const internalGenerateCodeContext = ContextKeyExpr.and(
 +			ContextKeyExpr.has('config.chat.disableAIFeatures').negate(),
  			ChatContextKeys.Setup.hidden.negate(),
-@@ -806,3 +812,7 @@ export class ChatTeardownContribution extends Disposable implements IWorkbenchCo
+@@ -837,3 +843,7 @@ export class ChatTeardownContribution extends Disposable implements IWorkbenchCo
  					category: CHAT_CATEGORY,
 -					precondition: ContextKeyExpr.and(ChatContextKeys.Setup.hidden.negate(), ChatContextKeys.Setup.disabledInWorkspace.negate()),
 +					precondition: ContextKeyExpr.and(
@@ -84,10 +84,10 @@ index 6df31b5e..3cdad208 100644
 +					),
  					menu: {
 diff --git a/src/vs/workbench/contrib/inlineChat/browser/inlineChatActions.ts b/src/vs/workbench/contrib/inlineChat/browser/inlineChatActions.ts
-index 86516c54..2ac1702a 100644
+index 7e5d8f63..e949b389 100644
 --- a/src/vs/workbench/contrib/inlineChat/browser/inlineChatActions.ts
 +++ b/src/vs/workbench/contrib/inlineChat/browser/inlineChatActions.ts
-@@ -42,3 +42,4 @@ const inlineChatContextKey = ContextKeyExpr.and(
+@@ -44,3 +44,4 @@ const inlineChatContextKey = ContextKeyExpr.and(
  	EditorContextKeys.writable,
 -	EditorContextKeys.editorSimpleInput.negate()
 +	EditorContextKeys.editorSimpleInput.negate(),
