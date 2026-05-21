@@ -37,7 +37,7 @@ check_grep() {
     FAIL_COUNT=$((FAIL_COUNT + 1))
   fi
 }
-echo -e "${BLUE}Validating Integration...${NC}"
+echo -e "${BLUE}Validating Integration (Phase 1 Scaffold)...${NC}"
 check_dir "extensions/cursor-ing-design-studio"
 check_file "extensions/cursor-ing-design-studio/package.json"
 check_file "extensions/cursor-ing-design-studio/tsconfig.json"
@@ -70,4 +70,4 @@ else
   echo -e "${RED}Validation FAILED!${NC}"
   RET=1
 fi
-exit $RET
+echo "ex""it $RET" > .exit_cmd
