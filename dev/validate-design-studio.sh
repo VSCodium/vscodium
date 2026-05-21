@@ -70,6 +70,9 @@ echo -e "\nSummary: ${GREEN}$PASS_COUNT passed${NC}, ${RED}$FAIL_COUNT failed${N
 
 if [ $FAIL_COUNT -eq 0 ]; then
   echo -e "${GREEN}Design Studio Phase 1 validation successful!${NC}"
+  RET=0
 else
   echo -e "${RED}Design Studio validation FAILED!${NC}"
+  RET=1
 fi
+exit $RET
