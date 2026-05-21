@@ -7,104 +7,88 @@
 - **License**: MIT-compatible
 
 ## Original Problem Statement
-Build Cursor ING on top of the VSCodium repository. Phase 1: scaffold architecture with AGENTS.md, .agents/ harness, extension skeleton, mock provider, agent roster, plan model, activity log, diff preview, documentation, and validation.
+Build Cursor ING on top of the VSCodium repository. The UI must be IDE-native (VS Code/Cursor-style), not a dashboard. Phase 1: scaffold architecture with AGENTS.md, .agents/ harness, extension skeleton, mock provider, agent roster, plan model, activity log, diff preview, and IDE-native web preview.
 
 ## User Persona
-- Software engineers who want AI-assisted coding without giving up privacy
-- Teams who need auditable, reversible AI actions in their IDE
-- Open-source advocates who want a Cursor alternative on VSCodium
+- Software engineers wanting AI-assisted coding without giving up privacy
+- Teams needing auditable, reversible AI actions in their IDE
+- Open-source advocates wanting a Cursor alternative on VSCodium
 
 ## Core Requirements (Static)
 1. No telemetry, no tracking, no proprietary assets
 2. Extension-first architecture (no core VSCodium patches)
 3. Provider abstraction supporting multiple AI backends
 4. Multi-agent team with visible statuses and permissions
-5. Explicit approval for file writes, commands, and browser actions
+5. Explicit approval for file writes, commands, browser actions
 6. Structured plans with review and approval workflow
-7. Activity log as audit trail for all agent actions
+7. Activity log as audit trail
 8. Diff preview with trust/reversibility controls
+9. IDE-native UI (not SaaS dashboard)
 
-## What's Been Implemented (Phase 1 - Jan 2026)
+## What's Been Implemented
 
-### Repo Scaffolding (Primary)
-- [x] Repo audit: VSCodium build pipeline, patches, product.json, branding, CI analyzed
-- [x] AGENTS.md: Canonical cross-model instruction file
-- [x] .agents/ scaffold: 3-layer harness (vendor, skills, agents+brain)
-  - registry.json, validate.sh
-  - 5 model adapters (Claude, Codex, Kimi, Qwen, Gemini)
-  - 3 skills (code-review, plan-and-execute, diff-apply)
-  - 5 agent definitions (planner, coder, reviewer, security, browser)
-  - Brain: memory, glossary, assumptions, ADR, architecture map, runbook
-- [x] Extension skeleton: extensions/cursor-ing-ai/ (TypeScript)
-  - Provider types, registry, mock provider
-  - Agent types, roster with tree view
-  - Plan types, plan viewer webview
-  - Activity log with output channel and webview
-  - Diff preview webview with approval UI
-  - Composer panel webview
-- [x] Documentation: CURSOR-ING.md
-- [x] Validation: .agents/validate.sh (53 checks, all pass)
+### Iteration 1 (Jan 2026) - Phase 1 Scaffolding
+- Repo audit: VSCodium build pipeline, patches, product.json analyzed
+- AGENTS.md + .agents/ three-layer harness (53 validation checks)
+- Extension skeleton: extensions/cursor-ing-ai/ (TypeScript)
+- Mock provider, agent roster, plan model, activity log, diff preview
+- Initial dashboard preview (replaced in iteration 2)
 
-### Preview Dashboard (Secondary)
-- [x] Backend: FastAPI serving mock data (8 API endpoints)
-- [x] Frontend: React dashboard with 6 panels
-  - Overview: Stats, acceptance criteria, architecture diagram, providers
-  - Agent Roster: 5 agents with icons, statuses, last actions
-  - Plan Viewer: 5-step plan with risk badges, file references
-  - Activity Log: 18 entries in terminal-style audit format
-  - Diff Preview: Red/green diff with approve/reject controls
-  - Composer: Chat with mock provider, receives structured responses
+### Iteration 2 (Jan 2026) - IDE-Native UI Overhaul
+- Complete UI rewrite: dashboard -> VS Code/Cursor-style IDE shell
+- TitleBar: Shows active file and "Cursor ING" branding
+- ActivityBar: 6 nav icons (Explorer, Search, SCM, Debug, Extensions, Agents) + Composer toggle
+- Sidebar: File explorer tree with .agents/, plans, extensions OR Agent roster with status dots
+- Editor Area: Tabbed editor with Welcome page, Plan editor (line numbers, risk badges), Diff editor (red/green lines)
+- Composer Panel: Right-side AI chat panel with mock-v1 provider
+- Bottom Panel: Activity Log (18 entries), Terminal, Problems tabs
+- Status Bar: Branch, agent status, provider model, "No Telemetry", version
+- Deep navy theme (#0B1120 base, #05A0F0 accent)
 
 ### Testing
-- Backend: 16/16 tests passed (100%)
-- Frontend: All UI tests passed (100%)
-- Validation: 53/53 checks passed
+- Iteration 1: Backend 16/16, Frontend 100%
+- Iteration 2: Backend 16/16, Frontend 100% (all IDE layout tests passed)
+- Validation: 53/53 scaffold checks
 
 ## Architecture
 ```
-User Interface (Webview Panels)
-  Composer | Agent Roster | Plan Viewer | Diff Preview
-    |
-Extension Host (TypeScript)
-  extension.ts -> commands, webviews, tree views
-    |
-Agent Orchestrator
-  Planner -> Coder -> Reviewer -> Security -> Browser
-    |
-Provider Abstraction
-  MockProvider | [OpenAI] | [Anthropic] | [Ollama] | [OpenRouter]
-    |
-Activity Log / Audit Trail
-    |
-VSCodium / VS Code Runtime
+TitleBar
++------+--------+-----------------------+------------------+
+| Act  | Side   | Editor Area           | AI Composer      |
+| Bar  | bar    | (Welcome/Plan/Diff    | (Chat + Mock     |
+| Icons| (Tree/ |  with tabs)           |  Provider)       |
+|      |  Agents|                       |                  |
++------+--------+-----------------------+------------------+
+|      | Bottom Panel (Activity Log / Terminal / Problems)  |
++------+--------+-----------------------+------------------+
+StatusBar: main | 3 agents active | mock-v1 | No Telemetry
 ```
 
 ## Prioritized Backlog
 
-### P0 - Phase 2 (Next)
-1. Real provider integration (OpenAI, Anthropic via Emergent key)
-2. Functional AI composer chat with streaming
+### P0 - Next
+1. Real AI provider integration (OpenAI/Anthropic via Emergent key)
+2. Functional composer chat with streaming
 3. Working diff application with file writes
 4. Terminal command approval flow
-5. Extension compilation and VSIX packaging
+5. Extension TypeScript compilation + VSIX
 
-### P1 - Phase 3
-1. Multi-agent orchestration protocol
-2. Agent-to-agent handoffs
-3. Browser-use panel with safe adapter
-4. Voice input (Ctrl+Shift+Space)
-5. Plannotator-inspired annotation UI
+### P1
+1. Editor decorations (Clicky-style agent visualization)
+2. Browser-use panel scaffold
+3. Multi-agent orchestration
+4. Plannotator annotations
+5. Voice input architecture
 
-### P2 - Phase 4+
-1. OpenRouter/Ollama local model support
-2. Kimi/Qwen/Gemini adapter implementations
-3. Legal/document workflow pack
-4. oh-my-claudecode deep interview loop
-5. Full VSCodium build integration
+### P2
+1. Domain packs (legal/document review)
+2. Ollama local model support
+3. Cross-platform build pipeline
+4. oh-my-claudecode interview loop
 
 ## Next Tasks
-1. Wire real AI provider (OpenAI-compatible) with Emergent LLM key
-2. Enable streaming in composer panel
-3. Implement diff apply (actual file writes with approval)
-4. TypeScript compilation of extension skeleton
-5. VSIX build and local extension testing
+1. Wire real AI provider into composer
+2. Enable streaming responses
+3. Implement diff apply with file writes
+4. Add editor decorations for agent activity
+5. TypeScript compilation of extension skeleton
