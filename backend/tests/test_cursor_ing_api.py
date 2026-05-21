@@ -222,14 +222,15 @@ class TestScaffoldValidateEndpoint:
     """Scaffold validation endpoint tests"""
     
     def test_scaffold_validate_passes(self):
-        """GET /api/scaffold/validate returns passed=true"""
+        """GET /api/scaffold/validate returns passed=true with 59 checks"""
         response = requests.get(f"{BASE_URL}/api/scaffold/validate")
         assert response.status_code == 200
         
         data = response.json()
         assert data["passed"] == True
         assert data["exitCode"] == 0
-        assert "53 passed" in data["output"]
+        # Iteration 3: validation expanded to 59 checks (was 53 in iteration 1-2)
+        assert "59 passed" in data["output"]
 
 
 class TestStatsEndpoint:

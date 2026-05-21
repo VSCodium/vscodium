@@ -48,12 +48,23 @@ check_json() {
   fi
 }
 
+check_no_plans_in_brain() {
+  local found
+  found=$(find .agents/brain -name "*.plan.json" 2>/dev/null)
+  if [[ -n "$found" ]]; then
+    echo -e "${RED}[FAIL]${NC} Plans found in .agents/brain/ -- plans must only be in .cursor-ing/plans/"
+    FAIL=$((FAIL + 1))
+  else
+    echo -e "${GREEN}[PASS]${NC} No plan files in .agents/brain/ (correct: plans in .cursor-ing/plans/)"
+    PASS=$((PASS + 1))
+  fi
+}
+
 echo "============================================"
 echo "  Cursor ING Phase 1 Validation"
 echo "============================================"
 echo ""
 
-# Find repo root (script is at .agents/validate.sh)
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
@@ -64,6 +75,13 @@ echo "--- Core Files ---"
 check_file "AGENTS.md"
 check_file "CURSOR-ING.md"
 check_file "LICENSE"
+
+echo ""
+echo "--- .cursor-ing/ Workspace State ---"
+check_dir ".cursor-ing"
+check_file ".cursor-ing/README.md"
+check_dir ".cursor-ing/plans"
+check_json ".cursor-ing/plans/auth-module.plan.json"
 
 echo ""
 echo "--- .agents/ Harness ---"
@@ -93,10 +111,15 @@ check_file ".agents/brain/glossary.md"
 check_file ".agents/brain/assumptions.md"
 check_dir ".agents/brain/adr"
 check_file ".agents/brain/adr/001-extension-first.md"
+check_file ".agents/brain/adr/002-plan-storage-location.md"
 check_dir ".agents/brain/maps"
 check_file ".agents/brain/maps/architecture.md"
 check_dir ".agents/brain/runbooks"
 check_file ".agents/brain/runbooks/phase1-setup.md"
+
+echo ""
+echo "--- Plan Storage Rule ---"
+check_no_plans_in_brain
 
 echo ""
 echo "--- Extension Skeleton ---"

@@ -89,13 +89,17 @@ function ExplorerView({ plan, onOpenTab }) {
             </>
           )}
 
-          <TreeNode label="plans" expanded={plansOpen} onToggle={() => setPlansOpen(p => !p)} depth={1} />
-          {plansOpen && plan && (
+          <TreeNode label=".cursor-ing" expanded={plansOpen} onToggle={() => setPlansOpen(p => !p)} depth={1} />
+          {plansOpen && (
             <>
-              <FileItem
-                icon={FileText} label="auth-module.plan" depth={2} active
-                onClick={() => onOpenTab('plan', 'auth-module.plan', 'plan')}
-              />
+              <FileItem icon={File} label="README.md" depth={2} />
+              <TreeNode label="plans" expanded={true} onToggle={() => {}} depth={2} />
+              {plan && (
+                <FileItem
+                  icon={FileText} label="auth-module.plan.json" depth={3} active
+                  onClick={() => onOpenTab('plan', 'auth-module.plan', 'plan')}
+                />
+              )}
               <FileItem
                 icon={FileCode} label="processor.diff" depth={2}
                 onClick={() => onOpenTab('diff', 'processor.diff', 'diff')}

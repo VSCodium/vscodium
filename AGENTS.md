@@ -34,6 +34,11 @@ The primary integration point is the `extensions/cursor-ing-ai/` extension.
 - `src/plans/plan-viewer.ts` - Plan viewer/editor scaffold
 - Plans have steps, statuses, annotations, approval states
 
+### Plan Storage (Locked)
+- **`.cursor-ing/plans/`** = runtime execution plans (single source of truth)
+- **`.agents/brain/`** = durable memory, assumptions, ADRs, glossary, maps, runbooks
+- Do NOT duplicate plan state in both places. See ADR 002.
+
 ### Activity Log
 - `src/activity/activity-log.ts` - Structured audit trail
 - Logs: file reads, edits, commands, browser actions, handoffs
@@ -48,6 +53,12 @@ Three-layer structure:
 1. **Vendor** (.agents/vendor/) - Read-only open-source references
 2. **Skills** (.agents/skills/) - Curated reusable skills
 3. **Domain** (.agents/agents/ + .agents/brain/) - Cursor ING-specific
+
+## Workspace State (.cursor-ing/)
+
+- `.cursor-ing/plans/` - Runtime execution plans (single source of truth)
+- `.cursor-ing/` may hold future per-project config and session state
+- Plans are NOT stored in `.agents/brain/`. Brain holds durable knowledge only.
 
 ## Rules for All Agents
 
@@ -91,3 +102,23 @@ They are adapters that translate AGENTS.md conventions:
 - Browser-use panel
 - Voice input (Ctrl+Shift+Space)
 - Legal/document workflow pack
+
+### Phase 7+ (Future Documentation Only)
+- Cross-platform build/release (Windows, macOS, Linux)
+- CI matrix, signing, notarization
+- Not a Phase 1 implementation target
+
+## UI Specification
+
+The Cursor ING preview and production UI must be **IDE-shell-first**, not dashboard-first.
+Any web preview must simulate a VS Code/VSCodium/Cursor-style IDE workspace:
+- Top title/menu/command area
+- Left activity bar (Explorer, Search, Source Control, Run, Extensions, Agents)
+- Left sidebar (file explorer or agent roster)
+- Editor tab bar
+- Main editor area (code, plan document, diff view)
+- Right AI composer/agent panel
+- Bottom terminal/output/activity log panel
+- Bottom status bar
+
+Do not use SaaS dashboard navigation, admin tables, or standalone dashboard pages.
