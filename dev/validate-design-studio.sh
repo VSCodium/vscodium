@@ -32,6 +32,24 @@ check_dir() {
   fi
 }
 
+check_grep() {
+  local pattern=$1
+  local file=$2
+  local desc=$3
+  if [ ! -f "$file" ]; then
+    echo -e "  [${RED}FAIL${NC}] $desc (file $file missing)"
+    FAIL_COUNT=$((FAIL_COUNT+1))
+    return
+  fi
+  if grep -q "$pattern" "$file"; then
+    echo -e "  [${GREEN}PASS${NC}] $desc"
+    PASS_COUNT=$((PASS_COUNT+1))
+  else
+    echo -e "  [${RED}FAIL${NC}] $desc (pattern not found in $file)"
+    FAIL_COUNT=$((FAIL_COUNT+1))
+  fi
+}
+
 echo "--- Extensions ---"
 check_dir "extensions/cursor-ing-design-studio"
 check_file "extensions/cursor-ing-design-studio/package.json"
@@ -57,14 +75,14 @@ check_file ".agents/skills/design/dashboard.json"
 check_dir ".agents/vendor/open-design"
 check_file ".agents/vendor/open-design/README.md"
 
-echo "--- Documentation ---"
-grep -q "cursorIng.openDesignStudio" extensions/cursor-ing-design-studio/package.json && echo -e "  [${GREEN}PASS${NC}] command ID consistent: openDesignStudio" || (echo -e "  [${RED}FAIL${NC}] command ID inconsistent: openDesignStudio"; FAIL_COUNT=$((FAIL_COUNT+1)))
-grep -q "cursorIng.newDesignProject" extensions/cursor-ing-design-studio/package.json && echo -e "  [${GREEN}PASS${NC}] command ID consistent: newDesignProject" || (echo -e "  [${RED}FAIL${NC}] command ID inconsistent: newDesignProject"; FAIL_COUNT=$((FAIL_COUNT+1)))
-grep -q "cursorIng.previewArtifact" extensions/cursor-ing-design-studio/package.json && echo -e "  [${GREEN}PASS${NC}] command ID consistent: previewArtifact" || (echo -e "  [${RED}FAIL${NC}] command ID inconsistent: previewArtifact"; FAIL_COUNT=$((FAIL_COUNT+1)))
-grep -q "cursorIng.openArtifactPreview" extensions/cursor-ing-artifacts/package.json && echo -e "  [${GREEN}PASS${NC}] command ID consistent: openArtifactPreview" || (echo -e "  [${RED}FAIL${NC}] command ID inconsistent: openArtifactPreview"; FAIL_COUNT=$((FAIL_COUNT+1)))
+echo "--- Documentation & IDs ---"
+check_grep "cursorIng.openDesignStudio" "extensions/cursor-ing-design-studio/package.json" "command ID: openDesignStudio"
+check_grep "cursorIng.newDesignProject" "extensions/cursor-ing-design-studio/package.json" "command ID: newDesignProject"
+check_grep "cursorIng.previewArtifact" "extensions/cursor-ing-design-studio/package.json" "command ID: previewArtifact"
+check_grep "cursorIng.openArtifactPreview" "extensions/cursor-ing-artifacts/package.json" "command ID: openArtifactPreview"
 
-grep -q "Design Studio" AGENTS.md && echo -e "  [${GREEN}PASS${NC}] AGENTS.md updated" || (echo -e "  [${RED}FAIL${NC}] AGENTS.md missing Design Studio"; FAIL_COUNT=$((FAIL_COUNT+1)))
-grep -q "Design Studio" CURSOR-ING.md && echo -e "  [${GREEN}PASS${NC}] CURSOR-ING.md updated" || (echo -e "  [${RED}FAIL${NC}] CURSOR-ING.md missing Design Studio"; FAIL_COUNT=$((FAIL_COUNT+1)))
+check_grep "Design Studio" "AGENTS.md" "AGENTS.md updated"
+check_grep "Design Studio" "CURSOR-ING.md" "CURSOR-ING.md updated"
 
 echo -e "\nSummary: ${GREEN}$PASS_COUNT passed${NC}, ${RED}$FAIL_COUNT failed${NC}"
 
