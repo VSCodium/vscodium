@@ -1069,17 +1069,6 @@ index 00000000..62a49d53
 +		assert.strictEqual(FONT.tabsSize35, 35);
 +	});
 +});
-diff --git a/src/vs/editor/browser/widget/codeEditor/editor.css b/src/vs/editor/browser/widget/codeEditor/editor.css
-index 638055a0..713d8a6c 100644
---- a/src/vs/editor/browser/widget/codeEditor/editor.css
-+++ b/src/vs/editor/browser/widget/codeEditor/editor.css
-@@ -17,2 +17,6 @@
- 
-+/* .monaco-editor .editor-widget {
-+	font-size: var(--vscode-workbench-font-size, 13px);
-+} */
-+
- /* -------------------- Editor -------------------- */
 diff --git a/src/vs/editor/contrib/find/browser/findWidget.css b/src/vs/editor/contrib/find/browser/findWidget.css
 index 62c6056c..3d893baa 100644
 --- a/src/vs/editor/contrib/find/browser/findWidget.css
@@ -2653,7 +2642,7 @@ index eeddba00..4a0ef488 100644
 +			},
  			'workbench.settings.editor': {
 diff --git a/src/vs/workbench/browser/workbench.ts b/src/vs/workbench/browser/workbench.ts
-index 10e2c3ed..74e3bbe9 100644
+index 10e2c3ed..b9967763 100644
 --- a/src/vs/workbench/browser/workbench.ts
 +++ b/src/vs/workbench/browser/workbench.ts
 @@ -9,2 +9,3 @@ import { Event, Emitter, setGlobalLeakWarningThreshold } from '../../base/common
@@ -2692,7 +2681,7 @@ index 10e2c3ed..74e3bbe9 100644
 -		}
 -
  		const aliasing = configurationService.getValue<'default' | 'antialiased' | 'none' | 'auto'>('workbench.fontAliasing');
-@@ -296,2 +303,31 @@ export class Workbench extends Layout {
+@@ -296,2 +303,33 @@ export class Workbench extends Layout {
  
 +	private fontFamily: string | undefined;
 +	private updateFontFamily(configurationService: IConfigurationService) {
@@ -2711,20 +2700,22 @@ index 10e2c3ed..74e3bbe9 100644
 +		}
 +	}
 +
++	private fontSize: number | undefined;
 +	private updateFontSize(configurationService: IConfigurationService) {
 +		const configuredSize = getFontSize(configurationService, 'workbench.experimental.fontSize', 13);
 +
-+		if (FONT.defaultSize === configuredSize) {
++		if (this.fontSize === configuredSize) {
 +			return;
 +		}
 +
 +		updateDefaultSize(configuredSize);
 +
-+		this.mainContainer.style.setProperty('--vscode-workbench-font-size', `${FONT.defaultSize}px`);
++		this.fontSize = configuredSize;
++		this.mainContainer.style.setProperty('--vscode-workbench-font-size', `${configuredSize}px`);
 +	}
 +
  	private restoreFontInfo(storageService: IStorageService, configurationService: IConfigurationService): void {
-@@ -339,3 +375,6 @@ export class Workbench extends Layout {
+@@ -339,3 +377,6 @@ export class Workbench extends Layout {
  		// Apply font aliasing
 -		this.updateFontAliasing(undefined, configurationService);
 +		this.updateFontAliasing(configurationService);
