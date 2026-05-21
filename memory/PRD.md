@@ -2,62 +2,46 @@
 
 ## Product Identity
 - **Name**: Cursor ING
-- **Base**: VSCodium (open-source VS Code without Microsoft telemetry)
-- **Goal**: Privacy-first, open-source, Cursor-inspired AI IDE
+- **Goal**: Privacy-first, open-source, Cursor-inspired AI IDE + Web Portal on VSCodium
 - **License**: MIT-compatible
 
-## UI Specification (Locked)
-IDE-shell-first, NOT dashboard-first. Web preview simulates VS Code/Cursor workspace:
-- Title bar, Activity bar (6 icons), Sidebar (explorer/agents), Editor tabs, Editor area, Composer panel (right), Bottom panel (activity/terminal/problems), Status bar
+## Two Connected Surfaces
+
+### Surface 1: Cursor ING IDE (Dark)
+AI-first coding workspace showing real coding scenario:
+- Code editor with `session.ts` open, syntax highlighting, line numbers
+- Inline agent edit proposals (Accept/Reject/Dismiss) from Coder agent
+- AI Composer panel (right) with multi-agent conversation (Planner plan, Reviewer risk flag)
+- Activity Bar, Explorer sidebar, Bottom panel (Activity/Terminal/Problems), Status Bar
+- Status: branch, 3 agents active, mock-v1, No Telemetry, v0.1.0
+
+### Surface 2: Cursor ING Web Portal (Light)
+Companion control-plane for agent management:
+- New Agent prompt box with provider/team selectors + Start Agent button
+- Setup Checklist (GitHub, repo, provider, plugins, first task)
+- Plugins marketplace (Code Review, TypeScript Fixer, Doc Generator, Test Writer)
+- Automations (PR Review on Push, Security Scan Nightly, Stale Branch Cleanup)
+- Integrations (GitHub connected, GitLab pending, Mock Provider active)
+- Bugbot, Shared Canvases, Members, Usage (future)
 
 ## Plan Storage (Locked)
-- `.cursor-ing/plans/` = runtime execution plans (single source of truth)
-- `.agents/brain/` = durable memory, assumptions, ADRs, glossary, maps, runbooks
-- No duplication. See ADR 002.
+- `.cursor-ing/plans/` = runtime plans (single source of truth)
+- `.agents/brain/` = durable memory only
 
-## Phase 1 Scope (Locked)
-AGENTS.md, .agents scaffold, extension skeletons, mock/local provider, mock agent roster, plan model, activity log model, diff-preview scaffold, IDE-shell preview, validation script, documentation.
-NOT in Phase 1: real providers, working diff apply, agent orchestration, browser automation, voice, cross-platform release.
+## Iterations
+1. Scaffolding (AGENTS.md, .agents/, extension skeleton, mock provider)
+2. IDE-native UI (VS Code-style shell, replaced dashboard)
+3. Spec corrections (plan storage lock, validation 59 checks)
+4. **Product rewrite**: Two surfaces (IDE + Web Portal), real coding scenario, inline agent edits
 
-## What's Been Implemented
+## Testing: All iterations 100% pass
+- Backend: 16/16 tests passed
+- Frontend: All IDE + Web Portal tests passed
+- Validation: 59/59 scaffold checks
 
-### Iteration 1 - Scaffolding
-- Repo audit, AGENTS.md, .agents/ 3-layer harness (53 checks)
-- Extension skeleton, mock provider, agent roster, plan/activity/diff models
-
-### Iteration 2 - IDE-Native UI
-- Complete rewrite from dashboard to VS Code/Cursor-style IDE shell
-- TitleBar, ActivityBar, Sidebar, EditorTabs, Editor Area, Composer, BottomPanel, StatusBar
-
-### Iteration 3 - Spec Corrections
-- Locked plan storage: .cursor-ing/plans/ (runtime) vs .agents/brain/ (durable memory)
-- Added ADR 002, .cursor-ing/README.md, auth-module.plan.json
-- Updated validation to 59 checks (includes plan storage rule enforcement)
-- Updated sidebar explorer to show .cursor-ing/plans/ path
-- Updated AGENTS.md and CURSOR-ING.md with UI spec and storage rules
-- Cross-platform release marked as future documentation only
-
-### Testing
-- Iteration 1: Backend 16/16, Frontend 100%
-- Iteration 2: Backend 16/16, Frontend 100%
-- Iteration 3: Backend 16/16, Frontend 100%, Validation 59/59
-
-## Backlog
-### P0 - Phase 2
-1. Real AI provider (OpenAI/Anthropic)
+## Next: Phase 2
+1. Real AI provider integration
 2. Streaming composer chat
 3. Working diff apply
-4. Terminal command approval
-5. Extension TypeScript compilation
-
-### P1 - Phase 3+
-1. Editor decorations (Clicky-style agent visualization)
-2. Browser-use panel
-3. Multi-agent orchestration
-4. Plannotator annotations
-5. Voice input architecture
-
-### P2 - Future
-1. Domain packs (legal/document review)
-2. Ollama local model support
-3. Cross-platform release builds (Windows/macOS/Linux)
+4. Agent orchestration execution
+5. Browser-use panel scaffold
