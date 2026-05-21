@@ -1,0 +1,115 @@
+{
+  "project_name": "Cursor ING",
+  "theme": "Dark",
+  "archetype": "Archetype 4: Swiss & High-Contrast (Developer IDE Variant)",
+  "emotional_tone": "Trustworthy, professional, highly capable, privacy-focused, objective, dense but readable",
+  "typography": {
+    "fonts": {
+      "heading": "IBM Plex Mono, monospace",
+      "body": "IBM Plex Sans, sans-serif",
+      "code": "JetBrains Mono, monospace"
+    },
+    "rules": {
+      "anti_default_rule": "Inter and generic sans are banned for headings. Using IBM Plex Mono to establish a serious, engineering-grade aesthetic.",
+      "hierarchy": {
+        "h1": "text-2xl sm:text-3xl tracking-tight font-medium",
+        "h2": "text-xl sm:text-2xl tracking-tight font-medium",
+        "h3": "text-lg sm:text-xl font-medium",
+        "h4": "text-base font-medium",
+        "body": "text-sm leading-relaxed",
+        "small": "text-xs tracking-wide"
+      },
+      "overlines": "uppercase text-[10px] tracking-[0.15em] font-semibold"
+    }
+  },
+  "colors": {
+    "strategy": "Deep navy / petrol anchor with bright blue accent. Restrained contrast, avoiding generic AI purple/blue gradients.",
+    "palette": {
+      "background_base": "#0B1120", 
+      "background_surface": "#1B2A4A",
+      "background_elevated": "#23355C",
+      "primary_accent": "#05A0F0",
+      "primary_hover": "#0486C9",
+      "text_primary": "#F1F5F9",
+      "text_muted": "#94A3B8",
+      "border_subtle": "#2A3F6C",
+      "border_strong": "#3B5284",
+      "status_success": "#10B981",
+      "status_warning": "#F59E0B",
+      "status_error": "#EF4444",
+      "diff_add_bg": "rgba(16, 185, 129, 0.15)",
+      "diff_add_text": "#34D399",
+      "diff_remove_bg": "rgba(239, 68, 68, 0.15)",
+      "diff_remove_text": "#F87171"
+    }
+  },
+  "layout_and_spacing": {
+    "strategy": "The 'Control Room' Grid Protocol. Information-dense, modular, and compact.",
+    "spacing_scale": "Tighter than standard SaaS. Use p-2, p-3, p-4 for internal components. p-4 to p-6 for main sections.",
+    "grid_system": {
+      "base": "grid-cols-1 md:grid-cols-12 gap-4",
+      "sidebar": "col-span-1 md:col-span-3 lg:col-span-2 (fixed or collapsible)",
+      "main_canvas": "col-span-1 md:col-span-9 lg:col-span-10"
+    },
+    "surface_styles": "Grid Borders (The 'Technical' Look). 1px solid borders separating panels. Zero border-radius for main panels, max 4px for inner elements like buttons/tags.",
+    "borders": "Expose the skeleton. border-collapse style layouts."
+  },
+  "components": {
+    "strategy": "Shadcn heavily customized for IDE-native density. No excessive padding. Cardless design (rectangular, dense).",
+    "agent_roster_panel": {
+      "description": "Multi-agent team with status and role avatars.",
+      "visuals": "List view. Small square avatars or crisp icons (Phosphor/Lucide). Status dots (green/amber) blinking softly. Role text in monospace."
+    },
+    "activity_log": {
+      "description": "Audit trail of agent actions.",
+      "visuals": "Terminal-style list. Monospace timestamps. Left-aligned, extremely dense (py-1). No chat-bubbles. Pure structured logs."
+    },
+    "plan_viewer": {
+      "description": "Structured plan review.",
+      "visuals": "Tree-view or numbered steps. Clear left-border tracking the active step (accent color). Checkboxes for completion."
+    },
+    "diff_preview": {
+      "description": "Trust/reversibility-focused diff viewer.",
+      "visuals": "Split pane or inline diff. Red/Green subtle backgrounds. Strict monospace. Prominent 'Approve' / 'Reject' floating action bar."
+    },
+    "mock_ai_provider": {
+      "description": "Composer chat scaffold.",
+      "visuals": "Command-line like input at bottom. Clean message thread above. No avatars for user, just clear text separation."
+    }
+  },
+  "interactions_and_motion": {
+    "philosophy": "Minimal, functional, zero decorative motion.",
+    "hover_states": "Background lightens slightly. Border color shifts to accent. Text must remain high contrast.",
+    "focus_states": "ring-1 ring-[#05A0F0] ring-offset-1 ring-offset-[#0B1120]",
+    "transitions": "Instant or 150ms ease-out. No bouncy spring animations."
+  },
+  "icons_and_assets": {
+    "icon_library": "@phosphor-icons/react (Duotone or Regular weight for technical feel)",
+    "image_urls": {
+      "agent_avatars": [
+        {
+          "url": "https://images.unsplash.com/photo-1705501409579-33cfa8ef1ad3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHwzfHxtaW5pbWFsaXN0JTIwYWJzdHJhY3QlMjBkZXZlbG9wZXIlMjBhdmF0YXIlMjBkYXJrfGVufDB8fHx8MTc3OTM3OTg0OHww&ixlib=rb-4.1.0&q=85",
+          "category": "agent_avatar",
+          "description": "Abstract minimalist dark avatar for agent representation"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1675895815075-618d222d7825?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwYWJzdHJhY3QlMjBkZXZlbG9wZXIlMjBhdmF0YXIlMjBkYXJrfGVufDB8fHx8MTc3OTM3OTg0OHww&ixlib=rb-4.1.0&q=85",
+          "category": "agent_avatar",
+          "description": "Abstract wave dark avatar for secondary agent"
+        }
+      ]
+    },
+    "installation_commands": [
+      "yarn add @phosphor-icons/react"
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Ensure all panels have strict 1px borders with border-[#2A3F6C] to create a 'skeleton' layout.",
+    "No large border radii. Use rounded-sm (2px) or rounded-none to maintain IDE aesthetics.",
+    "Do NOT use any gradients for backgrounds. Use solid colors from the palette.",
+    "Implement the layout as a collapsible sidebar (left) and main editor area (right).",
+    "All interactive elements MUST have data-testid attributes.",
+    "For the Diff Preview, use exact diff colors: addition is bg-emerald-500/15 with emerald-400 text, deletion is bg-red-500/15 with red-400 text.",
+    "Activity Log must look like a system audit trail (monospace timestamps, dense layout), NOT a consumer chatbot."
+  ]
+}
