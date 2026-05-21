@@ -1,0 +1,36 @@
+{
+  "name": "cursor-ing-design-studio",
+  "displayName": "Cursor ING Design Studio",
+  "description": "IDE-native design/artifact generation powered by Open Design skills and design systems.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "publisher": "cursor-ing",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "cursorIng.openDesignStudio", "title": "Cursor ING: Open Design Studio" },
+      { "command": "cursorIng.newDesignProject", "title": "Cursor ING: New Design Project" },
+      { "command": "cursorIng.previewArtifact", "title": "Cursor ING: Preview Artifact" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        { "id": "cursor-ing-design", "title": "Design Studio", "icon": "media/design-icon.svg" }
+      ]
+    },
+    "views": {
+      "cursor-ing-design": [
+        { "id": "cursorIng.designProjects", "name": "Design Projects" },
+        { "id": "cursorIng.designSkills", "name": "Skills" },
+        { "id": "cursorIng.designSystems", "name": "Design Systems" }
+      ]
+    }
+  },
+  "scripts": { "compile": "tsc -p ./", "watch": "tsc -watch -p ./" },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  }
+}
