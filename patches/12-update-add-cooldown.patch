@@ -1,18 +1,18 @@
 diff --git a/src/vs/platform/update/common/update.config.contribution.ts b/src/vs/platform/update/common/update.config.contribution.ts
-index 2c63e9e6..556f2403 100644
+index 2c63e9e6..e98ed806 100644
 --- a/src/vs/platform/update/common/update.config.contribution.ts
 +++ b/src/vs/platform/update/common/update.config.contribution.ts
 @@ -65,2 +65,8 @@ configurationRegistry.registerConfiguration({
  		},
 +		'update.minReleaseAge': {
 +			type: 'integer',
-+			default: 7,
++			default: 120,
 +			scope: ConfigurationScope.APPLICATION,
-+			description: localize('update.cooldown', "Configure how old an update need to be before installing it (in days)."),
++			description: localize('update.cooldown', "Control how old an update need to be before installing it (in hours)."),
 +		},
  		'update.enableWindowsBackgroundUpdates': {
 diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-index 49720f6a..7ce182cd 100644
+index d776f408..70b86dce 100644
 --- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
 +++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
 @@ -459,3 +459,26 @@ export abstract class AbstractUpdateService implements IUpdateService {
@@ -32,7 +32,7 @@ index 49720f6a..7ce182cd 100644
 +					return Promise.resolve(undefined);
 +				}
 +
-+				const age = Math.round(Math.abs(Date.now() - releaseDate.getTime()) / (1000 * 60 * 60 * 24));
++				const age = Math.round(Math.abs(Date.now() - releaseDate.getTime()) / (1000 * 60 * 60));
 +
 +				this.logService.info(`update#isLatestVersion() - releaseAge: ${age}, minReleaseAge: ${minReleaseAge}`);
 +
@@ -43,3 +43,40 @@ index 49720f6a..7ce182cd 100644
 +					return Promise.resolve(undefined);
 +				}
  			})
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
+index 464b3948..121bd09f 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
+@@ -168,2 +168,9 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
+ 			},
++			'extensions.minReleaseAge': {
++				type: 'integer',
++				default: 48,
++				scope: ConfigurationScope.APPLICATION,
++				description: localize('extensions.minReleaseAge', "Control how old an extension need to be before auto-updating it (in hours)."),
++				tags: ['usesOnlineServices']
++			},
+ 			'extensions.showRecommendationsOnlyOnDemand': {
+diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
+index 49b3ec6a..26f44277 100644
+--- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
++++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
+@@ -112,3 +112,4 @@ export class Extension implements IExtension {
+ 		@IFileService private readonly fileService: IFileService,
+-		@IProductService private readonly productService: IProductService
++		@IProductService private readonly productService: IProductService,
++		@IConfigurationService protected configurationService: IConfigurationService
+ 	) {
+@@ -348,3 +349,11 @@ export class Extension implements IExtension {
+ 			if (semver.gt(this.latestVersion, this.version)) {
+-				return true;
++				const minReleaseAge = this.configurationService.getValue<number>('extensions.minReleaseAge');
++
++				if(minReleaseAge === 0) {
++					return true;
++				}
++
++				const age = Math.round(Math.abs(Date.now() - this.gallery.lastUpdated) / (1000 * 60 * 60));
++
++				return age >= minReleaseAge;
+ 			}
