@@ -1,0 +1,105 @@
+{
+  "name": "cursor-ing-ai",
+  "displayName": "Cursor ING - AI Composer",
+  "description": "Privacy-first, open-source AI IDE extension for VSCodium. Provides AI composer, multi-agent team, plan viewer, activity log, and diff preview.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "publisher": "cursor-ing",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VSCodium/vscodium"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cursorIng.openComposer",
+        "title": "Cursor ING: Open Composer"
+      },
+      {
+        "command": "cursorIng.showAgentRoster",
+        "title": "Cursor ING: Show Agent Roster"
+      },
+      {
+        "command": "cursorIng.openPlanViewer",
+        "title": "Cursor ING: Open Plan Viewer"
+      },
+      {
+        "command": "cursorIng.showActivityLog",
+        "title": "Cursor ING: Show Activity Log"
+      },
+      {
+        "command": "cursorIng.openDiffPreview",
+        "title": "Cursor ING: Open Diff Preview"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cursor-ing",
+          "title": "Cursor ING",
+          "icon": "media/cursor-ing-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "cursor-ing": [
+        {
+          "type": "webview",
+          "id": "cursorIng.composerView",
+          "name": "Composer"
+        },
+        {
+          "id": "cursorIng.agentRoster",
+          "name": "Agent Roster"
+        },
+        {
+          "type": "webview",
+          "id": "cursorIng.activityLog",
+          "name": "Activity Log"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Cursor ING",
+      "properties": {
+        "cursorIng.provider": {
+          "type": "string",
+          "default": "mock",
+          "enum": ["mock", "openai", "anthropic", "ollama", "openrouter"],
+          "description": "AI provider to use. Phase 1 only supports 'mock'."
+        },
+        "cursorIng.enableTelemetry": {
+          "type": "boolean",
+          "default": false,
+          "description": "Telemetry is always disabled. This setting exists only for transparency."
+        },
+        "cursorIng.agentApprovalRequired": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require explicit approval before agents write files or execute commands."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}

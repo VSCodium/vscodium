@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0.0",
+  "product": "cursor-ing",
+  "description": "Cursor ING agent registry - maps agents, skills, and model adapters",
+  "agents": [
+    {
+      "id": "planner",
+      "name": "Planner",
+      "definition": ".agents/agents/planner.md",
+      "status": "scaffold",
+      "permissions": ["read", "plan"],
+      "tools": ["file_read", "search", "plan_create"]
+    },
+    {
+      "id": "coder",
+      "name": "Coder",
+      "definition": ".agents/agents/coder.md",
+      "status": "scaffold",
+      "permissions": ["read", "write_pending_approval"],
+      "tools": ["file_read", "file_write", "terminal", "search"]
+    },
+    {
+      "id": "reviewer",
+      "name": "Reviewer",
+      "definition": ".agents/agents/reviewer.md",
+      "status": "scaffold",
+      "permissions": ["read", "approve", "reject"],
+      "tools": ["file_read", "diff_view", "comment"]
+    },
+    {
+      "id": "security",
+      "name": "Security Auditor",
+      "definition": ".agents/agents/security.md",
+      "status": "scaffold",
+      "permissions": ["read", "flag"],
+      "tools": ["file_read", "search", "vuln_scan"]
+    },
+    {
+      "id": "browser",
+      "name": "Browser Agent",
+      "definition": ".agents/agents/browser.md",
+      "status": "scaffold",
+      "permissions": ["read", "browse_pending_approval"],
+      "tools": ["browser_navigate", "screenshot", "accessibility_tree"]
+    }
+  ],
+  "skills": [
+    {
+      "id": "code-review",
+      "file": ".agents/skills/code-review.md",
+      "triggers": ["review_request", "pr_opened"]
+    },
+    {
+      "id": "plan-and-execute",
+      "file": ".agents/skills/plan-and-execute.md",
+      "triggers": ["task_assigned", "plan_requested"]
+    },
+    {
+      "id": "diff-apply",
+      "file": ".agents/skills/diff-apply.md",
+      "triggers": ["diff_approved", "edit_requested"]
+    }
+  ],
+  "model_adapters": [
+    ".agents/model-adapters/claude.md",
+    ".agents/model-adapters/codex.md",
+    ".agents/model-adapters/kimi.md",
+    ".agents/model-adapters/qwen-code.md",
+    ".agents/model-adapters/gemini-code.md"
+  ],
+  "providers": [
+    {
+      "id": "mock",
+      "type": "mock",
+      "status": "active",
+      "requires_key": false
+    },
+    {
+      "id": "openai",
+      "type": "openai-compatible",
+      "status": "planned",
+      "requires_key": true
+    },
+    {
+      "id": "anthropic",
+      "type": "anthropic-compatible",
+      "status": "planned",
+      "requires_key": true
+    },
+    {
+      "id": "ollama",
+      "type": "ollama-local",
+      "status": "planned",
+      "requires_key": false
+    },
+    {
+      "id": "openrouter",
+      "type": "openrouter-compatible",
+      "status": "planned",
+      "requires_key": true
+    }
+  ]
+}
