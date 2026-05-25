@@ -1,0 +1,61 @@
+diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/startupPage.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/startupPage.ts
+index 6f785eaa..4172f07f 100644
+--- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/startupPage.ts
++++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/startupPage.ts
+@@ -33,5 +33,2 @@ import { mainWindow } from '../../../../base/browser/window.js';
+ import { getActiveElement } from '../../../../base/browser/dom.js';
+-import { isWeb } from '../../../../base/common/platform.js';
+-import { IOnboardingService } from '../../welcomeOnboarding/common/onboardingService.js';
+-import { ONBOARDING_STORAGE_KEY } from '../../welcomeOnboarding/common/onboardingTypes.js';
+ 
+@@ -96,3 +93,2 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
+ 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
+-		@IOnboardingService private readonly onboardingService: IOnboardingService,
+ 	) {
+@@ -100,3 +96,2 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
+ 
+-		this.tryShowOnboarding();
+ 		this.run().then(undefined, onUnexpectedError);
+@@ -232,32 +227,2 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
+ 	}
+-
+-	private tryShowOnboarding(): void {
+-		if (this.environmentService.skipWelcome) {
+-			return; // skip welcome flag is set
+-		}
+-
+-		if (isWeb) {
+-			return; // not supported on web (e.g. codespaces, github.dev)
+-		}
+-
+-		if (!this.configurationService.getValue<boolean>('workbench.welcomePage.experimentalOnboarding')) {
+-			return; // experimental onboarding is disabled
+-		}
+-
+-		if (!this.storageService.isNew(StorageScope.APPLICATION)) {
+-			return; // only show onboarding for new users who have never used the product before
+-		}
+-
+-		if (this.storageService.getBoolean(ONBOARDING_STORAGE_KEY, StorageScope.APPLICATION)) {
+-			return; // onboarding already completed
+-		}
+-
+-		// Show the onboarding overlay on top of the welcome page
+-		this.onboardingService.show();
+-
+-		// Mark onboarding as completed when dismissed
+-		this._register(this.onboardingService.onDidDismiss(() => {
+-			this.storageService.store(ONBOARDING_STORAGE_KEY, true, StorageScope.APPLICATION, StorageTarget.USER);
+-		}));
+-	}
+ }
+diff --git a/src/vs/workbench/workbench.common.main.ts b/src/vs/workbench/workbench.common.main.ts
+index 2c3be688..0ab9b329 100644
+--- a/src/vs/workbench/workbench.common.main.ts
++++ b/src/vs/workbench/workbench.common.main.ts
+@@ -379,5 +379,2 @@ import './contrib/welcomeViews/common/newFile.contribution.js';
+ 
+-// Welcome Onboarding
+-import './contrib/welcomeOnboarding/browser/welcomeOnboarding.contribution.js';
+-
+ // Call Hierarchy

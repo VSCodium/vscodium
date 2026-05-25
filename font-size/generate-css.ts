@@ -4,7 +4,7 @@ import path from 'node:path';
 import process from 'node:process';
 import fse from '@zokugun/fs-extra-plus/async';
 import { err, OK, type Result, stringifyError, xtry } from '@zokugun/xtry';
-import postcss, { Root, type Rule } from 'postcss';
+import postcss, { type Root, type Rule } from 'postcss';
 
 type Area = {
 	name: string;
@@ -16,7 +16,7 @@ type Area = {
 const PX_REGEX = /(-?\d+(\.\d+)?)px\b/g;
 const COEFF_PRECISION = 6;
 const HEADER = '/*** Generated for Custom Font Size ***/';
-const ZEROS = ['margin', 'padding'];
+const ZEROS = new Set(['margin', 'padding']);
 
 const AREAS: Record<string, Area> = {
 	activitybar: {
@@ -44,6 +44,7 @@ const AREAS: Record<string, Area> = {
 			'src/vs/base/browser/ui/actionbar/actionbar.css',
 			'src/vs/base/browser/ui/button/button.css',
 			'src/vs/base/browser/ui/inputbox/inputBox.css',
+			'src/vs/base/browser/ui/toggle/toggle.css',
 			'src/vs/workbench/contrib/debug/browser/media/debugToolBar.css',
 			'src/vs/workbench/contrib/debug/browser/media/debugViewlet.css',
 			'src/vs/workbench/contrib/extensions/browser/media/extension.css',
@@ -59,9 +60,18 @@ const AREAS: Record<string, Area> = {
 		files: [
 			'src/vs/workbench/browser/parts/editor/media/editortabscontrol.css',
 			'src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css',
-			'src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css'
+			'src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css',
 		],
 		prefixes: ['.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs'],
+	},
+	workbench: {
+		name: 'workbench',
+		defaultSize: 13,
+		files: [
+			'src/vs/base/browser/ui/toggle/toggle.css',
+			'src/vs/editor/contrib/find/browser/findWidget.css',
+		],
+		prefixes: ['.monaco-workbench .part'],
 	},
 };
 
@@ -79,8 +89,9 @@ function replacePx(area: Area) { // {{{
 		}
 
 		const coeff = formatCoefficient(pxValue / area.defaultSize);
+		const varname = area.name === 'workbench' ? '--vscode-workbench-font-size' : `--vscode-workbench-${area.name}-font-size`;
 
-		return `calc(var(--vscode-workbench-${area.name}-font-size) * ${coeff})`;
+		return `calc(var(${varname}) * ${coeff})`;
 	};
 } // }}}
 
@@ -104,7 +115,7 @@ async function processFile(filePath: string, areas: Area[]): Promise<Result<void
 	const generatedRoot = postcss.root();
 
 	for(const area of areas) {
-		processFileArea(postcssResult.value, generatedRoot, area)
+		processFileArea(postcssResult.value, generatedRoot, area);
 	}
 
 	if(generatedRoot.nodes && generatedRoot.nodes.length > 0) {
@@ -135,7 +146,7 @@ function processFileArea(postcssResult: Root, generatedRoot: Root, area: Area): 
 			else if(declaration.value === 'auto' && (declaration.prop === 'height' || declaration.prop === 'width')) {
 				declarationsToAdd.push({ prop: declaration.prop, value: 'auto' });
 			}
-			else if(declaration.value === '0' && ZEROS.includes(declaration.prop)) {
+			else if(declaration.value === '0' && ZEROS.has(declaration.prop)) {
 				declarationsToAdd.push({ prop: declaration.prop, value: '0' });
 			}
 		});
@@ -205,7 +216,7 @@ function mergeSelector(selectors: string[], prefixes: string[], index: number): 
 		mergeSelector(selectors, prefixes, index + 1);
 	}
 	else if(index === 0) {
-		selectors.unshift(...prefixes)
+		selectors.unshift(...prefixes);
 	}
 	else {
 		selectors.splice(index + 1, 0, ...prefixes.slice(index));
@@ -245,10 +256,10 @@ async function main(): Promise<void> { // {{{
 		for(const area of Object.values(AREAS)) {
 			for(const file of area.files) {
 				if(files[file]) {
-					files[file].push(area)
+					files[file].push(area);
 				}
 				else {
-					files[file] = [area]
+					files[file] = [area];
 				}
 			}
 		}
@@ -263,7 +274,6 @@ async function main(): Promise<void> { // {{{
 	else {
 		console.log(`No area found for ${name}`);
 		console.log(`\nAvailable areas:\n- ${Object.keys(AREAS).join('\n- ')}`);
-		return;
 	}
 } // }}}
 

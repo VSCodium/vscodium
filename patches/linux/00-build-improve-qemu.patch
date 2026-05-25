@@ -1,11 +1,11 @@
 diff --git a/build/npm/postinstall.ts b/build/npm/postinstall.ts
-index ae2651c..3bc46fa 100644
+index dc154d4b..f5ef3c57 100644
 --- a/build/npm/postinstall.ts
 +++ b/build/npm/postinstall.ts
 @@ -74,5 +74,7 @@ async function npmInstallAsync(dir: string, opts?: child_process.SpawnOptions):
  
 -		if (process.env['npm_config_arch'] === 'arm64') {
--			run('sudo', ['docker', 'run', '--rm', '--privileged', 'multiarch/qemu-user-static', '--reset', '-p', 'yes'], syncOpts);
+-			run('sudo', ['docker', 'run', '--rm', '--privileged', 'vscodehub.azurecr.io/multiarch/qemu-user-static@sha256:fe60359c92e86a43cc87b3d906006245f77bfc0565676b80004cc666e4feb9f0', '--reset', '-p', 'yes'], syncOpts);
 -		}
 +		const emulateArchList = ['arm64', 'arm', 'ppc64', 'riscv64', 's390x', 'loong64'];
 +		if (process.env['DISABLE_QEMU'] !== 'true' && !!process.env['npm_config_arch'] && emulateArchList.includes(process.env['npm_config_arch'])) {

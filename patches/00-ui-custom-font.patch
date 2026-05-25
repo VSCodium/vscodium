@@ -77,10 +77,10 @@ index e9e55ad9..0ce9147c 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/button/button.css b/src/vs/base/browser/ui/button/button.css
-index 0ec4cbb4..0fc77fae 100644
+index 0ec4cbb4..704ed8a8 100644
 --- a/src/vs/base/browser/ui/button/button.css
 +++ b/src/vs/base/browser/ui/button/button.css
-@@ -184 +184,43 @@
+@@ -184 +184,46 @@
  }
 +
 +
@@ -117,6 +117,9 @@ index 0ec4cbb4..0fc77fae 100644
 +.monaco-workbench .part.sidebar .monaco-button-dropdown .monaco-button-dropdown-separator > div, .monaco-workbench .part.auxiliarybar .monaco-button-dropdown .monaco-button-dropdown-separator > div {
 +    width: 1px
 +}
++.monaco-workbench .part.sidebar .monaco-button-dropdown > .monaco-button.monaco-dropdown-button, .monaco-workbench .part.auxiliarybar .monaco-button-dropdown > .monaco-button.monaco-dropdown-button {
++    padding: 0 calc(var(--vscode-workbench-sidebar-font-size) * 0.307692)
++}
 +.monaco-workbench .part.sidebar .monaco-description-button, .monaco-workbench .part.auxiliarybar .monaco-description-button {
 +    margin: calc(var(--vscode-workbench-sidebar-font-size) * 0.307692) calc(var(--vscode-workbench-sidebar-font-size) * 0.384615)
 +}
@@ -126,16 +129,23 @@ index 0ec4cbb4..0fc77fae 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/codicons/codicon/codicon.css b/src/vs/base/browser/ui/codicons/codicon/codicon.css
-index d7f257db..af55bddb 100644
+index d7f257db..8d21f859 100644
 --- a/src/vs/base/browser/ui/codicons/codicon/codicon.css
 +++ b/src/vs/base/browser/ui/codicons/codicon/codicon.css
-@@ -25 +25,7 @@
+@@ -25 +25,14 @@
  /* icon rules are dynamically created by the platform theme service (see iconsStyleSheet.ts) */
 +
 +
 +
++/*** Handcrafted for Custom Font Size ***/
++.monaco-workbench .part.titlebar .codicon[class*='codicon-'] {
++    font-size: 16px;
++}
 +.monaco-workbench .part.sidebar .codicon[class*='codicon-'], .monaco-workbench .part.auxiliarybar .codicon[class*='codicon-'] {
-+    font: normal normal normal calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)/1 codicon
++    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.230769)
++}
++.monaco-workbench .part .codicon[class*='codicon-'] {
++    font-size: calc(var(--vscode-workbench-font-size) * 1.230769)
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/iconLabel/iconlabel.css b/src/vs/base/browser/ui/iconLabel/iconlabel.css
@@ -302,19 +312,21 @@ index fb2e1f40..3b1e23f2 100644
 +		const headerSize = this.headerSize;
  
 diff --git a/src/vs/base/browser/ui/toggle/toggle.css b/src/vs/base/browser/ui/toggle/toggle.css
-index e2d206d3..e69352c8 100644
+index e2d206d3..e8dfa5a9 100644
 --- a/src/vs/base/browser/ui/toggle/toggle.css
 +++ b/src/vs/base/browser/ui/toggle/toggle.css
-@@ -69 +69,27 @@
+@@ -69 +69,52 @@
  }
 +
 +
++
++/*** Generated for Custom Font Size ***/
 +
 +.monaco-workbench .part.sidebar .monaco-custom-toggle, .monaco-workbench .part.auxiliarybar .monaco-custom-toggle {
 +    margin-left: calc(var(--vscode-workbench-sidebar-font-size) * 0.153846);
 +    width: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462);
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.538462);
-+    padding: calc(var(--vscode-workbench-sidebar-font-size) * 0.076923)
++    padding: 1px
 +}
 +.monaco-workbench .part.sidebar .monaco-custom-toggle.monaco-checkbox, .monaco-workbench .part.auxiliarybar .monaco-custom-toggle.monaco-checkbox {
 +    height: calc(var(--vscode-workbench-sidebar-font-size) * 1.384615);
@@ -333,6 +345,29 @@ index e2d206d3..e69352c8 100644
 +.monaco-workbench .part.sidebar .monaco-action-bar .checkbox-action-item > .checkbox-label, .monaco-workbench .part.auxiliarybar .monaco-action-bar .checkbox-action-item > .checkbox-label {
 +    font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.923077)
 +}
++.monaco-workbench .part .monaco-custom-toggle {
++    margin-left: calc(var(--vscode-workbench-font-size) * 0.153846);
++    width: calc(var(--vscode-workbench-font-size) * 1.538462);
++    height: calc(var(--vscode-workbench-font-size) * 1.538462);
++    padding: 1px
++}
++.monaco-workbench .part .monaco-custom-toggle.monaco-checkbox {
++    height: calc(var(--vscode-workbench-font-size) * 1.384615);
++    width: calc(var(--vscode-workbench-font-size) * 1.384615);
++    margin-right: calc(var(--vscode-workbench-font-size) * 0.692308);
++    margin-left: calc(var(--vscode-workbench-font-size) * 0);
++    padding: calc(var(--vscode-workbench-font-size) * 0);
++    background-size: calc(var(--vscode-workbench-font-size) * 1.230769)
++}
++.monaco-workbench .part .monaco-action-bar .checkbox-action-item {
++    padding-right: calc(var(--vscode-workbench-font-size) * 0.153846)
++}
++.monaco-workbench .part .monaco-action-bar .checkbox-action-item > .monaco-custom-toggle.monaco-checkbox {
++    margin-right: calc(var(--vscode-workbench-font-size) * 0.307692)
++}
++.monaco-workbench .part .monaco-action-bar .checkbox-action-item > .checkbox-label {
++    font-size: calc(var(--vscode-workbench-font-size) * 0.923077)
++}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/toggle/toggle.ts b/src/vs/base/browser/ui/toggle/toggle.ts
 index 0b2fcbbb..6370e6f7 100644
@@ -350,10 +385,10 @@ index 0b2fcbbb..6370e6f7 100644
  	}
 diff --git a/src/vs/base/common/font.ts b/src/vs/base/common/font.ts
 new file mode 100644
-index 00000000..8b9689c7
+index 00000000..20d0b27e
 --- /dev/null
 +++ b/src/vs/base/common/font.ts
-@@ -0,0 +1,187 @@
+@@ -0,0 +1,191 @@
 +import { IConfigurationService } from '../../platform/configuration/common/configuration.js';
 +
 +export const FONT = {
@@ -402,6 +437,8 @@ index 00000000..8b9689c7
 +	tabsSize38: 38,
 +	tabsSize80: 80,
 +	tabsSize120: 120,
++
++	workbenchCoefficient: 1,
 +};
 +
 +// Activity bar coefficients (base 16)
@@ -500,6 +537,8 @@ index 00000000..8b9689c7
 +	FONT.defaultSidebarSize = size
 +	FONT.defaultStatusBarSize = size * DEFAULT_COEFF_12
 +	FONT.defaultTabsSize = size
++
++	FONT.workbenchCoefficient = size / 13
 +}
 +
 +export function updatePanelSize(size: number): void {
@@ -1030,6 +1069,229 @@ index 00000000..62a49d53
 +		assert.strictEqual(FONT.tabsSize35, 35);
 +	});
 +});
+diff --git a/src/vs/editor/contrib/find/browser/findWidget.css b/src/vs/editor/contrib/find/browser/findWidget.css
+index 62c6056c..3d893baa 100644
+--- a/src/vs/editor/contrib/find/browser/findWidget.css
++++ b/src/vs/editor/contrib/find/browser/findWidget.css
+@@ -281 +281,104 @@
+ }
++
++
++
++/*** Handcrafted for Custom Font Size ***/
++
++.monaco-workbench .part .monaco-editor .find-widget.visible {
++	transform: translateY(0);
++}
++
++.monaco-workbench .part .monaco-editor .find-widget .codicon[class*='codicon-'] {
++    font-size: calc(var(--vscode-workbench-font-size) * 1.230769);
++}
++
++
++
++/*** Generated for Custom Font Size ***/
++
++.monaco-workbench .part .monaco-editor .find-widget {
++    height: calc(var(--vscode-workbench-font-size) * 2.615385);
++    line-height: calc(var(--vscode-workbench-font-size) * 1.461538);
++    padding: 0 calc(var(--vscode-workbench-font-size) * 0.307692) 0 calc(var(--vscode-workbench-font-size) * 0.692308);
++    margin-top: calc(var(--vscode-workbench-font-size) * 0.307692);
++    transform: translateY(calc(-100% - calc(var(--vscode-workbench-font-size) * 0.769231)))
++}
++.monaco-workbench .part .monaco-editor .find-widget textarea {
++    margin: calc(var(--vscode-workbench-font-size) * 0)
++}
++.monaco-workbench .part .monaco-editor .find-widget .monaco-inputbox.synthetic-focus {
++    outline: 1px solid -webkit-focus-ring-color;
++    outline-offset: calc(var(--vscode-workbench-font-size) * -0.076923)
++}
++.monaco-workbench .part .monaco-editor .find-widget .monaco-findInput .input {
++    font-size: calc(var(--vscode-workbench-font-size) * 1)
++}
++.monaco-workbench .part .monaco-editor .find-widget > .find-part, .monaco-workbench .part .monaco-editor .find-widget > .replace-part {
++    margin: calc(var(--vscode-workbench-font-size) * 0.230769) calc(var(--vscode-workbench-font-size) * 1.923077) 0 calc(var(--vscode-workbench-font-size) * 1.307692);
++    font-size: calc(var(--vscode-workbench-font-size) * 0.923077)
++}
++.monaco-workbench .part .monaco-editor .find-widget > .find-part .monaco-inputbox, .monaco-workbench .part .monaco-editor .find-widget > .replace-part .monaco-inputbox {
++    min-height: calc(var(--vscode-workbench-font-size) * 1.923077)
++}
++.monaco-workbench .part .monaco-editor .find-widget > .replace-part .monaco-inputbox > .ibwrapper > .mirror {
++    padding-right: calc(var(--vscode-workbench-font-size) * 1.692308)
++}
++.monaco-workbench .part .monaco-editor .find-widget > .find-part .monaco-inputbox > .ibwrapper > .input, .monaco-workbench .part .monaco-editor .find-widget > .find-part .monaco-inputbox > .ibwrapper > .mirror, .monaco-workbench .part .monaco-editor .find-widget > .replace-part .monaco-inputbox > .ibwrapper > .input, .monaco-workbench .part .monaco-editor .find-widget > .replace-part .monaco-inputbox > .ibwrapper > .mirror {
++    padding-top: calc(var(--vscode-workbench-font-size) * 0.153846);
++    padding-bottom: calc(var(--vscode-workbench-font-size) * 0.153846)
++}
++.monaco-workbench .part .monaco-editor .find-widget > .find-part .find-actions {
++    height: calc(var(--vscode-workbench-font-size) * 1.923077)
++}
++.monaco-workbench .part .monaco-editor .find-widget > .replace-part .replace-actions {
++    height: calc(var(--vscode-workbench-font-size) * 1.923077)
++}
++.monaco-workbench .part .monaco-editor .find-widget .matchesCount {
++    margin: 0 0 0 calc(var(--vscode-workbench-font-size) * 0.230769);
++    padding: calc(var(--vscode-workbench-font-size) * 0.153846) 0 0 calc(var(--vscode-workbench-font-size) * 0.153846);
++    height: calc(var(--vscode-workbench-font-size) * 1.923077);
++    line-height: calc(var(--vscode-workbench-font-size) * 1.769231)
++}
++.monaco-workbench .part .monaco-editor .find-widget .button {
++    width: calc(var(--vscode-workbench-font-size) * 1.230769);
++    height: calc(var(--vscode-workbench-font-size) * 1.230769);
++    padding: calc(var(--vscode-workbench-font-size) * 0.230769);
++    margin-left: calc(var(--vscode-workbench-font-size) * 0.230769)
++}
++.monaco-workbench .part .monaco-editor .find-widget .codicon-find-selection {
++    width: calc(var(--vscode-workbench-font-size) * 1.692308);
++    height: calc(var(--vscode-workbench-font-size) * 1.692308);
++    padding: calc(var(--vscode-workbench-font-size) * 0.230769)
++}
++.monaco-workbench .part .monaco-editor .find-widget .button.left {
++    margin: calc(var(--vscode-workbench-font-size) * 0.307692) 0 calc(var(--vscode-workbench-font-size) * 0.307692) calc(var(--vscode-workbench-font-size) * 0.384615)
++}
++.monaco-workbench .part .monaco-editor .find-widget .button.wide {
++    width: auto;
++    padding: 1px calc(var(--vscode-workbench-font-size) * 0.461538);
++    top: calc(var(--vscode-workbench-font-size) * -0.076923)
++}
++.monaco-workbench .part .monaco-editor .find-widget .button.toggle {
++    width: calc(var(--vscode-workbench-font-size) * 1.384615)
++}
++.monaco-workbench .part .monaco-editor .find-widget > .replace-part > .monaco-findInput > .controls {
++    top: calc(var(--vscode-workbench-font-size) * 0.230769);
++    right: calc(var(--vscode-workbench-font-size) * 0.153846)
++}
++.monaco-workbench .part .monaco-editor .find-widget.narrow-find-widget {
++    max-width: calc(var(--vscode-workbench-font-size) * 19.769231)
++}
++.monaco-workbench .part .monaco-editor .find-widget.collapsed-find-widget {
++    max-width: calc(var(--vscode-workbench-font-size) * 13.076923)
++}
++.monaco-workbench .part .monaco-editor .currentFindMatch {
++    padding: 1px
++}
++.monaco-workbench .part .monaco-editor.hc-black .find-widget .button:before {
++    top: 1px;
++    left: calc(var(--vscode-workbench-font-size) * 0.153846)
++}
++.monaco-workbench .part .monaco-editor .find-widget > .button.codicon-widget-close {
++    top: calc(var(--vscode-workbench-font-size) * 0.384615);
++    right: calc(var(--vscode-workbench-font-size) * 0.307692)
++}
+\ No newline at end of file
+diff --git a/src/vs/editor/contrib/find/browser/findWidget.ts b/src/vs/editor/contrib/find/browser/findWidget.ts
+index 03e698c3..7d6f5afa 100644
+--- a/src/vs/editor/contrib/find/browser/findWidget.ts
++++ b/src/vs/editor/contrib/find/browser/findWidget.ts
+@@ -47,2 +47,3 @@ import { HoverStyle, type IHoverLifecycleOptions } from '../../../../base/browse
+ import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { FONT } from '../../../../base/common/font.js';
+ 
+@@ -82,2 +83,3 @@ const PART_WIDTH = 275;
+ const FIND_INPUT_AREA_WIDTH = PART_WIDTH - 54;
++const FLEXIBLE_MAX_HEIGHT = 118;
+ 
+@@ -98,3 +100,3 @@ export class FindWidgetViewZone implements IViewZone {
+ 
+-		this.heightInPx = FIND_INPUT_AREA_HEIGHT;
++		this.heightInPx = FIND_INPUT_AREA_HEIGHT * FONT.workbenchCoefficient;
+ 		this.suppressMouseDown = false;
+@@ -767,3 +769,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 
+-			if (widgetWidth > FIND_WIDGET_INITIAL_WIDTH) {
++			if (widgetWidth > (FIND_WIDGET_INITIAL_WIDTH * FONT.workbenchCoefficient)) {
+ 				// as the widget is resized by users, we may need to change the max width of the widget as the editor width changes.
+@@ -775,9 +777,12 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 
+-		if (FIND_WIDGET_INITIAL_WIDTH + 28 + minimapWidth >= editorWidth) {
++		const initialWidth = (FIND_WIDGET_INITIAL_WIDTH + 28) * FONT.workbenchCoefficient
++		const maxMatchesWidth = MAX_MATCHES_COUNT_WIDTH * FONT.workbenchCoefficient
++
++		if (initialWidth + minimapWidth >= editorWidth) {
+ 			reducedFindWidget = true;
+ 		}
+-		if (FIND_WIDGET_INITIAL_WIDTH + 28 + minimapWidth - MAX_MATCHES_COUNT_WIDTH >= editorWidth) {
++		if (initialWidth * FONT.workbenchCoefficient + minimapWidth - maxMatchesWidth >= editorWidth) {
+ 			narrowFindWidget = true;
+ 		}
+-		if (FIND_WIDGET_INITIAL_WIDTH + 28 + minimapWidth - MAX_MATCHES_COUNT_WIDTH >= editorWidth + 50) {
++		if (initialWidth + minimapWidth - maxMatchesWidth >= editorWidth + 50) {
+ 			collapsedFindWidget = true;
+@@ -805,2 +810,5 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 	private _getHeight(): number {
++		const size2 = 2 * FONT.workbenchCoefficient
++		const size4 = 4 * FONT.workbenchCoefficient
++
+ 		let totalheight = 0;
+@@ -808,6 +816,6 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		// find input margin top
+-		totalheight += 4;
++		totalheight += size4;
+ 
+ 		// find input height
+-		totalheight += this._findInput.inputBox.height + 2 /** input box border */;
++		totalheight += this._findInput.inputBox.height + size2 /** input box border */;
+ 
+@@ -815,5 +823,5 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			// replace input margin
+-			totalheight += 4;
++			totalheight += size4;
+ 
+-			totalheight += this._replaceInput.inputBox.height + 2 /** input box border */;
++			totalheight += this._replaceInput.inputBox.height + size2 /** input box border */;
+ 		}
+@@ -821,3 +829,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		// margin bottom
+-		totalheight += 4;
++		totalheight += size4;
+ 		return totalheight;
+@@ -990,3 +998,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		this._findInput = this._register(new ContextScopedFindInput(null, this._contextViewProvider, {
+-			width: FIND_INPUT_AREA_WIDTH,
++			width: FIND_INPUT_AREA_WIDTH * FONT.workbenchCoefficient,
+ 			label: NLS_FIND_INPUT_LABEL,
+@@ -1010,3 +1018,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			flexibleWidth,
+-			flexibleMaxHeight: 118,
++			flexibleMaxHeight: FLEXIBLE_MAX_HEIGHT * FONT.workbenchCoefficient,
+ 			showCommonFindToggles: true,
+@@ -1166,3 +1174,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			flexibleWidth,
+-			flexibleMaxHeight: 118,
++			flexibleMaxHeight: FLEXIBLE_MAX_HEIGHT,
+ 			showHistoryHint: () => showHistoryKeybindingHint(this._keybindingService),
+@@ -1262,4 +1270,6 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 
++		let initialWidth = FIND_WIDGET_INITIAL_WIDTH * FONT.workbenchCoefficient;
++
+ 		// We need to set this explicitly, otherwise on IE11, the width inheritence of flex doesn't work.
+-		this._domNode.style.width = `${FIND_WIDGET_INITIAL_WIDTH}px`;
++		this._domNode.style.width = `${initialWidth}px`;
+ 
+@@ -1272,3 +1282,4 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		this._resized = false;
+-		let originalWidth = FIND_WIDGET_INITIAL_WIDTH;
++
++		let originalWidth = initialWidth;
+ 
+@@ -1282,3 +1293,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 
+-			if (width < FIND_WIDGET_INITIAL_WIDTH) {
++			if (width < initialWidth) {
+ 				// narrow down the find widget should be handled by CSS.
+@@ -1304,3 +1315,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 
+-			if (currentWidth < FIND_WIDGET_INITIAL_WIDTH) {
++			if (currentWidth < initialWidth) {
+ 				// The editor is narrow and the width of the find widget is controlled fully by CSS.
+@@ -1309,5 +1320,5 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 
+-			let width = FIND_WIDGET_INITIAL_WIDTH;
++			let width = initialWidth;
+ 
+-			if (!this._resized || currentWidth === FIND_WIDGET_INITIAL_WIDTH) {
++			if (!this._resized || currentWidth === initialWidth) {
+ 				// 1. never resized before, double click should maximizes it
 diff --git a/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts b/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
 index 328285f0..0735dfa2 100644
 --- a/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
@@ -1306,7 +1568,7 @@ index 568a7212..b3d7e506 100644
 +	height: calc(var(--vscode-workbench-activitybar-font-size) * 2.1875);
  }
 diff --git a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
-index d32082b4..ad7e524c 100644
+index c89c0e4e..88c43a91 100644
 --- a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
 +++ b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
 @@ -36,2 +36,4 @@ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js
@@ -1314,7 +1576,7 @@ index d32082b4..ad7e524c 100644
 +import { FONT, getFontSize, updateSidebarSize } from '../../../../base/common/font.js';
 +import { SidebarPart } from '../sidebar/sidebarPart.js';
  
-@@ -147,2 +149,8 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+@@ -146,2 +148,8 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
  			}
 +			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
 +				this.applyAuxiliaryBarFontSize();
@@ -1323,7 +1585,7 @@ index d32082b4..ad7e524c 100644
 +				this.applyAuxiliaryBarFontFamily();
 +			}
  		}));
-@@ -198,2 +206,37 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+@@ -197,2 +205,37 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
  		container.style.borderRightWidth = borderColor && isPositionLeft ? '1px' : '0px';
 +
 +		this.applyAuxiliaryBarFontSize(container);
@@ -1375,7 +1637,7 @@ index aec3de2d..b0e1fd8f 100644
 +
  .monaco-workbench .part.auxiliarybar > .title > .title-label {
 diff --git a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
-index b0a44e2c..e711a809 100644
+index 2ba6b32b..6eb3ee83 100644
 --- a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
 +++ b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
 @@ -48,2 +48,4 @@ import { MarkdownString } from '../../../../base/common/htmlContent.js';
@@ -1396,11 +1658,11 @@ index b0a44e2c..e711a809 100644
 +		};
 +	}
  
-@@ -142,2 +146,3 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+@@ -148,2 +152,3 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
  		@IHostService private readonly hostService: IHostService,
 +		@IConfigurationService protected readonly configurationService: IConfigurationService,
  	) {
-@@ -149,2 +154,13 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+@@ -155,2 +160,13 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
  
 +		this._register(configurationService.onDidChangeConfiguration(e => {
 +			if (e.affectsConfiguration('workbench.tabs.experimental.fontFamily')) {
@@ -1414,12 +1676,12 @@ index b0a44e2c..e711a809 100644
 +		}));
 +
  		// Context Keys
-@@ -170,2 +186,4 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+@@ -176,2 +192,4 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
  	protected create(parent: HTMLElement): HTMLElement {
 +		this.applyTabsFontSize(parent);
 +		this.applyTabsFontFamily(parent);
  		this.updateTabHeight();
-@@ -174,2 +192,30 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+@@ -180,2 +198,30 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
  
 +	private applyTabsFontFamily(container?: HTMLElement): void {
 +		const target = container ?? this.parent;
@@ -1532,7 +1794,7 @@ index a24f7613..6b15b9c2 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
-index 4f9477d0..b47fd85b 100644
+index d57abaaf..4928dac9 100644
 --- a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
 +++ b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
 @@ -176,4 +176,4 @@
@@ -1547,7 +1809,7 @@ index 4f9477d0..b47fd85b 100644
 -	min-width: calc(var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px)) - 1px);
 +	min-width: 50px - 1px;
  }
-@@ -568 +568,113 @@
+@@ -576 +576,113 @@
  }
 +
 +
@@ -1609,14 +1871,14 @@ index 4f9477d0..b47fd85b 100644
 +.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container > .tab.dirty-border-top:not(:focus) > .tab-border-top-container {
 +    height: calc(var(--vscode-workbench-tabs-font-size) * 0.153846)
 +}
-+.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container >  .tab.sizing-shrink > .tab-label > .monaco-icon-label-container::after, .monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container >  .tab.sizing-fixed > .tab-label > .monaco-icon-label-container::after {
++.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container > .tab.sizing-shrink > .tab-label > .monaco-icon-label-container::after, .monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container > .tab.sizing-fixed > .tab-label > .monaco-icon-label-container::after {
 +    width: calc(var(--vscode-workbench-tabs-font-size) * 0.384615);
 +    padding: 0;
 +    top: 1px;
 +    bottom: 1px;
 +    height: calc(100% - calc(var(--vscode-workbench-tabs-font-size) * 0.153846))
 +}
-+.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container >  .tab.sizing-shrink > .tab-label.tab-label-has-badge::after, .monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container >  .tab.sizing-fixed > .tab-label.tab-label-has-badge::after {
++.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container > .tab.sizing-shrink > .tab-label.tab-label-has-badge::after, .monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container > .tab.sizing-fixed > .tab-label.tab-label-has-badge::after {
 +    margin-right: calc(var(--vscode-workbench-tabs-font-size) * 0.384615)
 +}
 +.monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .tabs-container > .tab.sizing-shrink:not(.tab-actions-left):not(.close-action-off) .tab-label {
@@ -1663,7 +1925,7 @@ index 4f9477d0..b47fd85b 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
-index b56047d6..d6e6c7ed 100644
+index 1fe80afb..d792a8c5 100644
 --- a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
 +++ b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
 @@ -6,2 +6,3 @@
@@ -1887,14 +2149,14 @@ index e1c147d8..63d0e109 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/panel/panelPart.ts b/src/vs/workbench/browser/parts/panel/panelPart.ts
-index 9afcf596..a8d4c2e6 100644
+index 235bad74..cdd90d95 100644
 --- a/src/vs/workbench/browser/parts/panel/panelPart.ts
 +++ b/src/vs/workbench/browser/parts/panel/panelPart.ts
 @@ -34,2 +34,3 @@ import { IConfigurationService } from '../../../../platform/configuration/common
  import { Extensions } from '../../panecomposite.js';
 +import { FONT, getFontSize, updatePanelSize as updateBottomPaneSize } from '../../../../base/common/font.js';
  
-@@ -117,2 +118,8 @@ export class PanelPart extends AbstractPaneCompositePart {
+@@ -116,2 +117,8 @@ export class PanelPart extends AbstractPaneCompositePart {
  			}
 +			if (e.affectsConfiguration('workbench.bottomPane.experimental.fontFamily')) {
 +				this.applyPanelFontFamily();
@@ -1903,7 +2165,7 @@ index 9afcf596..a8d4c2e6 100644
 +				this.applyPanelFontSize();
 +			}
  		}));
-@@ -133,2 +140,37 @@ export class PanelPart extends AbstractPaneCompositePart {
+@@ -132,2 +139,37 @@ export class PanelPart extends AbstractPaneCompositePart {
  		}
 +
 +		this.applyPanelFontFamily(container);
@@ -1999,7 +2261,7 @@ index decb51ab..d0db4363 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
-index 101b9c6c..970cdaae 100644
+index f269e758..f87d5781 100644
 --- a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
 +++ b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
 @@ -36,2 +36,3 @@ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js
@@ -2010,7 +2272,7 @@ index 101b9c6c..970cdaae 100644
  	static readonly activeViewletSettingsKey = 'workbench.sidebar.activeviewletid';
 +	static readonly fontSizeSettingsKey = 'workbench.sideBar.experimental.fontSize';
  
-@@ -126,2 +128,8 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -125,2 +127,8 @@ export class SidebarPart extends AbstractPaneCompositePart {
  			}
 +			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
 +				this.applySidebarFontSize();
@@ -2019,13 +2281,13 @@ index 101b9c6c..970cdaae 100644
 +				this.applySidebarFontFamily();
 +			}
  		}));
-@@ -178,2 +186,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -177,2 +185,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
  		container.style.outlineColor = this.getColor(SIDE_BAR_DRAG_AND_DROP_BACKGROUND) ?? '';
 +
 +		this.applySidebarFontSize(container);
 +		this.applySidebarFontFamily(container);
  	}
-@@ -320,2 +331,34 @@ export class SidebarPart extends AbstractPaneCompositePart {
+@@ -319,2 +330,34 @@ export class SidebarPart extends AbstractPaneCompositePart {
  
 +	private applySidebarFontFamily(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
@@ -2273,7 +2535,7 @@ index aca98deb..5bf9bf71 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/views/treeView.ts b/src/vs/workbench/browser/parts/views/treeView.ts
-index 1c9305bd..6471a0d3 100644
+index 487cf079..438f1cc7 100644
 --- a/src/vs/workbench/browser/parts/views/treeView.ts
 +++ b/src/vs/workbench/browser/parts/views/treeView.ts
 @@ -79,2 +79,3 @@ import { IAccessibleViewInformationService } from '../../../services/accessibili
@@ -2290,10 +2552,10 @@ index 1c9305bd..6471a0d3 100644
 -	static readonly ITEM_HEIGHT = 22;
  	static readonly TREE_TEMPLATE_ID = 'treeExplorer';
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index bdc603ff..4bc6d153 100644
+index eeddba00..4a0ef488 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -698,2 +698,85 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -716,2 +716,85 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  			},
 +			'workbench.experimental.fontFamily': {
 +				type: 'string',
@@ -2380,12 +2642,12 @@ index bdc603ff..4bc6d153 100644
 +			},
  			'workbench.settings.editor': {
 diff --git a/src/vs/workbench/browser/workbench.ts b/src/vs/workbench/browser/workbench.ts
-index 10e2c3ed..74e3bbe9 100644
+index 10e2c3ed..47f28faa 100644
 --- a/src/vs/workbench/browser/workbench.ts
 +++ b/src/vs/workbench/browser/workbench.ts
 @@ -9,2 +9,3 @@ import { Event, Emitter, setGlobalLeakWarningThreshold } from '../../base/common
  import { RunOnceScheduler, timeout } from '../../base/common/async.js';
-+import { FONT, getFontSize, updateDefaultSize } from '../../base/common/font.js';
++import { getFontSize, updateDefaultSize } from '../../base/common/font.js';
  import { isFirefox, isSafari, isChrome } from '../../base/browser/browser.js';
 @@ -19,3 +20,3 @@ import { Position, Parts, IWorkbenchLayoutService, positionToString } from '../s
  import { IStorageService, WillSaveStateReason, StorageScope, StorageTarget } from '../../platform/storage/common/storage.js';
@@ -2419,7 +2681,7 @@ index 10e2c3ed..74e3bbe9 100644
 -		}
 -
  		const aliasing = configurationService.getValue<'default' | 'antialiased' | 'none' | 'auto'>('workbench.fontAliasing');
-@@ -296,2 +303,31 @@ export class Workbench extends Layout {
+@@ -296,2 +303,33 @@ export class Workbench extends Layout {
  
 +	private fontFamily: string | undefined;
 +	private updateFontFamily(configurationService: IConfigurationService) {
@@ -2438,20 +2700,22 @@ index 10e2c3ed..74e3bbe9 100644
 +		}
 +	}
 +
++	private fontSize: number | undefined;
 +	private updateFontSize(configurationService: IConfigurationService) {
 +		const configuredSize = getFontSize(configurationService, 'workbench.experimental.fontSize', 13);
 +
-+		if (FONT.defaultSize === configuredSize) {
++		if (this.fontSize === configuredSize) {
 +			return;
 +		}
 +
 +		updateDefaultSize(configuredSize);
 +
-+		this.mainContainer.style.setProperty('--vscode-workbench-font-size', `${FONT.defaultSize}px`);
++		this.fontSize = configuredSize;
++		this.mainContainer.style.setProperty('--vscode-workbench-font-size', `${configuredSize}px`);
 +	}
 +
  	private restoreFontInfo(storageService: IStorageService, configurationService: IConfigurationService): void {
-@@ -339,3 +375,6 @@ export class Workbench extends Layout {
+@@ -339,3 +377,6 @@ export class Workbench extends Layout {
  		// Apply font aliasing
 -		this.updateFontAliasing(undefined, configurationService);
 +		this.updateFontAliasing(configurationService);
@@ -2473,25 +2737,25 @@ index 6f588651..3ab0ee4e 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
-index d4f277de..4f386424 100644
+index 01aa7ab5..ca43c1e0 100644
 --- a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
 +++ b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
-@@ -53,2 +53,3 @@ import { BugIndicatingError } from '../../../../../base/common/errors.js';
- import { compareIgnoreCase } from '../../../../../base/common/strings.js';
+@@ -55,2 +55,3 @@ import { CancellationTokenSource } from '../../../../../base/common/cancellation
+ import { IChatSessionsService } from '../../common/chatSessionsService.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -838,5 +839,2 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+@@ -853,5 +854,2 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
  
 -	static readonly ITEM_HEIGHT = 54;
 -	static readonly SECTION_HEIGHT = 26;
 -
  	constructor(private readonly _approvalModel?: AgentSessionApprovalModel,
-@@ -847,3 +845,3 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+@@ -862,3 +860,3 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
  		if (isAgentSessionSection(element)) {
 -			return AgentSessionsListDelegate.SECTION_HEIGHT;
 +			return FONT.sidebarSize26;
  		}
-@@ -854,3 +852,3 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+@@ -869,3 +867,3 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
  
 -		let height = AgentSessionsListDelegate.ITEM_HEIGHT;
 +		let height = FONT.sidebarSize54;
@@ -2523,7 +2787,7 @@ index 15ae7996..06a95d59 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
-index 84939387..50a19e4f 100644
+index 6893c58f..0d8f7abc 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
 @@ -50,2 +50,3 @@ import { IHoverService } from '../../../../../../platform/hover/browser/hover.js
@@ -2536,7 +2800,7 @@ index 84939387..50a19e4f 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts
-index 8f0f2c48..52818d1d 100644
+index 4badd750..a8472409 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts
 @@ -11,2 +11,3 @@ import { IListRenderer, IListVirtualDelegate } from '../../../../../../base/brow
@@ -2683,14 +2947,14 @@ index 5162553b..5adbed8f 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/debug/browser/breakpointsView.ts b/src/vs/workbench/contrib/debug/browser/breakpointsView.ts
-index 6f82df16..6c8ae0d6 100644
+index d6dec6a1..3fb52d98 100644
 --- a/src/vs/workbench/contrib/debug/browser/breakpointsView.ts
 +++ b/src/vs/workbench/contrib/debug/browser/breakpointsView.ts
 @@ -63,2 +63,3 @@ import { equals } from '../../../../base/common/arrays.js';
  import { hasKey } from '../../../../base/common/types.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -578,3 +579,3 @@ class BreakpointsDelegate implements IListVirtualDelegate<BreakpointTreeElement>
+@@ -593,3 +594,3 @@ class BreakpointsDelegate implements IListVirtualDelegate<BreakpointTreeElement>
  	getHeight(_element: BreakpointTreeElement): number {
 -		return 22;
 +		return FONT.sidebarSize22;
@@ -3790,7 +4054,7 @@ index 62d5db99..f86dba1f 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/search/browser/searchView.ts b/src/vs/workbench/contrib/search/browser/searchView.ts
-index fb52bbb7..09ca3111 100644
+index d2778271..86b8b01e 100644
 --- a/src/vs/workbench/contrib/search/browser/searchView.ts
 +++ b/src/vs/workbench/contrib/search/browser/searchView.ts
 @@ -87,2 +87,3 @@ import { ITelemetryService } from '../../../../platform/telemetry/common/telemet
@@ -3852,7 +4116,7 @@ index e9c0fcd4..f3e23de0 100644
 +			this.replaceInput.width = width - FONT.sidebarSize28;
  			this.replaceInput.inputBox.layout();
 diff --git a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
-index 21118dd7..b5e53a1d 100644
+index 013ee562..8c0ac05a 100644
 --- a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
 +++ b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
 @@ -58,2 +58,3 @@ import { TerminalStorageKeys } from '../common/terminalStorageKeys.js';
@@ -3868,12 +4132,12 @@ index 21118dd7..b5e53a1d 100644
 -				getHeight: () => TerminalTabsListSizes.TabHeight,
 +				getHeight: () => FONT.bottomPaneSize22,
  				getTemplateId: () => 'terminal.tabs'
-@@ -113,3 +113,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
+@@ -116,3 +116,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
  				multipleSelectionSupport: true,
 -				paddingBottom: TerminalTabsListSizes.TabHeight,
 +				paddingBottom: FONT.bottomPaneSize22,
  				dnd: instantiationService.createInstance(TerminalTabsDragAndDrop),
-@@ -458,3 +458,3 @@ class TerminalTabsRenderer implements IListRenderer<ITerminalInstance, ITerminal
+@@ -460,3 +460,3 @@ class TerminalTabsRenderer implements IListRenderer<ITerminalInstance, ITerminal
  		});
 -		inputBox.element.style.height = '22px';
 +		inputBox.element.style.height = `${FONT.bottomPaneSize22}px`;
@@ -3955,23 +4219,23 @@ index 27c65807..0feb6465 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
-index 0e3e5ccd..c7d20959 100644
+index 888bd75d..70b57290 100644
 --- a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
 +++ b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
 @@ -49,3 +49,2 @@ import { AgentSessionsControl, IAgentSessionsControlOptions } from '../../chat/b
  import { AgentSessionsFilter } from '../../chat/browser/agentSessions/agentSessionsFilter.js';
 -import { AgentSessionsListDelegate } from '../../chat/browser/agentSessions/agentSessionsViewer.js';
  import { HoverPosition } from '../../../../base/browser/ui/hover/hoverWidget.js';
-@@ -62,2 +61,3 @@ import { toErrorMessage } from '../../../../base/common/errorMessage.js';
- import { ILogService } from '../../../../platform/log/common/log.js';
+@@ -63,2 +62,3 @@ import { ILogService } from '../../../../platform/log/common/log.js';
+ import { canShowAgentsBanner, createAgentsBanner } from '../../chat/browser/agentSessions/agentSessionsBanner.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -830,3 +830,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
+@@ -839,3 +839,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
  		);
 -		const sessionsHeight = visibleSessions * AgentSessionsListDelegate.ITEM_HEIGHT;
 +		const sessionsHeight = visibleSessions * FONT.sidebarSize22;
  		this.sessionsControl.layout(sessionsHeight, sessionsWidth);
-@@ -835,3 +835,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
+@@ -844,3 +844,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
  		// Visual height = ceil(n/2) * ITEM_HEIGHT, so offset = floor(n/2) * ITEM_HEIGHT
 -		const marginOffset = Math.floor(visibleSessions / 2) * AgentSessionsListDelegate.ITEM_HEIGHT;
 +		const marginOffset = Math.floor(visibleSessions / 2) * FONT.sidebarSize22;

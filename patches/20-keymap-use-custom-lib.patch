@@ -1,5 +1,5 @@
 diff --git a/.npmrc b/.npmrc
-index 8255ca3e..98dc0d47 100644
+index 025e4b04..5e409d87 100644
 --- a/.npmrc
 +++ b/.npmrc
 @@ -6,2 +6,3 @@ ignore-scripts=false
@@ -7,7 +7,7 @@ index 8255ca3e..98dc0d47 100644
 +build_from_source_native_keymap="no"
  legacy-peer-deps="true"
 diff --git a/build/.moduleignore b/build/.moduleignore
-index f83624f8..aaa384bf 100644
+index d1a8a227..b7209206 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
 @@ -65,7 +65,7 @@ fsevents/test/**
@@ -24,27 +24,27 @@ index f83624f8..aaa384bf 100644
 +!@vscodium/native-keymap/build/Release/*.node
  
 diff --git a/eslint.config.js b/eslint.config.js
-index 51bda2c3..494a2c2c 100644
+index 9f0b5274..10eb5a99 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
-@@ -1526,3 +1526,3 @@ export default tseslint.config(
+@@ -1518,3 +1518,3 @@ export default tseslint.config(
  						'node:module',
 -						'native-keymap',
 +						'@vscodium/native-keymap',
  						'net',
 diff --git a/package-lock.json b/package-lock.json
-index 75b98719..88c2aee4 100644
+index 68f23433..d5c1dfa7 100644
 --- a/package-lock.json
 +++ b/package-lock.json
-@@ -39,2 +39,3 @@
+@@ -41,2 +41,3 @@
          "@vscode/windows-registry": "^1.2.0",
 +        "@vscodium/native-keymap": "3.3.7-258424",
-         "@xterm/addon-clipboard": "^0.3.0-beta.197",
-@@ -56,3 +57,2 @@
+         "@xterm/addon-clipboard": "^0.3.0-beta.213",
+@@ -59,3 +60,2 @@
          "native-is-elevated": "0.9.0",
 -        "native-keymap": "^3.3.5",
-         "node-pty": "^1.2.0-beta.12",
-@@ -4168,2 +4168,9 @@
+         "node-pty": "^1.2.0-beta.13",
+@@ -4368,2 +4368,9 @@
      },
 +    "node_modules/@vscodium/native-keymap": {
 +      "version": "3.3.7-258424",
@@ -53,8 +53,8 @@ index 75b98719..88c2aee4 100644
 +      "hasInstallScript": true,
 +      "license": "MIT"
 +    },
-     "node_modules/@wdio/config": {
-@@ -14280,5 +14287,6 @@
+     "node_modules/@webgpu/types": {
+@@ -14103,5 +14110,6 @@
      "node_modules/napi-build-utils": {
 -      "version": "1.0.2",
 -      "resolved": "https://registry.npmjs.org/napi-build-utils/-/napi-build-utils-1.0.2.tgz",
@@ -64,7 +64,7 @@ index 75b98719..88c2aee4 100644
 +      "integrity": "sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA==",
 +      "license": "MIT"
      },
-@@ -14291,9 +14299,2 @@
+@@ -14114,9 +14122,2 @@
      },
 -    "node_modules/native-keymap": {
 -      "version": "3.3.9",
@@ -74,7 +74,7 @@ index 75b98719..88c2aee4 100644
 -      "license": "MIT"
 -    },
      "node_modules/natural-compare": {
-@@ -15805,5 +15806,6 @@
+@@ -15517,5 +15518,6 @@
      "node_modules/prebuild-install": {
 -      "version": "7.1.2",
 -      "resolved": "https://registry.npmjs.org/prebuild-install/-/prebuild-install-7.1.2.tgz",
@@ -84,22 +84,22 @@ index 75b98719..88c2aee4 100644
 +      "integrity": "sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==",
 +      "license": "MIT",
        "dependencies": {
-@@ -15814,3 +15816,3 @@
+@@ -15526,3 +15528,3 @@
          "mkdirp-classic": "^0.5.3",
 -        "napi-build-utils": "^1.0.1",
 +        "napi-build-utils": "^2.0.0",
          "node-abi": "^3.3.0",
 diff --git a/package.json b/package.json
-index b925a690..166f0cae 100644
+index 5defb1ef..f827d888 100644
 --- a/package.json
 +++ b/package.json
-@@ -133,3 +133,3 @@
+@@ -136,3 +136,3 @@
      "native-is-elevated": "0.9.0",
 -    "native-keymap": "^3.3.5",
 +    "@vscodium/native-keymap": "3.3.7-258424",
-     "node-pty": "^1.2.0-beta.12",
+     "node-pty": "^1.2.0-beta.13",
 diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
-index c30c6da5..ca6cea22 100644
+index 50360a79..93df77af 100644
 --- a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 +++ b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 @@ -44,8 +44,8 @@ flakySuite('Native Modules (all platforms)', () => {

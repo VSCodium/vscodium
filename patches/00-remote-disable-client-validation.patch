@@ -1,0 +1,51 @@
+diff --git a/src/vs/server/node/remoteExtensionHostAgentServer.ts b/src/vs/server/node/remoteExtensionHostAgentServer.ts
+index 5c4f3c2a..91010c0b 100644
+--- a/src/vs/server/node/remoteExtensionHostAgentServer.ts
++++ b/src/vs/server/node/remoteExtensionHostAgentServer.ts
+@@ -77,2 +77,3 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+ 		serverBasePath: string | undefined,
++		private readonly _disableClientValidation: boolean | undefined,
+ 		@IServerEnvironmentService private readonly _environmentService: IServerEnvironmentService,
+@@ -100,3 +101,3 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+ 		);
+-		this._logService.info(`Extension host agent started.`);
++		this._logService.info(`Extension host agent started. (validation: ${!this._disableClientValidation})`);
+ 		this._reconnectionGraceTime = this._environmentService.reconnectionGraceTime;
+@@ -334,8 +335,10 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+ 
+-				const rendererCommit = msg2.commit;
+-				const myCommit = this._productService.commit;
+-				if (rendererCommit && myCommit) {
+-					// Running in the built version where commits are defined
+-					if (rendererCommit !== myCommit) {
+-						return rejectWebSocketConnection(`Client refused: version mismatch`);
++				if(!this._disableClientValidation) {
++					const rendererCommit = msg2.commit;
++					const myCommit = this._productService.commit;
++					if (rendererCommit && myCommit) {
++						// Running in the built version where commits are defined
++						if (rendererCommit !== myCommit) {
++							return rejectWebSocketConnection(`Client refused: version mismatch`);
++						}
+ 					}
+@@ -700,3 +703,5 @@ export async function createServer(address: string | net.AddressInfo | null, arg
+ 
+-	const remoteExtensionHostAgentServer = instantiationService.createInstance(RemoteExtensionHostAgentServer, socketServer, connectionToken, vsdaMod, hasWebClient, serverBasePath);
++	let disableClientValidation = args['disable-client-validation'];
++
++	const remoteExtensionHostAgentServer = instantiationService.createInstance(RemoteExtensionHostAgentServer, socketServer, connectionToken, vsdaMod, hasWebClient, serverBasePath, disableClientValidation);
+ 
+diff --git a/src/vs/server/node/serverEnvironmentService.ts b/src/vs/server/node/serverEnvironmentService.ts
+index bacdd289..194b5485 100644
+--- a/src/vs/server/node/serverEnvironmentService.ts
++++ b/src/vs/server/node/serverEnvironmentService.ts
+@@ -35,2 +35,4 @@ export const serverOptions: OptionDescriptions<Required<ServerParsedArgs>> = {
+ 
++	'disable-client-validation': { type: 'boolean' },
++
+ 	/* ----- vs code options ---	-- */
+@@ -227,2 +229,4 @@ export interface ServerParsedArgs {
+ 
++	'disable-client-validation'?: boolean;
++
+ 	/* ----- server cli ----- */

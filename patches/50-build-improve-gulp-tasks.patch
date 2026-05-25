@@ -1,5 +1,5 @@
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 080d97f3..93b5f711 100644
+index a636b48c..25aa6a57 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
 @@ -30,3 +30,3 @@ import { createAsar } from './lib/asar.ts';
@@ -7,24 +7,20 @@ index 080d97f3..93b5f711 100644
 -import { compileBuildWithoutManglingTask, compileBuildWithManglingTask } from './gulpfile.compile.ts';
 +import { compileBuildWithoutManglingTask } from './gulpfile.compile.ts';
  import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask, compileCopilotExtensionBuildTask } from './gulpfile.extensions.ts';
-@@ -197,3 +197,2 @@ function runEsbuildBundle(outDir: string, minify: boolean, nls: boolean, target:
- 			args.push('--minify');
--			args.push('--mangle-privates');
- 		}
-@@ -757,3 +756,4 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -623,3 +623,4 @@ BUILD_TARGETS.forEach(buildTarget => {
  			);
 -			vscodeTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}`, task.series(
 +
 +			const prepackTask = task.define(`vscode${dashed(minified)}-prepack`, task.series(
  				copyCodiconsTask,
-@@ -763,2 +763,6 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -629,2 +630,6 @@ BUILD_TARGETS.forEach(buildTarget => {
  				compileExtensionMediaBuildTask,
 +			));
 +			gulp.task(prepackTask);
 +
 +			const packingTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}-packing`, task.series(
  				writeISODate('out-build'),
-@@ -767,5 +771,11 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -633,5 +638,11 @@ BUILD_TARGETS.forEach(buildTarget => {
  			));
 -		} else {
 +			gulp.task(packingTask);
@@ -38,7 +34,7 @@ index 080d97f3..93b5f711 100644
 +			const prepackTask = task.define(`vscode${dashed(minified)}-prepack`, task.series(
 +				compileBuildWithoutManglingTask,
  				cleanExtensionsBuildTask,
-@@ -775,4 +785,14 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -641,4 +652,14 @@ BUILD_TARGETS.forEach(buildTarget => {
  				minified ? minifyVSCodeTask : bundleVSCodeTask,
 +			));
 +			gulp.task(prepackTask);
@@ -52,4 +48,12 @@ index 080d97f3..93b5f711 100644
 +				prepackTask,
 +				packingTask,
 +			));
+ 		}
+diff --git a/build/lib/esbuild.ts b/build/lib/esbuild.ts
+index d066767b..0d09e32a 100644
+--- a/build/lib/esbuild.ts
++++ b/build/lib/esbuild.ts
+@@ -42,3 +42,2 @@ export function runEsbuildBundle(outDir: string, minify: boolean, nls: boolean,
+ 			args.push('--minify');
+-			args.push('--mangle-privates');
  		}

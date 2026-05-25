@@ -33,12 +33,12 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    sed -i "s|@@NAME@@|${APP_NAME}-Insiders|g" recipe.yml
-    sed -i "s|@@APPNAME@@|${BINARY_NAME}|g" recipe.yml
+    sed -i "s|@@APP_NAME@@|${APP_NAME}-Insiders|g" recipe.yml
+    sed -i "s|@@BINARY_NAME@@|${BINARY_NAME}|g" recipe.yml
     sed -i "s|@@ICON@@|${APP_NAME_LC}-insiders|g" recipe.yml
   else
-    sed -i "s|@@NAME@@|${APP_NAME}|g" recipe.yml
-    sed -i "s|@@APPNAME@@|${BINARY_NAME}|g" recipe.yml
+    sed -i "s|@@APP_NAME@@|${APP_NAME}|g" recipe.yml
+    sed -i "s|@@BINARY_NAME@@|${BINARY_NAME}|g" recipe.yml
     sed -i "s|@@ICON@@|${APP_NAME_LC}|g" recipe.yml
   fi
 
