@@ -6,7 +6,7 @@ Unlike Visual Studio Code, in VSCodium, Copilot features are disabled and not co
 
 ## Update your settings
 
-In your settings, sets:
+In your settings, set:
 ```
 "chat.disableAIFeatures": false,
 ```
