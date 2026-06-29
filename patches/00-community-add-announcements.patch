@@ -1,8 +1,8 @@
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-index e025130..f42db8d 100644
+index 067580a4..2ad8759f 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-@@ -343,2 +343,9 @@ configurationRegistry.registerConfiguration({
+@@ -316,2 +316,9 @@ configurationRegistry.registerConfiguration({
  		},
 +		'workbench.welcomePage.extraAnnouncements': {
 +			scope: ConfigurationScope.MACHINE,
@@ -13,10 +13,10 @@ index e025130..f42db8d 100644
 +		},
  		'workbench.startupEditor': {
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
-index 01778b2..615828d 100644
+index 0cb22b9c..1dfea59f 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
-@@ -117,4 +117,8 @@ type GettingStartedActionEvent = {
+@@ -119,4 +119,8 @@ type GettingStartedActionEvent = {
  type RecentEntry = (IRecentFolder | IRecentWorkspace) & { id: string };
 +type AnnouncementEntry = { id: string, title: string, url: string };
  
@@ -26,25 +26,25 @@ index 01778b2..615828d 100644
 +
  export class GettingStartedPage extends EditorPane {
 @@ -154,2 +158,4 @@ export class GettingStartedPage extends EditorPane {
- 	private gettingStartedList?: GettingStartedIndexList<IResolvedWalkthrough>;
+ 	private readonly gettingStartedList = this._register(new MutableDisposable<GettingStartedIndexList<IResolvedWalkthrough>>());
 +	private announcementList?: GettingStartedIndexList<AnnouncementEntry>;
 +	private announcementData?: AnnouncementEntry[];
  
-@@ -880,2 +886,3 @@ export class GettingStartedPage extends EditorPane {
+@@ -936,2 +942,3 @@ export class GettingStartedPage extends EditorPane {
  		const gettingStartedList = this.buildGettingStartedWalkthroughsList();
 +		const announcementList = await this.buildAnnouncementList();
  
-@@ -890,3 +897,3 @@ export class GettingStartedPage extends EditorPane {
+@@ -960,3 +967,3 @@ export class GettingStartedPage extends EditorPane {
  				this.container.classList.remove('noWalkthroughs');
 -				reset(rightColumn, gettingStartedList.getDomElement());
 +				reset(rightColumn, gettingStartedList.getDomElement(), announcementList.getDomElement());
  			}
-@@ -894,3 +901,3 @@ export class GettingStartedPage extends EditorPane {
+@@ -964,3 +971,3 @@ export class GettingStartedPage extends EditorPane {
  				this.container.classList.add('noWalkthroughs');
 -				reset(rightColumn);
 +				reset(rightColumn, announcementList.getDomElement());
  			}
-@@ -1047,2 +1054,55 @@ export class GettingStartedPage extends EditorPane {
+@@ -1151,2 +1158,55 @@ export class GettingStartedPage extends EditorPane {
  
 +	private async buildAnnouncementList(): Promise<GettingStartedIndexList<AnnouncementEntry>> {
 +		const renderAnnouncement = (announcement: AnnouncementEntry) => {
