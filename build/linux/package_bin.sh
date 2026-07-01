@@ -71,6 +71,8 @@ if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
   if [[ "${ELECTRON_VERSION}" != "${TARGET}" ]]; then
     # Force version
     replace "s|target=\"${TARGET}\"|target=\"${ELECTRON_VERSION}\"|" .npmrc
+
+    cat .npmrc
   fi
 fi
 

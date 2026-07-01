@@ -49,7 +49,7 @@ index 62c30da5..8ecd10b2 100644
 +			}
  			return platform === 'linux' && arch === 'x64' ? downloaded.pipe(patchElfLoadAlign()) : downloaded;
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 53987f88..a90581a1 100644
+index 53987f88..c8df0f4e 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
 @@ -425,4 +425,17 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
@@ -58,18 +58,23 @@ index 53987f88..a90581a1 100644
 +		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
 +			// official electron doesn't support all arch, override the repo with `VSCODE_ELECTRON_REPOSITORY`.
 +			electronOverride.repo = process.env.VSCODE_ELECTRON_REPOSITORY;
-+			console.log('Using Electron Repository:', electronOverride.repo)
++			console.log('Using Electron Repository:', electronOverride.repo);
 +		}
 +
 +		if (process.env.VSCODE_ELECTRON_TAG) {
 +			electronOverride.tag = process.env.VSCODE_ELECTRON_TAG;
-+			console.log('Using Electron Tag:', electronOverride.tag)
++			console.log('Using Electron Tag:', electronOverride.tag);
 +		}
 +
  		const electronConfig = {
  			...config,
 +			...electronOverride,
  			platform,
+@@ -432,2 +445,4 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 
++		console.log(JSON.stringify(electronConfig, null, '  '));
++
+ 		let result: NodeJS.ReadWriteStream = all
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
 index 7690e25d..42692905 100644
 --- a/build/linux/debian/dep-lists.ts
