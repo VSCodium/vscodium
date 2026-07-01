@@ -42,7 +42,7 @@ index 62c30da5..8354a843 100644
 -				compileCopilotExtensionBuildTask,
  				compileExtensionMediaBuildTask,
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index d6385970..cb34d8f8 100644
+index b897c6c6..97e316a3 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
 @@ -28,5 +28,5 @@ import minimist from 'minimist';
@@ -89,34 +89,11 @@ index d6385970..cb34d8f8 100644
  		let vscodeTask: task.Task;
 +
  		if (useEsbuildTranspile) {
-@@ -672,6 +652,5 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -693,3 +673,2 @@ BUILD_TARGETS.forEach(buildTarget => {
  				compileNonNativeExtensionsBuildTask,
 -				compileCopilotExtensionBuildTask,
  				compileExtensionMediaBuildTask,
- 			));
--			gulp.task(prepackTask);
-+			task.task(prepackTask);
- 
-@@ -682,3 +661,3 @@ BUILD_TARGETS.forEach(buildTarget => {
- 			));
--			gulp.task(packingTask);
-+			task.task(packingTask);
- 
-@@ -693,3 +672,2 @@ BUILD_TARGETS.forEach(buildTarget => {
- 				compileNonNativeExtensionsBuildTask,
--				compileCopilotExtensionBuildTask,
- 				compileExtensionMediaBuildTask,
-@@ -697,3 +675,3 @@ BUILD_TARGETS.forEach(buildTarget => {
- 			));
--			gulp.task(prepackTask);
-+			task.task(prepackTask);
- 
-@@ -702,3 +680,3 @@ BUILD_TARGETS.forEach(buildTarget => {
- 			));
--			gulp.task(packingTask);
-+			task.task(packingTask);
- 
-@@ -709,2 +687,3 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -709,2 +688,3 @@ BUILD_TARGETS.forEach(buildTarget => {
  		}
 +
  		task.task(vscodeTask);
