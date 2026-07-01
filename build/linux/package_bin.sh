@@ -23,7 +23,7 @@ export VSCODE_PLATFORM='linux'
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.28-gcc-10.5.0'
 
-if [[ "${VSCODE_ARCH}" == "arm64" || "${VSCODE_ARCH}" == "armhf" ]]; then
+if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   export VSCODE_SKIP_SYSROOT=1
   # export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then

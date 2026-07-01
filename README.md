@@ -32,6 +32,7 @@
 - [Why Does This Exist](#why)
 - [More Info](#more-info)
 - [Supported Platforms](#supported-platforms)
+- [Previously Supported Platforms](#previously-supported-platforms)
 
 ## <a id="download-install"></a>Download/Install
 
@@ -185,6 +186,12 @@ The minimal version is limited by the core component Electron, you may want to c
 - [x] GNU/Linux ppc64le (`tar.gz`)
 - [x] Windows 10 / Server 2012 R2 or newer x64
 - [x] Windows 10 / Server 2012 R2 or newer arm64
+
+## <a id="previously-supported-platforms"></a>Previously Supported Platforms
+
+- GNU/Linux armhf:
+  - Latest available: [v1.121.03429](https://github.com/VSCodium/vscodium/releases/tag/1.121.03429).
+  - Breaking point: `node-v24`.
 
 ## <a id="thanks"></a>Special thanks
 

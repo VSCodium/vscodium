@@ -187,36 +187,6 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
   </tr>
 </table>
 
-## ARM 32bits
-
-<table>
-  <tr>
-    <td rowspan="6">Linux</td>
-    <td>.deb</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@_@@VERSION@@_armhf.deb">@@BINARY_NAME@@_@@VERSION@@_armhf.deb</a></td>
-  </tr>
-  <tr>
-    <td>.rpm</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@-@@VERSION@@-el8.armv7hl.rpm">@@BINARY_NAME@@-@@VERSION@@-el8.armv7hl.rpm</a></td>
-  </tr>
-  <tr>
-    <td>.tar.gz</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME@@-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME@@-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
-  </tr>
-  <tr>
-    <td>Remote Host</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
-  </tr>
-  <tr>
-    <td>Web Host</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-web-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-web-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
-  </tr>
-  <tr>
-    <td>CLI</td>
-    <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-cli-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-cli-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
-  </tr>
-</table>
-
 ## PPC 64bits
 
 <table>

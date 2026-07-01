@@ -34,14 +34,6 @@ elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
 
   export VSCODE_SKIP_SYSROOT=1
   export USE_GNUPP2A=1
-elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
-  EXPECTED_GLIBC_VERSION="2.30"
-  NODE_VERSION="22.21.1"
-
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-armhf"
-
-  export VSCODE_SKIP_SYSROOT=1
-  export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   GLIBC_VERSION="2.28"
 
