@@ -73,6 +73,8 @@ if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
     replace "s|target=\"${TARGET}\"|target=\"${ELECTRON_VERSION}\"|" .npmrc
 
     cat .npmrc
+
+    export VSCODE_ELECTRON_VERSION="${ELECTRON_VERSION}"
   fi
 fi
 

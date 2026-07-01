@@ -49,7 +49,7 @@ index 62c30da5..8ecd10b2 100644
 +			}
  			return platform === 'linux' && arch === 'x64' ? downloaded.pipe(patchElfLoadAlign()) : downloaded;
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 53987f88..c8df0f4e 100644
+index 53987f88..50e75b95 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
 @@ -425,4 +425,17 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
@@ -70,11 +70,15 @@ index 53987f88..c8df0f4e 100644
  			...config,
 +			...electronOverride,
  			platform,
-@@ -432,2 +445,4 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+diff --git a/build/lib/electron.ts b/build/lib/electron.ts
+index 016c25f7..a04f56bb 100644
+--- a/build/lib/electron.ts
++++ b/build/lib/electron.ts
+@@ -103,3 +103,3 @@ function darwinBundleDocumentTypes(types: { [name: string]: string | string[] },
+ const { msBuildId } = util.getElectronVersion();
+-const electronVersion = '42.2.0';
++const electronVersion = process.env.VSCODE_ELECTRON_VERSION ?? '42.2.0';
  
-+		console.log(JSON.stringify(electronConfig, null, '  '));
-+
- 		let result: NodeJS.ReadWriteStream = all
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
 index 7690e25d..42692905 100644
 --- a/build/linux/debian/dep-lists.ts
