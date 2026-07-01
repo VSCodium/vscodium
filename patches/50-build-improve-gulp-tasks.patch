@@ -1,29 +1,29 @@
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index a636b48c..25aa6a57 100644
+index 53987f88..b897c6c6 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -30,3 +30,3 @@ import { createAsar } from './lib/asar.ts';
+@@ -27,3 +27,3 @@ import { createAsar } from './lib/asar.ts';
  import minimist from 'minimist';
 -import { compileBuildWithoutManglingTask, compileBuildWithManglingTask } from './gulpfile.compile.ts';
 +import { compileBuildWithoutManglingTask } from './gulpfile.compile.ts';
  import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask, compileCopilotExtensionBuildTask } from './gulpfile.extensions.ts';
-@@ -623,3 +623,4 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -667,3 +667,4 @@ BUILD_TARGETS.forEach(buildTarget => {
  			);
 -			vscodeTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}`, task.series(
 +
 +			const prepackTask = task.define(`vscode${dashed(minified)}-prepack`, task.series(
  				copyCodiconsTask,
-@@ -629,2 +630,6 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -673,2 +674,6 @@ BUILD_TARGETS.forEach(buildTarget => {
  				compileExtensionMediaBuildTask,
 +			));
-+			gulp.task(prepackTask);
++			task.task(prepackTask);
 +
 +			const packingTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}-packing`, task.series(
  				writeISODate('out-build'),
-@@ -633,5 +638,11 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -677,5 +682,11 @@ BUILD_TARGETS.forEach(buildTarget => {
  			));
 -		} else {
-+			gulp.task(packingTask);
++			task.task(packingTask);
 +
  			vscodeTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}`, task.series(
 -				minified ? compileBuildWithManglingTask : compileBuildWithoutManglingTask,
@@ -34,15 +34,15 @@ index a636b48c..25aa6a57 100644
 +			const prepackTask = task.define(`vscode${dashed(minified)}-prepack`, task.series(
 +				compileBuildWithoutManglingTask,
  				cleanExtensionsBuildTask,
-@@ -641,4 +652,14 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -685,4 +696,14 @@ BUILD_TARGETS.forEach(buildTarget => {
  				minified ? minifyVSCodeTask : bundleVSCodeTask,
 +			));
-+			gulp.task(prepackTask);
++			task.task(prepackTask);
 +
 +			const packingTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}-packing`, task.series(
  				vscodeTaskCI
  			));
-+			gulp.task(packingTask);
++			task.task(packingTask);
 +
 +			vscodeTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}`, task.series(
 +				prepackTask,

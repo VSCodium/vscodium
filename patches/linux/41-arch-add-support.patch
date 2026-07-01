@@ -49,19 +49,21 @@ index 62c30da5..8ecd10b2 100644
 +			}
  			return platform === 'linux' && arch === 'x64' ? downloaded.pipe(patchElfLoadAlign()) : downloaded;
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 53987f88..d192dd89 100644
+index 53987f88..a90581a1 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -425,4 +425,15 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -425,4 +425,17 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  
 +		const electronOverride: { repo?: string; tag?: string } = {};
 +		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
 +			// official electron doesn't support all arch, override the repo with `VSCODE_ELECTRON_REPOSITORY`.
 +			electronOverride.repo = process.env.VSCODE_ELECTRON_REPOSITORY;
++			console.log('Using Electron Repository:', electronOverride.repo)
 +		}
 +
 +		if (process.env.VSCODE_ELECTRON_TAG) {
 +			electronOverride.tag = process.env.VSCODE_ELECTRON_TAG;
++			console.log('Using Electron Tag:', electronOverride.tag)
 +		}
 +
  		const electronConfig = {
