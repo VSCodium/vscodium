@@ -52,6 +52,9 @@ if [[ "${FILE}" != "../patches/helper/settings.patch" ]]; then
 
     BASENAME=$(basename "${FILE}")
     DIRNAME=$(dirname "${FILE}")
+    echo $FILE
+    echo $BASENAME
+    echo $DIRNAME
 
     if [[ "${BASENAME}" =~ ^([0-9])([1-9])(-.*)\.patch$ ]]; then
       GROUP_ID="${BASH_REMATCH[1]}"
@@ -91,8 +94,23 @@ if [[ "${FILE}" != "../patches/helper/settings.patch" ]]; then
               normalize_file "${CANDIDATE}"
 
               git apply --reject "${FILE}"
+
+              NOT_FOUND=0
             fi
           done
+
+          if (( $NOT_FOUND )); then
+            for CANDIDATE in "${DIRNAME}/../../${GROUP_ID}${I}-"*.patch; do
+              if [[ -f "$CANDIDATE" ]]; then
+                echo "Candidate: ${CANDIDATE}"
+                normalize_file "${CANDIDATE}"
+
+                git apply --reject "${FILE}"
+
+                NOT_FOUND=0
+              fi
+            done
+          fi
         fi
       done
     fi
