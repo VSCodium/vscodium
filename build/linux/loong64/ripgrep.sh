@@ -11,6 +11,14 @@ fi
 RG_PATH="$1/@vscode/ripgrep-universal/bin/rg"
 RG_VERSION="14.1.1"
 
+ls -la "$1/@vscode/ripgrep-universal"
+ls -la "$1/@vscode/ripgrep-universal/bin"
+ls -la "$1/@vscode/ripgrep"
+
+# if [ ! -f "${RG_PATH}" ]; then
+#   RG_PATH="$1/@vscode/ripgrep/bin/rg"
+# fi
+
 echo "Replacing ripgrep binary with loong64 one"
 
 rm "${RG_PATH}"
