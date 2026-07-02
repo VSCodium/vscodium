@@ -49,7 +49,7 @@ index 92ae7b96..c3fe6214 100644
 +	| "user";
 \ No newline at end of file
 diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-index 8cf5dceb..d776f408 100644
+index 8cf5dceb..4c550923 100644
 --- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
 +++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
 @@ -17,3 +17,3 @@ import { ILogService } from '../../log/common/log.js';
@@ -81,14 +81,47 @@ index 8cf5dceb..d776f408 100644
 -
 -	return url.toString();
  }
+@@ -178,3 +175,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
+ 
+-		if (!this.buildUpdateFeedUrl(quality, this.productService.commit!)) {
++		if (!this.buildUpdateFeedUrl(quality)) {
+ 			this.setState(State.Disabled(DisablementReason.InvalidConfiguration));
+@@ -373,5 +370,5 @@ export abstract class AbstractUpdateService implements IUpdateService {
+ 
+-		const pendingUpdateCommit = this._state.update.version;
++		const pendingUpdateVersion = this._state.update.productVersion;
+ 
+-		if (!pendingUpdateCommit || pendingUpdateCommit === 'unknown') {
++		if (!pendingUpdateVersion) {
+ 			return false;
+@@ -384,3 +381,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
+ 			const timeoutPromise = timeout(2000).then(() => { cts.cancel(); return undefined; });
+-			isLatest = await Promise.race([this.isLatestVersion(pendingUpdateCommit, cts.token), timeoutPromise]);
++			isLatest = await Promise.race([this.isLatestVersion(pendingUpdateVersion, cts.token), timeoutPromise]);
+ 			cts.dispose();
+@@ -405,3 +402,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
+ 			this.setState(State.Overwriting(this._state.update, explicit));
+-			this.doCheckForUpdates(explicit, pendingUpdateCommit);
++			this.doCheckForUpdates(explicit, pendingUpdateVersion);
+ 			return true;
+@@ -412,3 +409,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
+ 
+-	async isLatestVersion(commit?: string, token: CancellationToken = CancellationToken.None): Promise<boolean | undefined> {
++	async isLatestVersion(pendingVersion?: string, token: CancellationToken = CancellationToken.None): Promise<boolean | undefined> {
+ 		if (!this.quality) {
 @@ -419,3 +416,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
  
 -		if (mode === 'none') {
 +		if (mode === 'none' || mode === 'manual') {
  			return undefined;
-@@ -429,18 +426,37 @@ export abstract class AbstractUpdateService implements IUpdateService {
+@@ -423,3 +420,3 @@ export abstract class AbstractUpdateService implements IUpdateService {
  
-+		return this._isLatestVersion(url, false)
+-		const url = this.buildUpdateFeedUrl(this.quality, commit ?? this.productService.commit!, { internalOrg: this.getInternalOrg() });
++		const url = this.buildUpdateFeedUrl(this.quality, { internalOrg: this.getInternalOrg() });
+ 
+@@ -429,18 +426,47 @@ export abstract class AbstractUpdateService implements IUpdateService {
+ 
++		return this._isLatestVersion(url, false, pendingVersion, token)
 +			.then((result) => {
 +				return Promise.resolve(result ? result.lastest : result);
 +			})
@@ -100,7 +133,7 @@ index 8cf5dceb..d776f408 100644
 +			});
 +	}
 +
-+	_isLatestVersion(url: string, explicit: boolean): Promise<{lastest: boolean, update: IUpdate} | undefined> {
++	_isLatestVersion(url: string, explicit: boolean, pendingVersion?: string, token: CancellationToken = CancellationToken.None): Promise<{lastest: boolean, update: IUpdate} | undefined> {
  		const headers = getUpdateRequestHeaders(this.productService.version);
 -		this.logService.trace('update#isLatestVersion() - checking update server', { url, headers });
  
@@ -121,24 +154,41 @@ index 8cf5dceb..d776f408 100644
 +		return this.requestService.request({ url, headers, callSite: NO_FETCH_TELEMETRY }, CancellationToken.None)
 +			.then<IUpdate | null>(asJson)
 +			.then(update => {
-+				if (!update || !update.url || !update.version || !update.productVersion) {
++				if (!update || !update.url || !update.version || !update.productVersion || token.isCancellationRequested) {
 +					this.setState(State.Idle(UpdateType.Setup, undefined, explicit || undefined));
 +
 +					return Promise.resolve(undefined);
 +				}
 +
 +				const fetchedVersion = /\d+\.\d+\.\d+\.\d+/.test(update.productVersion) ? update.productVersion.replace(/(\d+\.\d+\.\d+)\.\d+(\-\w+)?/, '$1$2') : update.productVersion.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3');
-+				const currentVersion = this.productService.version.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3');
 +
-+				this.logService.info(`update#isLatestVersion() - found: ${fetchedVersion}, current: ${currentVersion}`);
++				let currentVersion: string;
++
++				if(pendingVersion) {
++					currentVersion = pendingVersion.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3');
++
++					this.logService.info(`update#isLatestVersion() - found: ${fetchedVersion}, pending: ${currentVersion}`);
++				}
++				else {
++					currentVersion = this.productService.version.replace(/(\d+\.\d+\.)0+(\d+)(\-\w+)?/, '$1$2$3');
++
++					this.logService.info(`update#isLatestVersion() - found: ${fetchedVersion}, current: ${currentVersion}`);
++				}
 +
 +				const lastest = semver.compareBuild(currentVersion, fetchedVersion) >= 0;
 +
 +				return Promise.resolve({ lastest, update });
 +			})
  	}
+@@ -480,4 +506,4 @@ export abstract class AbstractUpdateService implements IUpdateService {
+ 
+-	protected abstract buildUpdateFeedUrl(quality: string, commit: string, options?: IUpdateURLOptions): string | undefined;
+-	protected abstract doCheckForUpdates(explicit: boolean, pendingCommit?: string): void;
++	protected abstract buildUpdateFeedUrl(quality: string, options?: IUpdateURLOptions): string | undefined;
++	protected abstract doCheckForUpdates(explicit: boolean, pendingVersion?: string): void;
+ }
 diff --git a/src/vs/platform/update/electron-main/updateService.darwin.ts b/src/vs/platform/update/electron-main/updateService.darwin.ts
-index e92c54e2..c4354cd1 100644
+index e92c54e2..b8057a06 100644
 --- a/src/vs/platform/update/electron-main/updateService.darwin.ts
 +++ b/src/vs/platform/update/electron-main/updateService.darwin.ts
 @@ -16,3 +16,3 @@ import { ILogService } from '../../log/common/log.js';
@@ -146,7 +196,7 @@ index e92c54e2..c4354cd1 100644
 -import { asJson, IRequestService } from '../../request/common/request.js';
 +import { asJson, IRequestService, NO_FETCH_TELEMETRY } from '../../request/common/request.js';
  import { IApplicationStorageMainService } from '../../storage/electron-main/storageMainService.js';
-@@ -93,15 +93,4 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+@@ -93,18 +93,7 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
  
 -	protected buildUpdateFeedUrl(quality: string, commit: string, options?: IUpdateURLOptions): string | undefined {
 -		const assetID = this.productService.darwinUniversalAssetId ?? (process.arch === 'x64' ? 'darwin' : 'darwin-arm64');
@@ -161,16 +211,25 @@ index e92c54e2..c4354cd1 100644
 -			return undefined;
 -		}
 -		return url;
-+	protected buildUpdateFeedUrl(quality: string, _commit: string, _options?: IUpdateURLOptions): string | undefined {
++	protected buildUpdateFeedUrl(quality: string, _options?: IUpdateURLOptions): string | undefined {
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch);
  	}
+ 
+-	protected doCheckForUpdates(explicit: boolean, pendingCommit?: string): void {
++	protected doCheckForUpdates(explicit: boolean, pendingVersion?: string): void {
+ 		if (!this.quality) {
+@@ -117,3 +106,3 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+ 		const background = !explicit && !internalOrg;
+-		const url = this.buildUpdateFeedUrl(this.quality, pendingCommit ?? this.productService.commit!, { background, internalOrg });
++		const url = this.buildUpdateFeedUrl(this.quality, { background, internalOrg });
+ 
 @@ -131,4 +120,32 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
  
 -		this.logService.trace('update#doCheckForUpdates - using Electron autoUpdater', { url, explicit, background });
 -		electron.autoUpdater.checkForUpdates();
 +		this.logService.info('update#doCheckForUpdates', { url, explicit, background });
 +
-+		this._isLatestVersion(url, explicit)
++		this._isLatestVersion(url, explicit, pendingVersion)
 +			.then((result) => {
 +				if(!result) {
 +					this.setState(State.Idle(UpdateType.Archive));
@@ -204,8 +263,13 @@ index e92c54e2..c4354cd1 100644
 -			const context = await this.requestService.request({ url, headers, callSite: 'updateService.darwin.checkForUpdates' }, CancellationToken.None);
 +			const context = await this.requestService.request({ url, headers, callSite: NO_FETCH_TELEMETRY }, CancellationToken.None);
  			const statusCode = context.res.statusCode;
+@@ -198,3 +215,3 @@ export class DarwinUpdateService extends AbstractUpdateService implements IRelau
+ 		// Rebuild feed URL and trigger download via Electron's auto-updater
+-		this.buildUpdateFeedUrl(this.quality!, state.update.version, { internalOrg: this.getInternalOrg() });
++		this.buildUpdateFeedUrl(this.quality!, { internalOrg: this.getInternalOrg() });
+ 		this.setState(State.CheckingForUpdates(true));
 diff --git a/src/vs/platform/update/electron-main/updateService.linux.ts b/src/vs/platform/update/electron-main/updateService.linux.ts
-index 2be53f61..53904dab 100644
+index 2be53f61..36a747ab 100644
 --- a/src/vs/platform/update/electron-main/updateService.linux.ts
 +++ b/src/vs/platform/update/electron-main/updateService.linux.ts
 @@ -5,3 +5,2 @@
@@ -221,21 +285,26 @@ index 2be53f61..53904dab 100644
 -import { AvailableForDownload, IUpdate, State, UpdateType } from '../common/update.js';
 +import { AvailableForDownload, State, UpdateType } from '../common/update.js';
  import { AbstractUpdateService, createUpdateURL, IUpdateURLOptions } from './abstractUpdateService.js';
-@@ -36,4 +35,4 @@ export class LinuxUpdateService extends AbstractUpdateService {
+@@ -36,7 +35,7 @@ export class LinuxUpdateService extends AbstractUpdateService {
  
 -	protected buildUpdateFeedUrl(quality: string, commit: string, options?: IUpdateURLOptions): string {
 -		return createUpdateURL(this.productService.updateUrl!, `linux-${process.arch}`, quality, commit, options);
-+	protected buildUpdateFeedUrl(quality: string, _commit: string, _options?: IUpdateURLOptions): string {
++	protected buildUpdateFeedUrl(quality: string, _options?: IUpdateURLOptions): string {
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch);
  	}
-@@ -45,2 +44,4 @@ export class LinuxUpdateService extends AbstractUpdateService {
+ 
+-	protected doCheckForUpdates(explicit: boolean, _pendingCommit?: string): void {
++	protected doCheckForUpdates(explicit: boolean, pendingVersion?: string): void {
+ 		if (!this.quality) {
+@@ -45,20 +44,33 @@ export class LinuxUpdateService extends AbstractUpdateService {
  
 +		this.setState(State.CheckingForUpdates(explicit));
 +
  		const internalOrg = this.getInternalOrg();
-@@ -48,17 +49,28 @@ export class LinuxUpdateService extends AbstractUpdateService {
- 		const url = this.buildUpdateFeedUrl(this.quality, this.productService.commit!, { background, internalOrg });
+ 		const background = !explicit && !internalOrg;
+-		const url = this.buildUpdateFeedUrl(this.quality, this.productService.commit!, { background, internalOrg });
 -		this.setState(State.CheckingForUpdates(explicit));
++		const url = this.buildUpdateFeedUrl(this.quality, { background, internalOrg });
  
 -		this.requestService.request({ url, callSite: 'updateService.linux.checkForUpdates' }, CancellationToken.None)
 -			.then<IUpdate | null>(asJson)
@@ -243,7 +312,7 @@ index 2be53f61..53904dab 100644
 -				if (!update || !update.url || !update.version || !update.productVersion) {
 +		this.logService.info('update#doCheckForUpdates', { url, explicit, background });
 +
-+		this._isLatestVersion(url, explicit)
++		this._isLatestVersion(url, explicit, pendingVersion)
 +			.then((result) => {
 +				if(!result) {
 +					this.setState(State.Idle(UpdateType.Archive));
@@ -273,7 +342,7 @@ index 2be53f61..53904dab 100644
 +
  				this.setState(State.Idle(UpdateType.Archive, message));
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index 1911ac0a..ee1cae7e 100644
+index 1911ac0a..e231d59e 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
 @@ -14,3 +14,2 @@ import { CancellationToken, CancellationTokenSource } from '../../../base/common
@@ -317,7 +386,7 @@ index 1911ac0a..ee1cae7e 100644
 -			const fastUpdatesEnabled = this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
 +			const fastUpdatesEnabled = getUpdateType() === UpdateType.Setup && this.configurationService.getValue('update.enableWindowsBackgroundUpdates');
  			// GC for background updates in system setup happens via inno_setup since it requires
-@@ -189,12 +193,22 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -189,15 +193,25 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -	protected buildUpdateFeedUrl(quality: string, commit: string, options?: IUpdateURLOptions): string | undefined {
 -		let platform = `win32-${process.arch}`;
@@ -326,7 +395,7 @@ index 1911ac0a..ee1cae7e 100644
 -			platform += '-archive';
 -		} else if (this.productService.target === 'user') {
 -			platform += '-user';
-+	protected buildUpdateFeedUrl(quality: string, _commit: string, _options?: IUpdateURLOptions): string {
++	protected buildUpdateFeedUrl(quality: string, _options?: IUpdateURLOptions): string {
 +		let target: Target;
 +
 +		switch (getUpdateType()) {
@@ -348,6 +417,10 @@ index 1911ac0a..ee1cae7e 100644
 -		return createUpdateURL(this.productService.updateUrl!, platform, quality, commit, options);
 +		return createUpdateURL(this.productService, quality, process.platform, process.arch, target);
  	}
+ 
+-	protected doCheckForUpdates(explicit: boolean, pendingCommit?: string): void {
++	protected doCheckForUpdates(explicit: boolean, pendingVersion?: string): void {
+ 		if (!this.quality) {
 @@ -206,6 +220,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -		const internalOrg = this.getInternalOrg();
@@ -363,11 +436,11 @@ index 1911ac0a..ee1cae7e 100644
 -			.then(update => {
 +		const internalOrg = this.getInternalOrg();
 +		const background = !explicit && !internalOrg;
-+		const url = this.buildUpdateFeedUrl(this.quality, pendingCommit ?? this.productService.commit!, { background, internalOrg });
++		const url = this.buildUpdateFeedUrl(this.quality, { background, internalOrg });
 +
 +		this.logService.info('update#doCheckForUpdates', { url, explicit, background });
 +
-+		this._isLatestVersion(url, explicit)
++		this._isLatestVersion(url, explicit, pendingVersion)
 +			.then((result) => {
  				const updateType = getUpdateType();
  
