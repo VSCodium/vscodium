@@ -8,19 +8,16 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-RG_PATH="$1/@vscode/ripgrep-universal/bin/rg"
+RG_PATH="$1/@vscode/ripgrep-universal/bin/linux-loong64/rg"
 RG_VERSION="14.1.1"
-
-ls -la "$1/@vscode/ripgrep-universal"
-ls -la "$1/@vscode/ripgrep-universal/bin"
-ls -la "$1/@vscode/ripgrep"
-
-# if [ ! -f "${RG_PATH}" ]; then
-#   RG_PATH="$1/@vscode/ripgrep/bin/rg"
-# fi
 
 echo "Replacing ripgrep binary with loong64 one"
 
-rm "${RG_PATH}"
+if [ -f "${RG_PATH}" ]; then
+  rm "${RG_PATH}"
+else
+  mkdir -p "$(dirname "${RG_PATH}")"
+fi
+
 curl --silent --fail -L https://github.com/darkyzhou/ripgrep-loongarch64-musl/releases/download/${RG_VERSION}/rg -o "${RG_PATH}"
 chmod +x "${RG_PATH}"
