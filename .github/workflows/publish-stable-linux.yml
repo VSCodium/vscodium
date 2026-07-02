@@ -30,7 +30,7 @@ jobs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -60,7 +60,7 @@ jobs:
       BUILD_SOURCEVERSION: ${{ env.BUILD_SOURCEVERSION }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -80,7 +80,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.11"
         if: env.SHOULD_BUILD == 'yes'
@@ -167,7 +167,7 @@ jobs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -274,7 +274,7 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -294,7 +294,7 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.11'
         if: env.DISABLED != 'yes'
@@ -364,7 +364,7 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -457,7 +457,7 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD_SNAP != 'no' && vars.DISABLE_STABLE_SNAP != 'yes'
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -470,7 +470,7 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         run: ./stores/snapcraft/check_version.sh
 
-      - uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
+      - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
 
       - uses: diddlesnaps/snapcraft-multiarch-action@cfd7a246fad6bea65bb92f69a1c8d07898c231e5 # v1.9.0
         with:
