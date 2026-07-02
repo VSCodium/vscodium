@@ -13,7 +13,7 @@ index 2f275d15..d844eb03 100755
 +  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
  fi
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index 62c30da5..8ecd10b2 100644
+index 62c30da5..85817274 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
 @@ -275,9 +275,24 @@ function nodejs(platform: string, arch: string): NodeJS.ReadWriteStream | undefi
@@ -33,7 +33,7 @@ index 62c30da5..8ecd10b2 100644
 +					.pipe(util.setExecutableBit('**'))
 +					.pipe(rename('node'));
 +			}
-+			if (product.nodejsRepository !== 'https://nodejs.org') {
++			else if (product.nodejsRepository !== 'https://nodejs.org') {
 +				downloaded = fetchGithub(product.nodejsRepository, { version: `${nodeVersion}-${internalNodeVersion}`, name: expectedName!, checksumSha256 })
 +					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
 +					.pipe(filter('**/node'))
