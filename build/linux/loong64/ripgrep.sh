@@ -8,7 +8,7 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-RG_PATH="$1/@vscode/ripgrep/bin/rg"
+RG_PATH="$1/@vscode/ripgrep-universal/bin/rg"
 RG_VERSION="14.1.1"
 
 echo "Replacing ripgrep binary with loong64 one"
