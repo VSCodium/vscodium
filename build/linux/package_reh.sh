@@ -119,18 +119,6 @@ EOF
   echo "${INCLUDES}" > "${HOME}/.gyp/include.gypi"
 fi
 
-echo "+ /root/vscode/remote/node_modules/@parcel/watcher/build/config.gypi"
-cat /root/vscode/remote/node_modules/@parcel/watcher/build/config.gypi || true
-
-echo "+ /usr/lib/node_modules/npm/node_modules/node-gyp/addon.gypi"
-cat /usr/lib/node_modules/npm/node_modules/node-gyp/addon.gypi || true
-
-echo "+ /root/.cache/node-gyp/24.15.0/include/node/common.gypi"
-cat /root/.cache/node-gyp/24.15.0/include/node/common.gypi || true
-
-echo "${HOME}/.gyp/include.gypi"
-cat "${HOME}/.gyp/include.gypi" || true
-
 for i in {1..5}; do # try 5 times
   npm ci --prefix build && break
   if [[ $i == 5 ]]; then
@@ -162,6 +150,12 @@ node build/npm/preinstall.ts
 
 mv .npmrc .npmrc.bak
 cp ../npmrc .npmrc
+
+echo "+ /usr/lib/node_modules/npm/node_modules/node-gyp/addon.gypi"
+cat /usr/lib/node_modules/npm/node_modules/node-gyp/addon.gypi || true
+
+echo "+ ${HOME}/.gyp/include.gypi"
+cat "${HOME}/.gyp/include.gypi" || true
 
 for i in {1..5}; do # try 5 times
   npm ci && break
