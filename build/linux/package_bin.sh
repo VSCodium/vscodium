@@ -57,7 +57,7 @@ if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
   # shellcheck disable=SC1090
   source "../build/linux/${VSCODE_ARCH}/electron.sh"
 
-  TARGET=$( ./node_modules/@vscode/ripgrep/bin/rg -o --no-filename --no-line-number "\d+\.\d+\.\d+" build/lib/electron.ts )
+  TARGET=$( grep -Eo "\d+\.\d+\.\d+" build/lib/electron.ts )
 
   # Only fails at different major versions
   if [[ "${ELECTRON_VERSION%%.*}" != "${TARGET%%.*}" ]] && [[ "${IGNORE_ELECTRON_VERSION}" != "yes" ]]; then
