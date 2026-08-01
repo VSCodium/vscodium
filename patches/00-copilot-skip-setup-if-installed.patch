@@ -1,32 +1,23 @@
 diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupController.ts b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupController.ts
-index 27409c00634..fd647fe5bbf 100644
+index 27409c00634..250f3e2f0ee 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupController.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupController.ts
-@@ -24,6 +24,8 @@ import { ITelemetryService } from '../../../../../platform/telemetry/common/tele
+@@ -24,6 +24,7 @@ import { ITelemetryService } from '../../../../../platform/telemetry/common/tele
  import { IActivityService, ProgressBadge } from '../../../../services/activity/common/activity.js';
  import { ILifecycleService } from '../../../../services/lifecycle/common/lifecycle.js';
  import { IExtensionsWorkbenchService } from '../../../extensions/common/extensions.js';
-+import { IWorkbenchExtensionEnablementService } from '../../../../services/extensionManagement/common/extensionManagement.js';
 +import { ExtensionIdentifier } from '../../../../../platform/extensions/common/extensions.js';
  import { ChatEntitlement, ChatEntitlementContext, ChatEntitlementRequests, isProUser } from '../../../../services/chat/common/chatEntitlementService.js';
  import { CHAT_OPEN_ACTION_ID } from '../actions/chatActions.js';
  import { ChatViewContainerId, ChatViewId } from '../chat.js';
-@@ -60,6 +62,7 @@ export class ChatSetupController extends Disposable {
- 		private readonly requests: ChatEntitlementRequests,
- 		@ITelemetryService private readonly telemetryService: ITelemetryService,
- 		@IExtensionsWorkbenchService private readonly extensionsWorkbenchService: IExtensionsWorkbenchService,
-+		@IWorkbenchExtensionEnablementService private readonly extensionEnablementService: IWorkbenchExtensionEnablementService,
- 		@ILogService private readonly logService: ILogService,
- 		@IProgressService private readonly progressService: IProgressService,
- 		@IActivityService private readonly activityService: IActivityService,
-@@ -260,6 +263,12 @@ export class ChatSetupController extends Disposable {
+@@ -260,6 +261,12 @@ export class ChatSetupController extends Disposable {
  	}
  
  	private async doInstall(): Promise<void> {
 +		await this.extensionsWorkbenchService.queryLocal();
 +		const installedExtension = this.extensionsWorkbenchService.local.find(value => ExtensionIdentifier.equals(value.identifier.id, defaultChat.chatExtensionId));
-+		if (installedExtension?.local && this.extensionEnablementService.isEnabled(installedExtension.local)) {
-+			return; // already installed and enabled locally: skip remote marketplace lookup (avoids failure on galleries that don't carry this extension)
++		if (installedExtension?.local) {
++			return; // already installed locally: skip remote marketplace lookup (avoids failure on galleries that don't carry this extension)
 +		}
 +
  		await this.extensionsWorkbenchService.install(defaultChat.chatExtensionId, {
