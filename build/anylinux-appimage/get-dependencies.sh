@@ -19,11 +19,11 @@ echo "---------------------------------------------------------------"
 mkdir -p ./AppDir/bin ./AppDir/share/applications
 tar -xzf vscode-bin.tar.gz -C ./AppDir/bin/
 
-# Protect the CLI script from being overwritten by quick-sharun.
-# quick-sharun skips non-executable files (checks -x in both
-# _is_deployable_binary and _handle_nested_bins).
-# We restore +x after deployment in make-appimage.sh.
-chmod -x ./AppDir/bin/bin/codium
+# Rename the CLI script so it survives quick-sharun and becomes MAIN_BIN.
+# quick-sharun would overwrite bin/bin/codium with an Electron sharun hardlink.
+# Renaming to codium-cli avoids the conflict; the desktop Exec= points to it.
+# The script calls ../codium (Electron) internally, which deploys normally.
+mv ./AppDir/bin/bin/codium ./AppDir/bin/bin/codium-cli
 
 # Get version from env (set by CI) or from package.json
 if [ -z "${RELEASE_VERSION:-}" ]; then
@@ -45,7 +45,7 @@ sed -i \
   -e 's/@@NAME_LONG@@/VSCodium/g' \
   -e 's/@@NAME_SHORT@@/codium/g' \
   -e 's/@@NAME@@/codium/g' \
-  -e 's#@@EXEC@@#codium#g' \
+  -e 's#@@EXEC@@#codium-cli#g' \
   -e 's/@@ICON@@/vscodium/g' \
   -e 's/@@URLPROTOCOL@@/vscodium/g' \
   ./AppDir/code.desktop ./AppDir/share/applications/code-url-handler.desktop

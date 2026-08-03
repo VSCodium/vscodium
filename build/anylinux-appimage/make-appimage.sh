@@ -16,14 +16,6 @@ export DEPLOY_VULKAN=1
 # Deploy dependencies
 quick-sharun ./AppDir/bin/*
 
-# Restore the CLI script and route CLI arguments via hook.
-# quick-sharun skipped it because we removed +x in get-dependencies.sh.
-chmod +x ./AppDir/bin/bin/codium
-
-cat > ./AppDir/bin/cli-router.hook <<'EOF'
-case "$1" in --*) exec "$APPDIR/bin/bin/codium" "$@" ;; esac
-EOF
-
 # Additional changes can be done in between here
 
 # Turn AppDir into AppImage
