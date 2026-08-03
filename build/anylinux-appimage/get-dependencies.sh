@@ -19,6 +19,12 @@ echo "---------------------------------------------------------------"
 mkdir -p ./AppDir/bin ./AppDir/share/applications
 tar -xzf vscode-bin.tar.gz -C ./AppDir/bin/
 
+# Protect the CLI script from being overwritten by quick-sharun.
+# quick-sharun skips non-executable files (checks -x in both
+# _is_deployable_binary and _handle_nested_bins).
+# We restore +x after deployment in make-appimage.sh.
+chmod -x ./AppDir/bin/bin/codium
+
 # Get version from env (set by CI) or from package.json
 if [ -z "${RELEASE_VERSION:-}" ]; then
   VERSION=$(awk -F'"' '/"version":/ {print $4}' ./AppDir/bin/resources/app/package.json)
