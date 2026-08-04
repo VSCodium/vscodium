@@ -239,10 +239,10 @@ jobs:
           name: vscode-bin-${{ matrix.arch == 'x86_64' && 'x64' || 'arm64' }}
 
       - name: Install Dependencies
-        run: /bin/sh ./build/anylinux-appimage/get-dependencies.sh
+        run: /bin/sh ./build/linux/anylinux-appimage/get-dependencies.sh
 
       - name: Make AppImage
-        run: /bin/sh ./build/anylinux-appimage/make-appimage.sh
+        run: /bin/sh ./build/linux/anylinux-appimage/make-appimage.sh
 
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
