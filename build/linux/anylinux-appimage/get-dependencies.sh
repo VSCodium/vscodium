@@ -36,12 +36,15 @@ cp "$SRC_DIR/code.desktop" ./AppDir/
 cp "$SRC_DIR/code-url-handler.desktop" ./AppDir/share/applications/
 
 sed -i \
-  -e 's/@@NAME_LONG@@/VSCodium/g' \
-  -e 's/@@NAME_SHORT@@/codium/g' \
-  -e 's/@@NAME@@/codium/g' \
-  -e 's#@@EXEC@@#codium#g' \
-  -e 's/@@ICON@@/vscodium/g' \
+  -e 's/@@NAME_LONG@@/VSCodium/g'   \
+  -e 's/@@NAME_SHORT@@/codium/g'    \
+  -e 's/@@NAME@@/codium/g'          \
+  -e 's#@@EXEC@@#codium#g'          \
+  -e 's/@@ICON@@/vscodium/g'        \
   -e 's/@@URLPROTOCOL@@/vscodium/g' \
   ./AppDir/code.desktop ./AppDir/share/applications/code-url-handler.desktop
 
 # Icon will be set via ICON env var in make-appimage.sh
+
+# Keeps CLI commands working and doesn't affect normal GUI launch
+cp ./build/linux/anylinux-appimage/cli-router.hook ./AppDir/bin/cli-router.hook
