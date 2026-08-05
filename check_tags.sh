@@ -112,9 +112,6 @@ else
       SHOULD_BUILD_RPM="no"
       SHOULD_BUILD_CLI="no"
     fi
-    if [[ "${VSCODE_ARCH}" != "x64" || "${DISABLE_APPIMAGE}" == "yes" ]]; then
-      export SHOULD_BUILD_APPIMAGE="no"
-    fi
   elif [[ "${OS_NAME}" == "windows" ]]; then
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
       export SHOULD_BUILD_REH="no"
@@ -132,7 +129,6 @@ fi
 
 
 echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
-echo "SHOULD_BUILD_APPIMAGE=${SHOULD_BUILD_APPIMAGE}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_DEB=${SHOULD_BUILD_DEB}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_DMG=${SHOULD_BUILD_DMG}" >> "${GITHUB_ENV}"
 echo "SHOULD_BUILD_EXE_SYS=${SHOULD_BUILD_EXE_SYS}" >> "${GITHUB_ENV}"
