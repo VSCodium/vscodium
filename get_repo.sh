@@ -95,6 +95,9 @@ echo "MS_COMMIT=\"${MS_COMMIT}\""
 git fetch --depth 1 origin "${MS_COMMIT}"
 git checkout FETCH_HEAD
 
+. ../patches.sh
+record_base_ref
+
 cd ..
 
 # for GH actions
