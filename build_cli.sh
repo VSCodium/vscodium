@@ -21,6 +21,7 @@ NAME_SHORT="$( node -p "require(\"../product.json\").nameShort" )"
 npm pack @vscode/openssl-prebuilt@0.0.11
 mkdir openssl
 tar -xvzf vscode-openssl-prebuilt-0.0.11.tgz --strip-components=1 --directory=openssl
+rm -f vscode-openssl-prebuilt-0.0.11.tgz
 
 if [[ "${OS_NAME}" == "osx" ]]; then
   if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
