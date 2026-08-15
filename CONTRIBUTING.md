@@ -39,14 +39,8 @@ To build VSCodium, please follow the command found in the section [`Build Script
 
 ### Updating patches
 
-If you want to update the existing patches, please follow the section [`Patch Update Process - Semi-Automated`](./docs/howto-build.md#patch-update-process-semiauto).
+If you want to update the existing patches, please follow the section [`Modify an existing patch`](./docs/howto-build.md#modify-an-existing-patch).
 
 ### Add a new patch
 
-- first, you need to build VSCodium
-- then use the command `./dev/patch.sh <your patch name>`, to initiate a new patch
-- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
-- run `npm run watch`
-- run `./script/code.sh`
-- make your changes
-- press any key to continue the script `patch.sh`
+Please follow the section [`Add a new patch`](./docs/howto-build.md#add-a-new-patch).
