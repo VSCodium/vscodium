@@ -1,8 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: make sure git addAICoAuthor defaults to off
+
+Marks the git extension's `addAICoAuthor` config read in `extensions/git/src/repository.ts` so the setting keeps resolving to `off`, ensuring no co-author trailer is appended to commits (#2842).
+
 diff --git a/extensions/git/src/repository.ts b/extensions/git/src/repository.ts
-index 77f1acf2..53d694ba 100644
+index 401208e541850d8f8317704a0ba3d15fb353bfd9..b103e94ece2d8009452f1c897e6bf5238fefdec1 100644
 --- a/extensions/git/src/repository.ts
 +++ b/extensions/git/src/repository.ts
-@@ -1505,2 +1505,3 @@ export class Repository implements Disposable {
+@@ -1508,6 +1508,7 @@ export class Repository implements Disposable {
+ 		}
+ 
  		const config = workspace.getConfiguration('git', Uri.file(this.root));
 +		// Make sure that AI CoAuthor is off
  		const addAICoAuthor = config.get<'off' | 'chatAndAgent' | 'all'>('addAICoAuthor', 'off');
+ 
+ 		if (addAICoAuthor === 'off') {

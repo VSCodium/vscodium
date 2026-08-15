@@ -1,32 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: VSCodium <scripts@vscodium.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: 70-build-contextmenu-appx
+
+
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 080d97f3..b01d710a 100644
+index 00410b1b808a67d79f1b8e3189ce7289c1975c52..79aa99bf81f67ceb9cddf2c3b35018e7055771e3 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -624,3 +624,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -544,7 +544,7 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 			if (quality === 'stable' || quality === 'insider') {
+ 				result = es.merge(result, gulp.src('.build/win32/appx/**', { base: '.build/win32' }));
  				const rawVersion = version.replace(/-\w+$/, '').split('.');
 -				const appxVersion = `${rawVersion[0]}.0.${rawVersion[1]}.${rawVersion[2]}`;
 +				const appxVersion = `${rawVersion[0]}.0.${rawVersion[1]}.${rawVersion[2].slice(1)}`;
  				result = es.merge(result, gulp.src('resources/win32/appx/AppxManifest.xml', { base: '.' })
+ 					.pipe(replace('@@AppxPackageName@@', product.win32AppUserModelId))
+ 					.pipe(replace('@@AppxPackageVersion@@', appxVersion))
 diff --git a/build/gulpfile.vscode.win32.ts b/build/gulpfile.vscode.win32.ts
-index 7a711276..2675bd85 100644
+index 1f0f2d9ea0a14034fe1242eedd5af314a98e529c..c43819dfbfa279d1502d19edfccd0cac5c4cf9ac 100644
 --- a/build/gulpfile.vscode.win32.ts
 +++ b/build/gulpfile.vscode.win32.ts
-@@ -134,4 +134,4 @@ function buildWin32Setup(arch: string, target: string): task.CallbackTask {
+@@ -114,8 +114,8 @@ function buildWin32Setup(arch: string, target: string): task.CallbackTask {
+ 		};
+ 
  		if (quality === 'stable' || quality === 'insider') {
 -			definitions['AppxPackage'] = `${quality === 'stable' ? 'code' : 'code_insider'}_${arch}.appx`;
 -			definitions['AppxPackageDll'] = `${quality === 'stable' ? 'code' : 'code_insider'}_explorer_command_${arch}.dll`;
 +			definitions['AppxPackage'] = `${product.applicationName.replaceAll('-', '_')}_${arch}.appx`;
 +			definitions['AppxPackageDll'] = `${product.applicationName.replaceAll('-', '_')}_explorer_command_${arch}.dll`;
  			definitions['AppxPackageName'] = `${product.win32AppUserModelId}`;
+ 			const ctxMenu = (product as { win32ContextMenu?: Record<string, { clsid: string }> }).win32ContextMenu;
+ 			if (ctxMenu && ctxMenu[arch]) {
 diff --git a/build/win32/explorer-dll-fetcher.ts b/build/win32/explorer-dll-fetcher.ts
-index 33603ef9..ead89fe4 100644
+index 33603ef951774b2127efaed050c14ed65cfe7664..ead89fe485d4bda65bf516eb9d20242e46202e16 100644
 --- a/build/win32/explorer-dll-fetcher.ts
 +++ b/build/win32/explorer-dll-fetcher.ts
-@@ -11,2 +11,3 @@ import productJson from '../../product.json' with { type: 'json' };
+@@ -9,6 +9,7 @@ import { downloadArtifact } from '@electron/get';
+ import productJson from '../../product.json' with { type: 'json' };
+ 
  interface ProductConfiguration {
 +	applicationName: string;
  	quality?: string;
-@@ -55,4 +56,6 @@ export async function downloadExplorerDll(outDir: string, quality: string = 'sta
+ 	[key: string]: unknown;
+ }
+@@ -53,8 +54,10 @@ export async function downloadExplorerDll(outDir: string, quality: string = 'sta
+ 		}
+ 	});
  
 -	d(`moving ${artifact} to ${outDir}`);
 -	await fs.copyFileSync(artifact, path.join(outDir, fileName));
@@ -35,3 +55,5 @@ index 33603ef9..ead89fe4 100644
 +	d(`moving ${artifact} as ${outFilePath}`);
 +	await fs.copyFileSync(artifact, outFilePath);
  }
+ 
+ async function main(outputDir?: string): Promise<void> {

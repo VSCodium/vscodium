@@ -1,9 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: escape non-ascii literals in terminal input-detection regex
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The upstream `detectsHighConfidenceInputPattern` regex embeds literal chevron/arrow characters (`›❯▸▶`) that esbuild does not auto-convert, so they survive into the minified output and trip the build's non-ASCII output guard in `optimize.ts`. Rewriting them as `\u{203A}\u{276F}\u{25B8}\u{25B6}` escapes with the `u` flag keeps the match identical while keeping the emitted output ASCII-only.
+
 diff --git a/src/vs/workbench/contrib/terminalContrib/chatAgentTools/browser/tools/monitoring/outputMonitor.ts b/src/vs/workbench/contrib/terminalContrib/chatAgentTools/browser/tools/monitoring/outputMonitor.ts
-index 3de86060..875de670 100644
+index 275a3fdce3c2ac38c0955d2911a4ce213a7e5c6a..4c0bf76936fe2cfc72f5d383aaa5f334ebb77578 100644
 --- a/src/vs/workbench/contrib/terminalContrib/chatAgentTools/browser/tools/monitoring/outputMonitor.ts
 +++ b/src/vs/workbench/contrib/terminalContrib/chatAgentTools/browser/tools/monitoring/outputMonitor.ts
-@@ -657,3 +657,3 @@ export function detectsHighConfidenceInputPattern(cursorLine: string): boolean {
+@@ -703,7 +703,7 @@ export function detectsHighConfidenceInputPattern(cursorLine: string): boolean {
+ 		//   "? Do you want to install jsdom? <chevron>"  (prompts)
+ 		//   "? Pick a color <chevron> "                  (enquirer)
  		// allow-any-unicode-next-line
 -		/^(?:\s|\x1b\[[0-9;]*m)*\?.*[›❯▸▶]\s*$/,
 +		/^(?:\s|\x1b\[[0-9;]*m)*\?.*[\u{203A}\u{276F}\u{25B8}\u{25B6}]\s*$/u,
  	].some(e => e.test(cursorLine));
+ }
+ 

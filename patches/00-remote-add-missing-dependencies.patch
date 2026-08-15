@@ -1,8 +1,17 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: add missing tslib dependency to remote server
+
+Upstream's remote (REH) package manifest omits tslib, the TypeScript runtime helper library the bundled server code relies on; declaring it in remote/package.json and the lockfile ensures it is installed into the remote server package.
+
 diff --git a/remote/package-lock.json b/remote/package-lock.json
-index 30a7391..94f839a 100644
+index 0367a56d604081fcdf37f37ad9c7be8000047210..1da763209e99f20fd0551f269d4a26ff22dcc62d 100644
 --- a/remote/package-lock.json
 +++ b/remote/package-lock.json
-@@ -1155,2 +1155,8 @@
+@@ -2023,6 +2023,12 @@
+         "node": ">=22"
+       }
      },
 +    "node_modules/tslib": {
 +      "version": "2.7.0",
@@ -11,11 +20,17 @@ index 30a7391..94f839a 100644
 +      "license": "0BSD"
 +    },
      "node_modules/tunnel-agent": {
+       "version": "0.6.0",
+       "resolved": "https://registry.npmjs.org/tunnel-agent/-/tunnel-agent-0.6.0.tgz",
 diff --git a/remote/package.json b/remote/package.json
-index 119d62c..9ef9624 100644
+index 3f1ea10856ea09343916ca784c9f1ce73ecb4bea..c2feb848b52edc4c9c53f350174d4e018514cbd0 100644
 --- a/remote/package.json
 +++ b/remote/package.json
-@@ -37,2 +37,3 @@
+@@ -46,6 +46,7 @@
+     "ssh2": "^1.16.0",
+     "tar": "^7.5.20",
      "tas-client": "0.3.1",
 +    "tslib": "^2.6.3",
      "vscode-oniguruma": "1.7.0",
+     "vscode-regexpp": "^3.1.0",
+     "vscode-textmate": "^9.3.2",

@@ -1,8 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: add `extensions.excludeUnsafes` setting to skip downloading the
+ malicious/deprecated extensions list
+
+Adds a machine-scoped `extensions.excludeUnsafes` boolean (default true) that gates the request to the extensions control URL; when disabled it short-circuits the gallery service so the extra online connection fetching the malicious and deprecated extension lists is never made (#2335).
+
 diff --git a/src/vs/platform/extensionManagement/common/extensionGalleryService.ts b/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
-index 5974768..876f779 100644
+index a48e462942083d89777c25131f82b25222ecba40..4598678a4cab02abbfe56173c56aebffa7ca2f25 100644
 --- a/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
-@@ -1788,2 +1788,8 @@ export abstract class AbstractExtensionGalleryService implements IExtensionGalle
+@@ -1936,6 +1936,12 @@ export abstract class AbstractExtensionGalleryService implements IExtensionGalle
+ 			return { malicious: [], deprecated: {}, search: [], autoUpdate: {} };
+ 		}
  
 +		const excludeUnsafes = this.configurationService.getValue('extensions.excludeUnsafes') ?? true;
 +
@@ -11,11 +21,15 @@ index 5974768..876f779 100644
 +		}
 +
  		const context = await this.requestService.request({
+ 			type: 'GET',
+ 			url: this.extensionsControlUrl,
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-index 4c44d3b..fe989e0 100644
+index d9aa4fe609f89fa94aa3757dfd466fcba059cea2..43a3f933655a3ecd2d15f96a530e9a45e2665340 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-@@ -294,2 +294,9 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
+@@ -379,6 +379,13 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
+ 				scope: ConfigurationScope.APPLICATION,
+ 				tags: ['advanced', 'usesOnlineServices']
  			},
 +			'extensions.excludeUnsafes': {
 +				scope: ConfigurationScope.MACHINE,
@@ -25,3 +39,5 @@ index 4c44d3b..fe989e0 100644
 +				tags: ['usesOnlineServices']
 +			},
  		}
+ 	});
+ 

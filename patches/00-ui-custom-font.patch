@@ -1,8 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: add configurable font size and family for workbench parts (sidebar,
+ activity bar, panel, tabs, status bar)
+
+Stock VS Code only exposes editor font settings, leaving the sidebar, activity bar, panel, tabs and status bar text unsizable. Adds experimental `workbench.*.experimental.fontSize`/`fontFamily` settings that drive per-part CSS variables through a shared `font.ts` helper, scaling icons, padding and separators proportionally so each part stays aligned at any size.
+
+Co-authored-by: xiaolai <lixiaolai@gmail.com>
+
 diff --git a/src/vs/base/browser/ui/actionbar/actionbar.css b/src/vs/base/browser/ui/actionbar/actionbar.css
-index e9e55ad9..0ce9147c 100644
+index e9e55ad9b269c71f182d568551dda088b3208fc3..0ce9147cfe122c292f748cc8af946e56820bf8b3 100644
 --- a/src/vs/base/browser/ui/actionbar/actionbar.css
 +++ b/src/vs/base/browser/ui/actionbar/actionbar.css
-@@ -127 +127,72 @@
+@@ -125,3 +125,74 @@
+ .monaco-action-bar .action-item.action-dropdown-item > .action-dropdown-item-separator > div {
+ 	width: 1px;
  }
 +
 +
@@ -77,10 +89,12 @@ index e9e55ad9..0ce9147c 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/button/button.css b/src/vs/base/browser/ui/button/button.css
-index f8f02ab6..a7c88ff8 100644
+index f8f02ab6152b64cfb667e5c11854fbfe0fb82185..a7c88ff8488d31412cb5b859239b419e73ba0b40 100644
 --- a/src/vs/base/browser/ui/button/button.css
 +++ b/src/vs/base/browser/ui/button/button.css
-@@ -194 +194,46 @@
+@@ -192,3 +192,48 @@
+ .monaco-button-dropdown.default-colors .monaco-button-dropdown-separator > div {
+ 	background-color: var(--vscode-button-separator);
  }
 +
 +
@@ -129,10 +143,12 @@ index f8f02ab6..a7c88ff8 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/codicons/codicon/codicon.css b/src/vs/base/browser/ui/codicons/codicon/codicon.css
-index d7f257db..8d21f859 100644
+index d7f257db9341e27bf5d3fe9f6d2d0305812124d2..8d21f859c94e3e7aac46ac1c696cbbcf9b63c15a 100644
 --- a/src/vs/base/browser/ui/codicons/codicon/codicon.css
 +++ b/src/vs/base/browser/ui/codicons/codicon/codicon.css
-@@ -25 +25,14 @@
+@@ -23,3 +23,16 @@
+ }
+ 
  /* icon rules are dynamically created by the platform theme service (see iconsStyleSheet.ts) */
 +
 +
@@ -149,10 +165,12 @@ index d7f257db..8d21f859 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/iconLabel/iconlabel.css b/src/vs/base/browser/ui/iconLabel/iconlabel.css
-index d3dfd9a5..cf596272 100644
+index e82cd75fcfcd6c15636d1c5dfe4d99aa965f309e..180c54ef37e8dbd9d2189b89fc323a2c1e116f0f 100644
 --- a/src/vs/base/browser/ui/iconLabel/iconlabel.css
 +++ b/src/vs/base/browser/ui/iconLabel/iconlabel.css
-@@ -119 +119,21 @@
+@@ -117,3 +117,23 @@
+ .monaco-list-row.selected .monaco-icon-label > .monaco-icon-label-container > .monaco-icon-description-container > .label-description {
+ 	opacity: 1;
  }
 +
 +
@@ -176,10 +194,12 @@ index d3dfd9a5..cf596272 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/inputbox/inputBox.css b/src/vs/base/browser/ui/inputbox/inputBox.css
-index dc5e637f..b580762b 100644
+index dc5e637f6ee56051558957679825f0642421b5ac..b580762b4d8348c4f1f457a4cefed7906332f5c3 100644
 --- a/src/vs/base/browser/ui/inputbox/inputBox.css
 +++ b/src/vs/base/browser/ui/inputbox/inputBox.css
-@@ -107 +107,28 @@
+@@ -105,3 +105,30 @@
+ 	height: 16px;
+ 	color: var(--vscode-icon-foreground);
  }
 +
 +
@@ -210,10 +230,12 @@ index dc5e637f..b580762b 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/selectBox/selectBox.css b/src/vs/base/browser/ui/selectBox/selectBox.css
-index fd4d00ea..92ddc996 100644
+index fd4d00ea3fe9adfbf469d68d36c2cf7a89644afa..92ddc996afad54e9470408330de93b0f1c83b43e 100644
 --- a/src/vs/base/browser/ui/selectBox/selectBox.css
 +++ b/src/vs/base/browser/ui/selectBox/selectBox.css
-@@ -35 +35,16 @@
+@@ -33,3 +33,18 @@
+ 	border-radius: var(--vscode-cornerRadius-small);
+ 	min-height: 24px;
  }
 +
 +
@@ -232,23 +254,33 @@ index fd4d00ea..92ddc996 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
-index b7cbca15..16f531cb 100644
+index b7cbca1525069f8cf0ff7306d92fe99dee2f26c0..16f531cb27452388958b875deb52d3441beb0a71 100644
 --- a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
 +++ b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
-@@ -8,2 +8,3 @@ import * as arrays from '../../../common/arrays.js';
+@@ -6,6 +6,7 @@
+ import { localize } from '../../../../nls.js';
+ import * as arrays from '../../../common/arrays.js';
  import { Emitter, Event } from '../../../common/event.js';
 +import { FONT } from '../../../common/font.js';
  import { KeyCode, KeyCodeUtils } from '../../../common/keyCodes.js';
-@@ -172,3 +173,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+ import { Disposable, DisposableStore, IDisposable } from '../../../common/lifecycle.js';
+ import { isMacintosh } from '../../../common/platform.js';
+@@ -170,7 +171,7 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+ 	// IDelegate - List renderer
+ 
  	getHeight(): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(): string {
 diff --git a/src/vs/base/browser/ui/splitview/paneview.css b/src/vs/base/browser/ui/splitview/paneview.css
-index ab4d9495..fba44ec9 100644
+index b94dd9b5721b8943cac9aff046ed9aff88b98186..5b3cfe60b8ab3a9d996692ca4e49490b32712a85 100644
 --- a/src/vs/base/browser/ui/splitview/paneview.css
 +++ b/src/vs/base/browser/ui/splitview/paneview.css
-@@ -154 +154,38 @@
+@@ -156,3 +156,40 @@
+ #monaco-pane-drop-overlay > .pane-overlay-indicator.overlay-move-transition {
+ 	transition: top 70ms ease-out, left 70ms ease-out, width 70ms ease-out, height 70ms ease-out, opacity 150ms ease-out;
  }
 +
 +
@@ -289,14 +321,20 @@ index ab4d9495..fba44ec9 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/splitview/paneview.ts b/src/vs/base/browser/ui/splitview/paneview.ts
-index 024b2147..19790a0b 100644
+index 024b21479868fb5dd2c6a3b60f93bf2e05123b1f..19790a0b92fc20880ce3a295d045d29aa19d5a7c 100644
 --- a/src/vs/base/browser/ui/splitview/paneview.ts
 +++ b/src/vs/base/browser/ui/splitview/paneview.ts
-@@ -21,2 +21,3 @@ import { IView, Sizing, SplitView } from './splitview.js';
+@@ -19,6 +19,7 @@ import './paneview.css';
+ import { localize } from '../../../../nls.js';
+ import { IView, Sizing, SplitView } from './splitview.js';
  import { applyDragImage } from '../dnd/dnd.js';
 +import { FONT } from '../../../common/font.js';
  
-@@ -50,8 +51,2 @@ export abstract class Pane extends Disposable implements IView {
+ export interface IPaneOptions {
+ 	minimumBodySize?: number;
+@@ -48,12 +49,6 @@ export interface IPaneStyles {
+  */
+ export abstract class Pane extends Disposable implements IView {
  
 -	/**
 -	 * Fallback header size (in px) used when the `--pane-header-size` CSS variable
@@ -305,16 +343,24 @@ index 024b2147..19790a0b 100644
 -	private static readonly HEADER_SIZE = 22;
 -
  	readonly element: HTMLElement;
-@@ -151,3 +146,3 @@ export abstract class Pane extends Disposable implements IView {
+ 	private header: HTMLElement | undefined;
+ 	private body!: HTMLElement;
+@@ -149,7 +144,7 @@ export abstract class Pane extends Disposable implements IView {
+ 	private resolveHeaderSize(): number {
+ 		if (this._headerSize === undefined) {
  			const size = parseInt(getWindow(this.element).getComputedStyle(this.element).getPropertyValue('--pane-header-size'), 10);
 -			this._headerSize = isNaN(size) ? Pane.HEADER_SIZE : size;
 +			this._headerSize = isNaN(size) ? FONT.sidebarSize22 : size;
  		}
+ 		return this._headerSize;
+ 	}
 diff --git a/src/vs/base/browser/ui/toggle/toggle.css b/src/vs/base/browser/ui/toggle/toggle.css
-index 14516fc5..40a4410d 100644
+index 14516fc54a9e117ab9bdd870b15ae8ef61b44c9d..40a4410d722bf39928a2a7046ba0b2f3f024e9a8 100644
 --- a/src/vs/base/browser/ui/toggle/toggle.css
 +++ b/src/vs/base/browser/ui/toggle/toggle.css
-@@ -75 +75,52 @@
+@@ -73,3 +73,54 @@
+ .monaco-action-bar .checkbox-action-item > .checkbox-label {
+ 	font-size: 12px;
  }
 +
 +
@@ -369,22 +415,30 @@ index 14516fc5..40a4410d 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/toggle/toggle.ts b/src/vs/base/browser/ui/toggle/toggle.ts
-index 2a5e4a99..63a3f8d0 100644
+index 971ba88c8af6148ab6d61a8726a8a97fe775e016..0b6bba9834905e052a173e65b93d293a0f6a9d93 100644
 --- a/src/vs/base/browser/ui/toggle/toggle.ts
 +++ b/src/vs/base/browser/ui/toggle/toggle.ts
-@@ -5,2 +5,3 @@
+@@ -3,6 +3,7 @@
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
+  *--------------------------------------------------------------------------------------------*/
  
 +import { FONT } from '../../../common/font.js';
  import { IAction } from '../../../common/actions.js';
-@@ -230,3 +231,4 @@ export class Toggle extends Widget {
+ import { Codicon } from '../../../common/codicons.js';
+ import { Emitter, Event } from '../../../common/event.js';
+@@ -228,7 +229,8 @@ export class Toggle extends Widget {
+ 	}
+ 
  	width(): number {
 -		return 2 /*margin left*/ + 2 /*border*/ + 2 /*padding*/ + 16 /* icon width */;
 +		// return 2 /*margin left*/ + 2 /*border*/ + 2 /*padding*/ + 16 /* icon width */;
 +		return 2 + FONT.sidebarSize20
  	}
+ 
+ 	protected applyStyles(): void {
 diff --git a/src/vs/base/common/font.ts b/src/vs/base/common/font.ts
 new file mode 100644
-index 00000000..20d0b27e
+index 0000000000000000000000000000000000000000..20d0b27e84ca5cfb34127f76fac758040a7e1252
 --- /dev/null
 +++ b/src/vs/base/common/font.ts
 @@ -0,0 +1,191 @@
@@ -582,7 +636,7 @@ index 00000000..20d0b27e
 \ No newline at end of file
 diff --git a/src/vs/base/test/common/font.test.ts b/src/vs/base/test/common/font.test.ts
 new file mode 100644
-index 00000000..62a49d53
+index 0000000000000000000000000000000000000000..62a49d537f3dde1386771f1d2d0c20c766be86c4
 --- /dev/null
 +++ b/src/vs/base/test/common/font.test.ts
 @@ -0,0 +1,482 @@
@@ -1069,10 +1123,12 @@ index 00000000..62a49d53
 +	});
 +});
 diff --git a/src/vs/editor/contrib/find/browser/findWidget.css b/src/vs/editor/contrib/find/browser/findWidget.css
-index 62c6056c..3d893baa 100644
+index 62c6056c1d98d4b2765fe6b2c9a754cf693e6781..3d893baab21e42317b80fc9166866eef99679a7f 100644
 --- a/src/vs/editor/contrib/find/browser/findWidget.css
 +++ b/src/vs/editor/contrib/find/browser/findWidget.css
-@@ -281 +281,104 @@
+@@ -279,3 +279,106 @@
+ 	top: 5px;
+ 	right: 4px;
  }
 +
 +
@@ -1179,28 +1235,46 @@ index 62c6056c..3d893baa 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/editor/contrib/find/browser/findWidget.ts b/src/vs/editor/contrib/find/browser/findWidget.ts
-index 03e698c3..7d6f5afa 100644
+index 03e698c3e877774755b3b4bb8a05b4276e0cdb13..7d6f5afa4d4ac11ed7cfa9c95e0b7e6fd8c9ae6f 100644
 --- a/src/vs/editor/contrib/find/browser/findWidget.ts
 +++ b/src/vs/editor/contrib/find/browser/findWidget.ts
-@@ -47,2 +47,3 @@ import { HoverStyle, type IHoverLifecycleOptions } from '../../../../base/browse
+@@ -45,6 +45,7 @@ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+ import { IHistory } from '../../../../base/common/history.js';
+ import { HoverStyle, type IHoverLifecycleOptions } from '../../../../base/browser/ui/hover/hover.js';
  import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -82,2 +83,3 @@ const PART_WIDTH = 275;
+ const findCollapsedIcon = registerIcon('find-collapsed', Codicon.chevronRight, nls.localize('findCollapsedIcon', 'Icon to indicate that the editor find widget is collapsed.'));
+ const findExpandedIcon = registerIcon('find-expanded', Codicon.chevronDown, nls.localize('findExpandedIcon', 'Icon to indicate that the editor find widget is expanded.'));
+@@ -80,6 +81,7 @@ export const NLS_NO_RESULTS = nls.localize('label.noResults', "No results");
+ const FIND_WIDGET_INITIAL_WIDTH = 419;
+ const PART_WIDTH = 275;
  const FIND_INPUT_AREA_WIDTH = PART_WIDTH - 54;
 +const FLEXIBLE_MAX_HEIGHT = 118;
  
-@@ -98,3 +100,3 @@ export class FindWidgetViewZone implements IViewZone {
+ let MAX_MATCHES_COUNT_WIDTH = 69;
+ // let FIND_ALL_CONTROLS_WIDTH = 17/** Find Input margin-left */ + (MAX_MATCHES_COUNT_WIDTH + 3 + 1) /** Match Results */ + 23 /** Button */ * 4 + 2/** sash */;
+@@ -96,7 +98,7 @@ export class FindWidgetViewZone implements IViewZone {
+ 	constructor(afterLineNumber: number) {
+ 		this.afterLineNumber = afterLineNumber;
  
 -		this.heightInPx = FIND_INPUT_AREA_HEIGHT;
 +		this.heightInPx = FIND_INPUT_AREA_HEIGHT * FONT.workbenchCoefficient;
  		this.suppressMouseDown = false;
-@@ -767,3 +769,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		this.domNode = document.createElement('div');
+ 		this.domNode.className = 'dock-find-viewzone';
+@@ -765,7 +767,7 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		if (this._resized) {
+ 			const widgetWidth = dom.getTotalWidth(this._domNode);
  
 -			if (widgetWidth > FIND_WIDGET_INITIAL_WIDTH) {
 +			if (widgetWidth > (FIND_WIDGET_INITIAL_WIDTH * FONT.workbenchCoefficient)) {
  				// as the widget is resized by users, we may need to change the max width of the widget as the editor width changes.
-@@ -775,9 +777,12 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 				this._domNode.style.maxWidth = `${editorWidth - 28 - minimapWidth - 15}px`;
+ 				this._replaceInput.width = dom.getTotalWidth(this._findInput.domNode);
+@@ -773,13 +775,16 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			}
+ 		}
  
 -		if (FIND_WIDGET_INITIAL_WIDTH + 28 + minimapWidth >= editorWidth) {
 +		const initialWidth = (FIND_WIDGET_INITIAL_WIDTH + 28) * FONT.workbenchCoefficient
@@ -1216,13 +1290,17 @@ index 03e698c3..7d6f5afa 100644
 -		if (FIND_WIDGET_INITIAL_WIDTH + 28 + minimapWidth - MAX_MATCHES_COUNT_WIDTH >= editorWidth + 50) {
 +		if (initialWidth + minimapWidth - maxMatchesWidth >= editorWidth + 50) {
  			collapsedFindWidget = true;
-@@ -805,2 +810,5 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		}
+ 		this._domNode.classList.toggle('collapsed-find-widget', collapsedFindWidget);
+@@ -803,23 +808,26 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 	}
+ 
  	private _getHeight(): number {
 +		const size2 = 2 * FONT.workbenchCoefficient
 +		const size4 = 4 * FONT.workbenchCoefficient
 +
  		let totalheight = 0;
-@@ -808,6 +816,6 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 
  		// find input margin top
 -		totalheight += 4;
 +		totalheight += size4;
@@ -1231,7 +1309,7 @@ index 03e698c3..7d6f5afa 100644
 -		totalheight += this._findInput.inputBox.height + 2 /** input box border */;
 +		totalheight += this._findInput.inputBox.height + size2 /** input box border */;
  
-@@ -815,5 +823,5 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		if (this._isReplaceVisible) {
  			// replace input margin
 -			totalheight += 4;
 +			totalheight += size4;
@@ -1239,27 +1317,43 @@ index 03e698c3..7d6f5afa 100644
 -			totalheight += this._replaceInput.inputBox.height + 2 /** input box border */;
 +			totalheight += this._replaceInput.inputBox.height + size2 /** input box border */;
  		}
-@@ -821,3 +829,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 
  		// margin bottom
 -		totalheight += 4;
 +		totalheight += size4;
  		return totalheight;
-@@ -990,3 +998,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 	}
+ 
+@@ -988,7 +996,7 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		const findSearchHistoryConfig = this._codeEditor.getOption(EditorOption.find).history;
+ 		const replaceHistoryConfig = this._codeEditor.getOption(EditorOption.find).replaceHistory;
  		this._findInput = this._register(new ContextScopedFindInput(null, this._contextViewProvider, {
 -			width: FIND_INPUT_AREA_WIDTH,
 +			width: FIND_INPUT_AREA_WIDTH * FONT.workbenchCoefficient,
  			label: NLS_FIND_INPUT_LABEL,
-@@ -1010,3 +1018,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			placeholder: NLS_FIND_INPUT_PLACEHOLDER,
+ 			appendCaseSensitiveLabel: this._keybindingLabelFor(FIND_IDS.ToggleCaseSensitiveCommand),
+@@ -1008,7 +1016,7 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			},
+ 			flexibleHeight,
  			flexibleWidth,
 -			flexibleMaxHeight: 118,
 +			flexibleMaxHeight: FLEXIBLE_MAX_HEIGHT * FONT.workbenchCoefficient,
  			showCommonFindToggles: true,
-@@ -1166,3 +1174,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			showHistoryHint: () => showHistoryKeybindingHint(this._keybindingService),
+ 			inputBoxStyles: defaultInputBoxStyles,
+@@ -1164,7 +1172,7 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			history: replaceHistoryConfig === 'workspace' ? this._replaceWidgetHistory : new Set([]),
+ 			flexibleHeight,
  			flexibleWidth,
 -			flexibleMaxHeight: 118,
 +			flexibleMaxHeight: FLEXIBLE_MAX_HEIGHT,
  			showHistoryHint: () => showHistoryKeybindingHint(this._keybindingService),
-@@ -1262,4 +1270,6 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			inputBoxStyles: defaultInputBoxStyles,
+ 			toggleStyles: defaultToggleStyles,
+@@ -1260,8 +1268,10 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		this._domNode.ariaLabel = NLS_FIND_DIALOG_LABEL;
+ 		this._domNode.role = 'dialog';
  
 +		let initialWidth = FIND_WIDGET_INITIAL_WIDTH * FONT.workbenchCoefficient;
 +
@@ -1267,23 +1361,36 @@ index 03e698c3..7d6f5afa 100644
 -		this._domNode.style.width = `${FIND_WIDGET_INITIAL_WIDTH}px`;
 +		this._domNode.style.width = `${initialWidth}px`;
  
-@@ -1272,3 +1282,4 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		this._domNode.appendChild(this._toggleReplaceBtn.domNode);
+ 		this._domNode.appendChild(findPart);
+@@ -1270,7 +1280,8 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 
+ 		this._resizeSash = this._register(new Sash(this._domNode, this, { orientation: Orientation.VERTICAL, size: 2 }));
  		this._resized = false;
 -		let originalWidth = FIND_WIDGET_INITIAL_WIDTH;
 +
 +		let originalWidth = initialWidth;
  
-@@ -1282,3 +1293,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 		this._register(this._resizeSash.onDidStart(() => {
+ 			originalWidth = dom.getTotalWidth(this._domNode);
+@@ -1280,7 +1291,7 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			this._resized = true;
+ 			const width = originalWidth + evt.startX - evt.currentX;
  
 -			if (width < FIND_WIDGET_INITIAL_WIDTH) {
 +			if (width < initialWidth) {
  				// narrow down the find widget should be handled by CSS.
-@@ -1304,3 +1315,3 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 				return;
+ 			}
+@@ -1302,14 +1313,14 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 			// users double click on the sash
+ 			const currentWidth = dom.getTotalWidth(this._domNode);
  
 -			if (currentWidth < FIND_WIDGET_INITIAL_WIDTH) {
 +			if (currentWidth < initialWidth) {
  				// The editor is narrow and the width of the find widget is controlled fully by CSS.
-@@ -1309,5 +1320,5 @@ export class FindWidget extends Widget implements IOverlayWidget, IVerticalSashL
+ 				return;
+ 			}
  
 -			let width = FIND_WIDGET_INITIAL_WIDTH;
 +			let width = initialWidth;
@@ -1291,24 +1398,36 @@ index 03e698c3..7d6f5afa 100644
 -			if (!this._resized || currentWidth === FIND_WIDGET_INITIAL_WIDTH) {
 +			if (!this._resized || currentWidth === initialWidth) {
  				// 1. never resized before, double click should maximizes it
+ 				// 2. users resized it already but its width is the same as default
+ 				const layoutInfo = this._codeEditor.getLayoutInfo();
 diff --git a/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts b/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
-index 328285f0..0735dfa2 100644
+index 328285f0222873865c4a227decee04c9017bcc2d..0735dfa2fa827dc68c846c4fe2dafa0012e2af4c 100644
 --- a/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
 +++ b/src/vs/platform/quickinput/browser/tree/quickInputDelegate.ts
-@@ -6,2 +6,3 @@
+@@ -4,6 +4,7 @@
+  *--------------------------------------------------------------------------------------------*/
+ 
  import { IListVirtualDelegate } from '../../../../base/browser/ui/list/list.js';
 +import { FONT } from '../../../../base/common/font.js';
  import { IQuickTreeItem } from '../../common/quickInput.js';
-@@ -14,3 +15,3 @@ export class QuickInputTreeDelegate<T extends IQuickTreeItem> implements IListVi
+ import { QuickInputTreeRenderer } from './quickInputTreeRenderer.js';
+ 
+@@ -12,7 +13,7 @@ import { QuickInputTreeRenderer } from './quickInputTreeRenderer.js';
+  */
+ export class QuickInputTreeDelegate<T extends IQuickTreeItem> implements IListVirtualDelegate<T> {
  	getHeight(_element: T): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(_element: T): string {
 diff --git a/src/vs/workbench/browser/media/style.css b/src/vs/workbench/browser/media/style.css
-index b04b3c70..8c7a7a5f 100644
+index b04b3c70daf610ce3a4fc1e10bbb60c4e4bc9ec5..8c7a7a5fe4aabd8194959f4ebd7151dfa03746b4 100644
 --- a/src/vs/workbench/browser/media/style.css
 +++ b/src/vs/workbench/browser/media/style.css
-@@ -11,20 +11,20 @@
+@@ -9,24 +9,24 @@
+ 
+ /* Font Families (with CJK support) */
  
 -.monaco-workbench.mac { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 -.monaco-workbench.mac:lang(zh-Hans) { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif; }
@@ -1345,12 +1464,20 @@ index b04b3c70..8c7a7a5f 100644
 +.monaco-workbench.linux:lang(ja) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", sans-serif; }
 +.monaco-workbench.linux:lang(ko) { --monaco-font: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans K", "Source Han Sans JR", "Source Han Sans", "UnDotum", "FBaekmuk Gulim", sans-serif; }
  
-@@ -55,2 +55,4 @@ body {
+ .monaco-workbench.mac { --monaco-monospace-font: "SF Mono", Monaco, Menlo, Courier, monospace; }
+ .monaco-workbench.windows { --monaco-monospace-font: Consolas, "Courier New", monospace; }
+@@ -53,6 +53,8 @@ body {
+ 	z-index: 1;
+ 	overflow: hidden;
  	color: var(--vscode-foreground);
 +	font-family: var(--vscode-workbench-font-family, var(--monaco-font));
 +	font-size: var(--vscode-workbench-font-size, 13px);
  
-@@ -355 +357,41 @@ body {
+ 	/* Elevation shadows */
+ 	--vscode-shadow-sm: 0 0 4px rgba(0, 0, 0, 0.08);
+@@ -353,3 +355,43 @@ body {
+ 	outline: 1px dashed var(--vscode-toolbar-hoverOutline);
+ 	outline-offset: -1px;
  }
 +
 +
@@ -1394,31 +1521,55 @@ index b04b3c70..8c7a7a5f 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts b/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
-index ee371523..fea72aba 100644
+index 4d65145c7a4ef430890091fc13cafa26f0da7f1b..ed42c89bccbe1d4259383206e6e39bfd22013719 100644
 --- a/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
 +++ b/src/vs/workbench/browser/parts/activitybar/activitybarPart.ts
-@@ -41,2 +41,3 @@ import { IViewsService } from '../../../services/views/common/viewsService.js';
+@@ -39,6 +39,7 @@ import { IExtensionService } from '../../../services/extensions/common/extension
+ import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ import { IViewsService } from '../../../services/views/common/viewsService.js';
  import { SwitchCompositeViewAction } from '../compositeBarActions.js';
 +import { FONT, getFontSize, updateActivityBarSize } from '../../../../base/common/font.js';
  
-@@ -46,2 +47,3 @@ export class ActivitybarPart extends Part {
- 	static readonly COMPACT_ACTION_HEIGHT = 32;
-+	static readonly COMPACT_ACTION_HEIGHT_RATIO = 32/48;
+ export class ActivitybarPart extends Part {
  
-@@ -49,2 +51,3 @@ export class ActivitybarPart extends Part {
+@@ -47,6 +48,7 @@ export class ActivitybarPart extends Part {
+ 
+ 	static readonly ACTIVITYBAR_WIDTH = 48;
  	static readonly COMPACT_ACTIVITYBAR_WIDTH = 36;
 +	static readonly COMPACT_ACTIVITYBAR_WIDTH_RATIO = 36/48;
  
-@@ -52,2 +55,3 @@ export class ActivitybarPart extends Part {
+ 	/** Narrower dimensions used when the floating panels (Modern UI) experiment is enabled. */
+ 	static readonly FLOATING_ACTION_HEIGHT = 36;
+@@ -55,6 +57,7 @@ export class ActivitybarPart extends Part {
+ 
+ 	static readonly ICON_SIZE = 24;
  	static readonly COMPACT_ICON_SIZE = 16;
 +	static readonly COMPACT_ICON_SIZE_RATIO = 16/24;
  
-@@ -75,3 +79,3 @@ export class ActivitybarPart extends Part {
- 	/** The intrinsic activity bar width (excludes any floating gutter). */
--	private get baseWidth(): number { return this._isCompact ? ActivitybarPart.COMPACT_ACTIVITYBAR_WIDTH : ActivitybarPart.ACTIVITYBAR_WIDTH; }
-+	private get baseWidth(): number { return this._isCompact ? FONT.activityBarSize48 * ActivitybarPart.COMPACT_ACTIVITYBAR_WIDTH_RATIO : FONT.activityBarSize48; }
+ 	/**
+ 	 * Gutter reserved on the left and bottom edges under the floating panels
+@@ -82,15 +85,15 @@ export class ActivitybarPart extends Part {
+ 		if (this.layoutService.isFloatingPanelsEnabled()) {
+ 			return this._isCompact ? ActivitybarPart.FLOATING_COMPACT_ACTIVITYBAR_WIDTH : ActivitybarPart.FLOATING_ACTIVITYBAR_WIDTH;
+ 		}
+-		return this._isCompact ? ActivitybarPart.COMPACT_ACTIVITYBAR_WIDTH : ActivitybarPart.ACTIVITYBAR_WIDTH;
++		return this._isCompact ? FONT.activityBarSize48 * ActivitybarPart.COMPACT_ACTIVITYBAR_WIDTH_RATIO : FONT.activityBarSize48;
+ 	}
  
-@@ -111,2 +115,11 @@ export class ActivitybarPart extends Part {
+ 	/** The action (item) height that drives visible item sizing and the composite bar overflow size. */
+ 	private get actionHeight(): number {
+ 		if (this._isCompact) {
+-			return ActivitybarPart.COMPACT_ACTION_HEIGHT;
++			return FONT.activityBarSize32;
+ 		}
+-		return this.layoutService.isFloatingPanelsEnabled() ? ActivitybarPart.FLOATING_ACTION_HEIGHT : ActivitybarPart.ACTION_HEIGHT;
++		return this.layoutService.isFloatingPanelsEnabled() ? ActivitybarPart.FLOATING_ACTION_HEIGHT : FONT.activityBarSize48;
+ 	}
+ 
+ 	/** Extra space reserved around the part when the floating panels experiment is enabled. */
+@@ -129,6 +132,15 @@ export class ActivitybarPart extends Part {
+ 				this._onDidChange.fire(undefined);
+ 			}
  		}));
 +
 +		this._register(configurationService.onDidChangeConfiguration(e => {
@@ -1430,21 +1581,40 @@ index ee371523..fea72aba 100644
 +			}
 +		}));
  	}
-@@ -117,4 +130,4 @@ export class ActivitybarPart extends Part {
+ 
+ 	private updateCompactStyle(): void {
+@@ -138,7 +150,7 @@ export class ActivitybarPart extends Part {
+ 			this.layoutService.mainContainer.classList.toggle('activitybar-compact', this._isCompact);
  			this.element.style.setProperty('--activity-bar-width', `${this.baseWidth}px`);
--			this.element.style.setProperty('--activity-bar-action-height', `${this._isCompact ? ActivitybarPart.COMPACT_ACTION_HEIGHT : ActivitybarPart.ACTION_HEIGHT}px`);
+ 			this.element.style.setProperty('--activity-bar-action-height', `${this.actionHeight}px`);
 -			this.element.style.setProperty('--activity-bar-icon-size', `${this._isCompact ? ActivitybarPart.COMPACT_ICON_SIZE : ActivitybarPart.ICON_SIZE}px`);
-+			this.element.style.setProperty('--activity-bar-action-height', `${this._isCompact ? FONT.activityBarSize32 : FONT.activityBarSize48}px`);
 +			this.element.style.setProperty('--activity-bar-icon-size', `${this._isCompact ? FONT.activityBarSize : FONT.activityBarSize24}px`);
  		}
-@@ -174,2 +187,6 @@ export class ActivitybarPart extends Part {
+ 	}
+ 
+@@ -159,7 +171,7 @@ export class ActivitybarPart extends Part {
+ 
+ 	private createCompositeBar(): PaneCompositeBar {
+ 		const actionHeight = this.actionHeight;
+-		const iconSize = this._isCompact ? ActivitybarPart.COMPACT_ICON_SIZE : ActivitybarPart.ICON_SIZE;
++		const iconSize = this._isCompact ? FONT.activityBarSize : FONT.activityBarSize24;
+ 
+ 		return this.instantiationService.createInstance(ActivityBarCompositeBar, this.location, {
+ 			partContainerClass: 'activitybar',
+@@ -194,6 +206,10 @@ export class ActivitybarPart extends Part {
+ 		this.element = parent;
+ 		this.content = append(this.element, $('.content'));
  
 +		// Apply font settings before show() so composite bar uses correct sizes
 +		this.applyActivityBarFontFamily(parent);
 +		this.applyActivityBarFontSize(parent);
 +
  		this.updateCompactStyle();
-@@ -183,2 +200,34 @@ export class ActivitybarPart extends Part {
+ 
+ 		if (this.layoutService.isVisible(Parts.ACTIVITYBAR_PART)) {
+@@ -203,6 +219,38 @@ export class ActivitybarPart extends Part {
+ 		return this.content;
+ 	}
  
 +	private applyActivityBarFontFamily(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
@@ -1479,11 +1649,15 @@ index ee371523..fea72aba 100644
 +	}
 +
  	getPinnedPaneCompositeIds(): string[] {
+ 		return this.compositeBar.value?.getPinnedPaneCompositeIds() ?? [];
+ 	}
 diff --git a/src/vs/workbench/browser/parts/activitybar/media/activityaction.css b/src/vs/workbench/browser/parts/activitybar/media/activityaction.css
-index a40a3515..51eb067d 100644
+index 75345d97c8a837a8aeae7ae70860826d39953431..521a4bdb13f8b392c864be0f10f25e4a1bd7f12c 100644
 --- a/src/vs/workbench/browser/parts/activitybar/media/activityaction.css
 +++ b/src/vs/workbench/browser/parts/activitybar/media/activityaction.css
-@@ -230 +230,60 @@
+@@ -228,3 +228,62 @@
+ 	left: auto;
+ 	right: 0;
  }
 +
 +
@@ -1546,34 +1720,47 @@ index a40a3515..51eb067d 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
-index 568a7212..b3d7e506 100644
+index 568a721298088f14eccd317b6d045cd3560a625a..b3d7e506edc365607835acf5e8efcfea4ce6f9ca 100644
 --- a/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
 +++ b/src/vs/workbench/browser/parts/activitybar/media/activitybarpart.css
-@@ -8,2 +8,4 @@
+@@ -6,6 +6,8 @@
+ .monaco-workbench .part.activitybar {
+ 	width: var(--activity-bar-width, 48px);
  	height: 100%;
 +	font-family: var(--vscode-workbench-activitybar-font-family, inherit);
 +	font-size: var(--vscode-workbench-activitybar-font-size);
  }
-@@ -67,3 +69,3 @@
+ 
+ /* Activity Bar - shadow when sidebar is hidden or on the right */
+@@ -65,10 +67,10 @@
+ 
+ .monaco-workbench .activitybar .menubar {
  	width: 100%;
 -	height: 35px;
 +	height: calc(var(--vscode-workbench-activitybar-font-size) * 2.1875);
  }
-@@ -72,3 +74,3 @@
+ 
+ .monaco-workbench .activitybar .menubar.compact .toolbar-toggle-more {
  	width: 100%;
 -	height: 35px;
 +	height: calc(var(--vscode-workbench-activitybar-font-size) * 2.1875);
  }
 diff --git a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
-index 058edb02..87da0854 100644
+index 058edb02a8ae38350c0ae417612e1968a2900ccf..87da0854a909027045227359853b42014307cf6d 100644
 --- a/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
 +++ b/src/vs/workbench/browser/parts/auxiliarybar/auxiliaryBarPart.ts
-@@ -36,2 +36,4 @@ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js
+@@ -34,6 +34,8 @@ import { getContextMenuActions } from '../../../../platform/actions/browser/menu
+ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js';
  import { Extensions } from '../../panecomposite.js';
 +import { FONT, getFontSize, updateSidebarSize } from '../../../../base/common/font.js';
 +import { SidebarPart } from '../sidebar/sidebarPart.js';
  
-@@ -147,2 +149,8 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+ interface IAuxiliaryBarPartConfiguration {
+ 	position: ActivityBarPosition;
+@@ -145,6 +147,12 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+ 			} else if (e.affectsConfiguration(LayoutSettings.ACTIVITY_BAR_AUTO_HIDE)) {
+ 				this.onDidChangeActivityBarLocation();
  			}
 +			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
 +				this.applyAuxiliaryBarFontSize();
@@ -1582,7 +1769,11 @@ index 058edb02..87da0854 100644
 +				this.applyAuxiliaryBarFontFamily();
 +			}
  		}));
-@@ -198,2 +206,37 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+ 	}
+ 
+@@ -196,6 +204,41 @@ export class AuxiliaryBarPart extends AbstractPaneCompositePart {
+ 
+ 		container.style.borderLeftWidth = borderColor && !isPositionLeft ? '1px' : '0px';
  		container.style.borderRightWidth = borderColor && isPositionLeft ? '1px' : '0px';
 +
 +		this.applyAuxiliaryBarFontSize(container);
@@ -1620,11 +1811,15 @@ index 058edb02..87da0854 100644
 +
 +		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
  	}
+ 
+ 	protected getCompositeBarOptions(): IPaneCompositeBarOptions {
 diff --git a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
-index aec3de2d..b0e1fd8f 100644
+index aec3de2d96d19fb4e6c88bba89119e181711a7b8..b0e1fd8fbe49ccd16b856c76ddba30e530a35cb9 100644
 --- a/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
 +++ b/src/vs/workbench/browser/parts/auxiliarybar/media/auxiliaryBarPart.css
-@@ -28,2 +28,8 @@
+@@ -26,6 +26,12 @@
+ 	background-color: var(--vscode-sideBarTitle-background);
+ }
  
 +.monaco-workbench .part.auxiliarybar > .content {
 +	font-size: var(--vscode-workbench-sidebar-font-size, 13px);
@@ -1633,33 +1828,59 @@ index aec3de2d..b0e1fd8f 100644
 +}
 +
  .monaco-workbench .part.auxiliarybar > .title > .title-label {
+ 	flex: 1;
+ }
 diff --git a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
-index 2ba6b32b..6eb3ee83 100644
+index 43cc2e5a0e493129c92133c25bbb7bd690a5a2a5..57ec2b0300ba7c2ca75d67d92d5054c7a65d0f41 100644
 --- a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
 +++ b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
-@@ -48,2 +48,4 @@ import { MarkdownString } from '../../../../base/common/htmlContent.js';
+@@ -46,6 +46,8 @@ import { ServiceCollection } from '../../../../platform/instantiation/common/ser
+ import { IBaseActionViewItemOptions } from '../../../../base/browser/ui/actionbar/actionViewItems.js';
+ import { MarkdownString } from '../../../../base/common/htmlContent.js';
  import { IManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
 +import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 +import { FONT, getFontSize, updateTabsSize } from '../../../../base/common/font.js';
  import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
-@@ -101,6 +103,8 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 
+ export class EditorCommandsContextActionRunner extends ActionRunner {
+@@ -99,15 +101,17 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 	protected readonly groupTransfer = LocalSelectionTransfer.getInstance<DraggedEditorGroupIdentifier>();
+ 	protected readonly treeItemsTransfer = LocalSelectionTransfer.getInstance<DraggedTreeItemsIdentifier>();
  
 -	private static readonly EDITOR_TAB_HEIGHT = {
 -		normal: 35 as const,
--		compact: 22 as const
+-		compact: 22 as const,
+-		// Style-override (Modern UI) multi-tab mode adds 4px top + 4px bottom padding to
+-		// the tabs-and-actions-container (tabs.css), so the total title-bar height is the
+-		// --editor-group-tab-height CSS value (24px / 20px) plus that 8px padding.
+-		styleOverride: 32 as const,        // 24px tab  + 4px top + 4px bottom padding
+-		styleOverrideCompact: 28 as const, // 20px tab  + 4px top + 4px bottom padding (20px = minimum to fit 16px icon + 2px padding)
 -	};
 +	private static get EDITOR_TAB_HEIGHT() {
 +		return {
 +			normal: FONT.tabsSize35,
-+			compact: FONT.tabsSize22
++			compact: FONT.tabsSize22,
++			// Style-override (Modern UI) multi-tab mode adds 4px top + 4px bottom padding to
++			// the tabs-and-actions-container (tabs.css), so the total title-bar height is the
++			// --editor-group-tab-height CSS value (24px / 20px) plus that 8px padding.
++			styleOverride: 32 as const,        // 24px tab  + 4px top + 4px bottom padding
++			styleOverrideCompact: 28 as const, // 20px tab  + 4px top + 4px bottom padding (20px = minimum to fit 16px icon + 2px padding)
 +		};
 +	}
  
-@@ -148,2 +152,3 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 	protected editorActionsToolbarContainer: HTMLElement | undefined;
+ 	private editorActionsToolbar: WorkbenchToolBar | undefined;
+@@ -156,6 +160,7 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 		@IEditorResolverService private readonly editorResolverService: IEditorResolverService,
  		@IHostService private readonly hostService: IHostService,
+ 		@IMenuService protected readonly menuService: IMenuService,
 +		@IConfigurationService protected readonly configurationService: IConfigurationService,
  	) {
-@@ -155,2 +160,13 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 		super(themeService);
+ 
+@@ -163,6 +168,17 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 
+ 		const container = this.create(parent);
  
 +		this._register(configurationService.onDidChangeConfiguration(e => {
 +			if (e.affectsConfiguration('workbench.tabs.experimental.fontFamily')) {
@@ -1673,12 +1894,17 @@ index 2ba6b32b..6eb3ee83 100644
 +		}));
 +
  		// Context Keys
-@@ -176,2 +192,4 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 		this.contextMenuContextKeyService = this._register(this.contextKeyService.createScoped(container));
+ 		const scopedInstantiationService = this._register(this.instantiationService.createChild(new ServiceCollection(
+@@ -185,10 +201,40 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 	}
+ 
  	protected create(parent: HTMLElement): HTMLElement {
 +		this.applyTabsFontSize(parent);
 +		this.applyTabsFontFamily(parent);
  		this.updateTabHeight();
-@@ -180,2 +198,30 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+ 		return parent;
+ 	}
  
 +	private applyTabsFontFamily(container?: HTMLElement): void {
 +		const target = container ?? this.parent;
@@ -1709,15 +1935,23 @@ index 2ba6b32b..6eb3ee83 100644
 +	}
 +
  	private get editorActionsEnabled(): boolean {
+ 		return this.groupsView.partOptions.editorActionsLocation === 'default' && this.groupsView.partOptions.showTabs !== 'none';
+ 	}
 diff --git a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
-index 57ab8ca5..72a328fc 100644
+index 57ab8ca5e2b3c8495b6dce0e8117c1fc513159d1..72a328fc7a767abceaa792ed66dbef609345241c 100644
 --- a/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
 +++ b/src/vs/workbench/browser/parts/editor/media/editortabscontrol.css
-@@ -9,2 +9,3 @@
+@@ -7,6 +7,7 @@
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title {
  	cursor: pointer;
 +	font-family: var(--vscode-workbench-tabs-font-family, inherit);
  }
-@@ -47 +48,37 @@
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .title-label,
+@@ -45,3 +46,39 @@
+ .monaco-workbench .part.editor > .content .editor-group-container > .title.tabs .monaco-icon-label::after {
+ 	margin-right: 0; /* by default the icon label has a padding right and this isn't wanted when not showing tabs and not showing breadcrumbs */
  }
 +
 +
@@ -1757,10 +1991,12 @@ index 57ab8ca5..72a328fc 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css b/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css
-index a24f7613..6b15b9c2 100644
+index a24f76131a86b81665958ddac26ce433abfeed1f..6b15b9c2d05dd9a326e057a128915230a749e7de 100644
 --- a/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css
 +++ b/src/vs/workbench/browser/parts/editor/media/editortitlecontrol.css
-@@ -47 +47,28 @@
+@@ -45,3 +45,30 @@
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .breadcrumbs-below-tabs .breadcrumbs-control .monaco-breadcrumb-item:last-child .codicon:last-child {
+ 	display: none; /* hides chevrons when last item */
  }
 +
 +
@@ -1791,22 +2027,32 @@ index a24f7613..6b15b9c2 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
-index d57abaaf..4928dac9 100644
+index 19588832d6344a5e53e41175fbe0ee7d3a91bd03..d641a5ad6e9e2431c86d0c7f62cd036d1e8415b0 100644
 --- a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
 +++ b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
-@@ -176,4 +176,4 @@
+@@ -190,8 +190,8 @@
+ }
+ 
  .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed {
 -	min-width: var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px));
 -	max-width: var(--tab-sizing-current-width, var(--tab-sizing-fixed-max-width, 160px));
 +	min-width: 50px;
 +	max-width: 160px;
  	flex: 1 0 0; /* all tabs are evenly sized and grow */
-@@ -185,3 +185,3 @@
+ }
+ 
+@@ -199,7 +199,7 @@
+ 	/* prevent last tab in a row from moving to next row when tab widths are
+ 	 * fixed in case rounding errors make the fixed tabs grow over the size
  	 * of the tabs container */
 -	min-width: calc(var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px)) - 1px);
 +	min-width: 50px - 1px;
  }
-@@ -576 +576,113 @@
+ 
+ .monaco-workbench .part.editor > .content .editor-group-container > .title > .tabs-and-actions-container.wrapping .tabs-container > .tab.sizing-fit.last-in-row:not(:last-child) {
+@@ -581,3 +581,115 @@
+ .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.last-in-row.drop-target-left:not(:last-child)::after {
+ 	right: 0;
  }
 +
 +
@@ -1922,18 +2168,28 @@ index d57abaaf..4928dac9 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
-index 1fe80afb..d792a8c5 100644
+index 7db977b8dd2e2767c5e07b15db419130614435cf..ade22184234a81527ff6ac219758eac5ded67c4d 100644
 --- a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
 +++ b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
-@@ -6,2 +6,3 @@
+@@ -4,6 +4,7 @@
+  *--------------------------------------------------------------------------------------------*/
+ 
  import './media/multieditortabscontrol.css';
 +import { FONT } from '../../../../base/common/font.js';
  import { isLinux, isMacintosh, isWindows } from '../../../../base/common/platform.js';
-@@ -60,2 +61,3 @@ import { BugIndicatingError } from '../../../../base/common/errors.js';
- import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
+ import { shorten } from '../../../../base/common/labels.js';
+ import { EditorResourceAccessor, Verbosity, IEditorPartOptions, SideBySideEditor, DEFAULT_EDITOR_ASSOCIATION, EditorInputCapabilities, IUntypedEditorInput, preventEditorClose, EditorCloseMethod, EditorsOrder, IToolbarActions } from '../../../common/editor.js';
+@@ -59,6 +60,7 @@ import { IEditorTitleControlDimensions } from './editorTitleControl.js';
+ import { StickyEditorGroupModel, UnstickyEditorGroupModel } from '../../../common/editor/filteredEditorGroupModel.js';
+ import { IReadonlyEditorGroupModel } from '../../../common/editor/editorGroupModel.js';
+ import { IHostService } from '../../../services/host/browser/host.js';
 +import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
- 
-@@ -96,7 +98,9 @@ export class MultiEditorTabsControl extends EditorTabsControl {
+ import { BugIndicatingError } from '../../../../base/common/errors.js';
+ import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
+ import { Codicon } from '../../../../base/common/codicons.js';
+@@ -99,11 +101,13 @@ export class MultiEditorTabsControl extends EditorTabsControl {
+ 		large: 10 as const
+ 	};
  
 -	private static readonly TAB_WIDTH = {
 -		compact: 38 as const,
@@ -1947,19 +2203,27 @@ index 1fe80afb..d792a8c5 100644
 +			fit: FONT.tabsSize120
 +		};
 +	}
+ 	private static readonly STYLE_OVERRIDE_COMPACT_PINNED_TAB_WIDTH = 28 as const;
+ 	private static readonly STYLE_OVERRIDE_PINNED_TAB_SPACING = 4 as const;
  
-@@ -154,4 +158,5 @@ export class MultiEditorTabsControl extends EditorTabsControl {
+@@ -163,8 +167,9 @@ export class MultiEditorTabsControl extends EditorTabsControl {
+ 		@IEditorResolverService editorResolverService: IEditorResolverService,
  		@IHostService hostService: IHostService,
+ 		@IMenuService menuService: IMenuService,
 +		@IConfigurationService configurationService: IConfigurationService,
  	) {
--		super(parent, editorPartsView, groupsView, groupView, tabsModel, contextMenuService, instantiationService, contextKeyService, keybindingService, notificationService, quickInputService, themeService, editorResolverService, hostService);
-+		super(parent, editorPartsView, groupsView, groupView, tabsModel, contextMenuService, instantiationService, contextKeyService, keybindingService, notificationService, quickInputService, themeService, editorResolverService, hostService, configurationService);
+-		super(parent, editorPartsView, groupsView, groupView, tabsModel, menuIds, contextMenuService, instantiationService, contextKeyService, keybindingService, notificationService, quickInputService, themeService, editorResolverService, hostService, menuService);
++		super(parent, editorPartsView, groupsView, groupView, tabsModel, menuIds, contextMenuService, instantiationService, contextKeyService, keybindingService, notificationService, quickInputService, themeService, editorResolverService, hostService, menuService, configurationService);
  
+ 		// Resolve the correct path library for the OS we are on
+ 		// If we are connected to remote, this accounts for the
 diff --git a/src/vs/workbench/browser/parts/media/paneCompositePart.css b/src/vs/workbench/browser/parts/media/paneCompositePart.css
-index fe0f2adf..195267cf 100644
+index b38af703f0cf2f3a926a3c797ec82a75bf0443ad..8541fb34c5bbb5559f38a07206ec1bb415ec8d27 100644
 --- a/src/vs/workbench/browser/parts/media/paneCompositePart.css
 +++ b/src/vs/workbench/browser/parts/media/paneCompositePart.css
-@@ -369 +369,119 @@
+@@ -377,3 +377,121 @@
+ 	margin: 12px;
+ 	text-align: center;
  }
 +
 +
@@ -2081,10 +2345,12 @@ index fe0f2adf..195267cf 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/panel/media/panelpart.css b/src/vs/workbench/browser/parts/panel/media/panelpart.css
-index e1c147d8..63d0e109 100644
+index e1c147d8e88a351ecd1a367de4415d32195cde65..63d0e10945156e3ec80a94610443ce2da681958b 100644
 --- a/src/vs/workbench/browser/parts/panel/media/panelpart.css
 +++ b/src/vs/workbench/browser/parts/panel/media/panelpart.css
-@@ -10,2 +10,7 @@
+@@ -8,6 +8,11 @@
+ 	visibility: hidden !important;
+ }
  
 +.monaco-workbench .part.panel > .content {
 +	font-family: var(--vscode-workbench-bottompane-font-family, inherit);
@@ -2092,7 +2358,11 @@ index e1c147d8..63d0e109 100644
 +}
 +
  .monaco-workbench .part.panel.bottom .composite.title {
-@@ -100 +105,51 @@
+ 	border-top-width: 1px;
+ 	border-top-style: solid;
+@@ -98,3 +103,53 @@
+ 	display: inline-block;
+ 	transform: rotate(180deg);
  }
 +
 +
@@ -2146,14 +2416,20 @@ index e1c147d8..63d0e109 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/panel/panelPart.ts b/src/vs/workbench/browser/parts/panel/panelPart.ts
-index 10376ab9..fba2f37f 100644
+index 10376ab910cee9ca917095190e7fa0e6826ec1bd..fba2f37fdb7f7104494525599e0709deb136fb3a 100644
 --- a/src/vs/workbench/browser/parts/panel/panelPart.ts
 +++ b/src/vs/workbench/browser/parts/panel/panelPart.ts
-@@ -34,2 +34,3 @@ import { IConfigurationService } from '../../../../platform/configuration/common
+@@ -32,6 +32,7 @@ import { IPaneCompositeBarOptions } from '../paneCompositeBar.js';
+ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+ import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
  import { Extensions } from '../../panecomposite.js';
 +import { FONT, getFontSize, updatePanelSize as updateBottomPaneSize } from '../../../../base/common/font.js';
  
-@@ -117,2 +118,8 @@ export class PanelPart extends AbstractPaneCompositePart {
+ export class PanelPart extends AbstractPaneCompositePart {
+ 
+@@ -115,6 +116,12 @@ export class PanelPart extends AbstractPaneCompositePart {
+ 			if (e.affectsConfiguration('workbench.panel.showLabels')) {
+ 				this.updateCompositeBar(true);
  			}
 +			if (e.affectsConfiguration('workbench.bottomPane.experimental.fontFamily')) {
 +				this.applyPanelFontFamily();
@@ -2162,7 +2438,11 @@ index 10376ab9..fba2f37f 100644
 +				this.applyPanelFontSize();
 +			}
  		}));
-@@ -133,2 +140,37 @@ export class PanelPart extends AbstractPaneCompositePart {
+ 	}
+ 
+@@ -131,6 +138,41 @@ export class PanelPart extends AbstractPaneCompositePart {
+ 		if (this.titleArea) {
+ 			this.titleArea.style.borderTopColor = this.getColor(PANEL_BORDER) || this.getColor(contrastBorder) || '';
  		}
 +
 +		this.applyPanelFontFamily(container);
@@ -2200,16 +2480,23 @@ index 10376ab9..fba2f37f 100644
 +
 +		this._onDidChange.fire(undefined); // Signal grid that size constraints changed
  	}
+ 
+ 	protected getCompositeBarOptions(): IPaneCompositeBarOptions {
 diff --git a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
-index decb51ab..d0db4363 100644
+index decb51aba558cfaf08eb952e034b96994e768b63..d0db43634ab5a7fd46894b74264c27b16333a7af 100644
 --- a/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
 +++ b/src/vs/workbench/browser/parts/sidebar/media/sidebarpart.css
-@@ -15,3 +15,3 @@
+@@ -13,15 +13,21 @@
+ }
+ 
  .monaco-workbench .part.sidebar .title-actions .action-item {
 -	margin-right: 4px;
 +	margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.308);
  }
-@@ -22,4 +22,10 @@
+ 
+ .monaco-workbench .part.sidebar > .title {
+ 	background-color: var(--vscode-sideBarTitle-background);
+ }
  
 +.monaco-workbench .part.sidebar > .content {
 +	font-size: var(--vscode-workbench-sidebar-font-size);
@@ -2220,19 +2507,27 @@ index decb51ab..d0db4363 100644
  	text-transform: uppercase;
 +	font-size: calc(var(--vscode-workbench-sidebar-font-size) * 0.846);
  }
-@@ -43,4 +49,4 @@
+ 
+ .monaco-workbench .viewlet .collapsible.header .title {
+@@ -41,12 +47,12 @@
+ }
+ 
  .monaco-workbench .viewlet .collapsible.header .actions .action-label {
 -	width: 28px;
 -	background-size: 16px;
 +	width: calc(var(--vscode-workbench-sidebar-font-size) * 2.154);
 +	background-size: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
  	background-position: center center;
-@@ -48,3 +54,3 @@
+ 	background-repeat: no-repeat;
  	margin-right: 0;
 -	height: 22px;
 +	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.692);
  }
-@@ -60,6 +66,6 @@
+ 
+ .monaco-workbench .viewlet .collapsible.header .actions .action-label .label {
+@@ -58,10 +64,10 @@
+ }
+ 
  .monaco-workbench .viewlet .collapsible.header .action-label {
 -	margin-right: 0.2em;
 +	margin-right: calc(var(--vscode-workbench-sidebar-font-size) * 0.2);
@@ -2242,12 +2537,20 @@ index decb51ab..d0db4363 100644
 +	width: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
 +	height: calc(var(--vscode-workbench-sidebar-font-size) * 1.231);
  }
-@@ -86,3 +92,3 @@
+ 
+ .monaco-workbench .part.sidebar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item:focus,
+@@ -84,7 +90,7 @@
+ .monaco-workbench .part.sidebar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label::before,
+ .monaco-workbench .part.sidebar > .header-or-footer > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label::before {
  	position: absolute;
 -	left: 5px; /* place icon in center */
 +	left: calc(var(--vscode-workbench-sidebar-font-size) * 0.385); /* place icon in center */
  }
-@@ -124,3 +130,7 @@
+ 
+ .monaco-workbench .part.sidebar > .header-or-footer.header > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item.checked:not(:focus) .active-item-indicator:before,
+@@ -122,5 +128,9 @@
+ }
+ 
  .monaco-workbench .sidebar.pane-composite-part > .title.has-composite-bar > .title-actions .monaco-action-bar .action-item {
 -	max-width: 150px;
 +	max-width: calc(var(--vscode-workbench-sidebar-font-size) * 11.538);
@@ -2258,18 +2561,25 @@ index decb51ab..d0db4363 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
-index eecc3b8d..de93d458 100644
+index eecc3b8d40e364389ccb5df3bfb24be4582c686d..de93d4584f9ecf03b76f3da7c525febe8f0c2683 100644
 --- a/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
 +++ b/src/vs/workbench/browser/parts/sidebar/sidebarPart.ts
-@@ -36,2 +36,3 @@ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js
+@@ -34,10 +34,12 @@ import { localize2 } from '../../../../nls.js';
+ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+ import { VisibleViewContainersTracker } from '../visibleViewContainersTracker.js';
  import { Extensions } from '../../panecomposite.js';
 +import { FONT, getFontSize, updateSidebarSize } from '../../../../base/common/font.js';
  
-@@ -40,2 +41,3 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ export class SidebarPart extends AbstractPaneCompositePart {
+ 
  	static readonly activeViewletSettingsKey = 'workbench.sidebar.activeviewletid';
 +	static readonly fontSizeSettingsKey = 'workbench.sideBar.experimental.fontSize';
  
-@@ -126,2 +128,8 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 	//#region IView
+ 
+@@ -124,6 +126,12 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 			if (e.affectsConfiguration(LayoutSettings.ACTIVITY_BAR_AUTO_HIDE)) {
+ 				this.onDidChangeActivityBarLocation();
  			}
 +			if (e.affectsConfiguration(SidebarPart.fontSizeSettingsKey)) {
 +				this.applySidebarFontSize();
@@ -2278,13 +2588,21 @@ index eecc3b8d..de93d458 100644
 +				this.applySidebarFontFamily();
 +			}
  		}));
-@@ -178,2 +186,5 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 
+ 		this.registerActions();
+@@ -176,6 +184,9 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 		container.style.borderLeftStyle = borderColor && !isPositionLeft ? 'solid' : '';
+ 		container.style.borderLeftColor = !isPositionLeft ? borderColor || '' : '';
  		container.style.outlineColor = this.getColor(SIDE_BAR_DRAG_AND_DROP_BACKGROUND) ?? '';
 +
 +		this.applySidebarFontSize(container);
 +		this.applySidebarFontFamily(container);
  	}
-@@ -320,2 +331,34 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 
+ 	override layout(width: number, height: number, top: number, left: number): void {
+@@ -318,6 +329,38 @@ export class SidebarPart extends AbstractPaneCompositePart {
+ 		}
+ 	}
  
 +	private applySidebarFontFamily(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
@@ -2319,15 +2637,23 @@ index eecc3b8d..de93d458 100644
 +	}
 +
  	private registerActions(): void {
+ 		const that = this;
+ 		this._register(registerAction2(class extends Action2 {
 diff --git a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
-index 1f3b102e..42ad22c0 100644
+index 1f3b102ebb13eb1115d6ebce6c4f41cc13948afc..42ad22c0e277b66ba7992757588d62f4fd840884 100644
 --- a/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
 +++ b/src/vs/workbench/browser/parts/statusbar/media/statusbarpart.css
-@@ -11,2 +11,3 @@
+@@ -9,6 +9,7 @@
+ 	width: 100%;
+ 	height: 22px;
  	font-size: 12px;
 +	font-family: var(--vscode-workbench-statusbar-font-family, inherit);
  	display: flex;
-@@ -239 +240,70 @@
+ 	overflow: hidden;
+ }
+@@ -237,3 +238,72 @@
+ 	color: var(--vscode-statusBarItem-offlineHoverForeground);
+ 	background-color: var(--vscode-statusBarItem-offlineHoverBackground) !important;
  }
 +
 +
@@ -2400,19 +2726,29 @@ index 1f3b102e..42ad22c0 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts b/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
-index 05bec26f..dcc8cf4a 100644
+index 041c20815c770339719155268c4776ad6f475ff7..b1ea6643de7f682433497735e38c6e43c406a6f6 100644
 --- a/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
 +++ b/src/vs/workbench/browser/parts/statusbar/statusbarPart.ts
-@@ -39,2 +39,3 @@ import { IView } from '../../../../base/browser/ui/grid/grid.js';
+@@ -37,6 +37,7 @@ import { StatusBarFocused } from '../../../common/contextkeys.js';
+ import { Emitter, Event } from '../../../../base/common/event.js';
+ import { IView } from '../../../../base/browser/ui/grid/grid.js';
  import { isManagedHoverTooltipHTMLElement, isManagedHoverTooltipMarkdownString } from '../../../../base/browser/ui/hover/hover.js';
 +import { FONT, getFontSize, updateStatusBarSize } from '../../../../base/common/font.js';
  
-@@ -121,3 +122,3 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ export interface IStatusbarEntryContainer extends IDisposable {
+ 
+@@ -119,7 +120,7 @@ interface IPendingStatusbarEntry {
+ 
+ class StatusbarPart extends Part implements IStatusbarEntryContainer {
  
 -	static readonly HEIGHT = 22;
 +	static get HEIGHT() { return FONT.statusBarSize22; }
  
-@@ -178,2 +179,11 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 	/**
+ 	 * Vertical padding reserved around the main status bar under the floating panels
+@@ -176,6 +177,15 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 	) {
+ 		super(id, { hasTitle: false }, themeService, storageService, layoutService);
  
 +		this._register(configurationService.onDidChangeConfiguration(e => {
 +			if (e.affectsConfiguration('workbench.statusBar.experimental.fontFamily')) {
@@ -2424,13 +2760,17 @@ index 05bec26f..dcc8cf4a 100644
 +		}));
 +
  		this.viewModel = this._register(new StatusbarViewModel(storageService));
-@@ -451,2 +461,5 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 		this.onDidChangeEntryVisibility = this.viewModel.onDidChangeEntryVisibility;
+ 
+@@ -449,9 +459,42 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 		// Initial status bar entries
+ 		this.createInitialStatusbarEntries();
  
 +		this.applyStatusBarFontFamily(this.element);
 +		this.applyStatusBarFontSize(this.element);
 +
  		return this.element;
-@@ -454,2 +467,32 @@ class StatusbarPart extends Part implements IStatusbarEntryContainer {
+ 	}
  
 +	private applyStatusBarFontFamily(container?: HTMLElement): void {
 +		const target = container ?? this.getContainer();
@@ -2463,16 +2803,24 @@ index 05bec26f..dcc8cf4a 100644
 +	}
 +
  	private createInitialStatusbarEntries(): void {
-@@ -763,3 +806,3 @@ export class AuxiliaryStatusbarPart extends StatusbarPart implements IAuxiliaryS
+ 
+ 		// Add items in order according to alignment
+@@ -766,7 +809,7 @@ export class AuxiliaryStatusbarPart extends StatusbarPart implements IAuxiliaryS
+ 
+ 	private static COUNTER = 1;
  
 -	readonly height = StatusbarPart.HEIGHT;
 +	get height() { return StatusbarPart.HEIGHT; }
  
+ 	constructor(
+ 		readonly container: HTMLElement,
 diff --git a/src/vs/workbench/browser/parts/views/media/paneviewlet.css b/src/vs/workbench/browser/parts/views/media/paneviewlet.css
-index aca98deb..5bf9bf71 100644
+index aca98deb96379bd13d6a7796ddc10820628f47d0..5bf9bf715f967787fcab5773d845005d416e38a4 100644
 --- a/src/vs/workbench/browser/parts/views/media/paneviewlet.css
 +++ b/src/vs/workbench/browser/parts/views/media/paneviewlet.css
-@@ -87 +87,30 @@
+@@ -85,3 +85,32 @@
+ .monaco-pane-view .pane:not(.merged-header) .monaco-progress-container {
+ 	top: 20px;
  }
 +
 +
@@ -2505,27 +2853,41 @@ index aca98deb..5bf9bf71 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/views/treeView.ts b/src/vs/workbench/browser/parts/views/treeView.ts
-index c2ae0b4a..ff138204 100644
+index bf917583d16166a48bc3748541b48a0bedc45651..77831b72790775d11990b7988f0b40d2bfe81c6b 100644
 --- a/src/vs/workbench/browser/parts/views/treeView.ts
 +++ b/src/vs/workbench/browser/parts/views/treeView.ts
-@@ -79,2 +79,3 @@ import { IAccessibleViewInformationService } from '../../../services/accessibili
+@@ -77,6 +77,7 @@ import { Button } from '../../../../base/browser/ui/button/button.js';
+ import { defaultButtonStyles } from '../../../../platform/theme/browser/defaultStyles.js';
+ import { IAccessibleViewInformationService } from '../../../services/accessibility/common/accessibleViewInformationService.js';
  import { Command } from '../../../../editor/common/languages.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -1169,3 +1170,3 @@ class TreeViewDelegate implements IListVirtualDelegate<ITreeItem> {
+ export class TreeViewPane extends ViewPane {
+ 
+@@ -1167,7 +1168,7 @@ class TreeViewIdentityProvider implements IIdentityProvider<ITreeItem> {
+ class TreeViewDelegate implements IListVirtualDelegate<ITreeItem> {
+ 
  	getHeight(element: ITreeItem): number {
 -		return TreeRenderer.ITEM_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
-@@ -1245,3 +1246,2 @@ interface ITreeExplorerTemplateData {
+ 
+ 	getTemplateId(element: ITreeItem): string {
+@@ -1243,7 +1244,6 @@ interface ITreeExplorerTemplateData {
+ }
+ 
  class TreeRenderer extends Disposable implements ITreeRenderer<ITreeItem, FuzzyScore, ITreeExplorerTemplateData> {
 -	static readonly ITEM_HEIGHT = 22;
  	static readonly TREE_TEMPLATE_ID = 'treeExplorer';
+ 
+ 	private readonly _onDidChangeCheckboxState: Emitter<readonly ITreeItem[]> = this._register(new Emitter<readonly ITreeItem[]>());
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index f2a3b35e..9eb97639 100644
+index 870207a9997c677e96c40d7df32e6bcb895819cf..288fbf7ec619004a059e35918b6fae9751feeacf 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -716,2 +716,85 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -718,6 +718,89 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+ 				],
+ 				'included': isMacintosh
  			},
 +			'workbench.experimental.fontFamily': {
 +				type: 'string',
@@ -2611,20 +2973,32 @@ index f2a3b35e..9eb97639 100644
 +				'tags': ['accessibility', 'experimental']
 +			},
  			'workbench.settings.editor': {
+ 				'type': 'string',
+ 				'enum': ['ui', 'json'],
 diff --git a/src/vs/workbench/browser/workbench.ts b/src/vs/workbench/browser/workbench.ts
-index 10e2c3ed..47f28faa 100644
+index 10e2c3edace79197d928d4586b369ff4f09e414a..47f28faabed0cc438a8331c3a01505515b56f022 100644
 --- a/src/vs/workbench/browser/workbench.ts
 +++ b/src/vs/workbench/browser/workbench.ts
-@@ -9,2 +9,3 @@ import { Event, Emitter, setGlobalLeakWarningThreshold } from '../../base/common
+@@ -7,6 +7,7 @@ import './style.js';
+ import { runWhenWindowIdle } from '../../base/browser/dom.js';
+ import { Event, Emitter, setGlobalLeakWarningThreshold } from '../../base/common/event.js';
  import { RunOnceScheduler, timeout } from '../../base/common/async.js';
 +import { getFontSize, updateDefaultSize } from '../../base/common/font.js';
  import { isFirefox, isSafari, isChrome } from '../../base/browser/browser.js';
-@@ -19,3 +20,3 @@ import { Position, Parts, IWorkbenchLayoutService, positionToString } from '../s
+ import { mark } from '../../base/common/performance.js';
+ import { onUnexpectedError, setUnexpectedErrorHandler } from '../../base/common/errors.js';
+@@ -17,7 +18,7 @@ import { IEditorFactoryRegistry, EditorExtensions } from '../common/editor.js';
+ import { getSingletonServiceDescriptors } from '../../platform/instantiation/common/extensions.js';
+ import { Position, Parts, IWorkbenchLayoutService, positionToString } from '../services/layout/browser/layoutService.js';
  import { IStorageService, WillSaveStateReason, StorageScope, StorageTarget } from '../../platform/storage/common/storage.js';
 -import { IConfigurationChangeEvent, IConfigurationService } from '../../platform/configuration/common/configuration.js';
 +import { IConfigurationService } from '../../platform/configuration/common/configuration.js';
  import { IInstantiationService } from '../../platform/instantiation/common/instantiation.js';
-@@ -233,3 +234,13 @@ export class Workbench extends Layout {
+ import { ServiceCollection } from '../../platform/instantiation/common/serviceCollection.js';
+ import { LifecyclePhase, ILifecycleService, WillShutdownEvent } from '../services/lifecycle/common/lifecycle.js';
+@@ -231,7 +232,17 @@ export class Workbench extends Layout {
+ 	private registerListeners(lifecycleService: ILifecycleService, storageService: IStorageService, configurationService: IConfigurationService, hostService: IHostService, dialogService: IDialogService): void {
+ 
  		// Configuration changes
 -		this._register(configurationService.onDidChangeConfiguration(e => this.updateFontAliasing(e, configurationService)));
 +		this._register(configurationService.onDidChangeConfiguration(e => {
@@ -2639,19 +3013,28 @@ index 10e2c3ed..47f28faa 100644
 +			}
 +		}));
  
-@@ -270,3 +281,3 @@ export class Workbench extends Layout {
+ 		// Font Info
+ 		if (isNative) {
+@@ -268,15 +279,11 @@ export class Workbench extends Layout {
+ 	}
+ 
  	private fontAliasing: 'default' | 'antialiased' | 'none' | 'auto' | undefined;
 -	private updateFontAliasing(e: IConfigurationChangeEvent | undefined, configurationService: IConfigurationService) {
 +	private updateFontAliasing(configurationService: IConfigurationService) {
  		if (!isMacintosh) {
-@@ -275,6 +286,2 @@ export class Workbench extends Layout {
+ 			return; // macOS only
+ 		}
  
 -		if (e && !e.affectsConfiguration('workbench.fontAliasing')) {
 -			return;
 -		}
 -
  		const aliasing = configurationService.getValue<'default' | 'antialiased' | 'none' | 'auto'>('workbench.fontAliasing');
-@@ -296,2 +303,33 @@ export class Workbench extends Layout {
+ 		if (this.fontAliasing === aliasing) {
+ 			return;
+@@ -294,6 +301,37 @@ export class Workbench extends Layout {
+ 		}
+ 	}
  
 +	private fontFamily: string | undefined;
 +	private updateFontFamily(configurationService: IConfigurationService) {
@@ -2685,7 +3068,11 @@ index 10e2c3ed..47f28faa 100644
 +	}
 +
  	private restoreFontInfo(storageService: IStorageService, configurationService: IConfigurationService): void {
-@@ -339,3 +377,6 @@ export class Workbench extends Layout {
+ 		const storedFontInfoRaw = storageService.get('editorFontInfo', StorageScope.APPLICATION);
+ 		if (storedFontInfoRaw) {
+@@ -337,7 +375,10 @@ export class Workbench extends Layout {
+ 		this.mainContainer.classList.add(...workbenchClasses);
+ 
  		// Apply font aliasing
 -		this.updateFontAliasing(undefined, configurationService);
 +		this.updateFontAliasing(configurationService);
@@ -2693,104 +3080,162 @@ index 10e2c3ed..47f28faa 100644
 +		this.updateFontFamily(configurationService);
 +		this.updateFontSize(configurationService);
  
+ 		// Warm up font cache information before building up too many dom elements
+ 		this.restoreFontInfo(storageService, configurationService);
 diff --git a/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts b/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts
-index 6f588651..3ab0ee4e 100644
+index 6f588651cfdc5a7a88947076344e63d7748945ed..3ab0ee4e404259f526b17dbdfdb4795e20200151 100644
 --- a/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts
 +++ b/src/vs/workbench/contrib/callHierarchy/browser/callHierarchyTree.ts
-@@ -17,2 +17,3 @@ import { localize } from '../../../../nls.js';
+@@ -15,6 +15,7 @@ import { Range } from '../../../../editor/common/core/range.js';
+ import { IListAccessibilityProvider } from '../../../../base/browser/ui/list/listWidget.js';
+ import { localize } from '../../../../nls.js';
  import { ThemeIcon } from '../../../../base/common/themables.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -137,3 +138,3 @@ export class VirtualDelegate implements IListVirtualDelegate<Call> {
+ export class Call {
+ 	constructor(
+@@ -135,7 +136,7 @@ export class CallRenderer implements ITreeRenderer<Call, FuzzyScore, CallRenderi
+ export class VirtualDelegate implements IListVirtualDelegate<Call> {
+ 
  	getHeight(_element: Call): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(_element: Call): string {
 diff --git a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
-index d20ac963..d266aa13 100644
+index 122155788d091fdd47ed7107acfa75f494dc692e..367c4abded874e0c271b27f4db46bbc890a57e38 100644
 --- a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
 +++ b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
-@@ -57,2 +57,3 @@ import { createPixelSpinner } from '../../../../../base/browser/ui/pixelSpinner/
+@@ -56,6 +56,7 @@ import { IChatSessionsService } from '../../common/chatSessionsService.js';
+ import { IVoicePlaybackService } from '../../common/voicePlaybackService.js';
+ import { createPixelSpinner, IPixelSpinner } from '../../../../../base/browser/ui/pixelSpinner/pixelSpinner.js';
  import { IAccessibilityService } from '../../../../../platform/accessibility/common/accessibility.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -944,5 +945,2 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+ export type AgentSessionListItem = IAgentSession | IAgentSessionSection | IAgentSessionShowMore | IAgentSessionShowLess;
  
--	static readonly ITEM_HEIGHT = 54;
--	static readonly SECTION_HEIGHT = 26;
--
+@@ -961,8 +962,8 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+ 
  	constructor(private readonly _approvalModel?: AgentSessionApprovalModel,
-@@ -953,3 +951,3 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
- 		if (isAgentSessionSection(element)) {
--			return AgentSessionsListDelegate.SECTION_HEIGHT;
-+			return FONT.sidebarSize26;
- 		}
-@@ -960,3 +958,3 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+ 		private readonly _compactShowMore?: boolean,
+-		private readonly _getItemHeight: () => number = () => AgentSessionsListDelegate.ITEM_HEIGHT,
+-		private readonly _getSectionHeight: () => number = () => AgentSessionsListDelegate.SECTION_HEIGHT,
++		private readonly _getItemHeight: () => number = () => FONT.sidebarSize54,
++		private readonly _getSectionHeight: () => number = () => FONT.sidebarSize26,
+ 	) { }
  
--		let height = AgentSessionsListDelegate.ITEM_HEIGHT;
-+		let height = FONT.sidebarSize54;
- 		const approval = this._approvalModel?.getApproval(element.resource).get();
+ 	getHeight(element: AgentSessionListItem): number {
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
-index f93bfe8f..049182f8 100644
+index 11398f12c23007c3d59e071e4575a9cd662e2b40..769f72c817e07f368ac48a254ffd7e13dc043743 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
-@@ -36,2 +36,3 @@ import { ResourcePool } from './chatCollections.js';
+@@ -37,8 +37,8 @@ import { ChatCollapsibleContentPart } from './chatCollapsibleContentPart.js';
+ import { ChatTreeItem } from '../../chat.js';
+ import { ResourcePool } from './chatCollections.js';
  import { IChatContentPart, IChatContentPartRenderContext } from './chatContentParts.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  
-@@ -260,3 +261,3 @@ class CollapsibleChangesSummaryListDelegate implements IListVirtualDelegate<IEdi
+-const CHANGES_SUMMARY_ELEMENT_HEIGHT = 22;
+ const CHANGES_SUMMARY_MAX_ITEMS_SHOWN = 6;
+ 
+ /** Options controlling how {@link renderChangesSummaryFileList} renders each row. */
+@@ -106,7 +106,7 @@ export function renderChangesSummaryFileList(
+ 		const currentDiffs = diffs.read(r);
+ 
+ 		const itemsShown = Math.min(currentDiffs.length, CHANGES_SUMMARY_MAX_ITEMS_SHOWN);
+-		const height = itemsShown * CHANGES_SUMMARY_ELEMENT_HEIGHT;
++		const height = itemsShown * FONT.sidebarSize22;
+ 		list.layout(height);
+ 		listNode.style.height = height + 'px';
+ 
+@@ -328,7 +328,7 @@ interface ICollapsibleChangesSummaryListTemplate extends IDisposable {
+ class CollapsibleChangesSummaryListDelegate implements IListVirtualDelegate<IEditSessionEntryDiff> {
+ 
  	getHeight(element: IEditSessionEntryDiff): number {
--		return 22;
+-		return CHANGES_SUMMARY_ELEMENT_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: IEditSessionEntryDiff): string {
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatMultiDiffContentPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatMultiDiffContentPart.ts
-index 92c7608c..a403814d 100644
+index 92c7608c7d1e01d189ad1c0883fd1c6635bc8f11..a403814dd32ce413711e327206e2fc1bbef6dbce 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatMultiDiffContentPart.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatMultiDiffContentPart.ts
-@@ -39,2 +39,3 @@ import { ChatTreeItem } from '../../chat.js';
+@@ -37,6 +37,7 @@ import { getChatSessionType } from '../../../common/model/chatUri.js';
+ import { IChatRendererContent } from '../../../common/model/chatViewModel.js';
+ import { ChatTreeItem } from '../../chat.js';
  import { IChatContentPart } from './chatContentParts.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  
-@@ -284,3 +285,3 @@ class ChatMultiDiffListDelegate implements IListVirtualDelegate<IChatMultiDiffIt
+ const $ = dom.$;
+ 
+@@ -282,7 +283,7 @@ export class ChatMultiDiffContentPart extends Disposable implements IChatContent
+ 
+ class ChatMultiDiffListDelegate implements IListVirtualDelegate<IChatMultiDiffItem> {
  	getHeight(): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(): string {
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
-index 6893c58f..0d8f7abc 100644
+index 6893c58f15c9d613bc4d338bbab074777f25fb91..0d8f7abc0ac49603e14c20b496fafd204763cd11 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatReferencesContentPart.ts
-@@ -50,2 +50,3 @@ import { IHoverService } from '../../../../../../platform/hover/browser/hover.js
+@@ -48,6 +48,7 @@ import { IDisposableReference, ResourcePool } from './chatCollections.js';
+ import { IChatContentPartRenderContext } from './chatContentParts.js';
+ import { IHoverService } from '../../../../../../platform/hover/browser/hover.js';
  import { IConfigurationService } from '../../../../../../platform/configuration/common/configuration.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  
-@@ -298,3 +299,3 @@ class CollapsibleListDelegate implements IListVirtualDelegate<IChatCollapsibleLi
+ const $ = dom.$;
+ 
+@@ -296,7 +297,7 @@ export class CollapsibleListPool extends Disposable {
+ 
+ class CollapsibleListDelegate implements IListVirtualDelegate<IChatCollapsibleListItem> {
  	getHeight(element: IChatCollapsibleListItem): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: IChatCollapsibleListItem): string {
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts
-index 4badd750..a8472409 100644
+index 4badd750fb82465907fda33ecda296281b40a466..a847240974d33dd0d032af865503feb388c3f667 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTodoListWidget.ts
-@@ -11,2 +11,3 @@ import { IListRenderer, IListVirtualDelegate } from '../../../../../../base/brow
+@@ -9,6 +9,7 @@ import { Button } from '../../../../../../base/browser/ui/button/button.js';
+ import { IconLabel } from '../../../../../../base/browser/ui/iconLabel/iconLabel.js';
+ import { IListRenderer, IListVirtualDelegate } from '../../../../../../base/browser/ui/list/list.js';
  import { Codicon } from '../../../../../../base/common/codicons.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  import { Disposable, DisposableStore } from '../../../../../../base/common/lifecycle.js';
-@@ -24,3 +25,3 @@ class TodoListDelegate implements IListVirtualDelegate<IChatTodo> {
+ import { isEqual } from '../../../../../../base/common/resources.js';
+ import { URI } from '../../../../../../base/common/uri.js';
+@@ -22,7 +23,7 @@ import { IChatTodo, IChatTodoListService } from '../../../common/tools/chatTodoL
+ 
+ class TodoListDelegate implements IListVirtualDelegate<IChatTodo> {
  	getHeight(element: IChatTodo): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: IChatTodo): string {
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTreeContentPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTreeContentPart.ts
-index 703940ed..e0fa9eb5 100644
+index 703940edde10d0145f0e2f1e724462131302fb03..e0fa9eb59948bf4889c5c732012b5eb141402f74 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTreeContentPart.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatTreeContentPart.ts
-@@ -12,2 +12,3 @@ import { IAsyncDataSource, ITreeNode } from '../../../../../../base/browser/ui/t
+@@ -10,6 +10,7 @@ import { ICompressedTreeNode } from '../../../../../../base/browser/ui/tree/comp
+ import { ICompressibleTreeRenderer } from '../../../../../../base/browser/ui/tree/objectTree.js';
+ import { IAsyncDataSource, ITreeNode } from '../../../../../../base/browser/ui/tree/tree.js';
  import { Event } from '../../../../../../base/common/event.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  import { Disposable, DisposableStore, IDisposable } from '../../../../../../base/common/lifecycle.js';
-@@ -155,6 +156,5 @@ export class TreePool extends Disposable {
+ import { localize } from '../../../../../../nls.js';
+ import { IConfigurationService } from '../../../../../../platform/configuration/common/configuration.js';
+@@ -153,10 +154,9 @@ export class TreePool extends Disposable {
+ }
+ 
  class ChatListTreeDelegate implements IListVirtualDelegate<IChatResponseProgressFileTreeData> {
 -	static readonly ITEM_HEIGHT = 22;
  
@@ -2798,11 +3243,15 @@ index 703940ed..e0fa9eb5 100644
 -		return ChatListTreeDelegate.ITEM_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: IChatResponseProgressFileTreeData): string {
 diff --git a/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css b/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css
-index c1415f8d..aed644f4 100644
+index 269d8d85baf62ab87f57ce197027bb4ea15f29c1..b8510511bf5ea3298f046a42471a5fca9444579d 100644
 --- a/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css
 +++ b/src/vs/workbench/contrib/chat/browser/widgetHosts/viewPane/media/chatViewPane.css
-@@ -188 +188,68 @@
+@@ -237,3 +237,70 @@
+ 		}
+ 	}
  }
 +
 +
@@ -2873,42 +3322,64 @@ index c1415f8d..aed644f4 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts b/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts
-index c6298b30..8fcab5f3 100644
+index c6298b30f43cf6b1d7ad226419151d68460b8307..8fcab5f310db3e6e512573cbb53027a459d962fd 100644
 --- a/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts
 +++ b/src/vs/workbench/contrib/codeEditor/browser/outline/documentSymbolsTree.ts
-@@ -15,2 +15,3 @@ import { safeIntl } from '../../../../../base/common/date.js';
+@@ -13,6 +13,7 @@ import { IListAccessibilityProvider } from '../../../../../base/browser/ui/list/
+ import { ITreeDragAndDrop, ITreeDragOverReaction, ITreeFilter, ITreeNode, ITreeRenderer } from '../../../../../base/browser/ui/tree/tree.js';
+ import { safeIntl } from '../../../../../base/common/date.js';
  import { createMatches, FuzzyScore } from '../../../../../base/common/filters.js';
 +import { FONT } from '../../../../../base/common/font.js';
  import { ThemeIcon } from '../../../../../base/common/themables.js';
-@@ -160,3 +161,3 @@ export class DocumentSymbolVirtualDelegate implements IListVirtualDelegate<Docum
+ import { URI } from '../../../../../base/common/uri.js';
+ import { Range } from '../../../../../editor/common/core/range.js';
+@@ -158,7 +159,7 @@ class DocumentSymbolTemplate {
+ export class DocumentSymbolVirtualDelegate implements IListVirtualDelegate<DocumentSymbolItem> {
+ 
  	getHeight(_element: DocumentSymbolItem): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: DocumentSymbolItem): string {
 diff --git a/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts b/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts
-index 4bd774ce..86c88c83 100644
+index 4bd774cea9e96f3cfb5f9d26e0ac80d392b6f57c..86c88c833e75848fa1ed230d3771240b68a051af 100644
 --- a/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts
 +++ b/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts
-@@ -40,2 +40,3 @@ import { SelectionClipboardContributionID } from '../selectionClipboard.js';
+@@ -38,6 +38,7 @@ import { ColorIdentifier, asCssVariable, asCssVariableWithDefault, inputBackgrou
+ import { MenuPreventer } from '../menuPreventer.js';
+ import { SelectionClipboardContributionID } from '../selectionClipboard.js';
  import { getSimpleEditorOptions, setupSimpleEditorSelectionStyling } from '../simpleEditorOptions.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -481,4 +482,4 @@ function getSuggestEnabledInputOptions(ariaLabel?: string): IEditorOptions {
+ export interface SuggestResultsProvider {
+ 	/**
+@@ -479,8 +480,8 @@ setupSimpleEditorSelectionStyling('.suggest-input-container');
+ 
+ function getSuggestEnabledInputOptions(ariaLabel?: string): IEditorOptions {
  	return {
 -		fontSize: 13,
 -		lineHeight: 20,
 +		fontSize: FONT.sidebarSize,
 +		lineHeight: FONT.sidebarSize20,
  		wordWrap: 'off',
+ 		scrollbar: { vertical: 'hidden', },
+ 		roundedSelection: false,
 diff --git a/src/vs/workbench/contrib/comments/browser/commentsTreeViewer.ts b/src/vs/workbench/contrib/comments/browser/commentsTreeViewer.ts
-index 5162553b..5adbed8f 100644
+index 5162553b7fc30669c0c9cc871823bf228df4f420..5adbed8f52b5531b09211c5d876e3c62149679d6 100644
 --- a/src/vs/workbench/contrib/comments/browser/commentsTreeViewer.ts
 +++ b/src/vs/workbench/contrib/comments/browser/commentsTreeViewer.ts
-@@ -43,2 +43,3 @@ import { MarshalledCommentThread, MarshalledCommentThreadInternal } from '../../
+@@ -41,6 +41,7 @@ import { ActionViewItem } from '../../../../base/browser/ui/actionbar/actionView
+ import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
+ import { MarshalledCommentThread, MarshalledCommentThreadInternal } from '../../../common/comments.js';
  import { IHoverService } from '../../../../platform/hover/browser/hover.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -84,5 +85,5 @@ class CommentsModelVirtualDelegate implements IListVirtualDelegate<ResourceWithC
+ export const COMMENTS_VIEW_ID = 'workbench.panel.comments';
+ export const COMMENTS_VIEW_STORAGE_ID = 'Comments';
+@@ -82,9 +83,9 @@ class CommentsModelVirtualDelegate implements IListVirtualDelegate<ResourceWithC
+ 
+ 	getHeight(element: any): number {
  		if ((element instanceof CommentNode) && element.hasReply()) {
 -			return 44;
 +			return FONT.sidebarSize44;
@@ -2916,28 +3387,44 @@ index 5162553b..5adbed8f 100644
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	public getTemplateId(element: any): string {
 diff --git a/src/vs/workbench/contrib/debug/browser/breakpointsView.ts b/src/vs/workbench/contrib/debug/browser/breakpointsView.ts
-index d6dec6a1..3fb52d98 100644
+index d6dec6a1cf0f35c5ee9b1afb76d4dc8ef6909e38..3fb52d986404229c0fbfb5a5d01bb812ff09cbae 100644
 --- a/src/vs/workbench/contrib/debug/browser/breakpointsView.ts
 +++ b/src/vs/workbench/contrib/debug/browser/breakpointsView.ts
-@@ -63,2 +63,3 @@ import { equals } from '../../../../base/common/arrays.js';
+@@ -61,6 +61,7 @@ import * as icons from './debugIcons.js';
+ import { DisassemblyView } from './disassemblyView.js';
+ import { equals } from '../../../../base/common/arrays.js';
  import { hasKey } from '../../../../base/common/types.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -593,3 +594,3 @@ class BreakpointsDelegate implements IListVirtualDelegate<BreakpointTreeElement>
+ const $ = dom.$;
+ 
+@@ -591,7 +592,7 @@ class BreakpointsDelegate implements IListVirtualDelegate<BreakpointTreeElement>
+ 	}
+ 
  	getHeight(_element: BreakpointTreeElement): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: BreakpointTreeElement): string {
 diff --git a/src/vs/workbench/contrib/debug/browser/callStackView.ts b/src/vs/workbench/contrib/debug/browser/callStackView.ts
-index 35c9c1e5..f8bf9c5b 100644
+index 35c9c1e5175b4b81b28d8c0e3472bb5f38392434..f8bf9c5b901f7d3538db5107017554ed1e19c2d1 100644
 --- a/src/vs/workbench/contrib/debug/browser/callStackView.ts
 +++ b/src/vs/workbench/contrib/debug/browser/callStackView.ts
-@@ -22,2 +22,3 @@ import { Event } from '../../../../base/common/event.js';
+@@ -20,6 +20,7 @@ import { RunOnceScheduler } from '../../../../base/common/async.js';
+ import { Codicon } from '../../../../base/common/codicons.js';
+ import { Event } from '../../../../base/common/event.js';
  import { createMatches, FuzzyScore, IMatch } from '../../../../base/common/filters.js';
 +import { FONT } from '../../../../base/common/font.js';
  import { DisposableStore, dispose, IDisposable } from '../../../../base/common/lifecycle.js';
-@@ -898,9 +899,9 @@ class CallStackDelegate implements IListVirtualDelegate<CallStackItem> {
+ import { posix } from '../../../../base/common/path.js';
+ import { commonSuffixLength } from '../../../../base/common/strings.js';
+@@ -896,13 +897,13 @@ class CallStackDelegate implements IListVirtualDelegate<CallStackItem> {
+ 
+ 	getHeight(element: CallStackItem): number {
  		if (element instanceof StackFrame && element.presentationHint === 'label') {
 -			return 16;
 +			return FONT.sidebarSize16;
@@ -2950,65 +3437,105 @@ index 35c9c1e5..f8bf9c5b 100644
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: CallStackItem): string {
 diff --git a/src/vs/workbench/contrib/debug/browser/callStackWidget.ts b/src/vs/workbench/contrib/debug/browser/callStackWidget.ts
-index 42e4cbeb..bfaf21e4 100644
+index 42e4cbebafe991204e7fd7341a5d7c72bbdcb4db..bfaf21e43dc66ac726e603c8a12fdc69e57fb44b 100644
 --- a/src/vs/workbench/contrib/debug/browser/callStackWidget.ts
 +++ b/src/vs/workbench/contrib/debug/browser/callStackWidget.ts
-@@ -13,2 +13,3 @@ import { Codicon } from '../../../../base/common/codicons.js';
+@@ -11,6 +11,7 @@ import { assertNever } from '../../../../base/common/assert.js';
+ import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
+ import { Codicon } from '../../../../base/common/codicons.js';
  import { Emitter, Event } from '../../../../base/common/event.js';
 +import { FONT } from '../../../../base/common/font.js';
  import { Disposable, DisposableStore, IDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
-@@ -84,3 +85,3 @@ class WrappedCallStackFrame extends CallStackFrame implements IFrameLikeItem {
+ import { autorun, autorunWithStore, derived, IObservable, ISettableObservable, observableValue, transaction } from '../../../../base/common/observable.js';
+ import { ThemeIcon } from '../../../../base/common/themables.js';
+@@ -82,7 +83,7 @@ class WrappedCallStackFrame extends CallStackFrame implements IFrameLikeItem {
+ 	public readonly collapsed = observableValue('WrappedCallStackFrame.collapsed', false);
+ 
  	public readonly height = derived(reader => {
 -		return this.collapsed.read(reader) ? CALL_STACK_WIDGET_HEADER_HEIGHT : CALL_STACK_WIDGET_HEADER_HEIGHT + this.editorHeight.read(reader);
 +		return this.collapsed.read(reader) ? FONT.sidebarSize24 : FONT.sidebarSize24 + this.editorHeight.read(reader);
  	});
-@@ -96,3 +97,3 @@ class WrappedCustomStackFrame implements IFrameLikeItem {
+ 
+ 	constructor(original: CallStackFrame) {
+@@ -94,7 +95,7 @@ class WrappedCustomStackFrame implements IFrameLikeItem {
+ 	public readonly collapsed = observableValue('WrappedCallStackFrame.collapsed', false);
+ 
  	public readonly height = derived(reader => {
 -		const headerHeight = this.original.showHeader.read(reader) ? CALL_STACK_WIDGET_HEADER_HEIGHT : 0;
 +		const headerHeight = this.original.showHeader.read(reader) ? FONT.sidebarSize24 : 0;
  		return this.collapsed.read(reader) ? headerHeight : headerHeight + this.original.height.read(reader);
-@@ -267,3 +268,3 @@ class StackDelegate implements IListVirtualDelegate<ListItem> {
+ 	});
+ 
+@@ -265,7 +266,7 @@ class StackDelegate implements IListVirtualDelegate<ListItem> {
+ 			return element.height.get();
+ 		}
  		if (element instanceof SkippedCallFrames) {
 -			return CALL_STACK_WIDGET_HEADER_HEIGHT;
 +			return FONT.sidebarSize24;
  		}
-@@ -322,4 +323,2 @@ const makeFrameElements = () => dom.h('div.multiCallStackFrame', [
+ 
+ 		assertNever(element);
+@@ -320,8 +321,6 @@ const makeFrameElements = () => dom.h('div.multiCallStackFrame', [
+ 	])
+ ]);
  
 -export const CALL_STACK_WIDGET_HEADER_HEIGHT = 24;
 -
  interface IAbstractFrameRendererTemplateData {
+ 	container: HTMLElement;
+ 	label: ResourceLabel;
 diff --git a/src/vs/workbench/contrib/debug/browser/debugHover.ts b/src/vs/workbench/contrib/debug/browser/debugHover.ts
-index fe8ae2b6..5830976e 100644
+index fe8ae2b6ab0a1f699866776efd1461e36aa9806e..5830976e7f12fa96a6116ee21240a1bb33643566 100644
 --- a/src/vs/workbench/contrib/debug/browser/debugHover.ts
 +++ b/src/vs/workbench/contrib/debug/browser/debugHover.ts
-@@ -15,2 +15,3 @@ import { coalesce } from '../../../../base/common/arrays.js';
+@@ -13,6 +13,7 @@ import { AsyncDataTree } from '../../../../base/browser/ui/tree/asyncDataTree.js
+ import { ITreeContextMenuEvent } from '../../../../base/browser/ui/tree/tree.js';
+ import { coalesce } from '../../../../base/common/arrays.js';
  import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
 +import { FONT } from '../../../../base/common/font.js';
  import { KeyCode } from '../../../../base/common/keyCodes.js';
-@@ -446,3 +447,3 @@ class DebugHoverDelegate implements IListVirtualDelegate<IExpression> {
+ import * as lifecycle from '../../../../base/common/lifecycle.js';
+ import { clamp } from '../../../../base/common/numbers.js';
+@@ -444,7 +445,7 @@ class DebugHoverDataSource extends AbstractExpressionDataSource<IExpression, IEx
+ 
+ class DebugHoverDelegate implements IListVirtualDelegate<IExpression> {
  	getHeight(element: IExpression): number {
 -		return 18;
 +		return FONT.sidebarSize18;
  	}
+ 
+ 	getTemplateId(element: IExpression): string {
 diff --git a/src/vs/workbench/contrib/debug/browser/loadedScriptsView.ts b/src/vs/workbench/contrib/debug/browser/loadedScriptsView.ts
-index 531c1146..909a66db 100644
+index 531c1146f97283163f98cfdeae22ee84e6114004..909a66db181955de6552d71e2bdb30db3088f248 100644
 --- a/src/vs/workbench/contrib/debug/browser/loadedScriptsView.ts
 +++ b/src/vs/workbench/contrib/debug/browser/loadedScriptsView.ts
-@@ -14,2 +14,3 @@ import { Codicon } from '../../../../base/common/codicons.js';
+@@ -12,6 +12,7 @@ import { ITreeElement, ITreeFilter, ITreeNode, TreeFilterResult, TreeVisibility
+ import { RunOnceScheduler } from '../../../../base/common/async.js';
+ import { Codicon } from '../../../../base/common/codicons.js';
  import { createMatches, FuzzyScore } from '../../../../base/common/filters.js';
 +import { FONT } from '../../../../base/common/font.js';
  import { normalizeDriveLetter, tildify } from '../../../../base/common/labels.js';
-@@ -652,3 +653,3 @@ class LoadedScriptsDelegate implements IListVirtualDelegate<LoadedScriptsItem> {
+ import { dispose, DisposableMap, DisposableStore } from '../../../../base/common/lifecycle.js';
+ import { isAbsolute, normalize, posix } from '../../../../base/common/path.js';
+@@ -650,7 +651,7 @@ export class LoadedScriptsView extends ViewPane {
+ class LoadedScriptsDelegate implements IListVirtualDelegate<LoadedScriptsItem> {
+ 
  	getHeight(element: LoadedScriptsItem): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: LoadedScriptsItem): string {
 diff --git a/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css b/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
-index ca34e6f7..611b4950 100644
+index ca34e6f77ba14b7d26e316c6f55bf1f57eb6aed0..611b49500b8171757e688c69a94af2b0f91619bc 100644
 --- a/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
 +++ b/src/vs/workbench/contrib/debug/browser/media/debugToolBar.css
-@@ -55 +55,25 @@
+@@ -53,3 +53,27 @@
+ 	align-items: center;
+ 	justify-content: center;
  }
 +
 +
@@ -3036,10 +3563,12 @@ index ca34e6f7..611b4950 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css b/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
-index a7eb2f1a..b220e4e7 100644
+index a7eb2f1ac26ab91c57b4fba9964e9935d8d2985e..b220e4e764b7cbe4d380922b2b46e2b4d1b573ba 100644
 --- a/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
 +++ b/src/vs/workbench/contrib/debug/browser/media/debugViewlet.css
-@@ -412 +412,103 @@
+@@ -410,3 +410,105 @@
+ 	display: flex;
+ 	align-items: center;
  }
 +
 +/*** Handcrafted for Custom Font Size ***/
@@ -3145,81 +3674,127 @@ index a7eb2f1a..b220e4e7 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/debug/browser/variablesView.ts b/src/vs/workbench/contrib/debug/browser/variablesView.ts
-index f18d41bf..8863b19d 100644
+index f18d41bf23c16eced817a641ceab47dd170c43b9..8863b19d68d2e606675f234ad8bddaa13878dfec 100644
 --- a/src/vs/workbench/contrib/debug/browser/variablesView.ts
 +++ b/src/vs/workbench/contrib/debug/browser/variablesView.ts
-@@ -18,2 +18,3 @@ import { Codicon } from '../../../../base/common/codicons.js';
+@@ -16,6 +16,7 @@ import { RunOnceScheduler } from '../../../../base/common/async.js';
+ import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
+ import { Codicon } from '../../../../base/common/codicons.js';
  import { FuzzyScore, createMatches } from '../../../../base/common/filters.js';
 +import { FONT } from '../../../../base/common/font.js';
  import { IDisposable, toDisposable } from '../../../../base/common/lifecycle.js';
-@@ -370,3 +371,3 @@ class VariablesDelegate implements IListVirtualDelegate<IExpression | IScope> {
+ import { ThemeIcon } from '../../../../base/common/themables.js';
+ import { localize } from '../../../../nls.js';
+@@ -368,7 +369,7 @@ interface IScopeTemplateData {
+ class VariablesDelegate implements IListVirtualDelegate<IExpression | IScope> {
+ 
  	getHeight(element: IExpression | IScope): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: IExpression | IScope): string {
 diff --git a/src/vs/workbench/contrib/debug/browser/watchExpressionsView.ts b/src/vs/workbench/contrib/debug/browser/watchExpressionsView.ts
-index 9fef1481..80631b5d 100644
+index 9fef1481a40a200bc627f087c0178d4e0150fbcc..80631b5dbdfd70035dfb41c3efc6c77fb7fe7619 100644
 --- a/src/vs/workbench/contrib/debug/browser/watchExpressionsView.ts
 +++ b/src/vs/workbench/contrib/debug/browser/watchExpressionsView.ts
-@@ -42,2 +42,3 @@ import { watchExpressionsAdd, watchExpressionsRemoveAll } from './debugIcons.js'
+@@ -40,6 +40,7 @@ import { COPY_WATCH_EXPRESSION_COMMAND_ID, setDataBreakpointInfoResponse } from
+ import { DebugExpressionRenderer } from './debugExpressionRenderer.js';
+ import { watchExpressionsAdd, watchExpressionsRemoveAll } from './debugIcons.js';
  import { VariablesRenderer, VisualizedVariableRenderer } from './variablesView.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -240,3 +241,3 @@ class WatchExpressionsDelegate implements IListVirtualDelegate<IExpression> {
+ const MAX_VALUE_RENDER_LENGTH_IN_VIEWLET = 1024;
+ let ignoreViewUpdates = false;
+@@ -238,7 +239,7 @@ export class WatchExpressionsView extends ViewPane implements IDebugViewWithVari
+ class WatchExpressionsDelegate implements IListVirtualDelegate<IExpression> {
+ 
  	getHeight(_element: IExpression): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: IExpression): string {
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionFeaturesTab.ts b/src/vs/workbench/contrib/extensions/browser/extensionFeaturesTab.ts
-index 3cd48a5b..3238df42 100644
+index 3cd48a5bd37c60da7840f776b28023406c8291fa..3238df426fc952baf95d2d8233fc30c038090814 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionFeaturesTab.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionFeaturesTab.ts
-@@ -40,2 +40,3 @@ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+@@ -38,6 +38,7 @@ import { asCssVariable } from '../../../../platform/theme/common/colorUtils.js';
+ import { foreground, chartAxis, chartGuide, chartLine } from '../../../../platform/theme/common/colorRegistry.js';
+ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
  import { IMarkdownRendererService } from '../../../../platform/markdown/browser/markdownRenderer.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -474,3 +475,3 @@ interface IExtensionFeatureItemTemplateData {
+ interface IExtensionFeatureElementRenderer extends IExtensionFeatureRenderer {
+ 	type: 'element';
+@@ -472,7 +473,7 @@ interface IExtensionFeatureItemTemplateData {
+ }
+ 
  class ExtensionFeatureItemDelegate implements IListVirtualDelegate<IExtensionFeatureDescriptor> {
 -	getHeight() { return 22; }
 +	getHeight() { return FONT.sidebarSize22; }
  	getTemplateId() { return 'extensionFeatureDescriptor'; }
+ }
+ 
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsList.ts b/src/vs/workbench/contrib/extensions/browser/extensionsList.ts
-index 42134f0b..4e14bd16 100644
+index 42134f0b6d376b2ee19e2668b8848bea175885bd..4e14bd169e2cb50045f0a1d5f03d9e563c917ce1 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsList.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsList.ts
-@@ -27,4 +27,3 @@ import { IActionViewItemOptions } from '../../../../base/browser/ui/actionbar/ac
+@@ -25,8 +25,7 @@ import { IContextMenuService } from '../../../../platform/contextview/browser/co
+ import { HoverPosition } from '../../../../base/browser/ui/hover/hoverWidget.js';
+ import { IActionViewItemOptions } from '../../../../base/browser/ui/actionbar/actionViewItems.js';
  import { extensionVerifiedPublisherIconColor, verifiedPublisherIcon } from '../../../services/extensionManagement/common/extensionsIcons.js';
 -
 -const EXTENSION_LIST_ELEMENT_HEIGHT = 72;
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -44,3 +43,3 @@ export interface ITemplateData {
+ export interface ITemplateData {
+ 	root: HTMLElement;
+@@ -42,7 +41,7 @@ export interface ITemplateData {
+ }
+ 
  export class Delegate implements IListVirtualDelegate<IExtension> {
 -	getHeight() { return EXTENSION_LIST_ELEMENT_HEIGHT; }
 +	getHeight() { return FONT.sidebarSize72; }
  	getTemplateId() { return 'extension'; }
+ }
+ 
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsViewer.ts b/src/vs/workbench/contrib/extensions/browser/extensionsViewer.ts
-index 418cb12e..fbb30c5c 100644
+index 418cb12e5f66c5eb83129297fe599654733563fa..fbb30c5c5db3105e3a4baa7bbb91ed8e2373f99d 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsViewer.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsViewer.ts
-@@ -40,2 +40,3 @@ import { ILogService } from '../../../../platform/log/common/log.js';
+@@ -38,6 +38,7 @@ import { DelayedPagedModel, IPagedModel } from '../../../../base/common/paging.j
+ import { ExtensionIconWidget } from './extensionsWidgets.js';
+ import { ILogService } from '../../../../platform/log/common/log.js';
  import { isCancellationError } from '../../../../base/common/errors.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -262,3 +263,3 @@ class VirualDelegate implements IListVirtualDelegate<IExtensionData> {
+ function getAriaLabelForExtension(extension: IExtension | null): string {
+ 	if (!extension) {
+@@ -260,7 +261,7 @@ class AsyncDataSource implements IAsyncDataSource<IExtensionData, any> {
+ class VirualDelegate implements IListVirtualDelegate<IExtensionData> {
+ 
  	public getHeight(element: IExtensionData): number {
 -		return 62;
 +		return FONT.sidebarSize62;
  	}
+ 	public getTemplateId({ extension }: IExtensionData): string {
+ 		return extension ? ExtensionRenderer.TEMPLATE_ID : UnknownExtensionRenderer.TEMPLATE_ID;
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts b/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts
-index ced3d32a..4d8b7fa2 100644
+index ced3d32a8bcc3d1451c66c0b0169b319c349aa5a..4d8b7fa284c985e7fb73e81be7f7d2cef053d99b 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts
-@@ -72,2 +72,3 @@ import { URI } from '../../../../base/common/uri.js';
+@@ -70,6 +70,7 @@ import { KeyCode } from '../../../../base/common/keyCodes.js';
+ import { IExtensionGalleryManifest, IExtensionGalleryManifestService, ExtensionGalleryManifestStatus } from '../../../../platform/extensionManagement/common/extensionGalleryManifest.js';
+ import { URI } from '../../../../base/common/uri.js';
  import { DEFAULT_ACCOUNT_SIGN_IN_COMMAND } from '../../../services/accounts/browser/defaultAccount.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -739,5 +740,5 @@ export class ExtensionsViewPaneContainer extends ViewPaneContainer<IExtensionsVi
+ export const ExtensionsSortByContext = new RawContextKey<string>('extensionsSortByValue', '');
+ export const SearchMarketplaceExtensionsContext = new RawContextKey<boolean>('searchMarketplaceExtensions', false);
+@@ -737,9 +738,9 @@ export class ExtensionsViewPaneContainer extends ViewPaneContainer<IExtensionsVi
+ 			this.root.classList.toggle('narrow', dimension.width <= 250);
+ 			this.root.classList.toggle('mini', dimension.width <= 200);
  		}
 -		this.searchBox?.layout(new Dimension(dimension.width - 34 - /*padding*/8 - (24 * 2), 20));
 -		const searchBoxHeight = 20 + 21 /*margin*/;
@@ -3228,11 +3803,15 @@ index ced3d32a..4d8b7fa2 100644
 +		const searchBoxHeight = FONT.sidebarSize20 + FONT.sidebarSize20 + 1 /*margin*/;
 +		const headerHeight = this.header && !!this.notificationContainer?.childNodes.length ? this.notificationContainer.clientHeight + searchBoxHeight + FONT.sidebarSize10 /*margin*/ : searchBoxHeight;
  		this.header!.style.height = `${headerHeight}px`;
+ 		super.layout(new Dimension(dimension.width, dimension.height - headerHeight));
+ 	}
 diff --git a/src/vs/workbench/contrib/extensions/browser/media/extension.css b/src/vs/workbench/contrib/extensions/browser/media/extension.css
-index 84544479..733b9a6b 100644
+index fa6ab479d5689c8ab19ee36bd346e07656a9693d..ac794f154dccd926fbb212d257f84b1f4b3e4fd3 100644
 --- a/src/vs/workbench/contrib/extensions/browser/media/extension.css
 +++ b/src/vs/workbench/contrib/extensions/browser/media/extension.css
-@@ -302 +302,91 @@
+@@ -292,3 +292,93 @@
+ .extension-list-item .monaco-action-bar > .actions-container > .action-item.action-dropdown-item > .monaco-dropdown .extension-action {
+ 	border-radius: 0 var(--vscode-cornerRadius-small) var(--vscode-cornerRadius-small) 0;
  }
 +
 +
@@ -3326,10 +3905,12 @@ index 84544479..733b9a6b 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css b/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css
-index 6326d45f..cc5242ae 100644
+index 50441970b66c6fc5424f55bd3a22c1e4eb3b1ab3..05b9c24c1cce90b805d848495313b2c96a633837 100644
 --- a/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css
 +++ b/src/vs/workbench/contrib/extensions/browser/media/extensionActions.css
-@@ -166 +166,26 @@
+@@ -164,3 +164,28 @@
+ 	opacity: 0.9;
+ 	font-style: italic;
  }
 +
 +
@@ -3358,10 +3939,12 @@ index 6326d45f..cc5242ae 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css b/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css
-index db5712fe..0f75b632 100644
+index c6cae5ccaef6ea6589612e4cfd6550ab06d71ebd..7d35c9e8bccf01d1faadae84ba0f0034f21f4e7d 100644
 --- a/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css
 +++ b/src/vs/workbench/contrib/files/browser/media/explorerviewlet.css
-@@ -108 +108,24 @@
+@@ -118,3 +118,26 @@
+ .monaco-workbench.context-menu-visible .explorer-folders-view.highlight .monaco-list-row {
+ 	outline: none !important;
  }
 +
 +
@@ -3388,23 +3971,29 @@ index db5712fe..0f75b632 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/files/browser/views/explorerView.ts b/src/vs/workbench/contrib/files/browser/views/explorerView.ts
-index 0e488c01..64dcbe00 100644
+index 89afdf547533314a8661a021025f4b170b83cdf4..a0881150bedcc63a4fb8d6bf190d7125d688a963 100644
 --- a/src/vs/workbench/contrib/files/browser/views/explorerView.ts
 +++ b/src/vs/workbench/contrib/files/browser/views/explorerView.ts
-@@ -511,3 +511,3 @@ export class ExplorerView extends ViewPane implements IExplorerView {
+@@ -505,7 +505,7 @@ export class ExplorerView extends ViewPane implements IExplorerView {
+ 				}
+ 				return false;
  			},
 -			paddingBottom: ExplorerDelegate.ITEM_HEIGHT,
 +			paddingBottom: ExplorerDelegate.getHeight(),
  			overrideStyles: this.getLocationBasedColors().listOverrideStyles,
+ 			findProvider: this.findProvider,
+ 		});
 diff --git a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
-index ed7dbe07..dba05e80 100644
+index ed7dbe07826f81f3b97b07d1ce1284a32956df18..dba05e809f349c56d6018660bedd7e17fbf3545d 100644
 --- a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
 +++ b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
-@@ -76,2 +76,3 @@ import { listFilterMatchHighlight, listFilterMatchHighlightBorder } from '../../
+@@ -74,13 +74,16 @@ import { IContextKey, IContextKeyService } from '../../../../../platform/context
+ import { CountBadge } from '../../../../../base/browser/ui/countBadge/countBadge.js';
+ import { listFilterMatchHighlight, listFilterMatchHighlightBorder } from '../../../../../platform/theme/common/colorRegistry.js';
  import { asCssVariable } from '../../../../../platform/theme/common/colorUtils.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -79,6 +80,8 @@ export class ExplorerDelegate implements IListVirtualDelegate<ExplorerItem> {
+ export class ExplorerDelegate implements IListVirtualDelegate<ExplorerItem> {
  
 -	static readonly ITEM_HEIGHT = 22;
 +	static getHeight(): number {
@@ -3415,16 +4004,24 @@ index ed7dbe07..dba05e80 100644
 -		return ExplorerDelegate.ITEM_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
-@@ -852,3 +855,3 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
+ 
+ 	getTemplateId(element: ExplorerItem): string {
+@@ -850,7 +853,7 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
+ 
+ 		const updateOffsetStyles = () => {
  			const indent = this.configurationService.getValue<number>('workbench.tree.indent');
 -			const offset = Math.max(22 - indent, 0); // derived via inspection
 +			const offset = Math.max(39 - indent, 0); // derived via inspection
  			container.style.setProperty(`--vscode-explorer-align-offset-margin-left`, `${offset}px`);
+ 		};
+ 
 diff --git a/src/vs/workbench/contrib/files/browser/views/media/openeditors.css b/src/vs/workbench/contrib/files/browser/views/media/openeditors.css
-index d933ff97..3995b14f 100644
+index d933ff9704316350fe497021602b7e57d783cc44..3995b14f7c46d8f3b84a4636bde671bf4e259649 100644
 --- a/src/vs/workbench/contrib/files/browser/views/media/openeditors.css
 +++ b/src/vs/workbench/contrib/files/browser/views/media/openeditors.css
-@@ -108 +108,28 @@
+@@ -106,3 +106,30 @@
+ .monaco-workbench.hc-light .open-editors .editor-group {
+ 	line-height: 20px;
  }
 +
 +
@@ -3455,24 +4052,38 @@ index d933ff97..3995b14f 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts b/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts
-index 08f151f0..b313c86c 100644
+index ff2a4b3d36071f54babc6a4d7d9909a09fa47752..3f82ae8a07b0ec27454f0d3564cfafdf8fae47be 100644
 --- a/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts
 +++ b/src/vs/workbench/contrib/files/browser/views/openEditorsView.ts
-@@ -58,2 +58,3 @@ import { IHoverService } from '../../../../../platform/hover/browser/hover.js';
+@@ -56,6 +56,7 @@ import { mainWindow } from '../../../../../base/browser/window.js';
+ import { EditorGroupView } from '../../../../browser/parts/editor/editorGroupView.js';
+ import { IHoverService } from '../../../../../platform/hover/browser/hover.js';
  import { IFileService } from '../../../../../platform/files/common/files.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -520,3 +521,3 @@ export class OpenEditorsView extends ViewPane {
+ const $ = dom.$;
+ 
+@@ -560,7 +561,7 @@ export class OpenEditorsView extends ViewPane {
+ 			return Number.POSITIVE_INFINITY;
+ 		}
  
 -		return (Math.max(this.elementCount, minVisibleOpenEditors)) * OpenEditorsDelegate.ITEM_HEIGHT;
 +		return (Math.max(this.elementCount, minVisibleOpenEditors)) * FONT.sidebarSize22;
  	}
-@@ -534,3 +535,3 @@ export class OpenEditorsView extends ViewPane {
+ 
+ 	private getMinExpandedBodySize(): number {
+@@ -574,7 +575,7 @@ export class OpenEditorsView extends ViewPane {
+ 
+ 	private computeMinExpandedBodySize(visibleOpenEditors = OpenEditorsView.DEFAULT_VISIBLE_OPEN_EDITORS): number {
  		const itemsToShow = Math.min(Math.max(visibleOpenEditors, 1), this.elementCount);
 -		return itemsToShow * OpenEditorsDelegate.ITEM_HEIGHT;
 +		return itemsToShow * FONT.sidebarSize22;
  	}
-@@ -582,6 +583,4 @@ class OpenEditorsDelegate implements IListVirtualDelegate<OpenEditor | IEditorGr
+ 
+ 	setStructuralRefreshDelay(delay: number): void {
+@@ -622,10 +623,8 @@ class OpenEditorActionRunner extends ActionRunner {
+ 
+ class OpenEditorsDelegate implements IListVirtualDelegate<OpenEditor | IEditorGroup> {
  
 -	public static readonly ITEM_HEIGHT = 22;
 -
@@ -3480,33 +4091,52 @@ index 08f151f0..b313c86c 100644
 -		return OpenEditorsDelegate.ITEM_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: OpenEditor | IEditorGroup): string {
 diff --git a/src/vs/workbench/contrib/files/test/browser/explorerFindProvider.test.ts b/src/vs/workbench/contrib/files/test/browser/explorerFindProvider.test.ts
-index f16d9fa5..3296abc7 100644
+index f16d9fa50c1ef71e15f486176e3a7553b6bb03dc..3296abc7eecbbf8a1b5f4a4d577c1b6a12dc003a 100644
 --- a/src/vs/workbench/contrib/files/test/browser/explorerFindProvider.test.ts
 +++ b/src/vs/workbench/contrib/files/test/browser/explorerFindProvider.test.ts
-@@ -28,2 +28,3 @@ import { ExplorerFindProvider, FilesFilter } from '../../browser/views/explorerV
+@@ -26,6 +26,7 @@ import { NullFilesConfigurationService, TestFileService } from '../../../../test
+ import { IExplorerService } from '../../browser/files.js';
+ import { ExplorerFindProvider, FilesFilter } from '../../browser/views/explorerViewer.js';
  import { ExplorerItem } from '../../common/explorerModel.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -80,3 +81,3 @@ class IdentityProvider implements IIdentityProvider<ExplorerItem> {
+ function find(element: ExplorerItem, id: string): ExplorerItem | undefined {
+ 	if (element.name === id) {
+@@ -78,7 +79,7 @@ class IdentityProvider implements IIdentityProvider<ExplorerItem> {
+ }
+ 
  class VirtualDelegate implements IListVirtualDelegate<ExplorerItem> {
 -	getHeight() { return 20; }
 +	getHeight() { return FONT.sidebarSize20; }
  	getTemplateId(element: ExplorerItem): string { return 'default'; }
+ }
+ 
 diff --git a/src/vs/workbench/contrib/markers/browser/markersTreeViewer.ts b/src/vs/workbench/contrib/markers/browser/markersTreeViewer.ts
-index 0176fb67..140cda1d 100644
+index 0176fb670459403a9b0e4f891a9affd92860529a..140cda1d8ecf48638708c1bd06b54373cc5940c5 100644
 --- a/src/vs/workbench/contrib/markers/browser/markersTreeViewer.ts
 +++ b/src/vs/workbench/contrib/markers/browser/markersTreeViewer.ts
-@@ -54,2 +54,3 @@ import type { IManagedHover } from '../../../../base/browser/ui/hover/hover.js';
+@@ -52,6 +52,7 @@ import Severity from '../../../../base/common/severity.js';
+ import { getDefaultHoverDelegate } from '../../../../base/browser/ui/hover/hoverDelegateFactory.js';
+ import type { IManagedHover } from '../../../../base/browser/ui/hover/hover.js';
  import { IHoverService } from '../../../../platform/hover/browser/hover.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -101,4 +102,2 @@ export class VirtualDelegate implements IListVirtualDelegate<MarkerElement> {
+ interface IResourceMarkersTemplateData {
+ 	readonly resourceLabel: IResourceLabel;
+@@ -99,17 +100,15 @@ const enum TemplateId {
+ 
+ export class VirtualDelegate implements IListVirtualDelegate<MarkerElement> {
  
 -	static LINE_HEIGHT: number = 22;
 -
  	constructor(private readonly markersViewState: MarkersViewModel) { }
-@@ -109,5 +108,5 @@ export class VirtualDelegate implements IListVirtualDelegate<MarkerElement> {
+ 
+ 	getHeight(element: MarkerElement): number {
+ 		if (element instanceof Marker) {
+ 			const viewModel = this.markersViewState.getViewModel(element);
  			const noOfLines = !viewModel || viewModel.multiline ? element.lines.length : 1;
 -			return noOfLines * VirtualDelegate.LINE_HEIGHT;
 +			return noOfLines * FONT.sidebarSize22;
@@ -3514,81 +4144,129 @@ index 0176fb67..140cda1d 100644
 -		return VirtualDelegate.LINE_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
-@@ -377,3 +376,3 @@ class MarkerWidget extends Disposable {
+ 
+ 	getTemplateId(element: MarkerElement): string {
+@@ -375,7 +374,7 @@ class MarkerWidget extends Disposable {
+ 			const highlightedLabel = this.disposables.add(new HighlightedLabel(messageElement));
+ 			highlightedLabel.set(lines[index].length > 1000 ? `${lines[index].substring(0, 1000)}...` : lines[index], lineMatches[index]);
  			if (lines[index] === '') {
 -				lineElement.style.height = `${VirtualDelegate.LINE_HEIGHT}px`;
 +				lineElement.style.height = `${FONT.sidebarSize22}px`;
  			}
+ 			lineElements.push(lineElement);
+ 		}
 diff --git a/src/vs/workbench/contrib/notebook/browser/contrib/notebookVariables/notebookVariablesTree.ts b/src/vs/workbench/contrib/notebook/browser/contrib/notebookVariables/notebookVariablesTree.ts
-index 4c95a373..fcb18e0e 100644
+index 4c95a37355f980ddb1fd83a91a8041b4abd0559c..fcb18e0eb489bb005f7b1939b4ebd845b8cdf31c 100644
 --- a/src/vs/workbench/contrib/notebook/browser/contrib/notebookVariables/notebookVariablesTree.ts
 +++ b/src/vs/workbench/contrib/notebook/browser/contrib/notebookVariables/notebookVariablesTree.ts
-@@ -10,2 +10,3 @@ import { ITreeNode, ITreeRenderer } from '../../../../../../base/browser/ui/tree
+@@ -8,6 +8,7 @@ import { IListVirtualDelegate } from '../../../../../../base/browser/ui/list/lis
+ import { IListAccessibilityProvider } from '../../../../../../base/browser/ui/list/listWidget.js';
+ import { ITreeNode, ITreeRenderer } from '../../../../../../base/browser/ui/tree/tree.js';
  import { FuzzyScore } from '../../../../../../base/common/filters.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  import { DisposableStore } from '../../../../../../base/common/lifecycle.js';
-@@ -29,3 +30,3 @@ export class NotebookVariablesDelegate implements IListVirtualDelegate<INotebook
+ import { observableValue } from '../../../../../../base/common/observable.js';
+ import { ILocalizedString, localize, localize2 } from '../../../../../../nls.js';
+@@ -27,7 +28,7 @@ export class NotebookVariablesTree extends WorkbenchObjectTree<INotebookVariable
+ export class NotebookVariablesDelegate implements IListVirtualDelegate<INotebookVariableElement> {
+ 
  	getHeight(element: INotebookVariableElement): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: INotebookVariableElement): string {
 diff --git a/src/vs/workbench/contrib/notebook/browser/contrib/outline/notebookOutline.ts b/src/vs/workbench/contrib/notebook/browser/contrib/outline/notebookOutline.ts
-index d812034b..e2affd59 100644
+index d812034b9958690f446485f5d8825c0260abe34d..e2affd598336eccc2e7e685cf0074deb4d2529f6 100644
 --- a/src/vs/workbench/contrib/notebook/browser/contrib/outline/notebookOutline.ts
 +++ b/src/vs/workbench/contrib/notebook/browser/contrib/outline/notebookOutline.ts
-@@ -56,2 +56,3 @@ import { ILanguageFeaturesService } from '../../../../../../editor/common/servic
+@@ -54,6 +54,7 @@ import { INotebookCellOutlineDataSourceFactory } from '../../viewModel/notebookO
+ import { INotebookExecutionStateService, NotebookExecutionType } from '../../../common/notebookExecutionStateService.js';
+ import { ILanguageFeaturesService } from '../../../../../../editor/common/services/languageFeatures.js';
  import { safeIntl } from '../../../../../../base/common/date.js';
 +import { FONT } from '../../../../../../base/common/font.js';
  
-@@ -277,3 +278,3 @@ class NotebookOutlineVirtualDelegate implements IListVirtualDelegate<OutlineEntr
+ class NotebookOutlineTemplate {
+ 
+@@ -275,7 +276,7 @@ class NotebookNavigationLabelProvider implements IKeyboardNavigationLabelProvide
+ class NotebookOutlineVirtualDelegate implements IListVirtualDelegate<OutlineEntry> {
+ 
  	getHeight(_element: OutlineEntry): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(_element: OutlineEntry): string {
 diff --git a/src/vs/workbench/contrib/preferences/browser/tocTree.ts b/src/vs/workbench/contrib/preferences/browser/tocTree.ts
-index 0078e1ea..b40fa10d 100644
+index 0078e1ea0f569c7ee2eb4c97cf3cf02b0c5b6c93..b40fa10dc0065e0120c58bf4312608f1211e0393 100644
 --- a/src/vs/workbench/contrib/preferences/browser/tocTree.ts
 +++ b/src/vs/workbench/contrib/preferences/browser/tocTree.ts
-@@ -11,2 +11,3 @@ import { RenderIndentGuides } from '../../../../base/browser/ui/tree/abstractTre
+@@ -9,6 +9,7 @@ import { IListVirtualDelegate } from '../../../../base/browser/ui/list/list.js';
+ import { DefaultStyleController, IListAccessibilityProvider } from '../../../../base/browser/ui/list/listWidget.js';
+ import { RenderIndentGuides } from '../../../../base/browser/ui/tree/abstractTree.js';
  import { ITreeElement, ITreeNode, ITreeRenderer } from '../../../../base/browser/ui/tree/tree.js';
 +import { FONT } from '../../../../base/common/font.js';
  import { Iterable } from '../../../../base/common/iterator.js';
-@@ -153,3 +154,3 @@ class TOCTreeDelegate implements IListVirtualDelegate<SettingsTreeElement> {
+ import { DisposableStore } from '../../../../base/common/lifecycle.js';
+ import { localize } from '../../../../nls.js';
+@@ -151,7 +152,7 @@ class TOCTreeDelegate implements IListVirtualDelegate<SettingsTreeElement> {
+ 	}
+ 
  	getHeight(element: SettingsTreeElement): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ }
+ 
 diff --git a/src/vs/workbench/contrib/processExplorer/browser/processExplorerControl.ts b/src/vs/workbench/contrib/processExplorer/browser/processExplorerControl.ts
-index b54812a0..05e5f75b 100644
+index b54812a080aa60c14f8d89da2afb224041cd31f2..05e5f75b0a1b828e429239ee0bded9a05f529bdd 100644
 --- a/src/vs/workbench/contrib/processExplorer/browser/processExplorerControl.ts
 +++ b/src/vs/workbench/contrib/processExplorer/browser/processExplorerControl.ts
-@@ -35,2 +35,3 @@ import { Schemas } from '../../../../base/common/network.js';
+@@ -33,6 +33,7 @@ import { IRemoteAgentService } from '../../../services/remote/common/remoteAgent
+ import { ILabelService } from '../../../../platform/label/common/label.js';
+ import { Schemas } from '../../../../base/common/network.js';
  import { isWeb } from '../../../../base/common/platform.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -75,3 +76,3 @@ class ProcessListDelegate implements IListVirtualDelegate<IMachineProcessInforma
+ const DEBUG_FLAGS_PATTERN = /\s--inspect(?:-brk|port)?=(?<port>\d+)?/;
+ const DEBUG_PORT_PATTERN = /\s--inspect-port=(?<port>\d+)/;
+@@ -73,7 +74,7 @@ function isProcessItem(item: unknown): item is ProcessItem {
+ class ProcessListDelegate implements IListVirtualDelegate<IMachineProcessInformation | ProcessItem | IRemoteDiagnosticError> {
+ 
  	getHeight() {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: IProcessInformation | IMachineProcessInformation | ProcessItem | IRemoteDiagnosticError) {
 diff --git a/src/vs/workbench/contrib/remote/browser/remote.ts b/src/vs/workbench/contrib/remote/browser/remote.ts
-index 2d7e4bb9..f4a5a5c1 100644
+index 2d7e4bb96efb3a0055c67cf9004a565e122114a4..f4a5a5c1e4530c1ece170a7ae107ba4f00826c55 100644
 --- a/src/vs/workbench/contrib/remote/browser/remote.ts
 +++ b/src/vs/workbench/contrib/remote/browser/remote.ts
-@@ -57,2 +57,3 @@ import { mainWindow } from '../../../../base/browser/window.js';
+@@ -55,6 +55,7 @@ import { IWalkthroughsService } from '../../welcomeGettingStarted/browser/gettin
+ import { Schemas } from '../../../../base/common/network.js';
+ import { mainWindow } from '../../../../base/browser/window.js';
  import { IHoverService } from '../../../../platform/hover/browser/hover.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -65,3 +66,3 @@ class HelpTreeVirtualDelegate implements IListVirtualDelegate<IHelpItem> {
+ interface IViewModel {
+ 	readonly onDidChangeHelpInformation: Event<void>;
+@@ -63,7 +64,7 @@ interface IViewModel {
+ 
+ class HelpTreeVirtualDelegate implements IListVirtualDelegate<IHelpItem> {
  	getHeight(element: IHelpItem): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: IHelpItem): string {
 diff --git a/src/vs/workbench/contrib/scm/browser/media/scm.css b/src/vs/workbench/contrib/scm/browser/media/scm.css
-index 408b771f..7ccc6b93 100644
+index 408b771f84c247ac2d5662907fb0c41fa62d4f55..7ccc6b937ca31f4b2249df9dbd930e49c609cf3b 100644
 --- a/src/vs/workbench/contrib/scm/browser/media/scm.css
 +++ b/src/vs/workbench/contrib/scm/browser/media/scm.css
-@@ -800 +800,215 @@
+@@ -798,3 +798,217 @@
+ 	border-radius: 2px;
+ 	opacity: 0.5;
  }
 +
 +
@@ -3806,70 +4484,115 @@ index 408b771f..7ccc6b93 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/scm/browser/scmHistoryViewPane.ts b/src/vs/workbench/contrib/scm/browser/scmHistoryViewPane.ts
-index 88c5c132..cd2b3759 100644
+index 88c5c132598c285d9f912ea7ccf528fb20398bc4..cd2b375958eebce892bb6734639c4be75218197a 100644
 --- a/src/vs/workbench/contrib/scm/browser/scmHistoryViewPane.ts
 +++ b/src/vs/workbench/contrib/scm/browser/scmHistoryViewPane.ts
-@@ -77,2 +77,3 @@ import { IMarkdownRendererService } from '../../../../platform/markdown/browser/
+@@ -75,6 +75,7 @@ import { SCMHistoryItemTransferData } from './scmHistoryChatContext.js';
+ import { CancellationToken } from '../../../../base/common/cancellation.js';
+ import { IMarkdownRendererService } from '../../../../platform/markdown/browser/markdownRenderer.js';
  import { MarkdownString } from '../../../../base/common/htmlContent.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -412,3 +413,3 @@ class ListDelegate implements IListVirtualDelegate<TreeElement> {
+ const PICK_REPOSITORY_ACTION_ID = 'workbench.scm.action.graph.pickRepository';
+ const PICK_HISTORY_ITEM_REFS_ACTION_ID = 'workbench.scm.action.graph.pickHistoryItemRefs';
+@@ -410,7 +411,7 @@ registerAction2(class extends Action2 {
+ class ListDelegate implements IListVirtualDelegate<TreeElement> {
+ 
  	getHeight(): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: TreeElement): string {
 diff --git a/src/vs/workbench/contrib/scm/browser/scmRepositoriesViewPane.ts b/src/vs/workbench/contrib/scm/browser/scmRepositoriesViewPane.ts
-index 1523a82c..fe788478 100644
+index 1523a82cf18dd35f22e84617b89d164b1575a7af..fe788478d746cb1b5e05b4465b08945f58385e69 100644
 --- a/src/vs/workbench/contrib/scm/browser/scmRepositoriesViewPane.ts
 +++ b/src/vs/workbench/contrib/scm/browser/scmRepositoriesViewPane.ts
-@@ -49,2 +49,3 @@ import { IActionViewItemProvider } from '../../../../base/browser/ui/actionbar/a
+@@ -47,13 +47,14 @@ import { Codicon } from '../../../../base/common/codicons.js';
+ import { IStorageService, StorageScope, StorageTarget } from '../../../../platform/storage/common/storage.js';
+ import { IActionViewItemProvider } from '../../../../base/browser/ui/actionbar/actionbar.js';
  import { fromNow } from '../../../../base/common/date.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -55,3 +56,3 @@ class ListDelegate implements IListVirtualDelegate<ISCMRepository> {
+ type TreeElement = ISCMRepository | SCMArtifactGroupTreeElement | SCMArtifactTreeElement | IResourceNode<SCMArtifactTreeElement, SCMArtifactGroupTreeElement>;
+ 
+ class ListDelegate implements IListVirtualDelegate<ISCMRepository> {
+ 
  	getHeight(): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: TreeElement): string {
 diff --git a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
-index a2887d47..5e81511f 100644
+index a2887d47f2521585269c89f83ea82da041141871..5e81511f24de8abbe4db6f6f45311b1a21237b22 100644
 --- a/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
 +++ b/src/vs/workbench/contrib/scm/browser/scmViewPane.ts
-@@ -77,2 +77,3 @@ import { AccessibilityCommandId } from '../../accessibility/common/accessibility
+@@ -75,6 +75,7 @@ import { AccessibilityVerbositySettingId } from '../../accessibility/browser/acc
+ import { IAccessibilityService } from '../../../../platform/accessibility/common/accessibility.js';
+ import { AccessibilityCommandId } from '../../accessibility/common/accessibilityCommands.js';
  import { SCMInputWidget } from './scmInput.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -143,4 +144,2 @@ interface ActionButtonTemplate {
+ type TreeElement = ISCMRepository | ISCMInput | ISCMActionButton | ISCMResourceGroup | ISCMResource | IResourceNode<ISCMResource, ISCMResourceGroup>;
+ 
+@@ -141,8 +142,6 @@ interface ActionButtonTemplate {
+ }
+ 
  export class ActionButtonRenderer implements ICompressibleTreeRenderer<ISCMActionButton, FuzzyScore, ActionButtonTemplate> {
 -	static readonly DEFAULT_HEIGHT = 28;
 -
  	static readonly TEMPLATE_ID = 'actionButton';
-@@ -261,4 +260,2 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 	get templateId(): string { return ActionButtonRenderer.TEMPLATE_ID; }
+ 
+@@ -259,8 +258,6 @@ interface InputTemplate {
+ 
+ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore, InputTemplate> {
  
 -	static readonly DEFAULT_HEIGHT = 26;
 -
  	static readonly TEMPLATE_ID = 'input';
-@@ -286,3 +283,3 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 	get templateId(): string { return InputRenderer.TEMPLATE_ID; }
+ 
+@@ -284,7 +281,7 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 		const inputWidget = this.instantiationService.createInstance(SCMInputWidget, inputElement, this.overflowWidgetsDomNode);
+ 		templateDisposable.add(inputWidget);
  
 -		return { inputWidget, inputWidgetHeight: InputRenderer.DEFAULT_HEIGHT, elementDisposables: new DisposableStore(), templateDisposable };
 +		return { inputWidget, inputWidgetHeight: FONT.sidebarSize26, elementDisposables: new DisposableStore(), templateDisposable };
  	}
-@@ -315,3 +312,3 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 
+ 	renderElement(node: ITreeNode<ISCMInput, FuzzyScore>, index: number, templateData: InputTemplate): void {
+@@ -313,7 +310,7 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 		}));
+ 
  		// Reset widget height so it's recalculated
 -		templateData.inputWidgetHeight = InputRenderer.DEFAULT_HEIGHT;
 +		templateData.inputWidgetHeight = FONT.sidebarSize26;
  
-@@ -323,3 +320,3 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 		// Rerender the element whenever the editor content height changes
+ 		const onDidChangeContentHeight = () => {
+@@ -321,7 +318,7 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 			this.contentHeights.set(input, contentHeight);
+ 
  			if (templateData.inputWidgetHeight !== contentHeight) {
 -				this.updateHeight(input, contentHeight + 10);
 +				this.updateHeight(input, contentHeight + FONT.sidebarSize8);
  				templateData.inputWidgetHeight = contentHeight;
-@@ -357,3 +354,3 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 				templateData.inputWidget.layout();
+ 			}
+@@ -355,7 +352,7 @@ class InputRenderer implements ICompressibleTreeRenderer<ISCMInput, FuzzyScore,
+ 	}
+ 
  	getHeight(input: ISCMInput): number {
 -		return (this.contentHeights.get(input) ?? InputRenderer.DEFAULT_HEIGHT) + 10;
 +		return (this.contentHeights.get(input) ?? FONT.sidebarSize26) + FONT.sidebarSize10;
  	}
-@@ -679,5 +676,5 @@ class ListDelegate implements IListVirtualDelegate<TreeElement> {
+ 
+ 	getRenderedInputWidget(input: ISCMInput): SCMInputWidget | undefined {
+@@ -677,9 +674,9 @@ class ListDelegate implements IListVirtualDelegate<TreeElement> {
+ 		if (isSCMInput(element)) {
+ 			return this.inputRenderer.getHeight(element);
  		} else if (isSCMActionButton(element)) {
 -			return ActionButtonRenderer.DEFAULT_HEIGHT + 8;
 +			return FONT.sidebarSize28 + 8;
@@ -3877,11 +4600,15 @@ index a2887d47..5e81511f 100644
 -			return 22;
 +			return FONT.sidebarSize22;
  		}
+ 	}
+ 
 diff --git a/src/vs/workbench/contrib/search/browser/media/searchview.css b/src/vs/workbench/contrib/search/browser/media/searchview.css
-index 47e85d64..977a4dc6 100644
+index 47e85d643deda9c09a98f0b434946d99e79840e9..977a4dc6d776a8435cbe13218f4827654f2166a5 100644
 --- a/src/vs/workbench/contrib/search/browser/media/searchview.css
 +++ b/src/vs/workbench/contrib/search/browser/media/searchview.css
-@@ -443 +443,121 @@
+@@ -441,3 +441,123 @@
+ 	user-select: none;
+ 	-webkit-user-select: none;
  }
 +
 +
@@ -4005,14 +4732,20 @@ index 47e85d64..977a4dc6 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/search/browser/searchResultsView.ts b/src/vs/workbench/contrib/search/browser/searchResultsView.ts
-index 994769dc..e0f828d9 100644
+index 994769dc62c59ba84c8f0fac2b824f2b665037f4..e0f828d90971dd1e92b6a644a66506dbd49b6d3a 100644
 --- a/src/vs/workbench/contrib/search/browser/searchResultsView.ts
 +++ b/src/vs/workbench/contrib/search/browser/searchResultsView.ts
-@@ -37,2 +37,3 @@ import { ISearchTreeMatch, isSearchTreeMatch, RenderableMatch, ITextSearchHeadin
+@@ -35,6 +35,7 @@ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
+ import { Codicon } from '../../../../base/common/codicons.js';
+ import { ISearchTreeMatch, isSearchTreeMatch, RenderableMatch, ITextSearchHeading, ISearchTreeFolderMatch, ISearchTreeFileMatch, isSearchTreeFileMatch, isSearchTreeFolderMatch, isTextSearchHeading, ISearchModel, isSearchTreeFolderMatchWorkspaceRoot, isSearchTreeFolderMatchNoRoot, isPlainTextSearchHeading } from './searchTreeModel/searchTreeCommon.js';
  import { isSearchTreeAIFileMatch } from './AISearch/aiSearchModelBase.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -80,6 +81,8 @@ export class SearchDelegate implements IListVirtualDelegate<RenderableMatch> {
+ interface IFolderMatchTemplate {
+ 	label: IResourceLabel;
+@@ -78,10 +79,12 @@ interface IMatchTemplate {
+ 
+ export class SearchDelegate implements IListVirtualDelegate<RenderableMatch> {
  
 -	public static ITEM_HEIGHT = 22;
 +	static getHeight(): number {
@@ -4023,24 +4756,40 @@ index 994769dc..e0f828d9 100644
 -		return SearchDelegate.ITEM_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: RenderableMatch): string {
 diff --git a/src/vs/workbench/contrib/search/browser/searchView.ts b/src/vs/workbench/contrib/search/browser/searchView.ts
-index 2c60e2cb..d3c7426c 100644
+index cd44270eb87a151bebc10cbfaccb6de0182ea40f..68de3673b62f9418076d63b913c6ab87e95bfde1 100644
 --- a/src/vs/workbench/contrib/search/browser/searchView.ts
 +++ b/src/vs/workbench/contrib/search/browser/searchView.ts
-@@ -88,2 +88,3 @@ import { ITelemetryService } from '../../../../platform/telemetry/common/telemet
+@@ -86,6 +86,7 @@ import { searchMatchComparer } from './searchCompare.js';
+ import { AIFolderMatchWorkspaceRootImpl } from './AISearch/aiSearchModel.js';
+ import { ITelemetryService } from '../../../../platform/telemetry/common/telemetry.js';
  import { forcedExpandRecursively } from './searchActionsTopBar.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -127,2 +128,3 @@ const SEARCH_CANCELLED_MESSAGE = nls.localize('searchCanceled', "Search was canc
+ const $ = dom.$;
+ 
+@@ -125,6 +126,7 @@ interface ISearchViewState {
+ 
+ const SEARCH_CANCELLED_MESSAGE = nls.localize('searchCanceled', "Search was canceled before any results could be found - ");
  const DEBOUNCE_DELAY = 75;
 +
  export class SearchView extends ViewPane {
-@@ -996,3 +998,3 @@ export class SearchView extends ViewPane {
+ 
+ 	private static readonly ACTIONS_RIGHT_CLASS_NAME = 'actions-right';
+@@ -994,7 +996,7 @@ export class SearchView extends ViewPane {
+ 				multipleSelectionSupport: true,
+ 				selectionNavigation: true,
  				overrideStyles: this.getLocationBasedColors().listOverrideStyles,
 -				paddingBottom: SearchDelegate.ITEM_HEIGHT,
 +				paddingBottom: SearchDelegate.getHeight(),
  				collapseByDefault: (e: RenderableMatch) => {
-@@ -1374,6 +1376,6 @@ export class SearchView extends ViewPane {
+ 					if (isTextSearchHeading(e)) {
+ 						// always collapse the ai text search result, but always expand the text result
+@@ -1372,14 +1374,14 @@ export class SearchView extends ViewPane {
+ 		const actionsPosition = this.searchConfig.actionsPosition;
+ 		this.getContainer().classList.toggle(SearchView.ACTIONS_RIGHT_CLASS_NAME, actionsPosition === 'right');
  
 -		this.searchWidget.setWidth(this.size.width - 28 /* container margin */);
 +		this.searchWidget.setWidth(this.size.width - FONT.sidebarSize28);
@@ -4050,163 +4799,272 @@ index 2c60e2cb..d3c7426c 100644
 +		this.inputPatternExcludes.setWidth(this.size.width - FONT.sidebarSize28);
 +		this.inputPatternIncludes.setWidth(this.size.width - FONT.sidebarSize28);
  
-@@ -1381,3 +1383,3 @@ export class SearchView extends ViewPane {
+ 		const widgetHeight = dom.getTotalHeight(this.searchWidgetsContainerElement);
  		const messagesHeight = dom.getTotalHeight(this.messagesElement);
 -		this.tree.layout(this.size.height - widgetHeight - messagesHeight, this.size.width - 28);
 +		this.tree.layout(this.size.height - widgetHeight - messagesHeight, this.size.width - FONT.sidebarSize28);
  	}
+ 
+ 	protected override layoutBody(height: number, width: number): void {
 diff --git a/src/vs/workbench/contrib/search/browser/searchWidget.ts b/src/vs/workbench/contrib/search/browser/searchWidget.ts
-index e9c0fcd4..f3e23de0 100644
+index e9c0fcd4ae1bf7f0a1a1ec4cc9c39ba1f2e70fa1..f3e23de0858438a4cfdee7f77fc50386732add74 100644
 --- a/src/vs/workbench/contrib/search/browser/searchWidget.ts
 +++ b/src/vs/workbench/contrib/search/browser/searchWidget.ts
-@@ -47,5 +47,3 @@ import { IDisposable, MutableDisposable } from '../../../../base/common/lifecycl
+@@ -45,9 +45,7 @@ import { SearchFindInput } from './searchFindInput.js';
+ import { getDefaultHoverDelegate } from '../../../../base/browser/ui/hover/hoverDelegateFactory.js';
+ import { IDisposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
  import { NotebookFindScopeType } from '../../notebook/common/notebookCommon.js';
 -
 -/** Specified in searchview.css */
 -const SingleLineInputHeight = 26;
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -99,3 +97,3 @@ function stopPropagationForMultiLineUpwards(event: IKeyboardEvent, value: string
+ export interface ISearchWidgetOptions {
+ 	value?: string;
+@@ -97,7 +95,7 @@ const ctrlKeyMod = (isMacintosh ? KeyMod.WinCtrl : KeyMod.CtrlCmd);
+ 
+ function stopPropagationForMultiLineUpwards(event: IKeyboardEvent, value: string, textarea: HTMLTextAreaElement | null) {
  	const isMultiline = !!value.match(/\n/);
 -	if (textarea && (isMultiline || textarea.clientHeight > SingleLineInputHeight) && textarea.selectionStart > 0) {
 +	if (textarea && (isMultiline || textarea.clientHeight > FONT.sidebarSize26) && textarea.selectionStart > 0) {
  		event.stopPropagation();
-@@ -107,3 +105,3 @@ function stopPropagationForMultiLineDownwards(event: IKeyboardEvent, value: stri
+ 		return;
+ 	}
+@@ -105,13 +103,12 @@ function stopPropagationForMultiLineUpwards(event: IKeyboardEvent, value: string
+ 
+ function stopPropagationForMultiLineDownwards(event: IKeyboardEvent, value: string, textarea: HTMLTextAreaElement | null) {
  	const isMultiline = !!value.match(/\n/);
 -	if (textarea && (isMultiline || textarea.clientHeight > SingleLineInputHeight) && textarea.selectionEnd < textarea.value.length) {
 +	if (textarea && (isMultiline || textarea.clientHeight > FONT.sidebarSize26) && textarea.selectionEnd < textarea.value.length) {
  		event.stopPropagation();
-@@ -113,3 +111,2 @@ function stopPropagationForMultiLineDownwards(event: IKeyboardEvent, value: stri
+ 		return;
+ 	}
+ }
  
 -
  export class SearchWidget extends Widget {
-@@ -316,3 +313,3 @@ export class SearchWidget extends Widget {
+ 	private static readonly INPUT_MAX_HEIGHT = 134;
+ 
+@@ -314,7 +311,7 @@ export class SearchWidget extends Widget {
+ 	setWidth(width: number) {
+ 		this.searchInput?.inputBox.layout();
  		if (this.replaceInput) {
 -			this.replaceInput.width = width - 28;
 +			this.replaceInput.width = width - FONT.sidebarSize28;
  			this.replaceInput.inputBox.layout();
+ 		}
+ 	}
 diff --git a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
-index 013ee562..8c0ac05a 100644
+index 013ee56258f7a2d0fe20c6badf61e9ccf33574cb..8c0ac05a754040392bfdb4ea9d023cb593a16c67 100644
 --- a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
 +++ b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
-@@ -58,2 +58,3 @@ import { TerminalStorageKeys } from '../common/terminalStorageKeys.js';
+@@ -56,11 +56,11 @@ import { ICommandService } from '../../../../platform/commands/common/commands.j
+ import { IStorageService, StorageScope } from '../../../../platform/storage/common/storage.js';
+ import { TerminalStorageKeys } from '../common/terminalStorageKeys.js';
  import { isObject } from '../../../../base/common/types.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -62,3 +63,2 @@ const $ = DOM.$;
+ const $ = DOM.$;
+ 
  export const enum TerminalTabsListSizes {
 -	TabHeight = 22,
  	NarrowViewWidth = 46,
-@@ -99,3 +99,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
+ 	WideViewMinimumWidth = 80,
+ 	DefaultWidth = 120,
+@@ -97,7 +97,7 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
+ 	) {
+ 		super('TerminalTabsList', container,
  			{
 -				getHeight: () => TerminalTabsListSizes.TabHeight,
 +				getHeight: () => FONT.bottomPaneSize22,
  				getTemplateId: () => 'terminal.tabs'
-@@ -116,3 +116,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
+ 			},
+ 			[instantiationService.createInstance(TerminalTabsRenderer, container, instantiationService.createInstance(ResourceLabels, DEFAULT_LABELS_CONTAINER), () => this.getSelectedElements(), {
+@@ -114,7 +114,7 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
+ 				accessibilityProvider: instantiationService.createInstance(TerminalTabsAccessibilityProvider),
+ 				smoothScrolling: _configurationService.getValue<boolean>('workbench.list.smoothScrolling'),
  				multipleSelectionSupport: true,
 -				paddingBottom: TerminalTabsListSizes.TabHeight,
 +				paddingBottom: FONT.bottomPaneSize22,
  				dnd: instantiationService.createInstance(TerminalTabsDragAndDrop),
-@@ -460,3 +460,3 @@ class TerminalTabsRenderer implements IListRenderer<ITerminalInstance, ITerminal
+ 				openOnSingleClick: true
+ 			},
+@@ -458,7 +458,7 @@ class TerminalTabsRenderer implements IListRenderer<ITerminalInstance, ITerminal
+ 			ariaLabel: localize('terminalInputAriaLabel', "Type terminal name. Press Enter to confirm or Escape to cancel."),
+ 			inputBoxStyles: defaultInputBoxStyles
  		});
 -		inputBox.element.style.height = '22px';
 +		inputBox.element.style.height = `${FONT.bottomPaneSize22}px`;
  		inputBox.value = value;
+ 		inputBox.focus();
+ 		inputBox.select({ start: 0, end: value.length });
 diff --git a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts b/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
-index 02fdfa31..3bed1bbb 100644
+index 02fdfa31a5e6bd2e1846d8765deb985c1fa8aef4..3bed1bbb084d215591b0a4e3871fccf35f5e63d4 100644
 --- a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
 +++ b/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
-@@ -16,2 +16,3 @@ import { memoize } from '../../../../base/common/decorators.js';
+@@ -14,6 +14,7 @@ import { assertNever } from '../../../../base/common/assert.js';
+ import { Codicon } from '../../../../base/common/codicons.js';
+ import { memoize } from '../../../../base/common/decorators.js';
  import { FuzzyScore, createMatches } from '../../../../base/common/filters.js';
 +import { FONT } from '../../../../base/common/font.js';
  import { Iterable } from '../../../../base/common/iterator.js';
-@@ -440,3 +441,3 @@ class TestCoverageTreeListDelegate implements IListVirtualDelegate<CoverageTreeE
+ import { Disposable, DisposableStore, MutableDisposable } from '../../../../base/common/lifecycle.js';
+ import { IObservable, autorun, observableValue } from '../../../../base/common/observable.js';
+@@ -438,7 +439,7 @@ class TestCoverageTree extends Disposable {
+ 
+ class TestCoverageTreeListDelegate implements IListVirtualDelegate<CoverageTreeElement> {
  	getHeight(element: CoverageTreeElement): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: CoverageTreeElement): string {
 diff --git a/src/vs/workbench/contrib/testing/browser/testResultsView/testResultsOutput.ts b/src/vs/workbench/contrib/testing/browser/testResultsView/testResultsOutput.ts
-index 8ab6a0c4..20950f27 100644
+index 8ab6a0c4823a80f7160e9e3786ae45c67536887f..20950f279ec7cc632199592b9f951308a5480ed8 100644
 --- a/src/vs/workbench/contrib/testing/browser/testResultsView/testResultsOutput.ts
 +++ b/src/vs/workbench/contrib/testing/browser/testResultsView/testResultsOutput.ts
-@@ -34,3 +34,2 @@ import { PANEL_BACKGROUND, SIDE_BAR_BACKGROUND } from '../../../../common/theme.
+@@ -32,7 +32,6 @@ import { IEditorConfiguration } from '../../../../browser/parts/editor/textEdito
+ import { EditorModel } from '../../../../common/editor/editorModel.js';
+ import { PANEL_BACKGROUND, SIDE_BAR_BACKGROUND } from '../../../../common/theme.js';
  import { IViewDescriptorService, ViewContainerLocation } from '../../../../common/views.js';
 -import { CALL_STACK_WIDGET_HEADER_HEIGHT } from '../../../debug/browser/callStackWidget.js';
  import { DetachedProcessInfo } from '../../../terminal/browser/detachedTerminal.js';
-@@ -45,2 +44,3 @@ import { colorizeTestMessageInEditor } from '../testMessageColorizer.js';
+ import { IDetachedTerminalInstance, ITerminalService } from '../../../terminal/browser/terminal.js';
+ import { getXtermScaledDimensions } from '../../../terminal/browser/xterm/xtermTerminal.js';
+@@ -43,6 +42,7 @@ import { ITaskRawOutput, ITestResult, ITestRunTaskResults, LiveTestResult, TestR
+ import { ITestMessage, TestMessageType, getMarkId } from '../../common/testTypes.js';
+ import { colorizeTestMessageInEditor } from '../testMessageColorizer.js';
  import { InspectSubject, MessageSubject, TaskSubject, TestOutputSubject } from './testResultsSubject.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -315,3 +315,3 @@ class ScrollHelper {
+ 
+ class SimpleDiffEditorModel extends EditorModel {
+@@ -313,7 +313,7 @@ class ScrollHelper {
+ 			return;
+ 		}
  
 -		let delta = Math.max(0, evt.scrollTop - (this.hasMultipleFrames ? CALL_STACK_WIDGET_HEADER_HEIGHT : 0));
 +		let delta = Math.max(0, evt.scrollTop - (this.hasMultipleFrames ? FONT.sidebarSize24 : 0));
  		delta = Math.min(Math.max(0, this.contentHeight - this.viewHeight), delta);
+ 
+ 		editor.setScrollTop(delta);
 diff --git a/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts b/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts
-index 20d4dbdb..b48d2e90 100644
+index 20d4dbdb8d26a18b4fa5a22d4f984416ee4d8c69..b48d2e9093de2ac4b514d23b6e756148ee20e73d 100644
 --- a/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts
 +++ b/src/vs/workbench/contrib/testing/browser/testingExplorerView.ts
-@@ -85,2 +85,3 @@ import { DebugLastRun, ReRunLastRun } from './testExplorerActions.js';
+@@ -83,6 +83,7 @@ import * as icons from './icons.js';
+ import './media/testing.css';
+ import { DebugLastRun, ReRunLastRun } from './testExplorerActions.js';
  import { TestingExplorerFilter } from './testingExplorerFilter.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -1431,3 +1432,3 @@ class ListDelegate implements IListVirtualDelegate<TestExplorerTreeElement> {
+ const enum LastFocusState {
+ 	Input,
+@@ -1429,7 +1430,7 @@ class TreeKeyboardNavigationLabelProvider implements IKeyboardNavigationLabelPro
+ 
+ class ListDelegate implements IListVirtualDelegate<TestExplorerTreeElement> {
  	getHeight(element: TestExplorerTreeElement) {
 -		return element instanceof TestTreeErrorMessage ? 17 + 10 : 22;
 +		return element instanceof TestTreeErrorMessage ? FONT.sidebarSize17 + 10 : FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: TestExplorerTreeElement) {
 diff --git a/src/vs/workbench/contrib/timeline/browser/timelinePane.ts b/src/vs/workbench/contrib/timeline/browser/timelinePane.ts
-index 7219c099..7c6bc96c 100644
+index 7219c0991f1c7e7e8691c3d51dfd2b6222e831e8..7c6bc96cdba258684bedc28389f820a3682173b6 100644
 --- a/src/vs/workbench/contrib/timeline/browser/timelinePane.ts
 +++ b/src/vs/workbench/contrib/timeline/browser/timelinePane.ts
-@@ -59,4 +59,3 @@ import { IHoverService, WorkbenchHoverDelegate } from '../../../../platform/hove
+@@ -57,8 +57,7 @@ import { AriaRole } from '../../../../base/browser/ui/aria/aria.js';
+ import { ILocalizedString } from '../../../../platform/action/common/action.js';
+ import { IHoverService, WorkbenchHoverDelegate } from '../../../../platform/hover/browser/hover.js';
  import { HoverPosition } from '../../../../base/browser/ui/hover/hoverWidget.js';
 -
 -const ItemHeight = 22;
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -330,3 +329,3 @@ export class TimelinePane extends ViewPane {
+ type TreeElement = TimelineItem | LoadMoreCommand;
+ 
+@@ -328,7 +327,7 @@ export class TimelinePane extends ViewPane {
+ 		let pageSize = this.configurationService.getValue<number | null | undefined>('timeline.pageSize');
+ 		if (pageSize === undefined || pageSize === null) {
  			// If we are paging when scrolling, then add an extra item to the end to make sure the "Load more" item is out of view
 -			pageSize = Math.max(20, Math.floor((this.tree?.renderHeight ?? 0 / ItemHeight) + (this.pageOnScroll ? 1 : -1)));
 +			pageSize = Math.max(20, Math.floor((this.tree?.renderHeight ?? 0 / FONT.sidebarSize22) + (this.pageOnScroll ? 1 : -1)));
  		}
-@@ -1148,3 +1147,3 @@ export class TimelineListVirtualDelegate implements IListVirtualDelegate<TreeEle
+ 		return pageSize;
+ 	}
+@@ -1146,7 +1145,7 @@ export class TimelineKeyboardNavigationLabelProvider implements IKeyboardNavigat
+ 
+ export class TimelineListVirtualDelegate implements IListVirtualDelegate<TreeElement> {
  	getHeight(_element: TreeElement): number {
 -		return ItemHeight;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(element: TreeElement): string {
 diff --git a/src/vs/workbench/contrib/typeHierarchy/browser/typeHierarchyTree.ts b/src/vs/workbench/contrib/typeHierarchy/browser/typeHierarchyTree.ts
-index 27c65807..0feb6465 100644
+index 27c65807797bc41d96b8bba5fa491eef01748543..0feb6465c8c37ca17858f02fd325bc9839bb4128 100644
 --- a/src/vs/workbench/contrib/typeHierarchy/browser/typeHierarchyTree.ts
 +++ b/src/vs/workbench/contrib/typeHierarchy/browser/typeHierarchyTree.ts
-@@ -17,2 +17,3 @@ import { localize } from '../../../../nls.js';
+@@ -15,6 +15,7 @@ import { Range } from '../../../../editor/common/core/range.js';
+ import { IListAccessibilityProvider } from '../../../../base/browser/ui/list/listWidget.js';
+ import { localize } from '../../../../nls.js';
  import { ThemeIcon } from '../../../../base/common/themables.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -132,3 +133,3 @@ export class VirtualDelegate implements IListVirtualDelegate<Type> {
+ export class Type {
+ 	constructor(
+@@ -130,7 +131,7 @@ export class TypeRenderer implements ITreeRenderer<Type, FuzzyScore, TypeRenderi
+ export class VirtualDelegate implements IListVirtualDelegate<Type> {
+ 
  	getHeight(_element: Type): number {
 -		return 22;
 +		return FONT.sidebarSize22;
  	}
+ 
+ 	getTemplateId(_element: Type): string {
 diff --git a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
-index 888bd75d..70b57290 100644
+index ac3207098565eafe8d192d76de956df5d6a34e05..363973c32ca529ba7522366e3220660586c223d7 100644
 --- a/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
 +++ b/src/vs/workbench/contrib/welcomeAgentSessions/browser/agentSessionsWelcome.ts
-@@ -49,3 +49,2 @@ import { AgentSessionsControl, IAgentSessionsControlOptions } from '../../chat/b
+@@ -47,7 +47,6 @@ import { ChatSessionPosition, getResourceForNewChatSession } from '../../chat/br
+ import { IChatEntitlementService } from '../../../services/chat/common/chatEntitlementService.js';
+ import { AgentSessionsControl, IAgentSessionsControlOptions } from '../../chat/browser/agentSessions/agentSessionsControl.js';
  import { AgentSessionsFilter } from '../../chat/browser/agentSessions/agentSessionsFilter.js';
 -import { AgentSessionsListDelegate } from '../../chat/browser/agentSessions/agentSessionsViewer.js';
  import { HoverPosition } from '../../../../base/browser/ui/hover/hoverWidget.js';
-@@ -63,2 +62,3 @@ import { ILogService } from '../../../../platform/log/common/log.js';
+ import { IResolvedWalkthrough, IWalkthroughsService } from '../../welcomeGettingStarted/browser/gettingStartedService.js';
+ import { GettingStartedEditorOptions, GettingStartedInput } from '../../welcomeGettingStarted/browser/gettingStartedInput.js';
+@@ -61,6 +60,7 @@ import { IViewDescriptorService, ViewContainerLocation } from '../../../common/v
+ import { toErrorMessage } from '../../../../base/common/errorMessage.js';
+ import { ILogService } from '../../../../platform/log/common/log.js';
  import { canShowAgentsBanner, createAgentsBanner } from '../../chat/browser/agentSessions/agentSessionsBanner.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -839,3 +839,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
+ const configurationKey = 'workbench.startupEditor';
+ const MAX_SESSIONS = 6;
+@@ -566,8 +566,8 @@ export class AgentSessionsWelcomePage extends EditorPane {
+ 			getHoverPosition: () => HoverPosition.BELOW,
+ 			trackActiveEditorSession: () => false,
+ 			source: 'welcomeView',
+-			itemHeight: AgentSessionsListDelegate.ITEM_HEIGHT,
+-			sectionHeight: AgentSessionsListDelegate.SECTION_HEIGHT,
++			itemHeight: FONT.sidebarSize54,
++			sectionHeight: FONT.sidebarSize26,
+ 			notifySessionOpened: () => {
+ 				const isProjectionEnabled = this.configurationService.getValue<boolean>(ChatConfiguration.AgentSessionProjectionEnabled);
+ 				if (!isProjectionEnabled) {
+@@ -841,12 +841,12 @@ export class AgentSessionsWelcomePage extends EditorPane {
+ 			this.agentSessionsService.model.sessions.filter(s => !s.isArchived()).length,
+ 			MAX_SESSIONS
  		);
 -		const sessionsHeight = visibleSessions * AgentSessionsListDelegate.ITEM_HEIGHT;
 +		const sessionsHeight = visibleSessions * FONT.sidebarSize22;
  		this.sessionsControl.layout(sessionsHeight, sessionsWidth);
-@@ -844,3 +844,3 @@ export class AgentSessionsWelcomePage extends EditorPane {
+ 
+ 		// Set margin offset for 2-column layout: actual height - visual height
  		// Visual height = ceil(n/2) * ITEM_HEIGHT, so offset = floor(n/2) * ITEM_HEIGHT
 -		const marginOffset = Math.floor(visibleSessions / 2) * AgentSessionsListDelegate.ITEM_HEIGHT;
 +		const marginOffset = Math.floor(visibleSessions / 2) * FONT.sidebarSize22;
  		this.sessionsControl.element!.style.marginBottom = `-${marginOffset}px`;
+ 	}
+ 

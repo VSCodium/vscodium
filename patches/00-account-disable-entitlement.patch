@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: VSCodium <scripts@vscodium.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: skip default account fetch when AI features are disabled
+
+When `chat.disableAIFeatures` is enabled, short-circuit `fetchDefaultAccount` to return null so the default account provider stops resolving the account entitlement data used to gate AI and chat features.
+
+diff --git a/src/vs/workbench/services/accounts/browser/defaultAccount.ts b/src/vs/workbench/services/accounts/browser/defaultAccount.ts
+index b267dcbd4f700c35cfbc924c799cd9f6d6ad7ae0..8e0cf6449944ae67d3b90ee15c9d28c2e15eb000 100644
+--- a/src/vs/workbench/services/accounts/browser/defaultAccount.ts
++++ b/src/vs/workbench/services/accounts/browser/defaultAccount.ts
+@@ -510,6 +510,10 @@ class DefaultAccountProvider extends Disposable implements IDefaultAccountProvid
+ 	}
+ 
+ 	private async fetchDefaultAccount(options?: { forceRefresh?: boolean }): Promise<IDefaultAccountData | null> {
++		if (this.configurationService.getValue<boolean>('chat.disableAIFeatures')) {
++			return null;
++		}
++
+ 		const defaultAccountProvider = this.getDefaultAccountAuthenticationProvider();
+ 		this.logService.debug('[DefaultAccount] Default account provider ID:', defaultAccountProvider.id);
+ 

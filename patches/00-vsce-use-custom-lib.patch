@@ -1,8 +1,17 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: use @vscodium forks of vsce and vsce-sign
+
+Point extension packaging and signature verification at VSCodium's own `@vscodium/vsce` and `@vscodium/vsce-sign` forks instead of Microsoft's `@vscode/*` packages across the moduleignore, gulp package task, extension build lib, manifests, and the signature verification service. Upstream `@vscode/vsce-sign` ships as a proprietary prebuilt binary ("SEE LICENSE IN LICENSE.txt"), and the `@vscodium/vsce` fork drops it as a dependency in favor of the open replacement.
+
 diff --git a/build/.moduleignore b/build/.moduleignore
-index 7af8defd..8eb8da15 100644
+index ed8de1365032efe2c2695a7500f6304d0ce016ed..6149b1ace972c05d0576ebbdaddaf1888886e271 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
-@@ -82,7 +82,7 @@ native-is-elevated/deps/**
+@@ -84,11 +84,11 @@ native-is-elevated/deps/**
+ @vscode/native-watchdog/src/**
+ !@vscode/native-watchdog/build/Release/*.node
  
 -@vscode/vsce-sign/**
 -!@vscode/vsce-sign/src/main.d.ts
@@ -15,93 +24,82 @@ index 7af8defd..8eb8da15 100644
 +!@vscodium/vsce-sign/package.json
 +!@vscodium/vsce-sign/bin/**
  
+ windows-foreground-love/binding.gyp
+ windows-foreground-love/build/**
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 53987f88..8951078a 100644
+index c65b7c029040d336eef996a2995fb3bd824bbcd8..c5ab4d72f10324162058ed14bb4e04cf88e7e2e7 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -359,3 +359,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -409,7 +409,7 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 				// and node-pty blocks the pty host on `ConnectNamedPipe`.
+ 				'**/node-pty/package.json',
  				'**/*.wasm',
 -				'**/@vscode/vsce-sign/bin/*',
 +				'**/@vscodium/vsce-sign/bin/*',
  			], [
+ 				'**/*.mk',
+ 			], [
 diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
-index e487ff5c..88e5ca1d 100644
+index 5b49b9255463c0c6a9fe52d8e27d7932e37c12cc..3085ce493f3889ed8a25abe3603275313a52bdd4 100644
 --- a/build/lib/extensions.ts
 +++ b/build/lib/extensions.ts
-@@ -128,3 +128,3 @@ export function typeCheckExtensionStream(extensionPath: string, forWeb: boolean)
+@@ -124,7 +124,7 @@ export function typeCheckExtensionStream(extensionPath: string, forWeb: boolean)
+ 
+ 
  function fromLocalNormal(extensionPath: string): Stream {
 -	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const result = es.through();
-@@ -150,3 +150,3 @@ function fromLocalNormal(extensionPath: string): Stream {
+ 
+ 	vsce.listFiles({ cwd: extensionPath, packageManager: vsce.PackageManager.Npm })
+@@ -146,7 +146,7 @@ function fromLocalNormal(extensionPath: string): Stream {
+ }
+ 
  function fromLocalEsbuild(extensionPath: string, esbuildConfigFileName: string): Stream {
 -	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const result = es.through();
+ 	const extensionName = path.basename(extensionPath);
+ 
 diff --git a/build/package-lock.json b/build/package-lock.json
-index 12162d60..a26843e8 100644
+index e9178ced494f6068bb02c0665d78b8d266df50f6..104b9c0077b8d2bdfc415e8abea7e0cd2f5d8615 100644
 --- a/build/package-lock.json
 +++ b/build/package-lock.json
-@@ -51,3 +51,3 @@
+@@ -49,7 +49,7 @@
+         "@types/xml2js": "0.0.33",
+         "@vscode/iconv-lite-umd": "0.7.1",
          "@vscode/ripgrep-universal": "^1.18.0",
 -        "@vscode/vsce": "3.6.1",
 +        "@vscodium/vsce": "3.6.1-258428",
          "ansi-colors": "^3.2.3",
-@@ -1928,6 +1928,45 @@
+         "byline": "^5.0.0",
+         "debug": "^4.3.2",
+@@ -1926,10 +1926,10 @@
+       "dev": true,
+       "license": "MIT"
      },
 -    "node_modules/@vscode/vsce": {
 -      "version": "3.6.1",
 -      "resolved": "https://registry.npmjs.org/@vscode/vsce/-/vsce-3.6.1.tgz",
 -      "integrity": "sha512-UXtMgeCBl/t5zjn1TX1v1sl5L/oIv3Xc3pkKPGzaqeFCIkp5+wfFFDBXTWDt3d5uUulHnZKORHkMIsKNe9+k5A==",
-+    "node_modules/@vscode/vsce/node_modules/balanced-match": {
-+      "version": "4.0.4",
-+      "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-4.0.4.tgz",
-+      "integrity": "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==",
-+      "extraneous": true,
-+      "license": "MIT",
-+      "engines": {
-+        "node": "18 || 20 || >=22"
-+      }
-+    },
-+    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
-+      "version": "5.0.6",
-+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.6.tgz",
-+      "integrity": "sha512-kLpxurY4Z4r9sgMsyG0Z9uzsBlgiU/EFKhj/h91/8yHu0edo7XuixOIH3VcJ8kkxs6/jPzoI6U9Vj3WqbMQ94g==",
-+      "extraneous": true,
-+      "license": "MIT",
-+      "dependencies": {
-+        "balanced-match": "^4.0.2"
-+      },
-+      "engines": {
-+        "node": "18 || 20 || >=22"
-+      }
-+    },
-+    "node_modules/@vscode/vsce/node_modules/glob/node_modules/minimatch": {
-+      "version": "10.2.4",
-+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.4.tgz",
-+      "integrity": "sha512-oRjTw/97aTBN0RHbYCdtF1MQfvusSIBQM0IZEgzl6426+8jSC0nF1a/GmnVLpfB9yyr6g6FTqWqiZVbxrtaCIg==",
-+      "extraneous": true,
-+      "license": "BlueOak-1.0.0",
-+      "dependencies": {
-+        "brace-expansion": "^5.0.2"
-+      },
-+      "engines": {
-+        "node": "18 || 20 || >=22"
-+      },
-+      "funding": {
-+        "url": "https://github.com/sponsors/isaacs"
-+      }
-+    },
 +    "node_modules/@vscodium/vsce": {
 +      "version": "3.6.1-258428",
 +      "resolved": "https://registry.npmjs.org/@vscodium/vsce/-/vsce-3.6.1-258428.tgz",
 +      "integrity": "sha512-B2uys5YU5MGNmzQPHsMsRXxzlQvZanhxE8Sfkd4Sr/LBN9BaV5yhMCppV7jyLUOQajj9K3YZThLqUYm4CCBy3A==",
        "dev": true,
-@@ -1940,3 +1979,2 @@
+       "license": "MIT",
+       "dependencies": {
+@@ -1938,7 +1938,6 @@
+         "@secretlint/secretlint-formatter-sarif": "^10.1.2",
+         "@secretlint/secretlint-rule-no-dotenv": "^10.1.2",
          "@secretlint/secretlint-rule-preset-recommend": "^10.1.2",
 -        "@vscode/vsce-sign": "^2.0.0",
          "azure-devops-node-api": "^12.5.0",
-@@ -1975,148 +2013,3 @@
+         "chalk": "^4.1.2",
+         "cheerio": "^1.0.0-rc.9",
+@@ -1973,152 +1972,7 @@
+         "keytar": "^7.7.0"
+       }
      },
 -    "node_modules/@vscode/vsce-sign": {
 -      "version": "2.0.7",
@@ -251,52 +249,111 @@ index 12162d60..a26843e8 100644
 -    "node_modules/@vscode/vsce/node_modules/ansi-styles": {
 +    "node_modules/@vscodium/vsce/node_modules/ansi-styles": {
        "version": "4.3.0",
-@@ -2136,3 +2029,3 @@
+       "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz",
+       "integrity": "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==",
+@@ -2134,7 +1988,7 @@
+         "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/balanced-match": {
 +    "node_modules/@vscodium/vsce/node_modules/balanced-match": {
        "version": "4.0.4",
-@@ -2146,3 +2039,3 @@
+       "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-4.0.4.tgz",
+       "integrity": "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==",
+@@ -2144,20 +1998,20 @@
+         "node": "18 || 20 || >=22"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
+-      "version": "5.0.7",
+-      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.7.tgz",
+-      "integrity": "sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==",
 +    "node_modules/@vscodium/vsce/node_modules/brace-expansion": {
-       "version": "5.0.6",
-@@ -2159,3 +2052,3 @@
++      "version": "5.0.9",
++      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.9.tgz",
++      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+         "balanced-match": "^4.0.2"
+       },
+       "engines": {
+-        "node": "18 || 20 || >=22"
++        "node": "20 || >=22"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/chalk": {
 +    "node_modules/@vscodium/vsce/node_modules/chalk": {
        "version": "4.1.2",
-@@ -2176,3 +2069,3 @@
+       "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz",
+       "integrity": "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==",
+@@ -2174,7 +2028,7 @@
+         "url": "https://github.com/chalk/chalk?sponsor=1"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/color-convert": {
 +    "node_modules/@vscodium/vsce/node_modules/color-convert": {
        "version": "2.0.1",
-@@ -2189,3 +2082,3 @@
+       "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz",
+       "integrity": "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==",
+@@ -2187,17 +2041,18 @@
+         "node": ">=7.0.0"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/color-name": {
 +    "node_modules/@vscodium/vsce/node_modules/color-name": {
        "version": "1.1.4",
-@@ -2196,3 +2089,3 @@
+       "resolved": "https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz",
+       "integrity": "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==",
+       "dev": true,
+       "license": "MIT"
      },
 -    "node_modules/@vscode/vsce/node_modules/glob": {
 +    "node_modules/@vscodium/vsce/node_modules/glob": {
        "version": "11.1.0",
-@@ -2220,3 +2113,3 @@
+       "resolved": "https://registry.npmjs.org/glob/-/glob-11.1.0.tgz",
+       "integrity": "sha512-vuNwKSaKiqm7g0THUBu2x7ckSs3XJLXE+2ssL7/MfTGPLLcrJQ/4Uq1CjPTtO5cCIiRxqvN6Twy1qOwhL0Xjcw==",
++      "deprecated": "Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me",
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "dependencies": {
+@@ -2218,14 +2073,14 @@
+         "url": "https://github.com/sponsors/isaacs"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/glob/node_modules/minimatch": {
+-      "version": "10.2.4",
+-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.4.tgz",
+-      "integrity": "sha512-oRjTw/97aTBN0RHbYCdtF1MQfvusSIBQM0IZEgzl6426+8jSC0nF1a/GmnVLpfB9yyr6g6FTqWqiZVbxrtaCIg==",
 +    "node_modules/@vscodium/vsce/node_modules/glob/node_modules/minimatch": {
-       "version": "10.2.4",
-@@ -2236,3 +2129,3 @@
++      "version": "10.2.6",
++      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz",
++      "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==",
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "brace-expansion": "^5.0.2"
++        "brace-expansion": "^5.0.8"
+       },
+       "engines": {
+         "node": "18 || 20 || >=22"
+@@ -2234,7 +2089,7 @@
+         "url": "https://github.com/sponsors/isaacs"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/has-flag": {
 +    "node_modules/@vscodium/vsce/node_modules/has-flag": {
        "version": "4.0.0",
-@@ -2246,3 +2139,3 @@
+       "resolved": "https://registry.npmjs.org/has-flag/-/has-flag-4.0.0.tgz",
+       "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+@@ -2244,17 +2099,19 @@
+         "node": ">=8"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/jsonc-parser": {
 +    "node_modules/@vscodium/vsce/node_modules/jsonc-parser": {
        "version": "3.3.1",
-@@ -2250,9 +2143,11 @@
+       "resolved": "https://registry.npmjs.org/jsonc-parser/-/jsonc-parser-3.3.1.tgz",
        "integrity": "sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==",
 -      "dev": true
 +      "dev": true,
@@ -307,18 +364,26 @@ index 12162d60..a26843e8 100644
 -      "resolved": "https://registry.npmjs.org/semver/-/semver-7.6.3.tgz",
 -      "integrity": "sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==",
 +    "node_modules/@vscodium/vsce/node_modules/semver": {
-+      "version": "7.7.3",
-+      "resolved": "https://registry.npmjs.org/semver/-/semver-7.7.3.tgz",
-+      "integrity": "sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==",
++      "version": "7.8.5",
++      "resolved": "https://registry.npmjs.org/semver/-/semver-7.8.5.tgz",
++      "integrity": "sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==",
        "dev": true,
 +      "license": "ISC",
        "bin": {
-@@ -2264,3 +2159,3 @@
+         "semver": "bin/semver.js"
+       },
+@@ -2262,7 +2119,7 @@
+         "node": ">=10"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/supports-color": {
 +    "node_modules/@vscodium/vsce/node_modules/supports-color": {
        "version": "7.2.0",
-@@ -2277,12 +2172,2 @@
+       "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-7.2.0.tgz",
+       "integrity": "sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==",
+@@ -2275,16 +2132,6 @@
+         "node": ">=8"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/yazl": {
 -      "version": "2.5.1",
@@ -331,7 +396,11 @@ index 12162d60..a26843e8 100644
 -      }
 -    },
      "node_modules/@xmldom/xmldom": {
-@@ -7099,2 +6984,12 @@
+       "version": "0.8.13",
+       "resolved": "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.13.tgz",
+@@ -7075,6 +6922,16 @@
+         "node": ">=12"
+       }
      },
 +    "node_modules/yazl": {
 +      "version": "2.5.1",
@@ -344,21 +413,31 @@ index 12162d60..a26843e8 100644
 +      }
 +    },
      "node_modules/yocto-queue": {
+       "version": "0.1.0",
+       "resolved": "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz",
 diff --git a/build/package.json b/build/package.json
-index 27176291..1ae8fa80 100644
+index 84db71fd0f9c9e3e2267c5114342b20b792db1a3..ecb927d98d1f89009478548fae7499ffc23a14f3 100644
 --- a/build/package.json
 +++ b/build/package.json
-@@ -45,3 +45,3 @@
+@@ -43,7 +43,7 @@
+     "@types/xml2js": "0.0.33",
+     "@vscode/iconv-lite-umd": "0.7.1",
      "@vscode/ripgrep-universal": "^1.18.0",
 -    "@vscode/vsce": "3.6.1",
 +    "@vscodium/vsce": "3.6.1-258428",
      "ansi-colors": "^3.2.3",
+     "byline": "^5.0.0",
+     "debug": "^4.3.2",
 diff --git a/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts b/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
-index 98535c5e..cc37d7b4 100644
+index 98535c5e648145095a27e542b8f5a201fe848772..cc37d7b4ad9b328d7e4f27ab0a008bf1aec6916f 100644
 --- a/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
 +++ b/src/vs/platform/extensionManagement/node/extensionSignatureVerificationService.ts
-@@ -69,3 +69,3 @@ export class ExtensionSignatureVerificationService implements IExtensionSignatur
+@@ -67,7 +67,7 @@ export class ExtensionSignatureVerificationService implements IExtensionSignatur
+ 	}
+ 
  	private async resolveVsceSign(): Promise<typeof vsceSign> {
 -		const mod = '@vscode/vsce-sign';
 +		const mod = '@vscodium/vsce-sign';
  		return import(mod);
+ 	}
+ 

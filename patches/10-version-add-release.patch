@@ -1,26 +1,50 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: remove package release number and report only vscode's version to
+ extensions
+
+Linux deb/rpm/snap packages now use the plain VS Code version instead of appending a generated package revision, and the version exposed through the extension host API is clamped to VS Code's `major.minor.patch` so extensions that gate on `vscode.version` are not confused by VSCodium's version string (#2299, #2334).
+
+Co-authored-by: Crystal-RainSlide <16851802+Crystal-RainSlide@users.noreply.github.com>
+
 diff --git a/build/gulpfile.vscode.linux.ts b/build/gulpfile.vscode.linux.ts
-index c5d2163..b4768b9 100644
+index 45179160a57b8647eeab7dd3d6722e05bc0d640c..9a9a6b60f7ce2884f0898b3f611f906c80ceb272 100644
 --- a/build/gulpfile.vscode.linux.ts
 +++ b/build/gulpfile.vscode.linux.ts
-@@ -90,3 +90,3 @@ function prepareDebPackage(arch: string) {
+@@ -87,7 +87,7 @@ function prepareDebPackage(arch: string) {
+ 				const that = this;
+ 				gulp.src('resources/linux/debian/control.template', { base: '.' })
  					.pipe(replace('@@NAME@@', product.applicationName))
 -					.pipe(replace('@@VERSION@@', packageJson.version + '-' + linuxPackageRevision))
 +					.pipe(replace('@@VERSION@@', packageJson.version))
  					.pipe(replace('@@ARCHITECTURE@@', debArch))
-@@ -198,3 +198,2 @@ function prepareRpmPackage(arch: string) {
+ 					.pipe(replace('@@DEPENDS@@', dependencies.join(', ')))
+ 					.pipe(replace('@@RECOMMENDS@@', debianRecommendedDependencies.join(', ')))
+@@ -195,7 +195,6 @@ function prepareRpmPackage(arch: string) {
+ 			.pipe(replace('@@NAME_LONG@@', product.nameLong))
+ 			.pipe(replace('@@ICON@@', product.linuxIconName))
  			.pipe(replace('@@VERSION@@', packageJson.version))
 -			.pipe(replace('@@RELEASE@@', linuxPackageRevision.toString()))
  			.pipe(replace('@@ARCHITECTURE@@', rpmArch))
-@@ -263,3 +262,3 @@ function prepareSnapPackage(arch: string) {
+ 			.pipe(replace('@@LICENSE@@', product.licenseName))
+ 			.pipe(replace('@@QUALITY@@', (product as typeof product & { quality?: string }).quality || '@@QUALITY@@'))
+@@ -261,7 +260,7 @@ function prepareSnapPackage(arch: string) {
+ 
+ 		const snapcraft = gulp.src('resources/linux/snap/snapcraft.yaml', { base: '.' })
  			.pipe(replace('@@NAME@@', product.applicationName))
 -			.pipe(replace('@@VERSION@@', commit!.substr(0, 8)))
 +			.pipe(replace('@@VERSION@@', packageJson.version))
  			// Possible run-on values https://snapcraft.io/docs/architectures
+ 			.pipe(replace('@@ARCHITECTURE@@', arch === 'x64' ? 'amd64' : arch))
+ 			.pipe(rename('snap/snapcraft.yaml'));
 diff --git a/src/vs/workbench/api/common/extHost.api.impl.ts b/src/vs/workbench/api/common/extHost.api.impl.ts
-index 8838f2f..fb120ae 100644
+index 93b1b4f31a20d48037dc3aa955ba0770c11f6c2c..c4c94899178889fc86e9690d0a961d591921cfb3 100644
 --- a/src/vs/workbench/api/common/extHost.api.impl.ts
 +++ b/src/vs/workbench/api/common/extHost.api.impl.ts
-@@ -1629,5 +1629,7 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
+@@ -1959,9 +1959,11 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
+ 			}
+ 		};
  
 +		const version = initData.version.replace(/^([0-9]+\.[0-9]+\.[0-5]).*$/, '$1');
 +
@@ -29,3 +53,5 @@ index 8838f2f..fb120ae 100644
 -			version: initData.version,
 +			version,
  			// namespaces
+ 			ai,
+ 			authentication,

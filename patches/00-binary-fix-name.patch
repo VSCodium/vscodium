@@ -1,23 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: derive the macos cli binary name from product.applicationName
+
+VS Code hardcodes the packaged macOS CLI helper as `bin/code`; naming it after `product.applicationName` keeps the shipped binary and the shell-command install target consistent with the product's own command name (`codium`) rather than the upstream `code`.
+
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index a103f11..cc95785 100644
+index 66514015e651e8c50e1dcbcd1e0e3e21563fea86..be1907ec11123d31d1c769287fcca8446c09abda 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -466,3 +466,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -474,7 +474,7 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 			const shortcut = gulp.src('resources/darwin/bin/code.sh')
+ 				.pipe(replace('@@APPNAME@@', product.applicationName))
  				.pipe(replace('@@NAME@@', product.nameShort))
 -				.pipe(rename('bin/code'));
 +				.pipe(rename('bin/' + product.applicationName));
  			const policyDest = gulp.src('.build/policies/darwin/**', { base: '.build/policies/darwin' })
+ 				.pipe(rename(f => f.dirname = `policies/${f.dirname}`));
+ 			all = es.merge(all, shortcut, policyDest);
 diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-index 93d0008..a04d296 100644
+index f09c80af27d1c8d3600851ffda66c6cd112afa76..db7f0ebe1b3dcde7a766625da41be795f98f4916 100644
 --- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
 +++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
-@@ -539,3 +539,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+@@ -566,7 +566,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+ 	}
+ 
  	private async getShellCommandLink(): Promise<{ readonly source: string; readonly target: string }> {
 -		const target = resolve(this.environmentMainService.appRoot, 'bin', 'code');
 +		const target = resolve(this.environmentMainService.appRoot, 'bin', this.productService.applicationName);
  		const source = `/usr/local/bin/${this.productService.applicationName}`;
-@@ -808,3 +808,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+ 
+ 		// Ensure source exists
+@@ -846,7 +846,7 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+ 
+ 		// macOS
  		if (this.environmentMainService.isBuilt) {
 -			return join(this.environmentMainService.appRoot, 'bin', 'code');
 +			return join(this.environmentMainService.appRoot, 'bin', `${this.productService.applicationName}`);
  		}
+ 
+ 		return join(this.environmentMainService.appRoot, 'scripts', 'code-cli.sh');

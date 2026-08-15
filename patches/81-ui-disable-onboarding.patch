@@ -1,24 +1,41 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: remove welcome onboarding screen
+
+Prevents the experimental welcome onboarding overlay from being shown on startup and drops its contribution registration, removing the AI-focused onboarding flow that VSCodium does not ship (#2841).
+
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/startupPage.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/startupPage.ts
-index 777f3ad8..4172f07f 100644
+index 777f3ad872c6de562252c1635e423c63692a3225..4172f07fe8344060a4739b007a51192533dbf608 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/startupPage.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/startupPage.ts
-@@ -33,6 +33,2 @@ import { mainWindow } from '../../../../base/browser/window.js';
+@@ -31,10 +31,6 @@ import { IContextKeyService } from '../../../../platform/contextkey/common/conte
+ import { AuxiliaryBarMaximizedContext } from '../../../common/contextkeys.js';
+ import { mainWindow } from '../../../../base/browser/window.js';
  import { getActiveElement } from '../../../../base/browser/dom.js';
 -import { isWeb } from '../../../../base/common/platform.js';
 -import { IOnboardingService } from '../../welcomeOnboarding/common/onboardingService.js';
 -import { ONBOARDING_STORAGE_KEY } from '../../welcomeOnboarding/common/onboardingTypes.js';
 -import { IChatEntitlementService } from '../../../services/chat/common/chatEntitlementService.js';
  
-@@ -97,4 +93,2 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
+ export const restoreWalkthroughsConfigurationKey = 'workbench.welcomePage.restorableWalkthroughs';
+ export type RestoreWalkthroughsConfigurationValue = { folder: string; category?: string; step?: string };
+@@ -95,12 +91,9 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
+ 		@IStorageService private readonly storageService: IStorageService,
+ 		@INotificationService private readonly notificationService: INotificationService,
  		@IContextKeyService private readonly contextKeyService: IContextKeyService,
 -		@IOnboardingService private readonly onboardingService: IOnboardingService,
 -		@IChatEntitlementService private readonly chatEntitlementService: IChatEntitlementService,
  	) {
-@@ -102,3 +96,2 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
+ 		super();
  
 -		this.tryShowOnboarding();
  		this.run().then(undefined, onUnexpectedError);
-@@ -234,36 +227,2 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
+ 		this._register(this.editorService.onDidCloseEditor((e) => {
+ 			if (e.editor instanceof GettingStartedInput) {
+@@ -232,40 +225,6 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
+ 
+ 		return true; // do not steal focus
  	}
 -
 -	private tryShowOnboarding(): void {
@@ -55,13 +72,19 @@ index 777f3ad8..4172f07f 100644
 -		}));
 -	}
  }
+ 
+ function isStartupPageEnabled(configurationService: IConfigurationService, contextService: IWorkspaceContextService, environmentService: IWorkbenchEnvironmentService) {
 diff --git a/src/vs/workbench/workbench.common.main.ts b/src/vs/workbench/workbench.common.main.ts
-index b6c33f80..e3a8ad35 100644
+index 3c43ccd0ab64dac85e7db7155bc778c540da0a0a..c92015de2d8e4c2e7ed212b8a152bd37d6d70eb4 100644
 --- a/src/vs/workbench/workbench.common.main.ts
 +++ b/src/vs/workbench/workbench.common.main.ts
-@@ -391,5 +391,2 @@ import './contrib/welcomeViews/common/newFile.contribution.js';
+@@ -393,9 +393,6 @@ import './contrib/welcomeWalkthrough/browser/walkThrough.contribution.js';
+ import './contrib/welcomeViews/common/viewsWelcome.contribution.js';
+ import './contrib/welcomeViews/common/newFile.contribution.js';
  
 -// Welcome Onboarding
 -import './contrib/welcomeOnboarding/browser/welcomeOnboarding.contribution.js';
 -
- // Call Hierarchy
+ // Onboarding (scenario engine)
+ import './contrib/onboarding/browser/onboarding.contribution.js';
+ 

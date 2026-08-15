@@ -1,18 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: disable extension signature verification
+
+Force `verifySignature` off in the extension download path so the `extensions.verifySignature` setting is ignored. VSCodium cannot validate the Microsoft-issued signatures required by the official Marketplace, so verification is bypassed to let extensions from alternative galleries install (#1915).
+
 diff --git a/src/vs/platform/extensionManagement/node/extensionManagementService.ts b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-index 0a50a2e..5ee6782 100644
+index e6cafc5d5e4464665c3a9077413f49b48f1c5178..73a0472214260565a58c037b1cb42bebf8684ba3 100644
 --- a/src/vs/platform/extensionManagement/node/extensionManagementService.ts
 +++ b/src/vs/platform/extensionManagement/node/extensionManagementService.ts
-@@ -36,3 +36,2 @@ import {
+@@ -34,7 +34,6 @@ import {
+ 	ExtensionSignatureVerificationCode,
+ 	computeSize,
  	IAllowedExtensionsService,
 -	VerifyExtensionSignatureConfigKey,
  	shouldRequireRepositorySignatureFor,
-@@ -89,2 +88,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ } from '../common/extensionManagement.js';
+ import { areSameExtensions, computeTargetPlatform, ExtensionKey, getGalleryExtensionId, groupByExtension } from '../common/extensionManagementUtil.js';
+@@ -87,6 +86,7 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ 		@IDownloadService private downloadService: IDownloadService,
+ 		@IInstantiationService private readonly instantiationService: IInstantiationService,
  		@IFileService private readonly fileService: IFileService,
 +		// @ts-expect-error no-unused-variable
  		@IConfigurationService private readonly configurationService: IConfigurationService,
-@@ -333,4 +333,3 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ 		@IExtensionGalleryManifestService protected readonly extensionGalleryManifestService: IExtensionGalleryManifestService,
+ 		@IProductService productService: IProductService,
+@@ -339,8 +339,7 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
+ 
+ 	private async downloadExtension(extension: IGalleryExtension, operation: InstallOperation, verifySignature: boolean, clientTargetPlatform?: TargetPlatform): Promise<{ readonly location: URI; readonly verificationStatus: ExtensionSignatureVerificationCode | undefined }> {
  		if (verifySignature) {
 -			const value = this.configurationService.getValue(VerifyExtensionSignatureConfigKey);
 -			verifySignature = isBoolean(value) ? value : true;
 +			verifySignature = false;
  		}
+ 		const { location, verificationStatus } = await this.extensionsDownloader.download(extension, operation, verifySignature, clientTargetPlatform);
+ 		const shouldRequireSignature = shouldRequireRepositorySignatureFor(extension.private, await this.extensionGalleryManifestService.getExtensionGalleryManifest());

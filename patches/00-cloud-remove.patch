@@ -1,22 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: remove cloud changes sign-in action from accounts menu
+
+Drops the `registerSignInAction` that adds the "Turn on Cloud Changes..." command (edit sessions) to the Accounts context menu and Command Palette, since VSCodium does not host the cloud/edit-sessions backend the feature depends on. See #1709.
+
 diff --git a/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts b/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts
-index 1bb5eb3..70f1b37 100644
+index 263cc326515ffd8b751ebc771fe220746d930b10..ea1afee27db581e891ffed21796e4a8590b0d090 100644
 --- a/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts
 +++ b/src/vs/workbench/contrib/editSessions/browser/editSessionsStorageService.ts
-@@ -7,3 +7,3 @@ import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.j
+@@ -5,7 +5,7 @@
+ 
+ import { Disposable, DisposableStore } from '../../../../base/common/lifecycle.js';
  import { localize } from '../../../../nls.js';
 -import { Action2, MenuId, MenuRegistry, registerAction2 } from '../../../../platform/actions/common/actions.js';
 +import { Action2, MenuId, registerAction2 } from '../../../../platform/actions/common/actions.js';
  import { ContextKeyExpr, IContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
-@@ -17,3 +17,3 @@ import { AuthenticationSession, AuthenticationSessionsChangeEvent, IAuthenticati
+ import { IEnvironmentService } from '../../../../platform/environment/common/environment.js';
+ import { IFileService } from '../../../../platform/files/common/files.js';
+@@ -15,7 +15,7 @@ import { IStorageService, StorageScope, StorageTarget } from '../../../../platfo
+ import { createSyncHeaders, IAuthenticationProvider, IResourceRefHandle } from '../../../../platform/userDataSync/common/userDataSync.js';
+ import { AuthenticationSession, AuthenticationSessionsChangeEvent, IAuthenticationService } from '../../../services/authentication/common/authentication.js';
  import { IExtensionService } from '../../../services/extensions/common/extensions.js';
 -import { EDIT_SESSIONS_SIGNED_IN, EditSession, EDIT_SESSION_SYNC_CATEGORY, IEditSessionsStorageService, EDIT_SESSIONS_SIGNED_IN_KEY, IEditSessionsLogService, SyncResource, EDIT_SESSIONS_PENDING_KEY } from '../common/editSessions.js';
 +import { EDIT_SESSIONS_SIGNED_IN, EditSession, EDIT_SESSION_SYNC_CATEGORY, IEditSessionsStorageService, EDIT_SESSIONS_SIGNED_IN_KEY, IEditSessionsLogService, SyncResource } from '../common/editSessions.js';
  import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
-@@ -93,3 +93,2 @@ export class EditSessionsWorkbenchService extends Disposable implements IEditSes
+ import { generateUuid } from '../../../../base/common/uuid.js';
+ import { getCurrentAuthenticationSessionInfo } from '../../../services/authentication/browser/authenticationService.js';
+@@ -91,7 +91,6 @@ export class EditSessionsWorkbenchService extends Disposable implements IEditSes
+ 		// If another window changes the preferred session storage, reset our cached auth state in memory
+ 		this._register(this.storageService.onDidChangeValue(StorageScope.APPLICATION, EditSessionsWorkbenchService.CACHED_SESSION_STORAGE_KEY, this._store)(() => this.onDidChangeStorage()));
  
 -		this.registerSignInAction();
  		this.registerResetAuthenticationAction();
-@@ -456,42 +455,2 @@ export class EditSessionsWorkbenchService extends Disposable implements IEditSes
+ 
+ 		this.signedInContext = EDIT_SESSIONS_SIGNED_IN.bindTo(this.contextKeyService);
+@@ -454,46 +453,6 @@ export class EditSessionsWorkbenchService extends Disposable implements IEditSes
+ 		}
+ 	}
  
 -	private registerSignInAction() {
 -		if (!this.serverConfiguration?.url) {
@@ -59,3 +80,5 @@ index 1bb5eb3..70f1b37 100644
 -	}
 -
  	private registerResetAuthenticationAction() {
+ 		const that = this;
+ 		this._register(registerAction2(class ResetEditSessionAuthenticationAction extends Action2 {

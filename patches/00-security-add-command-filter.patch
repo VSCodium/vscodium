@@ -1,16 +1,29 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: add configurable command authorization filter
+
+Adds a `commands.filters` setting that gates command execution in `CommandService`, letting each command be always authorized (`on`), never authorized (`off`), or confirmed through a prompt (`ask`); ships with `workbench.action.terminal.newLocal` disabled by default (#2487, #2492).
+
 diff --git a/src/vs/workbench/contrib/commands/common/commands.contribution.ts b/src/vs/workbench/contrib/commands/common/commands.contribution.ts
-index 3fd6b59..97a0e04 100644
+index 3fd6b59a3b088468924e183b89d298c2f147b255..97a0e04e286b8846546742b6137e80103d5c0ee2 100644
 --- a/src/vs/workbench/contrib/commands/common/commands.contribution.ts
 +++ b/src/vs/workbench/contrib/commands/common/commands.contribution.ts
-@@ -9,2 +9,3 @@ import { Action2, registerAction2 } from '../../../../platform/actions/common/ac
+@@ -7,9 +7,11 @@ import { safeStringify } from '../../../../base/common/objects.js';
+ import * as nls from '../../../../nls.js';
+ import { Action2, registerAction2 } from '../../../../platform/actions/common/actions.js';
  import { ICommandService } from '../../../../platform/commands/common/commands.js';
 +import { ConfigurationScope, IConfigurationRegistry } from '../../../../platform/configuration/common/configurationRegistry.js';
  import { ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
-@@ -12,2 +13,3 @@ import { ILogService } from '../../../../platform/log/common/log.js';
+ import { ILogService } from '../../../../platform/log/common/log.js';
  import { INotificationService } from '../../../../platform/notification/common/notification.js';
 +import { Registry } from '../../../../platform/registry/common/platform.js';
  
-@@ -156,2 +158,30 @@ class RunCommands extends Action2 {
+ type RunnableCommand = string | { command: string; args: any[] };
+ 
+@@ -154,4 +156,32 @@ class RunCommands extends Action2 {
+ 	}
+ }
  
 +Registry.as<IConfigurationRegistry>('base.contributions.configuration')
 +	.registerConfiguration({
@@ -42,28 +55,39 @@ index 3fd6b59..97a0e04 100644
 +
  registerAction2(RunCommands);
 diff --git a/src/vs/workbench/services/commands/common/commandService.ts b/src/vs/workbench/services/commands/common/commandService.ts
-index 93d1631..0533cf0 100644
+index 9e38f1ff9d2632e027fa757fb056554a3dcc7a74..82832da2518fe300a2127901f62fb9469747a56d 100644
 --- a/src/vs/workbench/services/commands/common/commandService.ts
 +++ b/src/vs/workbench/services/commands/common/commandService.ts
-@@ -8,3 +8,6 @@ import { Emitter, Event } from '../../../../base/common/event.js';
+@@ -6,7 +6,10 @@
+ import { CancelablePromise, notCancellablePromise, raceCancellablePromises, timeout } from '../../../../base/common/async.js';
+ import { Emitter, Event } from '../../../../base/common/event.js';
  import { Disposable } from '../../../../base/common/lifecycle.js';
 +import Severity from '../../../../base/common/severity.js';
  import { CommandsRegistry, ICommandEvent, ICommandService } from '../../../../platform/commands/common/commands.js';
 +import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 +import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
  import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
-@@ -20,2 +23,3 @@ export class CommandService extends Disposable implements ICommandService {
+ import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
+ import { ILogService } from '../../../../platform/log/common/log.js';
+@@ -18,6 +21,7 @@ export class CommandService extends Disposable implements ICommandService {
+ 
+ 	private _extensionHostIsReady: boolean = false;
  	private _starActivation: CancelablePromise<void> | null;
 +	private _commandFilters: Record<string, "ask" | "off" | "on">
  
-@@ -30,3 +34,5 @@ export class CommandService extends Disposable implements ICommandService {
+ 	private readonly _onWillExecuteCommand: Emitter<ICommandEvent> = this._register(new Emitter<ICommandEvent>());
+ 	public readonly onWillExecuteCommand: Event<ICommandEvent> = this._onWillExecuteCommand.event;
+@@ -28,11 +32,20 @@ export class CommandService extends Disposable implements ICommandService {
+ 	constructor(
+ 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
  		@IExtensionService private readonly _extensionService: IExtensionService,
 -		@ILogService private readonly _logService: ILogService
 +		@ILogService private readonly _logService: ILogService,
 +		@IConfigurationService private readonly _configurationService: IConfigurationService,
 +		@IDialogService private readonly _dialogService: IDialogService
  	) {
-@@ -35,2 +41,9 @@ export class CommandService extends Disposable implements ICommandService {
+ 		super();
+ 		this._extensionService.whenInstalledExtensionsRegistered().then(value => this._extensionHostIsReady = value);
  		this._starActivation = null;
 +		this._commandFilters = this._configurationService.getValue('commands.filters') ?? { 'workbench.action.terminal.newLocal': 'off' };
 +
@@ -73,7 +97,11 @@ index 93d1631..0533cf0 100644
 +			}
 +		})
  	}
-@@ -57,2 +70,27 @@ export class CommandService extends Disposable implements ICommandService {
+ 
+ 	private _activateStar(): Promise<void> {
+@@ -55,6 +68,31 @@ export class CommandService extends Disposable implements ICommandService {
+ 		const activationEvent = `onCommand:${id}`;
+ 		const commandIsRegistered = !!CommandsRegistry.getCommand(id);
  
 +		const filter = this._commandFilters[id];
 +		if (filter === 'off') {
@@ -101,11 +129,15 @@ index 93d1631..0533cf0 100644
 +		}
 +
  		if (commandIsRegistered) {
+ 
+ 			// if the activation event has already resolved (i.e. subsequent call),
 diff --git a/src/vs/workbench/services/commands/test/common/commandService.test.ts b/src/vs/workbench/services/commands/test/common/commandService.test.ts
-index ca3be11..fb456a3 100644
+index ca3be11a7f08c0cf03f537486eda38299ce8215d..fb456a3c1a7dfa6de5605b9953125eb4281e7d40 100644
 --- a/src/vs/workbench/services/commands/test/common/commandService.test.ts
 +++ b/src/vs/workbench/services/commands/test/common/commandService.test.ts
-@@ -12,2 +12,7 @@ import { NullExtensionService } from '../../../extensions/common/extensions.js';
+@@ -10,12 +10,29 @@ import { InstantiationService } from '../../../../../platform/instantiation/comm
+ import { NullLogService } from '../../../../../platform/log/common/log.js';
+ import { NullExtensionService } from '../../../extensions/common/extensions.js';
  import { CommandService } from '../../common/commandService.js';
 +import { NullPolicyService } from '../../../../../platform/policy/common/policy.js';
 +import { FileService } from '../../../../../platform/files/common/fileService.js';
@@ -113,7 +145,8 @@ index ca3be11..fb456a3 100644
 +import { ConfigurationService } from '../../../../../platform/configuration/common/configurationService.js';
 +import { TestDialogService } from '../../../../../platform/dialogs/test/common/testDialogService.js';
  
-@@ -16,4 +21,16 @@ suite('CommandService', function () {
+ suite('CommandService', function () {
+ 
  	const store = ensureNoDisposablesAreLeakedInTestSuite();
 +	const testDisposables = ensureNoDisposablesAreLeakedInTestSuite();
 +	let nullConfigService: ConfigurationService
@@ -130,38 +163,68 @@ index ca3be11..fb456a3 100644
 +		));
 +
  		store.add(CommandsRegistry.registerCommand('foo', function () { }));
-@@ -30,3 +47,3 @@ suite('CommandService', function () {
+ 	});
+ 
+@@ -28,7 +45,7 @@ suite('CommandService', function () {
+ 				lastEvent = activationEvent;
+ 				return super.activateByEvent(activationEvent);
  			}
 -		}, new NullLogService()));
 +		}, new NullLogService(), nullConfigService, new TestDialogService()));
  
-@@ -50,3 +67,3 @@ suite('CommandService', function () {
+ 		return service.executeCommand('foo').then(() => {
+ 			assert.ok(lastEvent, 'onCommand:foo');
+@@ -48,7 +65,7 @@ suite('CommandService', function () {
+ 			}
+ 		};
  
 -		const service = store.add(new CommandService(new InstantiationService(), extensionService, new NullLogService()));
 +		const service = store.add(new CommandService(new InstantiationService(), extensionService, new NullLogService(), nullConfigService, new TestDialogService()));
  
-@@ -68,3 +85,3 @@ suite('CommandService', function () {
+ 		await extensionService.whenInstalledExtensionsRegistered();
+ 
+@@ -66,7 +83,7 @@ suite('CommandService', function () {
+ 			override whenInstalledExtensionsRegistered() {
+ 				return new Promise<boolean>(_resolve => { /*ignore*/ });
  			}
 -		}, new NullLogService()));
 +		}, new NullLogService(), nullConfigService, new TestDialogService()));
  
-@@ -85,3 +102,3 @@ suite('CommandService', function () {
+ 		service.executeCommand('bar');
+ 		assert.strictEqual(callCounter, 1);
+@@ -83,7 +100,7 @@ suite('CommandService', function () {
+ 			override whenInstalledExtensionsRegistered() {
+ 				return whenInstalledExtensionsRegistered;
  			}
 -		}, new NullLogService()));
 +		}, new NullLogService(), nullConfigService, new TestDialogService()));
  
-@@ -125,3 +142,3 @@ suite('CommandService', function () {
+ 		const r = service.executeCommand('bar');
+ 		assert.strictEqual(callCounter, 0);
+@@ -123,7 +140,7 @@ suite('CommandService', function () {
+ 				return Promise.resolve();
+ 			}
  
 -		}, new NullLogService()));
 +		}, new NullLogService(), nullConfigService, new TestDialogService()));
  
-@@ -166,3 +183,3 @@ suite('CommandService', function () {
+ 		return service.executeCommand('farboo').then(() => {
+ 			assert.strictEqual(callCounter, 1);
+@@ -164,7 +181,7 @@ suite('CommandService', function () {
+ 				return Promise.resolve();
+ 			}
  
 -		}, new NullLogService()));
 +		}, new NullLogService(), nullConfigService, new TestDialogService()));
  
-@@ -187,3 +204,3 @@ suite('CommandService', function () {
+ 		return service.executeCommand('farboo2').then(() => {
+ 			assert.deepStrictEqual(actualOrder, expectedOrder);
+@@ -185,7 +202,7 @@ suite('CommandService', function () {
+ 				return true;
+ 			}
  		};
 -		const service = store.add(new CommandService(new InstantiationService(), extensionService, new NullLogService()));
 +		const service = store.add(new CommandService(new InstantiationService(), extensionService, new NullLogService(), nullConfigService, new TestDialogService()));
+ 
+ 		await extensionService.whenInstalledExtensionsRegistered();
  

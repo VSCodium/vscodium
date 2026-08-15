@@ -1,8 +1,16 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: disable the typescript mangler in the build compile task
+
+
 diff --git a/build/lib/compilation.ts b/build/lib/compilation.ts
-index 32e3e25e..6e9396d2 100644
+index 32e3e25e6bc4302e8328bc4c24553ab8a03be350..6e9396d2f61dd21c011dbbbed7d6aa2e015e6ff7 100644
 --- a/build/lib/compilation.ts
 +++ b/build/lib/compilation.ts
-@@ -139,27 +139,3 @@ export function compileTask(src: string, out: string, build: boolean, options: {
+@@ -137,31 +137,7 @@ export function compileTask(src: string, out: string, build: boolean, options: {
+ 			generator.execute();
+ 		}
  
 -		// mangle: TypeScript to TypeScript
 -		let mangleStream = es.through();
@@ -30,3 +38,5 @@ index 32e3e25e..6e9396d2 100644
  		const emit = util.streamToPromise(srcPipe
 -			.pipe(mangleStream)
  			.pipe(generator.stream)
+ 			.pipe(compile())
+ 			.pipe(gulp.dest(out)));

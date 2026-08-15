@@ -1,8 +1,17 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: build: remove the non-ascii check from the minify task
+
+Upstream's minify task aborts the build when the minified esbuild output contains any non-ASCII byte. Dropping the guard lets VSCodium's patched sources, which can introduce non-ASCII characters, pass minification instead of failing the build.
+
 diff --git a/build/lib/optimize.ts b/build/lib/optimize.ts
-index 21a17ee1..660620f8 100644
+index fa72ec528c9ddd2a43bdd56f216f992a1d359615..571a1f97b22ea0c965c44c273c9c9b49abb52ffa 100644
 --- a/build/lib/optimize.ts
 +++ b/build/lib/optimize.ts
-@@ -251,13 +251,8 @@ export function minifyTask(src: string, sourceMapBaseUrl?: string): (cb: any) =>
+@@ -249,17 +249,12 @@ export function minifyTask(src: string, sourceMapBaseUrl?: string): (cb: any) =>
+ 				}).then(res => {
+ 					const jsOrCSSFile = res.outputFiles.find(f => /\.(js|css)$/.test(f.path))!;
  					const sourceMapFile = res.outputFiles.find(f => /\.(js|css)\.map$/.test(f.path))!;
 -
  					const contents = Buffer.from(jsOrCSSFile.contents);
@@ -21,3 +30,5 @@ index 21a17ee1..660620f8 100644
 +
 +					cb(undefined, f);
  				}, cb);
+ 			}),
+ 			esbuildFilter.restore,

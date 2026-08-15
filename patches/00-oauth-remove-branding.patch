@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: VSCodium <scripts@vscodium.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: oauth: drop hardcoded vs code client_uri from dynamic client
+ registration
+
+The dynamic client registration request advertised Microsoft's `client_uri: 'https://code.visualstudio.com'` to authorization servers. Removing the field keeps VS Code branding out of the OAuth registration request sent by VSCodium.
+
+diff --git a/src/vs/base/common/oauth.ts b/src/vs/base/common/oauth.ts
+index 3e4d6133360a9e65c3bd049b92349bef643d3ee5..8d5348a7b9c9511910eab03174693044074c1d84 100644
+--- a/src/vs/base/common/oauth.ts
++++ b/src/vs/base/common/oauth.ts
+@@ -948,7 +948,6 @@ export async function fetchDynamicRegistration(serverMetadata: IAuthorizationSer
+ 
+ 	const requestBody: IAuthorizationDynamicClientRegistrationRequest = {
+ 		client_name: clientName,
+-		client_uri: 'https://code.visualstudio.com',
+ 		grant_types: serverMetadata.grant_types_supported
+ 			? serverMetadata.grant_types_supported.filter(gt => grantTypesSupported.includes(gt))
+ 			: grantTypesSupported,

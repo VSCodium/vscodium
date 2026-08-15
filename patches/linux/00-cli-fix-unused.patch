@@ -1,26 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: allow unused imports in cli tunnel and update-service sources
+
+The reh-archive and architecture CLI patches rewrite the `use` statements in `code_server.rs`, `dev_tunnels.rs`, and `update_service.rs`, leaving some imports unused; the crate-level `#![allow(unused_imports)]` suppresses the resulting Rust warnings so the CLI still compiles cleanly.
+
 diff --git a/cli/src/tunnels/code_server.rs b/cli/src/tunnels/code_server.rs
-index bbabadc..08af0df 100644
+index a3df1bea0edfb12ffdec847044bea885868d7c2b..15c123d3d6d03c921f65e66b35d5511bf47db9f5 100644
 --- a/cli/src/tunnels/code_server.rs
 +++ b/cli/src/tunnels/code_server.rs
-@@ -4,2 +4,4 @@
+@@ -2,6 +2,8 @@
+  *  Copyright (c) Microsoft Corporation. All rights reserved.
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
   *--------------------------------------------------------------------------------------------*/
 +#![allow(unused_imports)]
 +
  use super::paths::{InstalledServer, ServerPaths};
+ use crate::async_pipe::get_socket_name;
+ use crate::constants::{
 diff --git a/cli/src/tunnels/dev_tunnels.rs b/cli/src/tunnels/dev_tunnels.rs
-index 0168ee6..5d0d8d4 100644
+index ed8a9b08e0588ae83492cfa1d3e3f0b566460bdb..6156c74974cda0079f6fa80febb1d93e833daa69 100644
 --- a/cli/src/tunnels/dev_tunnels.rs
 +++ b/cli/src/tunnels/dev_tunnels.rs
-@@ -4,2 +4,4 @@
+@@ -2,6 +2,8 @@
+  *  Copyright (c) Microsoft Corporation. All rights reserved.
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
   *--------------------------------------------------------------------------------------------*/
 +#![allow(unused_imports)]
 +
  use super::protocol::{self, PortPrivacy, PortProtocol};
+ use crate::auth;
+ use crate::constants::{IS_INTERACTIVE_CLI, PROTOCOL_VERSION_TAG, TUNNEL_SERVICE_USER_AGENT};
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 55f1dad..f22a83c 100644
+index db0642776cf12df0c57982b93f25167f76bc622e..6721a4d847ffeb23e45d6aa7d6bb95f9bfb7905c 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
-@@ -4,2 +4,3 @@
+@@ -2,6 +2,7 @@
+  *  Copyright (c) Microsoft Corporation. All rights reserved.
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
   *--------------------------------------------------------------------------------------------*/
 +#![allow(unused_imports)]
+ 
+ use std::{fmt, path::Path};
  

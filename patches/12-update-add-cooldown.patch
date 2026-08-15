@@ -1,8 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: add minReleaseAge cooldown before installing updates and
+ auto-updating extensions
+
+Adds `update.minReleaseAge` (default 120h) and `extensions.minReleaseAge` (default 48h) settings so a release must have been available for a minimum number of hours before it is offered as an update or auto-installed, letting users hold back from freshly-published builds that may be broken or quickly pulled (#2799, #2868).
+
 diff --git a/src/vs/platform/update/common/update.config.contribution.ts b/src/vs/platform/update/common/update.config.contribution.ts
-index 2c63e9e6..e98ed806 100644
+index df48d44d01db5ddf623886a33bba012463a760d2..9ea70f17d26df36af4edba67e86bddda101bb8a3 100644
 --- a/src/vs/platform/update/common/update.config.contribution.ts
 +++ b/src/vs/platform/update/common/update.config.contribution.ts
-@@ -65,2 +65,8 @@ configurationRegistry.registerConfiguration({
+@@ -63,6 +63,12 @@ configurationRegistry.registerConfiguration({
+ 			description: localize('updateMode', "Configure whether you receive automatic updates. The updates are fetched from a Microsoft online service."),
+ 			deprecationMessage: localize('deprecated', "This setting is deprecated, please use '{0}' instead.", 'update.mode')
  		},
 +		'update.minReleaseAge': {
 +			type: 'integer',
@@ -11,11 +21,15 @@ index 2c63e9e6..e98ed806 100644
 +			description: localize('update.cooldown', "Control how old an update need to be before installing it (in hours)."),
 +		},
  		'update.enableWindowsBackgroundUpdates': {
+ 			type: 'boolean',
+ 			default: true,
 diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-index d776f408..70b86dce 100644
+index 2dbe1995eba7e192bb9a4eb0f6f4ab9c18610b9e..28c5c6102c83b8eb1dff2300ab624a20db117baf 100644
 --- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
 +++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-@@ -459,3 +459,26 @@ export abstract class AbstractUpdateService implements IUpdateService {
+@@ -582,7 +582,30 @@ export abstract class AbstractUpdateService extends Disposable implements IUpdat
+ 
+ 				const lastest = semver.compareBuild(currentVersion, fetchedVersion) >= 0;
  
 -				return Promise.resolve({ lastest, update });
 +				const minReleaseAge = this.configurationService.getValue<number>('update.minReleaseAge');
@@ -42,12 +56,16 @@ index d776f408..70b86dce 100644
 +				else {
 +					return Promise.resolve(undefined);
 +				}
- 			})
+ 			});
+ 	}
+ 
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-index 464b3948..121bd09f 100644
+index 31014451b8b0d47b9cb9c3f4db4a842a319e27a7..d9aa4fe609f89fa94aa3757dfd466fcba059cea2 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-@@ -168,2 +168,9 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
+@@ -200,6 +200,13 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
+ 				default: false,
+ 				agentsWindow: { default: true, readOnly: true },
  			},
 +			'extensions.minReleaseAge': {
 +				type: 'integer',
@@ -57,17 +75,25 @@ index 464b3948..121bd09f 100644
 +				tags: ['usesOnlineServices']
 +			},
  			'extensions.showRecommendationsOnlyOnDemand': {
+ 				type: 'boolean',
+ 				deprecationMessage: localize('extensionsShowRecommendationsOnlyOnDemand_Deprecated', "This setting is deprecated. Use extensions.ignoreRecommendations setting to control recommendation notifications. Use Extensions view's visibility actions to hide Recommended view by default."),
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index 49b3ec6a..26f44277 100644
+index 7c1aae768968daacdbbfde29f052efa75718d81b..1281dc0c2a3bb485429c01caf0e6847abe2bcd8b 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-@@ -112,3 +112,4 @@ export class Extension implements IExtension {
+@@ -111,7 +111,8 @@ export class Extension implements IExtension {
+ 		@ITelemetryService private readonly telemetryService: ITelemetryService,
+ 		@ILogService private readonly logService: ILogService,
  		@IFileService private readonly fileService: IFileService,
 -		@IProductService private readonly productService: IProductService
 +		@IProductService private readonly productService: IProductService,
 +		@IConfigurationService protected configurationService: IConfigurationService
  	) {
-@@ -348,3 +349,11 @@ export class Extension implements IExtension {
+ 	}
+ 
+@@ -347,7 +348,15 @@ export class Extension implements IExtension {
+ 				return false;
+ 			}
  			if (semver.gt(this.latestVersion, this.version)) {
 -				return true;
 +				const minReleaseAge = this.configurationService.getValue<number>('extensions.minReleaseAge');
@@ -80,3 +106,5 @@ index 49b3ec6a..26f44277 100644
 +
 +				return age >= minReleaseAge;
  			}
+ 			if (this.outdatedTargetPlatform) {
+ 				return true;

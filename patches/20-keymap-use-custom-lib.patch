@@ -1,16 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: use @vscodium/native-keymap fork instead of upstream native-keymap
+
+Swaps the upstream native-keymap dependency for VSCodium's @vscodium/native-keymap fork and sets build_from_source_native_keymap="no" so the vendored prebuilt binary is used as-is; the moduleignore keeps only the fork's build/Release/*.node while dropping its source and build trees.
+
 diff --git a/.npmrc b/.npmrc
-index 8c21e58e..25a93f40 100644
+index 02f65e85e66051819036a01933298426a04958ae..e2530b3a57f36ff86fc382af83d0804d56148085 100644
 --- a/.npmrc
 +++ b/.npmrc
-@@ -6,2 +6,3 @@ ignore-scripts=false
+@@ -4,5 +4,6 @@ ms_build_id="14760073"
+ runtime="electron"
+ ignore-scripts=false
  build_from_source="true"
 +build_from_source_native_keymap="no"
  legacy-peer-deps="true"
+ timeout=180000
 diff --git a/build/.moduleignore b/build/.moduleignore
-index 7af8defd..b21564c3 100644
+index 6149b1ace972c05d0576ebbdaddaf1888886e271..61ecce881a08b66bd81e7ffb9edc0797facd9a41 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
-@@ -65,7 +65,7 @@ fsevents/test/**
+@@ -67,11 +67,11 @@ fsevents/test/**
+ !@vscode/tree-sitter-wasm/wasm/tree-sitter-powershell.wasm
+ !@vscode/tree-sitter-wasm/wasm/tree-sitter-bash.wasm
  
 -native-keymap/binding.gyp
 -native-keymap/build/**
@@ -23,86 +35,41 @@ index 7af8defd..b21564c3 100644
 +@vscodium/native-keymap/deps/**
 +!@vscodium/native-keymap/build/Release/*.node
  
+ native-is-elevated/binding.gyp
+ native-is-elevated/build/**
 diff --git a/eslint.config.js b/eslint.config.js
-index 51b085ee..938419e2 100644
+index 0e48d130b7e123fd4d5332dd4eb8767355e0ac7f..ec666735343c24a74618c2434333946733fca4d6 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
-@@ -1563,3 +1563,3 @@ export default defineConfig(
+@@ -1562,7 +1562,7 @@ export default defineConfig(
+ 						'inspector',
+ 						'minimist',
  						'node:module',
 -						'native-keymap',
 +						'@vscodium/native-keymap',
  						'net',
-diff --git a/package-lock.json b/package-lock.json
-index 81d315f0..1d99e154 100644
---- a/package-lock.json
-+++ b/package-lock.json
-@@ -43,2 +43,3 @@
-         "@vscode/windows-registry": "^1.2.0",
-+        "@vscodium/native-keymap": "3.3.7-258424",
-         "@xterm/addon-clipboard": "^0.3.0-beta.285",
-@@ -62,3 +63,2 @@
-         "native-is-elevated": "0.9.0",
--        "native-keymap": "^3.3.5",
-         "node-addon-api": "^6.0.0",
-@@ -4498,2 +4498,9 @@
-     },
-+    "node_modules/@vscodium/native-keymap": {
-+      "version": "3.3.7-258424",
-+      "resolved": "https://registry.npmjs.org/@vscodium/native-keymap/-/native-keymap-3.3.7-258424.tgz",
-+      "integrity": "sha512-HZ20QfExV0kE2l939yE3wn0LezSV7BcpxOFmlUMUHBQbdANMSLkwzo6Zw1xOEZDoYm3VTDHt8/+WwLBR2MpA3A==",
-+      "hasInstallScript": true,
-+      "license": "MIT"
-+    },
-     "node_modules/@webgpu/types": {
-@@ -14159,5 +14166,6 @@
-     "node_modules/napi-build-utils": {
--      "version": "1.0.2",
--      "resolved": "https://registry.npmjs.org/napi-build-utils/-/napi-build-utils-1.0.2.tgz",
--      "integrity": "sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg=="
-+      "version": "2.0.0",
-+      "resolved": "https://registry.npmjs.org/napi-build-utils/-/napi-build-utils-2.0.0.tgz",
-+      "integrity": "sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA==",
-+      "license": "MIT"
-     },
-@@ -14170,9 +14178,2 @@
-     },
--    "node_modules/native-keymap": {
--      "version": "3.3.9",
--      "resolved": "https://registry.npmjs.org/native-keymap/-/native-keymap-3.3.9.tgz",
--      "integrity": "sha512-d/ydQ5x+GM5W0dyAjFPwexhtc9CDH1g/xWZESS5CXk16ThyFzSBLvlBJq1+FyzUIFf/F2g1MaHdOpa6G9150YQ==",
--      "hasInstallScript": true,
--      "license": "MIT"
--    },
-     "node_modules/natural-compare": {
-@@ -15582,5 +15583,6 @@
-     "node_modules/prebuild-install": {
--      "version": "7.1.2",
--      "resolved": "https://registry.npmjs.org/prebuild-install/-/prebuild-install-7.1.2.tgz",
--      "integrity": "sha512-UnNke3IQb6sgarcZIDU3gbMeTp/9SSU1DAIkil7PrqG1vZlBtY5msYccSKSHDqa3hNg436IXK+SNImReuA1wEQ==",
-+      "version": "7.1.3",
-+      "resolved": "https://registry.npmjs.org/prebuild-install/-/prebuild-install-7.1.3.tgz",
-+      "integrity": "sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==",
-+      "license": "MIT",
-       "dependencies": {
-@@ -15591,3 +15593,3 @@
-         "mkdirp-classic": "^0.5.3",
--        "napi-build-utils": "^1.0.1",
-+        "napi-build-utils": "^2.0.0",
-         "node-abi": "^3.3.0",
+ 						'node-pty',
+ 						'os',
 diff --git a/package.json b/package.json
-index 36485330..2a5830cd 100644
+index c80e65a6ed6ae4ad7b60011e105a67da107ef2a2..6b0ff734143e4442568b11ac555fdf8de8dc69c0 100644
 --- a/package.json
 +++ b/package.json
-@@ -146,3 +146,3 @@
+@@ -149,7 +149,7 @@
+     "kerberos": "2.1.1",
+     "minimist": "^1.2.8",
      "native-is-elevated": "0.9.0",
 -    "native-keymap": "^3.3.5",
 +    "@vscodium/native-keymap": "3.3.7-258424",
      "node-addon-api": "^6.0.0",
+     "node-pty": "^1.2.0-beta.13",
+     "open": "^10.1.2",
 diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
-index 9b11a712..975c3127 100644
+index 4b0ef7f29aa046ba8357fc20a5e97e9f92a82e99..90667682d760abc853d879156208b4a7bf1563c6 100644
 --- a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
 +++ b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
-@@ -44,8 +44,8 @@ flakySuite('Native Modules (all platforms)', () => {
+@@ -42,12 +42,12 @@ flakySuite('Native Modules (all platforms)', () => {
+ 	});
+ 
  	test('native-keymap', async () => {
 -		const keyMap = await import('native-keymap');
 -		assert.ok(typeof keyMap.onDidChangeKeyboardLayout === 'function', testErrorMessage('native-keymap'));
@@ -115,17 +82,27 @@ index 9b11a712..975c3127 100644
 -		assert.ok(result, testErrorMessage('native-keymap'));
 +		assert.ok(result, testErrorMessage('@vscodium/native-keymap'));
  	});
+ 
+ 	test('@vscode/native-watchdog', async () => {
 diff --git a/src/vs/platform/keyboardLayout/electron-main/keyboardLayoutMainService.ts b/src/vs/platform/keyboardLayout/electron-main/keyboardLayoutMainService.ts
-index 8950ce21..f31cea62 100644
+index 8950ce2184ab1dbd1b95776722ab137ddbabf366..f31cea623bc1614249660c65024fce65194b3f36 100644
 --- a/src/vs/platform/keyboardLayout/electron-main/keyboardLayoutMainService.ts
 +++ b/src/vs/platform/keyboardLayout/electron-main/keyboardLayoutMainService.ts
-@@ -5,3 +5,3 @@
+@@ -3,7 +3,7 @@
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
+  *--------------------------------------------------------------------------------------------*/
  
 -import type * as nativeKeymap from 'native-keymap';
 +import type * as nativeKeymap from '@vscodium/native-keymap';
  import * as platform from '../../../base/common/platform.js';
-@@ -48,3 +48,3 @@ export class KeyboardLayoutMainService extends Disposable implements INativeKeyb
+ import { Emitter } from '../../../base/common/event.js';
+ import { Disposable } from '../../../base/common/lifecycle.js';
+@@ -46,7 +46,7 @@ export class KeyboardLayoutMainService extends Disposable implements INativeKeyb
+ 	}
+ 
  	private async _doInitialize(): Promise<void> {
 -		const nativeKeymapMod = await import('native-keymap');
 +		const nativeKeymapMod = await import('@vscodium/native-keymap');
  
+ 		this._keyboardLayoutData = readKeyboardLayoutData(nativeKeymapMod);
+ 		if (!platform.isCI) {

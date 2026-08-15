@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: VSCodium <scripts@vscodium.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: agent host: clear hardcoded microsoft and copilot telemetry keys and
+ endpoint
+
+Empties the 1DS/aria instrumentation key, the GitHub Copilot standard and enhanced instrumentation keys, and the Copilot telemetry endpoint URL so the agent host transmits no telemetry to Microsoft or GitHub.
+
+diff --git a/src/vs/platform/agentHost/node/agentHostMicrosoftTelemetry.ts b/src/vs/platform/agentHost/node/agentHostMicrosoftTelemetry.ts
+index 3ab87ab1a0f86a4200750772d6374869ba1b13de..f63e9646337aa781eb3cb85c3be257846c633d87 100644
+--- a/src/vs/platform/agentHost/node/agentHostMicrosoftTelemetry.ts
++++ b/src/vs/platform/agentHost/node/agentHostMicrosoftTelemetry.ts
+@@ -10,7 +10,7 @@ import { OneDataSystemAppender } from '../../telemetry/node/1dsAppender.js';
+ import type { IAgentHostInternalTelemetryContext, IAgentHostInternalTelemetrySink, TelemetryMeasurements, TelemetryProps } from './agentHostRestrictedTelemetry.js';
+ 
+ // Public instrumentation key shipped as internalLargeStorageAriaKey in extensions/copilot/package.json.
+-const INTERNAL_LARGE_STORAGE_ARIA_KEY = 'ec712b3202c5462fb6877acae7f1f9d7-c19ad55e-3e3c-4f99-984b-827f6d95bd9e-6917';
++const INTERNAL_LARGE_STORAGE_ARIA_KEY = '';
+ const INTERNAL_EVENT_PREFIX = 'GitHub.copilot-chat';
+ const INTERNAL_EXTENSION_ID = 'GitHub.copilot-chat';
+ 
+diff --git a/src/vs/platform/agentHost/node/agentHostRestrictedTelemetry.ts b/src/vs/platform/agentHost/node/agentHostRestrictedTelemetry.ts
+index 0fb5382e7aca1b03cfaf741ad064e34fb0a83e4e..d2f5e2ac64a30fa26857245bf0787a4b75d7df17 100644
+--- a/src/vs/platform/agentHost/node/agentHostRestrictedTelemetry.ts
++++ b/src/vs/platform/agentHost/node/agentHostRestrictedTelemetry.ts
+@@ -15,8 +15,8 @@ import { ICommonProperties } from '../../telemetry/common/telemetry.js';
+  *  - standard  -> `copilot_v0_copilot_event`
+  *  - enhanced  -> `copilot_v0_restricted_copilot_event`
+  */
+-const GH_STANDARD_IKEY = '7d7048df-6dd0-4048-bb23-b716c1461f8f';
+-const GH_ENHANCED_IKEY = '3fdd7f28-937a-48c8-9a21-ba337db23bd1';
++const GH_STANDARD_IKEY = '';
++const GH_ENHANCED_IKEY = '';
+ 
+ /**
+  * Fallback Copilot telemetry endpoint (the dotcom value of the CAPI token's
+@@ -24,7 +24,7 @@ const GH_ENHANCED_IKEY = '3fdd7f28-937a-48c8-9a21-ba337db23bd1';
+  * Used until {@link IAgentHostRestrictedTelemetry.setRestrictedTelemetryEndpoint} supplies
+  * the user's discovered endpoint (dotcom, GHE, or proxy). Accepts unauthenticated POSTs.
+  */
+-const GH_TELEMETRY_URL = 'https://copilot-telemetry.githubusercontent.com/telemetry';
++const GH_TELEMETRY_URL = '';
+ 
+ /** Event names are namespaced by client category; the CTS name filter requires this. */
+ const NAMESPACE = 'copilot-chat';

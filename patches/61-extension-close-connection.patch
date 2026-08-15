@@ -1,13 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Thanh Nguyen <74597207+ThanhNguyxn@users.noreply.github.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: send `Connection: close` header on the extensions control manifest
+ request
+
+On non-web platforms, sets a `Connection: close` header on the `getExtensionsControlManifest` request so the socket is closed after the request completes instead of being kept alive (#2673).
+
 diff --git a/src/vs/platform/extensionManagement/common/extensionGalleryService.ts b/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
-index 6414a46..0bdc5a2 100644
+index 4598678a4cab02abbfe56173c56aebffa7ca2f25..7c60c9a2cb219dd78b28ba1bda9dc2df9c3b1bd7 100644
 --- a/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionGalleryService.ts
-@@ -1944,3 +1944,3 @@ export abstract class AbstractExtensionGalleryService implements IExtensionGalle
+@@ -1942,12 +1942,18 @@ export abstract class AbstractExtensionGalleryService implements IExtensionGalle
+ 			return { malicious: [], deprecated: {}, search: [] };
+ 		}
  
 -		const context = await this.requestService.request({
 +		const requestOptions: IRequestOptions = {
  			type: 'GET',
-@@ -1949,3 +1949,9 @@ export abstract class AbstractExtensionGalleryService implements IExtensionGalle
+ 			url: this.extensionsControlUrl,
+ 			timeout: this.getRequestTimeout(),
  			callSite: 'extensionGalleryService.getExtensionsControlManifest'
 -		}, CancellationToken.None);
 +		};
@@ -18,3 +29,5 @@ index 6414a46..0bdc5a2 100644
 +
 +		const context = await this.requestService.request(requestOptions, CancellationToken.None);
  
+ 		if (context.res.statusCode !== 200) {
+ 			throw new Error('Could not get extensions report.');
