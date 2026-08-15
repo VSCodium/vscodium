@@ -11,9 +11,11 @@
 - [Build for Development](#build-dev)
 - [Build for CI/Downstream](#build-ci)
 - [Build Snap](#build-snap)
-- [Patch Update Process](#patch-update-process)
-  - [Semi-Automated](#patch-update-process-semiauto)
-  - [Manual](#patch-update-process-manual)
+- [Working on Patches](#patch-update-process)
+  - [Modify an existing patch](#modify-an-existing-patch)
+  - [Add a new patch](#add-a-new-patch)
+  - [Update patches to a new upstream VS Code (rebase)](#update-patches-to-a-new-upstream-vs-code-rebase)
+  - [Regenerate / normalize patch files](#regenerate--normalize-patch-files)
 
 ## <a id="dependencies"></a>Dependencies
 
@@ -129,6 +131,8 @@ A build helper script can be found at `dev/build.sh`.
 ### Insider
 
 The `insider` version can be built with `./dev/build.sh -i` on the `insider` branch.
+Use `-i` there: the patch stack tracks the insider pin, and a plain (stable) build
+will not apply against `upstream/stable.json`'s older commit.
 
 You can try the latest version with the command `./dev/build.sh -il` but the patches might not be up to date.
 
@@ -141,6 +145,7 @@ The script `dev/build.sh` provides several flags:
 - `-o`: skip the build step
 - `-p`: generate the packages/assets/installers
 - `-s`: do not retrieve the source code of Visual Studio Code, it won't delete the existing build
+- `-f`: discard uncommitted edits and unexported commits in `vscode/` (also honoured as `VSCODIUM_FORCE_RESET=1`); without it the build refuses to destroy them
 
 ## <a id="build-ci"></a>Build for CI/Downstream
 
@@ -184,27 +189,103 @@ snapcraft --use-lxd
 review-tools.snap-review --allow-classic codium*.snap
 ```
 
-## <a id="patch-update-process"></a>Patch Update Process
+## <a id="patch-update-process"></a>Working on Patches
 
-## <a id="patch-update-process-semiauto"></a>Semi-Automated
+Patches apply as **git commits** on top of the pristine VS Code
+checkout, one commit per patch. `vscode/` is a real branch: edit it, rebuild, run
+`npm run watch`, without deleting the clone. Full model in
+[patches.md](patches.md); the essentials:
 
-- run `./dev/build.sh`, if a patch is failing then,
-- run `./dev/update_patches.sh`
-- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
-- fix all the `*.rej` files
-- run `npm run watch`
-- run `./script/code.sh` until everything is ok
-- press any key to continue the script `update_patches.sh`
+- `refs/vscodium/base` — pristine upstream commit.
+- `refs/vscodium/base..HEAD` — the VSCodium patch stack; every commit exports to a file.
+- `refs/vscodium/head` — the commit `patches/` reproduces; anything past it is unexported
+  work, which the build refuses to discard.
 
-## <a id="patch-update-process-manual"></a>Manual
+`./dev/build.sh` creates the clone and imports the stack. Afterwards,
+`./dev/build.sh -s` reuses it and keeps committed work; it refuses to discard
+uncommitted edits.
 
-- run `./dev/build.sh`, if a patch is failing then,
-- run `./dev/patch.sh <name>.patch` where `<name>.patch` is the failed patch
-- open `vscode` directory in a new **VSCodium**'s window
-- fix all the `*.rej` files
-- run `npm run watch`
-- run `./script/code.sh` until everything is ok
-- go back to the command line running `./dev/patch.sh`, press `enter` to validate the changes and it will update the patch
+### Modify an existing patch
+
+```bash
+cd vscode
+git reset --hard HEAD                        # drop the build's materialization, keep commits
+git log --oneline refs/vscodium/base..HEAD    # find the patch's commit
+# ...edit the source files...
+git add -A && git commit --fixup <that patch's commit>
+git -c sequence.editor=: rebase -i --autosquash refs/vscodium/base
+cd ..
+./dev/export.sh                              # rewrite that patch file from the commit
+```
+
+To test before exporting, run `./dev/build.sh -s` (which materializes the branding)
+and then `npm run watch` or `./scripts/code.sh` in `vscode/`. Running them on a bare
+authoring tree leaves `!!APP_NAME!!` placeholders unresolved.
+
+### Add a new patch
+
+No trailers, no naming rules — commit however you like, then export:
+
+```bash
+cd vscode
+git reset --hard HEAD                        # drop the build's materialization, keep commits
+# ...make your change...
+git add -A && git commit -m "describe your change"
+cd ..
+./dev/export.sh
+```
+
+The commit lands in `patches/user/`, its filename derived from the subject.
+Export walks to `HEAD`, so a freeform commit can never be silently dropped.
+
+### Update patches to a new upstream VS Code (rebase)
+
+```bash
+git -C vscode reset --hard HEAD   # rebase needs a clean tree
+./dev/rebase.sh <new-ms-commit>   # or no arg to use upstream/<quality>.json
+# run `git -C vscode status` and resolve each row by the label git gives it:
+#   both modified    edit out the <<<<<<< markers, then `git add`
+#   deleted by us    upstream deleted a file this patch edits — `git rm` it and drop
+#                    that hunk (`git add` would resurrect the deleted file)
+#   deleted by them  this patch deletes a file upstream edited — `git rm` to keep it deleted
+./dev/rebase.sh --continue        # finishes the rebase and re-anchors the base ref
+./dev/export.sh                   # regenerate patch files against the new base
+```
+
+Remember to bump `upstream/<quality>.json` to the new commit as well, so a fresh
+clone builds against the upstream the patches were rebased onto.
+
+### A patch failed to apply
+
+The import names the failing patch file and the underlying `git am` error, then aborts
+so the clone stays usable. After a version bump, re-sync the whole stack with
+`./dev/rebase.sh` (above) rather than patching one file at a time.
+
+To fix a single patch, edit the **patch file** and re-run the build — the clone is
+rebuilt from `patches/` every time, so the patch file is the thing to correct:
+
+```bash
+# the import prints which file failed; fix that file, then re-import:
+$EDITOR patches/<dir>/<the-failing-patch>
+./dev/build.sh -s     # repeat until the stack applies
+```
+
+The clone is rebuilt from `patches/` on every import, so the patch file is the thing
+to correct — there is no commit to amend until the stack applies again.
+
+> `./dev/export.sh` rewrites `patches/` from the commits it finds, so run it only once
+> the whole stack imports; exporting a partially-imported clone would drop the rest.
+
+### Regenerate / normalize patch files
+
+- `./dev/export.sh` — rewrite the current config's patches from the commits.
+- `./dev/export.sh --dry-run` — check `patches/` still matches the commits, writing nothing.
+- `./dev/normalize.sh` — rewrite **all** patches to the canonical format
+  (run against the correct base; see the script header).
+
+> The old `dev/patch.sh`, `dev/update_patches.sh` and `dev/merge-patches.sh`
+> (with their `*.rej` / "VSCODIUM HELPER" workflow) are deprecated; each prints
+> the equivalent commit-based command.
 
 ### <a id="icons"></a>icons/build_icons.sh
 
