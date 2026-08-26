@@ -16,7 +16,7 @@ diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
 index 62c30da5..85817274 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -275,9 +275,24 @@ function nodejs(platform: string, arch: string): NodeJS.ReadWriteStream | undefi
+@@ -275,9 +276,34 @@ function nodejs(platform: string, arch: string): NodeJS.ReadWriteStream | undefi
  		case 'linux': {
 -			const downloaded = (product.nodejsRepository !== 'https://nodejs.org' ?
 -				fetchGithub(product.nodejsRepository, { version: `${nodeVersion}-${internalNodeVersion}`, name: expectedName!, checksumSha256 }) :
@@ -26,7 +26,17 @@ index 62c30da5..85817274 100644
 -				.pipe(util.setExecutableBit('**'))
 -				.pipe(rename('node'));
 +			let downloaded: NodeJS.ReadWriteStream;
-+			if (process.env.VSCODE_NODEJS_SITE && process.env.VSCODE_NODEJS_URLROOT) {
++			if (process.env.VSCODE_NODEJS_REPOSITORY) {
++				const nodejsVersion = (process.env.VSCODE_NODEJS_TAG ?? `${nodeVersion}-${internalNodeVersion}`).replace(/^v/, '');
++				const nodejsName = process.env.VSCODE_NODEJS_NAME ?? expectedName!;
++				const nodejsChecksumSha256 = getNodeChecksum(nodejsName) ?? checksumSha256;
++				downloaded = fetchGithub(process.env.VSCODE_NODEJS_REPOSITORY, { version: nodejsVersion, name: nodejsName, checksumSha256: nodejsChecksumSha256 })
++					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
++					.pipe(filter('**/node'))
++					.pipe(util.setExecutableBit('**'))
++					.pipe(rename('node'));
++			}
++			else if (process.env.VSCODE_NODEJS_SITE && process.env.VSCODE_NODEJS_URLROOT) {
 +				downloaded = fetchUrls(`${process.env.VSCODE_NODEJS_URLROOT}/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}${process.env.VSCODE_NODEJS_URLSUFFIX}.tar.gz`, { base: process.env.VSCODE_NODEJS_SITE, checksumSha256 })
 +					.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
 +					.pipe(filter('**/node'))
