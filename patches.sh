@@ -88,6 +88,23 @@ unexpected_changes() {
   fi
 }
 
+rebase_in_progress() {
+  [[ -f "$( git rev-parse --git-dir )/vscodium-rebase/state.json" ]]
+}
+
+guard_rebase() {
+  [[ "${VSCODIUM_FORCE_RESET:-}" == "1" ]] && return 0
+  rebase_in_progress || return 0
+
+  echo "A rebase is in progress in vscode/ (./dev/rebase.sh --status)." >&2
+  echo "Finish it with ./dev/rebase.sh --continue, or drop it with ./dev/rebase.sh --abort." >&2
+  exit 1
+}
+
+guard_preflight() {
+  guard_rebase && guard_uncommitted && guard_unexported
+}
+
 guard_uncommitted() {
   local UNEXPECTED
   [[ "${VSCODIUM_FORCE_RESET:-}" == "1" ]] && return 0
@@ -125,6 +142,7 @@ stack_matches_patches() {
 }
 
 ensure_stack() {
+  guard_rebase
   guard_uncommitted
 
   if has_head_ref && stack_matches_patches; then
@@ -146,15 +164,19 @@ ensure_stack() {
 
 # Only import and export move the tip; commits past it are in no patch file yet.
 guard_unexported() {
-  local UNSAVED
+  local RANGE UNSAVED
   [[ "${VSCODIUM_FORCE_RESET:-}" == "1" ]] && return 0
 
-  has_head_ref || return 0
-  UNSAVED="$( git rev-list --count "${VSCODIUM_REF_HEAD}..HEAD" )"
+  if has_head_ref && git merge-base --is-ancestor "${VSCODIUM_REF_HEAD}" HEAD; then
+    RANGE="${VSCODIUM_REF_HEAD}..HEAD"
+  else
+    RANGE="${VSCODIUM_REF_BASE}..HEAD"
+  fi
+  UNSAVED="$( git rev-list --count "${RANGE}" )"
   [[ "${UNSAVED}" == "0" ]] && return 0
 
   echo "Refusing to discard ${UNSAVED} commit(s) in vscode/ that are not in patches/:" >&2
-  git log --oneline "${VSCODIUM_REF_HEAD}..HEAD" | sed 's/^/  /' >&2
+  git log --oneline "${RANGE}" | sed 's/^/  /' >&2
   echo "Run ./dev/export.sh to save them, or re-run with VSCODIUM_FORCE_RESET=1 (dev/build.sh -f)." >&2
   exit 1
 }

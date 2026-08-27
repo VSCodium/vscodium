@@ -11,7 +11,7 @@ cd "$( dirname "$0" )/.." || exit 1
 [[ -d vscode ]] || { echo "'vscode' dir not found; run ./dev/build.sh first"; exit 1; }
 
 # shellcheck disable=SC1091
-( cd vscode && . ../utils.sh && . ../patches.sh && guard_uncommitted && guard_unexported ) || exit 1
+( cd vscode && . ../utils.sh && . ../patches.sh && guard_preflight ) || exit 1
 
 QUALITY="${VSCODE_QUALITY:-stable}"
 

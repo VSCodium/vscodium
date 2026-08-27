@@ -91,7 +91,7 @@ guard_reclone() {
   [[ "${VSCODIUM_FORCE_RESET:-}" == "1" ]] && return 0
 
   # shellcheck disable=SC1091
-  ( cd vscode && . ../utils.sh && . ../patches.sh && guard_uncommitted && guard_unexported ) || exit 1
+  ( cd vscode && . ../utils.sh && . ../patches.sh && guard_preflight ) || exit 1
 }
 
 if [[ "${SKIP_SOURCE}" == "no" ]]; then
