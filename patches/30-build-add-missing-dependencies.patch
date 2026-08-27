@@ -1,43 +1,80 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: make tree-sitter an optional dependency
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+tree-sitter is a native module compiled through node-gyp-build (hasInstallScript, node-addon-api); moving it from build `dependencies` to `optionalDependencies` — and marking its native build companions optional — lets the build proceed on platforms where it cannot be compiled or installed (#2076).
+
 diff --git a/build/package-lock.json b/build/package-lock.json
-index 445e842..1dea5d1 100644
+index c71d2d73886990a5e9714d1e47d5ee7a63941c44..40c2a53fa9b11510b9d4e6ab86666aa65fca3ed6 100644
 --- a/build/package-lock.json
 +++ b/build/package-lock.json
-@@ -59,3 +59,2 @@
+@@ -63,13 +63,13 @@
+         "source-map": "0.6.1",
+         "ternary-stream": "^3.0.0",
          "through2": "^4.0.2",
 -        "tree-sitter": "^0.22.4",
          "vscode-universal-bundler": "^0.1.3",
-@@ -65,2 +64,3 @@
+         "workerpool": "^6.4.0",
+         "yauzl": "^3.3.1",
+         "zx": "^8.8.5"
+       },
        "optionalDependencies": {
 +        "tree-sitter": "^0.22.4",
          "tree-sitter-typescript": "^0.23.2",
-@@ -3416,4 +3416,4 @@
+         "vscode-gulp-watch": "^5.0.3"
+       }
+@@ -4750,8 +4750,8 @@
+       "version": "4.8.4",
+       "resolved": "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.8.4.tgz",
        "integrity": "sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==",
 -      "devOptional": true,
        "license": "MIT",
 +      "optional": true,
        "bin": {
-@@ -4243,5 +4243,5 @@
+         "node-gyp-build": "bin.js",
+         "node-gyp-build-optional": "optional.js",
+@@ -6386,9 +6386,9 @@
+       "version": "0.22.4",
+       "resolved": "https://registry.npmjs.org/tree-sitter/-/tree-sitter-0.22.4.tgz",
        "integrity": "sha512-usbHZP9/oxNsUY65MQUsduGRqDHQOou1cagUSwjhoSYAmSahjQDAVsh9s+SlZkn8X8+O1FULRGwHu7AFP3kjzg==",
 -      "dev": true,
        "hasInstallScript": true,
        "license": "MIT",
 +      "optional": true,
        "dependencies": {
-@@ -4316,4 +4316,4 @@
+         "node-addon-api": "^8.3.0",
+         "node-gyp-build": "^4.8.4"
+@@ -6459,8 +6459,8 @@
+       "version": "8.3.1",
+       "resolved": "https://registry.npmjs.org/node-addon-api/-/node-addon-api-8.3.1.tgz",
        "integrity": "sha512-lytcDEdxKjGJPTLEfW4mYMigRezMlyJY8W4wxJK8zE533Jlb8L8dRuObJFWg2P+AuOIxoCgKF+2Oq4d4Zd0OUA==",
 -      "dev": true,
        "license": "MIT",
 +      "optional": true,
        "engines": {
+         "node": "^18 || ^20 || >= 21"
+       }
 diff --git a/build/package.json b/build/package.json
-index 73d4f42..0eaf964 100644
+index 6e321408475ba9c42012654147c94062c1ded33f..0c027081596ae2740b812d0818c406cc7f37138a 100644
 --- a/build/package.json
 +++ b/build/package.json
-@@ -53,3 +53,2 @@
+@@ -57,7 +57,6 @@
+     "source-map": "0.6.1",
+     "ternary-stream": "^3.0.0",
      "through2": "^4.0.2",
 -    "tree-sitter": "^0.22.4",
      "vscode-universal-bundler": "^0.1.3",
-@@ -65,2 +64,3 @@
+     "workerpool": "^6.4.0",
+     "yauzl": "^3.3.1",
+@@ -72,6 +71,7 @@
+     "test": "node --test '{lib,next,agent-sdk,codex}/**/*.test.ts'"
+   },
    "optionalDependencies": {
 +    "tree-sitter": "^0.22.4",
      "tree-sitter-typescript": "^0.23.2",
+     "vscode-gulp-watch": "^5.0.3"
+   },

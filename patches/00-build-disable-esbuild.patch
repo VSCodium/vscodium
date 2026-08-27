@@ -1,8 +1,17 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: disable esbuild transpilation, fall back to gulp-tsb
+
+Flips `useEsbuildTranspile` to `false` so gulp-tsb performs both transpilation and type-checking (VS Code's pre-esbuild build path) instead of using esbuild for fast transpile.
+
 diff --git a/build/buildConfig.ts b/build/buildConfig.ts
-index a4299d26..a815dd51 100644
+index a4299d2647fe2097ea465cda43ec90f3535fb3b0..a815dd51917609857c54dc9380c58719d72a6a24 100644
 --- a/build/buildConfig.ts
 +++ b/build/buildConfig.ts
-@@ -11,2 +11,2 @@
+@@ -9,4 +9,4 @@
+  *
+  * When `false`, gulp-tsb does both transpilation and type-checking (old behavior).
   */
 -export const useEsbuildTranspile = true;
 +export const useEsbuildTranspile = false;

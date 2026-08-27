@@ -1,15 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: don't try to load the missing vsda signing library
+
+vsda is Microsoft's proprietary signing native module and is not shipped in the open-source build, so probing for and loading it only ever fails. The remote server and web sign service stub the validator and signing paths to return null / throw instead of attempting to load the missing native or wasm library (#2613).
+
 diff --git a/src/vs/platform/sign/browser/signService.ts b/src/vs/platform/sign/browser/signService.ts
-index c288b2e..8303040 100644
+index c288b2e12fafbe7b03f695b4983cd9ccbca0caea..8303040b5a9f5760ee34676019fdc8e4946d0915 100644
 --- a/src/vs/platform/sign/browser/signService.ts
 +++ b/src/vs/platform/sign/browser/signService.ts
-@@ -5,6 +5,2 @@
+@@ -3,95 +3,19 @@
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
+  *--------------------------------------------------------------------------------------------*/
  
 -import { importAMDNodeModule, resolveAmdNodeModulePath } from '../../../amdX.js';
 -import { WindowIntervalTimer } from '../../../base/browser/dom.js';
 -import { mainWindow } from '../../../base/browser/window.js';
 -import { memoize } from '../../../base/common/decorators.js';
  import { IProductService } from '../../product/common/productService.js';
-@@ -13,30 +9,4 @@ import { ISignService } from '../common/sign.js';
+ import { AbstractSignService, IVsdaValidator } from '../common/abstractSignService.js';
+ import { ISignService } from '../common/sign.js';
  
 -declare namespace vsdaWeb {
 -	export function sign(salted_message: string): string;
@@ -41,7 +51,7 @@ index c288b2e..8303040 100644
 -	constructor(@IProductService private readonly productService: IProductService) {
 +	constructor(@IProductService _productService: IProductService) {
  		super();
-@@ -44,53 +14,7 @@ export class SignService extends AbstractSignService implements ISignService {
+ 	}
  	protected override getValidator(): Promise<IVsdaValidator> {
 -		return this.vsda().then(vsda => {
 -			const v = new vsda.validator();
@@ -98,19 +108,30 @@ index c288b2e..8303040 100644
 +	protected override signValue(_arg: string): Promise<string> {
 +		throw new Error('error loading vsda');
  	}
+ }
 diff --git a/src/vs/server/node/remoteExtensionHostAgentServer.ts b/src/vs/server/node/remoteExtensionHostAgentServer.ts
-index 269cc38..a53fca9 100644
+index 10e6244edb0207f00a34ad6a18e4541ea0c8de1c..1f6fa0b3d2eed20abfafc4fc27b61d5430e054bb 100644
 --- a/src/vs/server/node/remoteExtensionHostAgentServer.ts
 +++ b/src/vs/server/node/remoteExtensionHostAgentServer.ts
-@@ -8,3 +8,2 @@ import type * as http from 'http';
+@@ -6,7 +6,6 @@
+ import * as fs from 'fs';
+ import type * as http from 'http';
  import * as net from 'net';
 -import { createRequire } from 'node:module';
  import { performance } from 'perf_hooks';
-@@ -41,3 +40,2 @@ import { setupServerServices, SocketServer } from './serverServices.js';
+ import { VSBuffer } from '../../base/common/buffer.js';
+ import { CharCode } from '../../base/common/charCode.js';
+@@ -39,7 +38,6 @@ import { IServerEnvironmentService, ServerParsedArgs } from './serverEnvironment
+ import { IServerLifetimeService } from './serverLifetimeService.js';
+ import { setupServerServices, SocketServer } from './serverServices.js';
  import { CacheControl, serveError, serveFile, WebClientServer } from './webClientServer.js';
 -const require = createRequire(import.meta.url);
  
-@@ -736,14 +734,3 @@ export async function createServer(address: string | net.AddressInfo | null, arg
+ function parseRequestUrl(requestUrl: string): URL | undefined {
+ 	try {
+@@ -721,18 +719,7 @@ export async function createServer(address: string | net.AddressInfo | null, arg
+ 		}
+ 	});
  
 -	const vsdaMod = instantiationService.invokeFunction((accessor) => {
 -		const logService = accessor.get(ILogService);
@@ -126,3 +147,5 @@ index 269cc38..a53fca9 100644
 -	});
 +	const vsdaMod = instantiationService.invokeFunction(() => null);
  
+ 	let serverBasePath = args['server-base-path'];
+ 	if (serverBasePath && !serverBasePath.startsWith('/')) {

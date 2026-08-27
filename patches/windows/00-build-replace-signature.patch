@@ -1,12 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: VSCodium <scripts@vscodium.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: 00-build-replace-signature
+
+
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index 62c30da5..46925452 100644
+index 3ad0ff58ed5a3d4afbcaa93604782e4f0dcf2a33..579b2436349e46e6999ffb90088cfab183237e45 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -33,2 +33,3 @@ import { getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgre
+@@ -32,6 +32,7 @@ import buildfile from './buildfile.ts';
+ import { fetchUrls } from './lib/fetch.ts';
+ import { downloadFeedPackage } from './lib/azureFeed.ts';
  import { readAgentSdkResults } from './agent-sdk/common.ts';
 +import { stripAuthenticodeSignature } from './win32/signature.ts';
  
-@@ -486,34 +487,2 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
+ 
+ const rcedit = promisify(rceditCallback);
+@@ -527,38 +528,6 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
+ 	};
+ }
  
 -function hasAuthenticodeSignature(filePath: string): Promise<boolean> {
 -	return new Promise((resolve, reject) => {
@@ -41,29 +53,45 @@ index 62c30da5..46925452 100644
 -}
 -
  function patchWin32DependenciesTask(destinationFolderName: string) {
-@@ -539,3 +508,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 	const cwd = path.join(BUILD_ROOT, destinationFolderName);
+ 
+@@ -580,11 +549,11 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 			await rcedit(fullPath, {
+ 				'file-version': baseVersion,
  				'version-string': {
 -					'CompanyName': 'Microsoft Corporation',
 +					'CompanyName': '!!ORG_NAME!!',
  					'FileDescription': productContents.nameLong,
-@@ -543,3 +512,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 					'FileVersion': packageJsonContents.version,
  					'InternalName': basename,
 -					'LegalCopyright': 'Copyright (C) 2026 Microsoft. All rights reserved',
 +					'LegalCopyright': 'Copyright (C) 2026 !!ORG_NAME!!. All rights reserved',
  					'OriginalFilename': basename,
+ 					'ProductName': productContents.nameLong,
+ 					'ProductVersion': packageJsonContents.version,
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 53987f88..bac039b8 100644
+index 7e47e440483965fbb38a778cf619b6f515cfb6da..3f805bbe9c3eed250e50eab6f09515efd820aea8 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -21,3 +21,2 @@ import product from '../product.json' with { type: 'json' };
+@@ -19,7 +19,6 @@ import { inlineMeta } from './lib/inlineMeta.ts';
+ import packageJson from '../package.json' with { type: 'json' };
+ import product from '../product.json' with { type: 'json' };
  import * as crypto from 'crypto';
 -import * as cp from 'child_process';
  import * as i18n from './lib/i18n.ts';
-@@ -38,2 +37,3 @@ import { spawnTsgo } from './lib/tsgo.ts';
+ import { getProductionDependencies } from './lib/dependencies.ts';
+ import { config } from './lib/electron.ts';
+@@ -37,6 +36,7 @@ import globCallback from 'glob';
+ import rceditCallback from 'rcedit';
+ import { spawnTsgo } from './lib/tsgo.ts';
  import { runEsbuildTranspile, runEsbuildBundle } from './lib/esbuild.ts';
 +import { stripAuthenticodeSignature } from './win32/signature.ts';
  
-@@ -532,34 +532,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 
+ const glob = promisify(globCallback);
+@@ -586,38 +586,6 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 	return task;
+ }
  
 -function hasAuthenticodeSignature(filePath: string): Promise<boolean> {
 -	return new Promise((resolve, reject) => {
@@ -98,19 +126,25 @@ index 53987f88..bac039b8 100644
 -}
 -
  function patchWin32DependenciesTask(destinationFolderName: string) {
-@@ -587,3 +555,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 	const cwd = path.join(path.dirname(root), destinationFolderName);
+ 
+@@ -641,11 +609,11 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 			await rcedit(fullPath, {
+ 				'file-version': baseVersion,
  				'version-string': {
 -					'CompanyName': 'Microsoft Corporation',
 +					'CompanyName': '!!ORG_NAME!!',
  					'FileDescription': product.nameLong,
-@@ -591,3 +559,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 					'FileVersion': packageJson.version,
  					'InternalName': basename,
 -					'LegalCopyright': 'Copyright (C) 2026 Microsoft. All rights reserved',
 +					'LegalCopyright': 'Copyright (C) 2026 !!ORG_NAME!!. All rights reserved',
  					'OriginalFilename': basename,
+ 					'ProductName': product.nameLong,
+ 					'ProductVersion': packageJson.version,
 diff --git a/build/win32/signature.ts b/build/win32/signature.ts
 new file mode 100644
-index 00000000..ee722946
+index 0000000000000000000000000000000000000000..ee722946a7bb948482f778450a7f7052e4a74d57
 --- /dev/null
 +++ b/build/win32/signature.ts
 @@ -0,0 +1,68 @@

@@ -1,8 +1,16 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: VSCodium <scripts@vscodium.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: 71-build-disable-appx
+
+
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 2412dd32..681e49e7 100644
+index 04a68dd17335216467c333096c5ea170fce6d3a8..ac7a5dc27ecfb9adac399d41527d7aa9f881af33 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -488,18 +488,18 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -551,22 +551,22 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 			result = es.merge(result, gulp.src('.build/policies/win32/**', { base: '.build/policies/win32' })
+ 				.pipe(rename(f => f.dirname = `policies/${f.dirname}`)));
  
 -			if (quality === 'stable' || quality === 'insider') {
 -				result = es.merge(result, gulp.src('.build/win32/appx/**', { base: '.build/win32' }));
@@ -37,11 +45,15 @@ index 2412dd32..681e49e7 100644
 +			// 		.pipe(rename(f => f.dirname = `appx/manifest`)));
 +			// }
  		} else if (platform === 'linux') {
+ 			result = es.merge(result, gulp.src('resources/linux/bin/code.sh', { base: '.' })
+ 				.pipe(replace('@@PRODNAME@@', product.nameLong))
 diff --git a/build/gulpfile.vscode.win32.ts b/build/gulpfile.vscode.win32.ts
-index 3f168c42..d4bbfc26 100644
+index c43819dfbfa279d1502d19edfccd0cac5c4cf9ac..a3037188e0c7b59b0a579bb92fd56683ddd3cea1 100644
 --- a/build/gulpfile.vscode.win32.ts
 +++ b/build/gulpfile.vscode.win32.ts
-@@ -113,11 +113,11 @@ function buildWin32Setup(arch: string, target: string): task.CallbackTask {
+@@ -113,15 +113,15 @@ function buildWin32Setup(arch: string, target: string): task.CallbackTask {
+ 			Quality: quality
+ 		};
  
 -		if (quality === 'stable' || quality === 'insider') {
 -			definitions['AppxPackage'] = `${product.applicationName.replaceAll('-', '_')}_${arch}.appx`;
@@ -61,4 +73,6 @@ index 3f168c42..d4bbfc26 100644
 +		// 		definitions['FileExplorerContextMenuCLSID'] = ctxMenu[arch].clsid;
 +		// 	}
 +		// }
+ 
+ 		fs.writeFileSync(productJsonPath, JSON.stringify(productJson, undefined, '\t'));
  

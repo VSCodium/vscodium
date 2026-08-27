@@ -1,13 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: fix rpm release field and mark product.json config(noreplace)
+
+Sets the RPM `Release` field to the Enterprise Linux 8 target, dropping the unsubstituted `@@RELEASE@@` placeholder (#2350). Marks `product.json` as `%config(noreplace)` so an RPM upgrade preserves a user-modified product.json instead of overwriting it.
+
 diff --git a/resources/linux/rpm/code.spec.template b/resources/linux/rpm/code.spec.template
-index a73bc02..242bab0 100644
+index ee6f0b069a282921ac748d6adf25763978150401..90a1f0f26fed2d47fe0048f441a10ed433db71ee 100644
 --- a/resources/linux/rpm/code.spec.template
 +++ b/resources/linux/rpm/code.spec.template
-@@ -2,3 +2,3 @@ Name:     @@NAME@@
+@@ -1,6 +1,6 @@
+ Name:     @@NAME@@
  Version:  @@VERSION@@
 -Release:  @@RELEASE@@.el8
 +Release:  el8
  Summary:  Code editing. Redefined.
-@@ -88 +88,3 @@ update-mime-database %{_datadir}/mime &> /dev/null || :
+ Group:    Development/Tools
+ Vendor:   Microsoft Corporation
+@@ -90,3 +90,5 @@ update-mime-database %{_datadir}/mime &> /dev/null || :
+ %{_datadir}/pixmaps/@@ICON@@.png
+ %{_datadir}/bash-completion/completions/%{name}
  %{_datadir}/zsh/site-functions/_%{name}
 +
 +%config(noreplace) /usr/share/%{name}/resources/app/product.json

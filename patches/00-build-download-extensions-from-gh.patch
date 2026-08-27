@@ -1,9 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: download built-in extensions from github instead of the marketplace
+
+The built-in extension download stream falls back to `extensionsGallery.serviceUrl` from `product.json` whenever one is defined; dropping that branch forces every built-in extension to be fetched from its GitHub release instead of the configured gallery.
+
 diff --git a/build/lib/builtInExtensions.ts b/build/lib/builtInExtensions.ts
-index de687da4..2436a1fc 100644
+index de687da4de483d96d06d5ef53dacd2e40b226b20..2436a1fce84a1f4141000d5d7440cd73f4f07e66 100644
 --- a/build/lib/builtInExtensions.ts
 +++ b/build/lib/builtInExtensions.ts
-@@ -95,4 +95,2 @@ function getExtensionDownloadStream(extension: IExtensionDefinition) {
+@@ -93,8 +93,6 @@ function getExtensionDownloadStream(extension: IExtensionDefinition) {
+ 			return es.readArray([]);
+ 		}
  		input = ext.fromGithub(extension, { asset, latest: isInsiders() });
 -	} else if (productjson.extensionsGallery?.serviceUrl) {
 -		input = ext.fromMarketplace(productjson.extensionsGallery.serviceUrl, extension);
  	} else {
+ 		input = ext.fromGithub(extension, { latest: isInsiders() });
+ 	}

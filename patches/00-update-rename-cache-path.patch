@@ -1,9 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Peter Squicciarini <stripedpajamas273@gmail.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: use applicationName for the windows update cache path
+
+The Windows update service caches downloaded updates in a `vscode-`prefixed temp directory; deriving the prefix from `productService.applicationName` keeps VSCodium's update cache distinct from a co-installed VS Code and reflects the product's own name (#765).
+
+Co-authored-by: Liwen Guo <lg@livven.me>
+Co-authored-by: Baptiste Augrain <daiyam@zokugun.org>
+Co-authored-by: Scott Humphries <sscotth@users.noreply.github.com>
+Co-authored-by: Mike Lewis <mike@mplew.is>
+
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index 7628ad1e..e59ded73 100644
+index 7628ad1ef0407804c2684977f39cb0dcce5d8ee6..e59ded734b8e658e84808c064764768554c9cc59 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
-@@ -74,3 +74,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -72,7 +72,7 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+ 	private readonly setupMutexName: string;
+ 
  	private get cachePathSync(): string {
 -		return path.join(tmpdir(), `vscode-${this.productService.quality}-${this.productService.target}-${process.arch}`);
 +		return path.join(tmpdir(), `${this.productService.applicationName}-${this.productService.quality}-${this.productService.target}-${process.arch}`);
  	}
+ 
+ 	@memoize

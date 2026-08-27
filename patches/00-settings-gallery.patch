@@ -1,30 +1,51 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: override extension gallery urls via environment variables
+
+Lets the extension gallery endpoints (service, control, item, latest, extension and resource URLs) be overridden at runtime through VSCODE_GALLERY_* environment variables, and threads configurable itemUrl/latestUrlTemplate fields through the product config so an alternate gallery can define its own latest-version endpoint (#2506).
+
 diff --git a/src/vs/base/common/product.ts b/src/vs/base/common/product.ts
-index 3954823..f8026cd 100644
+index e1cb858771f7bc2daf4c928ea04bae51e34a0738..44207cd424d8735c159210be25f8fdf96bf35ca8 100644
 --- a/src/vs/base/common/product.ts
 +++ b/src/vs/base/common/product.ts
-@@ -112,2 +112,4 @@ export interface IProductConfiguration {
+@@ -148,6 +148,8 @@ export interface IProductConfiguration {
+ 		readonly resourceUrlTemplate: string;
+ 		readonly nlsBaseUrl: string;
  		readonly accessSKUs?: string[];
 +		readonly itemUrl: string;
 +		readonly latestUrlTemplate?: string;
  	};
+ 
+ 	readonly agentSdks?: { readonly [packageId: string]: IAgentSdkProductConfig };
 diff --git a/src/vs/platform/extensionManagement/common/extensionGalleryManifestService.ts b/src/vs/platform/extensionManagement/common/extensionGalleryManifestService.ts
-index 658219e..d1bf7a9 100644
+index 53be55bdffd20fc62daa11f5be27db0922087a6a..337d2e651c8f3a6e524382cd28daa4e2c3489671 100644
 --- a/src/vs/platform/extensionManagement/common/extensionGalleryManifestService.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionGalleryManifestService.ts
-@@ -19,2 +19,3 @@ type ExtensionGalleryConfig = {
+@@ -17,6 +17,7 @@ type ExtensionGalleryConfig = {
+ 	readonly extensionUrlTemplate: string;
+ 	readonly controlUrl: string;
  	readonly nlsBaseUrl: string;
 +	readonly latestUrlTemplate?: string;
  };
-@@ -49,3 +50,3 @@ export class ExtensionGalleryManifestService extends Disposable implements IExte
+ 
+ export class ExtensionGalleryManifestService extends Disposable implements IExtensionGalleryManifestService {
+@@ -47,7 +48,7 @@ export class ExtensionGalleryManifestService extends Disposable implements IExte
+ 				type: ExtensionGalleryResourceType.ExtensionQueryService
+ 			},
  			{
 -				id: `${extensionsGallery.serviceUrl}/vscode/{publisher}/{name}/latest`,
 +				id: extensionsGallery.latestUrlTemplate ?? `${extensionsGallery.serviceUrl}/vscode/{publisher}/{name}/latest`,
  				type: ExtensionGalleryResourceType.ExtensionLatestVersionUri
+ 			},
+ 			{
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 5a6c171..112b31b 100644
+index 36d8d370f6936905714587b3a88900ad08f5f855..c7481f35b20e709d2837fed947d5304f6b0ca330 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -31,2 +31,15 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+@@ -39,6 +39,19 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+ 	product = globalThis._VSCODE_PRODUCT_JSON as unknown as IProductConfiguration;
+ 	const packageConfiguration = globalThis._VSCODE_PACKAGE_JSON as unknown as IPackageConfiguration;
  
 +	const { serviceUrl, controlUrl, itemUrl, latestUrlTemplate, extensionUrlTemplate, resourceUrlTemplate } = product.extensionsGallery || {};
 +
@@ -40,3 +61,5 @@ index 5a6c171..112b31b 100644
 +	});
 +
  	// Running out of sources
+ 	if (env['VSCODE_DEV']) {
+ 		Object.assign(product, {

@@ -1,8 +1,17 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: use github personal access token
+
+The built-in OAuth sign-in relies on callback schemes and the vscode.dev/github.dev redirect targets tied to Microsoft's client registration, which VSCodium cannot use. Forcing isSupportedClient and isHostedGitHubEnterprise to return false makes the github-authentication extension fall back to the personal access token flow (#672).
+
 diff --git a/extensions/github-authentication/src/common/env.ts b/extensions/github-authentication/src/common/env.ts
-index 56cad4be..18fd7327 100644
+index 56cad4beb339af0d1da3c9442192659a11b86468..18fd7327b8834f39e2412e9b7ae1e61227d28e6c 100644
 --- a/extensions/github-authentication/src/common/env.ts
 +++ b/extensions/github-authentication/src/common/env.ts
-@@ -7,24 +7,4 @@ import { AuthProviderType } from '../github';
+@@ -5,28 +5,8 @@
+ import { Uri } from 'vscode';
+ import { AuthProviderType } from '../github';
  
 -const VALID_DESKTOP_CALLBACK_SCHEMES = [
 -	'vscode',
@@ -29,7 +38,11 @@ index 56cad4be..18fd7327 100644
 +export function isSupportedClient(_uri: Uri): boolean {
 +	return false;
  }
-@@ -38,4 +18,4 @@ export function isSupportedTarget(type: AuthProviderType, gheUri?: Uri): boolean
+ 
+ export function isSupportedTarget(type: AuthProviderType, gheUri?: Uri): boolean {
+@@ -36,6 +16,6 @@ export function isSupportedTarget(type: AuthProviderType, gheUri?: Uri): boolean
+ 	);
+ }
  
 -export function isHostedGitHubEnterprise(uri: Uri): boolean {
 -	return /\.ghe\.com$/.test(uri.authority);

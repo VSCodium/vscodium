@@ -1,9 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: use branded global dirname for the linux system policy path
+
+Upstream hardcodes the system-wide policy file at /etc/vscode/policy.json; substituting the !!GLOBAL_DIRNAME!! branding token relocates it under the product's own branded config directory so the global policy file matches VSCodium rather than Microsoft (#2638).
+
 diff --git a/src/vs/base/common/policy.ts b/src/vs/base/common/policy.ts
-index 8141b0f..33599d9 100644
+index ffe87224d421bddd590290055a68f1d2db6804f4..88d38f9830de2c830d0fec1bbeef14a8a43b96a3 100644
 --- a/src/vs/base/common/policy.ts
 +++ b/src/vs/base/common/policy.ts
-@@ -11,3 +11,3 @@ import { IDefaultAccount } from './defaultAccount.js';
+@@ -9,7 +9,7 @@ import { IPolicyData } from './defaultAccount.js';
+ /**
+  * System-wide policy file path for Linux systems.
   */
 -export const LINUX_SYSTEM_POLICY_FILE_PATH = '/etc/vscode/policy.json';
 +export const LINUX_SYSTEM_POLICY_FILE_PATH = '/etc/!!GLOBAL_DIRNAME!!/policy.json';
  
+ export type PolicyName = string;
+ export type LocalizedValue = {

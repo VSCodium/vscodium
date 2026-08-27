@@ -1,6 +1,15 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Manuel Thalmann <m@nuth.ch>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: add codium and codium-insiders terminal completion specs
+
+The terminal-suggest extension only ships Fig completion specs for the upstream `code`/`code-insiders` binaries; VSCodium's CLI is `codium`/`codium-insiders`, so this clones those specs under the VSCodium binary and app names and registers them in `availableSpecs`, giving the renamed CLI shell autocompletion (#2233).
+
+Co-authored-by: Baptiste Augrain <daiyam@zokugun.org>
+
 diff --git a/extensions/terminal-suggest/src/completions/codium-insiders.ts b/extensions/terminal-suggest/src/completions/codium-insiders.ts
 new file mode 100644
-index 0000000..f3c0f9d
+index 0000000000000000000000000000000000000000..f3c0f9dbd1fd6be0c1ee81a602b433a57cd6c073
 --- /dev/null
 +++ b/extensions/terminal-suggest/src/completions/codium-insiders.ts
 @@ -0,0 +1,9 @@
@@ -15,7 +24,7 @@ index 0000000..f3c0f9d
 +export default codiumInsidersCompletionSpec;
 diff --git a/extensions/terminal-suggest/src/completions/codium.ts b/extensions/terminal-suggest/src/completions/codium.ts
 new file mode 100644
-index 0000000..1daa1fe
+index 0000000000000000000000000000000000000000..1daa1fe61aaafe3c61888db7eac9d679e8fd39ed
 --- /dev/null
 +++ b/extensions/terminal-suggest/src/completions/codium.ts
 @@ -0,0 +1,9 @@
@@ -29,16 +38,24 @@ index 0000000..1daa1fe
 +
 +export default codiumCompletionSpec;
 diff --git a/extensions/terminal-suggest/src/terminalSuggestMain.ts b/extensions/terminal-suggest/src/terminalSuggestMain.ts
-index 95654ff..202474b 100644
+index ee73be3ab0350c5e9960b83c2d4ea8a704190cfc..f7c6ef0b127afb74ed3ab1cbbb3db9c304a9ab63 100644
 --- a/extensions/terminal-suggest/src/terminalSuggestMain.ts
 +++ b/extensions/terminal-suggest/src/terminalSuggestMain.ts
-@@ -13,2 +13,4 @@ import codeCompletionSpec from './completions/code';
+@@ -11,6 +11,8 @@ import azdSpec from './completions/azd';
+ import cdSpec from './completions/cd';
+ import codeCompletionSpec from './completions/code';
  import codeInsidersCompletionSpec from './completions/code-insiders';
 +import codiumCompletionSpec from './completions/codium';
 +import codiumInsidersCompletionSpec from './completions/codium-insiders';
  import codeTunnelCompletionSpec from './completions/code-tunnel';
-@@ -76,2 +78,4 @@ export const availableSpecs: Fig.Spec[] = [
+ import codeTunnelInsidersCompletionSpec from './completions/code-tunnel-insiders';
+ import copilotSpec from './completions/copilot';
+@@ -67,6 +69,8 @@ export const availableSpecs: Fig.Spec[] = [
+ 	ghCompletionSpec,
+ 	npmCompletionSpec,
  	npxCompletionSpec,
 +	codiumInsidersCompletionSpec,
 +	codiumCompletionSpec,
  	pnpmCompletionSpec,
+ 	setLocationSpec,
+ 	yarnCompletionSpec,

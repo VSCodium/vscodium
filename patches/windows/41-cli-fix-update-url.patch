@@ -1,9 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: VSCodium <scripts@vscodium.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: 41-cli-fix-update-url
+
+
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 3e0895f..e518ad8 100644
+index db0642776cf12df0c57982b93f25167f76bc622e..810fc5119725682a3e5f1405ba769072fdfda9d4 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
-@@ -94,3 +94,3 @@ impl UpdateService {
+@@ -89,7 +89,7 @@ impl UpdateService {
+ 	) -> Result<Release, AnyError> {
+ 		let update_endpoint = get_update_endpoint()?;
  		let download_url = format!(
 -			"{}/{}/{}/{}/latest.json",
 +			"{}/{}/{}/{}/user/latest.json",
  			&update_endpoint,
+ 			quality_download_segment(quality),
+ 			platform.os(),
