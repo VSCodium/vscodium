@@ -1,27 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: build: allow overriding electron, nodejs and sysroot sources for
+ unofficial arches
+
+Official Electron, Node.js and vscode-linux-build-agent sysroot releases do not cover every CPU architecture, so the build reads VSCODE_ELECTRON_REPOSITORY/TAG/VERSION, VSCODE_NODEJS_SITE/URLROOT/URLSUFFIX and VSCODE_SYSROOT_REPOSITORY/VERSION to fetch the prebuilt binaries from alternate sources when set. Split out of the original combined architecture patch in #2085.
+
 diff --git a/build/azure-pipelines/linux/setup-env.sh b/build/azure-pipelines/linux/setup-env.sh
-index df123593..3d4a08ce 100755
+index df123593b1ab4944c41d1f258bb8ac78b2ea275b..3d4a08ce47210de495a80aa2643a2e0935347e59 100755
 --- a/build/azure-pipelines/linux/setup-env.sh
 +++ b/build/azure-pipelines/linux/setup-env.sh
-@@ -2,3 +2,3 @@
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env bash
  
 -set -e
 +set -ex
  
-@@ -22,3 +22,3 @@ else
+ SYSROOT_ARCH=$VSCODE_ARCH
+ if [ "$SYSROOT_ARCH" == "x64" ]; then
+@@ -20,7 +20,7 @@ if [ -d "$VSCODE_REMOTE_SYSROOT_DIR" ]; then
+   echo "Using cached remote sysroot"
+ else
    echo "Downloading remote sysroot"
 -  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" VSCODE_SYSROOT_PREFIX="-glibc-2.28-gcc-8.5.0" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
 +  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
  fi
+ 
+ mkdir -p "$HOME/.gyp"
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index a40ff6f6..d704284c 100644
+index 3ad0ff58ed5a3d4afbcaa93604782e4f0dcf2a33..679a3c1e4c6f4d303a415ae0271214df9dae515a 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -31,3 +31,3 @@ import log from 'fancy-log';
+@@ -29,7 +29,7 @@ import * as cp from 'child_process';
+ import crypto from 'crypto';
+ import log from 'fancy-log';
  import buildfile from './buildfile.ts';
 -import { fetchUrls } from './lib/fetch.ts';
 +import { fetchGithub, fetchUrls } from './lib/fetch.ts';
  import { downloadFeedPackage } from './lib/azureFeed.ts';
-@@ -315,9 +315,27 @@ function nodejs(platform: string, arch: string): NodeJS.ReadWriteStream | undefi
+ import { readAgentSdkResults } from './agent-sdk/common.ts';
+ 
+@@ -312,13 +312,31 @@ function nodejs(platform: string, arch: string): NodeJS.ReadWriteStream | undefi
+ 				.pipe(rename('node.exe'));
+ 		case 'darwin':
  		case 'linux': {
 -			const downloaded = (nodejsArtifactFeed ?
 -				fetchNodejs(expectedName!, checksumSha256) :
@@ -56,11 +77,15 @@ index a40ff6f6..d704284c 100644
 +					.pipe(rename('node'));
 +			}
  			return platform === 'linux' && arch === 'x64' ? downloaded.pipe(patchElfLoadAlign()) : downloaded;
+ 		}
+ 		case 'alpine':
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 7eb0a828..67e5aaab 100644
+index 7e47e440483965fbb38a778cf619b6f515cfb6da..134f8a57e5ea3f0463f1f5bb5b270b0ff0512f9c 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -498,4 +498,17 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -479,8 +479,21 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 			all = es.merge(all, shortcut, policyDest);
+ 		}
  
 +		const electronOverride: { repo?: string; tag?: string } = {};
 +		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
@@ -78,37 +103,53 @@ index 7eb0a828..67e5aaab 100644
  			...config,
 +			...electronOverride,
  			platform,
+ 			arch: arch === 'armhf' ? 'arm' : arch,
+ 			ffmpegChromium: false
 diff --git a/build/lib/util.ts b/build/lib/util.ts
-index 760768dd..b8148e78 100644
+index fb1c93f7300b4e2a1c96c9ea6c35a077f78540ef..294fef59f93bc3136e0adc256d6c4bc08a20e384 100644
 --- a/build/lib/util.ts
 +++ b/build/lib/util.ts
-@@ -377,3 +377,3 @@ export function getElectronVersion(): Record<string, string> {
+@@ -375,7 +375,7 @@ export function streamToPromise(stream: NodeJS.ReadWriteStream): Promise<void> {
+ 
+ export function getElectronVersion(): Record<string, string> {
  	const npmrc = fs.readFileSync(path.join(root, '.npmrc'), 'utf8');
 -	const electronVersion = /^target="(.*)"$/m.exec(npmrc)![1];
 +	const electronVersion = process.env.VSCODE_ELECTRON_VERSION ?? /^target="(.*)"$/m.exec(npmrc)![1];
  	const msBuildId = /^ms_build_id="(.*)"$/m.exec(npmrc)![1];
+ 	return { electronVersion, msBuildId };
+ }
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index 7db8c4b5..e5d70861 100644
+index 7db8c4b5dde1cf0d1fb73f51da89ff2743d22661..e5d70861d56a4750c4e032532e96e92e303a2848 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
-@@ -146,3 +146,3 @@ export const referenceGeneratedDepsByArch = {
+@@ -144,5 +144,5 @@ export const referenceGeneratedDepsByArch = {
+ 		'libxkbfile1 (>= 1:1.1.0)',
+ 		'libxrandr2',
  		'xdg-utils (>= 1.0.2)'
 -	]
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index 0dfc69a0..7b6ac8bb 100644
+index 0dfc69a05a7a43ae904f3a8a8473d304d6c6822a..7b6ac8bb156e5fc42bcc32b5fa2181f9b7387b0d 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -82,3 +82,5 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
+@@ -80,7 +80,9 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
+ 		const timeout = setTimeout(() => controller.abort(), 30 * 1000);
+ 		const version = '20260212-405735';
  		try {
 -			const response = await fetch(`https://api.github.com/repos/Microsoft/vscode-linux-build-agent/releases/tags/v${version}`, {
 +			const repository = process.env['VSCODE_SYSROOT_REPOSITORY'] ?? 'Microsoft/vscode-linux-build-agent';
 +			const actualVersion = process.env['VSCODE_SYSROOT_VERSION'] ?? version;
 +			const response = await fetch(`https://api.github.com/repos/${repository}/releases/tags/v${actualVersion}`, {
  				headers: ghApiHeaders,
-@@ -91,3 +93,3 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
+ 				signal: controller.signal
+ 			});
+@@ -89,7 +91,7 @@ async function fetchUrl(options: IFetchOptions, retries = 10, retryDelay = 1000)
+ 				const contents = Buffer.from(await response.arrayBuffer());
+ 				const asset = JSON.parse(contents.toString()).assets.find((a: { name: string }) => a.name === options.assetName);
  				if (!asset) {
 -					throw new Error(`Could not find asset in release of Microsoft/vscode-linux-build-agent @ ${version}`);
 +					throw new Error(`Could not find asset in release of ${repository} @ ${actualVersion}`);
  				}
+ 				console.log(`Found asset ${options.assetName} @ ${asset.url}.`);
+ 				const assetResponse = await fetch(asset.url, {

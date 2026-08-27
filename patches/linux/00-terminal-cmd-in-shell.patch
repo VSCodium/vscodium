@@ -1,5 +1,16 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: timkenhan <33104842+timkenhan@users.noreply.github.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: run linux external terminal exec through a shell to allow
+ space-separated args
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Passes `shell: true` to the spawn call in `LinuxExternalTerminalService` so the `terminal.external.linuxExec` setting is interpreted by a shell instead of being treated as a single executable path. This lets the command carry space-separated arguments — for example wrapping it in `flatpak-spawn` or appending options — without resorting to a separate wrapper script (#2790).
+
 diff --git a/src/vs/platform/externalTerminal/node/externalTerminalService.ts b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
-index e7cf3f54588..80075787abf 100644
+index 4424cc7f11bf4564de977db062abe47a32058f94..fad0df4718a9cf523f14bc4b938981af2e86383f 100644
 --- a/src/vs/platform/externalTerminal/node/externalTerminalService.ts
 +++ b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
 @@ -327,7 +327,7 @@ export class LinuxExternalTerminalService extends ExternalTerminalService implem

@@ -3,17 +3,41 @@
 
 set -e
 
-if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  cp -rp src/insider/* vscode/
-else
-  cp -rp src/stable/* vscode/
-fi
-
-cp -f LICENSE vscode/LICENSE.txt
-
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 { set +x; } 2>/dev/null
+
+# include common functions
+. ../utils.sh
+. ../patches.sh
+
+# {{{ apply patches
+echo "APP_NAME=\"${APP_NAME}\""
+echo "APP_NAME_LC=\"${APP_NAME_LC}\""
+echo "ASSETS_REPOSITORY=\"${ASSETS_REPOSITORY}\""
+echo "BINARY_NAME=\"${BINARY_NAME}\""
+echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
+echo "GLOBAL_DIRNAME=\"${GLOBAL_DIRNAME}\""
+echo "ORG_NAME=\"${ORG_NAME}\""
+echo "TUNNEL_APP_NAME=\"${TUNNEL_APP_NAME}\""
+
+ensure_stack
+
+materialize_tokens
+materialize_disabled_update
+# }}}
+
+# {{{ branding assets + LICENSE
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  cp -rp ../src/insider/* .
+else
+  cp -rp ../src/stable/* .
+fi
+
+cp -f ../LICENSE LICENSE.txt
+
+exclude_overlay
+# }}}
 
 # {{{ product.json
 cp product.json{,.bak}
@@ -49,6 +73,8 @@ setpath "product" "reportIssueUrl" "https://github.com/VSCodium/vscodium/issues/
 setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
 setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=852118"
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
+setpath "product" "serverLicenseUrl" "https://github.com/VSCodium/vscodium/blob/master/LICENSE"
+setpath "product" "voiceWsUrl" ""
 
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
   setpath "product" "updateUrl" "https://raw.githubusercontent.com/VSCodium/versions/refs/heads/master"
@@ -127,59 +153,6 @@ jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
 echo "${jsonTmp}" > product.json && unset jsonTmp
 
 cat product.json
-# }}}
-
-# include common functions
-. ../utils.sh
-
-# {{{ apply patches
-
-echo "APP_NAME=\"${APP_NAME}\""
-echo "APP_NAME_LC=\"${APP_NAME_LC}\""
-echo "ASSETS_REPOSITORY=\"${ASSETS_REPOSITORY}\""
-echo "BINARY_NAME=\"${BINARY_NAME}\""
-echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
-echo "GLOBAL_DIRNAME=\"${GLOBAL_DIRNAME}\""
-echo "ORG_NAME=\"${ORG_NAME}\""
-echo "TUNNEL_APP_NAME=\"${TUNNEL_APP_NAME}\""
-
-if [[ "${DISABLE_UPDATE}" == "yes" ]]; then
-  mv ../patches/00-update-disable.patch.yet ../patches/00-update-disable.patch
-fi
-
-for file in ../patches/*.json; do
-  if [[ -f "${file}" ]]; then
-    apply_actions "${file}"
-  fi
-done
-
-for file in ../patches/*.patch; do
-  if [[ -f "${file}" ]]; then
-    apply_patch "${file}"
-  fi
-done
-
-if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  for file in ../patches/insider/*.patch; do
-    if [[ -f "${file}" ]]; then
-      apply_patch "${file}"
-    fi
-  done
-fi
-
-if [[ -d "../patches/${OS_NAME}/" ]]; then
-  for file in "../patches/${OS_NAME}/"*.patch; do
-    if [[ -f "${file}" ]]; then
-      apply_patch "${file}"
-    fi
-  done
-fi
-
-for file in ../patches/user/*.patch; do
-  if [[ -f "${file}" ]]; then
-    apply_patch "${file}"
-  fi
-done
 # }}}
 
 set -x
@@ -291,5 +264,10 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   sed -i 's|https://code.visualstudio.com|https://vscodium.com|' build/win32/code.iss
   sed -i 's|Microsoft Corporation|VSCodium|' build/win32/code.iss
 fi
+
+# Never-restored backups; leaving them lets an authoring `git add -A` reach a patch.
+rm -f product.json.bak package.json.bak resources/server/manifest.json.bak .npmrc.bak
+
+record_materialized
 
 cd ..

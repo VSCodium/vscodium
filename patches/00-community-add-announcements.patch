@@ -1,8 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: add announcements list to the welcome page
+
+Renders a VSCodium announcements section on the getting started page, fetching extra entries from the project's repository so news can reach users without shipping an app update (#1274). A `workbench.welcomePage.extraAnnouncements` machine setting gates the online request (#2335), and the fetch falls back to the built-in list so the welcome page still opens when offline (#1493).
+
+Co-authored-by: scientificworld <30764166+scientificworld@users.noreply.github.com>
+
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-index 067580a4..2ad8759f 100644
+index 591d9b0d488cb4ee2eae170608cffb7f8edcdcd7..0cf6e6238ed300265bbfa399c4281edc46c8aa1f 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.contribution.ts
-@@ -316,2 +316,9 @@ configurationRegistry.registerConfiguration({
+@@ -314,6 +314,13 @@ configurationRegistry.registerConfiguration({
+ 			default: true,
+ 			description: localize('workbench.welcomePage.walkthroughs.openOnInstall', "When enabled, an extension's walkthrough will open upon install of the extension.")
  		},
 +		'workbench.welcomePage.extraAnnouncements': {
 +			scope: ConfigurationScope.MACHINE,
@@ -12,11 +23,15 @@ index 067580a4..2ad8759f 100644
 +			tags: ['usesOnlineServices']
 +		},
  		'workbench.startupEditor': {
+ 			'scope': ConfigurationScope.RESOURCE,
+ 			'type': 'string',
 diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
-index 0cb22b9c..1dfea59f 100644
+index 0cb22b9cf1741017c3e8345c40d8812886a36ada..1dfea59ff060aefa853c6b1811637f3457a0a715 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
-@@ -119,4 +119,8 @@ type GettingStartedActionEvent = {
+@@ -117,8 +117,12 @@ type GettingStartedActionEvent = {
+ };
+ 
  type RecentEntry = (IRecentFolder | IRecentWorkspace) & { id: string };
 +type AnnouncementEntry = { id: string, title: string, url: string };
  
@@ -25,26 +40,42 @@ index 0cb22b9c..1dfea59f 100644
 +const BUILTIN_ANNOUNCEMENTS: AnnouncementEntry[] = [/* BUILTIN_ANNOUNCEMENTS */];
 +
  export class GettingStartedPage extends EditorPane {
-@@ -154,2 +158,4 @@ export class GettingStartedPage extends EditorPane {
+ 
+ 	public static readonly ID = 'gettingStartedPage';
+@@ -152,6 +156,8 @@ export class GettingStartedPage extends EditorPane {
+ 	private readonly recentlyOpenedList = this._register(new MutableDisposable<GettingStartedIndexList<RecentEntry>>());
+ 	private readonly startList = this._register(new MutableDisposable<GettingStartedIndexList<IWelcomePageStartEntry>>());
  	private readonly gettingStartedList = this._register(new MutableDisposable<GettingStartedIndexList<IResolvedWalkthrough>>());
 +	private announcementList?: GettingStartedIndexList<AnnouncementEntry>;
 +	private announcementData?: AnnouncementEntry[];
  
-@@ -936,2 +942,3 @@ export class GettingStartedPage extends EditorPane {
+ 	private stepsSlide!: HTMLElement;
+ 	private categoriesSlide!: HTMLElement;
+@@ -934,6 +940,7 @@ export class GettingStartedPage extends EditorPane {
+ 		const startList = this.buildStartList();
+ 		const recentList = this.buildRecentlyOpenedList();
  		const gettingStartedList = this.buildGettingStartedWalkthroughsList();
 +		const announcementList = await this.buildAnnouncementList();
  
-@@ -960,3 +967,3 @@ export class GettingStartedPage extends EditorPane {
+ 		const footerChildren: HTMLElement[] = [];
+ 		if (canShowAgentsBanner(this.chatEntitlementService)) {
+@@ -958,11 +965,11 @@ export class GettingStartedPage extends EditorPane {
+ 		const layoutLists = () => {
+ 			if (gettingStartedList.itemCount) {
  				this.container.classList.remove('noWalkthroughs');
 -				reset(rightColumn, gettingStartedList.getDomElement());
 +				reset(rightColumn, gettingStartedList.getDomElement(), announcementList.getDomElement());
  			}
-@@ -964,3 +971,3 @@ export class GettingStartedPage extends EditorPane {
+ 			else {
  				this.container.classList.add('noWalkthroughs');
 -				reset(rightColumn);
 +				reset(rightColumn, announcementList.getDomElement());
  			}
-@@ -1151,2 +1158,55 @@ export class GettingStartedPage extends EditorPane {
+ 			setTimeout(() => this.categoriesPageScrollbar?.scanDomNode(), 50);
+ 			layoutRecentList();
+@@ -1149,6 +1156,59 @@ export class GettingStartedPage extends EditorPane {
+ 		}).catch(onUnexpectedError);
+ 	}
  
 +	private async buildAnnouncementList(): Promise<GettingStartedIndexList<AnnouncementEntry>> {
 +		const renderAnnouncement = (announcement: AnnouncementEntry) => {
@@ -100,3 +131,5 @@ index 0cb22b9c..1dfea59f 100644
 +	}
 +
  	private buildStartList(): GettingStartedIndexList<IWelcomePageStartEntry> {
+ 		const renderStartEntry = (entry: IWelcomePageStartEntry): HTMLElement =>
+ 			$('li',

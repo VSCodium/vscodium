@@ -8,39 +8,17 @@ GH_REPO_PATH="${GH_REPO_PATH:-VSCodium/vscodium}"
 ORG_NAME="${ORG_NAME:-VSCodium}"
 TUNNEL_APP_NAME="${TUNNEL_APP_NAME:-"${BINARY_NAME}-tunnel"}"
 
-if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  GLOBAL_DIRNAME="${GLOBAL_DIRNAME:-"${APP_NAME_LC}"}-insiders"
-else
-  GLOBAL_DIRNAME="${GLOBAL_DIRNAME:-"${APP_NAME_LC}"}"
+# Guarded: sourcing this file twice in one shell would append the suffix again.
+if [[ -z "${VSCODIUM_DIRNAME_SET:-}" ]]; then
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+    GLOBAL_DIRNAME="${GLOBAL_DIRNAME:-"${APP_NAME_LC}"}-insiders"
+  else
+    GLOBAL_DIRNAME="${GLOBAL_DIRNAME:-"${APP_NAME_LC}"}"
+  fi
+  VSCODIUM_DIRNAME_SET=1
 fi
 
 # All common functions can be added to this file
-
-apply_actions() {
-  jq -c '.[]' "$1" | while IFS= read -r ENTRY; do
-    ENTRY_ACTION=$( jq -r '.action // empty' <<< "${ENTRY}" )
-
-    case "${ENTRY_ACTION}" in
-      remove)
-        jq -r '.paths[]' <<< "${ENTRY}" | while IFS= read -r ENTRY_PATH; do
-          ENTRY_PATH="${ENTRY_PATH%$'\r'}"
-
-          if [[ -e "${ENTRY_PATH}" ]]; then
-            if rm -rf -- "${ENTRY_PATH}"; then
-              echo "Removed: ${ENTRY_PATH}"
-            else
-              echo "Failed to remove: ${ENTRY_PATH}" >&2
-              exit 4
-            fi
-          else
-            echo "Not found: ${ENTRY_PATH}" >&2
-            exit 4
-          fi
-        done
-      ;;
-    esac
-  done
-}
 
 apply_patch() {
   if [[ -z "$2" ]]; then
@@ -50,17 +28,10 @@ apply_patch() {
 
   cp $1{,.bak}
 
-  replace "s|!!APP_NAME!!|${APP_NAME}|g" "$1"
-  replace "s|!!APP_NAME_LC!!|${APP_NAME_LC}|g" "$1"
-  replace "s|!!ASSETS_REPOSITORY!!|${ASSETS_REPOSITORY}|g" "$1"
-  replace "s|!!BINARY_NAME!!|${BINARY_NAME}|g" "$1"
-  replace "s|!!GH_REPO_PATH!!|${GH_REPO_PATH}|g" "$1"
-  replace "s|!!GLOBAL_DIRNAME!!|${GLOBAL_DIRNAME}|g" "$1"
-  replace "s|!!ORG_NAME!!|${ORG_NAME}|g" "$1"
-  replace "s|!!RELEASE_VERSION!!|${RELEASE_VERSION}|g" "$1"
-  replace "s|!!TUNNEL_APP_NAME!!|${TUNNEL_APP_NAME}|g" "$1"
+  replace_tokens_in_file "$1"
 
   if ! git apply --ignore-whitespace "$1"; then
+    mv -f $1{.bak,}
     echo failed to apply patch "$1" >&2
     exit 1
   fi
@@ -80,6 +51,18 @@ replace() {
   else
     sed -i '' -E "${1}" "${2}"
   fi
+}
+
+replace_tokens_in_file() {
+  replace "s|!!APP_NAME!!|${APP_NAME}|g" "$1"
+  replace "s|!!APP_NAME_LC!!|${APP_NAME_LC}|g" "$1"
+  replace "s|!!ASSETS_REPOSITORY!!|${ASSETS_REPOSITORY}|g" "$1"
+  replace "s|!!BINARY_NAME!!|${BINARY_NAME}|g" "$1"
+  replace "s|!!GH_REPO_PATH!!|${GH_REPO_PATH}|g" "$1"
+  replace "s|!!GLOBAL_DIRNAME!!|${GLOBAL_DIRNAME}|g" "$1"
+  replace "s|!!ORG_NAME!!|${ORG_NAME}|g" "$1"
+  replace "s|!!RELEASE_VERSION!!|${RELEASE_VERSION}|g" "$1"
+  replace "s|!!TUNNEL_APP_NAME!!|${TUNNEL_APP_NAME}|g" "$1"
 }
 
 if ! exists gsed; then

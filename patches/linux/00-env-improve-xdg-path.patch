@@ -1,8 +1,17 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: scope XDG_RUNTIME_DIR to the flatpak app subdirectory for ipc sockets
+
+Inside a Flatpak sandbox the writable runtime directory is remapped under `app/${FLATPAK_ID}`, so Unix sockets created directly in `XDG_RUNTIME_DIR` land at the wrong path; when `FLATPAK_ID` is set, append `app/${FLATPAK_ID}` to the runtime dir used for the git IPC socket and the exported `XDG_RUNTIME_DIR` (#2071).
+
 diff --git a/extensions/git/src/ipc/ipcServer.ts b/extensions/git/src/ipc/ipcServer.ts
-index a7142fe..526ca17 100644
+index 5e56f9ceef53979f7816cb7edcab5f94c7a07899..88a53ae17533b9d494ef332be094540b33160ed2 100644
 --- a/extensions/git/src/ipc/ipcServer.ts
 +++ b/extensions/git/src/ipc/ipcServer.ts
-@@ -20,3 +20,7 @@ function getIPCHandlePath(id: string): string {
+@@ -18,7 +18,11 @@ function getIPCHandlePath(id: string): string {
+ 	}
+ 
  	if (process.platform !== 'darwin' && process.env['XDG_RUNTIME_DIR']) {
 -		return path.join(process.env['XDG_RUNTIME_DIR'] as string, `vscode-git-${id}.sock`);
 +		if (!!process.env.FLATPAK_ID) {
@@ -11,12 +20,18 @@ index a7142fe..526ca17 100644
 +			return path.join(process.env['XDG_RUNTIME_DIR'] as string, `vscode-git-${id}.sock`);
 +		}
  	}
+ 
+ 	return path.join(os.tmpdir(), `vscode-git-${id}.sock`);
 diff --git a/src/vs/base/parts/ipc/node/ipc.net.ts b/src/vs/base/parts/ipc/node/ipc.net.ts
-index e58f678..add8048 100644
+index d97410ac0850cab8b258c749575d13a23ac4513b..b2adbf9f208cf2beaa653ea68f715ca4ea455a6a 100644
 --- a/src/vs/base/parts/ipc/node/ipc.net.ts
 +++ b/src/vs/base/parts/ipc/node/ipc.net.ts
-@@ -839,3 +839,3 @@ function unmask(buffer: VSBuffer, mask: number): void {
+@@ -734,7 +734,7 @@ class ZlibDeflateStream extends Disposable {
+ 
+ // Read this before there's any chance it is overwritten
  // Related to https://github.com/microsoft/vscode/issues/30624
 -export const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
 +export const XDG_RUNTIME_DIR = !!process.env.FLATPAK_ID ? join(process.env['XDG_RUNTIME_DIR'] as string, 'app', process.env.FLATPAK_ID) : process.env['XDG_RUNTIME_DIR'];
  
+ const safeIpcPathLengths: { [platform: number]: number } = {
+ 	[Platform.Linux]: 107,

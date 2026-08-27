@@ -1,26 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: split vscode build into a shared prepack task and per-target packing
+ tasks
+
+Compiling core and the built-in extensions is platform- and arch-independent, so it is factored into a standalone `prepack` task keyed only by minification while the platform/arch-specific bundling becomes a separate `packing` task; both are registered as top-level gulp tasks so the compile stage can run once and be reused across every packaging target instead of being repeated per target.
+
+`semver` is also kept out of `node_modules.asar`: the update service imports it statically into the main ESM bundle, and node resolves a module's static imports before that bundle's body runs and registers the archive's loader hook, so it has to exist as a real file.
+
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 53987f88..b897c6c6 100644
+index cba41d98b4220a512d0d0dae7863e2dd63a2d3f7..e7a9cc39d46956a0020273eeacce745a54a4770c 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -27,3 +27,3 @@ import { createAsar } from './lib/asar.ts';
+@@ -25,7 +25,7 @@ import { getProductionDependencies } from './lib/dependencies.ts';
+ import { config } from './lib/electron.ts';
+ import { createAsar } from './lib/asar.ts';
  import minimist from 'minimist';
 -import { compileBuildWithoutManglingTask, compileBuildWithManglingTask } from './gulpfile.compile.ts';
 +import { compileBuildWithoutManglingTask } from './gulpfile.compile.ts';
  import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask, compileCopilotExtensionBuildTask } from './gulpfile.extensions.ts';
-@@ -667,3 +667,4 @@ BUILD_TARGETS.forEach(buildTarget => {
+ import { copyCodiconsTask } from './lib/compilation.ts';
+ import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
+@@ -740,26 +740,47 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 					minified && useCdnSourceMapsForPackagingTasks ? `${sourceMappingURLBase}/core` : undefined
+ 				)
  			);
 -			vscodeTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}`, task.series(
 +
 +			const prepackTask = task.define(`vscode${dashed(minified)}-prepack`, task.series(
  				copyCodiconsTask,
-@@ -673,2 +674,6 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 				cleanExtensionsBuildTask,
+ 				compileNonNativeExtensionsBuildTask,
+ 				compileCopilotExtensionBuildTask,
  				compileExtensionMediaBuildTask,
 +			));
 +			task.task(prepackTask);
 +
 +			const packingTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}-packing`, task.series(
  				writeISODate('out-build'),
-@@ -677,5 +682,11 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 				esbuildBundleTask,
+ 				vscodeTaskCI
  			));
 -		} else {
 +			task.task(packingTask);
@@ -34,7 +53,9 @@ index 53987f88..b897c6c6 100644
 +			const prepackTask = task.define(`vscode${dashed(minified)}-prepack`, task.series(
 +				compileBuildWithoutManglingTask,
  				cleanExtensionsBuildTask,
-@@ -685,4 +696,14 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 				compileNonNativeExtensionsBuildTask,
+ 				compileCopilotExtensionBuildTask,
+ 				compileExtensionMediaBuildTask,
  				minified ? minifyVSCodeTask : bundleVSCodeTask,
 +			));
 +			task.task(prepackTask);
@@ -49,11 +70,17 @@ index 53987f88..b897c6c6 100644
 +				packingTask,
 +			));
  		}
+ 		task.task(vscodeTask);
+ 
 diff --git a/build/lib/esbuild.ts b/build/lib/esbuild.ts
-index d066767b..0d09e32a 100644
+index d066767b40dfc26980939ef56bcc177a27c3ed63..0d09e32aec2c9d4a020d8b2b786be22117327131 100644
 --- a/build/lib/esbuild.ts
 +++ b/build/lib/esbuild.ts
-@@ -42,3 +42,2 @@ export function runEsbuildBundle(outDir: string, minify: boolean, nls: boolean,
+@@ -40,7 +40,6 @@ export function runEsbuildBundle(outDir: string, minify: boolean, nls: boolean,
+ 		const args = [scriptPath, 'bundle', '--out', outDir, '--target', target];
+ 		if (minify) {
  			args.push('--minify');
 -			args.push('--mangle-privates');
  		}
+ 		if (nls) {
+ 			args.push('--nls');

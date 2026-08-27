@@ -1,59 +1,94 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: disable telemetry and online-service defaults
+
+Flip the defaults for telemetry, crash reporting, edit-telemetry, experiment fetching, and natural-language search (command palette and settings) from on/true to off/false so VSCodium collects no diagnostic data and makes no Microsoft online-service calls out of the box. Introduced in #2502 to replace the prior sed-based script, later extended to also disable workbench.enableExperiments.
+
 diff --git a/src/vs/platform/telemetry/common/telemetryService.ts b/src/vs/platform/telemetry/common/telemetryService.ts
-index ef676bd..4feb98b 100644
+index 62a840dd92b592158411465ec7953452cda7224f..cf7a8021e17eac74d74ca290c8641c0896d31974 100644
 --- a/src/vs/platform/telemetry/common/telemetryService.ts
 +++ b/src/vs/platform/telemetry/common/telemetryService.ts
-@@ -219,3 +219,3 @@ configurationRegistry.registerConfiguration({
+@@ -321,7 +321,7 @@ configurationRegistry.registerConfiguration({
+ 				localize('telemetry.telemetryLevel.off', "Disables all product telemetry.")
+ 			],
  			'markdownDescription': getTelemetryLevelSettingDescription(),
 -			'default': TelemetryConfiguration.ON,
 +			'default': TelemetryConfiguration.OFF,
  			'restricted': true,
-@@ -245,3 +245,3 @@ configurationRegistry.registerConfiguration({
+ 			'scope': ConfigurationScope.APPLICATION,
+ 			'tags': ['usesOnlineServices', 'telemetry'],
+@@ -373,7 +373,7 @@ configurationRegistry.registerConfiguration({
+ 				!product.privacyStatementUrl ?
+ 					localize('telemetry.enableTelemetry', "Enable diagnostic data to be collected. This helps us to better understand how {0} is performing and where improvements need to be made.", product.nameLong) :
  					localize('telemetry.enableTelemetryMd', "Enable diagnostic data to be collected. This helps us to better understand how {0} is performing and where improvements need to be made. [Read more]({1}) about what we collect and our privacy statement.", product.nameLong, product.privacyStatementUrl),
 -			'default': true,
 +			'default': false,
  			'restricted': true,
+ 			'markdownDeprecationMessage': localize('enableTelemetryDeprecated', "If this setting is false, no telemetry will be sent regardless of the new setting's value. Deprecated in favor of the {0} setting.", `\`#${TELEMETRY_SETTING_ID}#\``),
+ 			'scope': ConfigurationScope.APPLICATION,
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index d09ab3f..f37edd6 100644
+index 8e5d4aff2ff67746df9f776eb3f5617ae71f0500..71ccbcd2294747897be7b56b070213b36a5d22b6 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -496,3 +496,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -540,7 +540,7 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+ 				'type': 'boolean',
+ 				tags: ['experimental'],
  				'description': localize('enableNaturalLanguageSearch', "Controls whether the command palette should include similar commands. You must have an extension installed that provides Natural Language support."),
 -				'default': true
 +				'default': false
  			},
+ 			'workbench.quickOpen.closeOnFocusLost': {
+ 				'type': 'boolean',
 diff --git a/src/vs/workbench/contrib/editTelemetry/browser/editTelemetry.contribution.ts b/src/vs/workbench/contrib/editTelemetry/browser/editTelemetry.contribution.ts
-index 16fd396..587e1e3 100644
+index d97a096cb3ebc4548ad1e9f4cca1f043812d822d..255f07f2039e5217ee5c93c1f8e1858263f20c5b 100644
 --- a/src/vs/workbench/contrib/editTelemetry/browser/editTelemetry.contribution.ts
 +++ b/src/vs/workbench/contrib/editTelemetry/browser/editTelemetry.contribution.ts
-@@ -28,3 +28,3 @@ configurationRegistry.registerConfiguration({
+@@ -28,7 +28,7 @@ configurationRegistry.registerConfiguration({
+ 		[EDIT_TELEMETRY_SETTING_ID]: {
+ 			markdownDescription: localize('telemetry.editStats.enabled', "Controls whether to enable telemetry for edit statistics (only sends statistics if general telemetry is enabled)."),
  			type: 'boolean',
 -			default: true,
 +			default: false,
  			tags: ['experimental'],
+ 			experiment: {
+ 				mode: 'auto'
 diff --git a/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts b/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
-index e5cec6f..9c9e169 100644
+index e5cec6f206a220eb50f25d1115b6518e70da4ecf..9c9e169bbe273e4a32e6a9e1ad3c50a316307468 100644
 --- a/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
 +++ b/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
-@@ -113,3 +113,3 @@ registry.registerConfiguration({
+@@ -111,7 +111,7 @@ registry.registerConfiguration({
+ 		'workbench.settings.enableNaturalLanguageSearch': {
+ 			'type': 'boolean',
  			'description': nls.localize('enableNaturalLanguageSettingsSearch', "Controls whether to enable the natural language search mode for settings. The natural language search is provided by a Microsoft online service."),
 -			'default': true,
 +			'default': false,
  			'scope': ConfigurationScope.WINDOW,
+ 			'tags': ['usesOnlineServices']
+ 		},
 diff --git a/src/vs/workbench/electron-browser/desktop.contribution.ts b/src/vs/workbench/electron-browser/desktop.contribution.ts
-index 3517cc1..7b365fa 100644
+index 8fb8e1f6d9c514c4832d93f99d95940ea17e63f0..c8ee71d49135c00ec97a082fafaec180abd47280 100644
 --- a/src/vs/workbench/electron-browser/desktop.contribution.ts
 +++ b/src/vs/workbench/electron-browser/desktop.contribution.ts
-@@ -342,3 +342,3 @@ import { registerWorkbenchContribution2, WorkbenchPhase } from '../common/contri
+@@ -347,7 +347,7 @@ import product from '../../platform/product/common/product.js';
+ 			'telemetry.enableCrashReporter': {
+ 				'type': 'boolean',
  				'description': localize('telemetry.enableCrashReporting', "Enable crash reports to be collected. This helps us improve stability. \nThis option requires restart to take effect."),
 -				'default': true,
 +				'default': false,
  				'tags': ['usesOnlineServices', 'telemetry'],
+ 				'markdownDeprecationMessage': localize('enableCrashReporterDeprecated', "If this setting is false, no telemetry will be sent regardless of the new setting's value. Deprecated due to being combined into the {0} setting.", `\`#${TELEMETRY_SETTING_ID}#\``),
+ 			}
 diff --git a/src/vs/workbench/services/assignment/common/assignmentService.ts b/src/vs/workbench/services/assignment/common/assignmentService.ts
-index 4a3d96b..e587d5b 100644
+index 30031408890e67aa0a8511b6ac1af440abad5631..d04d7b7363f8914512f2f88ca96376c189458fba 100644
 --- a/src/vs/workbench/services/assignment/common/assignmentService.ts
 +++ b/src/vs/workbench/services/assignment/common/assignmentService.ts
-@@ -277,3 +277,3 @@ registry.registerConfiguration({
+@@ -524,7 +524,7 @@ registry.registerConfiguration({
+ 		'workbench.enableExperiments': {
+ 			'type': 'boolean',
  			'description': localize('workbench.enableExperiments', "Fetches experiments to run from a Microsoft online service."),
 -			'default': true,
 +			'default': false,
  			'scope': ConfigurationScope.APPLICATION,
+ 			'restricted': true,
+ 			'tags': ['usesOnlineServices']

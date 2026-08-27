@@ -12,8 +12,11 @@
 - [Build for CI/Downstream](#build-ci)
 - [Build Snap](#build-snap)
 - [Patch Update Process](#patch-update-process)
-  - [Semi-Automated](#patch-update-process-semiauto)
-  - [Manual](#patch-update-process-manual)
+  - [Modify a patch](#patch-modify)
+  - [Add a patch](#patch-add)
+  - [Remove a patch](#patch-remove)
+  - [Update to a new VS Code](#patch-rebase)
+  - [Normalize](#patch-normalize)
 
 ## <a id="dependencies"></a>Dependencies
 
@@ -141,6 +144,7 @@ The script `dev/build.sh` provides several flags:
 - `-o`: skip the build step
 - `-p`: generate the packages/assets/installers
 - `-s`: do not retrieve the source code of Visual Studio Code, it won't delete the existing build
+- `-f`: discard uncommitted edits and unexported commits in `vscode/` (or `VSCODIUM_FORCE_RESET=1`)
 
 ## <a id="build-ci"></a>Build for CI/Downstream
 
@@ -186,25 +190,70 @@ review-tools.snap-review --allow-classic codium*.snap
 
 ## <a id="patch-update-process"></a>Patch Update Process
 
-## <a id="patch-update-process-semiauto"></a>Semi-Automated
+`vscode/` is a git branch: `refs/vscodium/base` is the upstream commit, and each patch file is one commit on top of it, in apply order (`patches/`, `patches/insider/`, `patches/<os>/`, `patches/user/`). See [patches.md](patches.md).
 
-- run `./dev/build.sh`, if a patch is failing then,
-- run `./dev/update_patches.sh`
-- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
-- fix all the `*.rej` files
-- run `npm run watch`
-- run `./script/code.sh` until everything is ok
-- press any key to continue the script `update_patches.sh`
+- `./dev/build.sh` clones VS Code and imports the stack; `-s` reuses the clone, and keeps the commits while `patches/` is unchanged; the build refuses to discard uncommitted edits or commits not yet in `patches/` unless `-f` is given
+- the build leaves the branding uncommitted on top of the stack; before editing, run `git reset --hard HEAD` in `vscode/` to drop it, commits keep the `!!APP_NAME!!` tokens
+- each commit subject starts with its patch name, without `.patch`: `[00-foo] <description>`
+- `./dev/export.sh` rewrites the patch files and `.patches` manifests from the commits; `--dry-run` only reports drift
+- `dev/patch.sh`, `dev/update_patches.sh` and `dev/merge-patches.sh` are deprecated; each prints its replacement
 
-## <a id="patch-update-process-manual"></a>Manual
+### <a id="patch-modify"></a>Modify a patch
 
-- run `./dev/build.sh`, if a patch is failing then,
-- run `./dev/patch.sh <name>.patch` where `<name>.patch` is the failed patch
-- open `vscode` directory in a new **VSCodium**'s window
-- fix all the `*.rej` files
-- run `npm run watch`
-- run `./script/code.sh` until everything is ok
-- go back to the command line running `./dev/patch.sh`, press `enter` to validate the changes and it will update the patch
+- find the commit with `git log --oneline refs/vscodium/base..HEAD`
+- edit the source, then run `git add -A && git commit --fixup <commit>`
+- run `git -c sequence.editor=: rebase -i --autosquash refs/vscodium/base`
+- run `./dev/export.sh`
+
+To test, run `./dev/export.sh`, then `./dev/build.sh -s` and `npm run watch` / `./scripts/code.sh` in `vscode/`.
+
+### <a id="patch-add"></a>Add a patch
+
+- make the change, then run `git add -A && git commit -m "[00-area-what-it-does] describe the change"`
+- run `./dev/export.sh`, it writes `patches/00-area-what-it-does.patch`
+- `[linux/00-foo]` writes to `patches/linux/`, `[user/foo]` to `patches/user/`; a commit without a tag lands in `patches/user/`
+- a commit tagged `[NN-name.json]` must only `git rm` files; it is written as `patches/NN-name.json`
+- a new commit sits above the whole stack; if `export` warns it is out of order, move it down with `git rebase -i refs/vscodium/base` or tag it `[user/...]`
+
+### <a id="patch-remove"></a>Remove a patch
+
+Drop the commit with `git rebase -i refs/vscodium/base` in `vscode/`, then run `./dev/export.sh`: it deletes the patch file and updates `.patches`.
+
+### <a id="patch-rebase"></a>Update to a new VS Code
+
+Run the rebase on the clone of the previous version, before changing `upstream/<quality>.json`, so git can 3-way merge. When `./dev/build.sh` fails on a stale patch, its message prints the `./dev/rebase.sh` command to run; with no argument it replays the stack onto the commit the build cloned.
+
+- run `./dev/rebase.sh <tag or commit>`
+- on a conflict the script stops and lists the files
+- fix the conflict markers, or apply the hunks from `<file>.rej` and delete it, then `git add` the file (`git rm` it if it should stay deleted)
+- run `./dev/rebase.sh --continue`
+- when it finishes, run `./dev/verify.sh`, it lists the imports the stack broke
+- run `./dev/export.sh`
+- repeat the rebase and export for the two other OSes: `OS_NAME=<os> ./dev/rebase.sh <tag or commit>` then `./dev/export.sh` (`linux`, `osx`, `windows`)
+- set `commit` and `tag` in `upstream/<quality>.json` to the new version
+- run `./dev/build.sh -s`
+- `.json` patches never conflict: paths gone upstream are dropped and reported
+- no 3-way merge on a fresh clone or after changing the pin: the failed hunks are left in `.rej` files
+- insider: `./dev/build.sh -il`, then `./dev/rebase.sh`, `./dev/export.sh`, `./dev/build.sh -ils` (writes `upstream/insider.json`)
+
+`./dev/rebase.sh` flags:
+
+- `--status`: show applied, skipped and pending patches
+- `--skip`: drop the patch that stopped; `--skip <patch>` drops a pending one
+- `--redo`: undo the last applied patch and apply it again
+- `--until <patch>`: stop after that patch; `Ctrl-C` pauses between patches
+- `--abort`: restore `vscode/` and `patches/`; add `-f` to discard rebased commits and patches exported mid-rebase
+
+`./dev/export.sh` works mid-rebase: it writes the patches rebased so far and leaves the pending ones untouched.
+
+### <a id="patch-normalize"></a>Normalize
+
+`./dev/normalize.sh` rewrites the patches of every OS to the canonical format; run it on a clone of the quality's base:
+
+```bash
+./dev/normalize.sh
+VSCODE_QUALITY=insider ./dev/normalize.sh
+```
 
 ### <a id="icons"></a>icons/build_icons.sh
 

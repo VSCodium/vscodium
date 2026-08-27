@@ -1,56 +1,94 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Levi Zim <rsworktech@outlook.com>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: add linux riscv64 build target
+
+Registers riscv64 as a Linux architecture across the gulp packaging pipeline (deb/rpm arch maps, generated dependency lists, sysroot download), the CLI update-service platform detection, the REH requirement check, and the extension gallery TargetPlatform, so VSCodium can produce riscv64 desktop and remote builds (#1851, #1922).
+
+Co-authored-by: Baptiste Augrain <daiyam@zokugun.org>
+
 diff --git a/build/checksums/nodejs.txt b/build/checksums/nodejs.txt
-index 30eb0829..db137887 100644
+index 30eb0829d7cc01d9ed38464130683b425d114ba9..db137887bf84d2094ea64fcc1084b6352888889f 100644
 --- a/build/checksums/nodejs.txt
 +++ b/build/checksums/nodejs.txt
-@@ -4,2 +4,3 @@ df224555a083b918e46260cc969838501b9f9a87140c1195e5b9597b56d5dae2  node-v24.18.1-
+@@ -2,5 +2,6 @@ eb02f7fab96d3d67de40c5ec8566096fcb4c2026728787683ae5a97eb612b941  node-v24.18.1-
+ 6fb20fceacbb157c2f95825b80df4a454a0f6d81cdcd7bb81eeae9147e0e76ec  node-v24.18.1-darwin-x64.tar.gz
+ df224555a083b918e46260cc969838501b9f9a87140c1195e5b9597b56d5dae2  node-v24.18.1-linux-arm64.tar.gz
  9f5eb6ac21845a66c493c91a253b1da32fd684e89e9b7202d4936982336be4ca  node-v24.18.1-linux-x64.tar.gz
 +65109e57e34279184efcca5888bc156cff3d24bf8eead73de16a28a313c18884  node-v24.18.0-linux-riscv64-local1.tar.gz
  845fc4ce00780241667f92e8f7a3a679321a655dddb3b610f2d85693b17ddf28  win-arm64/node.exe
+ ac51903c4c111815d52280b1fdcc8da067cbb37e2fe1a765097b85c3292c8582  win-x64/node.exe
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index 4881e6f8..01696997 100644
+index 4d2a142218870909a4865732ed130f137fc4cdde..e1d5d6f7fb22098e0642953f0421736cb697f261 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -54,2 +54,3 @@ const BUILD_TARGETS = [
+@@ -51,6 +51,7 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'x64' },
+ 	{ platform: 'linux', arch: 'arm64' },
  	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  	{ platform: 'alpine', arch: 'arm64' },
+ 	// legacy: we use to ship only one alpine so it was put in the arch, but now we ship
+ 	// multiple alpine images and moved to a better model (alpine as the platform)
 diff --git a/build/gulpfile.scan.ts b/build/gulpfile.scan.ts
-index 6d3d8991..b1d48278 100644
+index 6d3d8991344e06bbbc7cfbf9dad81e21990474e2..b1d482788fcc1f5ce89f90b048f195b4ac7c9363 100644
 --- a/build/gulpfile.scan.ts
 +++ b/build/gulpfile.scan.ts
-@@ -24,2 +24,3 @@ const BUILD_TARGETS = [
+@@ -22,6 +22,7 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'armhf' },
+ 	{ platform: 'linux', arch: 'arm64' },
  	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  ];
+ 
+ // The following files do not have PDBs downloaded for them during the download symbols process.
 diff --git a/build/gulpfile.vscode.linux.ts b/build/gulpfile.vscode.linux.ts
-index 18454fd9..2a74886a 100644
+index 1a7c298789e7dff2caea7e9fc27a1863e2b10563..b8173d7d2be75193a107c19c67c181d01d2242d6 100644
 --- a/build/gulpfile.vscode.linux.ts
 +++ b/build/gulpfile.vscode.linux.ts
-@@ -32,2 +32,3 @@ function getDebPackageArch(arch: string): string {
+@@ -30,6 +30,7 @@ function getDebPackageArch(arch: string): string {
+ 		case 'armhf': return 'armhf';
+ 		case 'arm64': return 'arm64';
  		case 'ppc64le': return 'ppc64el';
 +		case 'riscv64': return 'riscv64';
  		default: throw new Error(`Unknown arch: ${arch}`);
-@@ -143,2 +144,3 @@ function getRpmPackageArch(arch: string): string {
+ 	}
+ }
+@@ -141,6 +142,7 @@ function getRpmPackageArch(arch: string): string {
+ 		case 'armhf': return 'armv7hl';
+ 		case 'arm64': return 'aarch64';
  		case 'ppc64le': return 'ppc64le';
 +		case 'riscv64': return 'riscv64';
  		default: throw new Error(`Unknown arch: ${arch}`);
-@@ -289,2 +291,3 @@ const BUILD_TARGETS = [
+ 	}
+ }
+@@ -286,6 +288,7 @@ const BUILD_TARGETS = [
+ 	{ arch: 'armhf' },
+ 	{ arch: 'arm64' },
  	{ arch: 'ppc64le' },
 +	{ arch: 'riscv64' },
  ];
+ 
+ BUILD_TARGETS.forEach(({ arch }) => {
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index a410da3c..12b9123e 100644
+index 2653234d3e488b8f301d3827d7546caa47796bd4..e65073ed672209fa670df224e6405abc7d471315 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -717,2 +717,3 @@ const BUILD_TARGETS = [
+@@ -681,6 +681,7 @@ const BUILD_TARGETS = [
+ 	{ platform: 'linux', arch: 'armhf' },
+ 	{ platform: 'linux', arch: 'arm64' },
  	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  ];
+ BUILD_TARGETS.forEach(buildTarget => {
+ 	const dashed = (str: string) => (str ? `-${str}` : ``);
 diff --git a/build/linux/debian/calculate-deps.ts b/build/linux/debian/calculate-deps.ts
-index 1eb77249..f65788a9 100644
+index 1eb77249d2d940e432a26c471bc8e206a7731bce..f65788a9e4cf48ce3f7cef9b5278009aabd06520 100644
 --- a/build/linux/debian/calculate-deps.ts
 +++ b/build/linux/debian/calculate-deps.ts
-@@ -68,2 +68,8 @@ function calculatePackageDeps(binaryPath: string, arch: DebianArchString, chromi
+@@ -66,6 +66,12 @@ function calculatePackageDeps(binaryPath: string, arch: DebianArchString, chromi
+ 				`-l${vscodeSysroot}/usr/lib/powerpc64le-linux-gnu`,
+ 				`-l${vscodeSysroot}/lib/powerpc64le-linux-gnu`);
  			break;
 +		case 'riscv64':
 +			cmd.push(`-l${chromiumSysroot}/usr/lib/riscv64-linux-gnu`,
@@ -59,11 +97,15 @@ index 1eb77249..f65788a9 100644
 +				`-l${vscodeSysroot}/lib/riscv64-linux-gnu`);
 +			break;
  	}
+ 	cmd.push(`-l${chromiumSysroot}/usr/lib`);
+ 	cmd.push(`-l${path.dirname(path.resolve(binaryPath))}`);
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index 9f80b9bb..06615aae 100644
+index 9f80b9bbd93724234cbddf4e3b580b85c43fd084..06615aaea25b61d9c5a9b0654fdf87d122a8adb7 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
-@@ -186,2 +186,42 @@ export const referenceGeneratedDepsByArch = {
+@@ -184,4 +184,44 @@ export const referenceGeneratedDepsByArch = {
+ 		'libxrandr2',
+ 		'xdg-utils (>= 1.0.2)'
  	],
 +	'riscv64': [
 +		'ca-certificates',
@@ -107,21 +149,27 @@ index 9f80b9bb..06615aae 100644
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index ef7dd2ba..aece9b95 100644
+index ef7dd2bae8eae1538459a98e6b931d05b303ca05..aece9b953236f732147e729b40702b97b482f4bc 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -163,2 +163,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
+@@ -161,6 +161,10 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
+ 			expectedName = `powerpc64le-linux-gnu${prefix}.tar.gz`;
+ 			triple = `powerpc64le-linux-gnu`;
  			break;
 +		case 'riscv64':
 +			expectedName = `riscv64-linux-gnu${prefix}.tar.gz`;
 +			triple = 'riscv64-linux-gnu';
 +			break;
  	}
+ 	console.log(`Fetching ${expectedName} for ${triple}`);
+ 	const checksumSha256 = getVSCodeSysrootChecksum(expectedName);
 diff --git a/build/linux/debian/types.ts b/build/linux/debian/types.ts
-index c56d0678..5d63ed29 100644
+index c56d067873ca757251e4473680780d2bf432304c..5d63ed29f59d8acc9901f27db49a1787c0f529bc 100644
 --- a/build/linux/debian/types.ts
 +++ b/build/linux/debian/types.ts
-@@ -5,6 +5,6 @@
+@@ -3,8 +3,8 @@
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
+  *--------------------------------------------------------------------------------------------*/
  
 -export type DebianArchString = 'amd64' | 'armhf' | 'arm64' | 'ppc64el' | 'ppc64le';
 +export type DebianArchString = 'amd64' | 'armhf' | 'arm64' | 'ppc64el' | 'ppc64le' | 'riscv64';
@@ -131,10 +179,12 @@ index c56d0678..5d63ed29 100644
 +	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'ppc64le', 'riscv64'].includes(s);
  }
 diff --git a/build/linux/rpm/types.ts b/build/linux/rpm/types.ts
-index 3f3c3f5f..d94537e0 100644
+index 3f3c3f5f800bb9df56358a38fa0943be71be387b..d94537e0c49f6ad9c8b2ce5457fffb1c8ab234a1 100644
 --- a/build/linux/rpm/types.ts
 +++ b/build/linux/rpm/types.ts
-@@ -5,6 +5,6 @@
+@@ -3,8 +3,8 @@
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
+  *--------------------------------------------------------------------------------------------*/
  
 -export type RpmArchString = 'x86_64' | 'armv7hl' | 'aarch64' | 'ppc64le';
 +export type RpmArchString = 'x86_64' | 'armv7hl' | 'aarch64' | 'ppc64le' | 'riscv64';
@@ -144,70 +194,114 @@ index 3f3c3f5f..d94537e0 100644
 +	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le', 'riscv64'].includes(s);
  }
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 315a585c..7db6e844 100644
+index 5fbd7b4eefcebb2b45ac9c01ed4111ff51c005cd..6eb87bcc3702642ad91df4148e6ad78e15f95299 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
-@@ -180,2 +180,3 @@ pub enum Platform {
+@@ -179,6 +179,7 @@ pub enum Platform {
+ 	LinuxARM32,
+ 	LinuxARM32Legacy,
  	LinuxPPC64LE,
 +	LinuxRISCV64,
  	DarwinX64,
-@@ -199,2 +200,3 @@ impl Platform {
+ 	DarwinARM64,
+ 	WindowsX64,
+@@ -198,6 +199,7 @@ impl Platform {
+ 			Platform::LinuxARM32 => "armhf",
+ 			Platform::LinuxARM32Legacy => "armhf",
  			Platform::LinuxPPC64LE => "ppc64le",
 +			Platform::LinuxRISCV64 => "riscv64",
  			Platform::DarwinX64 => "x64",
-@@ -219,2 +221,3 @@ impl Platform {
+ 			Platform::DarwinARM64 => "arm64",
+ 			Platform::WindowsX64 => "x64",
+@@ -218,6 +220,7 @@ impl Platform {
+ 			Platform::LinuxARM32 => "linux",
+ 			Platform::LinuxARM32Legacy => "linux",
  			Platform::LinuxPPC64LE => "linux",
 +			Platform::LinuxRISCV64 => "linux",
  			Platform::DarwinX64 => "darwin",
-@@ -249,2 +252,4 @@ impl Platform {
+ 			Platform::DarwinARM64 => "darwin",
+ 			Platform::WindowsX64 => "win32",
+@@ -248,6 +251,8 @@ impl Platform {
+ 			Some(Platform::LinuxARM64)
+ 		} else if cfg!(all(target_os = "linux", target_arch = "powerpc64")) {
  			Some(Platform::LinuxPPC64LE)
 +		} else if cfg!(all(target_os = "linux", target_arch = "riscv64")) {
 +			Some(Platform::LinuxRISCV64)
  		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
-@@ -277,2 +282,3 @@ impl fmt::Display for Platform {
+ 			Some(Platform::DarwinX64)
+ 		} else if cfg!(all(target_os = "macos", target_arch = "aarch64")) {
+@@ -276,6 +281,7 @@ impl fmt::Display for Platform {
+ 			Platform::LinuxARM32 => "LinuxARM32",
+ 			Platform::LinuxARM32Legacy => "LinuxARM32Legacy",
  			Platform::LinuxPPC64LE => "LinuxPPC64LE",
 +			Platform::LinuxRISCV64 => "LinuxRISCV64",
  			Platform::DarwinX64 => "DarwinX64",
+ 			Platform::DarwinARM64 => "DarwinARM64",
+ 			Platform::WindowsX64 => "WindowsX64",
 diff --git a/cli/src/util/prereqs.rs b/cli/src/util/prereqs.rs
-index e499af60..16f89efe 100644
+index e499af60a3f3a26b9c18ceebf1e8b6253a5e12ac..16f89efecc3f2d7b4ad77179e89a45ee5edf4b9f 100644
 --- a/cli/src/util/prereqs.rs
 +++ b/cli/src/util/prereqs.rs
-@@ -85,2 +85,4 @@ impl PreReqChecker {
+@@ -83,6 +83,8 @@ impl PreReqChecker {
+ 					Platform::LinuxARM32
+ 				} else if cfg!(target_arch = "powerpc64") {
  					Platform::LinuxPPC64LE
 +				} else if cfg!(target_arch = "riscv64") {
 +					Platform::LinuxRISCV64
  				} else {
+ 					Platform::LinuxARM64
+ 				});
 diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
-index 94028e34..c41cce72 100644
+index 94028e34100be96b0bd4726fd5d7d632f6b25b68..c41cce723b53f371c4cf0a43e38891989f952d9c 100644
 --- a/resources/server/bin/helpers/check-requirements-linux.sh
 +++ b/resources/server/bin/helpers/check-requirements-linux.sh
-@@ -56,2 +56,3 @@ case $ARCH in
+@@ -54,6 +54,7 @@ case $ARCH in
+ 		fi
+ 		;;
      ppc64le) LDCONFIG_ARCH="64bit";;
 +	riscv64) LDCONFIG_ARCH="RISC-V";;
  esac
+ 
+ if [ "$OS_ID" != "alpine" ]; then
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index 26197506..deb584c5 100644
+index 261975065f58a0e50a465ecfd1376280d19f3d38..deb584c58d7ad4cbd1fac8a4f5f31d8be67cf73d 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-@@ -50,2 +50,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+@@ -48,6 +48,7 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+ 		case TargetPlatform.LINUX_ARM64: return 'Linux ARM 64';
+ 		case TargetPlatform.LINUX_ARMHF: return 'Linux ARM';
  		case TargetPlatform.LINUX_PPC64LE: return 'Linux PowerPC64';
 +		case TargetPlatform.LINUX_RISCV64: return 'Linux RISC-V 64';
  
-@@ -74,2 +75,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+ 		case TargetPlatform.ALPINE_X64: return 'Alpine Linux 64 bit';
+ 		case TargetPlatform.ALPINE_ARM64: return 'Alpine ARM 64';
+@@ -72,6 +73,7 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+ 		case TargetPlatform.LINUX_ARM64: return TargetPlatform.LINUX_ARM64;
+ 		case TargetPlatform.LINUX_ARMHF: return TargetPlatform.LINUX_ARMHF;
  		case TargetPlatform.LINUX_PPC64LE: return TargetPlatform.LINUX_PPC64LE;
 +		case TargetPlatform.LINUX_RISCV64: return TargetPlatform.LINUX_RISCV64;
  
-@@ -112,2 +114,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+ 		case TargetPlatform.ALPINE_X64: return TargetPlatform.ALPINE_X64;
+ 		case TargetPlatform.ALPINE_ARM64: return TargetPlatform.ALPINE_ARM64;
+@@ -110,6 +112,9 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+ 			if (arch === 'ppc64le') {
+ 				return TargetPlatform.LINUX_PPC64LE;
  			}
 +			if (arch === 'riscv64') {
 +				return TargetPlatform.LINUX_RISCV64;
 +			}
  			return TargetPlatform.UNKNOWN;
+ 
+ 		case 'alpine':
 diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
-index d898b3af..ceed3647 100644
+index d898b3af90bb5db951120c7584deffee1402e22f..ceed364743757559ff596dba45484699e04508ec 100644
 --- a/src/vs/platform/extensions/common/extensions.ts
 +++ b/src/vs/platform/extensions/common/extensions.ts
-@@ -351,2 +351,3 @@ export const enum TargetPlatform {
+@@ -349,6 +349,7 @@ export const enum TargetPlatform {
+ 	LINUX_ARM64 = 'linux-arm64',
+ 	LINUX_ARMHF = 'linux-armhf',
  	LINUX_PPC64LE = 'linux-ppc64le',
 +	LINUX_RISCV64 = 'linux-riscv64',
  
+ 	ALPINE_X64 = 'alpine-x64',
+ 	ALPINE_ARM64 = 'alpine-arm64',

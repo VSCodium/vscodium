@@ -1,24 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: load and deep-merge a user-provided product.json into the product
+ configuration
+
+Locates a product.json in the user data directory, loads it at startup into the `_VSCODE_USER_PRODUCT_JSON` global for both the desktop (src/main.ts) and CLI (src/cli.ts) entrypoints, and deep-merges it over the built-in configuration so users can override product values (e.g. gallery service and extension endpoint URLs) without rebuilding. CLI-side loading was added in #2595.
+
+Co-authored-by: ririxi <hey@ririxi.dev>
+
 diff --git a/src/cli.ts b/src/cli.ts
-index b643e34..2f228ef 100644
+index b643e346b08e90eae823aa500353ac9beb817be9..2f228ef580cd73a60a2321a299a7e32858d0516a 100644
 --- a/src/cli.ts
 +++ b/src/cli.ts
-@@ -5,2 +5,4 @@
+@@ -3,12 +3,16 @@
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
+  *--------------------------------------------------------------------------------------------*/
  
 +import * as path from 'node:path';
 +import { createRequire } from 'node:module';
  import './bootstrap-cli.js'; // this MUST come before other imports as it changes global state
-@@ -10,3 +12,5 @@ import { resolveNLSConfiguration } from './vs/base/node/nls.js';
+ import { configurePortable } from './bootstrap-node.js';
+ import { bootstrapESM } from './bootstrap-esm.js';
+ import { resolveNLSConfiguration } from './vs/base/node/nls.js';
  import { product } from './bootstrap-meta.js';
 +import { getUserDataPath } from './vs/platform/environment/node/userDataPath.js';
  
 +const require = createRequire(import.meta.url);
  // NLS
-@@ -21,2 +25,4 @@ process.env['VSCODE_CLI'] = '1';
+ const nlsConfiguration = await resolveNLSConfiguration({ userLocale: 'en', osLocale: 'en', commit: product.commit, userDataPath: '', nlsMetadataPath: import.meta.dirname });
+ process.env['VSCODE_NLS_CONFIG'] = JSON.stringify(nlsConfiguration); // required for `bootstrap-esm` to pick up NLS messages
+@@ -19,8 +23,23 @@ configurePortable(product);
+ // Signal processes that we got launched as CLI
+ process.env['VSCODE_CLI'] = '1';
  
 +resolveUserProduct();
 +
  // Bootstrap ESM
-@@ -26 +32,14 @@ await bootstrapESM();
+ await bootstrapESM();
+ 
+ // Load Server
  await import('./vs/code/node/cli.js');
 +
 +function resolveUserProduct() {
@@ -35,19 +55,29 @@ index b643e34..2f228ef 100644
 +}
 \ No newline at end of file
 diff --git a/src/main.ts b/src/main.ts
-index ec188d0..0160be6 100644
+index 2e180b995dd55aeb176e1083c40dc97b87ac05e1..9a154bbc9facb518984ef6f8c31ff7959386e748 100644
 --- a/src/main.ts
 +++ b/src/main.ts
-@@ -8,2 +8,3 @@ import * as fs from 'original-fs';
+@@ -6,6 +6,7 @@
+ import * as path from 'node:path';
+ import * as fs from 'original-fs';
  import * as os from 'node:os';
 +import { createRequire } from 'node:module';
  import { performance } from 'node:perf_hooks';
-@@ -22,2 +23,4 @@ import { NativeParsedArgs } from './vs/platform/environment/common/argv.js';
+ import { configurePortable } from './bootstrap-node.js';
+ import { bootstrapESM } from './bootstrap-esm.js';
+@@ -20,6 +21,8 @@ import { getUNCHost, addUNCHostToAllowlist } from './vs/base/node/unc.js';
+ import { INLSConfiguration } from './vs/nls.js';
+ import { NativeParsedArgs } from './vs/platform/environment/common/argv.js';
  
 +const require = createRequire(import.meta.url);
 +
  perf.mark('code/didStartMain');
-@@ -109,2 +112,14 @@ registerListeners();
+ 
+ perf.mark('code/willLoadMainBundle', {
+@@ -115,6 +118,18 @@ protocol.registerSchemesAsPrivileged([
+ // Global app listeners
+ registerListeners();
  
 +function resolveUserProduct() {
 +	const userProductPath = path.join(userDataPath, 'product.json');
@@ -62,24 +92,36 @@ index ec188d0..0160be6 100644
 +}
 +
  /**
-@@ -205,2 +220,3 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
+  * We can resolve the NLS configuration early if it is defined
+  * in argv.json before `app.ready` event. Otherwise we can only
+@@ -211,6 +226,7 @@ async function onReady() {
+ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfiguration): Promise<void> {
+ 	process.env['VSCODE_NLS_CONFIG'] = JSON.stringify(nlsConfig);
  	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
 +	resolveUserProduct();
  
+ 	// Bootstrap ESM
+ 	await bootstrapESM();
 diff --git a/src/typings/vscode-globals-product.d.ts b/src/typings/vscode-globals-product.d.ts
-index ab169bd..2155f5c 100644
+index ab169bd82d091524bc531e49a2ab52dfec11e880..2155f5c12c74c25ef6244fa3306717593508ccbe 100644
 --- a/src/typings/vscode-globals-product.d.ts
 +++ b/src/typings/vscode-globals-product.d.ts
-@@ -43,2 +43,4 @@ declare global {
+@@ -41,6 +41,8 @@ declare global {
+ 	 * @deprecated Avoid using this variable.
+ 	*/
  	var _VSCODE_USE_RELATIVE_IMPORTS: boolean | undefined;
 +
 +	var _VSCODE_USER_PRODUCT_JSON: Record<string, any>;
  }
+ 
+ // fake export to make global work
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 6f093e9..b63af55 100644
+index c7481f35b20e709d2837fed947d5304f6b0ca330..cb7e20d8318e1900621d9b8b3b56b7431079dd53 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -31,2 +31,25 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+@@ -52,6 +52,29 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+ 		}
+ 	});
  
 +	// Merge user-customized product.json
 +	try {
@@ -105,3 +147,5 @@ index 6f093e9..b63af55 100644
 +	}
 +
  	// Running out of sources
+ 	if (env['VSCODE_DEV']) {
+ 		Object.assign(product, {

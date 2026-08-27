@@ -1,22 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: cli: fetch reh server from release archives via explicit endpoints
+
+VSCodium does not run Microsoft's update service, so the CLI's tunnel/serve-web server download is rewired to build URLs from configured endpoints (VSCODE_CLI_DOWNLOAD_ENDPOINT/VSCODE_CLI_UPDATE_ENDPOINT) and app/binary names, pulling the `-reh-web-` archive directly from the release download endpoint instead of the upstream `/api/...` version API (#2313, #2319). The server entrypoint is resolved from the configured binary name rather than the built-in SERVER_NAME_MAP (#2561).
+
 diff --git a/cli/src/commands/serve_web.rs b/cli/src/commands/serve_web.rs
-index 12178ef2..48b6c135 100644
+index 8f2c147fa49a600aa2a105f04e461552a8df2be2..1095c8eea32aba634f5d417ef8c20b5a039d652e 100644
 --- a/cli/src/commands/serve_web.rs
 +++ b/cli/src/commands/serve_web.rs
-@@ -794,3 +794,3 @@ impl ConnectionManager {
+@@ -797,7 +797,7 @@ impl ConnectionManager {
+ 		let release_for_fut = args.release.clone();
+ 		let log_for_fut = args.log.clone();
  		let dir_fut = cache.create(&args.release.commit, |target_dir| async move {
 -			info!(log_for_fut, "Downloading server {}", release_for_fut.commit);
 +			info!(log_for_fut, "Downloading server {}/{}", release_for_fut.commit, release_for_fut.name);
  			let tmpdir = tempfile::tempdir().unwrap();
-@@ -822,3 +822,3 @@ impl ConnectionManager {
+ 			let response = update_service.get_download_stream(&release_for_fut).await?;
+ 
+@@ -825,7 +825,7 @@ impl ConnectionManager {
+ 
+ 		let executable = path
  			.join("bin")
 -			.join(args.release.quality.server_entrypoint());
 +			.join(args.release.quality.server_entrypoint().unwrap());
  
+ 		let socket_path = get_socket_name();
+ 
 diff --git a/cli/src/constants.rs b/cli/src/constants.rs
-index 938f4343..7277908a 100644
+index eaaa908d1520ee4545ebe4d07f3c1b2ecb4ab2ec..2d9e5849a0002eccfb0d66b1cce6f94c295c7e13 100644
 --- a/cli/src/constants.rs
 +++ b/cli/src/constants.rs
-@@ -37,3 +37,6 @@ pub const DOCUMENTATION_URL: Option<&'static str> = option_env!("VSCODE_CLI_DOCU
+@@ -40,7 +40,10 @@ pub const VSCODE_CLI_AI_ENDPOINT: Option<&'static str> = option_env!("VSCODE_CLI
+ pub const VSCODE_CLI_QUALITY: Option<&'static str> = option_env!("VSCODE_CLI_QUALITY");
+ pub const DOCUMENTATION_URL: Option<&'static str> = option_env!("VSCODE_CLI_DOCUMENTATION_URL");
  pub const VSCODE_CLI_COMMIT: Option<&'static str> = option_env!("VSCODE_CLI_COMMIT");
 -pub const VSCODE_CLI_UPDATE_ENDPOINT: Option<&'static str> = option_env!("VSCODE_CLI_UPDATE_URL");
 +pub const VSCODE_CLI_UPDATE_ENDPOINT: Option<&'static str> = option_env!("VSCODE_CLI_UPDATE_ENDPOINT");
@@ -24,23 +41,35 @@ index 938f4343..7277908a 100644
 +pub const VSCODE_CLI_APP_NAME: Option<&'static str> = option_env!("VSCODE_CLI_APP_NAME");
 +pub const VSCODE_CLI_BINARY_NAME: Option<&'static str> = option_env!("VSCODE_CLI_BINARY_NAME");
  
+ /// Windows lock name for the running tunnel service. Used by the setup script
+ /// to detect a tunnel process. See #179265.
 diff --git a/cli/src/options.rs b/cli/src/options.rs
-index 7d152c0e..c0f2fb2e 100644
+index 7d152c0e1ecfd1fc55f415fcb2392b7a581781c6..c0f2fb2e7d02af2df813e1e7055ff0a831c14d18 100644
 --- a/cli/src/options.rs
 +++ b/cli/src/options.rs
-@@ -9,3 +9,3 @@ use serde::{Deserialize, Serialize};
+@@ -7,7 +7,7 @@ use std::fmt;
+ 
+ use serde::{Deserialize, Serialize};
  
 -use crate::constants::SERVER_NAME_MAP;
 +use crate::{constants::VSCODE_CLI_BINARY_NAME, util::errors::CodeError};
  
-@@ -21,2 +21,6 @@ pub enum Quality {
+ #[derive(clap::ValueEnum, Copy, Clone, Debug, Hash, PartialEq, Eq, Serialize, Deserialize)]
+ pub enum Quality {
+@@ -19,6 +19,10 @@ pub enum Quality {
+ 	Insiders,
+ }
  
 +fn get_binary_name() -> Result<&'static str, CodeError> {
 +	VSCODE_CLI_BINARY_NAME.ok_or_else(|| CodeError::UpdatesNotConfigured("no binary name"))
 +}
 +
  impl Quality {
-@@ -41,9 +45,4 @@ impl Quality {
+ 	/// Lowercased quality name in paths and protocol
+ 	pub fn get_machine_name(&self) -> &'static str {
+@@ -39,19 +43,14 @@ impl Quality {
+ 	}
+ 
  	/// Server application name
 -	pub fn server_entrypoint(&self) -> String {
 -		let mut server_name = SERVER_NAME_MAP
@@ -52,53 +81,79 @@ index 7d152c0e..c0f2fb2e 100644
 +	pub fn server_entrypoint(&self) -> Result<String, CodeError> {
 +		let mut server_name = get_binary_name()?.to_string();
  
-@@ -53,3 +52,3 @@ impl Quality {
+ 		if cfg!(windows) {
+ 			server_name.push_str(".cmd");
+ 		}
  
 -		server_name
 +		Ok(server_name)
  	}
+ }
+ 
 diff --git a/cli/src/tunnels/agent_host.rs b/cli/src/tunnels/agent_host.rs
-index 93651587..77d19e6f 100644
+index dbd54c1c363203cd82818b9e660663c2c7d6cef2..df44c50011ec652403a6186dfc389d37968c6826 100644
 --- a/cli/src/tunnels/agent_host.rs
 +++ b/cli/src/tunnels/agent_host.rs
-@@ -233,3 +233,3 @@ impl AgentHostManager {
+@@ -241,7 +241,7 @@ impl AgentHostManager {
+ 			server_dir
+ 				.join(SERVER_FOLDER_NAME)
  				.join("bin")
 -				.join(release.quality.server_entrypoint())
 +				.join(release.quality.server_entrypoint().unwrap())
  		};
+ 
+ 		let agent_host_socket = get_socket_name();
 diff --git a/cli/src/tunnels/code_server.rs b/cli/src/tunnels/code_server.rs
-index df37b863..a3df1bea 100644
+index 18466efe0277bf9f1aa308ca39bfc3d65fb75bc7..32cd5c21c053474902bd748f86c4de9d8b6972b3 100644
 --- a/cli/src/tunnels/code_server.rs
 +++ b/cli/src/tunnels/code_server.rs
-@@ -499,3 +499,3 @@ impl<'a> ServerBuilder<'a> {
+@@ -497,7 +497,7 @@ impl<'a> ServerBuilder<'a> {
+ 					let output = capture_command_and_check_status(
+ 						server_dir
  							.join("bin")
 -							.join(self.server_params.release.quality.server_entrypoint()),
 +							.join(self.server_params.release.quality.server_entrypoint().unwrap()),
  						&["--version"],
+ 					)
+ 					.await
 diff --git a/cli/src/tunnels/paths.rs b/cli/src/tunnels/paths.rs
-index 3d7d718a..98529bc6 100644
+index 3d7d718a3cd0c00baf339c6b6ede4da84cc80a3d..98529bc6483bb98e954fb832949227471cb30bb5 100644
 --- a/cli/src/tunnels/paths.rs
 +++ b/cli/src/tunnels/paths.rs
-@@ -100,3 +100,3 @@ impl InstalledServer {
+@@ -98,7 +98,7 @@ impl InstalledServer {
+ 				server_dir
+ 					.join(SERVER_FOLDER_NAME)
  					.join("bin")
 -					.join(self.quality.server_entrypoint())
 +					.join(self.quality.server_entrypoint().unwrap())
  			},
+ 			logfile: server_dir.join("log.txt"),
+ 			pidfile: server_dir.join("pid.txt"),
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index cd94139f..db064277 100644
+index cd94139ffa3694c2311ce1ffcbdc8708538ef1c2..db0642776cf12df0c57982b93f25167f76bc622e 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
-@@ -10,3 +10,3 @@ use serde::{Deserialize, Serialize};
+@@ -8,7 +8,7 @@ use std::{fmt, path::Path};
+ use serde::{Deserialize, Serialize};
+ 
  use crate::{
 -	constants::VSCODE_CLI_UPDATE_ENDPOINT,
 +	constants::{VSCODE_CLI_APP_NAME, VSCODE_CLI_DOWNLOAD_ENDPOINT, VSCODE_CLI_UPDATE_ENDPOINT},
  	log, options,
-@@ -18,3 +18,3 @@ use crate::{
+ 	util::{
+ 		errors::{wrap, AnyError, CodeError, WrappedError},
+@@ -16,7 +16,7 @@ use crate::{
+ 		io::ReportCopyProgress,
+ 		tar::{self, has_gzip_header},
  		zipper,
 -	},
 +	}
  };
-@@ -58,2 +58,10 @@ fn quality_download_segment(quality: options::Quality) -> &'static str {
+ 
+ /// Implementation of the VS Code Update service for use in the CLI.
+@@ -56,6 +56,14 @@ fn quality_download_segment(quality: options::Quality) -> &'static str {
+ 	}
+ }
  
 +fn get_app_name() -> Result<&'static str, CodeError> {
 +	VSCODE_CLI_APP_NAME.ok_or_else(|| CodeError::UpdatesNotConfigured("no app name"))
@@ -109,18 +164,27 @@ index cd94139f..db064277 100644
 +}
 +
  fn get_update_endpoint() -> Result<String, CodeError> {
-@@ -66,3 +74,3 @@ fn get_update_endpoint() -> Result<String, CodeError> {
+ 	if let Ok(url) = std::env::var("VSCODE_CLI_UPDATE_URL") {
+ 		if !url.is_empty() {
+@@ -64,7 +72,7 @@ fn get_update_endpoint() -> Result<String, CodeError> {
+ 	}
+ 	VSCODE_CLI_UPDATE_ENDPOINT
  		.map(|s| s.to_string())
 -		.ok_or(CodeError::UpdatesNotConfigured("no service url"))
 +		.ok_or(CodeError::UpdatesNotConfigured("no update url"))
  }
-@@ -74,3 +82,4 @@ impl UpdateService {
+ 
+ impl UpdateService {
+@@ -72,23 +80,20 @@ impl UpdateService {
+ 		UpdateService { client: http, log }
+ 	}
  
 -	pub async fn get_release_by_semver_version(
 +	/// Gets the latest commit for the target of the given quality.
 +	pub async fn get_latest_commit(
  		&self,
-@@ -79,14 +88,10 @@ impl UpdateService {
+ 		platform: Platform,
+ 		target: TargetKind,
  		quality: options::Quality,
 -		version: &str,
  	) -> Result<Release, AnyError> {
@@ -138,12 +202,20 @@ index cd94139f..db064277 100644
 +			platform.os(),
 +			platform.arch(),
  		);
-@@ -100,3 +105,3 @@ impl UpdateService {
+ 
+ 		let mut response = self.client.make_request("GET", download_url).await?;
+@@ -98,7 +103,7 @@ impl UpdateService {
+ 		}
+ 
  		let res = response.json::<UpdateServerVersion>().await?;
 -		debug!(self.log, "Resolved version {} to {}", version, res.version);
 +		debug!(self.log, "Resolved quality {} to {}", quality, res.version);
  
-@@ -111,36 +116,17 @@ impl UpdateService {
+ 		Ok(Release {
+ 			target,
+@@ -109,57 +114,26 @@ impl UpdateService {
+ 		})
+ 	}
  
 -	/// Gets the latest commit for the target of the given quality.
 -	pub async fn get_latest_commit(
@@ -192,7 +264,8 @@ index cd94139f..db064277 100644
 -		})
 +		Ok(download_url)
  	}
-@@ -149,15 +135,3 @@ impl UpdateService {
+ 
+ 	/// Gets the download stream for the release.
  	pub async fn get_download_stream(&self, release: &Release) -> Result<SimpleResponse, AnyError> {
 -		let update_endpoint = get_update_endpoint()?;
 -		let download_segment = release
@@ -209,7 +282,11 @@ index cd94139f..db064277 100644
 -		);
 +		let download_url = self.get_download_url(release)?;
  
-@@ -195,13 +169,2 @@ pub enum TargetKind {
+ 		let response = self.client.make_request("GET", download_url).await?;
+ 		if !response.status_code.is_success() {
+@@ -193,17 +167,6 @@ pub enum TargetKind {
+ 	Cli,
+ }
  
 -impl TargetKind {
 -	fn download_segment(&self, platform: Platform) -> Option<String> {
@@ -223,7 +300,11 @@ index cd94139f..db064277 100644
 -}
 -
  #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
-@@ -224,50 +187,36 @@ pub enum Platform {
+ pub enum Platform {
+ 	LinuxAlpineX64,
+@@ -222,62 +185,44 @@ pub enum Platform {
+ }
+ 
  impl Platform {
 -	pub fn archive(&self) -> Option<String> {
 +	pub fn arch(&self) -> String {
@@ -303,19 +384,26 @@ index cd94139f..db064277 100644
 +			Platform::WindowsX86 => "win32",
 +			Platform::WindowsARM64 => "win32",
  		}
-@@ -276,6 +225,2 @@ impl Platform {
+ 		.to_owned()
+ 	}
  
 -	pub fn web(&self) -> Option<String> {
 -		self.headless().map(|h| format!("{h}-web"))
 -	}
 -
  	pub fn env_default() -> Option<Platform> {
+ 		if cfg!(all(
+ 			target_os = "linux",
 diff --git a/extensions/tunnel-forwarding/src/extension.ts b/extensions/tunnel-forwarding/src/extension.ts
-index 2f71999b..e689f628 100644
+index 2f71999b4b881111821975ec299d417c6032b34e..e689f628be832ab732ddff39d6f63a5c5fcb8349 100644
 --- a/extensions/tunnel-forwarding/src/extension.ts
 +++ b/extensions/tunnel-forwarding/src/extension.ts
-@@ -37,3 +37,3 @@ if (process.env.VSCODE_FORWARDING_IS_DEV) {
+@@ -35,7 +35,7 @@ if (process.env.VSCODE_FORWARDING_IS_DEV) {
+ 		binPath = '../../bin';
+ 	}
  
 -	const cliName = vscode.env.appQuality === 'stable' ? 'code-tunnel' : 'code-tunnel-insiders';
 +	const cliName = '!!TUNNEL_APP_NAME!!';
  	const extension = process.platform === 'win32' ? '.exe' : '';
+ 
+ 	cliPath = path.join(vscode.env.appRoot, binPath, cliName) + extension;

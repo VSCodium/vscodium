@@ -19,7 +19,7 @@ export VSCODE_LATEST="no"
 export VSCODE_QUALITY="stable"
 export VSCODE_SKIP_NODE_VERSION_CHECK="yes"
 
-while getopts ":ilops" opt; do
+while getopts ":filops" opt; do
   case "$opt" in
     i)
       export ASSETS_REPOSITORY="VSCodium/vscodium-insiders"
@@ -37,6 +37,9 @@ while getopts ":ilops" opt; do
       ;;
     s)
       export SKIP_SOURCE="yes"
+      ;;
+    f)
+      export VSCODIUM_FORCE_RESET="1"
       ;;
     *)
       ;;
@@ -81,7 +84,19 @@ echo "VSCODE_ARCH=\"${VSCODE_ARCH}\""
 echo "VSCODE_LATEST=\"${VSCODE_LATEST}\""
 echo "VSCODE_QUALITY=\"${VSCODE_QUALITY}\""
 
+guard_reclone() {
+  # Refuse to wipe a clone holding work not yet saved to patches/ (-f overrides).
+  [[ -d vscode/.git ]] || return 0
+  git -C vscode rev-parse --verify -q refs/vscodium/base > /dev/null 2>&1 || return 0
+  [[ "${VSCODIUM_FORCE_RESET:-}" == "1" ]] && return 0
+
+  # shellcheck disable=SC1091
+  ( cd vscode && . ../utils.sh && . ../patches.sh && guard_preflight ) || exit 1
+}
+
 if [[ "${SKIP_SOURCE}" == "no" ]]; then
+  guard_reclone
+
   rm -rf vscode* VSCode*
 
   . get_repo.sh
@@ -109,13 +124,6 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
   if [[ "${SKIP_SOURCE}" != "no" ]]; then
     cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-    git add .
-    git reset -q --hard HEAD
-
-    while [[ -n "$( git log -1 | grep "VSCODIUM HELPER" )" ]]; do
-      git reset -q --hard HEAD~
-    done
-
     rm -rf .build out*
 
     cd ..
@@ -136,6 +144,8 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
   fi
 
   . build.sh
+
+  ( cd vscode && record_materialized )
 
   if [[ -f "./include_${OS_NAME}.gypi" ]]; then
     mv ~/.gyp/include.gypi.pre-vscodium ~/.gyp/include.gypi

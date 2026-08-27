@@ -1,22 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: reuse the notification never-show-again flag in the banner
+
+Adds neverShowAgain support to IBannerItem so the banner reads the same persisted storage flag as its companion notification, mapping NeverShowAgainScope to StorageScope. This keeps the EOL banner dismissed once the user has opted out, instead of tracking banner and notification dismissal separately (#1463).
+
 diff --git a/src/vs/workbench/browser/parts/banner/bannerPart.ts b/src/vs/workbench/browser/parts/banner/bannerPart.ts
-index 1f329c4..3e36bff 100644
+index a0d5ce1c3b75a0c800efdd4b52e1a6ffec561c76..33853a06e9221615dc6400b5bd455f52f42f3295 100644
 --- a/src/vs/workbench/browser/parts/banner/bannerPart.ts
 +++ b/src/vs/workbench/browser/parts/banner/bannerPart.ts
-@@ -11,3 +11,3 @@ import { InstantiationType, registerSingleton } from '../../../../platform/insta
+@@ -10,7 +10,7 @@ import { asCSSUrl } from '../../../../base/browser/cssValue.js';
+ import { ActionBar } from '../../../../base/browser/ui/actionbar/actionbar.js';
+ import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
  import { IInstantiationService, ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
 -import { IStorageService } from '../../../../platform/storage/common/storage.js';
 +import { IStorageService, StorageScope } from '../../../../platform/storage/common/storage.js';
  import { IThemeService } from '../../../../platform/theme/common/themeService.js';
-@@ -30,2 +30,3 @@ import { widgetClose } from '../../../../platform/theme/common/iconRegistry.js';
+ import { ThemeIcon } from '../../../../base/common/themables.js';
+ import { Part } from '../../part.js';
+@@ -29,6 +29,7 @@ import { IContextKeyService } from '../../../../platform/contextkey/common/conte
+ import { URI } from '../../../../base/common/uri.js';
+ import { widgetClose } from '../../../../platform/theme/common/iconRegistry.js';
  import { BannerFocused } from '../../../common/contextkeys.js';
 +import { INeverShowAgainOptions, NeverShowAgainScope } from '../../../../platform/notification/common/notification.js';
  
-@@ -67,3 +68,3 @@ export class BannerPart extends Part implements IBannerService {
+ // Banner Part
+ 
+@@ -65,7 +66,7 @@ export class BannerPart extends Part implements IBannerService {
+ 	constructor(
+ 		@IThemeService themeService: IThemeService,
  		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
 -		@IStorageService storageService: IStorageService,
 +		@IStorageService private readonly storageService: IStorageService,
  		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-@@ -187,2 +188,14 @@ export class BannerPart extends Part implements IBannerService {
+ 		@IInstantiationService private readonly instantiationService: IInstantiationService,
+ 		@IMarkdownRendererService private readonly markdownRendererService: IMarkdownRendererService,
+@@ -184,6 +185,18 @@ export class BannerPart extends Part implements IBannerService {
+ 			return;
+ 		}
  
 +		if (item.neverShowAgain) {
 +			const scope = this.toStorageScope(item.neverShowAgain);
@@ -31,7 +52,11 @@ index 1f329c4..3e36bff 100644
 +		}
 +
  		// Clear previous item
-@@ -235,2 +248,15 @@ export class BannerPart extends Part implements IBannerService {
+ 		clearNode(this.element);
+ 
+@@ -232,6 +245,19 @@ export class BannerPart extends Part implements IBannerService {
+ 		this.item = item;
+ 	}
  
 +	private toStorageScope(options: INeverShowAgainOptions): StorageScope {
 +		switch (options.scope) {
@@ -47,15 +72,25 @@ index 1f329c4..3e36bff 100644
 +	}
 +
  	toJSON(): object {
+ 		return {
+ 			type: Parts.BANNER_PART
 diff --git a/src/vs/workbench/services/banner/browser/bannerService.ts b/src/vs/workbench/services/banner/browser/bannerService.ts
-index 2db0fa4..d179055 100644
+index 9c0e9b566540deae96c073a2ee76fea329e632ff..00ab42dbb93eb3e3dc5cf8c605089c332aa2ee16 100644
 --- a/src/vs/workbench/services/banner/browser/bannerService.ts
 +++ b/src/vs/workbench/services/banner/browser/bannerService.ts
-@@ -10,2 +10,3 @@ import { ILinkDescriptor } from '../../../../platform/opener/browser/link.js';
+@@ -8,6 +8,7 @@ import { URI } from '../../../../base/common/uri.js';
+ import { createDecorator } from '../../../../platform/instantiation/common/instantiation.js';
+ import { ILinkDescriptor } from '../../../../platform/opener/browser/link.js';
  import { ThemeIcon } from '../../../../base/common/themables.js';
 +import { INeverShowAgainOptions } from '../../../../platform/notification/common/notification.js';
  
-@@ -18,2 +19,3 @@ export interface IBannerItem {
+ export interface IBannerItem {
+ 	readonly id: string;
+@@ -16,6 +17,7 @@ export interface IBannerItem {
+ 	readonly actions?: ReadonlyArray<ILinkDescriptor>;
+ 	readonly ariaLabel?: string;
  	readonly onClose?: () => void;
 +	readonly neverShowAgain?: INeverShowAgainOptions;
  	readonly closeLabel?: string;
+ }
+ 

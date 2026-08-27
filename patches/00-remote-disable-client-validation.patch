@@ -1,17 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: add flag to disable reh client version validation
+
+The REH server rejects any client whose commit hash differs from the server's ("version mismatch"), which blocks connecting a client and server built from different commits; the new `--disable-client-validation` flag bypasses that check, and the agent-started log now reports whether validation is active (#2847, #2852).
+
 diff --git a/src/vs/server/node/remoteExtensionHostAgentServer.ts b/src/vs/server/node/remoteExtensionHostAgentServer.ts
-index 5c4f3c2a..91010c0b 100644
+index 2fc682eb1ccdca205d19ef344beadbf96ff81266..10e6244edb0207f00a34ad6a18e4541ea0c8de1c 100644
 --- a/src/vs/server/node/remoteExtensionHostAgentServer.ts
 +++ b/src/vs/server/node/remoteExtensionHostAgentServer.ts
-@@ -77,2 +77,3 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+@@ -91,6 +91,7 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+ 		private readonly _vsdaMod: typeof vsda | null,
+ 		hasWebClient: boolean,
  		serverBasePath: string | undefined,
 +		private readonly _disableClientValidation: boolean | undefined,
  		@IServerEnvironmentService private readonly _environmentService: IServerEnvironmentService,
-@@ -100,3 +101,3 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+ 		@IProductService private readonly _productService: IProductService,
+ 		@ILogService private readonly _logService: ILogService,
+@@ -114,7 +115,7 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+ 				? this._instantiationService.createInstance(WebClientServer, this._connectionToken, serverBasePath ?? '/', this._serverProductPath)
+ 				: null
  		);
 -		this._logService.info(`Extension host agent started.`);
 +		this._logService.info(`Extension host agent started. (validation: ${!this._disableClientValidation})`);
  		this._reconnectionGraceTime = this._environmentService.reconnectionGraceTime;
-@@ -334,8 +335,10 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+ 	}
+ 
+@@ -359,12 +360,14 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
+ 					return rejectWebSocketConnection(`Invalid second message field type`);
+ 				}
  
 -				const rendererCommit = msg2.commit;
 -				const myCommit = this._productService.commit;
@@ -28,24 +45,38 @@ index 5c4f3c2a..91010c0b 100644
 +							return rejectWebSocketConnection(`Client refused: version mismatch`);
 +						}
  					}
-@@ -700,3 +703,5 @@ export async function createServer(address: string | net.AddressInfo | null, arg
+ 				}
+ 
+@@ -744,7 +747,9 @@ export async function createServer(address: string | net.AddressInfo | null, arg
+ 		console.log(`Web UI available at http://localhost${address.port === 80 ? '' : `:${address.port}`}${serverBasePath ?? ''}${queryPart}`);
+ 	}
  
 -	const remoteExtensionHostAgentServer = instantiationService.createInstance(RemoteExtensionHostAgentServer, socketServer, connectionToken, vsdaMod, hasWebClient, serverBasePath);
 +	let disableClientValidation = args['disable-client-validation'];
 +
 +	const remoteExtensionHostAgentServer = instantiationService.createInstance(RemoteExtensionHostAgentServer, socketServer, connectionToken, vsdaMod, hasWebClient, serverBasePath, disableClientValidation);
  
+ 	perf.mark('code/server/ready');
+ 	const currentTime = performance.now();
 diff --git a/src/vs/server/node/serverEnvironmentService.ts b/src/vs/server/node/serverEnvironmentService.ts
-index bacdd289..194b5485 100644
+index 4407fcb60667173b2020cfc8ed2cd073b7395761..e213fb2439f39ce22d37431a6d16d0f1a059d9ff 100644
 --- a/src/vs/server/node/serverEnvironmentService.ts
 +++ b/src/vs/server/node/serverEnvironmentService.ts
-@@ -35,2 +35,4 @@ export const serverOptions: OptionDescriptions<Required<ServerParsedArgs>> = {
+@@ -33,6 +33,8 @@ export const serverOptions: OptionDescriptions<Required<ServerParsedArgs>> = {
+ 	'server-data-dir': { type: 'string', cat: 'o', description: nls.localize('serverDataDir', "Specifies the directory that server data is kept in.") },
+ 	'telemetry-level': { type: 'string', cat: 'o', args: 'level', description: nls.localize('telemetry-level', "Sets the initial telemetry level. Valid levels are: 'off', 'crash', 'error' and 'all'. If not specified, the server will send telemetry until a client connects, it will then use the clients telemetry setting. Setting this to 'off' is equivalent to --disable-telemetry") },
  
 +	'disable-client-validation': { type: 'boolean' },
 +
  	/* ----- vs code options ---	-- */
-@@ -227,2 +229,4 @@ export interface ServerParsedArgs {
+ 
+ 	'user-data-dir': OPTIONS['user-data-dir'],
+@@ -233,6 +235,8 @@ export interface ServerParsedArgs {
+ 	'without-browser-env-var'?: boolean;
+ 	'reconnection-grace-time'?: string;
  
 +	'disable-client-validation'?: boolean;
 +
  	/* ----- server cli ----- */
+ 	help: boolean;
+ 	version: boolean;

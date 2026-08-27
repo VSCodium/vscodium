@@ -1,13 +1,29 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Baptiste Augrain <daiyam@zokugun.org>
+Date: Sat, 1 Jan 2000 00:00:00 +0000
+Subject: gate system extension updates on the built-in allowlist in insider
+ builds
+
+Upstream only blocks updates to system (built-in) extensions in stable-quality builds; dropping the `quality === 'stable'` guard applies the same restriction to insider builds, so bundled extensions update only when listed in `builtInExtensionsEnabledWithAutoUpdates`.
+
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index 26f44277..896ab329 100644
+index b95c2509827de965cc2169dc9827b710f9c40353..62e388d9a377ab65867444ed795beee8b1fc71d6 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-@@ -112,2 +112,3 @@ export class Extension implements IExtension {
+@@ -111,6 +111,7 @@ export class Extension implements IExtension {
+ 		@ITelemetryService private readonly telemetryService: ITelemetryService,
+ 		@ILogService private readonly logService: ILogService,
  		@IFileService private readonly fileService: IFileService,
 +		// @ts-ignore
  		@IProductService private readonly productService: IProductService,
-@@ -342,3 +343,3 @@ export class Extension implements IExtension {
+ 		@IConfigurationService protected configurationService: IConfigurationService
+ 	) {
+@@ -341,7 +342,7 @@ export class Extension implements IExtension {
+ 				return false;
+ 			}
  			// Do not allow updating system extensions in stable
 -			if (this.type === ExtensionType.System && this.productService.quality === 'stable' && !this.productService.builtInExtensionsEnabledWithAutoUpdates?.some(id => id.toLowerCase() === this.identifier.id.toLowerCase())) {
 +			if (this.type === ExtensionType.System && !this.productService.builtInExtensionsEnabledWithAutoUpdates?.some(id => id.toLowerCase() === this.identifier.id.toLowerCase())) {
  				return false;
+ 			}
+ 			if (!this.local.preRelease && this.gallery.properties.isPreReleaseVersion) {
