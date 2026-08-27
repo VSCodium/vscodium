@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
+
 import path from 'node:path';
 import process from 'node:process';
 import fse from '@zokugun/fs-extra-plus/async';
@@ -7,9 +9,9 @@ import { err, OK, type Result, stringifyError, xtry } from '@zokugun/xtry';
 import postcss, { type Root, type Rule } from 'postcss';
 
 type Area = {
-	name: string;
 	defaultSize: number;
 	files: string[];
+	name: string;
 	prefixes: string[];
 };
 
@@ -75,111 +77,6 @@ const AREAS: Record<string, Area> = {
 	},
 };
 
-function formatCoefficient(n: number): string { // {{{
-	const fixed = n.toFixed(COEFF_PRECISION);
-	return fixed.replace(/\.?0+$/, '');
-} // }}}
-
-function replacePx(area: Area) { // {{{
-	return (match: string, numStr: string): string => {
-		const pxValue = Number.parseFloat(numStr);
-
-		if(pxValue === 1) {
-			return match;
-		}
-
-		const coeff = formatCoefficient(pxValue / area.defaultSize);
-		const varname = area.name === 'workbench' ? '--vscode-workbench-font-size' : `--vscode-workbench-${area.name}-font-size`;
-
-		return `calc(var(${varname}) * ${coeff})`;
-	};
-} // }}}
-
-function transformPxValue(value: string, area: Area): string { // {{{
-	return value.replaceAll(PX_REGEX, replacePx(area));
-} // }}}
-
-async function processFile(filePath: string, areas: Area[]): Promise<Result<void, string>> { // {{{
-	const readResult = await fse.readFile(filePath, 'utf8');
-	if(readResult.fails) {
-		return err(stringifyError(readResult.error));
-	}
-
-	const content = extractOriginal(readResult.value);
-
-	const postcssResult = xtry(() => postcss.parse(content, { from: filePath }));
-	if(postcssResult.fails) {
-		return err(`Failed to parse ${filePath}: ${stringifyError(postcssResult.error)}`);
-	}
-
-	const generatedRoot = postcss.root();
-
-	for(const area of areas) {
-		processFileArea(postcssResult.value, generatedRoot, area);
-	}
-
-	if(generatedRoot.nodes && generatedRoot.nodes.length > 0) {
-		const writeResult = await fse.writeFile(filePath, content + `\n\n\n${HEADER}\n\n` + generatedRoot.toString(), 'utf8');
-		if(writeResult.fails) {
-			return err(stringifyError(readResult.error));
-		}
-
-		console.log(`Generated: ${filePath}`);
-	}
-	else {
-		console.log(`No px sizes found in: ${filePath}`);
-	}
-
-	return OK;
-} // }}}
-
-function processFileArea(postcssResult: Root, generatedRoot: Root, area: Area): void { // {{{
-	postcssResult.walkRules((rule: Rule) => {
-		const declarationsToAdd: Array<{ prop: string; value: string }> = [];
-
-		rule.walkDecls((declaration) => {
-			if(PX_REGEX.test(declaration.value)) {
-				const newValue = transformPxValue(declaration.value, area);
-
-				declarationsToAdd.push({ prop: declaration.prop, value: newValue });
-			}
-			else if(declaration.value === 'auto' && (declaration.prop === 'height' || declaration.prop === 'width')) {
-				declarationsToAdd.push({ prop: declaration.prop, value: 'auto' });
-			}
-			else if(declaration.value === '0' && ZEROS.has(declaration.prop)) {
-				declarationsToAdd.push({ prop: declaration.prop, value: '0' });
-			}
-		});
-
-		if(declarationsToAdd.length > 0) {
-			const selectors = (rule.selectors && rule.selectors.length > 0)	? rule.selectors : [rule.selector];
-			const prefixeds: string[] = [];
-
-			for(const prefix of area.prefixes) {
-				const parts = prefix.split(' ');
-				const prefixed = selectors.map((s) => prefixSelector(s, parts)).join(', ');
-
-				prefixeds.push(prefixed);
-			}
-
-			const newRule = postcss.rule({ selector: `${prefixeds.join(', ')}` });
-
-			let length = 0;
-
-			for(const declaration of declarationsToAdd) {
-				if(!declaration.prop.startsWith('border')) {
-					newRule.append({ ...declaration });
-					length += 1;
-				}
-			}
-
-			if(length > 0) {
-				generatedRoot.append(newRule);
-			}
-		}
-	});
-} // }}}
-
 function extractOriginal(content: string): string { // {{{
 	const index = content.indexOf(HEADER);
 
@@ -194,6 +91,50 @@ function extractStyle(selector: string): string { // {{{
 	const match = /^(\.[\w-]+)/.exec(selector);
 
 	return match?.[1] ?? '';
+} // }}}
+
+function formatCoefficient(n: number): string { // {{{
+	const fixed = n.toFixed(COEFF_PRECISION);
+	return fixed.replace(/\.?0+$/, '');
+} // }}}
+
+async function main(): Promise<void> { // {{{
+	const [,, name] = process.argv;
+	const area = AREAS[name];
+
+	if(area) {
+		for(const file of area.files) {
+			const result = await processFile(path.join('..', 'vscode', file), [area]);
+			if(result.fails) {
+				console.error(`Error processing ${file}:`, result.error);
+			}
+		}
+	}
+	else if(name === 'all') {
+		const files: Record<string, Area[]> = {};
+
+		for(const area of Object.values(AREAS)) {
+			for(const file of area.files) {
+				if(files[file]) {
+					files[file].push(area);
+				}
+				else {
+					files[file] = [area];
+				}
+			}
+		}
+
+		for(const [file, areas] of Object.entries(files)) {
+			const result = await processFile(path.join('..', 'vscode', file), areas);
+			if(result.fails) {
+				console.error(`Error processing ${file}:`, result.error);
+			}
+		}
+	}
+	else {
+		console.log(`No area found for ${name}`);
+		console.log(`\nAvailable areas:\n- ${Object.keys(AREAS).join('\n- ')}`);
+	}
 } // }}}
 
 function mergeSelector(selectors: string[], prefixes: string[], index: number): void { // {{{
@@ -238,43 +179,104 @@ function prefixSelector(selector: string, prefixParts: string[]): string { // {{
 	return parts.join(' ');
 } // }}}
 
-async function main(): Promise<void> { // {{{
-	const name = process.argv[2];
-	const area = AREAS[name];
-
-	if(area) {
-		for(const file of area.files) {
-			const result = await processFile(path.join('..', 'vscode', file), [area]);
-			if(result.fails) {
-				console.error(`Error processing ${file}:`, result.error);
-			}
-		}
+async function processFile(filePath: string, areas: Area[]): Promise<Result<void, string>> { // {{{
+	const readResult = await fse.readFile(filePath, 'utf8');
+	if(readResult.fails) {
+		return err(stringifyError(readResult.error));
 	}
-	else if(name === 'all') {
-		const files: Record<string, Area[]> = {};
 
-		for(const area of Object.values(AREAS)) {
-			for(const file of area.files) {
-				if(files[file]) {
-					files[file].push(area);
-				}
-				else {
-					files[file] = [area];
-				}
-			}
+	const content = extractOriginal(readResult.value);
+
+	const postcssResult = xtry(() => postcss.parse(content, { from: filePath }));
+	if(postcssResult.fails) {
+		return err(`Failed to parse ${filePath}: ${stringifyError(postcssResult.error)}`);
+	}
+
+	const generatedRoot = postcss.root();
+
+	for(const area of areas) {
+		processFileArea(postcssResult.value, generatedRoot, area);
+	}
+
+	if(generatedRoot.nodes && generatedRoot.nodes.length > 0) {
+		const writeResult = await fse.writeFile(filePath, `${content}\n\n\n${HEADER}\n\n${generatedRoot.toString()}`, 'utf8');
+		if(writeResult.fails) {
+			return err(stringifyError(readResult.error));
 		}
 
-		for(const [file, areas] of Object.entries(files)) {
-			const result = await processFile(path.join('..', 'vscode', file), areas);
-			if(result.fails) {
-				console.error(`Error processing ${file}:`, result.error);
-			}
-		}
+		console.log(`Generated: ${filePath}`);
 	}
 	else {
-		console.log(`No area found for ${name}`);
-		console.log(`\nAvailable areas:\n- ${Object.keys(AREAS).join('\n- ')}`);
+		console.log(`No px sizes found in: ${filePath}`);
 	}
+
+	return OK;
+} // }}}
+
+function processFileArea(postcssResult: Root, generatedRoot: Root, area: Area): void { // {{{
+	postcssResult.walkRules((rule: Rule) => {
+		const declarationsToAdd: Array<{ prop: string; value: string }> = [];
+
+		rule.walkDecls((declaration) => {
+			if(PX_REGEX.test(declaration.value)) {
+				const newValue = transformPxValue(declaration.value, area);
+
+				declarationsToAdd.push({ prop: declaration.prop, value: newValue });
+			}
+			else if(declaration.value === 'auto' && (declaration.prop === 'height' || declaration.prop === 'width')) {
+				declarationsToAdd.push({ prop: declaration.prop, value: 'auto' });
+			}
+			else if(declaration.value === '0' && ZEROS.has(declaration.prop)) {
+				declarationsToAdd.push({ prop: declaration.prop, value: '0' });
+			}
+		});
+
+		if(declarationsToAdd.length > 0) {
+			const selectors = (rule.selectors && rule.selectors.length > 0)	? rule.selectors : [rule.selector];
+			const prefixeds: string[] = [];
+
+			for(const prefix of area.prefixes) {
+				const parts = prefix.split(' ');
+				const prefixed = selectors.map((s) => prefixSelector(s, parts)).join(', ');
+
+				prefixeds.push(prefixed);
+			}
+
+			const newRule = postcss.rule({ selector: prefixeds.join(', ') });
+
+			let length = 0;
+
+			for(const declaration of declarationsToAdd) {
+				if(!declaration.prop.startsWith('border')) {
+					newRule.append({ ...declaration });
+					length += 1;
+				}
+			}
+
+			if(length > 0) {
+				generatedRoot.append(newRule);
+			}
+		}
+	});
+} // }}}
+
+function replacePx(area: Area) { // {{{
+	return (match: string, numStr: string): string => {
+		const pxValue = Number.parseFloat(numStr);
+
+		if(pxValue === 1) {
+			return match;
+		}
+
+		const coeff = formatCoefficient(pxValue / area.defaultSize);
+		const varname = area.name === 'workbench' ? '--vscode-workbench-font-size' : `--vscode-workbench-${area.name}-font-size`;
+
+		return `calc(var(${varname}) * ${coeff})`;
+	};
+} // }}}
+
+function transformPxValue(value: string, area: Area): string { // {{{
+	return value.replaceAll(PX_REGEX, replacePx(area));
 } // }}}
 
 await main();
