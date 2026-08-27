@@ -320,15 +320,15 @@ index 30199b2b..008aed75 100644
 +	"json.tracing.desc": "Traces the communication between !!APP_NAME!! and the JSON language server.",
  	"json.colorDecorators.enable.desc": "Enables or disables color decorators",
 diff --git a/extensions/markdown-language-features/package.nls.json b/extensions/markdown-language-features/package.nls.json
-index cb292ba5..1eaf331e 100644
+index 12fcb821..afaede82 100644
 --- a/extensions/markdown-language-features/package.nls.json
 +++ b/extensions/markdown-language-features/package.nls.json
-@@ -30,3 +30,3 @@
+@@ -31,3 +31,3 @@
  	"markdown.trace.extension.desc": "Enable debug logging for the Markdown extension.",
 -	"markdown.trace.server.desc": "Traces the communication between VS Code and the Markdown language server.",
 +	"markdown.trace.server.desc": "Traces the communication between !!APP_NAME!! and the Markdown language server.",
  	"markdown.server.log.desc": "Controls the logging level of the Markdown language server.",
-@@ -88,3 +88,3 @@
+@@ -89,3 +89,3 @@
  		"comment": [
 -			"This setting is use the user drops or pastes image data into the editor. In this case, VS Code automatically creates a new image file in the workspace containing the dropped/pasted image.",
 +			"This setting is use the user drops or pastes image data into the editor. In this case, !!APP_NAME!! automatically creates a new image file in the workspace containing the dropped/pasted image.",
@@ -388,7 +388,7 @@ index 5c77708d..6f092001 100644
 +	"displayName": "NPM support for !!APP_NAME!!",
  	"workspaceTrust": "This extension executes tasks, which require trust to run.",
 diff --git a/extensions/swift/syntaxes/swift.tmLanguage.json b/extensions/swift/syntaxes/swift.tmLanguage.json
-index d52cabb8..eb3a76c1 100644
+index b8166680..ca64b981 100644
 --- a/extensions/swift/syntaxes/swift.tmLanguage.json
 +++ b/extensions/swift/syntaxes/swift.tmLanguage.json
 @@ -260,3 +260,3 @@
@@ -453,7 +453,7 @@ index 1154a29c..08545028 100644
 +				: '') + vscode.l10n.t("Use !!APP_NAME!!'s Version"),
  			description: bundledVersion.displayName,
 diff --git a/extensions/typescript-language-features/src/tsServer/versionProvider.electron.ts b/extensions/typescript-language-features/src/tsServer/versionProvider.electron.ts
-index 12cb1cca..bfaa57ed 100644
+index eff6db4f..d9c44809 100644
 --- a/extensions/typescript-language-features/src/tsServer/versionProvider.electron.ts
 +++ b/extensions/typescript-language-features/src/tsServer/versionProvider.electron.ts
 @@ -70,3 +70,3 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
@@ -471,26 +471,26 @@ index 823985e9..f22a314e 100644
 +			vscode.l10n.t("Please open a folder in !!APP_NAME!! to use a TypeScript or JavaScript project"));
  		return;
 diff --git a/extensions/typescript-language-features/src/typescriptServiceClient.ts b/extensions/typescript-language-features/src/typescriptServiceClient.ts
-index ae18dff7..9d158d2b 100644
+index 677721c2..eef95b48 100644
 --- a/extensions/typescript-language-features/src/typescriptServiceClient.ts
 +++ b/extensions/typescript-language-features/src/typescriptServiceClient.ts
-@@ -660,3 +660,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+@@ -670,3 +670,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  						prompt = vscode.window.showErrorMessage<vscode.MessageItem>(
 -							vscode.l10n.t("The JS/TS language service immediately crashed 5 times. The service will not be restarted.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
 +							vscode.l10n.t("The JS/TS language service immediately crashed 5 times. The service will not be restarted.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against !!APP_NAME!!.", pluginExtensionList));
- 					} else {
-@@ -681,3 +681,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+ 					} else if (!plugins.length) {
+@@ -691,3 +691,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  							prompt = vscode.window.showWarningMessage<vscode.MessageItem>(
 -								vscode.l10n.t("The JS/TS language service crashed 5 times in the last 5 Minutes.\nThis may be caused by a plugin contributed by one of these extensions: {0}\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
 +								vscode.l10n.t("The JS/TS language service crashed 5 times in the last 5 Minutes.\nThis may be caused by a plugin contributed by one of these extensions: {0}\nPlease try disabling these extensions before filing an issue against !!APP_NAME!!.", pluginExtensionList));
- 						} else {
-@@ -695,3 +695,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
+ 						} else if (!plugins.length) {
+@@ -705,3 +705,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
  						prompt = vscode.window.showWarningMessage<vscode.MessageItem>(
 -							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against VS Code.", pluginExtensionList));
 +							vscode.l10n.t("The JS/TS language service crashed.\nThis may be caused by a plugin contributed by one of these extensions: {0}.\nPlease try disabling these extensions before filing an issue against !!APP_NAME!!.", pluginExtensionList));
- 					} else {
+ 					} else if (!plugins.length) {
 diff --git a/extensions/vscode-api-tests/package.json b/extensions/vscode-api-tests/package.json
-index d56cbf59..47bdd32c 100644
+index 3bbda08c..0c17944c 100644
 --- a/extensions/vscode-api-tests/package.json
 +++ b/extensions/vscode-api-tests/package.json
 @@ -2,3 +2,3 @@
@@ -568,7 +568,7 @@ index a351aa77..c32e3efd 100644
 +			throw Error(`Failed to download and unzip !!APP_NAME!! ${quality} - ${commit}`);
  		}
 diff --git a/extensions/vscode-test-resolver/src/extension.ts b/extensions/vscode-test-resolver/src/extension.ts
-index 5c9b4785..d35897b2 100644
+index 32a93fe3..a2b81a3a 100644
 --- a/extensions/vscode-test-resolver/src/extension.ts
 +++ b/extensions/vscode-test-resolver/src/extension.ts
 @@ -215,3 +215,3 @@ export function activate(context: vscode.ExtensionContext) {
@@ -577,15 +577,15 @@ index 5c9b4785..d35897b2 100644
 +					progress.report({ message: 'Installing !!APP_NAME!! Server' });
  					serverLocation = await downloadAndUnzipVSCodeServer(updateUrl, commit, quality, serverBin, m => outputChannel.appendLine(m));
 diff --git a/src/main.ts b/src/main.ts
-index f70cf87e..c6ad520f 100644
+index 085290ba..2e180b99 100644
 --- a/src/main.ts
 +++ b/src/main.ts
-@@ -421,3 +421,3 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
+@@ -422,3 +422,3 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
  		const defaultArgvConfigContent = [
 -			'// This configuration file allows you to pass permanent command line arguments to VS Code.',
 +			'// This configuration file allows you to pass permanent command line arguments to !!APP_NAME!!.',
  			'// Only a subset of arguments is currently supported to reduce the likelihood of breaking',
-@@ -427,6 +427,6 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
+@@ -428,6 +428,6 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
  			'//',
 -			'// NOTE: Changing this file requires a restart of VS Code.',
 +			'// NOTE: Changing this file requires a restart of !!APP_NAME!!.',
@@ -595,10 +595,10 @@ index f70cf87e..c6ad520f 100644
 +			'	// This can help in cases where you see rendering issues in !!APP_NAME!!.',
  			'	// "disable-hardware-acceleration": true',
 diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
-index 811673d0..f49ee713 100644
+index 8176a5b4..4935d9a0 100644
 --- a/src/vs/code/electron-main/app.ts
 +++ b/src/vs/code/electron-main/app.ts
-@@ -610,3 +610,3 @@ export class CodeApplication extends Disposable {
+@@ -675,3 +675,3 @@ export class CodeApplication extends Disposable {
  	async startup(): Promise<void> {
 -		this.logService.debug('Starting VS Code');
 +		this.logService.debug('Starting !!APP_NAME!!');
@@ -659,7 +659,7 @@ index cf059eab..16a69a47 100644
 +			description: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from !!APP_NAME!!, which may source a login shell to ensure $PATH and other development variables are initialized. This has no effect on Windows."),
  			type: 'boolean',
 diff --git a/src/vs/platform/update/common/update.config.contribution.ts b/src/vs/platform/update/common/update.config.contribution.ts
-index 2c63e9e6..db27f74e 100644
+index f00f77df..df48d44d 100644
 --- a/src/vs/platform/update/common/update.config.contribution.ts
 +++ b/src/vs/platform/update/common/update.config.contribution.ts
 @@ -70,3 +70,3 @@ configurationRegistry.registerConfiguration({
@@ -668,33 +668,33 @@ index 2c63e9e6..db27f74e 100644
 +			description: localize('enableWindowsBackgroundUpdates', "Enable to download and install new !!APP_NAME!! versions in the background."),
  			included: isWindows && !isWeb
 diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-index 8cf5dceb..611001b3 100644
+index 2749d7be..2973a17b 100644
 --- a/src/vs/platform/update/electron-main/abstractUpdateService.ts
 +++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
-@@ -74,3 +74,3 @@ export type UpdateErrorClassification = {
+@@ -76,3 +76,3 @@ export type UpdateErrorClassification = {
  	messageHash: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The hash of the error message.' };
 -	comment: 'This is used to know how often VS Code updates have failed.';
 +	comment: 'This is used to know how often !!APP_NAME!! updates have failed.';
  };
 diff --git a/src/vs/server/node/server.cli.ts b/src/vs/server/node/server.cli.ts
-index 58ff362b..54815f3c 100644
+index 040656c0..a3483669 100644
 --- a/src/vs/server/node/server.cli.ts
 +++ b/src/vs/server/node/server.cli.ts
-@@ -93,3 +93,3 @@ export async function main(desc: ProductDescription, args: string[]): Promise<vo
+@@ -94,3 +94,3 @@ export async function main(desc: ProductDescription, args: string[]): Promise<vo
  	if (!cliPipe && !cliCommand) {
 -		console.log('Command is only available in WSL or inside a Visual Studio Code terminal.');
 +		console.log('Command is only available in WSL or inside a !!APP_NAME!! terminal.');
  		return;
-@@ -475,3 +475,3 @@ function asExtensionIdOrVSIX(inputs: string[] | undefined) {
+@@ -482,3 +482,3 @@ function asExtensionIdOrVSIX(inputs: string[] | undefined) {
  function fatal(message: string, err: unknown): void {
 -	console.error('Unable to connect to VS Code server: ' + message);
 +	console.error('Unable to connect to !!APP_NAME!! server: ' + message);
  	console.error(err);
 diff --git a/src/vs/workbench/api/browser/mainThreadAuthentication.ts b/src/vs/workbench/api/browser/mainThreadAuthentication.ts
-index 710009f8..01173665 100644
+index 30137e70..2738691f 100644
 --- a/src/vs/workbench/api/browser/mainThreadAuthentication.ts
 +++ b/src/vs/workbench/api/browser/mainThreadAuthentication.ts
-@@ -568,3 +568,3 @@ export class MainThreadAuthentication extends Disposable implements MainThreadAu
+@@ -582,3 +582,3 @@ export class MainThreadAuthentication extends Disposable implements MainThreadAu
  				owner: 'TylerLeonhardt';
 -				comment: 'Used to see which extensions are using the VSCode client id override';
 +				comment: 'Used to see which extensions are using the !!APP_NAME!! client id override';
@@ -718,10 +718,10 @@ index 2785bbd7..38e6fc5a 100644
 +			ApiCommandArgument.String.with('viewId', 'Custom editor view id. This should be the viewType string for custom editors or the notebookType string for notebooks. Use \'default\' to use !!APP_NAME!!\'s default text editor'),
  			new ApiCommandArgument<vscode.ViewColumn | typeConverters.TextEditorOpenOptions | undefined, [vscode.ViewColumn?, ITextEditorOptions?] | undefined>('columnOrOptions', 'Either the column in which to open or editor options, see vscode.TextDocumentShowOptions',
 diff --git a/src/vs/workbench/api/common/extHostCommands.ts b/src/vs/workbench/api/common/extHostCommands.ts
-index 92e874dc..d59e726e 100644
+index 52ea8314..0237e9a4 100644
 --- a/src/vs/workbench/api/common/extHostCommands.ts
 +++ b/src/vs/workbench/api/common/extHostCommands.ts
-@@ -464,4 +464,4 @@ export class ApiCommandArgument<V, O = V> {
+@@ -465,4 +465,4 @@ export class ApiCommandArgument<V, O = V> {
  	static readonly TypeHierarchyItem = new ApiCommandArgument('item', 'A type hierarchy item', v => v instanceof extHostTypes.TypeHierarchyItem, extHostTypeConverter.TypeHierarchyItem.from);
 -	static readonly TestItem = new ApiCommandArgument('testItem', 'A VS Code TestItem', v => v instanceof TestItemImpl, extHostTypeConverter.TestItem.from);
 -	static readonly TestProfile = new ApiCommandArgument('testProfile', 'A VS Code test profile', v => v instanceof extHostTypes.TestRunProfileBase, extHostTypeConverter.TestRunProfile.from);
@@ -729,10 +729,10 @@ index 92e874dc..d59e726e 100644
 +	static readonly TestProfile = new ApiCommandArgument('testProfile', 'A !!APP_NAME!! test profile', v => v instanceof extHostTypes.TestRunProfileBase, extHostTypeConverter.TestRunProfile.from);
  
 diff --git a/src/vs/workbench/api/node/loopbackServer.ts b/src/vs/workbench/api/node/loopbackServer.ts
-index 1d32a486..ae5c4c7e 100644
+index 0afc1fbd..3aae09db 100644
 --- a/src/vs/workbench/api/node/loopbackServer.ts
 +++ b/src/vs/workbench/api/node/loopbackServer.ts
-@@ -190,7 +190,2 @@ export class LoopbackAuthServer implements ILoopbackServer {
+@@ -194,7 +194,2 @@ export class LoopbackAuthServer implements ILoopbackServer {
  		let backgroundImage = 'url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQABAMAAACNMzawAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAJ1BMVEUAAAD///9Qm8+ozed8tNsWer+Lvd9trNfF3u9Ck8slgsMzi8eZxeM/Qa6mAAAAAXRSTlMAQObYZgAAAAFiS0dEAf8CLd4AAAAHdElNRQfiCwYULRt0g+ZLAAAJRUlEQVR42u3SUY0CQRREUSy0hSZtBA+wfOwv4wAPYwAJSMAfAthkB6YD79HnKqikzmYjSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIk6cmKhg4AAASAABAAAkAACAABIAAEgAAQAAJAAAgAAaBvBVAjtV2wfFe1ogcA+0gdFgBoe60IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnAjAP/1MkWoAvBvAsUTqBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAgAASAABIAAEAACQAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKA7gDlbFwC6AijZagAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQDM2boA0BXAqAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIATARAAAkAAvF7N1hWArgBKthoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfBrAlK0bAF0BjBoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4EQABIAAEwOtN2boB0BVAyVYDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgE8DqNm6AtAVwKgBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAEwEQAAJAAPzd7xypMwDvBnAskToBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAIAAkAACAABIAAEgAAQAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAkAACAABIAAEgAAQAAJAAAgAASAABIAAEAACQAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBKBGarsAwK5qRQ8ANGYAACAABIAAEAACQAAIAAEgAASAABAAAkDfCUCSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJC3uDtO80OSql+i8AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE4LTExLTA2VDIwOjQ1OjI3KzAwOjAwEjLurQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOC0xMS0wNlQyMDo0NToyNyswMDowMGNvVhEAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAAAElFTkSuQmCC\')';
 -		if (this._appName === 'Visual Studio Code') {
 -			backgroundImage = 'url(\'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDI1NiAyNTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxtYXNrIGlkPSJtYXNrMCIgbWFzay10eXBlPSJhbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE4MS41MzQgMjU0LjI1MkMxODUuNTY2IDI1NS44MjMgMTkwLjE2NCAyNTUuNzIyIDE5NC4yMzQgMjUzLjc2NEwyNDYuOTQgMjI4LjQwM0MyNTIuNDc4IDIyNS43MzggMjU2IDIyMC4xMzIgMjU2IDIxMy45ODNWNDIuMDE4MUMyNTYgMzUuODY4OSAyNTIuNDc4IDMwLjI2MzggMjQ2Ljk0IDI3LjU5ODhMMTk0LjIzNCAyLjIzNjgxQzE4OC44OTMgLTAuMzMzMTMyIDE4Mi42NDIgMC4yOTYzNDQgMTc3Ljk1NSAzLjcwNDE4QzE3Ny4yODUgNC4xOTEgMTc2LjY0NyA0LjczNDU0IDE3Ni4wNDkgNS4zMzM1NEw3NS4xNDkgOTcuMzg2MkwzMS4xOTkyIDY0LjAyNDdDMjcuMTA3OSA2MC45MTkxIDIxLjM4NTMgNjEuMTczNSAxNy41ODU1IDY0LjYzTDMuNDg5MzYgNzcuNDUyNUMtMS4xNTg1MyA4MS42ODA1IC0xLjE2Mzg2IDg4Ljk5MjYgMy40Nzc4NSA5My4yMjc0TDQxLjU5MjYgMTI4TDMuNDc3ODUgMTYyLjc3M0MtMS4xNjM4NiAxNjcuMDA4IC0xLjE1ODUzIDE3NC4zMiAzLjQ4OTM2IDE3OC41NDhMMTcuNTg1NSAxOTEuMzdDMjEuMzg1MyAxOTQuODI3IDI3LjEwNzkgMTk1LjA4MSAzMS4xOTkyIDE5MS45NzZMNzUuMTQ5IDE1OC42MTRMMTc2LjA0OSAyNTAuNjY3QzE3Ny42NDUgMjUyLjI2NCAxNzkuNTE5IDI1My40NjcgMTgxLjUzNCAyNTQuMjUyWk0xOTIuMDM5IDY5Ljg4NTNMMTE1LjQ3OSAxMjhMMTkyLjAzOSAxODYuMTE1VjY5Ljg4NTNaIiBmaWxsPSJ3aGl0ZSIvPgo8L21hc2s+CjxnIG1hc2s9InVybCgjbWFzazApIj4KPHBhdGggZD0iTTI0Ni45NCAyNy42MzgzTDE5NC4xOTMgMi4yNDEzOEMxODguMDg4IC0wLjY5ODMwMiAxODAuNzkxIDAuNTQxNzIxIDE3NS45OTkgNS4zMzMzMkwzLjMyMzcxIDE2Mi43NzNDLTEuMzIwODIgMTY3LjAwOCAtMS4zMTU0OCAxNzQuMzIgMy4zMzUyMyAxNzguNTQ4TDE3LjQzOTkgMTkxLjM3QzIxLjI0MjEgMTk0LjgyNyAyNi45NjgyIDE5NS4wODEgMzEuMDYxOSAxOTEuOTc2TDIzOS4wMDMgMzQuMjI2OUMyNDUuOTc5IDI4LjkzNDcgMjU1Ljk5OSAzMy45MTAzIDI1NS45OTkgNDIuNjY2N1Y0Mi4wNTQzQzI1NS45OTkgMzUuOTA3OCAyNTIuNDc4IDMwLjMwNDcgMjQ2Ljk0IDI3LjYzODNaIiBmaWxsPSIjMDA2NUE5Ii8+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXIwX2QpIj4KPHBhdGggZD0iTTI0Ni45NCAyMjguMzYyTDE5NC4xOTMgMjUzLjc1OUMxODguMDg4IDI1Ni42OTggMTgwLjc5MSAyNTUuNDU4IDE3NS45OTkgMjUwLjY2N0wzLjMyMzcxIDkzLjIyNzJDLTEuMzIwODIgODguOTkyNSAtMS4zMTU0OCA4MS42ODAyIDMuMzM1MjMgNzcuNDUyM0wxNy40Mzk5IDY0LjYyOThDMjEuMjQyMSA2MS4xNzMzIDI2Ljk2ODIgNjAuOTE4OCAzMS4wNjE5IDY0LjAyNDVMMjM5LjAwMyAyMjEuNzczQzI0NS45NzkgMjI3LjA2NSAyNTUuOTk5IDIyMi4wOSAyNTUuOTk5IDIxMy4zMzNWMjEzLjk0NkMyNTUuOTk5IDIyMC4wOTIgMjUyLjQ3OCAyMjUuNjk1IDI0Ni45NCAyMjguMzYyWiIgZmlsbD0iIzAwN0FDQyIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXIxX2QpIj4KPHBhdGggZD0iTTE5NC4xOTYgMjUzLjc2M0MxODguMDg5IDI1Ni43IDE4MC43OTIgMjU1LjQ1OSAxNzYgMjUwLjY2N0MxODEuOTA0IDI1Ni41NzEgMTkyIDI1Mi4zODkgMTkyIDI0NC4wMzlWMTEuOTYwNkMxOTIgMy42MTA1NyAxODEuOTA0IC0wLjU3MTE3NSAxNzYgNS4zMzMyMUMxODAuNzkyIDAuNTQxMTY2IDE4OC4wODkgLTAuNzAwNjA3IDE5NC4xOTYgMi4yMzY0OEwyNDYuOTM0IDI3LjU5ODVDMjUyLjQ3NiAzMC4yNjM1IDI1NiAzNS44Njg2IDI1NiA0Mi4wMTc4VjIxMy45ODNDMjU2IDIyMC4xMzIgMjUyLjQ3NiAyMjUuNzM3IDI0Ni45MzQgMjI4LjQwMkwxOTQuMTk2IDI1My43NjNaIiBmaWxsPSIjMUY5Q0YwIi8+CjwvZz4KPGcgc3R5bGU9Im1peC1ibGVuZC1tb2RlOm92ZXJsYXkiIG9wYWNpdHk9IjAuMjUiPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE4MS4zNzggMjU0LjI1MkMxODUuNDEgMjU1LjgyMiAxOTAuMDA4IDI1NS43MjIgMTk0LjA3NyAyNTMuNzY0TDI0Ni43ODMgMjI4LjQwMkMyNTIuMzIyIDIyNS43MzcgMjU1Ljg0NCAyMjAuMTMyIDI1NS44NDQgMjEzLjk4M1Y0Mi4wMTc5QzI1NS44NDQgMzUuODY4NyAyNTIuMzIyIDMwLjI2MzYgMjQ2Ljc4NCAyNy41OTg2TDE5NC4wNzcgMi4yMzY2NUMxODguNzM3IC0wLjMzMzI5OSAxODIuNDg2IDAuMjk2MTc3IDE3Ny43OTggMy43MDQwMUMxNzcuMTI5IDQuMTkwODMgMTc2LjQ5MSA0LjczNDM3IDE3NS44OTIgNS4zMzMzN0w3NC45OTI3IDk3LjM4NkwzMS4wNDI5IDY0LjAyNDVDMjYuOTUxNyA2MC45MTg5IDIxLjIyOSA2MS4xNzM0IDE3LjQyOTIgNjQuNjI5OEwzLjMzMzExIDc3LjQ1MjNDLTEuMzE0NzggODEuNjgwMyAtMS4zMjAxMSA4OC45OTI1IDMuMzIxNiA5My4yMjczTDQxLjQzNjQgMTI4TDMuMzIxNiAxNjIuNzczQy0xLjMyMDExIDE2Ny4wMDggLTEuMzE0NzggMTc0LjMyIDMuMzMzMTEgMTc4LjU0OEwxNy40MjkyIDE5MS4zN0MyMS4yMjkgMTk0LjgyNyAyNi45NTE3IDE5NS4wODEgMzEuMDQyOSAxOTEuOTc2TDc0Ljk5MjcgMTU4LjYxNEwxNzUuODkyIDI1MC42NjdDMTc3LjQ4OCAyNTIuMjY0IDE3OS4zNjMgMjUzLjQ2NyAxODEuMzc4IDI1NC4yNTJaTTE5MS44ODMgNjkuODg1MUwxMTUuMzIzIDEyOEwxOTEuODgzIDE4Ni4xMTVWNjkuODg1MVoiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcikiLz4KPC9nPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2QiIHg9Ii0yMS40ODk2IiB5PSI0MC41MjI1IiB3aWR0aD0iMjk4LjgyMiIgaGVpZ2h0PSIyMzYuMTQ5IiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUNvbG9yTWF0cml4IGluPSJTb3VyY2VBbHBoYSIgdHlwZT0ibWF0cml4IiB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDEyNyAwIi8+CjxmZU9mZnNldC8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEwLjY2NjciLz4KPGZlQ29sb3JNYXRyaXggdHlwZT0ibWF0cml4IiB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAuMjUgMCIvPgo8ZmVCbGVuZCBtb2RlPSJvdmVybGF5IiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJlZmZlY3QxX2Ryb3BTaGFkb3ciLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3QxX2Ryb3BTaGFkb3ciIHJlc3VsdD0ic2hhcGUiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjFfZCIgeD0iMTU0LjY2NyIgeT0iLTIwLjY3MzUiIHdpZHRoPSIxMjIuNjY3IiBoZWlnaHQ9IjI5Ny4zNDciIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiLz4KPGZlT2Zmc2V0Lz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMTAuNjY2NyIvPgo8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMC4yNSAwIi8+CjxmZUJsZW5kIG1vZGU9Im92ZXJsYXkiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvdyIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9ImVmZmVjdDFfZHJvcFNoYWRvdyIgcmVzdWx0PSJzaGFwZSIvPgo8L2ZpbHRlcj4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyIiB4MT0iMTI3Ljg0NCIgeTE9IjAuNjU5OTg4IiB4Mj0iMTI3Ljg0NCIgeTI9IjI1NS4zNCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSJ3aGl0ZSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IndoaXRlIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K\')';
@@ -750,14 +750,44 @@ index 0d713847..ae8d169b 100644
 +	test('Opening a notebook results in !!APP_NAME!! firing the event onDidChangeActiveNotebookEditor twice #118470', function () {
  		let count = 0;
 diff --git a/src/vs/workbench/browser/actions/developerActions.ts b/src/vs/workbench/browser/actions/developerActions.ts
-index ee85640c..4b1bb35f 100644
+index f394728f..465e5ce8 100644
 --- a/src/vs/workbench/browser/actions/developerActions.ts
 +++ b/src/vs/workbench/browser/actions/developerActions.ts
-@@ -690,3 +690,3 @@ class PolicyDiagnosticsAction extends Action2 {
+@@ -722,5 +722,5 @@ function managedSettingsPipeline(rawLabel: string, raw: unknown | undefined, nor
+ 	content += markdownJsonBlock(normalized);
+-	content += '**VS Code policy projection**\n\n';
++	content += '**!!APP_NAME!! policy projection**\n\n';
+ 	content += markdownJsonBlock(projected);
+-	return markdownDetails('Source, normalized, and VS Code projection', content);
++	return markdownDetails('Source, normalized, and !!APP_NAME!! projection', content);
+ }
+@@ -1013,3 +1013,3 @@ class PolicyDiagnosticsAction extends Action2 {
+ 					['Supplied keys', String(pick.resolutions.size)],
+-					['Effective VS Code policy keys', String(effectiveKeyCount)]
++					['Effective !!APP_NAME!! policy keys', String(effectiveKeyCount)]
+ 				]
+@@ -1044,3 +1044,3 @@ class PolicyDiagnosticsAction extends Action2 {
+ 			content += markdownDetails('Merged normalized bag', markdownJsonBlock(pick.values));
+-			content += markdownDetails('Effective VS Code policy bag', markdownJsonBlock(effective));
++			content += markdownDetails('Effective !!APP_NAME!! policy bag', markdownJsonBlock(effective));
  
--		let content = '# VS Code Policy Diagnostics\n\n';
-+		let content = '# !!APP_NAME!! Policy Diagnostics\n\n';
- 		content += '*WARNING: This file may contain sensitive information.*\n\n';
+@@ -1106,4 +1106,4 @@ class PolicyDiagnosticsAction extends Action2 {
+ 			content += markdownDetails(
+-				'VS Code managed-settings schema',
+-				'*Only keys declared here can reach VS Code policy callbacks. Runtime-owned keys may still be enforced by the Copilot runtime even when absent from the projections above.*\n\n' +
++				'!!APP_NAME!! managed-settings schema',
++				'*Only keys declared here can reach !!APP_NAME!! policy callbacks. Runtime-owned keys may still be enforced by the Copilot runtime even when absent from the projections above.*\n\n' +
+ 				markdownJsonBlock(declaredDefinitions)
+@@ -1112,3 +1112,3 @@ class PolicyDiagnosticsAction extends Action2 {
+ 			content += '### Agent Runtime Resolution\n\n';
+-			content += '*Resolved independently by each provider through its own SDK/runtime. This may include runtime-owned keys that VS Code does not declare as configuration policies.*\n\n';
++			content += '*Resolved independently by each provider through its own SDK/runtime. This may include runtime-owned keys that !!APP_NAME!! does not declare as configuration policies.*\n\n';
+ 			if (!agentHostEnablementService.enabled.get()) {
+@@ -1314,3 +1314,3 @@ class PolicyDiagnosticsAction extends Action2 {
+ 
+-		const report = '# VS Code Policy Diagnostics\n\n' +
++		const report = '# !!APP_NAME!! Policy Diagnostics\n\n' +
+ 			'*WARNING: This file may contain sensitive information.*\n\n' +
 diff --git a/src/vs/workbench/browser/actions/helpActions.ts b/src/vs/workbench/browser/actions/helpActions.ts
 index 8251c4a4..b236d547 100644
 --- a/src/vs/workbench/browser/actions/helpActions.ts
@@ -777,39 +807,69 @@ index e342f838..7c314e6b 100644
 +		throw new Error('Unable to create the !!APP_NAME!! workbench more than once.');
  	} else {
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index f2a3b35e..b52ae385 100644
+index 9953cb0c..8e5d4aff 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -835,3 +835,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -855,3 +855,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  		localize('profileName', "`${profileName}`: name of the profile in which the workspace is opened (e.g. Data Science (Profile)). Ignored if default profile is used."),
 -		localize('appName', "`${appName}`: e.g. VS Code."),
 +		localize('appName', "`${appName}`: e.g. !!APP_NAME!!."),
  		localize('remoteName', "`${remoteName}`: e.g. SSH"),
 diff --git a/src/vs/workbench/common/contextkeys.ts b/src/vs/workbench/common/contextkeys.ts
-index 51a4a3f2..e83d47da 100644
+index 41aace1b..6fc33f03 100644
 --- a/src/vs/workbench/common/contextkeys.ts
 +++ b/src/vs/workbench/common/contextkeys.ts
-@@ -40,3 +40,3 @@ export const EmbedderIdentifierContext = new RawContextKey<string | undefined>('
+@@ -42,3 +42,3 @@ export const EmbedderIdentifierContext = new RawContextKey<string | undefined>('
  
 -export const InAutomationContext = new RawContextKey<boolean>('inAutomation', false, localize('inAutomation', "Whether VS Code is running under automation/smoke test"));
 +export const InAutomationContext = new RawContextKey<boolean>('inAutomation', false, localize('inAutomation', "Whether !!APP_NAME!! is running under automation/smoke test"));
  
 diff --git a/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts b/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts
-index 883dab9e..825ebc1f 100644
+index 14210b54..4ff54b13 100644
 --- a/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts
-@@ -804,3 +804,3 @@ configurationRegistry.registerConfiguration({
+@@ -414,3 +414,3 @@ configurationRegistry.registerConfiguration({
+ 			default: AgentHostExternalSessionsMode.Recent,
+-			markdownDescription: nls.localize('chat.agentSessions.showExternal', "Controls which external agent sessions, created outside VS Code's Agent Host, are shown."),
++			markdownDescription: nls.localize('chat.agentSessions.showExternal', "Controls which external agent sessions, created outside !!APP_NAME!!'s Agent Host, are shown."),
+ 			tags: ['experimental'],
+@@ -1026,3 +1026,3 @@ configurationRegistry.registerConfiguration({
  				nls.localize('chat.mcp.access.none', "No access to MCP servers."),
--				nls.localize('chat.mcp.access.registry', "Allows access to MCP servers installed from the registry that VS Code is connected to."),
-+				nls.localize('chat.mcp.access.registry', "Allows access to MCP servers installed from the registry that !!APP_NAME!! is connected to."),
+-				nls.localize('chat.mcp.access.registry', "Allows access to MCP servers listed in the registry that VS Code is connected to."),
++				nls.localize('chat.mcp.access.registry', "Allows access to MCP servers listed in the registry that !!APP_NAME!! is connected to."),
  				nls.localize('chat.mcp.access.any', "Allow access to any installed MCP server.")
-@@ -831,3 +831,3 @@ configurationRegistry.registerConfiguration({
+@@ -1053,3 +1053,3 @@ configurationRegistry.registerConfiguration({
  						{
--							key: 'chat.mcp.access.registry', value: nls.localize('chat.mcp.access.registry', "Allows access to MCP servers installed from the registry that VS Code is connected to."),
-+							key: 'chat.mcp.access.registry', value: nls.localize('chat.mcp.access.registry', "Allows access to MCP servers installed from the registry that !!APP_NAME!! is connected to."),
+-							key: 'chat.mcp.access.registry', value: nls.localize('chat.mcp.access.registry', "Allows access to MCP servers listed in the registry that VS Code is connected to."),
++							key: 'chat.mcp.access.registry', value: nls.localize('chat.mcp.access.registry', "Allows access to MCP servers listed in the registry that !!APP_NAME!! is connected to."),
  						},
+@@ -1566,3 +1566,3 @@ configurationRegistry.registerConfiguration({
+ 			enumDescriptions: [
+-				nls.localize('chat.agentHost.copilotSdk.logLevel.info', "Log informational messages. Running VS Code with trace logging still enables all Copilot SDK runtime diagnostics."),
++				nls.localize('chat.agentHost.copilotSdk.logLevel.info', "Log informational messages. Running !!APP_NAME!! with trace logging still enables all Copilot SDK runtime diagnostics."),
+ 				nls.localize('chat.agentHost.copilotSdk.logLevel.trace', "Log all Copilot SDK runtime diagnostics."),
+@@ -1576,3 +1576,3 @@ configurationRegistry.registerConfiguration({
+ 			type: 'boolean',
+-			markdownDescription: nls.localize('chat.agentHost.copilot.mapLegacySettingsToManagedSettings', "When enabled, maps supported legacy VS Code settings to equivalent Copilot SDK managed settings for local Agent Host sessions. Only restrictions are mapped, and only from globally-scoped values — workspace and folder values are ignored. Applies to local sessions using the Copilot agent; remote hosts and other agents are unaffected. This compatibility bridge is temporary and is not used for new settings."),
++			markdownDescription: nls.localize('chat.agentHost.copilot.mapLegacySettingsToManagedSettings', "When enabled, maps supported legacy !!APP_NAME!! settings to equivalent Copilot SDK managed settings for local Agent Host sessions. Only restrictions are mapped, and only from globally-scoped values — workspace and folder values are ignored. Applies to local sessions using the Copilot agent; remote hosts and other agents are unaffected. This compatibility bridge is temporary and is not used for new settings."),
+ 			default: false,
+@@ -1589,3 +1589,3 @@ configurationRegistry.registerConfiguration({
+ 			type: 'boolean',
+-			description: nls.localize('chat.agentHost.copilot.toolSearch.enabled', "When enabled, Copilot SDK sessions defer MCP and non-core VS Code tools behind a tool-search tool so the model discovers them on demand instead of loading every tool definition up front."),
++			description: nls.localize('chat.agentHost.copilot.toolSearch.enabled', "When enabled, Copilot SDK sessions defer MCP and non-core !!APP_NAME!! tools behind a tool-search tool so the model discovers them on demand instead of loading every tool definition up front."),
+ 			default: true,
+@@ -1602,3 +1602,3 @@ configurationRegistry.registerConfiguration({
+ 			type: 'boolean',
+-			description: nls.localize('chat.copilot.semanticSearch.enabled', "Controls whether Copilot Agent Host sessions can use VS Code's semantic workspace search. When disabled, semantic search is unavailable."),
++			description: nls.localize('chat.copilot.semanticSearch.enabled', "Controls whether Copilot Agent Host sessions can use !!APP_NAME!!'s semantic workspace search. When disabled, semantic search is unavailable."),
+ 			default: false,
+@@ -1651,3 +1651,3 @@ configurationRegistry.registerConfiguration({
+ 						items: { type: 'string' },
+-						description: nls.localize('chat.agentHost.copilot.modelCapabilityOverrides.availableTools', "When set, only matching tools are available to sessions on this model. Patterns: bare tool names, `builtin:*` or `builtin:<name>` (Copilot runtime tools), `mcp:*` or `mcp:<name>` (MCP server tools), and `custom:*` or `custom:<name>` (every tool VS Code registers with the SDK, including the agent host's own terminal tools); a bare `*` expands to all three sources."),
++						description: nls.localize('chat.agentHost.copilot.modelCapabilityOverrides.availableTools', "When set, only matching tools are available to sessions on this model. Patterns: bare tool names, `builtin:*` or `builtin:<name>` (Copilot runtime tools), `mcp:*` or `mcp:<name>` (MCP server tools), and `custom:*` or `custom:<name>` (every tool !!APP_NAME!! registers with the SDK, including the agent host's own terminal tools); a bare `*` expands to all three sources."),
+ 					},
 diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts
-index 1417e0dc..24d713d2 100644
+index c4c6fe75..c3341286 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts
 @@ -120,3 +120,3 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
@@ -825,10 +885,10 @@ index 1417e0dc..24d713d2 100644
 +				userDescription: localize('setupToolsDescription', "Scaffold a new workspace in !!APP_NAME!!"),
  				canBeReferencedInPrompt: true,
 diff --git a/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts b/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts
-index d3be4e1e..7390a174 100644
+index 06a36292..eb7e6ba4 100644
 --- a/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts
 +++ b/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts
-@@ -290,5 +290,5 @@ export class PromptValidator {
+@@ -308,5 +308,5 @@ export class PromptValidator {
  							if (validGithubCopilotAttributeNames.value.has(attribute.key)) {
 -								report(toMarker(localize('promptValidator.ignoredAttribute.vscode-agent', "Attribute '{0}' is ignored when running locally in VS Code.", attribute.key), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
 +								report(toMarker(localize('promptValidator.ignoredAttribute.vscode-agent', "Attribute '{0}' is ignored when running locally in !!APP_NAME!!.", attribute.key), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
@@ -836,17 +896,17 @@ index d3be4e1e..7390a174 100644
 -								report(toMarker(localize('promptValidator.unknownAttribute.vscode-agent', "Attribute '{0}' is not supported in VS Code agent files. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
 +								report(toMarker(localize('promptValidator.unknownAttribute.vscode-agent', "Attribute '{0}' is not supported in !!APP_NAME!! agent files. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
  							}
-@@ -298,3 +298,3 @@ export class PromptValidator {
+@@ -316,3 +316,3 @@ export class PromptValidator {
  						if (target === Target.Claude) {
 -							report(toMarker(localize('promptValidator.unknownAttribute.rules', "Attribute '{0}' is not supported in rules files by VS Code agents. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
 +							report(toMarker(localize('promptValidator.unknownAttribute.rules', "Attribute '{0}' is not supported in rules files by !!APP_NAME!! agents. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
  						} else {
-@@ -304,3 +304,3 @@ export class PromptValidator {
+@@ -322,3 +322,3 @@ export class PromptValidator {
  					case PromptsType.skill:
 -						report(toMarker(localize('promptValidator.unknownAttribute.skill', "Attribute '{0}' is not supported by VS Code agents. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
 +						report(toMarker(localize('promptValidator.unknownAttribute.skill', "Attribute '{0}' is not supported by !!APP_NAME!! agents. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
  						break;
-@@ -1107,3 +1107,3 @@ export function mapClaudeModels(claudeModelNames: readonly string[]): readonly s
+@@ -1226,3 +1226,3 @@ export function mapClaudeModels(claudeModelNames: readonly string[]): readonly s
  /**
 - * Maps Claude tool names to their VS Code tool equivalents.
 + * Maps Claude tool names to their !!APP_NAME!! tool equivalents.
@@ -861,30 +921,30 @@ index 0b9ced32..731d9526 100644
 +						description: nls.localize('debugServer', "For debug extension development only: if a port is specified !!APP_NAME!! tries to connect to a debug adapter running in server mode"),
  						default: 4711
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-index 0c0965d3..9b9876ee 100644
+index a60cb5f0..c48f55fe 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-@@ -419,3 +419,3 @@ CommandsRegistry.registerCommand({
+@@ -416,3 +416,3 @@ CommandsRegistry.registerCommand({
  				description: '(optional) Options for installing the extension. Object with the following properties: ' +
 -					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
 +					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, !!APP_NAME!! installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
  				isOptional: true,
-@@ -426,3 +426,3 @@ CommandsRegistry.registerCommand({
+@@ -423,3 +423,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
 +							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, !!APP_NAME!! installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
  							default: false
-@@ -431,3 +431,3 @@ CommandsRegistry.registerCommand({
+@@ -428,3 +428,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, VS Code installs the pre-release version of the extension if available."),
 +							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, !!APP_NAME!! installs the pre-release version of the extension if available."),
  							default: false
-@@ -436,3 +436,3 @@ CommandsRegistry.registerCommand({
+@@ -433,3 +433,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, VS Code do not sync this extension when Settings Sync is on."),
 +							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, !!APP_NAME!! do not sync this extension when Settings Sync is on."),
  							default: false
-@@ -961,4 +961,4 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
+@@ -958,4 +958,4 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
  						Severity.Info,
 -						vsixs.length > 1 ? localize('InstallVSIXs.successReload', "Completed installing extensions. Please reload Visual Studio Code to enable them.")
 -							: localize('InstallVSIXAction.successReload', "Completed installing extension. Please reload Visual Studio Code to enable it."),
@@ -892,31 +952,31 @@ index 0c0965d3..9b9876ee 100644
 +							: localize('InstallVSIXAction.successReload', "Completed installing extension. Please reload VSCodium to enable it."),
  						[{
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
-index 452db88d..cd67d238 100644
+index 83d08390..7619a0cb 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsActions.ts
-@@ -109,3 +109,3 @@ export class PromptExtensionInstallFailureAction extends Action {
+@@ -110,3 +110,3 @@ export class PromptExtensionInstallFailureAction extends Action {
  		if (this.error.name === ExtensionManagementErrorCode.Unsupported) {
 -			const productName = isWeb ? localize('VS Code for Web', "{0} for the Web", this.productService.nameLong) : this.productService.nameLong;
 +			const productName = isWeb ? localize('!!APP_NAME!! for Web', "{0} for the Web", this.productService.nameLong) : this.productService.nameLong;
  			const message = localize('cannot be installed', "The '{0}' extension is not available in {1}. Click 'More Information' to learn more.", this.extension.displayName || this.extension.identifier.id, productName);
-@@ -553,3 +553,3 @@ export class InstallAction extends ExtensionAction {
+@@ -554,3 +554,3 @@ export class InstallAction extends ExtensionAction {
  			} else if (this.extension.deprecationInfo.settings) {
 -				detail = localize('deprecated with alternate settings message', "This extension is deprecated as this functionality is now built-in to VS Code.");
 +				detail = localize('deprecated with alternate settings message', "This extension is deprecated as this functionality is now built-in to !!APP_NAME!!.");
  
-@@ -942,3 +942,3 @@ export class UninstallAction extends ExtensionAction {
+@@ -943,3 +943,3 @@ export class UninstallAction extends ExtensionAction {
  			await this.extensionsWorkbenchService.uninstall(this.extension);
 -			alert(localize('uninstallExtensionComplete', "Please reload Visual Studio Code to complete the uninstallation of the extension {0}.", this.extension.displayName));
 +			alert(localize('uninstallExtensionComplete', "Please reload !!APP_NAME!! to complete the uninstallation of the extension {0}.", this.extension.displayName));
  		} catch (error) {
-@@ -2825,3 +2825,3 @@ export class ExtensionStatusAction extends ExtensionAction {
+@@ -2822,3 +2822,3 @@ export class ExtensionStatusAction extends ExtensionAction {
  				const link = `[${localize('settings', "settings")}](${createCommandUri('workbench.action.openSettings', this.extension.deprecationInfo.settings.map(setting => `@id:${setting}`).join(' '))}})`;
 -				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to VS Code. Configure these {0} to use this functionality.", link)) }, true);
 +				this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('deprecated with alternate settings tooltip', "This extension is deprecated as this functionality is now built-in to !!APP_NAME!!. Configure these {0} to use this functionality.", link)) }, true);
  			} else {
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
-index a58d77d1..7c1aae76 100644
+index b60ffca7..cac36135 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts
 @@ -479,3 +479,3 @@ export class Extension implements IExtension {
@@ -994,13 +1054,13 @@ index 050dde41..a8a61bd2 100644
 +				description: localize2('configureLocaleDescription', "Changes the locale of !!APP_NAME!! based on installed language packs. Common languages include French, Chinese, Spanish, Japanese, German, Korean, and more.")
  			}
 diff --git a/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts b/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
-index dc231e44..c47eeb39 100644
+index 720e4d20..d8114dae 100644
 --- a/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
 +++ b/src/vs/workbench/contrib/mcp/browser/mcpServersView.ts
 @@ -276,3 +276,3 @@ export class McpServersListView extends AbstractExtensionsListView<IWorkbenchMcp
  			new MarkdownString(
--				localize('mcp.welcome.descriptionWithLink', "Browse and install [Model Context Protocol (MCP) servers](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) directly from VS Code to extend agent mode with extra tools for connecting to databases, invoking APIs and performing specialized tasks."),
-+				localize('mcp.welcome.descriptionWithLink', "Browse and install [Model Context Protocol (MCP) servers](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) directly from !!APP_NAME!! to extend agent mode with extra tools for connecting to databases, invoking APIs and performing specialized tasks."),
+-				localize('mcp.welcome.descriptionWithLink', "Browse and install [Model Context Protocol (MCP) servers](https://code.visualstudio.com/docs/agent-customization/mcp-servers) directly from VS Code to extend agent mode with extra tools for connecting to databases, invoking APIs and performing specialized tasks."),
++				localize('mcp.welcome.descriptionWithLink', "Browse and install [Model Context Protocol (MCP) servers](https://code.visualstudio.com/docs/agent-customization/mcp-servers) directly from !!APP_NAME!! to extend agent mode with extra tools for connecting to databases, invoking APIs and performing specialized tasks."),
  				{ isTrusted: { enabledCommands: ['workbench.action.openSettings'] } },
 diff --git a/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts b/src/vs/workbench/contrib/preferences/browser/keyboardLayoutPicker.ts
 index b533feb1..112d6952 100644
@@ -1014,10 +1074,10 @@ index b533feb1..112d6952 100644
 +	`// ${nls.localize('doc', 'Open !!APP_NAME!! and run "Developer: Inspect Key Mappings (JSON)" from Command Palette.')}`,
  	``,
 diff --git a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
-index 36209197..8c9d5b35 100644
+index a3079cd7..c14d4a72 100644
 --- a/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
 +++ b/src/vs/workbench/contrib/tasks/browser/abstractTaskService.ts
-@@ -3483,3 +3483,3 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
+@@ -3488,3 +3488,3 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
  						if (response.code && response.code === TerminateResponseCode.ProcessNotFound) {
 -							this._notificationService.error(nls.localize('TerminateAction.noProcess', 'The launched process doesn\'t exist anymore. If the task spawned background tasks exiting VS Code might result in orphaned processes.'));
 +							this._notificationService.error(nls.localize('TerminateAction.noProcess', 'The launched process doesn\'t exist anymore. If the task spawned background tasks exiting !!APP_NAME!! might result in orphaned processes.'));
@@ -1096,7 +1156,7 @@ index 72a329b8..7992809f 100644
 +			Write-Host "`e[0m`e[7m * `e[0;103m !!APP_NAME!! Python powershell activation failed with exit code $($activationError.Exception.Message) `e[0m"
  		}
 diff --git a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
-index 3d3e8f2d..c4f18742 100644
+index 80c5267d..4f5e1f10 100644
 --- a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 +++ b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 @@ -322,3 +322,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
@@ -1172,26 +1232,26 @@ index 5fc22b73..099fb4a8 100644
 +	modelDescription: `Runs a !!APP_NAME!! task.\n\n- If you see that an appropriate task exists for building or running code, prefer to use this tool to run the task instead of using the ${TerminalToolId.RunInTerminal} tool.\n- Make sure that any appropriate build or watch task is running before trying to run tests or execute code.\n- If the user asks to run a task, use this tool to do so.`,
  	userDescription: localize('runInTerminalTool.userDescription', 'Run tasks in the workspace'),
 diff --git a/src/vs/workbench/contrib/terminalContrib/voice/browser/terminalVoiceActions.ts b/src/vs/workbench/contrib/terminalContrib/voice/browser/terminalVoiceActions.ts
-index 0f23e5a5..27f311e2 100644
+index f0e71c68..c3b0ab8c 100644
 --- a/src/vs/workbench/contrib/terminalContrib/voice/browser/terminalVoiceActions.ts
 +++ b/src/vs/workbench/contrib/terminalContrib/voice/browser/terminalVoiceActions.ts
-@@ -56,3 +56,3 @@ export function registerTerminalVoiceActions() {
+@@ -65,3 +65,3 @@ export function registerTerminalVoiceActions() {
  			} else {
 -				message = localize('terminal.voice.installSpeechExtension', "Would you like to install 'VS Code Speech' extension from 'Microsoft'?");
 +				message = localize('terminal.voice.installSpeechExtension', "Would you like to install '!!APP_NAME!! Speech' extension from 'Microsoft'?");
  				run = () => commandService.executeCommand('workbench.extensions.installExtension', 'ms-vscode.vscode-speech');
 diff --git a/src/vs/workbench/contrib/update/browser/update.ts b/src/vs/workbench/contrib/update/browser/update.ts
-index c182b9c2..7090ac01 100644
+index 52c517f2..dedb905a 100644
 --- a/src/vs/workbench/contrib/update/browser/update.ts
 +++ b/src/vs/workbench/contrib/update/browser/update.ts
-@@ -385,4 +385,4 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
+@@ -420,4 +420,4 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
  							detail: newQuality === 'insider' ?
 -								nls.localize('relaunchDetailInsiders', "Press the reload button to switch to the Insiders version of VS Code.") :
 -								nls.localize('relaunchDetailStable', "Press the reload button to switch to the Stable version of VS Code."),
 +								nls.localize('relaunchDetailInsiders', "Press the reload button to switch to the Insiders version of !!APP_NAME!!.") :
 +								nls.localize('relaunchDetailStable', "Press the reload button to switch to the Stable version of !!APP_NAME!!."),
  							primaryButton: nls.localize({ key: 'reload', comment: ['&& denotes a mnemonic'] }, "&&Reload")
-@@ -421,3 +421,3 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
+@@ -456,3 +456,3 @@ export class SwitchProductQualityContribution extends Disposable implements IWor
  						message: nls.localize('selectSyncService.message', "Choose the settings sync service to use after changing the version"),
 -						detail: nls.localize('selectSyncService.detail', "The Insiders version of VS Code will synchronize your settings, keybindings, extensions, snippets and UI State using separate insiders settings sync service by default."),
 +						detail: nls.localize('selectSyncService.detail', "The Insiders version of !!APP_NAME!! will synchronize your settings, keybindings, extensions, snippets and UI State using separate insiders settings sync service by default."),
@@ -1438,15 +1498,15 @@ index 6cccbced..877669a3 100644
 +				markdownDescription: localize('workspace.trust.emptyWindow.description', "Controls whether or not the empty window is trusted by default within !!APP_NAME!!. When used with `#{0}#`, you can enable the full functionality of !!APP_NAME!! without prompting in an empty window.", WORKSPACE_TRUST_UNTRUSTED_FILES),
  				tags: [WORKSPACE_TRUST_SETTING_TAG],
 diff --git a/src/vs/workbench/electron-browser/desktop.contribution.ts b/src/vs/workbench/electron-browser/desktop.contribution.ts
-index 9db62d8f..074209e5 100644
+index 41250d7b..8fb8e1f6 100644
 --- a/src/vs/workbench/electron-browser/desktop.contribution.ts
 +++ b/src/vs/workbench/electron-browser/desktop.contribution.ts
-@@ -453,3 +453,3 @@ import product from '../../platform/product/common/product.js';
+@@ -454,3 +454,3 @@ import product from '../../platform/product/common/product.js';
  				type: 'boolean',
 -				description: localize('argv.disableChromiumSandbox', "Disables the Chromium sandbox. This is useful when running VS Code as elevated on Linux and running under Applocker on Windows.")
 +				description: localize('argv.disableChromiumSandbox', "Disables the Chromium sandbox. This is useful when running !!APP_NAME!! as elevated on Linux and running under Applocker on Windows.")
  			},
-@@ -457,3 +457,3 @@ import product from '../../platform/product/common/product.js';
+@@ -458,3 +458,3 @@ import product from '../../platform/product/common/product.js';
  				type: 'boolean',
 -				description: localize('argv.useInMemorySecretStorage', "Ensures that an in-memory store will be used for secret storage instead of using the OS's credential store. This is often used when running VS Code extension tests or when you're experiencing difficulties with the credential store.")
 +				description: localize('argv.useInMemorySecretStorage', "Ensures that an in-memory store will be used for secret storage instead of using the OS's credential store. This is often used when running !!APP_NAME!! extension tests or when you're experiencing difficulties with the credential store.")
