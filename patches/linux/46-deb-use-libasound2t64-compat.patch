@@ -8,7 +8,7 @@ index 2523941a..8d521dd6 100644
 	const filteredDeps = depsStr.split(', ').filter(dependency => {
 		return !dependency.startsWith('libgcc-s1');
 	}).map(dependency => {
-		return dependency.startsWith('libasound2 (>= 1.0.17)') ? 'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17)' : dependency;
+		return dependency.startsWith('libasound2 (>= 1.0.17)') ? 'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17) | liboss4-salsa-asound2' : dependency;
 	}).sort();
 	const requires = new Set(filteredDeps);
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
@@ -19,35 +19,35 @@ index 6e81b12..f233d6f 100644
 	'amd64': [
 		'ca-certificates',
 -		'libasound2 (>= 1.0.17)',
-+		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17)',
++		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17) | liboss4-salsa-asound2',
 		'libatk-bridge2.0-0 (>= 2.5.3)',
 @@ -58,3 +58,3 @@ export const referenceGeneratedDepsByArch = {
 	'armhf': [
 		'ca-certificates',
 -		'libasound2 (>= 1.0.17)',
-+		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17)',
++		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17) | liboss4-salsa-asound2',
 		'libatk-bridge2.0-0 (>= 2.5.3)',
 @@ -100,3 +100,3 @@ export const referenceGeneratedDepsByArch = {
 	'arm64': [
 		'ca-certificates',
 -		'libasound2 (>= 1.0.17)',
-+		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17)',
++		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17) | liboss4-salsa-asound2',
 		'libatk-bridge2.0-0 (>= 2.5.3)',
 @@ -145,3 +145,3 @@ export const referenceGeneratedDepsByArch = {
 	'ppc64el': [
 		'ca-certificates',
 -		'libasound2 (>= 1.0.17)',
-+		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17)',
++		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17) | liboss4-salsa-asound2',
 		'libatk-bridge2.0-0 (>= 2.5.3)',
 @@ -186,3 +186,3 @@ export const referenceGeneratedDepsByArch = {
 	'riscv64': [
 		'ca-certificates',
 -		'libasound2 (>= 1.0.17)',
-+		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17)',
++		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17) | liboss4-salsa-asound2',
 		'libatk-bridge2.0-0 (>= 2.5.3)',
 @@ -227,3 +227,3 @@ export const referenceGeneratedDepsByArch = {
 	's390x': [
 		'ca-certificates',
 -		'libasound2 (>= 1.0.17)',
-+		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17)',
++		'libasound2t64 (>= 1.2.12) | libasound2 (>= 1.0.17) | liboss4-salsa-asound2',
 		'libatk-bridge2.0-0 (>= 2.5.3)',
