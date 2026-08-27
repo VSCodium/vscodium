@@ -170,6 +170,8 @@ Please note that some Visual Studio Code extensions have licenses that restrict 
 
 If you would like to see the commands we run to build `vscode` into VSCodium binaries, have a look at the workflow files in `.github/workflows` for Windows, GNU/Linux and macOS. These build files call all the other scripts in the repo. If you find something that doesn't make sense, feel free to ask about it [on Gitter](https://gitter.im/VSCodium/Lobby).
 
+Patch applicability is also validated in GitHub Actions before the main build and packaging phases, using `bash ./dev/check_patches.sh` and uploading `.patch-check/` logs as workflow artifacts.
+
 The builds are run every day, but exit early if there isn't a new release from Microsoft.
 
 ## <a id="supported-platforms"></a>Supported Platforms
