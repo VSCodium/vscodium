@@ -190,6 +190,7 @@ review-tools.snap-review --allow-classic codium*.snap
 
 - run `./dev/build.sh`, if a patch is failing then,
 - run `./dev/update_patches.sh`
+- GitHub Actions now runs `bash ./dev/check_patches.sh <scope>` before build/package steps to catch malformed or stale patches automatically
 - when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
 - fix all the `*.rej` files
 - run `npm run watch`
@@ -200,11 +201,22 @@ review-tools.snap-review --allow-classic codium*.snap
 
 - run `./dev/build.sh`, if a patch is failing then,
 - run `./dev/patch.sh <name>.patch` where `<name>.patch` is the failed patch
+- use this local script when CI patch validation reports a malformed patch or an apply failure that needs manual regeneration
 - open `vscode` directory in a new **VSCodium**'s window
 - fix all the `*.rej` files
 - run `npm run watch`
 - run `./script/code.sh` until everything is ok
 - go back to the command line running `./dev/patch.sh`, press `enter` to validate the changes and it will update the patch
+
+### Automated patch validation in GitHub Actions
+
+- `OS_NAME` and `VSCODE_QUALITY` are required for `compile`; package scopes infer `OS_NAME` automatically
+- `bash ./dev/check_patches.sh compile` validates compile-time patches against a fresh `vscode` checkout
+- `bash ./dev/check_patches.sh linux-client` validates Linux client packaging patches against `vscode.tar.gz`
+- `bash ./dev/check_patches.sh linux-reh` validates Linux REH packaging patches against `vscode.tar.gz`
+- `bash ./dev/check_patches.sh alpine-reh` validates Alpine REH packaging patches against `vscode.tar.gz`
+- example: `export OS_NAME=linux VSCODE_QUALITY=stable && bash ./dev/check_patches.sh compile`
+- workflows upload `.patch-check/` logs as artifacts so maintainers can inspect failures without reproducing them locally first
 
 ### <a id="icons"></a>icons/build_icons.sh
 
