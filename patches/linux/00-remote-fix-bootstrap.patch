@@ -10,7 +10,7 @@ index 49098a31..ae041b7d 100644
 @@ -40,3 +40,3 @@ globalThis._VSCODE_FILE_ROOT = import.meta.dirname;
  function enableASARSupport(): void {
 -	if (!process.env['ELECTRON_RUN_AS_NODE'] && !process.versions['electron']) {
-+	if (Module.register as unknown && (process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron'])) {
++	if (Module.register as unknown && !(process.env['ELECTRON_RUN_AS_NODE'] || process.versions['electron'])) {
  		return; // only on Electron / Electron-as-node
 @@ -235,3 +235,3 @@ function enableASARSupport(): void {
  
