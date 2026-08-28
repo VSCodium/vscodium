@@ -234,6 +234,7 @@ cp package.json{,.bak}
 setpath "package" "version" "${RELEASE_VERSION%-insider}"
 
 replace 's|Microsoft Corporation|VSCodium|' package.json
+replace "s|--max-old-space-size=8192|--max-old-space-size=${MAX_OLD_SPACE_SIZE}|" package.json
 
 cp resources/server/manifest.json{,.bak}
 
