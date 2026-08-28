@@ -12,7 +12,9 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-  export NODE_OPTIONS="--max-old-space-size=12288"
+  MAX_OLD_SPACE_SIZE="${MAX_OLD_SPACE_SIZE:-8192}"
+
+  export NODE_OPTIONS="--max-old-space-size=${MAX_OLD_SPACE_SIZE}"
   export VSCODE_PUBLISH_COUNTER=1
 
   npm run gulp vscode-min-prepack
