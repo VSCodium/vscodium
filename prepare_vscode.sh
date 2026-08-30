@@ -233,7 +233,7 @@ cp package.json{,.bak}
 
 setpath "package" "version" "${RELEASE_VERSION%-insider}"
 
-replace 's|Microsoft Corporation|VSCodium|' package.json
+replace "s|Microsoft Corporation|${ORG_NAME}|" package.json
 
 cp resources/server/manifest.json{,.bak}
 
@@ -250,8 +250,10 @@ replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( tr -d '\n' < ../announce
 
 ../undo_telemetry.sh
 
-replace 's|Microsoft Corporation|VSCodium|' build/lib/electron.ts
-replace 's|([0-9]) Microsoft|\1 VSCodium|' build/lib/electron.ts
+replace "s|Microsoft Corporation|${ORG_NAME}|" build/lib/electron.ts
+replace "s|([0-9]) Microsoft|\1 ${ORG_NAME}|" build/lib/electron.ts
+replace "s|'VS Code HelpBook'|product.nameLong + ' HelpBook'|g" build/lib/electron.ts
+replace "s|'VS Code workspace file'|[product.nameLong + ' workspace file']|" build/lib/electron.ts
 
 if [[ "${OS_NAME}" == "linux" ]]; then
   # microsoft adds their apt repo to sources
