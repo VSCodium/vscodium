@@ -371,7 +371,7 @@ index dbb08664..83ebe8b8 100644
 +
  				this.setState(State.Idle(UpdateType.Archive, message));
 diff --git a/src/vs/platform/update/electron-main/updateService.win32.ts b/src/vs/platform/update/electron-main/updateService.win32.ts
-index 7628ad1e..83b8da9f 100644
+index 7628ad1e..582f0b96 100644
 --- a/src/vs/platform/update/electron-main/updateService.win32.ts
 +++ b/src/vs/platform/update/electron-main/updateService.win32.ts
 @@ -15,3 +15,2 @@ import { memoize } from '../../../base/common/decorators.js';
@@ -425,22 +425,22 @@ index 7628ad1e..83b8da9f 100644
 -			platform += '-archive';
 -		} else if (this.productService.target === 'user') {
 -			platform += '-user';
-+	protected buildUpdateFeedUrl(quality: string, _options?: IUpdateURLOptions): string {
++	protected buildUpdateFeedUrl(quality: string, _options?: IUpdateURLOptions): string | undefined {
 +		let target: Target;
 +
 +		switch (getUpdateType()) {
 +			case UpdateType.Archive:
-+				target = "archive"
++				target = 'archive';
 +				break;
 +			case UpdateType.WindowsInstaller:
-+				target = "msi"
++				target = 'msi';
 +				break;
 +			default:
 +				if (this.productService.target === 'user') {
-+					target = "user"
++					target = 'user';
 +				}
 +				else {
-+					target = "system"
++					target = 'system';
 +				}
  		}
  
@@ -458,7 +458,7 @@ index 7628ad1e..83b8da9f 100644
 -		const url = this.buildUpdateFeedUrl(this.quality, pendingCommit ?? this.productService.commit!, { background, internalOrg });
 -
  		// Only set CheckingForUpdates if we're not already in Overwriting state
-@@ -247,7 +259,11 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -247,7 +259,16 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -		const headers = getUpdateRequestHeaders(this.productService.version);
 -		const promise = this.requestService.request({ url, headers, callSite: 'updateService.win32.checkForUpdates' }, token)
@@ -469,18 +469,23 @@ index 7628ad1e..83b8da9f 100644
 +		const background = !explicit && !internalOrg;
 +		const url = this.buildUpdateFeedUrl(this.quality, { background, internalOrg });
 +
++		if (!url) {
++			this.setState(State.Idle(UpdateType.Archive));
++			return;
++		}
++
 +		this.logService.info('update#doCheckForUpdates', { url, explicit, background });
 +
 +		const promise = this._isLatestVersion(url, explicit, pendingVersion)
 +			.then((result) => {
 + 				const updateType = getUpdateType();
  
-@@ -257,3 +273,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -257,3 +278,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -				if (!update || !update.url || !update.version || !update.productVersion) {
 +				if (!result) {
  					// If we were checking for an overwrite update and found nothing newer,
-@@ -269,2 +285,9 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -269,2 +290,9 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 +				const { lastest, update } = result;
 +
@@ -490,17 +495,17 @@ index 7628ad1e..83b8da9f 100644
 +				}
 +
  				if (updateType === UpdateType.Archive) {
-@@ -282,3 +305,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -282,3 +310,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  				return this.cleanup(update.version).then(() => {
 -					return this.getUpdatePackagePath(update.version).then(updatePackagePath => {
 +					return this.getUpdatePackagePath(update.version, updateType).then(updatePackagePath => {
  						return pfs.Promises.exists(updatePackagePath).then(exists => {
-@@ -294,3 +317,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -294,3 +322,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -							return this.requestService.request({ url: update.url, callSite: 'updateService.win32.downloadUpdate' }, token)
 +							return this.requestService.request({ url: update.url, callSite: NO_FETCH_TELEMETRY }, token)
  								.then(context => {
-@@ -343,5 +366,5 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -343,5 +371,5 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  			})
 -			.then(undefined, err => {
 +			.then(undefined, (error) => {
@@ -508,7 +513,7 @@ index 7628ad1e..83b8da9f 100644
 -				if (token.isCancellationRequested || isCancellationError(err)) {
 +				if (token.isCancellationRequested || isCancellationError(error)) {
  					return;
-@@ -349,7 +372,6 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -349,7 +377,6 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -				this.telemetryService.publicLog2<{ messageHash: string }, UpdateErrorClassification>('update:error', { messageHash: String(hash(String(err))) });
 -				this.logService.error(err);
@@ -518,26 +523,22 @@ index 7628ad1e..83b8da9f 100644
 -				const message: string | undefined = explicit ? (err.message || err) : undefined;
 +				const message: string | undefined = explicit ? (error.message || error) : undefined;
  
-@@ -390,5 +412,7 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -390,5 +417,7 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -	private async getUpdatePackagePath(version: string): Promise<string> {
 +	private async getUpdatePackagePath(version: string, type: UpdateType): Promise<string> {
  		const cachePath = await this.cachePath;
 -		return path.join(cachePath, `CodeSetup-${this.productService.quality}-${version}.exe`);
-+		const extension = type == UpdateType.WindowsInstaller ? 'msi' : 'exe'
++		const extension = type === UpdateType.WindowsInstaller ? 'msi' : 'exe';
 +
 +		return path.join(cachePath, `${this.productService.nameShort.replaceAll(/\s/g, '')}-${this.productService.quality}-${version}.${extension}`);
  	}
-@@ -398,3 +422,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -398,3 +427,3 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  		const filter = exceptVersion
 -			? (one: string) => one !== relaunchArgumentsFileName && !(new RegExp(`${this.productService.quality}-${exceptVersion}\\.exe$`).test(one))
 +			? (one: string) => one !== relaunchArgumentsFileName && !(new RegExp(`${this.productService.quality}-${exceptVersion}\\.(exe|msi)$`).test(one))
  			: () => true;
-@@ -422,3 +446,2 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
- 		const cachePath = await this.cachePath;
--		const sessionEndFlagPath = path.join(cachePath, 'session-ending.flag');
- 		const cancelFilePath = path.join(cachePath, `cancel.flag`);
-@@ -440,20 +463,9 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -440,20 +469,10 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  
 -			const installerArgs = [
 -				'/verysilent',
@@ -557,27 +558,87 @@ index 7628ad1e..83b8da9f 100644
 -			const child = spawn(this.availableUpdate.packagePath,
 -				installerArgs,
 -				{
-+			let child: ChildProcess
++			let child: ChildProcess;
 +
 +			const type = getUpdateType();
-+			if (type == UpdateType.WindowsInstaller) {
++
++			if (type === UpdateType.WindowsInstaller) {
 +				this.logService.info(`update#doApplyUpdate - msiexec.exe /i ${this.availableUpdate.packagePath}`);
 +
 +				child = spawn('msiexec.exe', ['/i', this.availableUpdate.packagePath], {
  					detached: true,
-@@ -462,4 +474,10 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+@@ -462,4 +481,29 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
  					env: { ...process.env, __COMPAT_LAYER: 'RunAsInvoker' }
 -				}
 -			);
 +				});
 +			} else {
-+				child = spawn(this.availableUpdate.packagePath, ['/silent', '/log', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
++				const installerArgs = [
++					'/verysilent',
++					'/log',
++					`/update="${this.availableUpdate.updateFilePath}"`,
++					`/progress="${progressFilePath}"`,
++					`/sessionend="${sessionEndFlagPath}"`,
++					`/cancel="${cancelFilePath}"`,
++					'/nocloseapplications',
++					'/mergetasks=runcode,!desktopicon,!quicklaunchicon'
++				];
++
++				// The restarting instance populates this file immediately before releasing the installer.
++				const relaunchArgsFilePath = this.getRelaunchArgumentsFilePath(cachePath, update.version);
++				installerArgs.push(`/relaunchargs="${relaunchArgsFilePath}"`);
++
++				child = spawn(this.availableUpdate.packagePath,
++					installerArgs,
++					{
++						detached: true,
++						stdio: ['ignore', 'ignore', 'ignore'],
++						windowsVerbatimArguments: true,
++						env: { ...process.env, __COMPAT_LAYER: 'RunAsInvoker' }
++					}
++				);
++			}
+ 
+@@ -637,16 +681,28 @@ export class Win32UpdateService extends AbstractUpdateService implements IRelaun
+ 		} else {
+-			const installerArgs = ['/silent', '/log', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'];
++			const type = getUpdateType();
++			if (type === UpdateType.WindowsInstaller) {
++				this.logService.info(`update#doQuitAndInstall - msiexec.exe /i ${this.availableUpdate.packagePath}`);
+ 
+-			// Preserve session defining arguments (e.g. --extensions-dir) across the installer relaunch (see #322663).
+-			const relaunchArgsFilePath = this.writeRelaunchArgumentsFile(this.cachePathSync, this.state.update.version);
+-			if (relaunchArgsFilePath) {
+-				installerArgs.push(`/relaunchargs="${relaunchArgsFilePath}"`);
++				spawn('msiexec.exe', ['/i', this.availableUpdate.packagePath], {
 +					detached: true,
 +					stdio: ['ignore', 'ignore', 'ignore'],
 +					env: { ...process.env, __COMPAT_LAYER: 'RunAsInvoker' }
 +				});
-+			}
+ 			}
++			else {
++				const installerArgs = ['/silent', '/log', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'];
  
+-			spawn(this.availableUpdate.packagePath, installerArgs, {
+-				detached: true,
+-				stdio: ['ignore', 'ignore', 'ignore'],
+-				windowsVerbatimArguments: true,
+-				env: { ...process.env, __COMPAT_LAYER: 'RunAsInvoker' }
+-			});
++				// Preserve session defining arguments (e.g. --extensions-dir) across the installer relaunch (see #322663).
++				const relaunchArgsFilePath = this.writeRelaunchArgumentsFile(this.cachePathSync, this.state.update.version);
++				if (relaunchArgsFilePath) {
++					installerArgs.push(`/relaunchargs="${relaunchArgsFilePath}"`);
++				}
++
++				spawn(this.availableUpdate.packagePath, installerArgs, {
++					detached: true,
++					stdio: ['ignore', 'ignore', 'ignore'],
++					windowsVerbatimArguments: true,
++					env: { ...process.env, __COMPAT_LAYER: 'RunAsInvoker' }
++				});
++			}
+ 		}
 diff --git a/src/vs/platform/update/test/electron-main/abstractUpdateService.test.ts b/src/vs/platform/update/test/electron-main/abstractUpdateService.test.ts
 index a493bdb6..54fc5e10 100644
 --- a/src/vs/platform/update/test/electron-main/abstractUpdateService.test.ts
