@@ -1,0 +1,25 @@
+diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupController.ts b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupController.ts
+index 27409c00634..250f3e2f0ee 100644
+--- a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupController.ts
++++ b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupController.ts
+@@ -24,6 +24,7 @@ import { ITelemetryService } from '../../../../../platform/telemetry/common/tele
+ import { IActivityService, ProgressBadge } from '../../../../services/activity/common/activity.js';
+ import { ILifecycleService } from '../../../../services/lifecycle/common/lifecycle.js';
+ import { IExtensionsWorkbenchService } from '../../../extensions/common/extensions.js';
++import { ExtensionIdentifier } from '../../../../../platform/extensions/common/extensions.js';
+ import { ChatEntitlement, ChatEntitlementContext, ChatEntitlementRequests, isProUser } from '../../../../services/chat/common/chatEntitlementService.js';
+ import { CHAT_OPEN_ACTION_ID } from '../actions/chatActions.js';
+ import { ChatViewContainerId, ChatViewId } from '../chat.js';
+@@ -260,6 +261,12 @@ export class ChatSetupController extends Disposable {
+ 	}
+ 
+ 	private async doInstall(): Promise<void> {
++		await this.extensionsWorkbenchService.queryLocal();
++		const installedExtension = this.extensionsWorkbenchService.local.find(value => ExtensionIdentifier.equals(value.identifier.id, defaultChat.chatExtensionId));
++		if (installedExtension?.local) {
++			return; // already installed locally: skip remote marketplace lookup (avoids failure on galleries that don't carry this extension)
++		}
++
+ 		await this.extensionsWorkbenchService.install(defaultChat.chatExtensionId, {
+ 			enable: true,
+ 			isApplicationScoped: true, 	// install into all profiles
