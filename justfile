@@ -10,4 +10,7 @@ ci-update:
   pinact run -min-age 7 -update
 
 lint-ec:
-  ecformat check -v
+  ecformat check --verbose --ignore-file .ecformat_ignore
+
+lint-ec-fix:
+  ecformat fix --verbose --ignore-file .ecformat_ignore
