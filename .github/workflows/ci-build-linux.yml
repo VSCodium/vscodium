@@ -220,7 +220,7 @@ jobs:
           - runs-on: ubuntu-24.04-arm
             arch: aarch64
             slug: ARM64
-    container: ghcr.io/pkgforge-dev/archlinux:latest
+    container: ghcr.io/pkgforge-dev/archlinux:v2026.08.31
     runs-on: ${{ matrix.runs-on }}
     env:
       DISABLED: ${{ vars[format('DISABLE_{0}_LINUX_APPIMAGE_{1}', ((github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'INSIDER' || 'STABLE'), matrix.slug)] }}
