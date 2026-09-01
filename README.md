@@ -1,8 +1,8 @@
 <div id="vscodium-logo" align="center">
-    <br />
-    <img src="./icons/stable/codium_cnl.svg" alt="VSCodium Logo" width="200"/>
-    <h1>VSCodium</h1>
-    <h3>Free/Libre Open Source Software Binaries of Visual Studio Code</h3>
+   <br />
+   <img src="./icons/stable/codium_cnl.svg" alt="VSCodium Logo" width="200"/>
+   <h1>VSCodium</h1>
+   <h3>Free/Libre Open Source Software Binaries of Visual Studio Code</h3>
 </div>
 
 <div id="badges" align="center">
@@ -20,14 +20,14 @@
 ## Table of Contents
 
 - [Download/Install](#download-install)
-  - [Install with Brew](#install-with-brew)
-  - [Install with Windows Package Manager (WinGet)](#install-with-winget)
-  - [Install with Chocolatey](#install-with-choco)
-  - [Install with Scoop](#install-with-scoop)
-  - [Install with snap](#install-with-snap)
-  - [Install with Package Manager](#install-with-package-manager)
-  - [Install on Arch Linux](#install-on-arch-linux)
-  - [Flatpak Option](#flatpak)
+   - [Install with Brew](#install-with-brew)
+   - [Install with Windows Package Manager (WinGet)](#install-with-winget)
+   - [Install with Chocolatey](#install-with-choco)
+   - [Install with Scoop](#install-with-scoop)
+   - [Install with snap](#install-with-snap)
+   - [Install with Package Manager](#install-with-package-manager)
+   - [Install on Arch Linux](#install-on-arch-linux)
+   - [Flatpak Option](#flatpak)
 - [Build](#build)
 - [Why Does This Exist](#why)
 - [More Info](#more-info)
@@ -142,12 +142,12 @@ If you want to build from source yourself, head over to [Microsoft's vscode repo
 Microsoft's build process (which we are running to build the binaries) does download additional files. Those packages downloaded during build are:
 
 - Pre-built extensions from the GitHub:
-  - [ms-vscode.js-debug-companion](https://github.com/microsoft/vscode-js-debug-companion)
-  - [ms-vscode.js-debug](https://github.com/microsoft/vscode-js-debug)
-  - [ms-vscode.vscode-js-profile-table](https://github.com/microsoft/vscode-js-profile-visualizer)
+   - [ms-vscode.js-debug-companion](https://github.com/microsoft/vscode-js-debug-companion)
+   - [ms-vscode.js-debug](https://github.com/microsoft/vscode-js-debug)
+   - [ms-vscode.vscode-js-profile-table](https://github.com/microsoft/vscode-js-profile-visualizer)
 - From [Electron releases](https://github.com/electron/electron/releases) (using [gulp-atom-electron](https://github.com/joaomoreno/gulp-atom-electron))
-  - electron
-  - ffmpeg
+   - electron
+   - ffmpeg
 
 ## <a id="more-info"></a>More Info
 
@@ -189,26 +189,26 @@ The minimal version is limited by the core component Electron, you may want to c
 ## <a id="thanks"></a>Special thanks
 
 <table>
-  <tr>
-    <td><a href="https://github.com/jaredreich" target="_blank">@jaredreich</a></td>
-    <td>for the logo</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/PalinuroSec" target="_blank">@PalinuroSec</a></td>
-    <td>for CDN and domain name</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.macstadium.com" target="_blank"><img src="https://images.prismic.io/macstadium/66fbce64-707e-41f3-b547-241908884716_MacStadium_Logo.png?w=128&q=75" width="128" height="49" alt="MacStadium logo" /></a></td>
-    <td>for providing a Mac mini M1</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/daiyam" target="_blank">@daiyam</a></td>
-    <td>for macOS certificate</td>
-  </tr>
-  <tr>
-    <td><a href="https://signpath.org/" target="_blank"><img src="https://avatars.githubusercontent.com/u/34448643" height="30" alt="SignPath logo" /></a></td>
-    <td>free code signing on Windows provided by <a href="https://signpath.io/" target="_blank">SignPath.io</a>, certificate by <a href="https://signpath.org/" target="_blank">SignPath Foundation</a></td>
-  </tr>
+   <tr>
+      <td><a href="https://github.com/jaredreich" target="_blank">@jaredreich</a></td>
+      <td>for the logo</td>
+   </tr>
+   <tr>
+      <td><a href="https://github.com/PalinuroSec" target="_blank">@PalinuroSec</a></td>
+      <td>for CDN and domain name</td>
+   </tr>
+   <tr>
+      <td><a href="https://www.macstadium.com" target="_blank"><img src="https://images.prismic.io/macstadium/66fbce64-707e-41f3-b547-241908884716_MacStadium_Logo.png?w=128&q=75" width="128" height="49" alt="MacStadium logo" /></a></td>
+      <td>for providing a Mac mini M1</td>
+   </tr>
+   <tr>
+      <td><a href="https://github.com/daiyam" target="_blank">@daiyam</a></td>
+      <td>for macOS certificate</td>
+   </tr>
+   <tr>
+      <td><a href="https://signpath.org/" target="_blank"><img src="https://avatars.githubusercontent.com/u/34448643" height="30" alt="SignPath logo" /></a></td>
+      <td>free code signing on Windows provided by <a href="https://signpath.io/" target="_blank">SignPath.io</a>, certificate by <a href="https://signpath.org/" target="_blank">SignPath Foundation</a></td>
+   </tr>
 </table>
 
 ## <a id="license"></a>License

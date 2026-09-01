@@ -30,12 +30,12 @@ workbench.commandPalette.experimental.enableNaturalLanguageSearch
 
 It is also recommended that you review all the settings that "use online services" by following [these instructions](https://code.visualstudio.com/docs/getstarted/telemetry#_managing-online-services). You can use the search filter `@tag:usesOnlineServices` to show such settings and review what to change.
 
-**Please note that some extensions send telemetry data to Microsoft as well. We have no control over this and can only recommend removing the extension.**  
+**Please note that some extensions send telemetry data to Microsoft as well. We have no control over this and can only recommend removing the extension.**
 For example, the C# extension `ms-vscode.csharp` sends tracking data to Microsoft. Be sure to check each extension's settings page to disable their telemetry if applicable.
 
 ### Update services
 
-By default, the app periodically fetches connections to check for the latest version available to download and install.  
+By default, the app periodically fetches connections to check for the latest version available to download and install.
 Extensions are also checked for updates automatically from time to time.
 
 If you want to prevent such behaviors, modify the following preferences:

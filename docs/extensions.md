@@ -51,14 +51,14 @@ with the content like:
 
 ```jsonc
 {
-  "extensionsGallery": {
-    "serviceUrl": "", // required
-    "itemUrl": "", // required
-    "cacheUrl": "",
-    "controlUrl": "",
-    "extensionUrlTemplate": "", // required
-    "resourceUrlTemplate": "",
-  }
+   "extensionsGallery": {
+      "serviceUrl": "", // required
+      "itemUrl": "", // required
+      "cacheUrl": "",
+      "controlUrl": "",
+      "extensionUrlTemplate": "", // required
+      "resourceUrlTemplate": "",
+   }
 }
 ```
 
@@ -69,13 +69,13 @@ Individual developers and enterprise companies in regulated or security-consciou
 There are likely other options, but the following were reported to work:
 
 * [Open VSX](https://github.com/eclipse/openvsx) eclipse open-source project
-  While the public instance which is run by the Eclipse Foundation is the pre-set endpoint in VSCodium, you can host your own instance.
+   While the public instance which is run by the Eclipse Foundation is the pre-set endpoint in VSCodium, you can host your own instance.
 
-    > Open VSX is a [vendor-neutral](https://projects.eclipse.org/projects/ecd.openvsx) open-source alternative to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/vscode). It provides a server application that manages [Visual Studio Code extensions](https://code.visualstudio.com/api) in a database, a web application similar to the Visual Studio Marketplace, and a command-line tool for publishing extensions similar to [vsce](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#vsce).
+      > Open VSX is a [vendor-neutral](https://projects.eclipse.org/projects/ecd.openvsx) open-source alternative to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/vscode). It provides a server application that manages [Visual Studio Code extensions](https://code.visualstudio.com/api) in a database, a web application similar to the Visual Studio Marketplace, and a command-line tool for publishing extensions similar to [vsce](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#vsce).
 
 * [code-marketplace](https://coder.com/blog/running-a-private-vs-code-extension-marketplace) open-source project
 
-    > `code-marketplace` is a self-contained go binary that does not have a frontend or any mechanisms for extension authors to add or update extensions in the marketplace. It simply reads extensions from file storage and provides an API for VSCode compatible editors to consume.
+      > `code-marketplace` is a self-contained go binary that does not have a frontend or any mechanisms for extension authors to add or update extensions in the marketplace. It simply reads extensions from file storage and provides an API for VSCode compatible editors to consume.
 
 ## <a id="visual-studio-marketplace"></a>Visual Studio Marketplace
 
@@ -97,12 +97,12 @@ A workaround exists to get debugging working in C# projects, by using Samsung's 
 Like the debuggers mentioned above, some extensions you may find in the marketplace (like the [Remote Development Extensions](https://code.visualstudio.com/docs/remote/remote-overview)) only function with the official Visual Studio Code build. You can work around this by adding the extension's internal ID (found on the extension's page) to the `extensionAllowedProposedApi` property of the product.json in your VSCodium installation. For example:
 
 ```jsonc
-  "extensionAllowedProposedApi": [
-    // ...
-    "ms-vscode-remote.vscode-remote-extensionpack",
-    "ms-vscode-remote.remote-wsl",
-    // ...
-  ],
+   "extensionAllowedProposedApi": [
+      // ...
+      "ms-vscode-remote.vscode-remote-extensionpack",
+      "ms-vscode-remote.remote-wsl",
+      // ...
+   ],
 ```
 
 In some cases, the above change won't help because the extension is hard-coded to only work with the official Visual Studio Code product.

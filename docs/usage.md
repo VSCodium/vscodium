@@ -10,7 +10,7 @@
 - [How do I fix the default file manager?](#file-manager)
 - [How do I press and hold a key and have it repeat in VSCodium?](#press-and-hold)
 - [How do I open VSCodium from the terminal?](#terminal-support)
-  - [From Linux .tar.gz](#from-linux-targz)
+   - [From Linux .tar.gz](#from-linux-targz)
 
 ## <a id="signin-github"></a>Sign in with GitHub
 
