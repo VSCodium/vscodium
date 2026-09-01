@@ -43,6 +43,13 @@ else
       export SHOULD_BUILD_TAR="no"
     fi
 
+    if [[ -z $( contains "aarch64.AppImage" ) ]]; then
+      echo "Building on Linux arm64 because we have no AppImage"
+      export SHOULD_BUILD="yes"
+    else
+      export SHOULD_BUILD_APPIMAGE="no"
+    fi
+
     if [[ -z $( contains "arm64.snap" ) || "${FORCE_LINUX_SNAP}" == "true" ]]; then
       echo "Building on Linux arm64 because we have no SNAP"
       export SHOULD_BUILD="yes"
@@ -63,8 +70,6 @@ else
     else
       export SHOULD_BUILD_REH_WEB="no"
     fi
-
-    export SHOULD_BUILD_APPIMAGE="no"
 
     if [[ -z $( contains "${APP_NAME_LC}-cli-linux-arm64-${RELEASE_VERSION}.tar.gz" ) ]]; then
       echo "Building on Linux arm64 because we have no CLI archive"
@@ -132,9 +137,9 @@ else
 
   # linux-riscv64
   if [[ "${VSCODE_ARCH}" == "riscv64" || "${CHECK_ALL}" == "yes" ]]; then
+    export SHOULD_BUILD_APPIMAGE="no"
     export SHOULD_BUILD_DEB="no"
     export SHOULD_BUILD_RPM="no"
-    export SHOULD_BUILD_APPIMAGE="no"
 
     if [[ -z $( contains "${APP_NAME}-linux-riscv64-${RELEASE_VERSION}.tar.gz" ) ]]; then
       echo "Building on Linux RISC-V 64 because we have no TAR"
@@ -200,10 +205,10 @@ else
 
   # linux-s390x
   if [[ "${VSCODE_ARCH}" == "s390x" || "${CHECK_ALL}" == "yes" ]]; then
-    SHOULD_BUILD_APPIMAGE="no"
-    SHOULD_BUILD_DEB="no"
-    SHOULD_BUILD_RPM="no"
-    SHOULD_BUILD_TAR="no"
+    export SHOULD_BUILD_APPIMAGE="no"
+    export SHOULD_BUILD_DEB="no"
+    export SHOULD_BUILD_RPM="no"
+    export SHOULD_BUILD_TAR="no"
 
     if [[ -z $( contains "${APP_NAME_LC}-reh-linux-s390x-${RELEASE_VERSION}.tar.gz" ) ]]; then
       echo "Building on Linux s390x because we have no REH archive"
@@ -249,9 +254,7 @@ else
       export SHOULD_BUILD_TAR="no"
     fi
 
-    if [[ "${DISABLE_APPIMAGE}" == "yes" ]]; then
-      export SHOULD_BUILD_APPIMAGE="no"
-    elif [[ -z $( contains "x86_64.AppImage" ) ]]; then
+    if [[ -z $( contains "x86_64.AppImage" ) ]]; then
       echo "Building on Linux x64 because we have no AppImage"
       export SHOULD_BUILD="yes"
     else

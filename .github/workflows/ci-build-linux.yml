@@ -111,10 +111,12 @@ jobs:
           vscode_arch: x64
           npm_arch: x64
           image: vscodium/vscodium-linux-build-agent:focal-x64
+          upload_binary: yes
         - slug: ARM64
           vscode_arch: arm64
           npm_arch: arm64
           image: vscodium/vscodium-linux-build-agent:focal-arm64
+          upload_binary: yes
         - slug: RISCV64
           vscode_arch: riscv64
           npm_arch: riscv64
@@ -177,9 +179,19 @@ jobs:
         run: ./build/linux/package_bin.sh
         if: env.DISABLED != 'yes'
 
+      - name: Package binary
+        run: tar -czf vscode-bin.tar.gz -C "VSCode-linux-${VSCODE_ARCH}" .
+        if: env.DISABLED != 'yes' && matrix.upload_binary == 'yes'
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: vscode-bin-${{ matrix.slug }}
+          path: ./vscode-bin.tar.gz
+          retention-days: 1
+        if: env.DISABLED != 'yes' && matrix.upload_binary == 'yes'
+
       - name: Prepare assets
         env:
-          SHOULD_BUILD_APPIMAGE: ${{ vars[format('DISABLE_{0}_APPIMAGE', ((github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'INSIDER' || 'STABLE'))] == 'yes' && 'no' || 'yes' }}
           SHOULD_BUILD_REH: 'no'
           SHOULD_BUILD_REH_WEB: 'no'
           VSCODE_SYSROOT_REPOSITORY: ${{ steps.build.outputs.VSCODE_SYSROOT_REPOSITORY }}
@@ -193,6 +205,53 @@ jobs:
         with:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/
+          retention-days: 3
+        if: env.DISABLED != 'yes' && github.event.inputs.generate_assets == 'true'
+
+  anylinux-appimage:
+    needs:
+      - build
+    strategy:
+      matrix:
+        include:
+          - runs-on: ubuntu-latest
+            arch: x86_64
+            slug: X64
+          - runs-on: ubuntu-24.04-arm
+            arch: aarch64
+            slug: ARM64
+    container: ghcr.io/pkgforge-dev/archlinux:v2026.08.31
+    runs-on: ${{ matrix.runs-on }}
+    env:
+      DISABLED: ${{ vars[format('DISABLE_{0}_LINUX_APPIMAGE_{1}', ((github.ref == 'refs/heads/insider' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'insider')) && 'INSIDER' || 'STABLE'), matrix.slug)] }}
+      RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+          persist-credentials: false
+        if: env.DISABLED != 'yes'
+
+      - name: Preparing Container
+        uses: pkgforge-dev/anylinux-setup-action@0964f2258d6c93d1391359978dde081fd8b3c6af # v2
+        if: env.DISABLED != 'yes'
+
+      - name: Download vscode binary artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: vscode-bin-${{ matrix.slug }}
+        if: env.DISABLED != 'yes'
+
+      - name: Make AppImage
+        run: ./build/linux/anylinux-appimage/make-appimage.sh
+        if: env.DISABLED != 'yes'
+
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: AppImage-anylinux-${{ matrix.arch }}
+          path: dist/
           retention-days: 3
         if: env.DISABLED != 'yes' && github.event.inputs.generate_assets == 'true'
 
