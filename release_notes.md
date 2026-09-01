@@ -110,7 +110,7 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
     <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-web-alpine-x64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-web-alpine-x64-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
   </tr>
 </table>
-</tool_result>
+
 ## ARM 64bits
 
 <table>

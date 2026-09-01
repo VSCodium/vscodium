@@ -132,10 +132,12 @@ jobs:
           vscode_arch: x64
           npm_arch: x64
           image: vscodium/vscodium-linux-build-agent:focal-x64
+          upload_binary: yes
         - slug: ARM64
           vscode_arch: arm64
           npm_arch: arm64
           image: vscodium/vscodium-linux-build-agent:focal-arm64
+          upload_binary: yes
         - slug: RISCV64
           vscode_arch: riscv64
           npm_arch: riscv64
@@ -176,7 +178,7 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           CHECK_REH: 'no'
-          DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
+          # DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
@@ -202,16 +204,16 @@ jobs:
         run: ./build/linux/package_bin.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - name: Upload VSCode binary (for anylinux-appimage)
-        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && (matrix.vscode_arch == 'x64' || matrix.vscode_arch == 'arm64')
+      - name: Package binary
         run: tar -czf vscode-bin.tar.gz -C "VSCode-linux-${VSCODE_ARCH}" .
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && matrix.upload_binary == 'yes'
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: vscode-bin-${{ matrix.vscode_arch }}
+          name: vscode-bin-${{ matrix.slug }}
           path: ./vscode-bin.tar.gz
           retention-days: 1
-        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && (matrix.vscode_arch == 'x64' || matrix.vscode_arch == 'arm64')
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && matrix.upload_binary == 'yes'
 
       - name: Prepare assets
         env:
@@ -240,9 +242,7 @@ jobs:
   anylinux-appimage:
     needs:
       - check
-      - compile
       - build
-    runs-on: ${{ matrix.runs-on }}
     environment: publish
     permissions:
       contents: write
@@ -251,46 +251,51 @@ jobs:
       matrix:
         include:
           - runs-on: ubuntu-latest
-            name: Build AppImage
             arch: x86_64
+            slug: X64
           - runs-on: ubuntu-24.04-arm
-            name: Build AppImage
             arch: aarch64
+            slug: ARM64
     container: ghcr.io/pkgforge-dev/archlinux:latest
+    runs-on: ${{ matrix.runs-on }}
     env:
-      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-    if: needs.check.outputs.SHOULD_BUILD == 'yes' && vars.DISABLE_STABLE_APPIMAGE != 'yes'
+      DISABLED: ${{ vars[format('DISABLE_STABLE_LINUX_APPIMAGE_{0}', matrix.slug)] }}
+      RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+    if: needs.check.outputs.SHOULD_BUILD_APPIMAGE != 'no' && needs.build.outputs.SHOULD_BUILD == 'yes'
 
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
+        if: env.DISABLED != 'yes'
 
       - name: Preparing Container
         uses: pkgforge-dev/anylinux-setup-action@0964f2258d6c93d1391359978dde081fd8b3c6af # v2
+        if: env.DISABLED != 'yes'
 
       - name: Download vscode binary artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: vscode-bin-${{ matrix.arch == 'x86_64' && 'x64' || 'arm64' }}
-
-      - name: Install Dependencies
-        run: /bin/sh ./build/linux/anylinux-appimage/get-dependencies.sh
+          name: vscode-bin-${{ matrix.slug }}
+        if: env.DISABLED != 'yes'
 
       - name: Make AppImage
-        run: /bin/sh ./build/linux/anylinux-appimage/make-appimage.sh
+        run: ./build/linux/anylinux-appimage/make-appimage.sh
+        if: env.DISABLED != 'yes'
 
       - name: Move AppImage to assets
         run: |
           mkdir -p assets
           mv dist/*.AppImage* assets/
+        if: env.DISABLED != 'yes'
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
+        if: env.DISABLED != 'yes'
 
   reh_linux:
     needs:
