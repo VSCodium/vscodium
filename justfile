@@ -7,4 +7,7 @@ ci-lint-fix:
   zizmor . --fix=all
 
 ci-update:
-  PINACT_MIN_AGE=7 pinact run --update
+  pinact run -min-age 7 -update
+
+lint-ec:
+  ecformat check -v
