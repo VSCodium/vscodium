@@ -39,7 +39,7 @@ echo "${VERSION}" > ~/version
 # Desktop entries from repo sources
 SRC_DIR="src/${QUALITY}/resources/linux"
 
-cp "${SRC_DIR}/code.desktop" "./AppDir/${NAME}"
+cp "${SRC_DIR}/code.desktop" "./AppDir/${NAME}.desktop"
 cp "${SRC_DIR}/code-url-handler.desktop" "./AppDir/share/applications/${NAME}-url-handler.desktop"
 
 # Keeps CLI commands working and doesn't affect normal GUI launch
