@@ -12,7 +12,7 @@ on:
 permissions: {}
 
 jobs:
-  zizmor:
+  ecformat:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -24,6 +24,6 @@ jobs:
 
       - name: Run ecformat
         run: |
-          cargo install --locked ecformat
+          cargo install ecformat@0.2.0
 
-          just run lint-ec
+          ecformat check --verbose --ignore-file .ecformat_ignore
