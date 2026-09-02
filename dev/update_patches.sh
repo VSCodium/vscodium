@@ -158,9 +158,20 @@ for FILE in ../patches/*.patch; do
     ENDNAME="${BASH_REMATCH[3]}"
 
     for ((I = 0; I < INDEX; I++)); do
+      NOT_FOUND=1
+
       for CANDIDATE in "${DIRNAME}/${GROUP_ID}${I}-"*.patch; do
         if [[ -f "$CANDIDATE" ]]; then
           ADDITIONAL_FILES+=("$CANDIDATE")
+          NOT_FOUND=0
+        fi
+
+        if (( $NOT_FOUND )); then
+          for CANDIDATE in "${DIRNAME}/${GROUP_ID}${I}-"*.json; do
+            if [[ -f "$CANDIDATE" ]]; then
+              apply_actions "${CANDIDATE}"
+            fi
+          done
         fi
       done
     done

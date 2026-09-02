@@ -1,0 +1,185 @@
+diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
+index 62c30da5..46925452 100644
+--- a/build/gulpfile.reh.ts
++++ b/build/gulpfile.reh.ts
+@@ -33,2 +33,3 @@ import { getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgre
+ import { readAgentSdkResults } from './agent-sdk/common.ts';
++import { stripAuthenticodeSignature } from './win32/signature.ts';
+ 
+@@ -486,34 +487,2 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
+ 
+-function hasAuthenticodeSignature(filePath: string): Promise<boolean> {
+-	return new Promise((resolve, reject) => {
+-		const proc = cp.spawn('signtool.exe', ['verify', '/pa', filePath]);
+-		proc.on('error', reject);
+-		proc.on('exit', code => resolve(code === 0));
+-	});
+-}
+-
+-async function stripAuthenticodeSignature(filePath: string): Promise<void> {
+-	// ESRP's `signtool /as` (append) fails with 0x800700C1 on PEs whose existing
+-	// Authenticode signature was invalidated by rcedit. Strip cleanly first so
+-	// rcedit operates on an unsigned PE.
+-	if (!await hasAuthenticodeSignature(filePath)) {
+-		return;
+-	}
+-	await new Promise<void>((resolve, reject) => {
+-		const proc = cp.spawn('signtool.exe', ['remove', '/s', filePath]);
+-		let out = '';
+-		proc.stdout?.on('data', chunk => out += chunk.toString());
+-		proc.stderr?.on('data', chunk => out += chunk.toString());
+-		proc.on('error', reject);
+-		proc.on('exit', code => {
+-			if (code === 0) {
+-				resolve();
+-			} else {
+-				process.stderr.write(out);
+-				reject(new Error(`signtool remove /s failed for ${filePath} (exit ${code})`));
+-			}
+-		});
+-	});
+-}
+-
+ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -539,3 +508,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 				'version-string': {
+-					'CompanyName': 'Microsoft Corporation',
++					'CompanyName': '!!ORG_NAME!!',
+ 					'FileDescription': productContents.nameLong,
+@@ -543,3 +512,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 					'InternalName': basename,
+-					'LegalCopyright': 'Copyright (C) 2026 Microsoft. All rights reserved',
++					'LegalCopyright': 'Copyright (C) 2026 !!ORG_NAME!!. All rights reserved',
+ 					'OriginalFilename': basename,
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index 53987f88..bac039b8 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -21,3 +21,2 @@ import product from '../product.json' with { type: 'json' };
+ import * as crypto from 'crypto';
+-import * as cp from 'child_process';
+ import * as i18n from './lib/i18n.ts';
+@@ -38,2 +37,3 @@ import { spawnTsgo } from './lib/tsgo.ts';
+ import { runEsbuildTranspile, runEsbuildBundle } from './lib/esbuild.ts';
++import { stripAuthenticodeSignature } from './win32/signature.ts';
+ 
+@@ -532,34 +532,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 
+-function hasAuthenticodeSignature(filePath: string): Promise<boolean> {
+-	return new Promise((resolve, reject) => {
+-		const proc = cp.spawn('signtool.exe', ['verify', '/pa', filePath]);
+-		proc.on('error', reject);
+-		proc.on('exit', code => resolve(code === 0));
+-	});
+-}
+-
+-async function stripAuthenticodeSignature(filePath: string): Promise<void> {
+-	// ESRP's `signtool /as` (append) fails with 0x800700C1 on PEs whose existing
+-	// Authenticode signature was invalidated by rcedit. Strip cleanly first so
+-	// rcedit operates on an unsigned PE.
+-	if (!await hasAuthenticodeSignature(filePath)) {
+-		return;
+-	}
+-	await new Promise<void>((resolve, reject) => {
+-		const proc = cp.spawn('signtool.exe', ['remove', '/s', filePath]);
+-		let out = '';
+-		proc.stdout?.on('data', chunk => out += chunk.toString());
+-		proc.stderr?.on('data', chunk => out += chunk.toString());
+-		proc.on('error', reject);
+-		proc.on('exit', code => {
+-			if (code === 0) {
+-				resolve();
+-			} else {
+-				process.stderr.write(out);
+-				reject(new Error(`signtool remove /s failed for ${filePath} (exit ${code})`));
+-			}
+-		});
+-	});
+-}
+-
+ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -587,3 +555,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 				'version-string': {
+-					'CompanyName': 'Microsoft Corporation',
++					'CompanyName': '!!ORG_NAME!!',
+ 					'FileDescription': product.nameLong,
+@@ -591,3 +559,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 					'InternalName': basename,
+-					'LegalCopyright': 'Copyright (C) 2026 Microsoft. All rights reserved',
++					'LegalCopyright': 'Copyright (C) 2026 !!ORG_NAME!!. All rights reserved',
+ 					'OriginalFilename': basename,
+diff --git a/build/win32/signature.ts b/build/win32/signature.ts
+new file mode 100644
+index 00000000..ee722946
+--- /dev/null
++++ b/build/win32/signature.ts
+@@ -0,0 +1,68 @@
++import * as cp from 'child_process';
++import { promises as fs } from 'node:fs';
++
++export async function stripAuthenticodeSignature(filePath: string): Promise<void> {
++	const signPath = await getSigntoolPath()
++	// ESRP's `signtool /as` (append) fails with 0x800700C1 on PEs whose existing
++	// Authenticode signature was invalidated by rcedit. Strip cleanly first so
++	// rcedit operates on an unsigned PE.
++	if (!await hasAuthenticodeSignature(filePath, signPath)) {
++		return;
++	}
++	await new Promise<void>((resolve, reject) => {
++		const proc = cp.spawn(signPath, ['remove', '/s', filePath]);
++		let out = '';
++		proc.stdout?.on('data', chunk => out += chunk.toString());
++		proc.stderr?.on('data', chunk => out += chunk.toString());
++		proc.on('error', reject);
++		proc.on('exit', code => {
++			if (code === 0) {
++				resolve();
++			} else {
++				process.stderr.write(out);
++				reject(new Error(`signtool remove /s failed for ${filePath} (exit ${code})`));
++			}
++		});
++	});
++}
++
++async function getSigntoolPath(): Promise<string> {
++    const windowsKitsFolder = 'C:/Program Files (x86)/Windows Kits/10/bin/';
++    const folders = await fs.readdir(windowsKitsFolder);
++    let fileName = '';
++    let maxVersion = 0;
++    for (const folder of folders) {
++        if (!folder.endsWith('.0')) {
++            continue;
++        }
++        const folderVersion = parseInt(folder.replace(/\./g,''));
++        if (folderVersion > maxVersion) {
++            const signtoolFilename = `${windowsKitsFolder}${folder}/x64/signtool.exe`;
++            try {
++                const stat = await fs.stat(signtoolFilename);
++                if (stat.isFile()) {
++                    fileName = signtoolFilename;
++                    maxVersion = folderVersion;
++                }
++            }
++            catch {
++                console.warn('Skipping %s due to error.', signtoolFilename);
++            }
++        }
++    }
++    if(fileName == '') {
++        throw new Error('Unable to find signtool.exe in ' + windowsKitsFolder);
++    }
++
++    console.log(`Signtool location is ${fileName}.`);
++
++    return fileName;
++}
++
++function hasAuthenticodeSignature(filePath: string, signPath: string): Promise<boolean> {
++	return new Promise((resolve, reject) => {
++		const proc = cp.spawn(signPath, ['verify', '/pa', filePath]);
++		proc.on('error', reject);
++		proc.on('exit', code => resolve(code === 0));
++	});
++}
+\ No newline at end of file

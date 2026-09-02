@@ -18,6 +18,7 @@ env:
   ASSETS_REPOSITORY: ${{ github.repository }}
   BINARY_NAME: codium
   GH_REPO_PATH: ${{ github.repository }}
+  MAX_OLD_SPACE_SIZE: 12288
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: osx
   SOURCEMAPS_REPOSITORY: ${{ github.repository_owner }}/sourcemaps
@@ -37,7 +38,7 @@ jobs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: master
           persist-credentials: false
@@ -67,13 +68,13 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: master
           persist-credentials: false
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
 

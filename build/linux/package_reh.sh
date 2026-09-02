@@ -18,7 +18,7 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 GLIBC_VERSION="2.28"
 GLIBCXX_VERSION="3.4.26"
-NODE_VERSION="22.21.1"
+NODE_VERSION="24.15.0"
 
 export VSCODE_NODEJS_URLROOT='/download/release'
 export VSCODE_NODEJS_URLSUFFIX=''
@@ -34,29 +34,21 @@ elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
 
   export VSCODE_SKIP_SYSROOT=1
   export USE_GNUPP2A=1
-elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
-  EXPECTED_GLIBC_VERSION="2.30"
-
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-armhf"
-
-  export VSCODE_SKIP_SYSROOT=1
-  export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  GLIBC_VERSION="2.28"
-
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-ppc64le"
-  VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
-
   export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
-  export VSCODE_SYSROOT_VERSION='20240129-253798'
+  export VSCODE_SYSROOT_VERSION='20260706'
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
-  NODE_VERSION="22.21.1"
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-riscv64"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:jammy-devtoolset-riscv64"
+  NODE_VERSION="24.18.0"
+  NODEJS_RELEASE_TAG="v${NODE_VERSION}-riscv64.1"
+  NODEJS_ASSET_NAME="node-v${NODE_VERSION}-linux-${VSCODE_ARCH}-local1.tar.gz"
 
   export VSCODE_SKIP_SETUPENV=1
-  export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
+  export VSCODE_NODEJS_REPOSITORY='riscv-forks/node-riscv'
+  export VSCODE_NODEJS_TAG="${NODEJS_RELEASE_TAG}"
+  export VSCODE_NODEJS_NAME="${NODEJS_ASSET_NAME}"
 elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
-  NODE_VERSION="22.21.1"
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:beige-devtoolset-loong64"
 
   export VSCODE_SKIP_SETUPENV=1
@@ -159,6 +151,12 @@ node build/npm/preinstall.ts
 
 mv .npmrc .npmrc.bak
 cp ../npmrc .npmrc
+
+echo "+ /usr/lib/node_modules/npm/node_modules/node-gyp/addon.gypi"
+cat /usr/lib/node_modules/npm/node_modules/node-gyp/addon.gypi || true
+
+echo "+ ${HOME}/.gyp/include.gypi"
+cat "${HOME}/.gyp/include.gypi" || true
 
 for i in {1..5}; do # try 5 times
   npm ci && break

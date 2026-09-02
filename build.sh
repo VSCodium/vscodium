@@ -8,11 +8,13 @@ set -ex
 if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   echo "MS_COMMIT=\"${MS_COMMIT}\""
 
+  export MAX_OLD_SPACE_SIZE="${MAX_OLD_SPACE_SIZE:-8192}"
+
   . prepare_vscode.sh
 
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-  export NODE_OPTIONS="--max-old-space-size=8192"
+  export NODE_OPTIONS="--max-old-space-size=${MAX_OLD_SPACE_SIZE}"
   export VSCODE_PUBLISH_COUNTER=1
 
   npm run gulp vscode-min-prepack

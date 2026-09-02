@@ -32,6 +32,7 @@
 - [Why Does This Exist](#why)
 - [More Info](#more-info)
 - [Supported Platforms](#supported-platforms)
+- [Previously Supported Platforms](#previously-supported-platforms)
 
 ## <a id="download-install"></a>Download/Install
 
@@ -179,12 +180,17 @@ The minimal version is limited by the core component Electron, you may want to c
 - [x] macOS (`zip`, `dmg`) macOS 12 or newer arm64
 - [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `snap`, `tar.gz`)
 - [x] GNU/Linux arm64 (`deb`, `rpm`, `snap`, `tar.gz`)
-- [x] GNU/Linux armhf (`deb`, `rpm`, `tar.gz`)
 - [x] GNU/Linux riscv64 (`tar.gz`)
 - [x] GNU/Linux loong64 (`tar.gz`)
 - [x] GNU/Linux ppc64le (`tar.gz`)
 - [x] Windows 10 / Server 2012 R2 or newer x64
 - [x] Windows 10 / Server 2012 R2 or newer arm64
+
+## <a id="previously-supported-platforms"></a>Previously Supported Platforms
+
+- GNU/Linux armhf:
+   - Latest available: [v1.121.03429](https://github.com/VSCodium/vscodium/releases/tag/1.121.03429).
+   - Breaking point: `node-v24`.
 
 ## <a id="thanks"></a>Special thanks
 

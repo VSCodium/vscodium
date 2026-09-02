@@ -1,0 +1,3116 @@
+diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
+index a40ff6f6..d4d02860 100644
+--- a/build/gulpfile.reh.ts
++++ b/build/gulpfile.reh.ts
+@@ -25,3 +25,3 @@ import rceditCallback from 'rcedit';
+ import { compileBuildWithManglingTask } from './gulpfile.compile.ts';
+-import { cleanExtensionsBuildTask, compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileExtensionMediaBuildTask, compileCopilotExtensionBuildTask } from './gulpfile.extensions.ts';
++import { cleanExtensionsBuildTask, compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileExtensionMediaBuildTask } from './gulpfile.extensions.ts';
+ import { vscodeWebResourceIncludes, createVSCodeWebFileContentMapper } from './gulpfile.vscode.web.ts';
+@@ -33,3 +33,2 @@ import { fetchUrls } from './lib/fetch.ts';
+ import { downloadFeedPackage } from './lib/azureFeed.ts';
+-import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
+ import { readAgentSdkResults } from './agent-sdk/common.ts';
+@@ -444,9 +443,3 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
+ 			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, `.moduleignore.${process.platform}`)));
+-		ensureCopilotPlatformPackage(platform, arch, 'remote/node_modules');
+-		const copilotRuntimePrebuilds = gulp.src(getCopilotRuntimePrebuildFiles(platform, arch, 'remote/node_modules'), { base: 'remote', dot: true, allowEmpty: true });
+-		const deps = es.merge(cleanedDeps, copilotRuntimePrebuilds)
+-			.pipe(filter(getCopilotExcludeFilter(platform, arch)))
+-			.pipe(filter(getCopilotTgrepExcludeFilter(platform, arch)))
+-			.pipe(filter(getRipgrepExcludeFilter(platform, arch)))
+-			.pipe(filter(getMxcExcludeFilter(arch)))
++		const deps = es.merge(cleanedDeps)
+ 			.pipe(jsFilter)
+@@ -604,12 +597,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 
+-function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destinationFolderName: string) {
+-	return async () => {
+-		const outputDir = path.join(BUILD_ROOT, destinationFolderName);
+-		const nodeModulesDir = path.join(outputDir, 'node_modules');
+-
+-		const builtInCopilotExtensionDir = path.join(outputDir, 'extensions', 'copilot');
+-		prepareBuiltInCopilotRipgrepShim(platform, arch, builtInCopilotExtensionDir, nodeModulesDir);
+-	};
+-}
+-
+ /**
+@@ -663,3 +646,2 @@ function tweakProductForServerWeb(product: typeof import('../product.json')) {
+ 				packageTask(type, platform, arch, sourceFolderName, destinationFolderName),
+-				prepareCopilotRipgrepShimTaskREH(platform, arch, destinationFolderName)
+ 			];
+@@ -677,3 +659,2 @@ function tweakProductForServerWeb(product: typeof import('../product.json')) {
+ 				compileNonNativeExtensionsBuildTask,
+-				compileCopilotExtensionBuildTask,
+ 				compileExtensionMediaBuildTask,
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index 99f20db3..3b5cd412 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -28,5 +28,4 @@ import minimist from 'minimist';
+ import { compileBuildWithoutManglingTask } from './gulpfile.compile.ts';
+-import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask, compileCopilotExtensionBuildTask } from './gulpfile.extensions.ts';
++import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask } from './gulpfile.extensions.ts';
+ import { copyCodiconsTask } from './lib/compilation.ts';
+-import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
+ import { ensureOSProxyResolverPlatformPackage, getOSProxyResolverExcludeFilter, getOSProxyResolverPlatformFiles } from './lib/osProxyResolver.ts';
+@@ -341,6 +340,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 				json.version = version;
+-				json.copilotVersions = {
+-					runtime: getLockedPackageVersion('@github/copilot'),
+-					sdk: getLockedPackageVersion('@github/copilot-sdk'),
+-				};
+ 				// Stamp agentSdks from the per-platform results file produced
+@@ -387,11 +382,5 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, `.moduleignore.${process.platform}`)));
+-		ensureCopilotPlatformPackage(platform, arch);
+-		const copilotRuntimePrebuilds = gulp.src(getCopilotRuntimePrebuildFiles(platform, arch), { base: '.', dot: true, allowEmpty: true });
+ 		ensureOSProxyResolverPlatformPackage(platform, arch);
+ 		const osProxyResolverPlatformPackage = gulp.src(getOSProxyResolverPlatformFiles(platform, arch), { base: '.', dot: true, allowEmpty: true });
+-		const deps = es.merge(cleanedDeps, copilotRuntimePrebuilds, osProxyResolverPlatformPackage)
+-			.pipe(filter(getCopilotExcludeFilter(platform, arch)))
+-			.pipe(filter(getCopilotTgrepExcludeFilter(platform, arch)))
+-			.pipe(filter(getRipgrepExcludeFilter(platform, arch)))
+-			.pipe(filter(getMxcExcludeFilter(arch)))
++		const deps = es.merge(cleanedDeps, osProxyResolverPlatformPackage)
+ 			.pipe(filter(getFoundryLocalExcludeFilter()))
+@@ -404,10 +393,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 				'**/@vscode/ripgrep-universal/bin/**',
+-				// Only the platform-specific Copilot CLI packages (`@github/copilot-<os>-<arch>`)
+-				// need to be unpacked: the CLI is spawned as a subprocess and is a
+-				// self-locating bundle that memory-maps files and resolves its native
+-				// addons / sub-binaries relative to its own on-disk location, so it cannot
+-				// run from inside the archive. `@github/copilot-sdk` is intentionally NOT
+-				// matched here — it is pure JavaScript that the agent host loads via
+-				// `import` (ASAR-aware), so it stays in the archive.
+-				'**/@github/copilot-{darwin,linux,linuxmusl,win32}-*/**',
+ 				'**/@microsoft/mxc-sdk/bin/**',
+@@ -676,19 +657,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+ 
+-function prepareCopilotRipgrepShimTask(platform: string, arch: string, destinationFolderName: string) {
+-	const outputDir = path.join(path.dirname(root), destinationFolderName);
+-
+-	return async () => {
+-		// On Windows with win32VersionedUpdate, app resources live under a
+-		// commit-hash prefix: {output}/{commitHash}/resources/app/
+-		const versionedResourcesFolder = util.getVersionedResourcesFolder(platform, commit!);
+-		const appBase = platform === 'darwin'
+-			? path.join(outputDir, `${product.nameLong}.app`, 'Contents', 'Resources', 'app')
+-			: path.join(outputDir, versionedResourcesFolder, 'resources', 'app');
+-		const appNodeModulesDir = path.join(appBase, 'node_modules.asar.unpacked');
+-
+-		const builtInCopilotExtensionDir = path.join(appBase, 'extensions', 'copilot');
+-		prepareBuiltInCopilotRipgrepShim(platform, arch, builtInCopilotExtensionDir, appNodeModulesDir);
+-	};
+-}
+-
+ const buildRoot = path.dirname(root);
+@@ -718,3 +682,2 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 			packageTask(platform, arch, sourceFolderName, destinationFolderName, opts),
+-			prepareCopilotRipgrepShimTask(platform, arch, destinationFolderName)
+ 		];
+@@ -729,2 +692,3 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 		let vscodeTask: task.Task;
++
+ 		if (useEsbuildTranspile) {
+@@ -745,3 +709,2 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 				compileNonNativeExtensionsBuildTask,
+-				compileCopilotExtensionBuildTask,
+ 				compileExtensionMediaBuildTask,
+@@ -766,3 +729,2 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 				compileNonNativeExtensionsBuildTask,
+-				compileCopilotExtensionBuildTask,
+ 				compileExtensionMediaBuildTask,
+@@ -782,2 +744,3 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 		}
++
+ 		task.task(vscodeTask);
+diff --git a/build/npm/dirs.ts b/build/npm/dirs.ts
+index 7bc33635..89f8708b 100644
+--- a/build/npm/dirs.ts
++++ b/build/npm/dirs.ts
+@@ -17,3 +17,2 @@ export const dirs = [
+ 	'extensions/configuration-editing',
+-	'extensions/copilot',
+ 	'extensions/css-language-features',
+diff --git a/build/npm/postinstall.ts b/build/npm/postinstall.ts
+index 0dd0b514..5d270d30 100644
+--- a/build/npm/postinstall.ts
++++ b/build/npm/postinstall.ts
+@@ -321,33 +321,2 @@ async function main() {
+ 
+-	// Symlink .claude/ files to their canonical locations to test Claude agent harness
+-	const claudeDir = path.join(root, '.claude');
+-	fs.mkdirSync(claudeDir, { recursive: true });
+-
+-	const claudeMdLink = path.join(claudeDir, 'CLAUDE.md');
+-	const claudeMdLinkType = ensureAgentHarnessLink(path.join('..', '.github', 'copilot-instructions.md'), claudeMdLink);
+-	if (claudeMdLinkType !== 'existing') {
+-		log('.', `Created ${claudeMdLinkType} .claude/CLAUDE.md -> .github/copilot-instructions.md`);
+-	}
+-
+-	const claudeSkillsLink = path.join(claudeDir, 'skills');
+-	const claudeSkillsLinkType = ensureAgentHarnessLink(path.join('..', '.agents', 'skills'), claudeSkillsLink);
+-	if (claudeSkillsLinkType !== 'existing') {
+-		log('.', `Created ${claudeSkillsLinkType} .claude/skills -> .agents/skills`);
+-	}
+-
+-	// Temporary: patch @github/copilot-sdk session.js to fix ESM import
+-	// (missing .js extension on vscode-jsonrpc/node). Fixed upstream in v0.1.32.
+-	// TODO: Remove once @github/copilot-sdk is updated to >=0.1.32
+-	for (const dir of ['', 'remote']) {
+-		const sessionFile = path.join(root, dir, 'node_modules', '@github', 'copilot-sdk', 'dist', 'session.js');
+-		if (fs.existsSync(sessionFile)) {
+-			const content = fs.readFileSync(sessionFile, 'utf8');
+-			const patched = content.replace(/from "vscode-jsonrpc\/node"/g, 'from "vscode-jsonrpc/node.js"');
+-			if (content !== patched) {
+-				fs.writeFileSync(sessionFile, patched);
+-				log(dir || '.', 'Patched @github/copilot-sdk session.js (vscode-jsonrpc ESM import fix)');
+-			}
+-		}
+-	}
+-
+ 	// foundry-local-sdk (on-device chat dictation) resolves its prebuilt N-API
+diff --git a/package-lock.json b/package-lock.json
+index 2c53ca84..937716f8 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -12,5 +12,2 @@
+       "dependencies": {
+-        "@anthropic-ai/sdk": "^0.82.0",
+-        "@github/copilot": "1.0.81-0",
+-        "@github/copilot-sdk": "1.0.11",
+         "@microsoft/1ds-core-js": "^3.2.13",
+@@ -342,22 +339,2 @@
+     },
+-    "node_modules/@anthropic-ai/sdk": {
+-      "version": "0.82.0",
+-      "resolved": "https://registry.npmjs.org/@anthropic-ai/sdk/-/sdk-0.82.0.tgz",
+-      "integrity": "sha512-xdHTjL1GlUlDugHq/I47qdOKp/ROPvuHl7ROJCgUQigbvPu7asf9KcAcU1EqdrP2LuVhEKaTs7Z+ShpZDRzHdQ==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "json-schema-to-ts": "^3.1.1"
+-      },
+-      "bin": {
+-        "anthropic-ai-sdk": "bin/cli"
+-      },
+-      "peerDependencies": {
+-        "zod": "^3.25.0 || ^4.0.0"
+-      },
+-      "peerDependenciesMeta": {
+-        "zod": {
+-          "optional": true
+-        }
+-      }
+-    },
+     "node_modules/@azure-rest/ai-translation-text": {
+@@ -869,11 +846,2 @@
+     },
+-    "node_modules/@babel/runtime": {
+-      "version": "7.29.2",
+-      "resolved": "https://registry.npmjs.org/@babel/runtime/-/runtime-7.29.2.tgz",
+-      "integrity": "sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=6.9.0"
+-      }
+-    },
+     "node_modules/@babel/template": {
+@@ -1154,341 +1122,2 @@
+     },
+-    "node_modules/@github/copilot": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.81-0.tgz",
+-      "integrity": "sha512-0JggnsNkKQl5O6ilPxrjxDahARG/kPPRzDQvEHnuUBisfJi6PSRc4BXNtH+cc704nifIuj8DTb16lK11sRbneA==",
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "dependencies": {
+-        "detect-libc": "^2.1.2"
+-      },
+-      "bin": {
+-        "copilot": "npm-loader.js"
+-      },
+-      "optionalDependencies": {
+-        "@github/copilot-darwin-arm64": "1.0.81-0",
+-        "@github/copilot-darwin-x64": "1.0.81-0",
+-        "@github/copilot-linux-arm64": "1.0.81-0",
+-        "@github/copilot-linux-x64": "1.0.81-0",
+-        "@github/copilot-linuxmusl-arm64": "1.0.81-0",
+-        "@github/copilot-linuxmusl-x64": "1.0.81-0",
+-        "@github/copilot-win32-arm64": "1.0.81-0",
+-        "@github/copilot-win32-x64": "1.0.81-0"
+-      }
+-    },
+-    "node_modules/@github/copilot-darwin-arm64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.81-0.tgz",
+-      "integrity": "sha512-8KOUMQ0OdmNQXPhjsKpo86VL/ZUT/lN4329Kdk6cpsvkM3x4+PdFNIJ7j9+4O9rB1P3g5gJ04XtR+qAkmeTekg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "bin": {
+-        "copilot-darwin-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-darwin-x64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-x64/-/copilot-darwin-x64-1.0.81-0.tgz",
+-      "integrity": "sha512-6jbuDK3zyyU7Iiwnx3Shhs6LcEm03/NCnZYEJFd4oj+g4OtyCziXlVOeIGP+fntuIltIP418Dhc6qd8LL45/Qg==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "bin": {
+-        "copilot-darwin-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-linux-arm64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linux-arm64/-/copilot-linux-arm64-1.0.81-0.tgz",
+-      "integrity": "sha512-UUkCH9iaVdCNHQPjEdSm2L5AZyaM0x0XbxuRuhqB8KidcOCOHp2+Qr8VZnkkXA43CuYQHHi3mSkUGNR1QsEuLg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "libc": [
+-        "glibc"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linux-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-linux-x64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linux-x64/-/copilot-linux-x64-1.0.81-0.tgz",
+-      "integrity": "sha512-bAnfkeTFQcUSuUuKFLzBI8n/wrRbel54cb0aZnSYQCejnOSuYSF4d/osCTLDzZwo7aU0zWYxC38jJ9eh4HkUfQ==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "libc": [
+-        "glibc"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linux-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-linuxmusl-arm64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-arm64/-/copilot-linuxmusl-arm64-1.0.81-0.tgz",
+-      "integrity": "sha512-4Iqz4VPC5kULTC9KbyFP1NB3kmfZc+Z5vKSGhP3/uHnKViYis7GZrvkaGk93PgS50/5q31rsa/8lFqSgbkfMQg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "libc": [
+-        "musl"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linuxmusl-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-linuxmusl-x64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-x64/-/copilot-linuxmusl-x64-1.0.81-0.tgz",
+-      "integrity": "sha512-iZm/TkBU7WJforS+eo7mZxv4RtdoSqJBqsFwZXi8lTGSeXs2bQBnv+m+XEKabOGk9cHQ8bj8B5K/cCwro4p5tg==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "libc": [
+-        "musl"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linuxmusl-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk": {
+-      "version": "1.0.11",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk/-/copilot-sdk-1.0.11.tgz",
+-      "integrity": "sha512-ngrnfa9052fLTOMoY0iiQS2B6pFDYJpWNj3syCdjzdje0R5mWoij9b8exJZciLvX7BbJjKz2/lIdwo24av3e3A==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "@github/copilot": "^1.0.79",
+-        "koffi": "^3.1.0",
+-        "vscode-jsonrpc": "^8.2.1",
+-        "zod": "^4.3.6"
+-      },
+-      "engines": {
+-        "node": "^20.19.0 || >=22.12.0"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.80.tgz",
+-      "integrity": "sha512-6tf93ZF56KOiTTAjK/UhLZkl1W543IzaTQly288kockJZFswpRTnQEI00Yvacpb39DTvTYu3/ha9SeKpo/pgZQ==",
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "dependencies": {
+-        "detect-libc": "^2.1.2"
+-      },
+-      "bin": {
+-        "copilot": "npm-loader.js"
+-      },
+-      "optionalDependencies": {
+-        "@github/copilot-darwin-arm64": "1.0.80",
+-        "@github/copilot-darwin-x64": "1.0.80",
+-        "@github/copilot-linux-arm64": "1.0.80",
+-        "@github/copilot-linux-x64": "1.0.80",
+-        "@github/copilot-linuxmusl-arm64": "1.0.80",
+-        "@github/copilot-linuxmusl-x64": "1.0.80",
+-        "@github/copilot-win32-arm64": "1.0.80",
+-        "@github/copilot-win32-x64": "1.0.80"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-darwin-arm64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.80.tgz",
+-      "integrity": "sha512-fzn4PnSx3+O/a3ip72KVsjnzORsEygK+0i21bFAnFBYS+0Wi1Pk+o/CmNsJ7aRbf1enSJrcH8UDVkyc9pMGEBg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "bin": {
+-        "copilot-darwin-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-darwin-x64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-x64/-/copilot-darwin-x64-1.0.80.tgz",
+-      "integrity": "sha512-PKsyGk5DccNzR3bYXcYTGB9N6sHzhzGqEwq/2t1qBwqPbrC98Zo2dOT2G40/QYpJ4XdrGmTmdmfPJQ9PJknlIQ==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "bin": {
+-        "copilot-darwin-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linux-arm64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linux-arm64/-/copilot-linux-arm64-1.0.80.tgz",
+-      "integrity": "sha512-8oXwN2luyHEjIoSk8AkATBjXDhRoQtuiUvC93GpfQKFHI+I1eoOVwIsAq5fKP8jNCF2rOrYFIcTjwmRt38kCcQ==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "libc": [
+-        "glibc"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linux-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linux-x64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linux-x64/-/copilot-linux-x64-1.0.80.tgz",
+-      "integrity": "sha512-qv1ytVNwA3IDK7kcQow+fAikD67t42+AQ8X42bK/7oudNiv4frVZMO0yh1DYIebVRcmEhmPvbVPY/ptVUK3cbA==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "libc": [
+-        "glibc"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linux-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linuxmusl-arm64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-arm64/-/copilot-linuxmusl-arm64-1.0.80.tgz",
+-      "integrity": "sha512-Qjyi+OlVnPC4Lkuy7blDMMwMUQI/yELl7gDnqQlaN8TEbhZqZueuf3p0a+kEjXcNsw4XtNYQc0eMJqSIYy/Pjg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "libc": [
+-        "musl"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linuxmusl-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linuxmusl-x64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-x64/-/copilot-linuxmusl-x64-1.0.80.tgz",
+-      "integrity": "sha512-rBg8pugf+5FhiZxi2zkOr+rlcOVF6Xg63j1FvryfwPT4DJ2w5Na7O3lpS4sgu8QmsP5H+dAqjlXYLYsvSoVQ0g==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "libc": [
+-        "musl"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linuxmusl-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-win32-arm64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-win32-arm64/-/copilot-win32-arm64-1.0.80.tgz",
+-      "integrity": "sha512-+f7Vkd3vt2DYOxRnS8dStvYu3DY638N/AuLuIjxZp1F9GgwCUZK69wspqIxg2L59PmRRQcH4AGTrRDR60ENIZA==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "bin": {
+-        "copilot-win32-arm64": "copilot.exe"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-win32-x64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-win32-x64/-/copilot-win32-x64-1.0.80.tgz",
+-      "integrity": "sha512-PO0kPqhRTWQfsqGaj4UN3cj8ttkcJYy4wmXiArtFm+03AIFu8xTvuhQDPn2xEOsUome7m7t2XomKoavcrCcRsw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "bin": {
+-        "copilot-win32-x64": "copilot.exe"
+-      }
+-    },
+-    "node_modules/@github/copilot-win32-arm64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-win32-arm64/-/copilot-win32-arm64-1.0.81-0.tgz",
+-      "integrity": "sha512-xMNCRb3T9uBvEYarMN5zX9V8TRCM2bGoarbl5mddnP6AHyg1U7AL7CHuh6auiloE/QAPxL68ZSs3IMrAS4XcEg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "bin": {
+-        "copilot-win32-arm64": "copilot.exe"
+-      }
+-    },
+-    "node_modules/@github/copilot-win32-x64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-win32-x64/-/copilot-win32-x64-1.0.81-0.tgz",
+-      "integrity": "sha512-bWus/QuH1u0WUeVsafn5800JL6IwGHjNclKriQlcZsYqJ6VjUgvXJaqafdXR9Vk7DdoWkxjM76Zko3LEltDeTg==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "bin": {
+-        "copilot-win32-x64": "copilot.exe"
+-      }
+-    },
+     "node_modules/@gulp-sourcemaps/identity-map": {
+@@ -1975,242 +1604,2 @@
+     },
+-    "node_modules/@koromix/koffi-darwin-arm64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-arm64/-/koffi-darwin-arm64-3.1.2.tgz",
+-      "integrity": "sha512-32pU4pNZABIz+l9DNJl51Y+jur4vv+SF4Ip2CSF4OUg1xUyefoLpX0NttDmzGITIrneUEVSEN+dT22524ESKBw==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-darwin-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-x64/-/koffi-darwin-x64-3.1.2.tgz",
+-      "integrity": "sha512-S+H6LQgUoMj77BqDegwlRaxwLXDfwvSJGuceOqtH0I5V8rzKLmu/hC7NBlxOoAlvKlcV63FtdNiE2E9YSltffg==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-freebsd-arm64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-arm64/-/koffi-freebsd-arm64-3.1.2.tgz",
+-      "integrity": "sha512-fD0ow2PBE60nw7K6xcbala6qwXxfcYeU62tduNeIPvx0KoWhU2rMKZiDNe+iI5TQb3rxYYjjP+aF2Sdm9y6EXQ==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "freebsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-freebsd-ia32": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-ia32/-/koffi-freebsd-ia32-3.1.2.tgz",
+-      "integrity": "sha512-t8OmL+hoJGDLZDnuLjgLemSYrXX99M7Md+zJX8bMHOtiNbFtkGXn/mV21Pb1ik9JhBXjwK1r4hvBPNlqTMGrHg==",
+-      "cpu": [
+-        "ia32"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "freebsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-freebsd-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-x64/-/koffi-freebsd-x64-3.1.2.tgz",
+-      "integrity": "sha512-axbLgiM4Y2vyDOTqlXCI8vkg9wqjwSRsmoWXSKreA5YFJwnYA6Sc4aHMz+qZgUSfFei52Qrv1RGhDyo4kHvqhA==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "freebsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-arm64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-arm64/-/koffi-linux-arm64-3.1.2.tgz",
+-      "integrity": "sha512-f0hqAIlFcL9wlRGJ/uCfyfspqnGaASk2gLx1UAP3RBgMQl68D1e+fiHNdXa7g9d76ttmpA8/PGNAqc1X4Byy1Q==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-ia32": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-ia32/-/koffi-linux-ia32-3.1.2.tgz",
+-      "integrity": "sha512-UGLPuqeOV/UArsK6oeB5yI/XjSWkFqFlBTC9rUbezBuHJhSibk1EMv7QC0cvtDMu18bo+ucqXWPzh42oT5yYlw==",
+-      "cpu": [
+-        "ia32"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-loong64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-loong64/-/koffi-linux-loong64-3.1.2.tgz",
+-      "integrity": "sha512-jI0+gM2oDsJ7reOt3XPyO7lyQtZ1CT6NR2uqGQcQVM43cyXBAVYYCUxEH3LHCbgumFaZ+LueIUgbMSwb9pHBxQ==",
+-      "cpu": [
+-        "loong64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-riscv64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-riscv64/-/koffi-linux-riscv64-3.1.2.tgz",
+-      "integrity": "sha512-yB99adXBRd5T+xXG+f6nnUkC3jCI0iXvPU6RqD9Kx7aZP4Y4NNUWJ5Q4FaP9jb1XmZLY4pGBUiHt8u03Yl7NyA==",
+-      "cpu": [
+-        "riscv64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-x64/-/koffi-linux-x64-3.1.2.tgz",
+-      "integrity": "sha512-Oxvo6F3Edzy/Jm2EtbHWkJ2xRB0mXDAe63k5+USL5uiGE5xZjwEUDOBKIhv2BpCZSOAJrfoojFFogj6+ICKQhw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-openbsd-ia32": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-ia32/-/koffi-openbsd-ia32-3.1.2.tgz",
+-      "integrity": "sha512-SSWzUhL8Ex84JTsO67+MdWZrdwgOzoOrQ0+ZbB+UsivHoAxmWLHKWZaSafNqyBZtxGY1EgtR8AIPouWE9U+Zfw==",
+-      "cpu": [
+-        "ia32"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "openbsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-openbsd-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-x64/-/koffi-openbsd-x64-3.1.2.tgz",
+-      "integrity": "sha512-0ZuI4St7chq3M0d3VivvKIqacZ7RhgohdR476V3HpJkaNdfIywsJIw+GBvqkQahu+4A2Rpu6yQJpWSrfk/Z+Jw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "openbsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-win32-arm64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-arm64/-/koffi-win32-arm64-3.1.2.tgz",
+-      "integrity": "sha512-8Wn6phw7y53uI52+aBPAqEfZ5pj/HCjg/YtdthqSWYHy+d0MhyASKlcmuP0B5raxQnnA1Bm9LC8UO3M3RojeBw==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-win32-ia32": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-ia32/-/koffi-win32-ia32-3.1.2.tgz",
+-      "integrity": "sha512-FkKaPBMawgHMNnp1FwLldXMNvEa139GXkxPi9JD9xU71Kh/ZmuEYHGSD6JwZDmDr4jekVrBrr+eGZ+j6C2mkXg==",
+-      "cpu": [
+-        "ia32"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-win32-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-x64/-/koffi-win32-x64-3.1.2.tgz",
+-      "integrity": "sha512-FeFC59UU1XX4J3ZaqKrsrEzczzB5qksMJo7/R45vIg8mGNVSLMVE85JRiZpjcp9i5Lbav5Vw47QvwFzBgIfvlw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+     "node_modules/@malept/cross-spawn-promise": {
+@@ -13677,15 +13066,2 @@
+     },
+-    "node_modules/json-schema-to-ts": {
+-      "version": "3.1.1",
+-      "resolved": "https://registry.npmjs.org/json-schema-to-ts/-/json-schema-to-ts-3.1.1.tgz",
+-      "integrity": "sha512-+DWg8jCJG2TEnpy7kOm/7/AxaYoaRbjVB4LFZLySZlWn8exGs3A4OLJR966cVvU26N7X9TWxl+Jsw7dzAqKT6g==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "@babel/runtime": "^7.18.3",
+-        "ts-algebra": "^2.0.0"
+-      },
+-      "engines": {
+-        "node": ">=16"
+-      }
+-    },
+     "node_modules/json-schema-traverse": {
+@@ -14015,29 +13391,2 @@
+     },
+-    "node_modules/koffi": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/koffi/-/koffi-3.1.2.tgz",
+-      "integrity": "sha512-wVwuE21TBl8/si6E0hPorKR2PJ2q33mEWVETANrtSp3kFM8fi2FcD/J5wmxu0T4TBcqmMQ4xKuF1X1ayFmphzw==",
+-      "hasInstallScript": true,
+-      "license": "MIT",
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      },
+-      "optionalDependencies": {
+-        "@koromix/koffi-darwin-arm64": "3.1.2",
+-        "@koromix/koffi-darwin-x64": "3.1.2",
+-        "@koromix/koffi-freebsd-arm64": "3.1.2",
+-        "@koromix/koffi-freebsd-ia32": "3.1.2",
+-        "@koromix/koffi-freebsd-x64": "3.1.2",
+-        "@koromix/koffi-linux-arm64": "3.1.2",
+-        "@koromix/koffi-linux-ia32": "3.1.2",
+-        "@koromix/koffi-linux-loong64": "3.1.2",
+-        "@koromix/koffi-linux-riscv64": "3.1.2",
+-        "@koromix/koffi-linux-x64": "3.1.2",
+-        "@koromix/koffi-openbsd-ia32": "3.1.2",
+-        "@koromix/koffi-openbsd-x64": "3.1.2",
+-        "@koromix/koffi-win32-arm64": "3.1.2",
+-        "@koromix/koffi-win32-ia32": "3.1.2",
+-        "@koromix/koffi-win32-x64": "3.1.2"
+-      }
+-    },
+     "node_modules/last-run": {
+@@ -19548,8 +18897,2 @@
+     },
+-    "node_modules/ts-algebra": {
+-      "version": "2.0.0",
+-      "resolved": "https://registry.npmjs.org/ts-algebra/-/ts-algebra-2.0.0.tgz",
+-      "integrity": "sha512-FPAhNPFMrkwz76P7cdjdmiShwMynZYN6SgOujD1urY4oNm80Ou9oMdmbR45LotcKOXoy7wSmHkRFE6Mxbrhefw==",
+-      "license": "MIT"
+-    },
+     "node_modules/ts-api-utils": {
+@@ -20598,11 +19941,2 @@
+     },
+-    "node_modules/vscode-jsonrpc": {
+-      "version": "8.2.1",
+-      "resolved": "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-8.2.1.tgz",
+-      "integrity": "sha512-kdjOSJ2lLIn7r1rtrMbbNCHjyMPfRnowdKjBQ+mGq6NAW5QY2bEZC/khaC5OR8svbbjvLEaIXkOq45e2X9BIbQ==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=14.0.0"
+-      }
+-    },
+     "node_modules/vscode-oniguruma": {
+diff --git a/package.json b/package.json
+index 3c518289..fc288612 100644
+--- a/package.json
++++ b/package.json
+@@ -24,5 +24,4 @@
+     "postinstall": "node build/npm/postinstall.ts",
+-    "compile": "npm-run-all2 -lp compile-client compile-copilot",
++    "compile": "npm-run-all2 -lp compile-client",
+     "compile-client": "npm run gulp compile",
+-    "compile-copilot": "npm --prefix extensions/copilot run compile",
+     "build-fast": "node build/next/index.ts build-fast",
+@@ -32,4 +31,4 @@
+     "codex:check-protocol": "node build/codex/check-protocol-sync.ts",
+-    "watch": "npm-run-all2 -lp watch-client-transpile watch-client watch-extensions watch-copilot",
+-    "watch-transpile": "npm-run-all2 -lp watch-client-transpile watch-extensions watch-copilot",
++    "watch": "npm-run-all2 -lp watch-client-transpile watch-client watch-extensions",
++    "watch-transpile": "npm-run-all2 -lp watch-client-transpile watch-extensions",
+     "watchd": "deemon npm run watch",
+@@ -51,5 +50,2 @@
+     "kill-watch-extensionsd": "deemon --kill npm run watch-extensions",
+-    "watch-copilot": "npm --prefix extensions/copilot run watch",
+-    "watch-copilotd": "deemon npm run watch-copilot",
+-    "kill-watch-copilotd": "deemon --kill npm run watch-copilot",
+     "precommit": "node --experimental-strip-types build/hygiene.ts",
+@@ -93,4 +89,2 @@
+     "perf:chat-leak": "node scripts/chat-simulation/test-chat-mem-leaks.js",
+-    "copilot:setup": "npm --prefix extensions/copilot run setup",
+-    "copilot:get_token": "npm --prefix extensions/copilot run get_token",
+     "update-build-ts-version": "npm install -D typescript@npm:@typescript/typescript6@^6.0.2 && npm install -D @typescript/native@npm:typescript@next && (cd build && npm run typecheck)",
+@@ -101,5 +95,2 @@
+   "dependencies": {
+-    "@anthropic-ai/sdk": "^0.82.0",
+-    "@github/copilot": "1.0.81-0",
+-    "@github/copilot-sdk": "1.0.11",
+     "@microsoft/1ds-core-js": "^3.2.13",
+diff --git a/remote/package-lock.json b/remote/package-lock.json
+index 0d791e25..07efdbb5 100644
+--- a/remote/package-lock.json
++++ b/remote/package-lock.json
+@@ -10,4 +10,2 @@
+       "dependencies": {
+-        "@github/copilot": "1.0.81-0",
+-        "@github/copilot-sdk": "1.0.11",
+         "@microsoft/1ds-core-js": "^3.2.13",
+@@ -62,341 +60,2 @@
+     },
+-    "node_modules/@github/copilot": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.81-0.tgz",
+-      "integrity": "sha512-0JggnsNkKQl5O6ilPxrjxDahARG/kPPRzDQvEHnuUBisfJi6PSRc4BXNtH+cc704nifIuj8DTb16lK11sRbneA==",
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "dependencies": {
+-        "detect-libc": "^2.1.2"
+-      },
+-      "bin": {
+-        "copilot": "npm-loader.js"
+-      },
+-      "optionalDependencies": {
+-        "@github/copilot-darwin-arm64": "1.0.81-0",
+-        "@github/copilot-darwin-x64": "1.0.81-0",
+-        "@github/copilot-linux-arm64": "1.0.81-0",
+-        "@github/copilot-linux-x64": "1.0.81-0",
+-        "@github/copilot-linuxmusl-arm64": "1.0.81-0",
+-        "@github/copilot-linuxmusl-x64": "1.0.81-0",
+-        "@github/copilot-win32-arm64": "1.0.81-0",
+-        "@github/copilot-win32-x64": "1.0.81-0"
+-      }
+-    },
+-    "node_modules/@github/copilot-darwin-arm64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.81-0.tgz",
+-      "integrity": "sha512-8KOUMQ0OdmNQXPhjsKpo86VL/ZUT/lN4329Kdk6cpsvkM3x4+PdFNIJ7j9+4O9rB1P3g5gJ04XtR+qAkmeTekg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "bin": {
+-        "copilot-darwin-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-darwin-x64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-x64/-/copilot-darwin-x64-1.0.81-0.tgz",
+-      "integrity": "sha512-6jbuDK3zyyU7Iiwnx3Shhs6LcEm03/NCnZYEJFd4oj+g4OtyCziXlVOeIGP+fntuIltIP418Dhc6qd8LL45/Qg==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "bin": {
+-        "copilot-darwin-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-linux-arm64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linux-arm64/-/copilot-linux-arm64-1.0.81-0.tgz",
+-      "integrity": "sha512-UUkCH9iaVdCNHQPjEdSm2L5AZyaM0x0XbxuRuhqB8KidcOCOHp2+Qr8VZnkkXA43CuYQHHi3mSkUGNR1QsEuLg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "libc": [
+-        "glibc"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linux-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-linux-x64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linux-x64/-/copilot-linux-x64-1.0.81-0.tgz",
+-      "integrity": "sha512-bAnfkeTFQcUSuUuKFLzBI8n/wrRbel54cb0aZnSYQCejnOSuYSF4d/osCTLDzZwo7aU0zWYxC38jJ9eh4HkUfQ==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "libc": [
+-        "glibc"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linux-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-linuxmusl-arm64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-arm64/-/copilot-linuxmusl-arm64-1.0.81-0.tgz",
+-      "integrity": "sha512-4Iqz4VPC5kULTC9KbyFP1NB3kmfZc+Z5vKSGhP3/uHnKViYis7GZrvkaGk93PgS50/5q31rsa/8lFqSgbkfMQg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "libc": [
+-        "musl"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linuxmusl-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-linuxmusl-x64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-x64/-/copilot-linuxmusl-x64-1.0.81-0.tgz",
+-      "integrity": "sha512-iZm/TkBU7WJforS+eo7mZxv4RtdoSqJBqsFwZXi8lTGSeXs2bQBnv+m+XEKabOGk9cHQ8bj8B5K/cCwro4p5tg==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "libc": [
+-        "musl"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linuxmusl-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk": {
+-      "version": "1.0.11",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk/-/copilot-sdk-1.0.11.tgz",
+-      "integrity": "sha512-ngrnfa9052fLTOMoY0iiQS2B6pFDYJpWNj3syCdjzdje0R5mWoij9b8exJZciLvX7BbJjKz2/lIdwo24av3e3A==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "@github/copilot": "^1.0.79",
+-        "koffi": "^3.1.0",
+-        "vscode-jsonrpc": "^8.2.1",
+-        "zod": "^4.3.6"
+-      },
+-      "engines": {
+-        "node": "^20.19.0 || >=22.12.0"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.80.tgz",
+-      "integrity": "sha512-6tf93ZF56KOiTTAjK/UhLZkl1W543IzaTQly288kockJZFswpRTnQEI00Yvacpb39DTvTYu3/ha9SeKpo/pgZQ==",
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "dependencies": {
+-        "detect-libc": "^2.1.2"
+-      },
+-      "bin": {
+-        "copilot": "npm-loader.js"
+-      },
+-      "optionalDependencies": {
+-        "@github/copilot-darwin-arm64": "1.0.80",
+-        "@github/copilot-darwin-x64": "1.0.80",
+-        "@github/copilot-linux-arm64": "1.0.80",
+-        "@github/copilot-linux-x64": "1.0.80",
+-        "@github/copilot-linuxmusl-arm64": "1.0.80",
+-        "@github/copilot-linuxmusl-x64": "1.0.80",
+-        "@github/copilot-win32-arm64": "1.0.80",
+-        "@github/copilot-win32-x64": "1.0.80"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-darwin-arm64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.80.tgz",
+-      "integrity": "sha512-fzn4PnSx3+O/a3ip72KVsjnzORsEygK+0i21bFAnFBYS+0Wi1Pk+o/CmNsJ7aRbf1enSJrcH8UDVkyc9pMGEBg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "bin": {
+-        "copilot-darwin-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-darwin-x64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-x64/-/copilot-darwin-x64-1.0.80.tgz",
+-      "integrity": "sha512-PKsyGk5DccNzR3bYXcYTGB9N6sHzhzGqEwq/2t1qBwqPbrC98Zo2dOT2G40/QYpJ4XdrGmTmdmfPJQ9PJknlIQ==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "bin": {
+-        "copilot-darwin-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linux-arm64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linux-arm64/-/copilot-linux-arm64-1.0.80.tgz",
+-      "integrity": "sha512-8oXwN2luyHEjIoSk8AkATBjXDhRoQtuiUvC93GpfQKFHI+I1eoOVwIsAq5fKP8jNCF2rOrYFIcTjwmRt38kCcQ==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "libc": [
+-        "glibc"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linux-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linux-x64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linux-x64/-/copilot-linux-x64-1.0.80.tgz",
+-      "integrity": "sha512-qv1ytVNwA3IDK7kcQow+fAikD67t42+AQ8X42bK/7oudNiv4frVZMO0yh1DYIebVRcmEhmPvbVPY/ptVUK3cbA==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "libc": [
+-        "glibc"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linux-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linuxmusl-arm64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-arm64/-/copilot-linuxmusl-arm64-1.0.80.tgz",
+-      "integrity": "sha512-Qjyi+OlVnPC4Lkuy7blDMMwMUQI/yELl7gDnqQlaN8TEbhZqZueuf3p0a+kEjXcNsw4XtNYQc0eMJqSIYy/Pjg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "libc": [
+-        "musl"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linuxmusl-arm64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linuxmusl-x64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-x64/-/copilot-linuxmusl-x64-1.0.80.tgz",
+-      "integrity": "sha512-rBg8pugf+5FhiZxi2zkOr+rlcOVF6Xg63j1FvryfwPT4DJ2w5Na7O3lpS4sgu8QmsP5H+dAqjlXYLYsvSoVQ0g==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "libc": [
+-        "musl"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "bin": {
+-        "copilot-linuxmusl-x64": "copilot"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-win32-arm64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-win32-arm64/-/copilot-win32-arm64-1.0.80.tgz",
+-      "integrity": "sha512-+f7Vkd3vt2DYOxRnS8dStvYu3DY638N/AuLuIjxZp1F9GgwCUZK69wspqIxg2L59PmRRQcH4AGTrRDR60ENIZA==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "bin": {
+-        "copilot-win32-arm64": "copilot.exe"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-win32-x64": {
+-      "version": "1.0.80",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-win32-x64/-/copilot-win32-x64-1.0.80.tgz",
+-      "integrity": "sha512-PO0kPqhRTWQfsqGaj4UN3cj8ttkcJYy4wmXiArtFm+03AIFu8xTvuhQDPn2xEOsUome7m7t2XomKoavcrCcRsw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "bin": {
+-        "copilot-win32-x64": "copilot.exe"
+-      }
+-    },
+-    "node_modules/@github/copilot-win32-arm64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-win32-arm64/-/copilot-win32-arm64-1.0.81-0.tgz",
+-      "integrity": "sha512-xMNCRb3T9uBvEYarMN5zX9V8TRCM2bGoarbl5mddnP6AHyg1U7AL7CHuh6auiloE/QAPxL68ZSs3IMrAS4XcEg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "bin": {
+-        "copilot-win32-arm64": "copilot.exe"
+-      }
+-    },
+-    "node_modules/@github/copilot-win32-x64": {
+-      "version": "1.0.81-0",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-win32-x64/-/copilot-win32-x64-1.0.81-0.tgz",
+-      "integrity": "sha512-bWus/QuH1u0WUeVsafn5800JL6IwGHjNclKriQlcZsYqJ6VjUgvXJaqafdXR9Vk7DdoWkxjM76Zko3LEltDeTg==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "SEE LICENSE IN LICENSE.md",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "bin": {
+-        "copilot-win32-x64": "copilot.exe"
+-      }
+-    },
+     "node_modules/@isaacs/fs-minipass": {
+@@ -413,242 +72,2 @@
+     },
+-    "node_modules/@koromix/koffi-darwin-arm64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-arm64/-/koffi-darwin-arm64-3.1.2.tgz",
+-      "integrity": "sha512-32pU4pNZABIz+l9DNJl51Y+jur4vv+SF4Ip2CSF4OUg1xUyefoLpX0NttDmzGITIrneUEVSEN+dT22524ESKBw==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-darwin-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-x64/-/koffi-darwin-x64-3.1.2.tgz",
+-      "integrity": "sha512-S+H6LQgUoMj77BqDegwlRaxwLXDfwvSJGuceOqtH0I5V8rzKLmu/hC7NBlxOoAlvKlcV63FtdNiE2E9YSltffg==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-freebsd-arm64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-arm64/-/koffi-freebsd-arm64-3.1.2.tgz",
+-      "integrity": "sha512-fD0ow2PBE60nw7K6xcbala6qwXxfcYeU62tduNeIPvx0KoWhU2rMKZiDNe+iI5TQb3rxYYjjP+aF2Sdm9y6EXQ==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "freebsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-freebsd-ia32": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-ia32/-/koffi-freebsd-ia32-3.1.2.tgz",
+-      "integrity": "sha512-t8OmL+hoJGDLZDnuLjgLemSYrXX99M7Md+zJX8bMHOtiNbFtkGXn/mV21Pb1ik9JhBXjwK1r4hvBPNlqTMGrHg==",
+-      "cpu": [
+-        "ia32"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "freebsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-freebsd-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-x64/-/koffi-freebsd-x64-3.1.2.tgz",
+-      "integrity": "sha512-axbLgiM4Y2vyDOTqlXCI8vkg9wqjwSRsmoWXSKreA5YFJwnYA6Sc4aHMz+qZgUSfFei52Qrv1RGhDyo4kHvqhA==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "freebsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-arm64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-arm64/-/koffi-linux-arm64-3.1.2.tgz",
+-      "integrity": "sha512-f0hqAIlFcL9wlRGJ/uCfyfspqnGaASk2gLx1UAP3RBgMQl68D1e+fiHNdXa7g9d76ttmpA8/PGNAqc1X4Byy1Q==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-ia32": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-ia32/-/koffi-linux-ia32-3.1.2.tgz",
+-      "integrity": "sha512-UGLPuqeOV/UArsK6oeB5yI/XjSWkFqFlBTC9rUbezBuHJhSibk1EMv7QC0cvtDMu18bo+ucqXWPzh42oT5yYlw==",
+-      "cpu": [
+-        "ia32"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-loong64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-loong64/-/koffi-linux-loong64-3.1.2.tgz",
+-      "integrity": "sha512-jI0+gM2oDsJ7reOt3XPyO7lyQtZ1CT6NR2uqGQcQVM43cyXBAVYYCUxEH3LHCbgumFaZ+LueIUgbMSwb9pHBxQ==",
+-      "cpu": [
+-        "loong64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-riscv64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-riscv64/-/koffi-linux-riscv64-3.1.2.tgz",
+-      "integrity": "sha512-yB99adXBRd5T+xXG+f6nnUkC3jCI0iXvPU6RqD9Kx7aZP4Y4NNUWJ5Q4FaP9jb1XmZLY4pGBUiHt8u03Yl7NyA==",
+-      "cpu": [
+-        "riscv64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-linux-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-x64/-/koffi-linux-x64-3.1.2.tgz",
+-      "integrity": "sha512-Oxvo6F3Edzy/Jm2EtbHWkJ2xRB0mXDAe63k5+USL5uiGE5xZjwEUDOBKIhv2BpCZSOAJrfoojFFogj6+ICKQhw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-openbsd-ia32": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-ia32/-/koffi-openbsd-ia32-3.1.2.tgz",
+-      "integrity": "sha512-SSWzUhL8Ex84JTsO67+MdWZrdwgOzoOrQ0+ZbB+UsivHoAxmWLHKWZaSafNqyBZtxGY1EgtR8AIPouWE9U+Zfw==",
+-      "cpu": [
+-        "ia32"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "openbsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-openbsd-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-x64/-/koffi-openbsd-x64-3.1.2.tgz",
+-      "integrity": "sha512-0ZuI4St7chq3M0d3VivvKIqacZ7RhgohdR476V3HpJkaNdfIywsJIw+GBvqkQahu+4A2Rpu6yQJpWSrfk/Z+Jw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "openbsd"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-win32-arm64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-arm64/-/koffi-win32-arm64-3.1.2.tgz",
+-      "integrity": "sha512-8Wn6phw7y53uI52+aBPAqEfZ5pj/HCjg/YtdthqSWYHy+d0MhyASKlcmuP0B5raxQnnA1Bm9LC8UO3M3RojeBw==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-win32-ia32": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-ia32/-/koffi-win32-ia32-3.1.2.tgz",
+-      "integrity": "sha512-FkKaPBMawgHMNnp1FwLldXMNvEa139GXkxPi9JD9xU71Kh/ZmuEYHGSD6JwZDmDr4jekVrBrr+eGZ+j6C2mkXg==",
+-      "cpu": [
+-        "ia32"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@koromix/koffi-win32-x64": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-x64/-/koffi-win32-x64-3.1.2.tgz",
+-      "integrity": "sha512-FeFC59UU1XX4J3ZaqKrsrEzczzB5qksMJo7/R45vIg8mGNVSLMVE85JRiZpjcp9i5Lbav5Vw47QvwFzBgIfvlw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+     "node_modules/@microsoft/1ds-core-js": {
+@@ -1718,29 +1137,2 @@
+     },
+-    "node_modules/koffi": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/koffi/-/koffi-3.1.2.tgz",
+-      "integrity": "sha512-wVwuE21TBl8/si6E0hPorKR2PJ2q33mEWVETANrtSp3kFM8fi2FcD/J5wmxu0T4TBcqmMQ4xKuF1X1ayFmphzw==",
+-      "hasInstallScript": true,
+-      "license": "MIT",
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      },
+-      "optionalDependencies": {
+-        "@koromix/koffi-darwin-arm64": "3.1.2",
+-        "@koromix/koffi-darwin-x64": "3.1.2",
+-        "@koromix/koffi-freebsd-arm64": "3.1.2",
+-        "@koromix/koffi-freebsd-ia32": "3.1.2",
+-        "@koromix/koffi-freebsd-x64": "3.1.2",
+-        "@koromix/koffi-linux-arm64": "3.1.2",
+-        "@koromix/koffi-linux-ia32": "3.1.2",
+-        "@koromix/koffi-linux-loong64": "3.1.2",
+-        "@koromix/koffi-linux-riscv64": "3.1.2",
+-        "@koromix/koffi-linux-x64": "3.1.2",
+-        "@koromix/koffi-openbsd-ia32": "3.1.2",
+-        "@koromix/koffi-openbsd-x64": "3.1.2",
+-        "@koromix/koffi-win32-arm64": "3.1.2",
+-        "@koromix/koffi-win32-ia32": "3.1.2",
+-        "@koromix/koffi-win32-x64": "3.1.2"
+-      }
+-    },
+     "node_modules/lru-cache": {
+@@ -2239,11 +1631,2 @@
+     },
+-    "node_modules/vscode-jsonrpc": {
+-      "version": "8.2.1",
+-      "resolved": "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-8.2.1.tgz",
+-      "integrity": "sha512-kdjOSJ2lLIn7r1rtrMbbNCHjyMPfRnowdKjBQ+mGq6NAW5QY2bEZC/khaC5OR8svbbjvLEaIXkOq45e2X9BIbQ==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=14.0.0"
+-      }
+-    },
+     "node_modules/vscode-oniguruma": {
+diff --git a/remote/package.json b/remote/package.json
+index d53cd5c6..0ae2455f 100644
+--- a/remote/package.json
++++ b/remote/package.json
+@@ -5,4 +5,2 @@
+   "dependencies": {
+-    "@github/copilot": "1.0.81-0",
+-    "@github/copilot-sdk": "1.0.11",
+     "@microsoft/1ds-core-js": "^3.2.13",
+diff --git a/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts b/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts
+index 4fb1328b..1656f85a 100644
+--- a/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts
++++ b/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts
+@@ -5,3 +5,2 @@
+ 
+-import type { TelemetryConfig } from '@github/copilot-sdk';
+ import type { URI } from '../../../../base/common/uri.js';
+@@ -54,9 +53,2 @@ export interface IAgentHostOTelService {
+ 
+-	/**
+-	 * Returns the telemetry config to hand to `new CopilotClient({ telemetry })`,
+-	 * starting the loopback receiver + store on first call when in DB mode.
+-	 * Resolves to `undefined` when telemetry is disabled.
+-	 */
+-	getSdkTelemetryConfig(): Promise<TelemetryConfig | undefined>;
+-
+ 	/** Resolve provider-neutral native SDK destinations. Logs and metrics always
+diff --git a/src/vs/platform/agentHost/node/agentHostContributions.ts b/src/vs/platform/agentHost/node/agentHostContributions.ts
+index 4cdbcc36..b224470c 100644
+--- a/src/vs/platform/agentHost/node/agentHostContributions.ts
++++ b/src/vs/platform/agentHost/node/agentHostContributions.ts
+@@ -10,3 +10,2 @@ import { IAgentHostChangesetOperationService } from '../common/agentHostChangese
+ import { IAgentHostStateManager } from './agentHostStateManager.js';
+-import { AgentHostCommitOperationContribution } from './agentHostCommitOperationProvider.js';
+ import { IAgentHostCompletions } from './agentHostCompletions.js';
+@@ -26,3 +25,2 @@ export function activateAgentHostContributions(accessor: ServicesAccessor, insta
+ 		const changesetOperationService = accessor.get(IAgentHostChangesetOperationService);
+-		store.add(changesetOperationService.registerContribution(instantiationService.createInstance(AgentHostCommitOperationContribution)));
+ 		store.add(changesetOperationService.registerContribution(instantiationService.createInstance(AgentHostPullRequestOperationContribution)));
+diff --git a/src/vs/platform/agentHost/node/agentHostMain.ts b/src/vs/platform/agentHost/node/agentHostMain.ts
+index fc1cb531..f76abab5 100644
+--- a/src/vs/platform/agentHost/node/agentHostMain.ts
++++ b/src/vs/platform/agentHost/node/agentHostMain.ts
+@@ -17,4 +17,3 @@ import * as os from 'os';
+ import * as inspector from 'inspector';
+-import { AgentHostClaudeAgentEnabledEnvVar, AgentHostCodexAgentEnabledEnvVar, AgentHostIpcChannels, IAgentHostInspectInfo, IAgentHostSocketInfo, IConnectionTrackerService, isAgentEnabled } from '../common/agentService.js';
+-import { AgentHostCodexEnabledConfigKey, platformRootSchema } from '../common/agentHostSchema.js';
++import { AgentHostIpcChannels, IAgentHostInspectInfo, IAgentHostSocketInfo, IConnectionTrackerService } from '../common/agentService.js';
+ import { AgentModelRefreshScheduler, MODEL_REFRESH_INTERVAL_MS } from './agentModelRefreshScheduler.js';
+@@ -24,7 +23,2 @@ import { IAgentConfigurationService } from './agentConfigurationService.js';
+ import { IAgentHostCompletions } from './agentHostCompletions.js';
+-import { CopilotAgent } from './copilot/copilotAgent.js';
+-import { ClaudeAgent } from './claude/claudeAgent.js';
+-import { ClaudeSdkPackage } from './claude/claudeAgentSdkService.js';
+-import { CodexAgent, CodexSdkPackage } from './codex/codexAgent.js';
+-import { createCodexProviderConfiguration } from './codex/codexProviderConfiguration.js';
+ import { ByokLmBridgeRegistry } from './byokLmBridgeRegistry.js';
+@@ -127,3 +121,3 @@ async function startAgentHost(): Promise<void> {
+ 			hostLaunchKind,
+-			providerConfigurations: [createCodexProviderConfiguration(environmentService.userHome)],
++			providerConfigurations: [],
+ 			byok: { kind: 'renderer', bridgeRegistry: byokLmBridgeRegistry },
+@@ -142,3 +136,2 @@ async function startAgentHost(): Promise<void> {
+ 		}));
+-		const agentConfigurationService = runtimeServices.configurationService;
+ 		fileService = runtimeServices.fileService;
+@@ -148,40 +141,2 @@ async function startAgentHost(): Promise<void> {
+ 		errorTelemetry.value = new ErrorTelemetry(runtimeServices.telemetryService);
+-		const agentSdkDownloader = runtimeServices.agentSdkDownloader;
+-		sdkDownloadProgress = runtime.sdkDownloadProgress;
+-		agentService.registerProvider(instantiationService.createInstance(CopilotAgent));
+-		// Claude and Codex providers are gated on two things:
+-		//  1. The user-facing enable toggle (`chat.agentHost.<x>Agent.enabled`,
+-		//     forwarded as an env var by the starters). Claude defaults to on,
+-		//     Codex defaults to off.
+-		//  2. The SDK being reachable. Claude is a devDependency of this repo
+-		//     so the bare-import path in `ClaudeAgentSdkService._loadSdk`
+-		//     always succeeds in dev; in built products the SDK ships via
+-		//     `product.agentSdks.claude` and the downloader handles it. Codex
+-		//     is likewise a devDependency, so `CodexAgent._resolveSdkRoot`
+-		//     resolves it from `node_modules` in dev; built products use the
+-		//     env-var override or a `product.agentSdks.codex` entry.
+-		// If either gate fails, the provider is not registered and never appears
+-		// in the agent picker (matches the pre-CDN UX exactly).
+-		if (isAgentEnabled(process.env[AgentHostClaudeAgentEnabledEnvVar], true) && (!environmentService.isBuilt || agentSdkDownloader.isAvailable(ClaudeSdkPackage))) {
+-			agentService.registerProvider(instantiationService.createInstance(ClaudeAgent));
+-		}
+-		// Codex registration is one-way (register-on-enable): the env-var toggle
+-		// or the renderer-forwarded `codexAgentEnabled` root config enables it.
+-		// Disabling requires an agent host restart.
+-		if (!environmentService.isBuilt || agentSdkDownloader.isAvailable(CodexSdkPackage)) {
+-			let codexRegistered = false;
+-			const registerCodexIfEnabled = () => {
+-				if (codexRegistered) {
+-					return;
+-				}
+-				const enabledByEnv = isAgentEnabled(process.env[AgentHostCodexAgentEnabledEnvVar], false);
+-				const enabledByRootConfig = agentConfigurationService.getRootValue(platformRootSchema, AgentHostCodexEnabledConfigKey) === true;
+-				if (enabledByEnv || enabledByRootConfig) {
+-					codexRegistered = true;
+-					agentService.registerProvider(instantiationService.createInstance(CodexAgent));
+-				}
+-			};
+-			registerCodexIfEnabled();
+-			disposables.add(agentConfigurationService.onDidRootConfigChange(registerCodexIfEnabled));
+-		}
+ 	} catch (err) {
+diff --git a/src/vs/platform/agentHost/node/agentHostServerMain.ts b/src/vs/platform/agentHost/node/agentHostServerMain.ts
+index f8000897..1c8ebdfc 100644
+--- a/src/vs/platform/agentHost/node/agentHostServerMain.ts
++++ b/src/vs/platform/agentHost/node/agentHostServerMain.ts
+@@ -39,11 +39,5 @@ import { IAgentHostStateManager } from './agentHostStateManager.js';
+ import { BANG_COMMAND_PREFIX } from './agentHostBangCommand.js';
+-import { CopilotAgent } from './copilot/copilotAgent.js';
+-import { ClaudeAgent } from './claude/claudeAgent.js';
+-import { ClaudeSdkPackage } from './claude/claudeAgentSdkService.js';
+-import { CodexAgent, CodexSdkPackage } from './codex/codexAgent.js';
+-import { createCodexProviderConfiguration } from './codex/codexProviderConfiguration.js';
+ import { IAgentSdkDownloader, type IAgentSdkDownloadProgress } from './agentSdkDownloader.js';
+-import { AgentHostCodexEnabledConfigKey, platformRootSchema } from '../common/agentHostSchema.js';
+ import { AgentModelRefreshScheduler, MODEL_REFRESH_INTERVAL_MS } from './agentModelRefreshScheduler.js';
+-import { AgentHostClaudeAgentEnabledEnvVar, AgentHostClaudeSdkRootEnvVar, AgentHostCodexAgentEnabledEnvVar, AgentHostCodexAgentSdkRootEnvVar, isAgentEnabled } from '../common/agentService.js';
++import { AgentHostClaudeSdkRootEnvVar, AgentHostCodexAgentSdkRootEnvVar } from '../common/agentService.js';
+ import { WebSocketProtocolServer } from './webSocketTransport.js';
+@@ -200,3 +194,3 @@ async function main(): Promise<void> {
+ 		hostLaunchKind: AgentHostLaunchKind.VSCodeCLI,
+-		providerConfigurations: [createCodexProviderConfiguration(environmentService.userHome)],
++		providerConfigurations: [],
+ 		byok: { kind: 'unavailable' },
+@@ -216,6 +210,4 @@ async function main(): Promise<void> {
+ 	const {
+-		configurationService: agentConfigurationService,
+ 		fileService,
+ 		sessionDataService,
+-		agentSdkDownloader,
+ 		stateManager,
+@@ -230,41 +222,2 @@ async function main(): Promise<void> {
+ 		sdkDownloadProgress = runtime.sdkDownloadProgress;
+-		const copilotAgent = disposables.add(instantiationService.createInstance(CopilotAgent));
+-		agentService.registerProvider(copilotAgent);
+-		log('CopilotAgent registered');
+-		// Claude and Codex providers are gated on two things:
+-		//  1. The user-facing enable toggle (`chat.agentHost.<x>Agent.enabled`,
+-		//     forwarded as an env var by the renderer-side starters; the remote
+-		//     server reads the env directly). Claude defaults to on, Codex
+-		//     defaults to off.
+-		//  2. The SDK being reachable. Claude is a devDependency of this repo
+-		//     so the bare-import path in `ClaudeAgentSdkService._loadSdk`
+-		//     always succeeds in dev; in built/shipped server installs the
+-		//     SDK comes from the CLI flag / env var dev override or a
+-		//     `product.agentSdks.claude` entry. Codex is likewise a
+-		//     devDependency, so `CodexAgent._resolveSdkRoot` resolves it from
+-		//     `node_modules` in dev; built/shipped installs use the env-var
+-		//     override or `product.agentSdks.codex`.
+-		if (isAgentEnabled(process.env[AgentHostClaudeAgentEnabledEnvVar], true) && (!environmentService.isBuilt || agentSdkDownloader.isAvailable(ClaudeSdkPackage))) {
+-			const claudeAgent = disposables.add(instantiationService.createInstance(ClaudeAgent));
+-			agentService.registerProvider(claudeAgent);
+-			log('ClaudeAgent registered');
+-		}
+-		if (!environmentService.isBuilt || agentSdkDownloader.isAvailable(CodexSdkPackage)) {
+-			let codexRegistered = false;
+-			const registerCodexIfEnabled = () => {
+-				if (codexRegistered) {
+-					return;
+-				}
+-				const enabledByEnv = isAgentEnabled(process.env[AgentHostCodexAgentEnabledEnvVar], false);
+-				const enabledByRootConfig = agentConfigurationService.getRootValue(platformRootSchema, AgentHostCodexEnabledConfigKey) === true;
+-				if (enabledByEnv || enabledByRootConfig) {
+-					codexRegistered = true;
+-					const codexAgent = disposables.add(instantiationService.createInstance(CodexAgent));
+-					agentService.registerProvider(codexAgent);
+-					log('CodexAgent registered');
+-				}
+-			};
+-			registerCodexIfEnabled();
+-			disposables.add(agentConfigurationService.onDidRootConfigChange(() => registerCodexIfEnabled()));
+-		}
+ 	}
+diff --git a/src/vs/platform/agentHost/node/agentHostServices.ts b/src/vs/platform/agentHost/node/agentHostServices.ts
+index 22f35bd1..4637e904 100644
+--- a/src/vs/platform/agentHost/node/agentHostServices.ts
++++ b/src/vs/platform/agentHost/node/agentHostServices.ts
+@@ -18,3 +18,2 @@ import { IAgentEditAttributionService } from '../common/fileEditAttribution.js';
+ import { IAgentHostGitService } from '../common/agentHostGitService.js';
+-import { IAgentHostOTelService } from '../common/otel/agentHostOTelService.js';
+ import { IAgentHostChangesetOperationService } from '../common/agentHostChangesetOperationService.js';
+@@ -31,9 +30,5 @@ import { AgentSdkDownloader, IAgentSdkDownloader } from './agentSdkDownloader.js
+ import { IByokLmBridgeRegistry } from './byokLmBridgeRegistry.js';
+-import { ClaudeAgentSdkService, IClaudeAgentSdkService } from './claude/claudeAgentSdkService.js';
+-import { ClaudeProxyService, IClaudeProxyService } from './claude/claudeProxyService.js';
+ import { ByokLmProxyService, IByokLmProxyService, NullByokLmProxyService } from './copilot/byokLmProxyService.js';
+-import { CodexProxyService, ICodexProxyService } from './codex/codexProxyService.js';
+ import { NodeWorkerDiffComputeService } from './diffComputeService.js';
+ import { NetworkDiagnosticsService, INetworkDiagnosticsService } from './networkDiagnosticsService.js';
+-import { AgentHostOTelService } from './otel/agentHostOTelService.js';
+ import { AgentHostChangesetOperationService } from './agentHostChangesetOperationService.js';
+@@ -144,6 +139,2 @@ export function registerAgentHostHostServices(services: AgentHostServiceCollecti
+ 	registerService(services, ids, IAgentSdkDownloader, new SyncDescriptor(AgentSdkDownloader));
+-	registerService(services, ids, IClaudeAgentSdkService, new SyncDescriptor(ClaudeAgentSdkService));
+-	registerService(services, ids, IClaudeProxyService, new SyncDescriptor(ClaudeProxyService));
+-	registerService(services, ids, ICodexProxyService, new SyncDescriptor(CodexProxyService));
+-	registerService(services, ids, IAgentHostOTelService, new SyncDescriptor(AgentHostOTelService, [inputs.fetchFn]));
+ 	registerService(services, ids, IAgentHostWorktreeIsolation, new SyncDescriptor(WorktreeIsolation, [undefined]));
+diff --git a/src/vs/platform/agentHost/node/agentHostSessionTitleController.ts b/src/vs/platform/agentHost/node/agentHostSessionTitleController.ts
+index f11f7ea8..a32fd831 100644
+--- a/src/vs/platform/agentHost/node/agentHostSessionTitleController.ts
++++ b/src/vs/platform/agentHost/node/agentHostSessionTitleController.ts
+@@ -5,3 +5,2 @@
+ 
+-import { Limiter } from '../../../base/common/async.js';
+ import { CancellationToken, CancellationTokenSource } from '../../../base/common/cancellation.js';
+@@ -16,4 +15,3 @@ import { buildConversationContext, renderResponseMarkdown, truncateMiddle } from
+ import { AgentHostStateManager } from './agentHostStateManager.js';
+-import type { GitHubIssueOrPullRequest, IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
+-import { ICopilotApiService, type ICopilotUtilityChatMessage } from './shared/copilotApiService.js';
++import type { IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
+ import { AGENT_HOST_TITLE_SOURCE_AGENT, AGENT_HOST_TITLE_SOURCE_AUTO, AGENT_HOST_TITLE_SOURCE_USER, customChatTitleMetadataKey, customChatTitleSourceMetadataKey, persistSessionMetadata, SESSION_CUSTOM_TITLE_KEY, SESSION_CUSTOM_TITLE_SOURCE_KEY } from './shared/persistSessionMetadata.js';
+@@ -22,13 +20,2 @@ const MAX_TITLE_LENGTH = 200;
+ const MAX_ACTIVE_AGENT_FALLBACK_TITLE_LENGTH = 40;
+-const MAX_TITLE_TOKENS = 32;
+-const GITHUB_CONTEXT_REQUEST_TIMEOUT = 5_000;
+-const MAX_CONCURRENT_GITHUB_CONTEXT_REQUESTS = 5;
+-const MAX_GITHUB_CONTEXT_BODY_CHARS = 4_000;
+-const MAX_GITHUB_CONTEXT_REFERENCES = 10;
+-const MAX_TRAILING_HAN_SUFFIX_CODE_UNITS = 6;
+-const MIN_LATIN_LETTERS_BEFORE_HAN_SUFFIX = 4;
+-const MIN_LATIN_LETTER_RATIO = 0.8;
+-const HAN_CHARACTER = /\p{sc=Han}/u;
+-const TRAILING_HAN_SUFFIX = /(?<!\p{sc=Han})\p{sc=Han}{2,3}$/u;
+-const GITHUB_ISSUE_OR_PULL_REQUEST_URL_PATTERN = /\bhttps?:\/\/(?<host>[\w.-]+)\/(?<owner>[\w.-]+)\/(?<repo>[\w.-]+)\/(?<kind>issues|pull)\/(?<number>\d+)\b/gi;
+ const CHAT_RENAME_REMINDER = 'Reminder: This chat currently has an auto-generated or placeholder title. If the user references an issue or PR, fetch it first. Please give the chat a short, descriptive title based on the user\'s intent by calling `rename_chat` with `automatic: true`, silently and without a preamble. The user must not know that you are renaming. Do not skip it.';
+@@ -43,22 +30,2 @@ const MAX_TITLE_CONTEXT_CHARS = 20000;
+ 
+-/**
+- * Slice of {@link MAX_TITLE_CONTEXT_CHARS} always available to GitHub context,
+- * so a referenced issue title survives even a budget-filling conversation.
+- */
+-const MIN_GITHUB_CONTEXT_CHARS = 4_000;
+-
+-type GitHubReferenceKind = 'issue' | 'pull request';
+-
+-interface IGitHubReference {
+-	readonly owner: string;
+-	readonly repo: string;
+-	readonly number: number;
+-	readonly kind: GitHubReferenceKind;
+-}
+-
+-interface IGitHubReferenceContext {
+-	readonly reference: IGitHubReference;
+-	readonly value: GitHubIssueOrPullRequest;
+-}
+-
+ /** Everything the utility model is told about when asked for a title. */
+@@ -82,3 +49,2 @@ export interface IAgentHostSessionTitleControllerOptions {
+ 	readonly octoKitService?: IAgentHostOctoKitService;
+-	readonly copilotApiService?: ICopilotApiService;
+ 	readonly isActiveAgentTitleGenerationEnabled?: () => boolean;
+@@ -574,214 +540,3 @@ export class AgentHostSessionTitleController extends Disposable {
+ 	private async _generateTitleFromPrompt(prompt: ITitlePromptContext, token: CancellationToken): Promise<string | undefined> {
+-		if (token.isCancellationRequested) {
+-			return undefined;
+-		}
+-
+-		const githubToken = this._options.getGitHubCopilotToken?.();
+-		const copilotApiService = this._options.copilotApiService;
+-		if (!githubToken || !copilotApiService) {
+-			return undefined;
+-		}
+-
+-		const abortController = new AbortController();
+-		const cancellationListener = token.onCancellationRequested(() => abortController.abort());
+-		try {
+-			const titlePromptContent = prompt.gitHubReferenceSource === undefined
+-				? prompt.content
+-				: await this._appendGitHubContext(prompt.content, prompt.gitHubReferenceSource, abortController.signal, token);
+-			if (token.isCancellationRequested) {
+-				return undefined;
+-			}
+-			const rawTitle = await copilotApiService.utilityChatCompletion(githubToken, {
+-				messages: this._buildTitlePrompt(titlePromptContent, prompt),
+-				maxTokens: MAX_TITLE_TOKENS,
+-			}, {
+-				signal: abortController.signal,
+-			});
+-			return this._cleanTitle(rawTitle, titlePromptContent);
+-		} catch (err) {
+-			if (token.isCancellationRequested) {
+-				return undefined;
+-			}
+-			this._logService.warn('[AgentHostSessionTitleController] Failed to generate session title', err);
+-			return undefined;
+-		} finally {
+-			cancellationListener.dispose();
+-		}
+-	}
+-
+-	/**
+-	 * Appends the GitHub issue / pull requests linked from `referenceSource` to
+-	 * `promptContent`, keeping the combined text within
+-	 * {@link MAX_TITLE_CONTEXT_CHARS}. Enrichment is guaranteed
+-	 * {@link MIN_GITHUB_CONTEXT_CHARS}; whatever it leaves over bounds
+-	 * `promptContent`, whose middle is dropped so the request at its head and
+-	 * the response tail both survive.
+-	 */
+-	private async _appendGitHubContext(promptContent: string, referenceSource: string, cancellationSignal: AbortSignal, token: CancellationToken): Promise<string> {
+-		const references = this._parseGitHubReferences(referenceSource);
+-		const githubToken = this._options.getGitHubToken?.();
+-		const octoKitService = this._options.octoKitService;
+-		if (references.length === 0 || !githubToken || !octoKitService) {
+-			return promptContent;
+-		}
+-
+-		const signal = AbortSignal.any([cancellationSignal, AbortSignal.timeout(this._options.gitHubContextRequestTimeout ?? GITHUB_CONTEXT_REQUEST_TIMEOUT)]);
+-		const limiter = new Limiter<IGitHubReferenceContext | undefined>(MAX_CONCURRENT_GITHUB_CONTEXT_REQUESTS);
+-		try {
+-			const contexts = await Promise.all(references.map(reference => limiter.queue(async () => {
+-				try {
+-					const value = await octoKitService.getIssueOrPullRequest(
+-						reference.owner,
+-						reference.repo,
+-						reference.number,
+-						githubToken,
+-						signal,
+-					);
+-					return { reference, value };
+-				} catch (error) {
+-					if (!token.isCancellationRequested) {
+-						this._logService.warn(`[AgentHostSessionTitleController] Failed to fetch GitHub ${reference.kind} ${reference.owner}/${reference.repo}#${reference.number}`, error);
+-					}
+-					return undefined;
+-				}
+-			})));
+-			const successfulContexts = contexts.filter(context => context !== undefined);
+-			if (successfulContexts.length === 0) {
+-				return promptContent;
+-			}
+-			const separator = '\n\n';
+-			const gitHubBudget = Math.max(MIN_GITHUB_CONTEXT_CHARS, MAX_TITLE_CONTEXT_CHARS - promptContent.length - separator.length);
+-			const gitHubContext = this._formatGitHubContexts(successfulContexts, gitHubBudget);
+-			const contentBudget = Math.max(0, MAX_TITLE_CONTEXT_CHARS - gitHubContext.length - separator.length);
+-			const content = promptContent.length > contentBudget ? truncateMiddle(promptContent, contentBudget) : promptContent;
+-			return `${content}${separator}${gitHubContext}`;
+-		} finally {
+-			limiter.dispose();
+-		}
+-	}
+-
+-	private _parseGitHubReferences(text: string): IGitHubReference[] {
+-		const references: IGitHubReference[] = [];
+-		const seen = new Set<string>();
+-		const configuredHost = this._normalizeGitHubHost(this._options.getGitHubHost?.() ?? 'github.com');
+-		for (const match of text.matchAll(GITHUB_ISSUE_OR_PULL_REQUEST_URL_PATTERN)) {
+-			const host = match.groups?.host;
+-			const owner = match.groups?.owner;
+-			const repo = match.groups?.repo;
+-			const rawKind = match.groups?.kind;
+-			const number = Number(match.groups?.number);
+-			if (!host || this._normalizeGitHubHost(host) !== configuredHost || !owner || !repo || (rawKind !== 'issues' && rawKind !== 'pull') || !Number.isSafeInteger(number) || number <= 0) {
+-				continue;
+-			}
+-			const kind: GitHubReferenceKind = rawKind === 'issues' ? 'issue' : 'pull request';
+-			const key = `${owner.toLowerCase()}/${repo.toLowerCase()}/${kind}/${number}`;
+-			if (seen.has(key)) {
+-				continue;
+-			}
+-			seen.add(key);
+-			references.push({ owner, repo, number, kind });
+-			if (references.length === MAX_GITHUB_CONTEXT_REFERENCES) {
+-				break;
+-			}
+-		}
+-		return references;
+-	}
+-
+-	private _normalizeGitHubHost(host: string): string {
+-		const normalizedHost = host.toLowerCase();
+-		return normalizedHost === 'www.github.com' ? 'github.com' : normalizedHost;
+-	}
+-
+-	private _formatGitHubContexts(contexts: readonly IGitHubReferenceContext[], budget: number): string {
+-		const heading = 'GitHub issue and pull request context:\n\n';
+-		const fixedLength = heading.length + contexts.reduce((length, context, index) => {
+-			return length + this._formatGitHubContext(context.reference, context.value, '').length + (index === 0 ? 0 : 2);
+-		}, 0);
+-		let remainingBodyBudget = Math.max(0, budget - fixedLength);
+-		const sections = contexts.map((context, index) => {
+-			const bodyBudget = Math.min(
+-				MAX_GITHUB_CONTEXT_BODY_CHARS,
+-				Math.floor(remainingBodyBudget / (contexts.length - index)),
+-			);
+-			const body = truncateMiddle(context.value.body, bodyBudget);
+-			remainingBodyBudget -= body.length;
+-			return this._formatGitHubContext(context.reference, context.value, body);
+-		});
+-		return truncateMiddle(`${heading}${sections.join('\n\n')}`, budget);
+-	}
+-
+-	private _formatGitHubContext(reference: IGitHubReference, value: GitHubIssueOrPullRequest, body: string): string {
+-		return [
+-			`GitHub ${reference.kind} ${reference.owner}/${reference.repo}#${reference.number}:`,
+-			`The title of the ${reference.kind} is: ${value.title}`,
+-			`The body of the ${reference.kind} is:`,
+-			body,
+-		].join('\n');
+-	}
+-
+-	private _buildTitlePrompt(promptContent: string, prompt: ITitlePromptContext): ICopilotUtilityChatMessage[] {
+-		const request = prompt.isConversation
+-			? `Please write a brief title for the following conversation:\n\n${promptContent}`
+-			: `Please write a brief title for the following request:\n\n${promptContent}`;
+-		const currentTitle = prompt.currentTitle?.trim();
+-		const userInstruction = currentTitle
+-			? `${request}\n\nIts current title is: ${currentTitle}\nReply with that same title unless the text above supports a clearly more accurate one.`
+-			: request;
+-		return [
+-			{
+-				role: 'system',
+-				content: [
+-					'You are an expert in crafting ultra-compact titles for chatbot conversations.',
+-					'You are presented with a chat request or conversation, and you reply with only a brief title that captures the main topic.',
+-					'Write the title in sentence case, not title case.',
+-					'Preserve product names, abbreviations, code symbols, and proper nouns.',
+-					'Aim for 3-6 words. Prefer the shortest accurate title.',
+-					'Drop articles like "a", "an", and "the" unless needed for clarity.',
+-					'Drop filler and generic framing like "help with", "question about", "request for", or "issue with".',
+-					'Never describe the chat itself as forked, branched, or continued — title only the underlying topic.',
+-					'Prefer short, concrete synonyms and omit unnecessary words.',
+-					'Do not wrap the title in quotes or add trailing punctuation.',
+-				].join(' '),
+-			},
+-			{
+-				role: 'user',
+-				content: userInstruction,
+-			},
+-		];
+-	}
+-
+-	private _cleanTitle(rawTitle: string, promptContent: string): string | undefined {
+-		let title = rawTitle.trim();
+-		const firstLine = title.split(/\r?\n/).map(line => line.trim()).find(line => line.length > 0);
+-		title = firstLine ?? '';
+-		if (title.startsWith('"') && title.endsWith('"') && title.length > 1) {
+-			title = title.slice(1, -1).trim();
+-		}
+-		title = title.replace(/[.!?]+$/, '').trim();
+-
+-		if (!title || title.includes('can\'t assist with that')) {
+-			return undefined;
+-		}
+-		title = title.slice(0, MAX_TITLE_LENGTH + MAX_TRAILING_HAN_SUFFIX_CODE_UNITS);
+-		return this._stripUnexpectedTrailingHanSuffix(title, promptContent).slice(0, MAX_TITLE_LENGTH);
+-	}
+-
+-	private _stripUnexpectedTrailingHanSuffix(title: string, promptContent: string): string {
+-		if (HAN_CHARACTER.test(promptContent)) {
+-			return title;
+-		}
+-
+-		const suffix = TRAILING_HAN_SUFFIX.exec(title);
+-		if (!suffix) {
+-			return title;
+-		}
+-
+-		const prefix = title.slice(0, suffix.index).trimEnd();
+-		const letterCount = prefix.match(/\p{L}/gu)?.length ?? 0;
+-		const latinLetterCount = prefix.match(/\p{sc=Latin}/gu)?.length ?? 0;
+-		if (latinLetterCount < MIN_LATIN_LETTERS_BEFORE_HAN_SUFFIX || latinLetterCount / letterCount < MIN_LATIN_LETTER_RATIO) {
+-			return title;
+-		}
+-
+-		return prefix;
++		return undefined;
+ 	}
+diff --git a/src/vs/platform/agentHost/node/agentService.ts b/src/vs/platform/agentHost/node/agentService.ts
+index d3c34b3f..d7bc36ae 100644
+--- a/src/vs/platform/agentHost/node/agentService.ts
++++ b/src/vs/platform/agentHost/node/agentService.ts
+@@ -70,3 +70,2 @@ import { AgentHostSkillCompletionProvider } from './agentHostSkillCompletionProv
+ import { SessionServerToolName } from '../common/serverToolNames.js';
+-import { ICopilotApiService } from './shared/copilotApiService.js';
+ import { INetworkDiagnosticsService } from './networkDiagnosticsService.js';
+@@ -359,3 +358,2 @@ export interface IAgentServiceOptions {
+ 	readonly rootConfigResource?: URI;
+-	readonly copilotApiService?: ICopilotApiService;
+ 	readonly providerConfigurations?: readonly IAgentCustomizationSettingsRegistration[];
+diff --git a/src/vs/platform/agentHost/node/agentServiceComposition.ts b/src/vs/platform/agentHost/node/agentServiceComposition.ts
+index 82336855..a07d3d90 100644
+--- a/src/vs/platform/agentHost/node/agentServiceComposition.ts
++++ b/src/vs/platform/agentHost/node/agentServiceComposition.ts
+@@ -40,3 +40,2 @@ import { type IAgentServiceFoundation } from './agentServiceFoundation.js';
+ import { IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
+-import { ICopilotApiService } from './shared/copilotApiService.js';
+ 
+@@ -100,3 +99,2 @@ export function createAgentServiceComposition(
+ 		const octoKitService = accessor.get(IAgentHostOctoKitService);
+-		const copilotApiService = accessor.get(ICopilotApiService);
+ 		const customizationEnablementService = accessor.get(IAgentHostCustomizationEnablementService);
+@@ -132,3 +130,2 @@ export function createAgentServiceComposition(
+ 				hostLaunchKind: options.hostLaunchKind ?? AgentHostLaunchKind.Unknown,
+-				copilotApiService,
+ 				getGitHubCopilotToken: () => {
+diff --git a/src/vs/platform/agentHost/node/agentSideEffects.ts b/src/vs/platform/agentHost/node/agentSideEffects.ts
+index c1cb1902..f64ff351 100644
+--- a/src/vs/platform/agentHost/node/agentSideEffects.ts
++++ b/src/vs/platform/agentHost/node/agentSideEffects.ts
+@@ -90,3 +90,2 @@ import { SessionPermissionManager } from './sessionPermissions.js';
+ import type { IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
+-import type { ICopilotApiService } from './shared/copilotApiService.js';
+ import { stripProxyErrorMarker, toChatErrorMeta, tryParseForwardedChatError } from './shared/proxyChatError.js';
+@@ -116,4 +115,2 @@ export interface IAgentSideEffectsOptions {
+ 	readonly octoKitService?: IAgentHostOctoKitService;
+-	/** CAPI service used for Copilot utility title generation. */
+-	readonly copilotApiService?: ICopilotApiService;
+ 	/**
+@@ -312,3 +309,2 @@ export class AgentSideEffects extends Disposable {
+ 			octoKitService: this._options.octoKitService,
+-			copilotApiService: this._options.copilotApiService,
+ 			isActiveAgentTitleGenerationEnabled: () => this._agentConfigService.getRootValue(platformRootSchema, AgentHostActiveAgentTitleGenerationConfigKey) === true,
+diff --git a/src/vs/platform/agentHost/node/copilot/prompts/promptRegistry.ts b/src/vs/platform/agentHost/node/copilot/prompts/promptRegistry.ts
+index 56f2e801..81cbd9f3 100644
+--- a/src/vs/platform/agentHost/node/copilot/prompts/promptRegistry.ts
++++ b/src/vs/platform/agentHost/node/copilot/prompts/promptRegistry.ts
+@@ -5,3 +5,2 @@
+ 
+-import type { SectionOverride, SystemMessageConfig, SystemMessageSection } from '@github/copilot-sdk';
+ import { copilotCliConfigSchema } from '../../../common/copilotCliConfig.js';
+@@ -9,4 +8,2 @@ import type { SchemaValue } from '../../../common/agentHostSchema.js';
+ import type { ModelSelection } from '../../../common/state/protocol/state.js';
+-import { appendSystemMessageContent, COPILOT_AGENT_HOST_FILE_LINK_INSTRUCTIONS, COPILOT_AGENT_HOST_WORKSPACELESS_INSTRUCTIONS, COPILOT_AGENT_HOST_SYSTEM_MESSAGE, fullSystemPrompt, sectionOverrides, withDefaultSections } from './systemMessage.js';
+-import { resolveToolInstructionsOverride, toolSearchInstructionLines, universalToolInstructions, type IToolInstructionContext } from './toolInstructions.js';
+ 
+@@ -80,8 +77,2 @@ export interface IAgentHostPrompt {
+ 	resolveFullSystemPrompt?(model: ModelSelection, context: IAgentHostPromptContext): string | undefined;
+-
+-	/**
+-	 * Section-level overrides. Resolved into `{ mode: 'customize' }`, keeping the
+-	 * SDK foundation prompt and guardrails intact.
+-	 */
+-	resolveSectionOverrides?(model: ModelSelection, context: IAgentHostPromptContext): Partial<Record<SystemMessageSection, SectionOverride>> | undefined;
+ }
+@@ -127,101 +118,2 @@ export class AgentHostPromptRegistry {
+ 	}
+-
+-	private _getContributor(model: ModelSelection): IAgentHostPromptCtor | undefined {
+-		for (const ctor of this._promptsWithMatcher) {
+-			if (ctor.matchesModel(model)) {
+-				return ctor;
+-			}
+-		}
+-		for (const { prefix, ctor } of this._familyPrefixList) {
+-			if (model.id.startsWith(prefix)) {
+-				return ctor;
+-			}
+-		}
+-		return undefined;
+-	}
+-
+-	/**
+-	 * The per-model (or default) config with the universal layers on top. Those
+-	 * layers apply to every mode, including a full `replace` prompt (appended
+-	 * after its content), so a replacement owns the prompt body but not the
+-	 * host's plumbing.
+-	 *
+-	 * Lifetime: the SDK accepts a system message only at session create/resume
+-	 * (there is no mid-session update), so this is resolved once per (re)launch
+-	 * and any tool-gated content reflects the tool set at that moment. A change
+-	 * to the session's tools/plugins is part of the launcher's restart-detection
+-	 * snapshot, so it re-launches the session and recomputes this; an in-flight
+-	 * turn keeps the prompt it launched with.
+-	 */
+-	resolveSystemMessageConfig(model: ModelSelection | undefined, context: IAgentHostPromptContext): SystemMessageConfig {
+-		const config = this._withUniversalSections(this._resolveModelConfig(model, context), context);
+-		const withWorkspacelessScratch = this._withWorkspacelessScratch(config, context);
+-		return appendSystemMessageContent(withWorkspacelessScratch, COPILOT_AGENT_HOST_FILE_LINK_INSTRUCTIONS);
+-	}
+-
+-	/**
+-	 * Resolves the per-model config, before universal sections are layered on.
+-	 *
+-	 * Falls back to {@link COPILOT_AGENT_HOST_SYSTEM_MESSAGE} when the model is
+-	 * unknown (e.g. server-side "Auto" selection where no model is chosen at
+-	 * create time), when no contributor matches, or when the matching
+-	 * contributor opts out for the current {@link context} (e.g. a setting that
+-	 * gates it is disabled).
+-	 */
+-	private _resolveModelConfig(model: ModelSelection | undefined, context: IAgentHostPromptContext): SystemMessageConfig {
+-		if (!model) {
+-			return COPILOT_AGENT_HOST_SYSTEM_MESSAGE;
+-		}
+-		const ctor = this._getContributor(model);
+-		if (!ctor) {
+-			return COPILOT_AGENT_HOST_SYSTEM_MESSAGE;
+-		}
+-		const contributor = new ctor();
+-		const fullPrompt = contributor.resolveFullSystemPrompt?.(model, context);
+-		if (fullPrompt !== undefined) {
+-			return fullSystemPrompt(fullPrompt);
+-		}
+-		const sections = contributor.resolveSectionOverrides?.(model, context);
+-		// Composed OVER the defaults, so a contributor only overrides what it names.
+-		if (sections && Object.keys(sections).length > 0) {
+-			return withDefaultSections(sectionOverrides(sections));
+-		}
+-		return COPILOT_AGENT_HOST_SYSTEM_MESSAGE;
+-	}
+-
+-	/**
+-	 * Layers the tool instructions that apply to EVERY model over the base config.
+-	 * A `customize` config composes them into its `tool_instructions` section
+-	 * rather than being overwritten by them; a `replace` prompt has no sections,
+-	 * so they are appended after its content instead of being silently lost.
+-	 */
+-	private _withUniversalSections(config: SystemMessageConfig, context: IAgentHostPromptContext): SystemMessageConfig {
+-		const lineContext: IToolInstructionContext = {
+-			hasTool: name => context.hasClientTool(name),
+-			getSetting: key => context.getSetting(key),
+-		};
+-		if (config.mode === 'replace') {
+-			const lines = universalToolInstructions(lineContext, toolSearchInstructionLines(context.toolSearchActive));
+-			return lines ? appendSystemMessageContent(config, lines) : config;
+-		}
+-		if (config.mode !== 'customize') {
+-			return config;
+-		}
+-		const toolInstructions = resolveToolInstructionsOverride(lineContext, config.sections?.tool_instructions, toolSearchInstructionLines(context.toolSearchActive));
+-		if (!toolInstructions) {
+-			return config;
+-		}
+-		return { ...config, sections: { ...config.sections, tool_instructions: toolInstructions } };
+-	}
+-
+-	/**
+-	 * Appends the scratch/repoless guidance as trailing `content`, so it composes
+-	 * on top of whatever the base config carries — including a `replace` prompt.
+-	 */
+-	private _withWorkspacelessScratch(config: SystemMessageConfig, context: IAgentHostPromptContext): SystemMessageConfig {
+-		if (!context.workspaceless) {
+-			return config;
+-		}
+-		return appendSystemMessageContent(config, COPILOT_AGENT_HOST_WORKSPACELESS_INSTRUCTIONS);
+-	}
+ }
+diff --git a/src/vs/platform/agentHost/node/copilot/prompts/toolInstructions.ts b/src/vs/platform/agentHost/node/copilot/prompts/toolInstructions.ts
+index 3c9295a9..ce5b1266 100644
+--- a/src/vs/platform/agentHost/node/copilot/prompts/toolInstructions.ts
++++ b/src/vs/platform/agentHost/node/copilot/prompts/toolInstructions.ts
+@@ -5,3 +5,2 @@
+ 
+-import type { SectionOverride } from '@github/copilot-sdk';
+ import { coalesce } from '../../../../../base/common/arrays.js';
+@@ -115,49 +114 @@ export function universalToolInstructions(context: IToolInstructionContext, line
+ }
+-
+-/**
+- * Folds universal tool-instructions `content` into a per-model contributor's
+- * `existing` `tool_instructions` override (if any), so a contributor's section
+- * is preserved rather than clobbered.
+- *
+- * @param existing the per-model contributor's `tool_instructions` override, if any.
+- */
+-function composeToolInstructions(existing: SectionOverride | undefined, content: string): SectionOverride {
+-	// No per-model override: append after the SDK foundation section, led by a
+-	// newline so it doesn't run on from the foundation content.
+-	if (!existing) {
+-		return { action: 'append', content: `\n${content}` };
+-	}
+-	// A `remove` or transform-function override is a deliberate, non-composable
+-	// choice by the contributor; preserve it untouched rather than fight it.
+-	if (existing.action === 'remove' || typeof existing.action === 'function') {
+-		return existing;
+-	}
+-	// Fold our lines into the contributor's content (preserve it, don't clobber),
+-	// then pad relative to the foundation by where this action places the content:
+-	// `append` sits after it (lead with a newline), `prepend` sits before it (trail
+-	// with a newline), `replace` owns the section (no foundation adjacency, so no
+-	// padding — and no leading newline even when the contributor's content is empty).
+-	const base = existing.content ?? '';
+-	const merged = base ? `${base}\n${content}` : content;
+-	switch (existing.action) {
+-		case 'append': return { action: 'append', content: `\n${merged}` };
+-		case 'prepend': return { action: 'prepend', content: `${merged}\n` };
+-		default: return { action: existing.action, content: merged };
+-	}
+-}
+-
+-/**
+- * Resolves the `tool_instructions` {@link SectionOverride} for a session,
+- * composing the universal lines with any override a per-model contributor
+- * already set for that section.
+- *
+- * Returns `undefined` when no universal lines apply — the caller then keeps the
+- * contributor's `existing` override (if any) untouched.
+- *
+- * @param existing the per-model contributor's `tool_instructions` override, if any.
+- * @param lines defaults to the registered {@link TOOL_INSTRUCTION_LINES}.
+- */
+-export function resolveToolInstructionsOverride(context: IToolInstructionContext, existing: SectionOverride | undefined, lines: readonly ToolInstructionLine[] = TOOL_INSTRUCTION_LINES): SectionOverride | undefined {
+-	const content = universalToolInstructions(context, lines);
+-	return content === undefined ? undefined : composeToolInstructions(existing, content);
+-}
+diff --git a/src/vs/platform/agentHost/node/copilot/sessionCustomizationDiscovery.ts b/src/vs/platform/agentHost/node/copilot/sessionCustomizationDiscovery.ts
+index d60fc30d..c246f5b1 100644
+--- a/src/vs/platform/agentHost/node/copilot/sessionCustomizationDiscovery.ts
++++ b/src/vs/platform/agentHost/node/copilot/sessionCustomizationDiscovery.ts
+@@ -5,3 +5,2 @@
+ 
+-import type { CopilotClient } from '@github/copilot-sdk';
+ import { appendFile, mkdir } from 'fs/promises';
+@@ -12,15 +11,8 @@ import { Disposable, type IDisposable } from '../../../../base/common/lifecycle.
+ import { ResourceMap, ResourceSet } from '../../../../base/common/map.js';
+-import { joinPath, dirname as uriDirname, extUriBiasedIgnorePathCase } from '../../../../base/common/resources.js';
++import { joinPath } from '../../../../base/common/resources.js';
+ import { compare as compareStrings } from '../../../../base/common/strings.js';
+ import { URI } from '../../../../base/common/uri.js';
+-import { basename, isAbsolute, dirname as nodeDirname } from '../../../../base/common/path.js';
++import { dirname as nodeDirname } from '../../../../base/common/path.js';
+ import { FileOperationResult, IFileService, IFileStat, IFileStatWithMetadata, toFileOperationResult } from '../../../files/common/files.js';
+ import { ILogService } from '../../../log/common/log.js';
+-import { AgentCustomization, ChildCustomization, CustomizationLoadStatus, CustomizationType, DirectoryCustomization, HookCustomization, RuleCustomization, SkillCustomization, customizationId } from '../../common/state/sessionState.js';
+-import { ChildCustomizationType } from '../../common/state/protocol/state.js';
+-import { toAgentCustomizationMeta } from '../../common/meta/agentCustomizationMeta.js';
+-import { raceCancellationError } from '../../../../base/common/async.js';
+-
+-type AgentsDiscoverRequest = Parameters<CopilotClient['rpc']['agents']['discover']>[0];
+-type InstructionSource = Awaited<ReturnType<CopilotClient['rpc']['instructions']['discover']>>['sources'][number];
+ 
+@@ -97,10 +89,2 @@ function compareDiscoveredFile(a: IDiscoveredFile, b: IDiscoveredFile): number {
+ 
+-function compareDirectoryCustomization(a: DirectoryCustomization, b: DirectoryCustomization): number {
+-	const byUri = compareStrings(a.uri, b.uri);
+-	if (byUri !== 0) {
+-		return byUri;
+-	}
+-	return compareStrings(a.contents, b.contents);
+-}
+-
+ /**
+@@ -118,3 +102,2 @@ const README_FILENAME = 'README.md';
+ const CUSTOMIZATION_DISCOVERY_DEBUG_LOG_PATH = undefined; //'/tmp/copilot-customization-discovery-debug.log';
+-const AGENT_INSTRUCTION_FILENAMES = new Set(['agents.md', 'claude.md', 'gemini.md', 'copilot-instructions.md']);
+ 
+@@ -133,4 +116,2 @@ interface IFixedDiscoveryFile {
+ 
+-type PathToUri = (path: string) => URI;
+-
+ /**
+@@ -234,4 +215,2 @@ export class SessionCustomizationDiscovery extends Disposable {
+ 
+-	private _discoveredDirectories: readonly IDiscoveredDirectory[] | undefined = undefined;
+-
+ 	private readonly _watchers = new ResourceMap<IWatchSpec & { readonly disposable: IDisposable }>();
+@@ -241,3 +220,2 @@ export class SessionCustomizationDiscovery extends Disposable {
+ 		private readonly _userHome: URI,
+-		private readonly _pathToUri: PathToUri = URI.file,
+ 		@IFileService private readonly _fileService: IFileService,
+@@ -269,41 +247,2 @@ export class SessionCustomizationDiscovery extends Disposable {
+ 
+-	/**
+-	 * True when `uri` is one of the workspace roots or the user home — i.e. an
+-	 * ancestor-walk boundary. With a single root this is exactly the previous
+-	 * `isEqual(uri, workingDirectory) || isEqual(uri, userHome)` check.
+-	 */
+-	private _isDiscoveryBoundary(uri: URI): boolean {
+-		if (extUriBiasedIgnorePathCase.isEqual(uri, this._userHome)) {
+-			return true;
+-		}
+-		return this._workingDirectories.some(root => extUriBiasedIgnorePathCase.isEqual(uri, root));
+-	}
+-
+-	/**
+-	 * The workspace root that contains (or equals) `uri`, or `undefined` when it
+-	 * lives under none of them. Prefers the most specific root when roots nest.
+-	 */
+-	private _containingWorkspaceRoot(uri: URI): URI | undefined {
+-		let best: URI | undefined;
+-		for (const root of this._workingDirectories) {
+-			if (extUriBiasedIgnorePathCase.isEqualOrParent(uri, root) && (!best || root.path.length > best.path.length)) {
+-				best = root;
+-			}
+-		}
+-		return best;
+-	}
+-
+-	/**
+-	 * Maps an SDK-supplied `projectPath` (an fs path string) back to the original
+-	 * workspace-root {@link URI}, preserving its scheme/authority. Returns
+-	 * `undefined` when the path matches none of the roots.
+-	 */
+-	private _rootForProjectPath(projectPath: string | undefined): URI | undefined {
+-		if (!projectPath) {
+-			return undefined;
+-		}
+-		const target = this._pathToUri(projectPath);
+-		return this._workingDirectories.find(root => extUriBiasedIgnorePathCase.isEqual(root, target));
+-	}
+-
+ 	/**
+@@ -343,573 +282,2 @@ export class SessionCustomizationDiscovery extends Disposable {
+ 
+-	private async getDiscoveredDirectories(client: CopilotClient, token: CancellationToken): Promise<readonly IDiscoveredDirectory[]> {
+-		throwIfCancelled(token);
+-
+-		const p: AgentsDiscoverRequest = { projectPaths: this._workingDirectories.map(uri => uri.fsPath) };
+-		const result = this.getHooksDiscoveryPaths();
+-		const workspaceAgentInstructionFilesByRoot = new ResourceMap<IDiscoveredFile[]>();
+-		const userAgentInstructionFiles: IDiscoveredFile[] = [];
+-
+-		try {
+-			const [agentDiscovery, instructionDiscovery, skillDiscovery] = await Promise.all([
+-				raceCancellationError(client.rpc.agents.getDiscoveryPaths(p), token),
+-				raceCancellationError(client.rpc.instructions.getDiscoveryPaths(p), token),
+-				raceCancellationError(client.rpc.skills.getDiscoveryPaths(p), token)
+-			]);
+-
+-			// Process agent discovery paths
+-			for (const agentPath of agentDiscovery?.paths ?? []) {
+-				throwIfCancelled(token);
+-				result.push({
+-					uri: this._pathToUri(agentPath.path),
+-					type: DiscoveredType.Agent,
+-					files: [],
+-					name: basename(agentPath.path),
+-					writable: true
+-				});
+-			}
+-
+-			// Process instruction discovery paths
+-			for (const instructionPath of instructionDiscovery?.paths ?? []) {
+-				throwIfCancelled(token);
+-				if (instructionPath.kind === 'file') {
+-					const fileUri = this._pathToUri(instructionPath.path);
+-					const discoveredFile: IDiscoveredFile = { uri: fileUri, etag: '' };
+-					const containingRoot = this._containingWorkspaceRoot(fileUri);
+-					if (containingRoot) {
+-						const files = workspaceAgentInstructionFilesByRoot.get(containingRoot) ?? [];
+-						files.push(discoveredFile);
+-						workspaceAgentInstructionFilesByRoot.set(containingRoot, files);
+-					} else if (extUriBiasedIgnorePathCase.isEqualOrParent(fileUri, this._userHome)) {
+-						userAgentInstructionFiles.push(discoveredFile);
+-					}
+-					continue;
+-				} else if (instructionPath.kind === 'directory') {
+-					result.push({
+-						uri: this._pathToUri(instructionPath.path),
+-						type: DiscoveredType.Instruction,
+-						files: [],
+-						name: basename(instructionPath.path),
+-						writable: true
+-					});
+-				}
+-			}
+-			for (const [root, files] of workspaceAgentInstructionFilesByRoot) {
+-				if (files.length > 0) {
+-					result.push({
+-						uri: root,
+-						type: DiscoveredType.AgentInstruction,
+-						files,
+-						name: '',
+-						writable: false
+-					});
+-				}
+-			}
+-			if (userAgentInstructionFiles.length > 0) {
+-				result.push({
+-					uri: this._userHome,
+-					type: DiscoveredType.AgentInstruction,
+-					files: userAgentInstructionFiles,
+-					name: '',
+-					writable: false
+-				});
+-			}
+-
+-			// Process skill discovery paths
+-			for (const skillPath of skillDiscovery?.paths ?? []) {
+-				throwIfCancelled(token);
+-				result.push({
+-					uri: this._pathToUri(skillPath.path),
+-					type: DiscoveredType.Skill,
+-					files: [],
+-					name: basename(skillPath.path),
+-					writable: true
+-				});
+-			}
+-
+-		} catch (err) {
+-			if (err instanceof CancellationError) {
+-				throw err;
+-			}
+-			this._logService.debug(`[SessionCustomizationDiscovery] Error getting discovery paths: ${err instanceof Error ? err.message : String(err)}`);
+-		}
+-
+-		return result.sort(compareDiscoveredDirectory);
+-	}
+-
+-	private getHooksDiscoveryPaths(): IDiscoveredDirectory[] {
+-		const byUri = new ResourceMap<IDiscoveredDirectory>();
+-		const add = (uri: URI, name: string): void => {
+-			if (!byUri.has(uri)) {
+-				byUri.set(uri, { uri, type: DiscoveredType.Hook, files: [], name, writable: true });
+-			}
+-		};
+-
+-		for (const root of searchRoots.workspace) {
+-			if (root.type === DiscoveredType.Hook) {
+-				// Hooks: primary working directory only (Copilot limitation).
+-				for (const workingDirectory of this._hookWorkingDirectories) {
+-					add(joinPath(workingDirectory, ...root.path), root.name);
+-				}
+-			}
+-		}
+-		for (const root of searchRoots.user) {
+-			if (root.type === DiscoveredType.Hook) {
+-				add(joinPath(this._userHome, ...root.path), root.name);
+-			}
+-		}
+-		for (const root of fixedDiscoveryFiles.workspace) {
+-			if (root.type === DiscoveredType.Hook) {
+-				// Hooks: primary working directory only (Copilot limitation).
+-				for (const workingDirectory of this._hookWorkingDirectories) {
+-					add(joinPath(workingDirectory, ...root.path), basename(joinPath(workingDirectory, ...root.path).path));
+-				}
+-			}
+-		}
+-		for (const root of fixedDiscoveryFiles.user) {
+-			if (root.type === DiscoveredType.Hook) {
+-				add(joinPath(this._userHome, ...root.path), basename(joinPath(this._userHome, ...root.path).path));
+-			}
+-		}
+-		return [...byUri.values()];
+-	}
+-
+-	private async _updateWatchers(discoveredDirectories: readonly IDiscoveredDirectory[], token: CancellationToken): Promise<void> {
+-		const nextWatchRootUris = new ResourceMap<IWatchSpec>();
+-		const toResolve = new ResourceSet();
+-		const recursiveByDirectory = new ResourceMap<boolean>();
+-
+-		for (const discoveredDir of discoveredDirectories) {
+-			throwIfCancelled(token);
+-
+-			const dirUri = discoveredDir.uri;
+-			const recursive = discoveredDir.type === DiscoveredType.Skill ||
+-				discoveredDir.type === DiscoveredType.Instruction ||
+-				discoveredDir.type === DiscoveredType.Hook;
+-			recursiveByDirectory.set(dirUri, recursive);
+-			toResolve.add(dirUri);
+-
+-			let current = dirUri;
+-			while (!this._isDiscoveryBoundary(current)) {
+-				const parent = uriDirname(current);
+-				if (extUriBiasedIgnorePathCase.isEqual(parent, current)) {
+-					break;
+-				}
+-				toResolve.add(parent);
+-				current = parent;
+-			}
+-
+-			for (const file of discoveredDir.files) {
+-				throwIfCancelled(token);
+-
+-				let currentFilePath = file.uri;
+-				while (!this._isDiscoveryBoundary(currentFilePath)) {
+-					const parent = uriDirname(currentFilePath);
+-					if (extUriBiasedIgnorePathCase.isEqual(parent, currentFilePath)) {
+-						break;
+-					}
+-					toResolve.add(parent);
+-					currentFilePath = parent;
+-				}
+-			}
+-		}
+-
+-		throwIfCancelled(token);
+-
+-		const toResolveArray = [...toResolve];
+-		const statResults = await this._fileService.resolveAll(toResolveArray.map(resource => ({ resource })));
+-		const existingDirectories = new ResourceSet();
+-		for (let i = 0; i < statResults.length; i++) {
+-			const result = statResults[i];
+-			if (result.success && result.stat?.isDirectory) {
+-				existingDirectories.add(toResolveArray[i]);
+-			}
+-		}
+-
+-		for (const discoveredDir of discoveredDirectories) {
+-			throwIfCancelled(token);
+-
+-			const dirUri = discoveredDir.uri;
+-			const recursive = recursiveByDirectory.get(dirUri) ?? false;
+-			if (existingDirectories.has(dirUri)) {
+-				addWatch(nextWatchRootUris, dirUri, recursive, dirUri);
+-			}
+-
+-			let current = dirUri;
+-			while (!this._isDiscoveryBoundary(current)) {
+-				const parent = uriDirname(current);
+-				if (extUriBiasedIgnorePathCase.isEqual(parent, current)) {
+-					break;
+-				}
+-				if (existingDirectories.has(parent)) {
+-					addWatch(nextWatchRootUris, parent, false, current);
+-				}
+-				current = parent;
+-			}
+-
+-			for (const file of discoveredDir.files) {
+-				throwIfCancelled(token);
+-
+-				let currentFilePath = file.uri;
+-				while (!this._isDiscoveryBoundary(currentFilePath)) {
+-					const parent = uriDirname(currentFilePath);
+-					if (extUriBiasedIgnorePathCase.isEqual(parent, currentFilePath)) {
+-						break;
+-					}
+-					if (existingDirectories.has(parent)) {
+-						addWatch(nextWatchRootUris, parent, false, currentFilePath);
+-					}
+-					currentFilePath = parent;
+-				}
+-			}
+-		}
+-
+-		this._reconcileWatchers(nextWatchRootUris);
+-	}
+-
+-
+-	public async discover(client: CopilotClient, token: CancellationToken): Promise<readonly DirectoryCustomization[]> {
+-		await this.writeCustomizationDiscoveryDebugLog({
+-			method: 'discover',
+-			workingDirectories: this._workingDirectories.map(d => d.toString()),
+-			userHome: this._userHome.toString(),
+-		});
+-		if (!this._discoveredDirectories) {
+-			this._discoveredDirectories = await this.getDiscoveredDirectories(client, token);
+-		}
+-
+-		throwIfCancelled(token);
+-
+-		const p: AgentsDiscoverRequest = { projectPaths: this._workingDirectories.map(uri => uri.fsPath) };
+-
+-		try {
+-			const [agents, rules, skills, hooks] = await Promise.all([
+-				this.discoverAgents(p, client, token),
+-				this.discoverRules(p, client, token),
+-				this.discoverSkills(p, client, token),
+-				this.discoverHooks(token),
+-				this._updateWatchers(this._discoveredDirectories, token)
+-			]);
+-			throwIfCancelled(token);
+-			const result: DirectoryCustomization[] = [];
+-			await this.toDirectoryCustomizations(CustomizationType.Agent, agents, this._discoveredDirectories, result);
+-			await this.toDirectoryCustomizations(CustomizationType.Rule, rules, this._discoveredDirectories, result);
+-			await this.toDirectoryCustomizations(CustomizationType.Skill, skills, this._discoveredDirectories, result);
+-			await this.toDirectoryCustomizations(CustomizationType.Hook, hooks, this._discoveredDirectories, result);
+-			const sortedResult = result.sort(compareDirectoryCustomization);
+-			await this.writeCustomizationDiscoveryDebugLog({
+-				method: 'discover',
+-				result: sortedResult.map(customization => ({
+-					contents: customization.contents,
+-					uri: customization.uri,
+-					children: (customization.children ?? []).map(child => ({ type: child.type, uri: child.uri, name: child.name })),
+-				})),
+-			});
+-			return sortedResult;
+-		} catch (err) {
+-			this._logService.error(`[SessionCustomizationDiscovery] Error during discovery: ${err instanceof Error ? err.message : String(err)}`);
+-			return [];
+-		}
+-	}
+-
+-	private async discoverAgents(discoveryRequest: AgentsDiscoverRequest, client: CopilotClient, token: CancellationToken): Promise<AgentCustomization[]> {
+-		const agents: AgentCustomization[] = [];
+-
+-		const agentDiscovery = await raceCancellationError(client.rpc.agents.discover(discoveryRequest), token);
+-		for (const agent of agentDiscovery.agents) {
+-			if (agent.path) {
+-				const uri = this._pathToUri(agent.path);
+-				agents.push({ type: CustomizationType.Agent, uri: uri.toString(), id: agent.id, name: agent.name, description: agent.description, _meta: toAgentCustomizationMeta({ userInvocable: agent.userInvocable }) });
+-			}
+-		}
+-		return agents;
+-	}
+-
+-	private async discoverRules(discoveryRequest: AgentsDiscoverRequest, client: CopilotClient, token: CancellationToken): Promise<RuleCustomization[]> {
+-		const rules: RuleCustomization[] = [];
+-		const seenRuleUris = new Set<string>();
+-
+-		const instructionDiscovery = await raceCancellationError(client.rpc.instructions.discover(discoveryRequest), token);
+-		await this.writeCustomizationDiscoveryDebugLog({
+-			method: 'discoverRules.instructions.discover',
+-			sources: instructionDiscovery.sources.map(source => ({
+-				id: source.id,
+-				label: source.label,
+-				sourcePath: source.sourcePath,
+-				applyTo: source.applyTo,
+-				type: source.type,
+-			})),
+-		});
+-
+-		for (const instruction of instructionDiscovery.sources) {
+-			let uri: URI;
+-			if (isAbsolute(instruction.sourcePath)) {
+-				uri = this._pathToUri(instruction.sourcePath);
+-			} else {
+-				// Resolve the relative source against the workspace root the SDK attributed
+-				// it to (`projectPath` disambiguates same-named files across multiple roots).
+-				// Fall back to the primary root for sources without an attributed project.
+-				const anchor = this._rootForProjectPath(instruction.projectPath) ?? this._workingDirectories[0];
+-				uri = joinPath(anchor, instruction.sourcePath);
+-			}
+-			const uriString = uri.toString();
+-			rules.push({
+-				type: CustomizationType.Rule,
+-				uri: uriString,
+-				id: instruction.id,
+-				name: instruction.label,
+-				description: instruction.description,
+-				globs: instruction.applyTo ? [...instruction.applyTo] : undefined,
+-				alwaysApply: this._isAgentInstructionSource(instruction),
+-			});
+-			seenRuleUris.add(uriString);
+-		}
+-
+-		for (const directory of this._discoveredDirectories ?? []) {
+-			if (directory.type !== DiscoveredType.AgentInstruction) {
+-				continue;
+-			}
+-
+-			for (const file of directory.files) {
+-				const uri = file.uri.toString();
+-				if (seenRuleUris.has(uri)) {
+-					continue;
+-				}
+-
+-				rules.push({
+-					type: CustomizationType.Rule,
+-					uri,
+-					id: customizationId(uri),
+-					name: basename(file.uri.path),
+-					alwaysApply: true,
+-				});
+-				seenRuleUris.add(uri);
+-			}
+-		}
+-
+-		return rules;
+-	}
+-
+-	private _isAgentInstructionSource(instruction: InstructionSource): boolean {
+-		if (instruction.type === 'home' || instruction.type === 'repo' || instruction.type === 'model') {
+-			return true;
+-		}
+-
+-		const filename = basename(instruction.sourcePath).toLowerCase();
+-		return AGENT_INSTRUCTION_FILENAMES.has(filename);
+-	}
+-
+-	private async discoverSkills(discoveryRequest: AgentsDiscoverRequest, client: CopilotClient, token: CancellationToken): Promise<SkillCustomization[]> {
+-		const skills: SkillCustomization[] = [];
+-
+-		const skillDiscovery = await raceCancellationError(client.rpc.skills.discover(discoveryRequest), token);
+-		for (const skill of skillDiscovery.skills) {
+-			if (skill.path) {
+-				const uri = this._pathToUri(skill.path);
+-				skills.push({ type: CustomizationType.Skill, uri: uri.toString(), id: skill.path, name: skill.name, description: skill.description });
+-			}
+-		}
+-		return skills;
+-	}
+-
+-	private async discoverHooks(token: CancellationToken): Promise<HookCustomization[]> {
+-		const seen = new ResourceSet();
+-		const discoveredDirectories: IDiscoveredDirectory[] = [];
+-
+-		const hookRootsWorkspace = searchRoots.workspace.filter(root => root.type === DiscoveredType.Hook);
+-		const hookRootsUser = searchRoots.user.filter(root => root.type === DiscoveredType.Hook);
+-		const fixedHookFilesWorkspace = fixedDiscoveryFiles.workspace.filter(root => root.type === DiscoveredType.Hook);
+-		const fixedHookFilesUser = fixedDiscoveryFiles.user.filter(root => root.type === DiscoveredType.Hook);
+-
+-		await Promise.all([
+-			// Hooks: primary working directory only (Copilot limitation — see _hookWorkingDirectories).
+-			...this._hookWorkingDirectories.flatMap(workingDirectory =>
+-				hookRootsWorkspace.map(root => this._discoverHookRoot(workingDirectory, root, seen, discoveredDirectories, token))),
+-			...hookRootsUser.map(root => this._discoverHookRoot(this._userHome, root, seen, discoveredDirectories, token)),
+-			...this._hookWorkingDirectories.map(workingDirectory =>
+-				this._discoverFixedHookFiles(workingDirectory, fixedHookFilesWorkspace, seen, discoveredDirectories, token)),
+-			this._discoverFixedHookFiles(this._userHome, fixedHookFilesUser, seen, discoveredDirectories, token),
+-		]);
+-
+-		const hooks: HookCustomization[] = [];
+-		for (const directory of discoveredDirectories) {
+-			for (const file of directory.files) {
+-				const uri = file.uri.toString();
+-				hooks.push({
+-					type: CustomizationType.Hook,
+-					id: customizationId(uri),
+-					uri,
+-					name: basename(file.uri.path),
+-				});
+-			}
+-		}
+-		hooks.sort((a, b) => compareStrings(a.uri, b.uri));
+-		return hooks;
+-	}
+-
+-	private async _discoverHookRoot(base: URI, root: ISearchRoot, seen: ResourceSet, result: IDiscoveredDirectory[], token: CancellationToken): Promise<void> {
+-		const rootUri = joinPath(base, ...root.path);
+-		let stat: IFileStatWithMetadata | undefined = undefined;
+-		try {
+-			stat = await this._fileService.resolve(rootUri, { resolveMetadata: true });
+-		} catch {
+-			// Root does not exist (or is unreadable) — still discover as an empty source folder.
+-		}
+-		await this._scanForHooks(root, rootUri, stat, seen, result, token);
+-	}
+-
+-	private async _discoverFixedHookFiles(base: URI, roots: readonly IFixedDiscoveryFile[], seen: ResourceSet, result: IDiscoveredDirectory[], token: CancellationToken): Promise<void> {
+-		for (const root of roots) {
+-			throwIfCancelled(token);
+-
+-			const rootUri = joinPath(base, ...root.path);
+-			const files: IDiscoveredFile[] = [];
+-			let stat: IFileStatWithMetadata | undefined = undefined;
+-			try {
+-				stat = await this._fileService.resolve(rootUri, { resolveMetadata: true });
+-			} catch {
+-				// Root does not exist (or is unreadable) — still discover as an empty source folder.
+-			}
+-
+-			for (const child of stat?.children ?? []) {
+-				throwIfCancelled(token);
+-
+-				if (child.isFile && root.filenames.includes(child.name)) {
+-					if (!seen.has(child.resource)) {
+-						seen.add(child.resource);
+-						files.push({ uri: child.resource, etag: child.etag });
+-					}
+-				}
+-			}
+-			if (files.length > 0) {
+-				result.push({ uri: rootUri, type: DiscoveredType.Hook, files: files.sort(compareDiscoveredFile), name: basename(rootUri.path), writable: true });
+-			}
+-		}
+-	}
+-
+-	private async toDirectoryCustomizations(type: ChildCustomizationType, customizations: readonly ChildCustomization[], allDiscoveredDirectories: readonly IDiscoveredDirectory[], result: DirectoryCustomization[]): Promise<void> {
+-		const discoveredDirectories = allDiscoveredDirectories.filter(d => {
+-			if (type === CustomizationType.Agent) {
+-				return d.type === DiscoveredType.Agent;
+-			}
+-			if (type === CustomizationType.Rule) {
+-				return d.type === DiscoveredType.Instruction || d.type === DiscoveredType.AgentInstruction;
+-			}
+-			if (type === CustomizationType.Hook) {
+-				return d.type === DiscoveredType.Hook;
+-			}
+-			return d.type === DiscoveredType.Skill;
+-		});
+-		const candidateOutputDirectories = type === CustomizationType.Rule
+-			? discoveredDirectories.filter(d => d.type !== DiscoveredType.AgentInstruction || this._isDiscoveryBoundary(d.uri))
+-			: discoveredDirectories;
+-		const outputDirectories = type === CustomizationType.Skill
+-			? candidateOutputDirectories.filter(directory => !candidateOutputDirectories.some(candidate =>
+-				!extUriBiasedIgnorePathCase.isEqual(directory.uri, candidate.uri)
+-				&& extUriBiasedIgnorePathCase.isEqualOrParent(directory.uri, candidate.uri)
+-			))
+-			: candidateOutputDirectories;
+-		const byParent = new ResourceMap<{ readonly uri: URI; readonly name: string; readonly writable: boolean; readonly children: ChildCustomization[] }>();
+-		for (const discoveredDirectory of outputDirectories) {
+-			byParent.set(discoveredDirectory.uri, {
+-				uri: discoveredDirectory.uri,
+-				name: discoveredDirectory.name || basename(discoveredDirectory.uri.path),
+-				writable: discoveredDirectory.writable,
+-				children: []
+-			});
+-		}
+-
+-		const fixedHookDirectoryUris = type === CustomizationType.Hook
+-			? new ResourceSet([
+-				// Hooks: primary working directory only (Copilot limitation).
+-				...this._hookWorkingDirectories.flatMap(workingDirectory => fixedDiscoveryFiles.workspace
+-					.filter(root => root.type === DiscoveredType.Hook)
+-					.map(root => joinPath(workingDirectory, ...root.path))),
+-				...fixedDiscoveryFiles.user
+-					.filter(root => root.type === DiscoveredType.Hook)
+-					.map(root => joinPath(this._userHome, ...root.path)),
+-			])
+-			: undefined;
+-
+-		const agentInstructionDirectoryUris = new ResourceSet(
+-			outputDirectories
+-				.filter(directory => directory.type === DiscoveredType.AgentInstruction)
+-				.map(directory => directory.uri)
+-		);
+-
+-		for (const customization of customizations) {
+-			if (customization.type !== type) {
+-				continue;
+-			}
+-
+-			const childUri = URI.parse(customization.uri);
+-			let bestParent = outputDirectories.find(d => extUriBiasedIgnorePathCase.isEqualOrParent(childUri, d.uri));
+-			if (!bestParent && customization.type === CustomizationType.Rule && customization.alwaysApply && customization.name.match(/\.md$/i)) {
+-				bestParent = outputDirectories.find(d =>
+-					d.type === DiscoveredType.AgentInstruction && extUriBiasedIgnorePathCase.isEqualOrParent(childUri, d.uri)
+-				) ?? outputDirectories.find(d => d.type === DiscoveredType.AgentInstruction);
+-			}
+-			if (bestParent) {
+-				for (const candidate of outputDirectories) {
+-					if (extUriBiasedIgnorePathCase.isEqualOrParent(childUri, candidate.uri) && candidate.uri.path.length > bestParent.uri.path.length) {
+-						bestParent = candidate;
+-					}
+-				}
+-			}
+-
+-			const parentUri = bestParent?.uri ?? uriDirname(childUri);
+-			let entry = byParent.get(parentUri);
+-			if (!entry) {
+-				this._logService.error(`[SessionCustomizationDiscovery] BUG: customization '${customization.uri}' of type '${customization.type}' is outside discovered directories; creating fallback directory '${parentUri.toString()}'.`);
+-				entry = {
+-					uri: parentUri,
+-					name: basename(parentUri.path),
+-					writable: true,
+-					children: []
+-				};
+-				byParent.set(parentUri, entry);
+-			}
+-			entry.children.push(customization);
+-		}
+-
+-		for (const { uri, name, writable, children } of byParent.values()) {
+-			if (type === CustomizationType.Hook && fixedHookDirectoryUris?.has(uri) && children.length === 0) {
+-				continue;
+-			}
+-
+-			if (type === CustomizationType.Rule && agentInstructionDirectoryUris.has(uri)) {
+-				const existingChildren: ChildCustomization[] = [];
+-				for (const child of children) {
+-					const childUri = URI.parse(child.uri);
+-					try {
+-						const stat = await this._fileService.resolve(childUri, { resolveMetadata: true });
+-						if (stat.isFile) {
+-							existingChildren.push(child);
+-						}
+-					} catch {
+-						// Ignore missing agent-instruction files; they should not surface.
+-					}
+-				}
+-				if (existingChildren.length === 0) {
+-					continue;
+-				}
+-				children.length = 0;
+-				children.push(...existingChildren);
+-			}
+-
+-			children.sort((a, b) => compareStrings(a.uri, b.uri));
+-			result.push({
+-				type: CustomizationType.Directory,
+-				id: customizationId(uri.toString()),
+-				uri: uri.toString(),
+-				name,
+-				enabled: true,
+-				contents: type,
+-				writable,
+-				load: { kind: CustomizationLoadStatus.Loaded },
+-				children,
+-			});
+-		}
+-	}
+-
+-
+ 	/**
+diff --git a/src/vs/platform/agentHost/node/shared/copilotApiService.ts b/src/vs/platform/agentHost/node/shared/copilotApiService.ts
+index 7735f9c7..2dc3ee35 100644
+--- a/src/vs/platform/agentHost/node/shared/copilotApiService.ts
++++ b/src/vs/platform/agentHost/node/shared/copilotApiService.ts
+@@ -5,3 +5,2 @@
+ 
+-import type Anthropic from '@anthropic-ai/sdk';
+ import { CAPIClient, RequestType, type CCAModel, type IExtensionInformation } from '@vscode/copilot-api';
+@@ -249,3 +248,3 @@ export class CopilotApiError extends Error {
+ 		readonly status: number,
+-		readonly envelope: Anthropic.ErrorResponse,
++		readonly envelope: any,
+ 		message?: string,
+@@ -269,3 +268,3 @@ export class CopilotApiError extends Error {
+ function buildCopilotApiHttpError(status: number, statusText: string, bodyText: string, prefix = 'CAPI request failed'): CopilotApiError {
+-	let envelope: Anthropic.ErrorResponse | undefined;
++	let envelope: any | undefined;
+ 	if (bodyText) {
+@@ -283,3 +282,3 @@ function buildCopilotApiHttpError(status: number, statusText: string, bodyText:
+ 				) {
+-					envelope = parsed as Anthropic.ErrorResponse;
++					envelope = parsed;
+ 				}
+@@ -418,5 +417,5 @@ export interface ICopilotApiService {
+ 		githubToken: string,
+-		request: Anthropic.MessageCreateParamsStreaming,
++		request: any,
+ 		options?: ICopilotApiServiceRequestOptions,
+-	): AsyncGenerator<Anthropic.MessageStreamEvent>;
++	): AsyncGenerator<any>;
+ 
+@@ -428,5 +427,5 @@ export interface ICopilotApiService {
+ 		githubToken: string,
+-		request: Anthropic.MessageCreateParamsNonStreaming,
++		request: any,
+ 		options?: ICopilotApiServiceRequestOptions,
+-	): Promise<Anthropic.Message>;
++	): Promise<any>;
+ 
+@@ -440,5 +439,5 @@ export interface ICopilotApiService {
+ 		githubToken: string,
+-		req: Anthropic.MessageCountTokensParams,
++		req: any,
+ 		options?: ICopilotApiServiceRequestOptions,
+-	): Promise<Anthropic.MessageTokensCount>;
++	): Promise<any>;
+ 
+@@ -538,15 +537,15 @@ export class CopilotApiService implements ICopilotApiService {
+ 		githubToken: string,
+-		request: Anthropic.MessageCreateParamsStreaming,
++		request: any,
+ 		options?: ICopilotApiServiceRequestOptions,
+-	): AsyncGenerator<Anthropic.MessageStreamEvent>;
++	): AsyncGenerator<any>;
+ 	messages(
+ 		githubToken: string,
+-		request: Anthropic.MessageCreateParamsNonStreaming,
++		request: any,
+ 		options?: ICopilotApiServiceRequestOptions,
+-	): Promise<Anthropic.Message>;
++	): Promise<any>;
+ 	messages(
+ 		githubToken: string,
+-		request: Anthropic.MessageCreateParams,
++		request: any,
+ 		options?: ICopilotApiServiceRequestOptions,
+-	): AsyncGenerator<Anthropic.MessageStreamEvent> | Promise<Anthropic.Message> {
++	): AsyncGenerator<any> | Promise<any> {
+ 		if (request.stream) {
+@@ -559,5 +558,5 @@ export class CopilotApiService implements ICopilotApiService {
+ 		_githubToken: string,
+-		_req: Anthropic.MessageCountTokensParams,
++		_req: any,
+ 		_options?: ICopilotApiServiceRequestOptions,
+-	): Promise<Anthropic.MessageTokensCount> {
++	): Promise<any> {
+ 		throw new Error('countTokens not supported by CAPI');
+@@ -744,5 +743,5 @@ export class CopilotApiService implements ICopilotApiService {
+ 		githubToken: string,
+-		request: Anthropic.MessageCreateParams,
++		request: any,
+ 		options?: ICopilotApiServiceRequestOptions,
+-	): AsyncGenerator<Anthropic.MessageStreamEvent> {
++	): AsyncGenerator<any> {
+ 		const response = await this._sendRequest(githubToken, request, true, options);
+@@ -762,7 +761,7 @@ export class CopilotApiService implements ICopilotApiService {
+ 		githubToken: string,
+-		request: Anthropic.MessageCreateParams,
++		request: any,
+ 		options?: ICopilotApiServiceRequestOptions,
+-	): Promise<Anthropic.Message> {
++	): Promise<any> {
+ 		const response = await this._sendRequest(githubToken, request, false, options);
+-		return response.json() as Promise<Anthropic.Message>;
++		return response.json() as Promise<any>;
+ 	}
+@@ -775,3 +774,3 @@ export class CopilotApiService implements ICopilotApiService {
+ 		githubToken: string,
+-		request: Anthropic.MessageCreateParams,
++		request: any,
+ 		stream: boolean,
+@@ -1011,3 +1010,3 @@ export class CopilotApiService implements ICopilotApiService {
+ 
+-	private async *_readSSE(body: ReadableStream<Uint8Array>): AsyncGenerator<Anthropic.MessageStreamEvent> {
++	private async *_readSSE(body: ReadableStream<Uint8Array>): AsyncGenerator<any> {
+ 		const reader = body.getReader();
+@@ -1065,3 +1064,3 @@ export class CopilotApiService implements ICopilotApiService {
+ 	 */
+-	private _parseDataLine(line: string): Anthropic.MessageStreamEvent | undefined {
++	private _parseDataLine(line: string): any | undefined {
+ 		if (!line.startsWith('data: ')) {
+@@ -1096,3 +1095,3 @@ export class CopilotApiService implements ICopilotApiService {
+ 			const rawError = (parsed as { error?: unknown }).error;
+-			let envelope: Anthropic.ErrorResponse;
++			let envelope: any;
+ 			if (
+@@ -1102,3 +1101,3 @@ export class CopilotApiService implements ICopilotApiService {
+ 			) {
+-				envelope = parsed as Anthropic.ErrorResponse;
++				envelope = parsed as any;
+ 			} else {
+@@ -1125,3 +1124,3 @@ export class CopilotApiService implements ICopilotApiService {
+ 
+-		return parsed as Anthropic.MessageStreamEvent;
++		return parsed as any;
+ 	}
+diff --git a/src/vs/platform/agentHost/test/node/mockAgent.ts b/src/vs/platform/agentHost/test/node/mockAgent.ts
+index 0fefd0ab..b64a0730 100644
+--- a/src/vs/platform/agentHost/test/node/mockAgent.ts
++++ b/src/vs/platform/agentHost/test/node/mockAgent.ts
+@@ -14,3 +14,2 @@ import { type ISyncedCustomization } from '../../common/agentPluginManager.js';
+ import { AgentSession, type AgentProvider, type AgentSignal, type IActiveClient, type IAgent, type IAgentActionSignal, type IAgentChatConfigCompletionsParams, type IAgentChatContext, type IAgentChatMetadata, type IAgentChats, type IAgentCreateChatOptions, type IAgentCreateChatResult, type IAgentCreateSessionConfig, type IAgentDescriptor, type IAgentDiscoveredChat, type IAgentModelInfo, type IAgentResolveChatConfigParams, type IAgentSessionMetadata, type IAgentToolPendingConfirmationSignal, resolveAgentChatContext } from '../../common/agent.js';
+-import { buildSubagentTurnsFromHistory, buildTurnsFromHistory, type IHistoryRecord } from './historyRecordFixtures.js';
+ import { ProtectedResourceMetadata, ToolCallContributorKind, type AgentSelection, type MessageAttachment, type ModelSelection, type ToolDefinition } from '../../common/state/protocol/state.js';
+@@ -18,3 +17,3 @@ import type { ResolveSessionConfigResult, SessionConfigCompletionsResult } from
+ import { ActionType, type AuthRequiredParams } from '../../common/state/sessionActions.js';
+-import { ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, CustomizationLoadStatus, buildDefaultChatUri, isAhpChatChannel, isDefaultChatUri, parseChatUri, parseSubagentSessionUri, type ClientPluginCustomization, type Customization, type PendingMessage, type StringOrMarkdown, type ToolCallResult, type Turn, type UsageInfo } from '../../common/state/sessionState.js';
++import { ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, CustomizationLoadStatus, buildDefaultChatUri, isAhpChatChannel, parseChatUri, type ClientPluginCustomization, type Customization, type PendingMessage, type StringOrMarkdown, type ToolCallResult, type Turn, type UsageInfo } from '../../common/state/sessionState.js';
+ import { hasKey } from '../../../../base/common/types.js';
+@@ -111,9 +110,2 @@ export class MockAgent implements IAgent {
+ 
+-	/**
+-	 * Configurable session history. Tests construct {@link IHistoryRecord}
+-	 * entries (the agent-internal intermediate shape) and the mock converts
+-	 * them to {@link Turn}s on demand. Subagent URIs are routed to filtered
+-	 * subagent turns via {@link buildSubagentTurnsFromHistory}.
+-	 */
+-	sessionMessages: IHistoryRecord[] = [];
+ 	/** Usage stamped onto every reconstructed turn (e.g. an Auto-model stub). */
+@@ -243,14 +235,2 @@ export class MockAgent implements IAgent {
+ 
+-	async getSessionMessages(session: URI): Promise<readonly Turn[]> {
+-		const subagentInfo = parseSubagentSessionUri(session);
+-		if (subagentInfo) {
+-			return buildSubagentTurnsFromHistory(this.sessionMessages, subagentInfo.toolCallId, session.toString());
+-		}
+-		const turns = buildTurnsFromHistory(this.sessionMessages);
+-		if (this.turnUsageOverride) {
+-			return turns.map(turn => ({ ...turn, usage: this.turnUsageOverride }));
+-		}
+-		return turns;
+-	}
+-
+ 	/** Backing helper for {@link chats}.releaseChat: records a non-destructive release. */
+@@ -383,4 +363,3 @@ export class MockAgent implements IAgent {
+ 		getMessages: (chat: URI, context: URI | IAgentChatContext): Promise<readonly Turn[]> => {
+-			this._recordContext('getMessages', chat, context);
+-			return this.getSessionMessages(chat);
++			return Promise.resolve([]);
+ 		},
+@@ -506,9 +485,2 @@ export class ScriptedMockAgent implements IAgent {
+ 	 */
+-	private readonly _preExistingMessages: IHistoryRecord[] = [
+-		{ type: 'message', role: 'user', session: PRE_EXISTING_SESSION_URI, messageId: 'h-msg-1', content: 'What files are here?' },
+-		{ type: 'tool_start', session: PRE_EXISTING_SESSION_URI, toolCallId: 'h-tc-1', toolName: 'list_files', displayName: 'List Files', invocationMessage: 'Listing files...' },
+-		{ type: 'tool_complete', session: PRE_EXISTING_SESSION_URI, toolCallId: 'h-tc-1', result: { pastTenseMessage: 'Listed files', content: [{ type: ToolResultContentType.Text, text: 'file1.ts\nfile2.ts' }], success: true } satisfies ToolCallResult },
+-		{ type: 'message', role: 'assistant', session: PRE_EXISTING_SESSION_URI, messageId: 'h-msg-2', content: 'Here are the files: file1.ts and file2.ts' },
+-	];
+-
+ 	// Track pending permission requests
+@@ -1042,17 +1014,2 @@ export class ScriptedMockAgent implements IAgent {
+ 
+-	async getSessionMessages(session: URI): Promise<readonly Turn[]> {
+-		const subagentInfo = parseSubagentSessionUri(session);
+-		if (subagentInfo) {
+-			return buildSubagentTurnsFromHistory(this._preExistingMessages, subagentInfo.toolCallId, session.toString());
+-		}
+-		// Restore addresses the default chat by its channel URI; normalize it
+-		// back to the session URI (mirroring the real agents' getSessionMessages).
+-		const parsed = parseChatUri(session);
+-		const normalized = parsed && isDefaultChatUri(session) ? URI.parse(parsed.session) : session;
+-		if (normalized.toString() === PRE_EXISTING_SESSION_URI.toString()) {
+-			return buildTurnsFromHistory(this._preExistingMessages);
+-		}
+-		return [];
+-	}
+-
+ 	async abortSession(session: URI): Promise<void> {
+@@ -1119,3 +1076,3 @@ export class ScriptedMockAgent implements IAgent {
+ 		getMessages: (chat: URI, context: URI | IAgentChatContext): Promise<readonly Turn[]> => {
+-			return this.getSessionMessages(this._resolveChatTarget(chat, context).session);
++			return Promise.resolve([]);
+ 		},

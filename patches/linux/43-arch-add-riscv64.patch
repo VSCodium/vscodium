@@ -1,28 +1,36 @@
+diff --git a/build/checksums/nodejs.txt b/build/checksums/nodejs.txt
+index 30eb0829..db137887 100644
+--- a/build/checksums/nodejs.txt
++++ b/build/checksums/nodejs.txt
+@@ -4,2 +4,3 @@ df224555a083b918e46260cc969838501b9f9a87140c1195e5b9597b56d5dae2  node-v24.18.1-
+ 9f5eb6ac21845a66c493c91a253b1da32fd684e89e9b7202d4936982336be4ca  node-v24.18.1-linux-x64.tar.gz
++65109e57e34279184efcca5888bc156cff3d24bf8eead73de16a28a313c18884  node-v24.18.0-linux-riscv64-local1.tar.gz
+ 845fc4ce00780241667f92e8f7a3a679321a655dddb3b610f2d85693b17ddf28  win-arm64/node.exe
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index f986b4e..557990e 100644
+index 4881e6f8..01696997 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -53,2 +53,3 @@ const BUILD_TARGETS = [
+@@ -54,2 +54,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  	{ platform: 'alpine', arch: 'arm64' },
 diff --git a/build/gulpfile.scan.ts b/build/gulpfile.scan.ts
-index 47b25cf..dd5bb56 100644
+index 6d3d8991..b1d48278 100644
 --- a/build/gulpfile.scan.ts
 +++ b/build/gulpfile.scan.ts
-@@ -25,2 +25,3 @@ const BUILD_TARGETS = [
+@@ -24,2 +24,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  ];
 diff --git a/build/gulpfile.vscode.linux.ts b/build/gulpfile.vscode.linux.ts
-index da4fc1f..b64dd9a 100644
+index 18454fd9..2a74886a 100644
 --- a/build/gulpfile.vscode.linux.ts
 +++ b/build/gulpfile.vscode.linux.ts
-@@ -33,2 +33,3 @@ function getDebPackageArch(arch: string): string {
+@@ -32,2 +32,3 @@ function getDebPackageArch(arch: string): string {
  		case 'ppc64le': return 'ppc64el';
 +		case 'riscv64': return 'riscv64';
  		default: throw new Error(`Unknown arch: ${arch}`);
-@@ -144,2 +145,3 @@ function getRpmPackageArch(arch: string): string {
+@@ -143,2 +144,3 @@ function getRpmPackageArch(arch: string): string {
  		case 'ppc64le': return 'ppc64le';
 +		case 'riscv64': return 'riscv64';
  		default: throw new Error(`Unknown arch: ${arch}`);
@@ -31,15 +39,15 @@ index da4fc1f..b64dd9a 100644
 +	{ arch: 'riscv64' },
  ];
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 1d7e9d5..3a5a9ca 100644
+index a410da3c..12b9123e 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -518,2 +518,3 @@ const BUILD_TARGETS = [
+@@ -717,2 +717,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  ];
 diff --git a/build/linux/debian/calculate-deps.ts b/build/linux/debian/calculate-deps.ts
-index 6c6bbf5..5ee005e 100644
+index 1eb77249..f65788a9 100644
 --- a/build/linux/debian/calculate-deps.ts
 +++ b/build/linux/debian/calculate-deps.ts
 @@ -68,2 +68,8 @@ function calculatePackageDeps(binaryPath: string, arch: DebianArchString, chromi
@@ -52,10 +60,10 @@ index 6c6bbf5..5ee005e 100644
 +			break;
  	}
 diff --git a/build/linux/debian/dep-lists.ts b/build/linux/debian/dep-lists.ts
-index 73d451f..7ea5910 100644
+index 9f80b9bb..06615aae 100644
 --- a/build/linux/debian/dep-lists.ts
 +++ b/build/linux/debian/dep-lists.ts
-@@ -181,2 +181,42 @@ export const referenceGeneratedDepsByArch = {
+@@ -186,2 +186,42 @@ export const referenceGeneratedDepsByArch = {
  	],
 +	'riscv64': [
 +		'ca-certificates',
@@ -99,10 +107,10 @@ index 73d451f..7ea5910 100644
 +	],
  };
 diff --git a/build/linux/debian/install-sysroot.ts b/build/linux/debian/install-sysroot.ts
-index 3086928..6e5246c 100644
+index ef7dd2ba..aece9b95 100644
 --- a/build/linux/debian/install-sysroot.ts
 +++ b/build/linux/debian/install-sysroot.ts
-@@ -162,2 +162,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
+@@ -163,2 +163,6 @@ export async function getVSCodeSysroot(arch: DebianArchString, isMusl: boolean =
  			break;
 +		case 'riscv64':
 +			expectedName = `riscv64-linux-gnu${prefix}.tar.gz`;
@@ -110,7 +118,7 @@ index 3086928..6e5246c 100644
 +			break;
  	}
 diff --git a/build/linux/debian/types.ts b/build/linux/debian/types.ts
-index c56d067..5d63ed2 100644
+index c56d0678..5d63ed29 100644
 --- a/build/linux/debian/types.ts
 +++ b/build/linux/debian/types.ts
 @@ -5,6 +5,6 @@
@@ -123,7 +131,7 @@ index c56d067..5d63ed2 100644
 +	return ['amd64', 'armhf', 'arm64', 'ppc64el', 'ppc64le', 'riscv64'].includes(s);
  }
 diff --git a/build/linux/rpm/types.ts b/build/linux/rpm/types.ts
-index 3f3c3f5..d94537e 100644
+index 3f3c3f5f..d94537e0 100644
 --- a/build/linux/rpm/types.ts
 +++ b/build/linux/rpm/types.ts
 @@ -5,6 +5,6 @@
@@ -136,41 +144,41 @@ index 3f3c3f5..d94537e 100644
 +	return ['x86_64', 'armv7hl', 'aarch64', 'ppc64le', 'riscv64'].includes(s);
  }
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index ec97760..de9ca72 100644
+index 315a585c..7db6e844 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
-@@ -184,2 +184,3 @@ pub enum Platform {
+@@ -180,2 +180,3 @@ pub enum Platform {
  	LinuxPPC64LE,
 +	LinuxRISCV64,
  	DarwinX64,
-@@ -203,2 +204,3 @@ impl Platform {
+@@ -199,2 +200,3 @@ impl Platform {
  			Platform::LinuxPPC64LE => "ppc64le",
 +			Platform::LinuxRISCV64 => "riscv64",
  			Platform::DarwinX64 => "x64",
-@@ -223,2 +225,3 @@ impl Platform {
+@@ -219,2 +221,3 @@ impl Platform {
  			Platform::LinuxPPC64LE => "linux",
 +			Platform::LinuxRISCV64 => "linux",
  			Platform::DarwinX64 => "darwin",
-@@ -253,2 +256,4 @@ impl Platform {
+@@ -249,2 +252,4 @@ impl Platform {
  			Some(Platform::LinuxPPC64LE)
 +		} else if cfg!(all(target_os = "linux", target_arch = "riscv64")) {
 +			Some(Platform::LinuxRISCV64)
  		} else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
-@@ -281,2 +286,3 @@ impl fmt::Display for Platform {
+@@ -277,2 +282,3 @@ impl fmt::Display for Platform {
  			Platform::LinuxPPC64LE => "LinuxPPC64LE",
 +			Platform::LinuxRISCV64 => "LinuxRISCV64",
  			Platform::DarwinX64 => "DarwinX64",
 diff --git a/cli/src/util/prereqs.rs b/cli/src/util/prereqs.rs
-index 679aacb..1a37552 100644
+index e499af60..16f89efe 100644
 --- a/cli/src/util/prereqs.rs
 +++ b/cli/src/util/prereqs.rs
-@@ -84,2 +84,4 @@ impl PreReqChecker {
+@@ -85,2 +85,4 @@ impl PreReqChecker {
  					Platform::LinuxPPC64LE
 +				} else if cfg!(target_arch = "riscv64") {
 +					Platform::LinuxRISCV64
  				} else {
 diff --git a/resources/server/bin/helpers/check-requirements-linux.sh b/resources/server/bin/helpers/check-requirements-linux.sh
-index 94028e3..c41cce7 100644
+index 94028e34..c41cce72 100644
 --- a/resources/server/bin/helpers/check-requirements-linux.sh
 +++ b/resources/server/bin/helpers/check-requirements-linux.sh
 @@ -56,2 +56,3 @@ case $ARCH in
@@ -178,28 +186,28 @@ index 94028e3..c41cce7 100644
 +	riscv64) LDCONFIG_ARCH="RISC-V";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index a754ff3..b607327 100644
+index 26197506..deb584c5 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-@@ -49,2 +49,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
+@@ -50,2 +50,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {
  		case TargetPlatform.LINUX_PPC64LE: return 'Linux PowerPC64';
 +		case TargetPlatform.LINUX_RISCV64: return 'Linux RISC-V 64';
  
-@@ -73,2 +74,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
+@@ -74,2 +75,3 @@ export function toTargetPlatform(targetPlatform: string): TargetPlatform {
  		case TargetPlatform.LINUX_PPC64LE: return TargetPlatform.LINUX_PPC64LE;
 +		case TargetPlatform.LINUX_RISCV64: return TargetPlatform.LINUX_RISCV64;
  
-@@ -111,2 +113,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
+@@ -112,2 +114,5 @@ export function getTargetPlatform(platform: Platform | 'alpine', arch: string |
  			}
 +			if (arch === 'riscv64') {
 +				return TargetPlatform.LINUX_RISCV64;
 +			}
  			return TargetPlatform.UNKNOWN;
 diff --git a/src/vs/platform/extensions/common/extensions.ts b/src/vs/platform/extensions/common/extensions.ts
-index b605be0..22d2206 100644
+index d898b3af..ceed3647 100644
 --- a/src/vs/platform/extensions/common/extensions.ts
 +++ b/src/vs/platform/extensions/common/extensions.ts
-@@ -332,2 +332,3 @@ export const enum TargetPlatform {
+@@ -351,2 +351,3 @@ export const enum TargetPlatform {
  	LINUX_PPC64LE = 'linux-ppc64le',
 +	LINUX_RISCV64 = 'linux-riscv64',
  

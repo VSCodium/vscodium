@@ -23,16 +23,14 @@ export VSCODE_PLATFORM='linux'
 export VSCODE_SKIP_NODE_VERSION_CHECK=1
 export VSCODE_SYSROOT_PREFIX='-glibc-2.28-gcc-10.5.0'
 
-if [[ "${VSCODE_ARCH}" == "arm64" || "${VSCODE_ARCH}" == "armhf" ]]; then
+if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   export VSCODE_SKIP_SYSROOT=1
   # export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
-  export VSCODE_SYSROOT_VERSION='20240129-253798'
-  export VSCODE_SYSROOT_PREFIX="-glibc-2.28"
+  export VSCODE_SYSROOT_VERSION='20260706'
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-  export VSCODE_SKIP_SETUPENV=1
   export VSCODE_ELECTRON_REPOSITORY='lex-ibm/electron-ppc64le-build-scripts'
   export IGNORE_ELECTRON_VERSION="yes"
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
@@ -58,7 +56,7 @@ if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
   # shellcheck disable=SC1090
   source "../build/linux/${VSCODE_ARCH}/electron.sh"
 
-  TARGET=$( npm config get target )
+  TARGET=$( grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' build/lib/electron.ts )
 
   # Only fails at different major versions
   if [[ "${ELECTRON_VERSION%%.*}" != "${TARGET%%.*}" ]] && [[ "${IGNORE_ELECTRON_VERSION}" != "yes" ]]; then
@@ -71,6 +69,10 @@ if [[ -f "../build/linux/${VSCODE_ARCH}/electron.sh" ]]; then
   if [[ "${ELECTRON_VERSION}" != "${TARGET}" ]]; then
     # Force version
     replace "s|target=\"${TARGET}\"|target=\"${ELECTRON_VERSION}\"|" .npmrc
+
+    cat .npmrc
+
+    export VSCODE_ELECTRON_VERSION="${ELECTRON_VERSION}"
   fi
 fi
 

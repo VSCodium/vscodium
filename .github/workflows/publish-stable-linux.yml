@@ -30,7 +30,7 @@ jobs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -60,7 +60,7 @@ jobs:
       BUILD_SOURCEVERSION: ${{ env.BUILD_SOURCEVERSION }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -74,13 +74,13 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Python 3
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.11"
         if: env.SHOULD_BUILD == 'yes'
@@ -132,14 +132,12 @@ jobs:
           vscode_arch: x64
           npm_arch: x64
           image: vscodium/vscodium-linux-build-agent:focal-x64
+          upload_binary: yes
         - slug: ARM64
           vscode_arch: arm64
           npm_arch: arm64
           image: vscodium/vscodium-linux-build-agent:focal-arm64
-        - slug: ARM32
-          vscode_arch: armhf
-          npm_arch: arm
-          image: vscodium/vscodium-linux-build-agent:focal-armhf
+          upload_binary: yes
         - slug: RISCV64
           vscode_arch: riscv64
           npm_arch: riscv64
@@ -167,7 +165,7 @@ jobs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -180,7 +178,7 @@ jobs:
       - name: Check existing VSCodium tags/releases
         env:
           CHECK_REH: 'no'
-          DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
+          # DISABLE_APPIMAGE: ${{ vars.DISABLE_STABLE_APPIMAGE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
@@ -189,7 +187,7 @@ jobs:
         run: ./build/linux/deps.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6 # v1.16.1
+      - uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1.17.0
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
@@ -205,6 +203,17 @@ jobs:
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./build/linux/package_bin.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
+
+      - name: Package binary
+        run: tar -czf vscode-bin.tar.gz -C "VSCode-linux-${VSCODE_ARCH}" .
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && matrix.upload_binary == 'yes'
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: vscode-bin-${{ matrix.slug }}
+          path: ./vscode-bin.tar.gz
+          retention-days: 1
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes' && matrix.upload_binary == 'yes'
 
       - name: Prepare assets
         env:
@@ -230,6 +239,64 @@ jobs:
         run: ./update_version.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
+  anylinux-appimage:
+    needs:
+      - check
+      - build
+    environment: publish
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs-on: ubuntu-latest
+            arch: x86_64
+            slug: X64
+          - runs-on: ubuntu-24.04-arm
+            arch: aarch64
+            slug: ARM64
+    container: ghcr.io/pkgforge-dev/archlinux:v2026.08.31
+    runs-on: ${{ matrix.runs-on }}
+    env:
+      DISABLED: ${{ vars[format('DISABLE_STABLE_LINUX_APPIMAGE_{0}', matrix.slug)] }}
+      RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+    if: needs.check.outputs.SHOULD_BUILD_APPIMAGE != 'no' && needs.build.outputs.SHOULD_BUILD == 'yes'
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
+          persist-credentials: false
+        if: env.DISABLED != 'yes'
+
+      - name: Preparing Container
+        uses: pkgforge-dev/anylinux-setup-action@0964f2258d6c93d1391359978dde081fd8b3c6af # v2
+        if: env.DISABLED != 'yes'
+
+      - name: Download vscode binary artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: vscode-bin-${{ matrix.slug }}
+        if: env.DISABLED != 'yes'
+
+      - name: Make AppImage
+        run: ./build/linux/anylinux-appimage/make-appimage.sh
+        if: env.DISABLED != 'yes'
+
+      - name: Move AppImage to assets
+        run: |
+          mkdir -p assets
+          mv dist/*.AppImage* assets/
+        if: env.DISABLED != 'yes'
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+        run: ./release.sh
+        if: env.DISABLED != 'yes'
+
   reh_linux:
     needs:
       - check
@@ -248,9 +315,6 @@ jobs:
         - slug: ARM64
           vscode_arch: arm64
           npm_arch: arm64
-        - slug: ARM32
-          vscode_arch: armhf
-          npm_arch: arm
         - slug: PPC64
           vscode_arch: ppc64le
           npm_arch: ppc64
@@ -274,7 +338,7 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -288,13 +352,13 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
         if: env.DISABLED != 'yes'
 
       - name: Setup Python 3
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.11'
         if: env.DISABLED != 'yes'
@@ -364,7 +428,7 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD == 'yes'
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -376,7 +440,7 @@ jobs:
           platform: x64
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
 
@@ -457,7 +521,7 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD_SNAP != 'no' && vars.DISABLE_STABLE_SNAP != 'yes'
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -470,7 +534,7 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         run: ./stores/snapcraft/check_version.sh
 
-      - uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
+      - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
 
       - uses: diddlesnaps/snapcraft-multiarch-action@cfd7a246fad6bea65bb92f69a1c8d07898c231e5 # v1.9.0
         with:

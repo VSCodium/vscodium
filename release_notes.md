@@ -75,8 +75,8 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
    <tr>
       <td>AppImage</td>
       <td>
-      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.30-x86_64.AppImage">@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.30-x86_64.AppImage</a><br />
-      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.30-x86_64.AppImage.zsync">@@APP_NAME_QUALITY@@-@@VERSION@@.glibc2.30-x86_64.AppImage.zsync</a>
+      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@-anylinux-x86_64.AppImage">@@APP_NAME_QUALITY@@-@@VERSION@@-anylinux-x86_64.AppImage</a><br />
+      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@-anylinux-x86_64.AppImage.zsync">@@APP_NAME_QUALITY@@-@@VERSION@@-anylinux-x86_64.AppImage.zsync</a>
       </td>
    </tr>
    <tr>
@@ -96,7 +96,12 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
       <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-cli-linux-x64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-cli-linux-x64-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
    </tr>
    <tr>
-      <td rowspan="2">Alpine</td>
+      <td rowspan="3">Alpine</td>
+      <td>AppImage</td>
+      <td>Same AppImage as the Linux section above<br />
+      <em>(Anylinux-AppImages are Alpine compatible)</em></td>
+   </tr>
+   <tr>
       <td>Remote Host</td>
       <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-alpine-x64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-alpine-x64-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
    </tr>
@@ -148,7 +153,7 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
       <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-cli-darwin-arm64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-cli-darwin-arm64-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
    </tr>
    <tr>
-      <td rowspan="7">Linux</td>
+      <td rowspan="8">Linux</td>
       <td>.deb</td>
       <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@_@@VERSION@@_arm64.deb">@@BINARY_NAME@@_@@VERSION@@_arm64.deb</a></td>
    </tr>
@@ -159,6 +164,13 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
    <tr>
       <td>.tar.gz</td>
       <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME@@-linux-arm64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME@@-linux-arm64-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
+   </tr>
+   <tr>
+      <td>AppImage</td>
+      <td>
+      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@-anylinux-aarch64.AppImage">@@APP_NAME_QUALITY@@-@@VERSION@@-anylinux-aarch64.AppImage</a><br />
+      <a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_QUALITY@@-@@VERSION@@-anylinux-aarch64.AppImage.zsync">@@APP_NAME_QUALITY@@-@@VERSION@@-anylinux-aarch64.AppImage.zsync</a>
+      </td>
    </tr>
    <tr>
       <td>Snap</td>
@@ -177,43 +189,18 @@ update vscode to [@@MS_TAG@@](@@MS_URL@@)
       <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-cli-linux-arm64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-cli-linux-arm64-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
    </tr>
    <tr>
-      <td rowspan="2">Alpine</td>
+      <td rowspan="3">Alpine</td>
+      <td>AppImage</td>
+      <td>Same AppImage as the Linux section above<br />
+      <em>(Anylinux-AppImages are Alpine compatible)</em></td>
+   </tr>
+   <tr>
       <td>Remote Host</td>
       <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-alpine-arm64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-alpine-arm64-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
    </tr>
    <tr>
       <td>Web Host</td>
       <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-web-alpine-arm64-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-web-alpine-arm64-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
-   </tr>
-</table>
-
-## ARM 32bits
-
-<table>
-   <tr>
-      <td rowspan="6">Linux</td>
-      <td>.deb</td>
-      <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@_@@VERSION@@_armhf.deb">@@BINARY_NAME@@_@@VERSION@@_armhf.deb</a></td>
-   </tr>
-   <tr>
-      <td>.rpm</td>
-      <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@BINARY_NAME@@-@@VERSION@@-el8.armv7hl.rpm">@@BINARY_NAME@@-@@VERSION@@-el8.armv7hl.rpm</a></td>
-   </tr>
-   <tr>
-      <td>.tar.gz</td>
-      <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME@@-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME@@-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
-   </tr>
-   <tr>
-      <td>Remote Host</td>
-      <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
-   </tr>
-   <tr>
-      <td>Web Host</td>
-      <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-reh-web-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-reh-web-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
-   </tr>
-   <tr>
-      <td>CLI</td>
-      <td><a href="https://github.com/@@ASSETS_REPOSITORY@@/releases/download/@@VERSION@@@@QUALITY@@/@@APP_NAME_LC@@-cli-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz">@@APP_NAME_LC@@-cli-linux-armhf-@@VERSION@@@@QUALITY@@.tar.gz</a></td>
    </tr>
 </table>
 

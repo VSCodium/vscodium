@@ -1,0 +1,54 @@
+#!/bin/sh
+
+# when run in remote terminal, use the remote cli
+if [ -n "$VSCODE_IPC_HOOK_CLI" ]; then
+  REMOTE_CLI=""
+  _IFS=$IFS
+  IFS=:
+  for d in $PATH; do
+    case "$d" in
+      */remote-cli/*)
+        if REMOTE_CLI=$(PATH=$d command -v @@NAME@@); then
+          break
+        fi
+        ;;
+    esac
+  done
+  IFS=$_IFS
+  if [ -n "$REMOTE_CLI" ]; then
+    "$REMOTE_CLI" "$@"
+    exit $?
+  fi
+fi
+
+# test that @@NAME_LONG@@ wasn't installed inside WSL
+if grep -qi Microsoft /proc/version && [ -z "$DONT_PROMPT_WSL_INSTALL" ]; then
+  echo "To use @@NAME_LONG@@ with the Windows Subsystem for Linux, please install @@NAME_LONG@@ in Windows and uninstall the Linux version in WSL. You can then use the \`@@NAME@@\` command in a WSL terminal just as you would in a normal command prompt." 1>&2
+  printf "Do you want to continue anyway? [y/N] " 1>&2
+  read -r YN
+  case "$YN" in
+    y|Y|yes|Yes|YES) :;;
+    *) exit 1;;
+  esac
+  echo "To no longer see this prompt, start @@NAME_LONG@@ with the environment variable DONT_PROMPT_WSL_INSTALL defined." 1>&2
+fi
+
+# If root, ensure that --user-data-dir or --file-write is specified
+if [ "$APPIMAGE_UID" = 0 ]; then
+  for i do
+    case "$i" in
+      --user-data-dir|--user-data-dir=*|--file-write|tunnel|serve-web)
+        CAN_LAUNCH_AS_ROOT=1
+        ;;
+    esac
+  done
+  if [ -z "$CAN_LAUNCH_AS_ROOT" ]; then
+    echo "You are trying to start @@NAME_LONG@@ as a super user which isn't recommended. If this was intended, please add the argument \`--no-sandbox\` and specify an alternate user data directory using the \`--user-data-dir\` argument." 1>&2
+    exit 1
+  fi
+fi
+
+ELECTRON=$APPDIR/bin/@@NAME@@
+CLI=$APPDIR/bin/resources/app/out/cli.js
+ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
+exit $?

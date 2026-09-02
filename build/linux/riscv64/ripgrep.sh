@@ -8,11 +8,16 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-RG_PATH="$1/@vscode/ripgrep/bin/rg"
+RG_PATH="$1/@vscode/ripgrep-universal/bin/linux-riscv64/rg"
 RG_VERSION="14.1.1-4"
 
 echo "Replacing ripgrep binary with riscv64 one"
 
-rm "${RG_PATH}"
+if [ -f "${RG_PATH}" ]; then
+  rm "${RG_PATH}"
+else
+  mkdir -p "$(dirname "${RG_PATH}")"
+fi
+
 curl --silent --fail -L https://github.com/riscv-forks/ripgrep-riscv64-prebuilt/releases/download/${RG_VERSION}/rg -o "${RG_PATH}"
 chmod +x "${RG_PATH}"

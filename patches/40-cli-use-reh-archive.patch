@@ -1,19 +1,19 @@
 diff --git a/cli/src/commands/serve_web.rs b/cli/src/commands/serve_web.rs
-index 74f2abdb..4d5d6bce 100644
+index 12178ef2..48b6c135 100644
 --- a/cli/src/commands/serve_web.rs
 +++ b/cli/src/commands/serve_web.rs
-@@ -792,3 +792,3 @@ impl ConnectionManager {
+@@ -794,3 +794,3 @@ impl ConnectionManager {
  		let dir_fut = cache.create(&args.release.commit, |target_dir| async move {
 -			info!(log_for_fut, "Downloading server {}", release_for_fut.commit);
 +			info!(log_for_fut, "Downloading server {}/{}", release_for_fut.commit, release_for_fut.name);
  			let tmpdir = tempfile::tempdir().unwrap();
-@@ -820,3 +820,3 @@ impl ConnectionManager {
+@@ -822,3 +822,3 @@ impl ConnectionManager {
  			.join("bin")
 -			.join(args.release.quality.server_entrypoint());
 +			.join(args.release.quality.server_entrypoint().unwrap());
  
 diff --git a/cli/src/constants.rs b/cli/src/constants.rs
-index f95cc77a..9a817c0c 100644
+index 938f4343..7277908a 100644
 --- a/cli/src/constants.rs
 +++ b/cli/src/constants.rs
 @@ -37,3 +37,6 @@ pub const DOCUMENTATION_URL: Option<&'static str> = option_env!("VSCODE_CLI_DOCU
@@ -58,19 +58,19 @@ index 7d152c0e..c0f2fb2e 100644
 +		Ok(server_name)
  	}
 diff --git a/cli/src/tunnels/agent_host.rs b/cli/src/tunnels/agent_host.rs
-index 2d50c926..11a349cb 100644
+index 93651587..77d19e6f 100644
 --- a/cli/src/tunnels/agent_host.rs
 +++ b/cli/src/tunnels/agent_host.rs
-@@ -166,3 +166,3 @@ impl AgentHostManager {
+@@ -233,3 +233,3 @@ impl AgentHostManager {
  				.join("bin")
 -				.join(release.quality.server_entrypoint())
 +				.join(release.quality.server_entrypoint().unwrap())
  		};
 diff --git a/cli/src/tunnels/code_server.rs b/cli/src/tunnels/code_server.rs
-index 3e4bb9eb..b4440f18 100644
+index df37b863..a3df1bea 100644
 --- a/cli/src/tunnels/code_server.rs
 +++ b/cli/src/tunnels/code_server.rs
-@@ -460,3 +460,3 @@ impl<'a> ServerBuilder<'a> {
+@@ -499,3 +499,3 @@ impl<'a> ServerBuilder<'a> {
  							.join("bin")
 -							.join(self.server_params.release.quality.server_entrypoint()),
 +							.join(self.server_params.release.quality.server_entrypoint().unwrap()),
@@ -85,7 +85,7 @@ index 3d7d718a..98529bc6 100644
 +					.join(self.quality.server_entrypoint().unwrap())
  			},
 diff --git a/cli/src/update_service.rs b/cli/src/update_service.rs
-index 1070dac0..db064277 100644
+index cd94139f..db064277 100644
 --- a/cli/src/update_service.rs
 +++ b/cli/src/update_service.rs
 @@ -10,3 +10,3 @@ use serde::{Deserialize, Serialize};
@@ -214,19 +214,20 @@ index 1070dac0..db064277 100644
 -impl TargetKind {
 -	fn download_segment(&self, platform: Platform) -> Option<String> {
 -		match *self {
--			TargetKind::Server => Some(platform.headless()),
+-			TargetKind::Server => platform.headless(),
 -			TargetKind::Archive => platform.archive(),
--			TargetKind::Web => Some(platform.web()),
+-			TargetKind::Web => platform.web(),
 -			TargetKind::Cli => Some(platform.cli()),
 -		}
 -	}
 -}
 -
  #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
-@@ -224,30 +187,17 @@ pub enum Platform {
+@@ -224,50 +187,36 @@ pub enum Platform {
  impl Platform {
 -	pub fn archive(&self) -> Option<String> {
--		match self {
++	pub fn arch(&self) -> String {
+ 		match self {
 -			Platform::LinuxX64 => Some("linux-x64".to_owned()),
 -			Platform::LinuxARM64 => Some("linux-arm64".to_owned()),
 -			Platform::LinuxARM32 => Some("linux-armhf".to_owned()),
@@ -236,24 +237,6 @@ index 1070dac0..db064277 100644
 -			Platform::WindowsX86 => Some("win32-archive".to_owned()),
 -			Platform::WindowsARM64 => Some("win32-arm64-archive".to_owned()),
 -			_ => None,
--		}
--	}
--	pub fn headless(&self) -> String {
-+	pub fn arch(&self) -> String {
- 		match self {
--			Platform::LinuxAlpineARM64 => "server-alpine-arm64",
--			Platform::LinuxAlpineX64 => "server-linux-alpine",
--			Platform::LinuxX64 => "server-linux-x64",
--			Platform::LinuxX64Legacy => "server-linux-legacy-x64",
--			Platform::LinuxARM64 => "server-linux-arm64",
--			Platform::LinuxARM64Legacy => "server-linux-legacy-arm64",
--			Platform::LinuxARM32 => "server-linux-armhf",
--			Platform::LinuxARM32Legacy => "server-linux-legacy-armhf",
--			Platform::DarwinX64 => "server-darwin",
--			Platform::DarwinARM64 => "server-darwin-arm64",
--			Platform::WindowsX64 => "server-win32-x64",
--			Platform::WindowsX86 => "server-win32",
--			Platform::WindowsARM64 => "server-win32-arm64",
 +			Platform::LinuxAlpineARM64 => "arm64",
 +			Platform::LinuxAlpineX64 => "x64",
 +			Platform::LinuxX64 => "x64",
@@ -268,7 +251,27 @@ index 1070dac0..db064277 100644
 +			Platform::WindowsX86 => "ia42",
 +			Platform::WindowsARM64 => "arm64",
  		}
-@@ -256,17 +206,17 @@ impl Platform {
+-	}
+-	pub fn headless(&self) -> Option<String> {
+-		let name = match self {
+-			Platform::LinuxAlpineARM64 => "server-alpine-arm64",
+-			Platform::LinuxAlpineX64 => "server-linux-alpine",
+-			Platform::LinuxX64 => "server-linux-x64",
+-			Platform::LinuxX64Legacy => "server-linux-legacy-x64",
+-			Platform::LinuxARM64 => "server-linux-arm64",
+-			Platform::LinuxARM64Legacy => "server-linux-legacy-arm64",
+-			// No remote server is built for arm32 since Node.js dropped
+-			// 32-bit Linux on armv7 in v24.
+-			Platform::LinuxARM32 | Platform::LinuxARM32Legacy => return None,
+-			Platform::DarwinX64 => "server-darwin",
+-			Platform::DarwinARM64 => "server-darwin-arm64",
+-			Platform::WindowsX64 => "server-win32-x64",
+-			Platform::WindowsX86 => "server-win32",
+-			Platform::WindowsARM64 => "server-win32-arm64",
+-		};
+-		Some(name.to_owned())
++		.to_owned()
+ 	}
  
 -	pub fn cli(&self) -> String {
 +	pub fn os(&self) -> String {
@@ -300,10 +303,10 @@ index 1070dac0..db064277 100644
 +			Platform::WindowsX86 => "win32",
 +			Platform::WindowsARM64 => "win32",
  		}
-@@ -275,6 +225,2 @@ impl Platform {
+@@ -276,6 +225,2 @@ impl Platform {
  
--	pub fn web(&self) -> String {
--		format!("{}-web", self.headless())
+-	pub fn web(&self) -> Option<String> {
+-		self.headless().map(|h| format!("{h}-web"))
 -	}
 -
  	pub fn env_default() -> Option<Platform> {

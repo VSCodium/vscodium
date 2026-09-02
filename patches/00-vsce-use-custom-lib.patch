@@ -1,8 +1,8 @@
 diff --git a/build/.moduleignore b/build/.moduleignore
-index f83624f8..00779f06 100644
+index fec2fbe2..ac2d8025 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
-@@ -82,7 +82,7 @@ native-is-elevated/deps/**
+@@ -86,7 +86,7 @@ native-is-elevated/deps/**
  
 -@vscode/vsce-sign/**
 -!@vscode/vsce-sign/src/main.d.ts
@@ -16,43 +16,59 @@ index f83624f8..00779f06 100644
 +!@vscodium/vsce-sign/bin/**
  
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 080d97f3..180177c5 100644
+index 7eb0a828..092a9480 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -460,3 +460,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -426,3 +426,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  				'**/*.wasm',
 -				'**/@vscode/vsce-sign/bin/*',
 +				'**/@vscodium/vsce-sign/bin/*',
  			], [
 diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
-index a25395c9..d87ff9aa 100644
+index 6a54fbe9..842f0e62 100644
 --- a/build/lib/extensions.ts
 +++ b/build/lib/extensions.ts
-@@ -126,3 +126,3 @@ export function typeCheckExtensionStream(extensionPath: string, forWeb: boolean)
+@@ -128,3 +128,3 @@ export function typeCheckExtensionStream(extensionPath: string, forWeb: boolean)
  function fromLocalNormal(extensionPath: string): Stream {
 -	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const result = es.through();
-@@ -148,3 +148,3 @@ function fromLocalNormal(extensionPath: string): Stream {
+@@ -150,3 +150,3 @@ function fromLocalNormal(extensionPath: string): Stream {
  function fromLocalEsbuild(extensionPath: string, esbuildConfigFileName: string): Stream {
 -	const vsce = require('@vscode/vsce') as typeof import('@vscode/vsce');
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const result = es.through();
 diff --git a/build/package-lock.json b/build/package-lock.json
-index 92f3b6a4..420464b0 100644
+index 068e38e3..c71d2d73 100644
 --- a/build/package-lock.json
 +++ b/build/package-lock.json
 @@ -51,3 +51,3 @@
-         "@vscode/ripgrep": "^1.17.1",
+         "@vscode/ripgrep-universal": "^1.18.0",
 -        "@vscode/vsce": "3.6.1",
 +        "@vscodium/vsce": "3.6.1-258428",
          "ansi-colors": "^3.2.3",
-@@ -1941,6 +1941,45 @@
+@@ -1928,6 +1928,61 @@
      },
 -    "node_modules/@vscode/vsce": {
 -      "version": "3.6.1",
 -      "resolved": "https://registry.npmjs.org/@vscode/vsce/-/vsce-3.6.1.tgz",
 -      "integrity": "sha512-UXtMgeCBl/t5zjn1TX1v1sl5L/oIv3Xc3pkKPGzaqeFCIkp5+wfFFDBXTWDt3d5uUulHnZKORHkMIsKNe9+k5A==",
++    "node_modules/@vscode/vsce/node_modules/ansi-styles": {
++      "version": "4.3.0",
++      "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz",
++      "integrity": "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==",
++      "extraneous": true,
++      "license": "MIT",
++      "dependencies": {
++        "color-convert": "^2.0.1"
++      },
++      "engines": {
++        "node": ">=8"
++      },
++      "funding": {
++        "url": "https://github.com/chalk/ansi-styles?sponsor=1"
++      }
++    },
 +    "node_modules/@vscode/vsce/node_modules/balanced-match": {
 +      "version": "4.0.4",
 +      "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-4.0.4.tgz",
@@ -64,9 +80,9 @@ index 92f3b6a4..420464b0 100644
 +      }
 +    },
 +    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
-+      "version": "5.0.5",
-+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.5.tgz",
-+      "integrity": "sha512-VZznLgtwhn+Mact9tfiwx64fA9erHH/MCXEUfB/0bX/6Fz6ny5EGTXYltMocqg4xFAQZtnO3DHWWXi8RiuN7cQ==",
++      "version": "5.0.7",
++      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.7.tgz",
++      "integrity": "sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==",
 +      "extraneous": true,
 +      "license": "MIT",
 +      "dependencies": {
@@ -97,16 +113,16 @@ index 92f3b6a4..420464b0 100644
 +      "resolved": "https://registry.npmjs.org/@vscodium/vsce/-/vsce-3.6.1-258428.tgz",
 +      "integrity": "sha512-B2uys5YU5MGNmzQPHsMsRXxzlQvZanhxE8Sfkd4Sr/LBN9BaV5yhMCppV7jyLUOQajj9K3YZThLqUYm4CCBy3A==",
        "dev": true,
-@@ -1953,3 +1992,2 @@
+@@ -1940,3 +1995,2 @@
          "@secretlint/secretlint-rule-preset-recommend": "^10.1.2",
 -        "@vscode/vsce-sign": "^2.0.0",
          "azure-devops-node-api": "^12.5.0",
-@@ -1988,148 +2026,3 @@
+@@ -1975,148 +2029,3 @@
      },
 -    "node_modules/@vscode/vsce-sign": {
--      "version": "2.0.7",
--      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign/-/vsce-sign-2.0.7.tgz",
--      "integrity": "sha512-cz0GFW8qCxpypOy3y509u26K1FIPMlDIHBwGmDyvEbgoma2v3y5YIHHuijr8zCYBp9kzCCOJd28s/0PG7cA7ew==",
+-      "version": "2.1.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/vsce-sign/-/vsce-sign-2.1.0.tgz",
+-      "integrity": "sha512-9AQrqazrBgTgRSuwleLVXUrIUphY02/SFCh2TKYoLV/xifJAdblhdmEmw5gUrYSPQ3sRwNs9iyCMD14sATEE6g==",
 -      "dev": true,
 -      "hasInstallScript": true,
 -      "license": "SEE LICENSE IN LICENSE.txt",
@@ -251,52 +267,62 @@ index 92f3b6a4..420464b0 100644
 -    "node_modules/@vscode/vsce/node_modules/ansi-styles": {
 +    "node_modules/@vscodium/vsce/node_modules/ansi-styles": {
        "version": "4.3.0",
-@@ -2149,3 +2042,3 @@
+@@ -2136,3 +2045,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/balanced-match": {
 +    "node_modules/@vscodium/vsce/node_modules/balanced-match": {
        "version": "4.0.4",
-@@ -2159,3 +2052,3 @@
+@@ -2146,6 +2055,6 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
+-      "version": "5.0.7",
+-      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.7.tgz",
+-      "integrity": "sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==",
 +    "node_modules/@vscodium/vsce/node_modules/brace-expansion": {
-       "version": "5.0.5",
-@@ -2172,3 +2065,3 @@
++      "version": "5.0.9",
++      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.9.tgz",
++      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==",
+       "dev": true,
+@@ -2156,6 +2065,6 @@
+       "engines": {
+-        "node": "18 || 20 || >=22"
++        "node": "20 || >=22"
+       }
      },
 -    "node_modules/@vscode/vsce/node_modules/chalk": {
 +    "node_modules/@vscodium/vsce/node_modules/chalk": {
        "version": "4.1.2",
-@@ -2189,3 +2082,3 @@
+@@ -2176,3 +2085,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/color-convert": {
 +    "node_modules/@vscodium/vsce/node_modules/color-convert": {
        "version": "2.0.1",
-@@ -2202,3 +2095,3 @@
+@@ -2189,3 +2098,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/color-name": {
 +    "node_modules/@vscodium/vsce/node_modules/color-name": {
        "version": "1.1.4",
-@@ -2209,3 +2102,3 @@
+@@ -2196,3 +2105,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/glob": {
 +    "node_modules/@vscodium/vsce/node_modules/glob": {
        "version": "11.1.0",
-@@ -2233,3 +2126,3 @@
+@@ -2220,3 +2129,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/glob/node_modules/minimatch": {
 +    "node_modules/@vscodium/vsce/node_modules/glob/node_modules/minimatch": {
        "version": "10.2.4",
-@@ -2249,3 +2142,3 @@
+@@ -2236,3 +2145,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/has-flag": {
 +    "node_modules/@vscodium/vsce/node_modules/has-flag": {
        "version": "4.0.0",
-@@ -2259,3 +2152,3 @@
+@@ -2246,3 +2155,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/jsonc-parser": {
 +    "node_modules/@vscodium/vsce/node_modules/jsonc-parser": {
        "version": "3.3.1",
-@@ -2263,9 +2156,11 @@
+@@ -2250,9 +2159,11 @@
        "integrity": "sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==",
 -      "dev": true
 +      "dev": true,
@@ -313,12 +339,12 @@ index 92f3b6a4..420464b0 100644
        "dev": true,
 +      "license": "ISC",
        "bin": {
-@@ -2277,3 +2172,3 @@
+@@ -2264,3 +2175,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/supports-color": {
 +    "node_modules/@vscodium/vsce/node_modules/supports-color": {
        "version": "7.2.0",
-@@ -2290,12 +2185,2 @@
+@@ -2277,12 +2188,2 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/yazl": {
 -      "version": "2.5.1",
@@ -331,7 +357,7 @@ index 92f3b6a4..420464b0 100644
 -      }
 -    },
      "node_modules/@xmldom/xmldom": {
-@@ -7022,2 +6907,12 @@
+@@ -7077,2 +6978,12 @@
      },
 +    "node_modules/yazl": {
 +      "version": "2.5.1",
@@ -345,11 +371,11 @@ index 92f3b6a4..420464b0 100644
 +    },
      "node_modules/yocto-queue": {
 diff --git a/build/package.json b/build/package.json
-index 4746ea2f..49867df9 100644
+index b642b42a..6e321408 100644
 --- a/build/package.json
 +++ b/build/package.json
 @@ -45,3 +45,3 @@
-     "@vscode/ripgrep": "^1.17.1",
+     "@vscode/ripgrep-universal": "^1.18.0",
 -    "@vscode/vsce": "3.6.1",
 +    "@vscodium/vsce": "3.6.1-258428",
      "ansi-colors": "^3.2.3",
