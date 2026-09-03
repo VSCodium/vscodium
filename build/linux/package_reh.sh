@@ -40,7 +40,6 @@ elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
   VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-armhf"
   NODE_VERSION="24.20.0"
 
-  export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_REPOSITORY='4meters/node-for-armv7'
   export VSCODE_NODEJS_TAG="v${NODE_VERSION}-armv7l"
   export VSCODE_NODEJS_NAME="node-v${NODE_VERSION}-linux-armv7l.tar.gz"
