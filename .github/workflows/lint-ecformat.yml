@@ -22,8 +22,14 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Install ecformat
+        run: |
+          curl --remote-name https://codeberg.org/api/packages/BaumiCoder/generic/ecformat_bin/0.2.0/ecformat-x86_64-unknown-linux-gnu.tar.gz
+
+          echo "e790f3d3a478c3c9db154727ccc2547f7affceec2b8e0f794c7b9d8a132bf65a  ecformat-x86_64-unknown-linux-gnu.tar.gz" | sha256sum --check --strict
+
+          tar -xzf ecformat-x86_64-unknown-linux-gnu.tar.gz
+
       - name: Run ecformat
         run: |
-          cargo install ecformat@0.2.0
-
           ecformat check --verbose --ignore-file .ecformat_ignore
