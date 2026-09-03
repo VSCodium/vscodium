@@ -264,7 +264,7 @@ jobs:
     if: needs.check.outputs.SHOULD_BUILD_APPIMAGE != 'no' && needs.build.outputs.SHOULD_BUILD == 'yes'
 
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
@@ -548,7 +548,7 @@ jobs:
           isClassic: 'true'
         if: env.SHOULD_DEPLOY_TO_RELEASE == 'yes' || env.SHOULD_DEPLOY_TO_STORE == 'yes'
 
-      - uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # latest
+      - uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # 2.11.5
         with:
           repo_name: ${{ env.ASSETS_REPOSITORY }}
           repo_token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
@@ -556,7 +556,7 @@ jobs:
           tag: ${{ env.RELEASE_VERSION }}
         if: env.SHOULD_DEPLOY_TO_RELEASE == 'yes'
 
-      - uses: snapcore/action-publish@214b86e5ca036ead1668c79afb81e550e6c54d40
+      - uses: snapcore/action-publish@214b86e5ca036ead1668c79afb81e550e6c54d40 # v1.2.0
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
         with:
