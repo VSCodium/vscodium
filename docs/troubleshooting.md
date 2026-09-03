@@ -5,16 +5,16 @@
 ## Table of Contents
 
 - [Linux](#linux)
-  - [Fonts showing up as rectangles](#linux-fonts-rectangle)
-  - [Text and/or the entire interface not appearing](#linux-rendering-glitches)
-  - [Global menu workaround for KDE](#linux-kde-global-menu)
-  - [Flatpak most common issues](#linux-flatpak-most-common-issues)
-  - [Remote SSH doesn't work](#linux-remote-ssh)
-  - [The window doesn't show up](#linux-no-window)
+   - [Fonts showing up as rectangles](#linux-fonts-rectangle)
+   - [Text and/or the entire interface not appearing](#linux-rendering-glitches)
+   - [Global menu workaround for KDE](#linux-kde-global-menu)
+   - [Flatpak most common issues](#linux-flatpak-most-common-issues)
+   - [Remote SSH doesn't work](#linux-remote-ssh)
+   - [The window doesn't show up](#linux-no-window)
 - [Windows](#windows)
-  - [Group Policy Objects (GPOs) are ignored](#windows-gpo)
-  - ["Open with VSCodium" missing from context menu](#windows-context-menu)
-  - [Windows Defender flags the installer as malware](#windows-defender)
+   - [Group Policy Objects (GPOs) are ignored](#windows-gpo)
+   - ["Open with VSCodium" missing from context menu](#windows-context-menu)
+   - [Windows Defender flags the installer as malware](#windows-defender)
 
 ## <a id="linux"></a>Linux
 
@@ -51,20 +51,20 @@ Credits: [Gerson](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/
 ### <a id="linux-flatpak-most-common-issues"></a>_Flatpak most common issues_
 
 - blurry screen with HiDPI on wayland run:
-  ```bash
-  flatpak override --user --nosocket=wayland com.vscodium.codium
-  ```
+   ```bash
+   flatpak override --user --nosocket=wayland com.vscodium.codium
+   ```
 - To execute commands on the host system, run inside the sandbox
-  ```bash
-  flatpak-spawn --host <COMMAND>
-  # or
-  host-spawn <COMMAND>
-  ```
+   ```bash
+   flatpak-spawn --host <COMMAND>
+   # or
+   host-spawn <COMMAND>
+   ```
 - Where is my X extension? AKA modify product.json
-  TL;DR: use https://open-vsx.org/extension/zokugun/vsix-manager
+   TL;DR: use https://open-vsx.org/extension/zokugun/vsix-manager
 
 - SDKs
-  see [this](https://github.com/flathub/com.vscodium.codium?tab=readme-ov-file#sdks)
+   see [this](https://github.com/flathub/com.vscodium.codium?tab=readme-ov-file#sdks)
 
 - If you have any other problems with the flatpak package try to look on the [FAQ](https://github.com/flathub/com.vscodium.codium?tab=readme-ov-file#faq) maybe the solution is already there or open an [issue](https://github.com/flathub/com.vscodium.codium/issues).
 

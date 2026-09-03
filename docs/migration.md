@@ -39,16 +39,16 @@ The extension is available in the Visual Studio Marketplace, OpenVSX or directly
 
 1. Install the **Sync Settings** extension in both Visual Studio Code and VSCodium.
 2. Configure the extension on both Visual Studio Code and VSCodium:
-  - Open Command Palette (`Meta+Shift+P`).
-  - Search for `Sync Settings: Open the repository settings` and execute the command.
-  - Configure the repository
+   - Open Command Palette (`Meta+Shift+P`).
+   - Search for `Sync Settings: Open the repository settings` and execute the command.
+   - Configure the repository
 3. Export your current settings from Visual Studio Code:
-  - Open Command Palette (`Meta+Shift+P`).
-  - Search for `Sync Settings: Upload (user -> repository)` and execute the command.
+   - Open Command Palette (`Meta+Shift+P`).
+   - Search for `Sync Settings: Upload (user -> repository)` and execute the command.
 4. Import the settings into VSCodium:
-  - I recommend the setting `"syncSettings.openOutputOnActivity": true,`.
-  - Open Command Palette (`Meta+Shift+P`).
-  - Search for `Sync Settings: Download (repository -> user)` and execute the command.
-  - Wait for all the extensions to be downloaded and installed (follow logs in the `Output` panel) before restarting VSCodium.
+   - I recommend the setting `"syncSettings.openOutputOnActivity": true,`.
+   - Open Command Palette (`Meta+Shift+P`).
+   - Search for `Sync Settings: Download (repository -> user)` and execute the command.
+   - Wait for all the extensions to be downloaded and installed (follow logs in the `Output` panel) before restarting VSCodium.
 
 This method ensures that all supported configurations are seamlessly transferred.

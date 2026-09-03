@@ -9,17 +9,29 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+[*.md]
+indent_style = space
+indent_size = 3
+
+[*.patch{,.no,.yet}]
+trim_trailing_whitespace = false
+insert_final_newline = false
+# There are files with different kinds of indentations
+indent_style = unset
+indent_size = unset
+
 [*.sh]
 indent_style = space
 indent_size = 2
+
+[*.svg]
+insert_final_newline = false
 
 [*.{yml,yaml}]
 indent_style = space
 indent_size = 2
 
-[*.patch]
-trim_trailing_whitespace = false
-insert_final_newline = false
-
-[*.svg]
-insert_final_newline = false
+[*.{xml,xsl,wxi,wxl,wxs}]
+indent_style = tab
+indent_size = 4
+tab_width = 4

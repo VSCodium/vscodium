@@ -6,9 +6,9 @@
 
 - [Incompatibility](#incompatibility)
 - [Replacements](#replacements)
-  - [C/C++](#cc)
-  - [Python](#python)
-  - [Remote](#remote)
+   - [C/C++](#cc)
+   - [Python](#python)
+   - [Remote](#remote)
 
 ## <a id="incompatibility"></a>Incompatibility
 
@@ -31,8 +31,8 @@ The following extensions are functional replacements for incompatible extensions
 ### <a id="cc"></a>C/C++
 
 - [clangd](https://open-vsx.org/extension/llvm-vs-code-extensions/vscode-clangd) for full featured editing (including IntelliSense)
-- [Native Debug](https://open-vsx.org/extension/webfreak/debug) for Debugging with GDB + LLDB  
-  Note that there are many working debugging extensions and specialized ones including for microcontrollers.
+- [Native Debug](https://open-vsx.org/extension/webfreak/debug) for Debugging with GDB + LLDB
+   Note that there are many working debugging extensions and specialized ones including for microcontrollers.
 
 ### <a id="python"></a>Python
 

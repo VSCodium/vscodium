@@ -1,0 +1,29 @@
+name: Lint - ecformat
+
+on:
+  push:
+    branches:
+      - master
+      - insider
+  pull_request:
+    branches:
+      - "**"
+
+permissions: {}
+
+jobs:
+  ecformat:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run ecformat
+        run: |
+          cargo install ecformat@0.2.0
+
+          ecformat check --verbose --ignore-file .ecformat_ignore

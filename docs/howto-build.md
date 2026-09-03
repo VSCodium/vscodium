@@ -5,15 +5,15 @@
 ## Table of Contents
 
 - [Dependencies](#dependencies)
-  - [Linux](#dependencies-linux)
-  - [MacOS](#dependencies-macos)
-  - [Windows](#dependencies-windows)
+   - [Linux](#dependencies-linux)
+   - [MacOS](#dependencies-macos)
+   - [Windows](#dependencies-windows)
 - [Build for Development](#build-dev)
 - [Build for CI/Downstream](#build-ci)
 - [Build Snap](#build-snap)
 - [Patch Update Process](#patch-update-process)
-  - [Semi-Automated](#patch-update-process-semiauto)
-  - [Manual](#patch-update-process-manual)
+   - [Semi-Automated](#patch-update-process-semiauto)
+   - [Manual](#patch-update-process-manual)
 
 ## <a id="dependencies"></a>Dependencies
 
@@ -52,52 +52,52 @@ The build scripts are written in Bash, so on Windows you must run them inside **
 
 - **Git for Windows** — provides Git Bash, `sed`, and POSIX utilities used by the build scripts:
 
-  ```cmd
-  winget install --id Git.Git -e
-  ```
+   ```cmd
+   winget install --id Git.Git -e
+   ```
 
 - **Node.js** — exact version is specified in [`.nvmrc`](../.nvmrc). Use [nvm-windows](https://github.com/coreybutler/nvm-windows) to manage versions:
 
-  ```cmd
-  nvm install <version-from-.nvmrc>
-  nvm use <version-from-.nvmrc>
-  ```
+   ```cmd
+   nvm install <version-from-.nvmrc>
+   nvm use <version-from-.nvmrc>
+   ```
 
-  Alternatively, download directly from [nodejs.org](https://nodejs.org/). During installation, enable **"Automatically install the necessary tools"** to get the C++ build tools (required for native Node addons).
+   Alternatively, download directly from [nodejs.org](https://nodejs.org/). During installation, enable **"Automatically install the necessary tools"** to get the C++ build tools (required for native Node addons).
 
 - **jq** — JSON processor used throughout the build scripts:
 
-  ```cmd
-  winget install --id jqlang.jq -e
-  ```
+   ```cmd
+   winget install --id jqlang.jq -e
+   ```
 
 - **7-Zip** — used to package `.zip` archives:
 
-  ```cmd
-  winget install --id 7zip.7zip -e
-  ```
+   ```cmd
+   winget install --id 7zip.7zip -e
+   ```
 
 - **Python 3.11** — required by the VS Code build system:
 
-  ```cmd
-  winget install --id Python.Python.3.11 -e
-  ```
+   ```cmd
+   winget install --id Python.Python.3.11 -e
+   ```
 
-  Ensure `python` / `python3` is on your `PATH` after installation.
+   Ensure `python` / `python3` is on your `PATH` after installation.
 
 - **Rustup** — required to compile some native VS Code modules:
 
-  ```cmd
-  winget install --id Rustlang.Rustup -e
-  ```
+   ```cmd
+   winget install --id Rustlang.Rustup -e
+   ```
 
-  Restart your shell afterwards so `cargo` and `rustc` are on your `PATH`.
+   Restart your shell afterwards so `cargo` and `rustc` are on your `PATH`.
 
 #### Optional tools
 
 - **WiX Toolset v3** _(only needed for `.msi` installer packaging, i.e., the `-p` flag)_:
 
-  Download from [wixtoolset.org](https://wixtoolset.org/releases/) and ensure `candle.exe` / `light.exe` are on your `PATH`.
+   Download from [wixtoolset.org](https://wixtoolset.org/releases/) and ensure `candle.exe` / `light.exe` are on your `PATH`.
 
 #### PATH verification
 
