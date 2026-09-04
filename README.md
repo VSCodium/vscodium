@@ -188,10 +188,6 @@ The minimal version is limited by the core component Electron, you may want to c
 
 ## <a id="previously-supported-platforms"></a>Previously Supported Platforms
 
-- GNU/Linux armhf:
-   - Latest available: [v1.121.03429](https://github.com/VSCodium/vscodium/releases/tag/1.121.03429).
-   - Breaking point: `node-v24`.
-
 ## <a id="thanks"></a>Special thanks
 
 <table>
