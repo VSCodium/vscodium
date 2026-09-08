@@ -82,6 +82,10 @@ jobs:
         run: ./get_repo.sh
         if: env.SHOULD_BUILD == 'yes'
 
+      - name: Validate compile-time patches
+        run: bash ./dev/check_patches.sh compile
+        if: env.SHOULD_BUILD == 'yes'
+
       - name: Build
         env:
           SHOULD_BUILD_REH: no
@@ -104,6 +108,14 @@ jobs:
           path: ./vscode.tar.gz
           retention-days: 30
         if: env.SHOULD_BUILD == 'yes'
+
+      - name: Upload patch validation logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: patch-check-compile-windows-insider
+          path: ./.patch-check/
+          retention-days: 3
+        if: always() && env.SHOULD_BUILD == 'yes'
 
   build:
     needs:

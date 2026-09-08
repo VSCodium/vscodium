@@ -2,6 +2,14 @@
 
 Documentation for VSCodium patches applied on top of VS Code.
 
+## Validation and maintenance
+
+- GitHub Actions validates patch applicability before the main build and packaging steps.
+- The non-interactive validator is `bash ./dev/check_patches.sh <scope>`.
+- `compile` expects `OS_NAME`, `VSCODE_QUALITY`, and a prepared `vscode/` checkout; package scopes expect `vscode.tar.gz`.
+- Logs are written to `.patch-check/` and uploaded as workflow artifacts.
+- Local regeneration is still done with `./dev/patch.sh <name>.patch` or `./dev/update_patches.sh` when a patch needs human conflict resolution.
+
 ---
 
 ## fix-policies
