@@ -62,7 +62,7 @@ fi
 
 export ARCH
 export OUTPATH=./dist
-export ADD_HOOKS="self-updater.hook"
+export ADD_HOOKS="self-updater.hook:fix-namespaces.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*${ARCH}.AppImage.zsync"
 export ICON="src/${VSCODE_QUALITY}/resources/linux/code.svg"
 export DEPLOY_GTK=1
