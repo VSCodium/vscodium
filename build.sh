@@ -11,6 +11,10 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   export MAX_OLD_SPACE_SIZE="${MAX_OLD_SPACE_SIZE:-8192}"
 
   . prepare_vscode.sh
+  if [ $? -ne 0 ]; then
+    echo "Preparation failed. Build aborted."
+    exit 1
+  fi
 
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
