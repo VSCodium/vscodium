@@ -1,0 +1,113 @@
+diff --git a/package-lock.json b/package-lock.json
+index 86f2564a..b17c205f 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -42,3 +42,2 @@
+         "@vscodium/native-keymap": "3.3.9-260952",
+-        "@vscodium/policy-watcher": "1.4.0-265896",
+         "@xterm/addon-clipboard": "^0.3.0-beta.301",
+@@ -4587,22 +4586,2 @@
+     },
+-    "node_modules/@vscodium/policy-watcher": {
+-      "version": "1.4.0-265896",
+-      "resolved": "https://registry.npmjs.org/@vscodium/policy-watcher/-/policy-watcher-1.4.0-265896.tgz",
+-      "integrity": "sha512-zbMusW4ZzhjKuh0uId2eb/0ihC3cZudqXBI4vEQpalvu0EjOgNxczY1G2lF2arwqSCgnj+TiLJ98WTt1zxH8bQ==",
+-      "hasInstallScript": true,
+-      "license": "MIT",
+-      "dependencies": {
+-        "bindings": "^1.5.0",
+-        "node-addon-api": "^8.2.0"
+-      }
+-    },
+-    "node_modules/@vscodium/policy-watcher/node_modules/node-addon-api": {
+-      "version": "8.7.0",
+-      "resolved": "https://registry.npmjs.org/node-addon-api/-/node-addon-api-8.7.0.tgz",
+-      "integrity": "sha512-9MdFxmkKaOYVTV+XVRG8ArDwwQ77XIgIPyKASB1k3JPq3M8fGQQQE3YpMOrKm6g//Ktx8ivZr8xo1Qmtqub+GA==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": "^18 || ^20 || >= 21"
+-      }
+-    },
+     "node_modules/@webgpu/types": {
+diff --git a/package.json b/package.json
+index e44857b1..e393b26e 100644
+--- a/package.json
++++ b/package.json
+@@ -113,3 +113,2 @@
+     "@vscode/os-proxy-resolver": "^0.3.0",
+-    "@vscodium/policy-watcher": "1.4.0-265896",
+     "@vscode/proxy-agent": "^0.44.0",
+@@ -306,3 +305,2 @@
+     "@vscode/deviceid@0.1.5": true,
+-    "@vscodium/policy-watcher@1.4.0-265896": true,
+     "@vscode/spdlog@0.15.8": true,
+diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
+index de250c8d..02e32b66 100644
+--- a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
++++ b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
+@@ -62,7 +62,2 @@ flakySuite('Native Modules (all platforms)', () => {
+ 
+-	test('@vscodium/policy-watcher', async () => {
+-		const watcher = await import('@vscodium/policy-watcher');
+-		assert.ok(typeof watcher.createWatcher === 'function', testErrorMessage('@vscodium/policy-watcher'));
+-	});
+-
+ 	test('node-pty', async () => {
+diff --git a/src/vs/platform/policy/node/nativeManagedSettingsService.ts b/src/vs/platform/policy/node/nativeManagedSettingsService.ts
+index d3475f5f..99bf606f 100644
+--- a/src/vs/platform/policy/node/nativeManagedSettingsService.ts
++++ b/src/vs/platform/policy/node/nativeManagedSettingsService.ts
+@@ -8,3 +8,3 @@ import { IStringDictionary } from '../../../base/common/collections.js';
+ import { Emitter } from '../../../base/common/event.js';
+-import { Disposable, MutableDisposable } from '../../../base/common/lifecycle.js';
++import { Disposable, IDisposable, MutableDisposable } from '../../../base/common/lifecycle.js';
+ import { equals } from '../../../base/common/objects.js';
+@@ -14,3 +14,4 @@ import { collectManagedSettingsDefinitions, INativeManagedSettingsService, MANAG
+ import { PolicyDefinition, PolicyValue } from '../common/policy.js';
+-import type { Watcher } from '@vscodium/policy-watcher';
++// vslight: @vscodium/policy-watcher is not shipped; managed OS policies are disabled.
++interface Watcher extends IDisposable { }
+ 
+@@ -123,3 +124,10 @@ export class NativeManagedSettingsService extends Disposable implements INativeM
+ 
+-		const { createWatcher } = this.watcherFactory ? { createWatcher: this.watcherFactory } : (await import('@vscodium/policy-watcher') as { createWatcher: NativePolicyWatcherFactory });
++		// vslight: resolve optionally — the module is not shipped in this product.
++		const policyWatcherModule = '@vscodium/policy-watcher';
++		const policyWatcher: { createWatcher?: NativePolicyWatcherFactory } | undefined = this.watcherFactory ? { createWatcher: this.watcherFactory } : await import(policyWatcherModule).catch(() => undefined);
++		if (!policyWatcher?.createWatcher) {
++			this.logService.info('vslight: policy-watcher unavailable, managed OS policies are disabled.');
++			return;
++		}
++		const { createWatcher } = policyWatcher;
+ 		await this.throttler.queue(() => new Promise<void>((c, e) => {
+diff --git a/src/vs/platform/policy/node/nativePolicyService.ts b/src/vs/platform/policy/node/nativePolicyService.ts
+index fc46a02f..5176264b 100644
+--- a/src/vs/platform/policy/node/nativePolicyService.ts
++++ b/src/vs/platform/policy/node/nativePolicyService.ts
+@@ -8,4 +8,7 @@ import { IStringDictionary } from '../../../base/common/collections.js';
+ import { Throttler } from '../../../base/common/async.js';
+-import type { PolicyUpdate, Watcher } from '@vscodium/policy-watcher';
+-import { MutableDisposable } from '../../../base/common/lifecycle.js';
++import { IDisposable, MutableDisposable } from '../../../base/common/lifecycle.js';
++
++// vslight: @vscodium/policy-watcher is not shipped; managed OS policies are disabled.
++type PolicyUpdate = Record<string, PolicyValue | undefined>;
++interface Watcher extends IDisposable { }
+ import { ILogService } from '../../log/common/log.js';
+@@ -27,3 +30,10 @@ export class NativePolicyService extends AbstractPolicyService implements IPolic
+ 
+-		const { createWatcher } = await import('@vscodium/policy-watcher');
++		// vslight: resolve optionally — the module is not shipped in this product.
++		const policyWatcherModule = '@vscodium/policy-watcher';
++		const policyWatcher: { createWatcher?: (vendorName: string, productName: string, policyDefinitions: IStringDictionary<PolicyDefinition>, onDidChange: (update: PolicyUpdate) => void) => Watcher } | undefined = await import(policyWatcherModule).catch(() => undefined);
++		if (!policyWatcher?.createWatcher) {
++			this.logService.info('vslight: policy-watcher unavailable, managed OS policies are disabled.');
++			return;
++		}
++		const { createWatcher } = policyWatcher;
+ 
+@@ -43,3 +53,3 @@ export class NativePolicyService extends AbstractPolicyService implements IPolic
+ 
+-	private _onDidPolicyChange(update: PolicyUpdate<IStringDictionary<PolicyDefinition>>): void {
++	private _onDidPolicyChange(update: PolicyUpdate): void {
+ 		this.logService.trace(`NativePolicyService#_onDidPolicyChange - Updated policy values: ${JSON.stringify(update)}`);
