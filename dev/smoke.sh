@@ -115,15 +115,16 @@ if (( PHASE >= 4 )); then
   if find "${OUT_DIR}" -name 'agentHostMain.js' | grep -q .; then fail "agentHostMain.js 仍在产物"; else pass "产物无 agentHostMain.js"; fi
 fi
 
-# ---- 配置/命令前缀计数（workbench 产物内，quoted-prefix 口径）
-count_prefix() { # count_prefix <prefix> -> stdout count
-  grep -roh "\"$1" "${OUT_DIR}/vs/workbench" 2>/dev/null | wc -l | tr -d ' '
+# ---- 配置/命令前缀计数（workbench 产物内，schema 属性形 "prefix.key":{ 口径，
+#      只计注册用户可见默认设置，不计服务内部使用串；命令面板入口由 L3 层覆盖）
+count_prefix() { # count_prefix <prefix-regex> -> stdout count
+  grep -rohE "\"$1\"[[:space:]]*:[[:space:]]*\{" "${OUT_DIR}/vs/workbench" 2>/dev/null | wc -l | tr -d ' '
 }
-if (( PHASE >= 3 )); then check '"remote." 前缀为 0' "0" "$( count_prefix 'remote\.' )"; fi
+if (( PHASE >= 3 )); then check '"remote.*" 注册设置为 0' "0" "$( count_prefix 'remote\.[a-zA-Z]+' )"; fi
 if (( PHASE >= 4 )); then
-  check '"debug." 前缀为 0' "0" "$( count_prefix 'debug\.' )"
-  check '"chat." 前缀为 0' "0" "$( count_prefix 'chat\.' )"
-  check '"notebook." 前缀为 0' "0" "$( count_prefix 'notebook\.' )"
+  check '"debug.*" 注册设置为 0' "0" "$( count_prefix 'debug\.[a-zA-Z]+' )"
+  check '"chat.*" 注册设置为 0' "0" "$( count_prefix 'chat\.[a-zA-Z]+' )"
+  check '"notebook.*" 注册设置为 0' "0" "$( count_prefix 'notebook\.[a-zA-Z]+' )"
 fi
 
 # =============================================================================
