@@ -123,8 +123,10 @@ count_prefix() { # count_prefix <prefix-regex> -> stdout count
 if (( PHASE >= 3 )); then check '"remote.*" 注册设置为 0' "0" "$( count_prefix 'remote\.[a-zA-Z]+' )"; fi
 if (( PHASE >= 4 )); then
   check '"debug.*" 注册设置为 0' "0" "$( count_prefix 'debug\.[a-zA-Z]+' )"
-  check '"chat.*" 注册设置为 0' "0" "$( count_prefix 'chat\.[a-zA-Z]+' )"
   check '"notebook.*" 注册设置为 0' "0" "$( count_prefix 'notebook\.[a-zA-Z]+' )"
+  # chat: F-12 降级为隐藏入口（全量保留打包，chat.disableAIFeatures 默认 true 隐藏全部 AI 入口）
+  CHAT_OFF="$( grep -rohE '"chat\.disableAIFeatures"[^}]{0,200}default[[:space:]]*:[[:space:]]*(!0|true)' "${OUT_DIR}/vs/workbench" 2>/dev/null | head -1 )"
+  if [[ -n "${CHAT_OFF}" ]]; then pass "chat.disableAIFeatures 默认 true（AI 入口全隐藏）"; else fail "chat.disableAIFeatures 未默认开启"; fi
 fi
 
 # =============================================================================
