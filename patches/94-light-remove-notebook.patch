@@ -1,0 +1,101 @@
+diff --git a/build/buildfile.ts b/build/buildfile.ts
+index d71b8743..69021cc6 100644
+--- a/build/buildfile.ts
++++ b/build/buildfile.ts
+@@ -15,3 +15,2 @@ export const workerEditor = createModuleDescription('vs/editor/common/services/e
+ export const workerExtensionHost = createModuleDescription('vs/workbench/api/worker/extensionHostWorkerMain');
+-export const workerNotebook = createModuleDescription('vs/workbench/contrib/notebook/common/services/notebookWebWorkerMain');
+ export const workerLanguageDetection = createModuleDescription('vs/workbench/services/languageDetection/browser/languageDetectionWebWorkerMain');
+@@ -65,3 +64,2 @@ const buildfile = {
+ 	workerExtensionHost,
+-	workerNotebook,
+ 	workerLanguageDetection,
+diff --git a/build/npm/dirs.ts b/build/npm/dirs.ts
+index 0a0436aa..085736dc 100644
+--- a/build/npm/dirs.ts
++++ b/build/npm/dirs.ts
+@@ -29,3 +29,2 @@ export const dirs = [
+ 	'extensions/html-language-features/server',
+-	'extensions/ipynb',
+ 	'extensions/jake',
+@@ -39,3 +38,2 @@ export const dirs = [
+ 	'extensions/microsoft-authentication',
+-	'extensions/notebook-renderers',
+ 	'extensions/npm',
+diff --git a/src/vs/workbench/contrib/notebook/browser/notebook.service.contribution.ts b/src/vs/workbench/contrib/notebook/browser/notebook.service.contribution.ts
+new file mode 100644
+index 00000000..1f5b09aa
+--- /dev/null
++++ b/src/vs/workbench/contrib/notebook/browser/notebook.service.contribution.ts
+@@ -0,0 +1,51 @@
++/*---------------------------------------------------------------------------------------------
++ *  Copyright (c) Microsoft Corporation. All rights reserved.
++ *  Licensed under the MIT License. See License.txt in the project root for license information.
++ *--------------------------------------------------------------------------------------------*/
++
++// vslight: the notebook UI (notebook.contribution) is removed. This file keeps the
++// notebook service layer registered so the extension API (mainThreadNotebook*) and
++// other kept consumers do not hit DI failures. Notebook editors cannot be opened
++// without the contribution, so these services stay inert locally.
++
++import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
++import { INotebookService } from '../common/notebookService.js';
++import { NotebookService } from './services/notebookServiceImpl.js';
++import { INotebookEditorWorkerService } from '../common/services/notebookWorkerService.js';
++import { NotebookEditorWorkerServiceImpl } from './services/notebookWorkerServiceImpl.js';
++import { INotebookEditorModelResolverService } from '../common/notebookEditorModelResolverService.js';
++import { NotebookModelResolverServiceImpl } from '../common/notebookEditorModelResolverServiceImpl.js';
++import { INotebookCellStatusBarService } from '../common/notebookCellStatusBarService.js';
++import { NotebookCellStatusBarService } from './services/notebookCellStatusBarServiceImpl.js';
++import { INotebookEditorService } from './services/notebookEditorService.js';
++import { NotebookEditorWidgetService } from './services/notebookEditorServiceImpl.js';
++import { INotebookKernelHistoryService, INotebookKernelService } from '../common/notebookKernelService.js';
++import { NotebookKernelService } from './services/notebookKernelServiceImpl.js';
++import { NotebookKernelHistoryService } from './services/notebookKernelHistoryServiceImpl.js';
++import { INotebookExecutionService } from '../common/notebookExecutionService.js';
++import { NotebookExecutionService } from './services/notebookExecutionServiceImpl.js';
++import { INotebookExecutionStateService } from '../common/notebookExecutionStateService.js';
++import { NotebookExecutionStateService } from './services/notebookExecutionStateServiceImpl.js';
++import { INotebookRendererMessagingService } from '../common/notebookRendererMessagingService.js';
++import { NotebookRendererMessagingService } from './services/notebookRendererMessagingServiceImpl.js';
++import { INotebookKeymapService } from '../common/notebookKeymapService.js';
++import { NotebookKeymapService } from './services/notebookKeymapServiceImpl.js';
++import { INotebookLoggingService } from '../common/notebookLoggingService.js';
++import { NotebookLoggingService } from './services/notebookLoggingServiceImpl.js';
++import { INotebookCellOutlineDataSourceFactory, NotebookCellOutlineDataSourceFactory } from './viewModel/notebookOutlineDataSourceFactory.js';
++import { INotebookOutlineEntryFactory, NotebookOutlineEntryFactory } from './viewModel/notebookOutlineEntryFactory.js';
++
++registerSingleton(INotebookService, NotebookService, InstantiationType.Delayed);
++registerSingleton(INotebookEditorWorkerService, NotebookEditorWorkerServiceImpl, InstantiationType.Delayed);
++registerSingleton(INotebookEditorModelResolverService, NotebookModelResolverServiceImpl, InstantiationType.Delayed);
++registerSingleton(INotebookCellStatusBarService, NotebookCellStatusBarService, InstantiationType.Delayed);
++registerSingleton(INotebookEditorService, NotebookEditorWidgetService, InstantiationType.Delayed);
++registerSingleton(INotebookKernelService, NotebookKernelService, InstantiationType.Delayed);
++registerSingleton(INotebookKernelHistoryService, NotebookKernelHistoryService, InstantiationType.Delayed);
++registerSingleton(INotebookExecutionService, NotebookExecutionService, InstantiationType.Delayed);
++registerSingleton(INotebookExecutionStateService, NotebookExecutionStateService, InstantiationType.Delayed);
++registerSingleton(INotebookRendererMessagingService, NotebookRendererMessagingService, InstantiationType.Delayed);
++registerSingleton(INotebookKeymapService, NotebookKeymapService, InstantiationType.Delayed);
++registerSingleton(INotebookLoggingService, NotebookLoggingService, InstantiationType.Delayed);
++registerSingleton(INotebookCellOutlineDataSourceFactory, NotebookCellOutlineDataSourceFactory, InstantiationType.Delayed);
++registerSingleton(INotebookOutlineEntryFactory, NotebookOutlineEntryFactory, InstantiationType.Delayed);
+diff --git a/src/vs/workbench/workbench.common.main.ts b/src/vs/workbench/workbench.common.main.ts
+index f0985dfb..45d7f24a 100644
+--- a/src/vs/workbench/workbench.common.main.ts
++++ b/src/vs/workbench/workbench.common.main.ts
+@@ -213,4 +213,4 @@ import './contrib/performance/browser/performance.contribution.js';
+ 
+-// Notebook
+-import './contrib/notebook/browser/notebook.contribution.js';
++// Notebook — vslight: notebook UI removed; keep the service layer for the extension API
++import './contrib/notebook/browser/notebook.service.contribution.js';
+ 
+@@ -234,8 +234,2 @@ import './contrib/imageCarousel/browser/imageCarousel.contribution.js';
+ 
+-// Interactive
+-import './contrib/interactive/browser/interactive.contribution.js';
+-
+-// repl
+-import './contrib/replNotebook/browser/repl.contribution.js';
+-
+ // Testing
