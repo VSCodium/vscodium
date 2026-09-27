@@ -1,0 +1,67 @@
+diff --git a/src/vs/workbench/contrib/testing/browser/testing.service.contribution.ts b/src/vs/workbench/contrib/testing/browser/testing.service.contribution.ts
+new file mode 100644
+index 00000000..5fbb1426
+--- /dev/null
++++ b/src/vs/workbench/contrib/testing/browser/testing.service.contribution.ts
+@@ -0,0 +1,27 @@
++/*---------------------------------------------------------------------------------------------
++ *  Copyright (c) Microsoft Corporation. All rights reserved.
++ *  Licensed under the MIT License. See License.txt in the project root for license information.
++ *--------------------------------------------------------------------------------------------*/
++
++// vslight: the testing UI (testing.contribution) is removed. This file keeps the
++// testing service layer registered so the extension API (mainThreadTesting) and
++// other kept consumers do not hit DI failures. No test UI exists locally, so
++// these services stay inert.
++
++import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
++import { ITestService } from '../common/testService.js';
++import { TestService } from '../common/testServiceImpl.js';
++import { ITestResultStorage, TestResultStorage } from '../common/testResultStorage.js';
++import { ITestProfileService, TestProfileService } from '../common/testProfileService.js';
++import { ITestCoverageService, TestCoverageService } from '../common/testCoverageService.js';
++import { ITestingContinuousRunService, TestingContinuousRunService } from '../common/testingContinuousRunService.js';
++import { ITestResultService, TestResultService } from '../common/testResultService.js';
++import { ITestExplorerFilterState, TestExplorerFilterState } from '../common/testExplorerFilterState.js';
++
++registerSingleton(ITestService, TestService, InstantiationType.Delayed);
++registerSingleton(ITestResultStorage, TestResultStorage, InstantiationType.Delayed);
++registerSingleton(ITestProfileService, TestProfileService, InstantiationType.Delayed);
++registerSingleton(ITestCoverageService, TestCoverageService, InstantiationType.Delayed);
++registerSingleton(ITestingContinuousRunService, TestingContinuousRunService, InstantiationType.Delayed);
++registerSingleton(ITestResultService, TestResultService, InstantiationType.Delayed);
++registerSingleton(ITestExplorerFilterState, TestExplorerFilterState, InstantiationType.Delayed);
+diff --git a/src/vs/workbench/workbench.common.main.ts b/src/vs/workbench/workbench.common.main.ts
+index 45d7f24a..8af7a500 100644
+--- a/src/vs/workbench/workbench.common.main.ts
++++ b/src/vs/workbench/workbench.common.main.ts
+@@ -234,4 +234,4 @@ import './contrib/imageCarousel/browser/imageCarousel.contribution.js';
+ 
+-// Testing
+-import './contrib/testing/browser/testing.contribution.js';
++// Testing — vslight: testing UI removed; keep the service layer for the extension API
++import './contrib/testing/browser/testing.service.contribution.js';
+ 
+@@ -367,6 +367,4 @@ import './contrib/surveys/browser/languageSurveys.contribution.js';
+ 
+-// Welcome
+-import './contrib/welcomeGettingStarted/browser/gettingStarted.contribution.js';
+-import './contrib/welcomeAgentSessions/browser/agentSessionsWelcome.contribution.js';
+-import './contrib/welcomeWalkthrough/browser/walkThrough.contribution.js';
++// Welcome — vslight: welcome page/walkthroughs removed; viewsWelcome/newFile kept
++// (they render the empty-state of kept views like Explorer)
+ import './contrib/welcomeViews/common/viewsWelcome.contribution.js';
+@@ -399,5 +397,2 @@ import './contrib/userDataSync/browser/userDataSync.contribution.js';
+ 
+-// User Data Profiles
+-import './contrib/userDataProfile/browser/userDataProfile.contribution.js';
+-
+ // Continue Edit Session
+diff --git a/src/vs/workbench/workbench.desktop.main.ts b/src/vs/workbench/workbench.desktop.main.ts
+index acd8a72a..e6065454 100644
+--- a/src/vs/workbench/workbench.desktop.main.ts
++++ b/src/vs/workbench/workbench.desktop.main.ts
+@@ -130,3 +130,2 @@ import './contrib/extensions/electron-browser/devtoolsExtensionHost.contribution
+ // Issues
+-import './contrib/issue/electron-browser/issue.contribution.js';
+ 
