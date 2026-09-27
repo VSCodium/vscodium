@@ -27,7 +27,7 @@ new file mode 100644
 index 00000000..1f5b09aa
 --- /dev/null
 +++ b/src/vs/workbench/contrib/notebook/browser/notebook.service.contribution.ts
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,55 @@
 +/*---------------------------------------------------------------------------------------------
 + *  Copyright (c) Microsoft Corporation. All rights reserved.
 + *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -64,6 +64,8 @@ index 00000000..1f5b09aa
 +import { NotebookLoggingService } from './services/notebookLoggingServiceImpl.js';
 +import { INotebookCellOutlineDataSourceFactory, NotebookCellOutlineDataSourceFactory } from './viewModel/notebookOutlineDataSourceFactory.js';
 +import { INotebookOutlineEntryFactory, NotebookOutlineEntryFactory } from './viewModel/notebookOutlineEntryFactory.js';
++import { IInteractiveDocumentService, InteractiveDocumentService } from '../../interactive/browser/interactiveDocumentService.js';
++import { IInteractiveHistoryService, InteractiveHistoryService } from '../../interactive/browser/interactiveHistoryService.js';
 +
 +registerSingleton(INotebookService, NotebookService, InstantiationType.Delayed);
 +registerSingleton(INotebookEditorWorkerService, NotebookEditorWorkerServiceImpl, InstantiationType.Delayed);
@@ -79,6 +81,8 @@ index 00000000..1f5b09aa
 +registerSingleton(INotebookLoggingService, NotebookLoggingService, InstantiationType.Delayed);
 +registerSingleton(INotebookCellOutlineDataSourceFactory, NotebookCellOutlineDataSourceFactory, InstantiationType.Delayed);
 +registerSingleton(INotebookOutlineEntryFactory, NotebookOutlineEntryFactory, InstantiationType.Delayed);
++registerSingleton(IInteractiveDocumentService, InteractiveDocumentService, InstantiationType.Delayed);
++registerSingleton(IInteractiveHistoryService, InteractiveHistoryService, InstantiationType.Delayed);
 diff --git a/src/vs/workbench/workbench.common.main.ts b/src/vs/workbench/workbench.common.main.ts
 index f0985dfb..45d7f24a 100644
 --- a/src/vs/workbench/workbench.common.main.ts
@@ -149,3 +153,34 @@ diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
  	{ script: 'mermaid-markdown-features/esbuild.webview.mts', tsconfig: 'mermaid-markdown-features/preview-src/tsconfig.json' },
 -	{ script: 'notebook-renderers/esbuild.notebook.mts', tsconfig: 'notebook-renderers/tsconfig.json' },
  	{ script: 'simple-browser/esbuild.webview.mts', tsconfig: 'simple-browser/preview-src/tsconfig.json' },
+diff --git a/src/vs/workbench/contrib/notebook/browser/view/cellParts/cellEditorOptions.ts b/src/vs/workbench/contrib/notebook/browser/view/cellParts/cellEditorOptions.ts
+--- a/src/vs/workbench/contrib/notebook/browser/view/cellParts/cellEditorOptions.ts
++++ b/src/vs/workbench/contrib/notebook/browser/view/cellParts/cellEditorOptions.ts
+@@ -180,17 +180,2 @@
+ }
+-
+-Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerConfiguration({
+-	id: 'notebook',
+-	order: 100,
+-	type: 'object',
+-	'properties': {
+-		'notebook.lineNumbers': {
+-			type: 'string',
+-			enum: ['off', 'on'],
+-			default: 'off',
+-			markdownDescription: localize('notebook.lineNumbers', "Controls the display of line numbers in the cell editor.")
+-		}
+-	}
+-});
+-
+ registerAction2(class ToggleLineNumberAction extends Action2 {
+diff --git a/src/vs/workbench/contrib/notebook/browser/view/cellParts/cellEditorOptions.ts b/src/vs/workbench/contrib/notebook/browser/view/cellParts/cellEditorOptions.ts
+--- a/src/vs/workbench/contrib/notebook/browser/view/cellParts/cellEditorOptions.ts
++++ b/src/vs/workbench/contrib/notebook/browser/view/cellParts/cellEditorOptions.ts
+@@ -11,6 +11,4 @@ import { Action2, MenuId, registerAction2 } from '../../../../../../platform/act
+ import { IConfigurationService } from '../../../../../../platform/configuration/common/configuration.js';
+-import { Extensions as ConfigurationExtensions, IConfigurationRegistry } from '../../../../../../platform/configuration/common/configurationRegistry.js';
+ import { ContextKeyExpr } from '../../../../../../platform/contextkey/common/contextkey.js';
+ import { ServicesAccessor } from '../../../../../../platform/instantiation/common/instantiation.js';
+-import { Registry } from '../../../../../../platform/registry/common/platform.js';
+ import { ActiveEditorContext } from '../../../../../common/contextkeys.js';
