@@ -1,0 +1,170 @@
+diff --git a/build/buildfile.ts b/build/buildfile.ts
+index c2dbccb4..8ab03132 100644
+--- a/build/buildfile.ts
++++ b/build/buildfile.ts
+@@ -27,7 +27,4 @@ export const workbenchDesktop = [
+ 	createModuleDescription('vs/platform/terminal/node/ptyHostMain'),
+-	createModuleDescription('vs/platform/agentHost/node/agentHostMain'),
+-	createModuleDescription('vs/platform/agentHost/node/diffWorkerMain'),
+ 	createModuleDescription('vs/workbench/api/node/extensionHostProcess'),
+-	createModuleDescription('vs/workbench/workbench.desktop.main'),
+-	createModuleDescription('vs/sessions/sessions.desktop.main')
++	createModuleDescription('vs/workbench/workbench.desktop.main')
+ ];
+@@ -50,3 +47,2 @@ export const code = [
+ 	createModuleDescription('vs/code/electron-browser/workbench/workbench'),
+-	createModuleDescription('vs/sessions/electron-browser/sessions'),
+ ];
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+index 95e47b72..8847def2 100644
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -80,3 +80,2 @@ const vscodeResourceIncludes = [
+ 	'out-build/vs/code/electron-browser/workbench/workbench.html',
+-	'out-build/vs/sessions/electron-browser/sessions.html',
+ 
+@@ -116,9 +115,2 @@ const vscodeResourceIncludes = [
+ 
+-	// Sessions
+-	'out-build/vs/sessions/contrib/chat/browser/media/*.svg',
+-	'out-build/vs/sessions/contrib/welcome/browser/media/*.svg',
+-	'out-build/vs/sessions/contrib/welcome/browser/media/themePreviews/*.svg',
+-	'out-build/vs/sessions/prompts/*.prompt.md',
+-	'out-build/vs/sessions/skills/**/SKILL.md',
+-
+ 	// Extensions
+@@ -175,3 +167,3 @@ const bundleVSCodeTask = task.define('bundle-vscode', task.series(
+ 				resources: vscodeResources,
+-				skipTSBoilerplateRemoval: entryPoint => entryPoint === 'vs/code/electron-browser/workbench/workbench' || entryPoint === 'vs/sessions/electron-browser/sessions'
++				skipTSBoilerplateRemoval: entryPoint => entryPoint === 'vs/code/electron-browser/workbench/workbench'
+ 			}
+@@ -284,6 +276,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+ 			'vs/code/electron-browser/workbench/workbench.js',
+-			'vs/sessions/sessions.desktop.main.js',
+-			'vs/sessions/sessions.desktop.main.css',
+-			'vs/sessions/electron-browser/sessions.html',
+-			'vs/sessions/electron-browser/sessions.js'
+ 		]);
+diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
+index eedc6a19..d7c00441 100644
+--- a/src/vs/code/electron-main/app.ts
++++ b/src/vs/code/electron-main/app.ts
+@@ -131,4 +131,2 @@ import { ElectronPtyHostStarter } from '../../platform/terminal/electron-main/el
+ import { PtyHostService } from '../../platform/terminal/node/ptyHostService.js';
+-import { ElectronAgentHostStarter } from '../../platform/agentHost/electron-main/electronAgentHostStarter.js';
+-import { AgentHostProcessManager } from '../../platform/agentHost/node/agentHostService.js';
+ import { NODE_REMOTE_RESOURCE_CHANNEL_NAME, NODE_REMOTE_RESOURCE_IPC_METHOD_NAME, NodeRemoteResourceResponse, NodeRemoteResourceRouter } from '../../platform/remote/common/electronRemoteResources.js';
+@@ -731,13 +729,2 @@ export class CodeApplication extends Disposable {
+ 
+-		// Agent Host
+-		// Always instantiate the starter + manager. They are cheap (the
+-		// constructors only register an IPC listener and emitters) and the agent
+-		// host utility process is spawned lazily on the first window connection
+-		// request. The renderer only requests a connection when the runtime is
+-		// available and AI features are enabled there, which the main process
+-		// cannot fully observe.
+-		const agentHostStarter = appInstantiationService.createInstance(ElectronAgentHostStarter, { machineId, sqmId, devDeviceId });
+-		// This manager self-disposes after its lifecycle join; CodeApplication disposes before later shutdown listeners run.
+-		appInstantiationService.createInstance(AgentHostProcessManager, agentHostStarter, process.platform);
+-
+ 		// Metered connection telemetry
+diff --git a/src/vs/code/electron-utility/sharedProcess/sharedProcessMain.ts b/src/vs/code/electron-utility/sharedProcess/sharedProcessMain.ts
+index 011d8d51..cc36e4e2 100644
+--- a/src/vs/code/electron-utility/sharedProcess/sharedProcessMain.ts
++++ b/src/vs/code/electron-utility/sharedProcess/sharedProcessMain.ts
+@@ -89,9 +89,2 @@ import { IExtensionsScannerService } from '../../../platform/extensionManagement
+ import { ExtensionsScannerService } from '../../../platform/extensionManagement/node/extensionsScannerService.js';
+-import { ISSHRemoteAgentHostMainService, SSH_REMOTE_AGENT_HOST_CHANNEL } from '../../../platform/agentHost/common/sshRemoteAgentHost.js';
+-import { SSHRemoteAgentHostMainService } from '../../../platform/agentHost/node/sshRemoteAgentHostService.js';
+-import { IWSLRemoteAgentHostMainService, WSL_REMOTE_AGENT_HOST_CHANNEL } from '../../../platform/agentHost/common/wslRemoteAgentHost.js';
+-import { WSLRemoteAgentHostMainService } from '../../../platform/agentHost/node/wslRemoteAgentHostService.js';
+-import { ITunnelAgentHostMainService, ITunnelAgentHostHostingService, TUNNEL_AGENT_HOST_CHANNEL, TUNNEL_HOST_CHANNEL } from '../../../platform/agentHost/common/tunnelAgentHost.js';
+-import { TunnelAgentHostMainService } from '../../../platform/agentHost/node/tunnelAgentHostService.js';
+-import { TunnelHostMainService } from '../../../platform/agentHost/node/tunnelHostMainService.js';
+ import { IUserDataProfilesService } from '../../../platform/userDataProfile/common/userDataProfile.js';
+@@ -422,13 +415,2 @@ class SharedProcessMain extends Disposable implements IClientConnectionFilter {
+ 
+-		// SSH Remote Agent Host
+-		services.set(ISSHRemoteAgentHostMainService, new SyncDescriptor(SSHRemoteAgentHostMainService, undefined, true));
+-
+-		// WSL Remote Agent Host
+-		services.set(IWSLRemoteAgentHostMainService, new SyncDescriptor(WSLRemoteAgentHostMainService, undefined, true));
+-
+-		// Tunnel Agent Host
+-		services.set(ITunnelAgentHostMainService, new SyncDescriptor(TunnelAgentHostMainService, undefined, true));
+-
+-		// Tunnel Host (hosting local agent host for remote connections)
+-		services.set(ITunnelAgentHostHostingService, new SyncDescriptor(TunnelHostMainService, undefined, true));
+ 
+@@ -510,17 +492,2 @@ class SharedProcessMain extends Disposable implements IClientConnectionFilter {
+ 
+-		// SSH Remote Agent Host
+-		const sshRemoteAgentHostChannel = ProxyChannel.fromService(accessor.get(ISSHRemoteAgentHostMainService), this._store);
+-		this.server.registerChannel(SSH_REMOTE_AGENT_HOST_CHANNEL, sshRemoteAgentHostChannel);
+-
+-		// WSL Remote Agent Host
+-		const wslRemoteAgentHostChannel = ProxyChannel.fromService(accessor.get(IWSLRemoteAgentHostMainService), this._store);
+-		this.server.registerChannel(WSL_REMOTE_AGENT_HOST_CHANNEL, wslRemoteAgentHostChannel);
+-
+-		// Tunnel Agent Host
+-		const tunnelAgentHostChannel = ProxyChannel.fromService(accessor.get(ITunnelAgentHostMainService), this._store);
+-		this.server.registerChannel(TUNNEL_AGENT_HOST_CHANNEL, tunnelAgentHostChannel);
+-
+-		// Tunnel Host
+-		const tunnelHostChannel = ProxyChannel.fromService(accessor.get(ITunnelAgentHostHostingService), this._store);
+-		this.server.registerChannel(TUNNEL_HOST_CHANNEL, tunnelHostChannel);
+ 	}
+diff --git a/src/vs/platform/windows/electron-main/windowImpl.ts b/src/vs/platform/windows/electron-main/windowImpl.ts
+index 4a51cc55..b03577e0 100644
+--- a/src/vs/platform/windows/electron-main/windowImpl.ts
++++ b/src/vs/platform/windows/electron-main/windowImpl.ts
+@@ -710,5 +710,2 @@ export class CodeWindow extends BaseWindow implements ICodeWindow {
+ 			};
+-			if (config.isSessionsWindow) {
+-				webPreferences.backgroundThrottling = false; // keep agents window responsive when in background
+-			}
+ 
+@@ -1212,4 +1209,2 @@ export class CodeWindow extends BaseWindow implements ICodeWindow {
+ 			windowUrl = process.env.VSCODE_DEV_SERVER_URL; // support URL override for development
+-		} else if (configuration.isSessionsWindow) {
+-			windowUrl = FileAccess.asBrowserUri(`vs/sessions/electron-browser/sessions${this.environmentMainService.isBuilt ? '' : '-dev'}.html`).toString(true);
+ 		} else {
+diff --git a/src/vs/platform/windows/electron-main/windowsMainService.ts b/src/vs/platform/windows/electron-main/windowsMainService.ts
+index d8428b52..a666064d 100644
+--- a/src/vs/platform/windows/electron-main/windowsMainService.ts
++++ b/src/vs/platform/windows/electron-main/windowsMainService.ts
+@@ -21,3 +21,3 @@ import { IProcessEnvironment, isMacintosh, isWindows, OS } from '../../../base/c
+ import { cwd } from '../../../base/common/process.js';
+-import { extUriBiasedIgnorePathCase, isEqual, isEqualAuthority, normalizePath, originalFSPath, removeTrailingPathSeparator } from '../../../base/common/resources.js';
++import { extUriBiasedIgnorePathCase, isEqualAuthority, normalizePath, originalFSPath, removeTrailingPathSeparator } from '../../../base/common/resources.js';
+ import { assertReturnsDefined } from '../../../base/common/types.js';
+@@ -1599,3 +1599,3 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
+ 
+-			isSessionsWindow: isWorkspaceIdentifier(options.workspace) && isEqual(options.workspace.configPath, this.environmentMainService.agentSessionsWorkspace),
++			isSessionsWindow: false, // vslight: sessions window removed; always open a normal workbench window
+ 		};
+diff --git a/src/vs/workbench/workbench.common.main.ts b/src/vs/workbench/workbench.common.main.ts
+index 8f63e647..73e33638 100644
+--- a/src/vs/workbench/workbench.common.main.ts
++++ b/src/vs/workbench/workbench.common.main.ts
+@@ -13,10 +13,2 @@ import './browser/workbench.zenMode.contribution.js';
+ 
+-// Agent-sessions color tokens — side-effect import so they register in the
+-// global color registry and appear in the color-theme JSON schema.
+-import '../sessions/common/theme.js';
+-
+-// Agent-sessions size tokens (font ramp) — side-effect import so they register
+-// in the global size registry and appear in the workbench-sizes JSON schema.
+-import '../sessions/common/sizes.js';
+-
+ //#endregion
+diff --git a/src/vs/workbench/workbench.desktop.main.ts b/src/vs/workbench/workbench.desktop.main.ts
+index 63b2e6f2..a91540b0 100644
+--- a/src/vs/workbench/workbench.desktop.main.ts
++++ b/src/vs/workbench/workbench.desktop.main.ts
+@@ -92,5 +92,2 @@ import '../platform/sandbox/electron-browser/sandboxHelperService.js';
+ import '../platform/webContentExtractor/electron-browser/webContentExtractorService.js';
+-import './services/agentHost/electron-browser/agentHostService.js';
+-import '../platform/agentHost/electron-browser/remoteAgentHostService.js';
+-import '../platform/agentHost/browser/agentHostEnablementService.js';
+ import './services/browserView/electron-browser/playwrightWorkbenchService.js';
