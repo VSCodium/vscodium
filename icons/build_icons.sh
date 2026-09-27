@@ -37,13 +37,13 @@ check_programs "icns2png" "composite" "convert" "png2icns" "icotool" "rsvg-conve
 
 if ! declare -F load_linux_png &>/dev/null; then
   load_linux_png() {
-    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "$1"
+    cp "icons/${QUALITY}/vslight-1024.png" "$1"
   }
 fi
 
 if ! declare -F load_windows_ico &>/dev/null; then
   load_windows_ico() {
-    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "$1"
+    cp "icons/${QUALITY}/vslight.ico" "$1"
   }
 fi
 
@@ -52,9 +52,9 @@ build_darwin_main() { # {{{
     mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/darwin"
 
     if [[ "$1" == "no-template" ]]; then
-      rsvg-convert -w 1024 -h 1024 "icons/${QUALITY}/codium_cnl.svg" -o "code_1024.png"
+      rsvg-convert -w 1024 -h 1024 "icons/${QUALITY}/vslight.svg" -o "code_1024.png"
     else
-      rsvg-convert -w 655 -h 655 "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
+      rsvg-convert -w 655 -h 655 "icons/${QUALITY}/vslight.svg" -o "code_logo.png"
       composite "code_logo.png" -gravity center "${VSCODE_PREFIX}icons/template_macos.png" "code_1024.png"
     fi
 
@@ -70,9 +70,9 @@ build_darwin_main() { # {{{
 
 build_darwin_types() { # {{{
   if [[ "$1" == "no-border" ]]; then
-    rsvg-convert -w 128 -h 128 "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
+    rsvg-convert -w 128 -h 128 "icons/${QUALITY}/vslight.svg" -o "code_logo.png"
   else
-    rsvg-convert -w 128 -h 128 "icons/${QUALITY}/codium_cnl_w80_b8.svg" -o "code_logo.png"
+    rsvg-convert -w 128 -h 128 "icons/${QUALITY}/vslight.svg" -o "code_logo.png"
   fi
 
   for file in "${VSCODE_PREFIX}"vscode/resources/darwin/*; do
@@ -115,7 +115,7 @@ build_media() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/src/vs/workbench/browser/media/code-icon.svg" ]]; then
     mkdir -p "${SRC_PREFIX}src/${QUALITY}/src/vs/workbench/browser/media"
 
-    cp "icons/${QUALITY}/codium_clt.svg" "${SRC_PREFIX}src/${QUALITY}/src/vs/workbench/browser/media/code-icon.svg"
+    cp "icons/${QUALITY}/vslight.svg" "${SRC_PREFIX}src/${QUALITY}/src/vs/workbench/browser/media/code-icon.svg"
     gsed -i 's|width="100" height="100"|width="1024" height="1024"|' "${SRC_PREFIX}src/${QUALITY}/src/vs/workbench/browser/media/code-icon.svg"
   fi
 } # }}}
@@ -160,7 +160,7 @@ build_windows_type() { # {{{
       convert -size "${IMG_SIZE}" "${IMG_BG_COLOR}" "${FILE_PATH}"
     fi
 
-    rsvg-convert -w "${LOGO_SIZE}" -h "${LOGO_SIZE}" "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
+    rsvg-convert -w "${LOGO_SIZE}" -h "${LOGO_SIZE}" "icons/${QUALITY}/vslight.svg" -o "code_logo.png"
 
     if [[ "${GRAVITY}" == "center" ]]; then
       composite -gravity "${GRAVITY}" "code_logo.png" "${FILE_PATH}" "${FILE_PATH}"
@@ -173,7 +173,7 @@ build_windows_type() { # {{{
 build_windows_types() { # {{{
   mkdir -p "${SRC_PREFIX}src/${QUALITY}/resources/win32" "${SRC_PREFIX}build/windows/msi/resources/${QUALITY}"
 
-  rsvg-convert -b "#F5F6F7" -w 64 -h 64 "icons/${QUALITY}/codium_cnl.svg" -o "code_logo.png"
+  rsvg-convert -b "#F5F6F7" -w 64 -h 64 "icons/${QUALITY}/vslight.svg" -o "code_logo.png"
 
   for file in "${VSCODE_PREFIX}"vscode/resources/win32/*.ico; do
     if [[ -f "${file}" ]]; then
