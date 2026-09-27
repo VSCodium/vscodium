@@ -176,6 +176,16 @@ for file in ../patches/user/*.patch; do
 done
 # }}}
 
+# {{{ vslight light-prune — must run AFTER all patches (docs/vslight-plan.md §1.3-a;
+# audit: dev/progress/audit-remove-patch.md). apply_actions exits 4 on missing paths.
+for file in ../patches/light/*.json; do
+  if [[ -f "${file}" ]]; then
+    echo "light-prune: ${file}"
+    apply_actions "${file}"
+  fi
+done
+# }}}
+
 set -x
 
 # {{{ install dependencies
