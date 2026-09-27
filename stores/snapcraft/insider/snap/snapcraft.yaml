@@ -1,5 +1,5 @@
-name: codium-insiders
-adopt-info: codium-insiders
+name: vslight-insiders
+adopt-info: vslight-insiders
 summary: Code editing. Redefined.
 description: |
   Binary releases of Visual Studio Code - Insiders without branding/telemetry/licensing
@@ -10,12 +10,12 @@ confinement: classic
 compression: lzo
 
 parts:
-  codium-insiders:
+  vslight-insiders:
     plugin: nil
     override-build: |
       set -eu
       # Get .deb url
-      wget --quiet https://api.github.com/repos/VSCodium/vscodium-insiders/releases -O latest.json
+      wget --quiet https://api.github.com/repos/vslight/vslight-insiders/releases -O latest.json
       VERSION=$( jq -r 'sort_by(.tag_name|split("-")[0]|split(".")|map(tonumber))|last.tag_name' latest.json )
       DEB_URL=$( jq -r 'map(select(.tag_name == "'"${VERSION}"'"))|first.assets[].browser_download_url|select(endswith("'"_${SNAPCRAFT_TARGET_ARCH}.deb"'"))' latest.json )
       DEB_NAME=$( basename "${DEB_URL}" )
@@ -30,12 +30,12 @@ parts:
       snapcraftctl set-version "${VERSION/-*/}"
       # Prepare GUI
       mkdir -p "${SNAPCRAFT_PART_INSTALL}/meta/gui"
-      cp "${SNAPCRAFT_PART_INSTALL}/usr/share/codium-insiders/resources/app/resources/linux/code.png" "${SNAPCRAFT_PART_INSTALL}/meta/gui/codium-insiders.png"
+      cp "${SNAPCRAFT_PART_INSTALL}/usr/share/vslight-insiders/resources/app/resources/linux/code.png" "${SNAPCRAFT_PART_INSTALL}/meta/gui/vslight-insiders.png"
       # Update paths
-      sed -i 's|Exec=/usr/share/codium/codium-insiders|Exec=codium-insiders --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders.desktop"
-      sed -i 's|Exec=/usr/share/codium/codium-insiders|Exec=codium-insiders --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders-url-handler.desktop"
-      sed -i 's|Icon=vscodium-insiders|Icon=${SNAP}/meta/gui/codium-insiders.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders.desktop"
-      sed -i 's|Icon=vscodium-insiders|Icon=${SNAP}/meta/gui/codium-insiders.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/codium-insiders-url-handler.desktop"
+      sed -i 's|Exec=/usr/share/vslight/vslight-insiders|Exec=vslight-insiders --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/vslight-insiders.desktop"
+      sed -i 's|Exec=/usr/share/vslight/vslight-insiders|Exec=vslight-insiders --force-user-env|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/vslight-insiders-url-handler.desktop"
+      sed -i 's|Icon=vslight-insiders|Icon=${SNAP}/meta/gui/vslight-insiders.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/vslight-insiders.desktop"
+      sed -i 's|Icon=vslight-insiders|Icon=${SNAP}/meta/gui/vslight-insiders.png|g' "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/vslight-insiders-url-handler.desktop"
     build-packages:
       - wget
       - jq
@@ -76,7 +76,7 @@ parts:
       - -usr/share/icons
       - -usr/share/lintian
       - -usr/share/man
-      - -usr/share/codium-insiders/chrome-sandbox
+      - -usr/share/vslight-insiders/chrome-sandbox
     build-attributes:
       - enable-patchelf
     override-prime: |
@@ -89,16 +89,16 @@ parts:
 
   electron-launch:
     after:
-      - codium-insiders
+      - vslight-insiders
     plugin: dump
     source: snap/local/bin
 
 apps:
-  codium:
-    command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --no-sandbox
-    desktop: usr/share/applications/codium-insiders.desktop
-    common-id: codium-insiders.desktop
+  vslight:
+    command: electron-launch $SNAP/usr/share/vslight-insiders/bin/vslight-insiders --no-sandbox
+    desktop: usr/share/applications/vslight-insiders.desktop
+    common-id: vslight-insiders.desktop
 
   url-handler:
-    command: electron-launch $SNAP/usr/share/codium-insiders/bin/codium-insiders --open-url --no-sandbox
-    desktop: usr/share/applications/codium-insiders-url-handler.desktop
+    command: electron-launch $SNAP/usr/share/vslight-insiders/bin/vslight-insiders --open-url --no-sandbox
+    desktop: usr/share/applications/vslight-insiders-url-handler.desktop

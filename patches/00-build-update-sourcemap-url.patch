@@ -9,7 +9,7 @@ index e013781..3caf586 100644
 @@ -100,3 +101,3 @@ const compilations = [
  
 -const getBaseUrl = (out: string) => `https://main.vscode-cdn.net/sourcemaps/${commit}/${out}`;
-+const getBaseUrl = (out: string) => `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}/extensions-${out.replaceAll('/', '-')}`;
++const getBaseUrl = (out: string) => `https://github.com/vslight/sourcemaps/releases/download/${product.quality}-${commit}/extensions-${out.replaceAll('/', '-')}`;
  
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
 index 0ad08ab..78f17b8 100644
@@ -18,7 +18,7 @@ index 0ad08ab..78f17b8 100644
 @@ -494,3 +494,3 @@ function tweakProductForServerWeb(product: typeof import('../product.json')) {
  		util.rimraf(`out-vscode-${type}-min`),
 -		optimize.minifyTask(`out-vscode-${type}`, `https://main.vscode-cdn.net/sourcemaps/${commit}/core`)
-+		optimize.minifyTask(`out-vscode-${type}`, `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}/core`)
++		optimize.minifyTask(`out-vscode-${type}`, `https://github.com/vslight/sourcemaps/releases/download/${product.quality}-${commit}/core`)
  	));
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
 index 187726c..4854af5 100644
@@ -27,7 +27,7 @@ index 187726c..4854af5 100644
 @@ -238,3 +238,3 @@ function runTsGoTypeCheck(): Promise<void> {
  
 -const sourceMappingURLBase = `https://main.vscode-cdn.net/sourcemaps/${commit}`;
-+const sourceMappingURLBase = `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}`;
++const sourceMappingURLBase = `https://github.com/vslight/sourcemaps/releases/download/${product.quality}-${commit}`;
  const isCI = !!process.env['CI'] || !!process.env['BUILD_ARTIFACTSTAGINGDIRECTORY'] || !!process.env['GITHUB_WORKSPACE'];
 diff --git a/build/gulpfile.vscode.web.ts b/build/gulpfile.vscode.web.ts
 index 3e6b29a..f031b99 100644
@@ -36,12 +36,12 @@ index 3e6b29a..f031b99 100644
 @@ -164,3 +164,3 @@ const minifyVSCodeWebTask = task.define('minify-vscode-web-OLD', task.series(
  	util.rimraf('out-vscode-web-min'),
 -	optimize.minifyTask('out-vscode-web', `https://main.vscode-cdn.net/sourcemaps/${commit}/core`)
-+	optimize.minifyTask('out-vscode-web', `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}/core`)
++	optimize.minifyTask('out-vscode-web', `https://github.com/vslight/sourcemaps/releases/download/${product.quality}-${commit}/core`)
  ));
 @@ -169,3 +169,3 @@ gulp.task(minifyVSCodeWebTask);
  // esbuild-based tasks (new)
 -const sourceMappingURLBase = `https://main.vscode-cdn.net/sourcemaps/${commit}`;
-+const sourceMappingURLBase = `https://github.com/VSCodium/sourcemaps/releases/download/${product.quality}-${commit}`;
++const sourceMappingURLBase = `https://github.com/vslight/sourcemaps/releases/download/${product.quality}-${commit}`;
  const esbuildBundleVSCodeWebTask = task.define('esbuild-vscode-web', () => runEsbuildBundle('out-vscode-web', false, true));
 diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
 index aacf25c..a62f2a7 100644

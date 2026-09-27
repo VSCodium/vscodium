@@ -26,29 +26,29 @@ export VSCODE_NODEJS_URLROOT='/download/release'
 export VSCODE_NODEJS_URLSUFFIX=''
 
 if [[ "${VSCODE_ARCH}" == "x64" ]]; then
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-x64"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vslight/vslight-linux-build-agent:focal-devtoolset-x64"
 
   export VSCODE_SKIP_SETUPENV=1
 elif [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   EXPECTED_GLIBC_VERSION="2.30"
 
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-arm64"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vslight/vslight-linux-build-agent:focal-devtoolset-arm64"
 
   export VSCODE_SKIP_SYSROOT=1
   export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "armhf" ]]; then
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-armhf"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vslight/vslight-linux-build-agent:focal-devtoolset-armhf"
   NODE_VERSION="24.20.0"
 
   export VSCODE_NODEJS_REPOSITORY='4meters/node-for-armv7'
   export VSCODE_NODEJS_TAG="v${NODE_VERSION}-armv7l"
   export VSCODE_NODEJS_NAME="node-v${NODE_VERSION}-linux-armv7l.tar.gz"
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-ppc64le"
-  export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vslight/vslight-linux-build-agent:focal-devtoolset-ppc64le"
+  export VSCODE_SYSROOT_REPOSITORY='vslight/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20260706'
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:jammy-devtoolset-riscv64"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vslight/vslight-linux-build-agent:jammy-devtoolset-riscv64"
   NODE_VERSION="24.18.0"
 
   export VSCODE_SKIP_SETUPENV=1
@@ -56,17 +56,17 @@ elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   export VSCODE_NODEJS_TAG="v${NODE_VERSION}-riscv64.1"
   export VSCODE_NODEJS_NAME="node-v${NODE_VERSION}-linux-${VSCODE_ARCH}-local1.tar.gz"
 elif [[ "${VSCODE_ARCH}" == "loong64" ]]; then
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:beige-devtoolset-loong64"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vslight/vslight-linux-build-agent:beige-devtoolset-loong64"
 
   export VSCODE_SKIP_SETUPENV=1
   export VSCODE_NODEJS_SITE='https://unofficial-builds.nodejs.org'
 elif [[ "${VSCODE_ARCH}" == "s390x" ]]; then
   GLIBC_VERSION="2.28"
 
-  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vscodium/vscodium-linux-build-agent:focal-devtoolset-s390x"
+  VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME="vslight/vslight-linux-build-agent:focal-devtoolset-s390x"
   VSCODE_SYSROOT_PREFIX="-glibc-${GLIBC_VERSION}"
 
-  export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
+  export VSCODE_SYSROOT_REPOSITORY='vslight/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20241108'
 fi
 

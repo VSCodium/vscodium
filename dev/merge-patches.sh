@@ -21,13 +21,13 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 git add .
 git reset -q --hard HEAD
 
-while [[ -n "$( git log -1 | grep "VSCODIUM HELPER" )" ]]; do
+while [[ -n "$( git log -1 | grep "VSLIGHT HELPER" )" ]]; do
   git reset -q --hard HEAD~
 done
 
 git apply --reject "../patches/helper/settings.patch"
 git add .
-git commit --no-verify -q -m "VSCODIUM HELPER"
+git commit --no-verify -q -m "VSLIGHT HELPER"
 
 while [ $# -gt 1 ]; do
   normalize_file "${1}"

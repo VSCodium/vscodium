@@ -35,95 +35,89 @@ setpath_json() {
 }
 
 setpath "product" "checksumFailMoreInfoUrl" "https://go.microsoft.com/fwlink/?LinkId=828886"
-setpath "product" "documentationUrl" "https://go.microsoft.com/fwlink/?LinkID=533484#vscode"
+setpath "product" "documentationUrl" "https://code.visualstudio.com/docs"
 setpath_json "product" "extensionsGallery" '{"serviceUrl": "https://open-vsx.org/vscode/gallery", "itemUrl": "https://open-vsx.org/vscode/item", "latestUrlTemplate": "https://open-vsx.org/vscode/gallery/{publisher}/{name}/latest", "controlUrl": "https://raw.githubusercontent.com/EclipseFdn/publish-extensions/refs/heads/master/extension-control/extensions.json"}'
 
-setpath "product" "introductoryVideosUrl" "https://go.microsoft.com/fwlink/?linkid=832146"
-setpath "product" "keyboardShortcutsUrlLinux" "https://go.microsoft.com/fwlink/?linkid=832144"
-setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?linkid=832143"
-setpath "product" "keyboardShortcutsUrlWin" "https://go.microsoft.com/fwlink/?linkid=832145"
-setpath "product" "licenseUrl" "https://github.com/VSCodium/vscodium/blob/master/LICENSE"
+setpath "product" "keyboardShortcutsUrlLinux" "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf"
+setpath "product" "keyboardShortcutsUrlMac" "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf"
+setpath "product" "keyboardShortcutsUrlWin" "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf"
+setpath "product" "licenseUrl" "https://github.com/vslight/vslight/blob/master/LICENSE"
 setpath_json "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
-setpath "product" "releaseNotesUrl" "https://go.microsoft.com/fwlink/?LinkID=533483#vscode"
-setpath "product" "reportIssueUrl" "https://github.com/VSCodium/vscodium/issues/new"
-setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
-setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=852118"
-setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
+setpath "product" "releaseNotesUrl" "https://github.com/vslight/vslight/releases"
+setpath "product" "reportIssueUrl" "https://github.com/vslight/vslight/issues/new"
 
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
-  setpath "product" "updateUrl" "https://raw.githubusercontent.com/VSCodium/versions/refs/heads/master"
+  setpath "product" "updateUrl" "https://raw.githubusercontent.com/vslight/versions/refs/heads/master"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    setpath "product" "downloadUrl" "https://github.com/VSCodium/vscodium-insiders/releases"
+    setpath "product" "downloadUrl" "https://github.com/vslight/vslight-insiders/releases"
   else
-    setpath "product" "downloadUrl" "https://github.com/VSCodium/vscodium/releases"
+    setpath "product" "downloadUrl" "https://github.com/vslight/vslight/releases"
   fi
-
-  # if [[ "${OS_NAME}" == "windows" ]]; then
-  #   setpath_json "product" "win32VersionedUpdate" "true"
-  # fi
 fi
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  setpath "product" "nameShort" "VSCodium - Insiders"
-  setpath "product" "nameLong" "VSCodium - Insiders"
-  setpath "product" "applicationName" "codium-insiders"
-  setpath "product" "dataFolderName" ".vscodium-insiders"
-  setpath "product" "linuxIconName" "vscodium-insiders"
+  setpath "product" "nameShort" "VSLight - Insiders"
+  setpath "product" "nameLong" "VSLight - Insiders"
+  setpath "product" "applicationName" "vslight-insiders"
+  setpath "product" "dataFolderName" ".vslight-insiders"
+  setpath "product" "linuxIconName" "vslight-insiders"
   setpath "product" "quality" "insider"
-  setpath "product" "urlProtocol" "vscodium-insiders"
-  setpath "product" "serverApplicationName" "codium-server-insiders"
-  setpath "product" "serverDataFolderName" ".vscodium-server-insiders"
-  setpath "product" "darwinBundleIdentifier" "com.vscodium.VSCodiumInsiders"
-  setpath "product" "win32AppUserModelId" "VSCodium.VSCodiumInsiders"
-  setpath "product" "win32DirName" "VSCodium Insiders"
-  setpath "product" "win32MutexName" "vscodiuminsiders"
-  setpath "product" "win32NameVersion" "VSCodium Insiders"
-  setpath "product" "win32RegValueName" "VSCodiumInsiders"
-  setpath "product" "win32ShellNameShort" "VSCodium Insiders"
-  setpath "product" "win32AppId" "{{EF35BB36-FA7E-4BB9-B7DA-D1E09F2DA9C9}"
-  setpath "product" "win32x64AppId" "{{B2E0DDB2-120E-4D34-9F7E-8C688FF839A2}"
-  setpath "product" "win32arm64AppId" "{{44721278-64C6-4513-BC45-D48E07830599}"
-  setpath "product" "win32UserAppId" "{{ED2E5618-3E7E-4888-BF3C-A6CCC84F586F}"
-  setpath "product" "win32x64UserAppId" "{{20F79D0D-A9AC-4220-9A81-CE675FFB6B41}"
-  setpath "product" "win32arm64UserAppId" "{{2E362F92-14EA-455A-9ABD-3E656BBBFE71}"
-  setpath "product" "tunnelApplicationName" "codium-insiders-tunnel"
-  setpath "product" "win32TunnelServiceMutex" "vscodiuminsiders-tunnelservice"
-  setpath "product" "win32TunnelMutex" "vscodiuminsiders-tunnel"
+  setpath "product" "urlProtocol" "vslight-insiders"
+  setpath "product" "darwinBundleIdentifier" "com.vslight.VSLightInsiders"
+  setpath "product" "win32AppUserModelId" "VSLight.VSLightInsiders"
+  setpath "product" "win32DirName" "VSLight Insiders"
+  setpath "product" "win32MutexName" "vslightinsiders"
+  setpath "product" "win32NameVersion" "VSLight Insiders"
+  setpath "product" "win32RegValueName" "VSLightInsiders"
+  setpath "product" "win32ShellNameShort" "VSLight Insiders"
+  setpath "product" "win32AppId" "{{086A68B5-11FB-4A53-B581-00B085E0C26D}"
+  setpath "product" "win32x64AppId" "{{1ADD66A1-D56B-4D29-8784-B4F1159AA17D}"
+  setpath "product" "win32arm64AppId" "{{35E6F2F5-1819-4059-821A-71B4792483E5}"
+  setpath "product" "win32UserAppId" "{{542F10DC-7068-4EB9-A635-8FC7C64B47E1}"
+  setpath "product" "win32x64UserAppId" "{{7A251FF6-AE7A-4EFF-A668-7F28E584D8E2}"
+  setpath "product" "win32arm64UserAppId" "{{1C8C6787-818A-4A15-B57A-226942EA1330}"
   setpath "product" "win32ContextMenu.x64.clsid" "90AAD229-85FD-43A3-B82D-8598A88829CF"
   setpath "product" "win32ContextMenu.arm64.clsid" "7544C31C-BDBF-4DDF-B15E-F73A46D6723D"
 else
-  setpath "product" "nameShort" "VSCodium"
-  setpath "product" "nameLong" "VSCodium"
-  setpath "product" "applicationName" "codium"
-  setpath "product" "linuxIconName" "vscodium"
+  setpath "product" "nameShort" "VSLight"
+  setpath "product" "nameLong" "VSLight"
+  setpath "product" "applicationName" "vslight"
+  setpath "product" "dataFolderName" ".vslight"
+  setpath "product" "linuxIconName" "vslight"
   setpath "product" "quality" "stable"
-  setpath "product" "urlProtocol" "vscodium"
-  setpath "product" "serverApplicationName" "codium-server"
-  setpath "product" "serverDataFolderName" ".vscodium-server"
-  setpath "product" "darwinBundleIdentifier" "com.vscodium"
-  setpath "product" "win32AppUserModelId" "VSCodium.VSCodium"
-  setpath "product" "win32DirName" "VSCodium"
-  setpath "product" "win32MutexName" "vscodium"
-  setpath "product" "win32NameVersion" "VSCodium"
-  setpath "product" "win32RegValueName" "VSCodium"
-  setpath "product" "win32ShellNameShort" "VSCodium"
-  setpath "product" "win32AppId" "{{763CBF88-25C6-4B10-952F-326AE657F16B}"
-  setpath "product" "win32x64AppId" "{{88DA3577-054F-4CA1-8122-7D820494CFFB}"
-  setpath "product" "win32arm64AppId" "{{67DEE444-3D04-4258-B92A-BC1F0FF2CAE4}"
-  setpath "product" "win32UserAppId" "{{0FD05EB4-651E-4E78-A062-515204B47A3A}"
-  setpath "product" "win32x64UserAppId" "{{2E1F05D1-C245-4562-81EE-28188DB6FD17}"
-  setpath "product" "win32arm64UserAppId" "{{57FD70A5-1B8D-4875-9F40-C5553F094828}"
-  setpath "product" "tunnelApplicationName" "codium-tunnel"
-  setpath "product" "win32TunnelServiceMutex" "vscodium-tunnelservice"
-  setpath "product" "win32TunnelMutex" "vscodium-tunnel"
+  setpath "product" "urlProtocol" "vslight"
+  setpath "product" "darwinBundleIdentifier" "com.vslight"
+  setpath "product" "win32AppUserModelId" "VSLight.VSLight"
+  setpath "product" "win32DirName" "VSLight"
+  setpath "product" "win32MutexName" "vslight"
+  setpath "product" "win32NameVersion" "VSLight"
+  setpath "product" "win32RegValueName" "VSLight"
+  setpath "product" "win32ShellNameShort" "VSLight"
+  setpath "product" "win32AppId" "{{086A68B5-11FB-4A53-B581-00B085E0C26D}"
+  setpath "product" "win32x64AppId" "{{1ADD66A1-D56B-4D29-8784-B4F1159AA17D}"
+  setpath "product" "win32arm64AppId" "{{35E6F2F5-1819-4059-821A-71B4792483E5}"
+  setpath "product" "win32UserAppId" "{{542F10DC-7068-4EB9-A635-8FC7C64B47E1}"
+  setpath "product" "win32x64UserAppId" "{{7A251FF6-AE7A-4EFF-A668-7F28E584D8E2}"
+  setpath "product" "win32arm64UserAppId" "{{1C8C6787-818A-4A15-B57A-226942EA1330}"
   setpath "product" "win32ContextMenu.x64.clsid" "D910D5E6-B277-4F4A-BDC5-759A34EEE25D"
   setpath "product" "win32ContextMenu.arm64.clsid" "4852FC55-4A84-4EA1-9C86-D53BE3DF83C0"
 fi
 
-setpath_json "product" "tunnelApplicationConfig" '{}'
-
 jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
+echo "${jsonTmp}" > product.json && unset jsonTmp
+
+# vslight: key-level deletion (merge has no delete semantics) — server/tunnel/sessions
+# are not part of this product; readers of these keys are nil-safe (checked at 1.135)
+jsonTmp=$( jq 'del(
+  .serverApplicationName,
+  .serverDataFolderName,
+  .tunnelApplicationName,
+  .tunnelApplicationConfig,
+  .win32TunnelServiceMutex,
+  .win32TunnelMutex,
+  .sessionsWindowAllowedExtensions
+)' product.json )
 echo "${jsonTmp}" > product.json && unset jsonTmp
 
 cat product.json
@@ -233,17 +227,17 @@ cp package.json{,.bak}
 
 setpath "package" "version" "${RELEASE_VERSION%-insider}"
 
-replace 's|Microsoft Corporation|VSCodium|' package.json
+replace 's|Microsoft Corporation|VSLight|' package.json
 replace "s|--max-old-space-size=8192|--max-old-space-size=${MAX_OLD_SPACE_SIZE}|" package.json
 
 cp resources/server/manifest.json{,.bak}
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  setpath "resources/server/manifest" "name" "VSCodium - Insiders"
-  setpath "resources/server/manifest" "short_name" "VSCodium - Insiders"
+  setpath "resources/server/manifest" "name" "VSLight - Insiders"
+  setpath "resources/server/manifest" "short_name" "VSLight - Insiders"
 else
-  setpath "resources/server/manifest" "name" "VSCodium"
-  setpath "resources/server/manifest" "short_name" "VSCodium"
+  setpath "resources/server/manifest" "name" "VSLight"
+  setpath "resources/server/manifest" "short_name" "VSLight"
 fi
 
 # announcements
@@ -251,46 +245,46 @@ replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( tr -d '\n' < ../announce
 
 ../undo_telemetry.sh
 
-replace 's|Microsoft Corporation|VSCodium|' build/lib/electron.ts
-replace 's|([0-9]) Microsoft|\1 VSCodium|' build/lib/electron.ts
+replace 's|Microsoft Corporation|VSLight|' build/lib/electron.ts
+replace 's|([0-9]) Microsoft|\1 VSLight|' build/lib/electron.ts
 
 if [[ "${OS_NAME}" == "linux" ]]; then
   # microsoft adds their apt repo to sources
   # unless the app name is code-oss
-  # as we are renaming the application to vscodium
+  # as we are renaming the application to vslight
   # we need to edit a line in the post install template
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    sed -i "s/code-oss/codium-insiders/" resources/linux/debian/postinst.template
+    sed -i "s/code-oss/vslight-insiders/" resources/linux/debian/postinst.template
   else
-    sed -i "s/code-oss/codium/" resources/linux/debian/postinst.template
+    sed -i "s/code-oss/vslight/" resources/linux/debian/postinst.template
   fi
 
   # fix the packages metadata
   # code.appdata.xml
-  sed -i 's|Visual Studio Code|VSCodium|g' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://vscodium.com/img/vscodium.png|' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/code.appdata.xml
+  sed -i 's|Visual Studio Code|VSLight|g' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/vslight/vslight#download-install|' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://github.com/vslight/vslight|' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com|https://github.com/vslight/vslight|' resources/linux/code.appdata.xml
 
   # control.template
-  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|VSCodium Team https://github.com/VSCodium/vscodium/graphs/contributors|'  resources/linux/debian/control.template
-  sed -i 's|Visual Studio Code|VSCodium|g' resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/debian/control.template
+  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|VSLight Team https://github.com/vslight/vslight/graphs/contributors|'  resources/linux/debian/control.template
+  sed -i 's|Visual Studio Code|VSLight|g' resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/vslight/vslight#download-install|' resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com|https://github.com/vslight/vslight|' resources/linux/debian/control.template
 
   # code.spec.template
-  sed -i 's|Microsoft Corporation|VSCodium Team|' resources/linux/rpm/code.spec.template
-  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|VSCodium Team https://github.com/VSCodium/vscodium/graphs/contributors|' resources/linux/rpm/code.spec.template
-  sed -i 's|Visual Studio Code|VSCodium|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/VSCodium/vscodium#download-install|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/rpm/code.spec.template
+  sed -i 's|Microsoft Corporation|VSLight Team|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|VSLight Team https://github.com/vslight/vslight/graphs/contributors|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code|VSLight|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/vslight/vslight#download-install|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com|https://github.com/vslight/vslight|' resources/linux/rpm/code.spec.template
 
   # snapcraft.yaml
-  sed -i 's|Visual Studio Code|VSCodium|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code|VSLight|' resources/linux/rpm/code.spec.template
 elif [[ "${OS_NAME}" == "windows" ]]; then
   # code.iss
-  sed -i 's|https://code.visualstudio.com|https://vscodium.com|' build/win32/code.iss
-  sed -i 's|Microsoft Corporation|VSCodium|' build/win32/code.iss
+  sed -i 's|https://code.visualstudio.com|https://github.com/vslight/vslight|' build/win32/code.iss
+  sed -i 's|Microsoft Corporation|VSLight|' build/win32/code.iss
 fi
 
 cd ..

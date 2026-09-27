@@ -27,7 +27,7 @@ if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
   export VSCODE_SKIP_SYSROOT=1
   # export USE_GNUPP2A=1
 elif [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  export VSCODE_SYSROOT_REPOSITORY='VSCodium/vscode-linux-build-agent'
+  export VSCODE_SYSROOT_REPOSITORY='vslight/vscode-linux-build-agent'
   export VSCODE_SYSROOT_VERSION='20260706'
   export ELECTRON_SKIP_BINARY_DOWNLOAD=1
   export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1

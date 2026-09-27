@@ -8,9 +8,9 @@ on:
 
 env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-  APP_NAME: VSCodium
+  APP_NAME: VSLight
   ASSETS_REPOSITORY: ${{ github.repository }}
-  BINARY_NAME: codium
+  BINARY_NAME: vslight
   DISABLE_UPDATE: yes
   GH_REPO_PATH: ${{ github.repository }}
   GITHUB_BRANCH: master
@@ -38,7 +38,7 @@ jobs:
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing VSLight tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ALL: yes
@@ -179,7 +179,7 @@ jobs:
         run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing VSLight tags/releases
         env:
           CHECK_REH: 'no'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -389,7 +389,7 @@ jobs:
         run: ./build/linux/install_gh.sh
         if: env.DISABLED != 'yes'
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing VSLight tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
@@ -465,7 +465,7 @@ jobs:
       - name: Install GH
         run: ./build/linux/install_gh.sh
 
-      - name: Check existing VSCodium tags/releases
+      - name: Check existing VSLight tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ONLY_REH: 'yes'
@@ -609,5 +609,5 @@ jobs:
         uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
         with:
           token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-          repository: VSCodium/repositories-linux
+          repository: vslight/repositories-linux
           event-type: deploy

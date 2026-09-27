@@ -5,13 +5,17 @@
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./dev/build.sh
 ###
 
-export APP_NAME="VSCodium"
-export ASSETS_REPOSITORY="VSCodium/vscodium"
-export BINARY_NAME="codium"
+export APP_NAME="VSLight"
+export ASSETS_REPOSITORY="vslight/vslight"
+export BINARY_NAME="vslight"
 export CI_BUILD="no"
-export GH_REPO_PATH="VSCodium/vscodium"
-export ORG_NAME="VSCodium"
+export DISABLE_UPDATE="yes" # until the vslight versions feed is ready (Phase 6)
+export GH_REPO_PATH="vslight/vslight"
+export ORG_NAME="vslight"
 export SHOULD_BUILD="yes"
+export SHOULD_BUILD_CLI="no"
+export SHOULD_BUILD_REH="no"
+export SHOULD_BUILD_REH_WEB="no"
 export SKIP_ASSETS="yes"
 export SKIP_BUILD="no"
 export SKIP_SOURCE="no"
@@ -22,8 +26,8 @@ export VSCODE_SKIP_NODE_VERSION_CHECK="yes"
 while getopts ":ilops" opt; do
   case "$opt" in
     i)
-      export ASSETS_REPOSITORY="VSCodium/vscodium-insiders"
-      export BINARY_NAME="codium-insiders"
+      export ASSETS_REPOSITORY="vslight/vslight-insiders"
+      export BINARY_NAME="vslight-insiders"
       export VSCODE_QUALITY="insider"
       ;;
     l)
@@ -112,7 +116,7 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
     git add .
     git reset -q --hard HEAD
 
-    while [[ -n "$( git log -1 | grep "VSCODIUM HELPER" )" ]]; do
+    while [[ -n "$( git log -1 | grep -E "VSLIGHT HELPER|VSCODIUM HELPER" )" ]]; do
       git reset -q --hard HEAD~
     done
 
@@ -127,9 +131,9 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
     mkdir -p ~/.gyp
 
     if [[ -f "${HOME}/.gyp/include.gypi" ]]; then
-      mv ~/.gyp/include.gypi ~/.gyp/include.gypi.pre-vscodium
+      mv ~/.gyp/include.gypi ~/.gyp/include.gypi.pre-vslight
     else
-      echo "{}" > ~/.gyp/include.gypi.pre-vscodium
+      echo "{}" > ~/.gyp/include.gypi.pre-vslight
     fi
 
     cp ./build/osx/include.gypi ~/.gyp/include.gypi
@@ -138,7 +142,7 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
   . build.sh
 
   if [[ -f "./include_${OS_NAME}.gypi" ]]; then
-    mv ~/.gyp/include.gypi.pre-vscodium ~/.gyp/include.gypi
+    mv ~/.gyp/include.gypi.pre-vslight ~/.gyp/include.gypi
   fi
 
   if [[ "${VSCODE_LATEST}" == "yes" ]]; then

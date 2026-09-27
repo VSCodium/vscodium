@@ -12,7 +12,7 @@ echo "Installing debloated packages..."
 echo "---------------------------------------------------------------"
 get-debloated-pkgs --add-common --prefer-nano
 
-echo "Extracting VSCodium binary..."
+echo "Extracting VSLight binary..."
 echo "---------------------------------------------------------------"
 
 mkdir -p ./AppDir/bin ./AppDir/share/applications
