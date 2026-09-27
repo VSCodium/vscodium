@@ -125,8 +125,15 @@ if (( PHASE >= 4 )); then
   check '"debug.*" 注册设置为 0' "0" "$( count_prefix 'debug\.[a-zA-Z]+' )"
   check '"notebook.*" 注册设置为 0' "0" "$( count_prefix 'notebook\.[a-zA-Z]+' )"
   # chat: F-12 降级为隐藏入口（全量保留打包，chat.disableAIFeatures 默认 true 隐藏全部 AI 入口）
-  CHAT_OFF="$( grep -rohE '"chat\.disableAIFeatures"[^}]{0,200}default[[:space:]]*:[[:space:]]*(!0|true)' "${OUT_DIR}/vs/workbench" 2>/dev/null | head -1 )"
-  if [[ -n "${CHAT_OFF}" ]]; then pass "chat.disableAIFeatures 默认 true（AI 入口全隐藏）"; else fail "chat.disableAIFeatures 未默认开启"; fi
+  # 产物为 minify+nls 外化，无法可靠静态断言默认值 → 源码级断言（构建树内），UI 入口检查归 Phase 7
+  CHAT_SRC="vscode/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts"
+  if [[ -f "${CHAT_SRC}" ]] && grep -A4 'ChatAIDisabledSettingId\]' "${CHAT_SRC}" | grep -q 'default: true'; then
+    pass "chat.disableAIFeatures 默认 true（AI 入口全隐藏，源码断言）"
+  elif [[ ! -f "${CHAT_SRC}" ]]; then
+    skip "源码树不在（仅产物），chat 降级断言归入 Phase 7 UI 检查"
+  else
+    fail "chat.disableAIFeatures 未默认开启"
+  fi
 fi
 
 # =============================================================================
