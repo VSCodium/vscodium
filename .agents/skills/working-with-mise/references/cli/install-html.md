@@ -1,0 +1,83 @@
+mise install
+
+install` [​](#mise-install)
+
+- **Usage:** `mise install [FLAGS] [TOOL@VERSION]…`
+- **Aliases:** `i`
+- **Effect:** modifies state
+- **Source code:** [`src/cli/install.rs`](https://github.com/jdx/mise/blob/main/src/cli/install.rs)
+
+Install a tool version
+
+Installs a tool version under the mise data directory, by default `~/.local/share/mise/installs/<TOOL>/<VERSION>`. Installing alone does not add the tool to your config, so a tool that is not already configured will not be on PATH. To install and activate in one command, use `mise use`, which also writes the version to the selected project config so the tool is active in that configuration scope. To run a tool once without touching any config, use `mise exec <TOOL>@<VERSION> -- <COMMAND>`.
+
+Tools are installed in parallel. To disable, set `--jobs=1` or `MISE_JOBS=1`.
+
+## Arguments [​](#arguments)
+
+- **`[TOOL@VERSION]…`** — Tool(s) to install e.g.: node@20
+
+## Flags [​](#flags)
+
+- **`-f --force`** — Force reinstall even if already installed With no tools specified, reinstall all configured tools
+- **`-j --jobs <JOBS>`** — Number of jobs to run in parallel Values below 1 are treated as 1 Defaults to the `jobs` setting
+
+  **Environment Variable:** `MISE_JOBS`
+- **`-n --dry-run`** — Show what would be installed without actually installing
+- **`-v --verbose`** — Show installation output
+
+  This argument will print backend output such as download, configuration, and compilation output.
+- **`--dry-run-code`** — Like --dry-run but exits with code 1 if there are tools to install
+
+  This is useful for scripts to check if tools need to be installed.
+- **`--include-task-tools`** — Also install tools required by tasks in the current scope
+
+  This prepares task tools without running task commands or dependencies. Combine with --monorepo to include tasks from every configured root.
+- **`--include-lazy`** — Also install tools configured with `lazy = true`
+
+  By default, a bare `mise install` leaves lazy tools for first-command installation.
+- **`--minimum-release-age <MINIMUM_RELEASE_AGE>`** — Only install versions released before this date or older than this duration
+
+  Supports absolute dates like "2024-06-01" and relative durations like "90d" or "1y".
+- **`--monorepo`** — Install tools from every \[monorepo].config\_roots config root
+
+  Uses the active MISE\_ENV and requires monorepo\_root = true plus explicit \[monorepo].config\_roots in the monorepo root config.
+
+  **Environment Variable:** `MISE_MONOREPO`
+- **`--raw`** — Connect backend install command stdin/stdout/stderr directly to the terminal. Implies `--jobs=1`
+- **`--shared <SHARED>`** — Install tool(s) to a shared directory
+
+  Installs to the specified directory instead of the default install location. May require elevated permissions depending on the path.
+- **`--system`** — Install tool(s) to the system-wide shared directory
+
+  Installs to /usr/local/share/mise/installs (or MISE\_SYSTEM\_DATA\_DIR/installs). On Unix, binary-download backends invoke sudo to publish into protected system directories unless system\_packages.sudo is disabled. Run mise as your user, without sudo.
+- **`-h --help`** — Print help
+
+## Examples [​](#examples)
+
+```
+mise install node@20.0.0  # install a specific node version
+mise install node@20      # install the latest node 20.x
+mise install node         # install the version specified in mise.toml
+mise install              # install everything specified in mise.toml
+mise install --include-lazy # also install tools configured for lazy installation
+mise install --include-task-tools # also install tools required by tasks
+```
+
+## Related documentation [​](#related-documentation)
+
+- [Installing and selecting tools](https://mise.jdx.dev/dev-tools/).
+- [All commands](https://mise.jdx.dev/cli/).
+- [Global flags and argument syntax](https://mise.jdx.dev/cli/#global-flags).
+
+[Edit this page](https://github.com/jdx/mise/edit/main/docs/cli/install.md)
+
+Last updated:
+
+Pager
+
+[Previous pagemise implode](https://mise.jdx.dev/cli/implode.html)
+
+[Next pagemise install-into](https://mise.jdx.dev/cli/install-into.html)
+
+MIT License·Copyright © 2026· [![](https://github.com/jdx.png?size=96)jdx.dev](https://jdx.dev)

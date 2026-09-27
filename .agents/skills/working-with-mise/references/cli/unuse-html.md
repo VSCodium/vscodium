@@ -1,0 +1,74 @@
+mise unuse
+
+unuse` [​](#mise-unuse)
+
+- **Usage:** `mise unuse [FLAGS] <INSTALLED_TOOL@VERSION>…`
+- **Aliases:** `rm`, `remove`
+- **Effect:** destructive — may delete or irreversibly overwrite
+- **Source code:** [`src/cli/unuse.rs`](https://github.com/jdx/mise/blob/main/src/cli/unuse.rs)
+
+Remove tool requests from configuration and prune unused installations
+
+Without a selector, mise edits the first loaded config that declares one of the requested tools. Use `--path`, `--global`, or `--env` to choose a specific file. A version argument matches the configured request literally: to remove `node = "20"`, use `mise unuse node@20`, not the concrete installed version it resolved to. Omit the version to remove all requests for that tool from the selected file.
+
+Versions are pruned only when no remaining tracked config or tool stub needs them. Pass `--no-prune` to edit configuration while keeping installations. To remove an installation without editing configuration, use `mise uninstall`.
+
+## Arguments [​](#arguments)
+
+- **`<INSTALLED_TOOL@VERSION>…`** — Tool(s) to remove
+
+## Flags [​](#flags)
+
+- **`-e --env <ENV>`** — Modify `.mise.<env>.toml` when it exists, otherwise `mise.<env>.toml`
+- **`-g --global`** — Use the global config file ( `~/.config/mise/config.toml`) instead of the local one
+- **`-p --path <PATH>`** — Specify a path to a config file or directory
+
+  If a directory is specified, it will look for a config file in that directory following the target-file selection rules.
+
+  **Aliases:** `--file`
+- **`--no-prune`** — Do not also prune the installed version
+- **`-h --help`** — Print help
+
+## Examples [​](#examples)
+
+remove node@18.0.0 from mise.toml and uninstall it
+
+```
+mise unuse node@18.0.0
+```
+
+remove it from the global config instead
+
+```
+mise unuse -g node@18.0.0
+```
+
+remove the literal node@20 request from mise.local.toml
+
+```
+mise unuse --env local node@20
+```
+
+remove the literal node@20 request from mise.staging.toml
+
+```
+mise unuse --env staging node@20
+```
+
+## Related documentation [​](#related-documentation)
+
+- [Configuration write targets](https://mise.jdx.dev/configuration.html#target-file-for-write-operations).
+- [All commands](https://mise.jdx.dev/cli/).
+- [Global flags and argument syntax](https://mise.jdx.dev/cli/#global-flags).
+
+[Edit this page](https://github.com/jdx/mise/edit/main/docs/cli/unuse.md)
+
+Last updated:
+
+Pager
+
+[Previous pagemise untrust](https://mise.jdx.dev/cli/untrust.html)
+
+[Next pagemise upgrade](https://mise.jdx.dev/cli/upgrade.html)
+
+MIT License·Copyright © 2026· [![](https://github.com/jdx.png?size=96)jdx.dev](https://jdx.dev)

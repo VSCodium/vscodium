@@ -1,0 +1,115 @@
+Go Backend
+
+Go Backend [​](#go-backend)
+
+The `go` backend builds Go command-line packages with `go install`. Use the import path of the executable package, which may include `/cmd/TOOL` or a major version suffix such as `/v4`. Libraries belong in your application's `go.mod`.
+
+The code for this is inside the mise repository at [`./src/backend/go.rs`](https://github.com/jdx/mise/blob/main/src/backend/go.rs).
+
+## Dependencies [​](#dependencies)
+
+Install Go and the tool in the current project. The configured Go installation is available while mise builds the dependent tool:
+
+sh
+
+```
+mise use go@1.26 go:github.com/DarthSim/hivemind
+mise exec -- hivemind --help
+```
+
+This records both tools in `mise.toml`; add `-g` for global configuration. Source builds may also need Git, a C compiler, or native libraries, depending on the package and whether it uses cgo.
+
+## Usage [​](#usage)
+
+List available versions with `mise ls-remote go:github.com/DarthSim/hivemind`. To select one, run `mise use go:github.com/DarthSim/hivemind@VERSION`, replacing `VERSION` with a listed release. mise writes the resulting executable into its own installation directory instead of your ordinary `GOBIN`.
+
+### Version discovery and release dates [​](#version-discovery-and-release-dates)
+
+For `latest`, mise first queries the module proxy or `go list` directly for the latest stable release. This avoids listing every version and fetching a release date for each one, which can time out on modules with many tags.
+
+Commands such as `mise ls-remote` and version requests such as `@1` still use the full version list. To keep these lookups fast, mise fetches release dates for only the newest 100 versions through a module proxy, or the newest 10 through `go list`. All versions remain in the list; versions outside these limits have no release date.
+
+A version with no release date is still checked against [`minimum_release_age`](https://mise.jdx.dev/configuration/settings.html#minimum_release_age): before mise settles on one, it reads that single version's date and moves further back while the answer is newer than the cutoff. A cutoff deep enough to reach past the dated versions therefore costs one query per version it skips, which can make the first resolution of a module with many releases noticeably slower through `go list`. The direct `latest` query includes a release date, and if that release is too recent mise falls back to the full list and dates candidates from there.
+
+Unreachable sources
+
+If reading a version's date fails outright — an unreachable proxy, a VCS host that times out — mise warns and allows that version rather than failing the install. A version can therefore still slip past the cutoff on a bad network, and the warning is what tells you it happened.
+
+### Private modules [​](#private-modules)
+
+Private modules use Go's normal VCS authentication. Export `GOPRIVATE`, or define it in mise's `[env]` configuration, so mise delegates version discovery to Go instead of querying the public module proxy itself. Values set only with `go env -w` are not read by mise when choosing the discovery path:
+
+toml
+
+```
+[env]
+GOPRIVATE = "github.com/acme/*"
+```
+
+Go uses `GOPRIVATE` as the default for both `GONOPROXY` and `GONOSUMDB`. If you configure those variables separately, set each one according to the proxy and checksum-database privacy you need.
+
+### Pinned versions [​](#pinned-versions)
+
+You can also pin a specific Go module version, including an unreleased pseudo-version:
+
+toml
+
+```
+[tools]
+"go:github.com/grafana/oats" = "v0.7.1-0.20260703092802-96201f1b8136"
+```
+
+If you need to resolve an unreleased revision directly from VCS instead of the module proxy, combine the pinned version with [`install_env`](https://mise.jdx.dev/dev-tools/backends/go.html#install-env):
+
+toml
+
+```
+[tools]
+"go:github.com/grafana/oats" = { version = "v0.7.1-0.20260703092802-96201f1b8136", install_env = { GOPROXY = "direct", GONOSUMDB = "github.com/grafana/oats" } }
+```
+
+## Tool Options [​](#tool-options)
+
+The following [tool-options](https://mise.jdx.dev/dev-tools/#tool-options) are available for the `go` backend—these go in `[tools]` in `mise.toml`.
+
+### `install_env` [​](#install-env)
+
+Set environment variables for the `go install` command. mise still sets `GOBIN` to the tool install directory after applying `install_env`. Put `GOPRIVATE` in `[env]` as shown above when it must also affect version discovery.
+
+toml
+
+```
+[tools]
+"go:github.com/acme/my-tool" = { version = "latest", install_env = { GOPRIVATE = "github.com/acme/*" } }
+```
+
+### `tags` [​](#tags)
+
+Specify Go build tags (passed as `go install -tags`):
+
+toml
+
+```
+[tools]
+"go:github.com/golang-migrate/migrate/v4/cmd/migrate" = { version = "latest", tags = "postgres" }
+# equivalent array form:
+# "go:github.com/golang-migrate/migrate/v4/cmd/migrate" = { version = "latest", tags = ["postgres", "mysql"] }
+```
+
+## Troubleshooting [​](#troubleshooting)
+
+- **Package is not a main package:** use the executable's import path, not the repository root or a library package.
+- **Private module lookup fails:** check exported `GOPRIVATE` and your Go/Git credentials; mise's GitHub token is not a substitute for VCS authentication.
+- **Go version or compiler error:** use a toolchain supported by the package and install any required native build dependencies.
+
+[Edit this page](https://github.com/jdx/mise/edit/main/docs/dev-tools/backends/go.md)
+
+Last updated:
+
+Pager
+
+[Previous pagegitlab](https://mise.jdx.dev/dev-tools/backends/gitlab.html)
+
+[Next pagehttp](https://mise.jdx.dev/dev-tools/backends/http.html)
+
+MIT License·Copyright © 2026· [![](https://github.com/jdx.png?size=96)jdx.dev](https://jdx.dev)
