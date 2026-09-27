@@ -73,7 +73,7 @@ declare -a RESULTS=()
 
 note() { printf '  %s\n' "$*"; }
 pass() { RESULTS+=( "PASS: $1" ); note "[PASS] $1"; }
-fail() { RESULTS+=( "FAIL: $1" ); note "[FAIL] $1"; if [[ "$2" == "ui" ]]; then FAIL_UI=1; else FAIL_HARD=1; fi; }
+fail() { RESULTS+=( "FAIL: $1" ); note "[FAIL] $1"; if [[ "${2:-hard}" == "ui" ]]; then FAIL_UI=1; else FAIL_HARD=1; fi; }
 skip() { RESULTS+=( "SKIP: $1" ); note "[SKIP] $1"; }
 
 check() { # check <desc> <expected> <actual>
@@ -152,11 +152,21 @@ VER_OUT="$( run_to 30 "${BIN}" --user-data-dir "${UDIR}" --extensions-dir "${EDI
 if [[ -n "${VER_OUT}" ]]; then pass "--version => $( head -1 <<< "${VER_OUT}" )"; else fail "--version 无输出"; fi
 
 if [[ "${APP_NAME}" == "VSLight" ]] && (( PHASE >= 2 )); then
-  if "${BIN}" tunnel --help >/dev/null 2>&1; then fail "vslight tunnel 子命令仍可用"; else pass "无 vslight tunnel 子命令"; fi
+  TUNNEL_OUT="$( "${BIN}" tunnel 2>&1 )"
+  if grep -q 'not supported' <<< "${TUNNEL_OUT}"; then
+    pass "vslight tunnel 给出可读报错: $( head -1 <<< "${TUNNEL_OUT}" )"
+  else
+    fail "vslight tunnel 未给出预期报错: $( head -1 <<< "${TUNNEL_OUT}" )"
+  fi
+fi
+
+if [[ -d "${APP_RES}/extensions/git" && -d "${APP_RES}/extensions/git-base" ]]; then
+  pass "内置 Git 扩展在包内 (git, git-base)"
+else
+  fail "内置 Git 扩展缺失"
 fi
 
 EXT_LIST="$( run_to 60 "${BIN}" --user-data-dir "${UDIR}" --extensions-dir "${EDIR}" --list-extensions 2>/dev/null )"
-if grep -qi '^vscode.git$' <<< "${EXT_LIST}"; then pass "内置 vscode.git 在列"; else fail "vscode.git 缺失 (list=$( head -3 <<< "${EXT_LIST}" | tr '\n' ',' ))"; fi
 
 if run_to 120 "${BIN}" --user-data-dir "${UDIR}" --extensions-dir "${EDIR}" --install-extension zhuangtongfa.material-theme >/dev/null 2>&1; then
   EXT_LIST2="$( "${BIN}" --user-data-dir "${UDIR}" --extensions-dir "${EDIR}" --list-extensions 2>/dev/null )"
