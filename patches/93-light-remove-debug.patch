@@ -1,0 +1,58 @@
+diff --git a/build/buildfile.ts b/build/buildfile.ts
+index 8ab03132..d71b8743 100644
+--- a/build/buildfile.ts
++++ b/build/buildfile.ts
+@@ -23,3 +23,2 @@ export const workerBackgroundTokenization = createModuleDescription('vs/workbenc
+ export const workbenchDesktop = [
+-	createModuleDescription('vs/workbench/contrib/debug/node/telemetryApp'),
+ 	createModuleDescription('vs/platform/files/node/watcher/watcherMain'),
+diff --git a/build/npm/dirs.ts b/build/npm/dirs.ts
+index 8e5754c5..0a0436aa 100644
+--- a/build/npm/dirs.ts
++++ b/build/npm/dirs.ts
+@@ -19,4 +19,2 @@ export const dirs = [
+ 	'extensions/css-language-features/server',
+-	'extensions/debug-auto-launch',
+-	'extensions/debug-server-ready',
+ 	'extensions/emmet',
+diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
+index d7c00441..35dbb38e 100644
+--- a/src/vs/code/electron-main/app.ts
++++ b/src/vs/code/electron-main/app.ts
+@@ -32,3 +32,2 @@ import { BackupMainService } from '../../platform/backup/electron-main/backupMai
+ import { IConfigurationService } from '../../platform/configuration/common/configuration.js';
+-import { ElectronExtensionHostDebugBroadcastChannel } from '../../platform/debug/electron-main/extensionHostDebugIpc.js';
+ import { IDiagnosticsService, IGPULogMessage } from '../../platform/diagnostics/common/diagnostics.js';
+@@ -1437,5 +1436,2 @@ export class CodeApplication extends Disposable {
+ 
+-		// Extension Host Debug Broadcasting
+-		const electronExtensionHostDebugBroadcastChannel = new ElectronExtensionHostDebugBroadcastChannel(accessor.get(IWindowsMainService));
+-		mainProcessElectronServer.registerChannel('extensionhostdebugservice', electronExtensionHostDebugBroadcastChannel);
+ 
+diff --git a/src/vs/workbench/workbench.common.main.ts b/src/vs/workbench/workbench.common.main.ts
+index 73e33638..f0985dfb 100644
+--- a/src/vs/workbench/workbench.common.main.ts
++++ b/src/vs/workbench/workbench.common.main.ts
+@@ -279,9 +279,5 @@ import './contrib/scm/browser/scm.service.contribution.js';
+ 
+-// Debug
+-import './contrib/debug/browser/debug.contribution.js';
+-import './contrib/debug/browser/debugEditorContribution.js';
+-import './contrib/debug/browser/breakpointEditorContribution.js';
+-import './contrib/debug/browser/callStackEditorContribution.js';
+-import './contrib/debug/browser/repl.js';
+-import './contrib/debug/browser/debugViewlet.js';
++// Debug — vslight: debug subsystem removed; keep only the IDebugService registration
++// (API-layer stub: MainThreadDebugService and other kept services inject it)
++import './contrib/debug/browser/debug.service.contribution.js';
+ 
+diff --git a/src/vs/workbench/workbench.desktop.main.ts b/src/vs/workbench/workbench.desktop.main.ts
+index acd8a72a..c88bc917 100644
+--- a/src/vs/workbench/workbench.desktop.main.ts
++++ b/src/vs/workbench/workbench.desktop.main.ts
+@@ -122,5 +122,2 @@ import './contrib/codeEditor/electron-browser/codeEditor.contribution.js';
+ 
+-// Debug
+-import './contrib/debug/electron-browser/extensionHostDebugService.js';
+-
+ // Extensions Management
