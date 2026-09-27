@@ -64,5 +64,26 @@ index acd8a72a..e6065454 100644
 @@ -130,3 +130,3 @@ import './contrib/extensions/electron-browser/devtoolsExtensionHost.contribution
  // Issues
 -import './contrib/issue/electron-browser/issue.contribution.js';
-+import './contrib/issue/electron-browser/issueService.js'; // vslight: keep IWorkbenchIssueService registered (extension report-issue actions inject it)
++import './contrib/issue/electron-browser/issue.service.contribution.js'; // vslight: keep issue services registered (extension report-issue actions inject IWorkbenchIssueService)
  
+diff --git a/src/vs/workbench/contrib/issue/electron-browser/issue.service.contribution.ts b/src/vs/workbench/contrib/issue/electron-browser/issue.service.contribution.ts
+new file mode 100644
+--- /dev/null
++++ b/src/vs/workbench/contrib/issue/electron-browser/issue.service.contribution.ts
+@@ -0,0 +1,16 @@
++/*---------------------------------------------------------------------------------------------
++ *  Copyright (c) Microsoft Corporation. All rights reserved.
++ *  Licensed under the MIT License. See License.txt in the project root for license information.
++ *--------------------------------------------------------------------------------------------*/
++
++// vslight: the issue reporter contribution (commands/menus) is removed; keep the
++// issue services registered for kept consumers (extension report-issue actions).
++
++import { IWorkbenchIssueService } from '../common/issue.js';
++import { NativeIssueService } from './issueService.js';
++import { IIssueFormService } from '../common/issue.js';
++import { NativeIssueFormService } from './nativeIssueFormService.js';
++import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
++
++registerSingleton(IWorkbenchIssueService, NativeIssueService, InstantiationType.Delayed);
++registerSingleton(IIssueFormService, NativeIssueFormService, InstantiationType.Delayed);
