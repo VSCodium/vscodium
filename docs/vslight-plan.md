@@ -95,12 +95,12 @@ CI 发布版本就不含 map —— 296MB 只影响本地/自发布口径；体�
 ### Phase 0 — 基线与验收契约（0.5 天）
 
 - [x] 全量构建跑通 —— 实际命令 `./dev/run-build.sh -s`，证据 `build.log`（2026-09-27 13:35）与产物
-- [ ] 建分支 `vslight`；恢复快照协议（§6）
-- [ ] `dev/smoke.sh` **规格**：驱动方式（CLI + AppleScript/快捷键注入）、每步断言、超时、退出码；
+- [x] 建分支 `vslight`；恢复快照协议（§6）
+- [x] `dev/smoke.sh` **规格**：驱动方式（CLI + AppleScript/快捷键注入）、每步断言、超时、退出码；
   正向（打开/编辑/搜索/Git/终端/装扩展）+ **负向清单**（Remote Explorer/Debug/Chat/sessions 入口不存在，
   命令面板与默认设置中 `remote.`/`debug.`/`chat.`/`notebook.` 前缀计数为 0）+ **保留面回归**
   （终端、Git、open-vsx 安装、语言/主题扩展、zh-CN 语言包）
-- [ ] **remove∩patch 审计表**（Phase 3/4 每项裁剪的开工前置产物）：列出拟删路径 × 存量 patch 命中关系，
+- [x] **remove∩patch 审计表**（Phase 3/4 每项裁剪的开工前置产物）：列出拟删路径 × 存量 patch 命中关系，
   断言「remove 集合 ∩ 晚于剪枝阶段执行的 patch 目标 = ∅」
 
 ### Phase 1 — 构建级裁剪（0.5 天，零 patch）
