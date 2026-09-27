@@ -70,7 +70,7 @@ diff --git a/src/vs/workbench/contrib/issue/electron-browser/issue.service.contr
 new file mode 100644
 --- /dev/null
 +++ b/src/vs/workbench/contrib/issue/electron-browser/issue.service.contribution.ts
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,19 @@
 +/*---------------------------------------------------------------------------------------------
 + *  Copyright (c) Microsoft Corporation. All rights reserved.
 + *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -84,6 +84,9 @@ new file mode 100644
 +import { IIssueFormService } from '../common/issue.js';
 +import { NativeIssueFormService } from './nativeIssueFormService.js';
 +import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
++import { IGitHubUploadService } from '../browser/githubUploadService.js';
++import { NativeGitHubUploadService } from './nativeGitHubUploadService.js';
 +
 +registerSingleton(IWorkbenchIssueService, NativeIssueService, InstantiationType.Delayed);
 +registerSingleton(IIssueFormService, NativeIssueFormService, InstantiationType.Delayed);
++registerSingleton(IGitHubUploadService, NativeGitHubUploadService, InstantiationType.Delayed);
