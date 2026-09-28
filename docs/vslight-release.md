@@ -19,7 +19,7 @@
 | `VSLight-macos-arm64-<ver>.zip`（或 dmg） | 构建产出（prepare_assets.sh，`-p` 开关） |
 | `vslight-cli-...` / `vslight-reh-...` | **不发布**（CLI/reh 已裁） |
 | checksums（sha1/sha256） | prepare_checksums.sh 产出 |
-| release notes | 落点：GitHub releases 页面（`vslight/vslight`） |
+| release notes | 落点：GitHub releases 页面（`rockie/vslight`） |
 | 迁移说明 | 落点：docs/vslight-migration.md + release notes 首段链接 |
 | versions feed `latest.json` | 待 feed 仓（docs/vslight-update-feed.md） |
 

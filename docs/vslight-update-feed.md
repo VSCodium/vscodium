@@ -6,7 +6,7 @@
 > feed 就绪后：移除 `DISABLE_UPDATE`，`prepare_vscode.sh` 已指向
 > `https://raw.githubusercontent.com/rockie/versions/refs/heads/master`。
 
-## 1. 目录布局（`vslight/versions` 仓）
+## 1. 目录布局（`rockie/versions` 仓）
 
 由 `update_version.sh` 在发布流程中生成：
 
