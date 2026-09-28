@@ -12,7 +12,7 @@ cd cli
 export CARGO_NET_GIT_FETCH_WITH_CLI="true"
 export VSCODE_CLI_APP_NAME="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 export VSCODE_CLI_BINARY_NAME="$( node -p "require(\"../product.json\").serverApplicationName" )"
-export VSCODE_CLI_UPDATE_ENDPOINT="https://raw.githubusercontent.com/rockie/versions/refs/heads/master"
+export VSCODE_CLI_UPDATE_ENDPOINT="https://raw.githubusercontent.com/rockie/vslight/refs/heads/versions"
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   export VSCODE_CLI_DOWNLOAD_ENDPOINT="https://github.com/rockie/vslight-insiders/releases"

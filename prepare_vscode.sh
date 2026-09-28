@@ -47,7 +47,7 @@ setpath "product" "releaseNotesUrl" "https://github.com/rockie/vslight/releases"
 setpath "product" "reportIssueUrl" "https://github.com/rockie/vslight/issues/new"
 
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
-  setpath "product" "updateUrl" "https://raw.githubusercontent.com/rockie/versions/refs/heads/master"
+  setpath "product" "updateUrl" "https://raw.githubusercontent.com/rockie/vslight/refs/heads/versions"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     setpath "product" "downloadUrl" "https://github.com/rockie/vslight-insiders/releases"

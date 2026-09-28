@@ -9,7 +9,6 @@ export APP_NAME="VSLight"
 export ASSETS_REPOSITORY="rockie/vslight"
 export BINARY_NAME="vslight"
 export CI_BUILD="no"
-export DISABLE_UPDATE="yes" # until the vslight versions feed is ready (Phase 6)
 export GH_REPO_PATH="rockie/vslight"
 export ORG_NAME="vslight"
 export SHOULD_BUILD="yes"

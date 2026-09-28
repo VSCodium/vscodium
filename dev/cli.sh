@@ -3,7 +3,7 @@ export VSCODE_CLI_APP_NAME="vslight"
 export VSCODE_CLI_BINARY_NAME="vslight-server-insiders"
 export VSCODE_CLI_DOWNLOAD_URL="https://github.com/rockie/vslight-insiders/releases"
 export VSCODE_CLI_QUALITY="insider"
-export VSCODE_CLI_UPDATE_URL="https://raw.githubusercontent.com/rockie/versions/refs/heads/master"
+export VSCODE_CLI_UPDATE_URL="https://raw.githubusercontent.com/rockie/vslight/refs/heads/versions"
 
 cargo build --release --target aarch64-apple-darwin --bin=code
 
