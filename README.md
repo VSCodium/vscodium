@@ -13,7 +13,7 @@ rebranded and stripped of everything that is not local editing:
 
 ## Download/Install
 
-Releases: <https://github.com/vslight/vslight/releases>
+Releases: <https://github.com/rockie/vslight/releases>
 
 macOS (Apple Silicon) is the verified platform; Linux and Windows keep build
 capability but are not part of the acceptance scope of this release.

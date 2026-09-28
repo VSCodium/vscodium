@@ -4,7 +4,7 @@
 > 在 feed 就绪前，构建以 `DISABLE_UPDATE=yes` 兜底（dev/build.sh），更新服务完全关闭
 > （main.log 可见 `updates are disabled as there is no update URL`）。
 > feed 就绪后：移除 `DISABLE_UPDATE`，`prepare_vscode.sh` 已指向
-> `https://raw.githubusercontent.com/vslight/versions/refs/heads/master`。
+> `https://raw.githubusercontent.com/rockie/versions/refs/heads/master`。
 
 ## 1. 目录布局（`vslight/versions` 仓）
 
@@ -32,8 +32,8 @@
 ## 3. 客户端行为（1.135 核实）
 
 - 更新检查：`updateService` 定时 GET `<updateUrl>/<quality>/<platform>/<arch>/latest.json`。
-- `prepare_vscode.sh` 已设置 `updateUrl=https://raw.githubusercontent.com/vslight/versions/refs/heads/master`、
-  `downloadUrl=https://github.com/vslight/vslight/releases`（DISABLE_UPDATE 移除后生效）。
+- `prepare_vscode.sh` 已设置 `updateUrl=https://raw.githubusercontent.com/rockie/versions/refs/heads/master`、
+  `downloadUrl=https://github.com/rockie/vslight/releases`（DISABLE_UPDATE 移除后生效）。
 - macOS 注意（F-05）：`updateService.darwin.ts:143` 无条件 `autoUpdater.setFeedURL`；
   adhoc 签名下 Squirrel.Mac 自更新**很可能不可用**（需正式签名+公证），首版建议保持
   「检查更新→跳转 releases 页手动下载」语义，签名专项另立。
