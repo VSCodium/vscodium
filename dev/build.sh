@@ -6,11 +6,11 @@
 ###
 
 export APP_NAME="VSLight"
-export ASSETS_REPOSITORY="vslight/vslight"
+export ASSETS_REPOSITORY="rockie/vslight"
 export BINARY_NAME="vslight"
 export CI_BUILD="no"
 export DISABLE_UPDATE="yes" # until the vslight versions feed is ready (Phase 6)
-export GH_REPO_PATH="vslight/vslight"
+export GH_REPO_PATH="rockie/vslight"
 export ORG_NAME="vslight"
 export SHOULD_BUILD="yes"
 export SHOULD_BUILD_CLI="no"
@@ -26,7 +26,7 @@ export VSCODE_SKIP_NODE_VERSION_CHECK="yes"
 while getopts ":ilops" opt; do
   case "$opt" in
     i)
-      export ASSETS_REPOSITORY="vslight/vslight-insiders"
+      export ASSETS_REPOSITORY="rockie/vslight-insiders"
       export BINARY_NAME="vslight-insiders"
       export VSCODE_QUALITY="insider"
       ;;

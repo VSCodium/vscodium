@@ -2,9 +2,9 @@
 
 APP_NAME="${APP_NAME:-VSLight}"
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
-ASSETS_REPOSITORY="${ASSETS_REPOSITORY:-vslight/vslight}"
+ASSETS_REPOSITORY="${ASSETS_REPOSITORY:-rockie/vslight}"
 BINARY_NAME="${BINARY_NAME:-vslight}"
-GH_REPO_PATH="${GH_REPO_PATH:-vslight/vslight}"
+GH_REPO_PATH="${GH_REPO_PATH:-rockie/vslight}"
 ORG_NAME="${ORG_NAME:-vslight}"
 TUNNEL_APP_NAME="${TUNNEL_APP_NAME:-"${BINARY_NAME}-tunnel"}"
 

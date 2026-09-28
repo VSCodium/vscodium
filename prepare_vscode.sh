@@ -41,18 +41,18 @@ setpath_json "product" "extensionsGallery" '{"serviceUrl": "https://open-vsx.org
 setpath "product" "keyboardShortcutsUrlLinux" "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf"
 setpath "product" "keyboardShortcutsUrlMac" "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf"
 setpath "product" "keyboardShortcutsUrlWin" "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf"
-setpath "product" "licenseUrl" "https://github.com/vslight/vslight/blob/master/LICENSE"
+setpath "product" "licenseUrl" "https://github.com/rockie/vslight/blob/master/LICENSE"
 setpath_json "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
-setpath "product" "releaseNotesUrl" "https://github.com/vslight/vslight/releases"
-setpath "product" "reportIssueUrl" "https://github.com/vslight/vslight/issues/new"
+setpath "product" "releaseNotesUrl" "https://github.com/rockie/vslight/releases"
+setpath "product" "reportIssueUrl" "https://github.com/rockie/vslight/issues/new"
 
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
-  setpath "product" "updateUrl" "https://raw.githubusercontent.com/vslight/versions/refs/heads/master"
+  setpath "product" "updateUrl" "https://raw.githubusercontent.com/rockie/versions/refs/heads/master"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    setpath "product" "downloadUrl" "https://github.com/vslight/vslight-insiders/releases"
+    setpath "product" "downloadUrl" "https://github.com/rockie/vslight-insiders/releases"
   else
-    setpath "product" "downloadUrl" "https://github.com/vslight/vslight/releases"
+    setpath "product" "downloadUrl" "https://github.com/rockie/vslight/releases"
   fi
 fi
 
@@ -274,28 +274,28 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   # fix the packages metadata
   # code.appdata.xml
   sed -i 's|Visual Studio Code|VSLight|g' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/vslight/vslight#download-install|' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://github.com/vslight/vslight|' resources/linux/code.appdata.xml
-  sed -i 's|https://code.visualstudio.com|https://github.com/vslight/vslight|' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/rockie/vslight#download-install|' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com/home/home-screenshot-linux-lg.png|https://github.com/rockie/vslight|' resources/linux/code.appdata.xml
+  sed -i 's|https://code.visualstudio.com|https://github.com/rockie/vslight|' resources/linux/code.appdata.xml
 
   # control.template
-  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|VSLight Team https://github.com/vslight/vslight/graphs/contributors|'  resources/linux/debian/control.template
+  sed -i 's|Microsoft Corporation <vscode-linux@microsoft.com>|VSLight Team https://github.com/rockie/vslight/graphs/contributors|'  resources/linux/debian/control.template
   sed -i 's|Visual Studio Code|VSLight|g' resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/vslight/vslight#download-install|' resources/linux/debian/control.template
-  sed -i 's|https://code.visualstudio.com|https://github.com/vslight/vslight|' resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/rockie/vslight#download-install|' resources/linux/debian/control.template
+  sed -i 's|https://code.visualstudio.com|https://github.com/rockie/vslight|' resources/linux/debian/control.template
 
   # code.spec.template
   sed -i 's|Microsoft Corporation|VSLight Team|' resources/linux/rpm/code.spec.template
-  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|VSLight Team https://github.com/vslight/vslight/graphs/contributors|' resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code Team <vscode-linux@microsoft.com>|VSLight Team https://github.com/rockie/vslight/graphs/contributors|' resources/linux/rpm/code.spec.template
   sed -i 's|Visual Studio Code|VSLight|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/vslight/vslight#download-install|' resources/linux/rpm/code.spec.template
-  sed -i 's|https://code.visualstudio.com|https://github.com/vslight/vslight|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com/docs/setup/linux|https://github.com/rockie/vslight#download-install|' resources/linux/rpm/code.spec.template
+  sed -i 's|https://code.visualstudio.com|https://github.com/rockie/vslight|' resources/linux/rpm/code.spec.template
 
   # snapcraft.yaml
   sed -i 's|Visual Studio Code|VSLight|' resources/linux/rpm/code.spec.template
 elif [[ "${OS_NAME}" == "windows" ]]; then
   # code.iss
-  sed -i 's|https://code.visualstudio.com|https://github.com/vslight/vslight|' build/win32/code.iss
+  sed -i 's|https://code.visualstudio.com|https://github.com/rockie/vslight|' build/win32/code.iss
   sed -i 's|Microsoft Corporation|VSLight|' build/win32/code.iss
 fi
 
