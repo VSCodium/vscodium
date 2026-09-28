@@ -1,12 +1,14 @@
 # vslight 更新源（versions feed）契约
 
-> 状态：**待基础设施**（需要 GitHub `vslight` org 下的 `versions` 仓与 `vslight` 发布仓）。
-> 在 feed 就绪前，构建以 `DISABLE_UPDATE=yes` 兜底（dev/build.sh），更新服务完全关闭
-> （main.log 可见 `updates are disabled as there is no update URL`）。
-> feed 就绪后：移除 `DISABLE_UPDATE`，`prepare_vscode.sh` 已指向
-> `https://raw.githubusercontent.com/rockie/versions/refs/heads/master`。
+> 状态：**已上线（2026-09-28）**。feed 托管在 `rockie/vslight` 仓的 **orphan 分支 `versions`**
+> （与代码历史隔离，效果等同独立仓，无需单独建仓/扩 token）。
+> `updateUrl = https://raw.githubusercontent.com/rockie/vslight/refs/heads/versions`；
+> 客户端请求 `${updateUrl}/<quality>/<platform>/<arch>/latest.json`。
+> 首个 latest.json（1.135.06493，darwin/arm64）已播种并经 curl 验证；
+> `dev/seed-versions-feed.sh` 可复用于后续播种/格式参考。
+> 构建已移除 `DISABLE_UPDATE=yes`（更新检查开启）。
 
-## 1. 目录布局（`rockie/versions` 仓）
+## 1. 目录布局（`versions` 分支）
 
 由 `update_version.sh` 在发布流程中生成：
 
