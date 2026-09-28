@@ -30,7 +30,11 @@
    icons 文档流程替换（含 letterpress 底纹四变体）。验收 = Dock/关于框/底纹目视。
 2. **vslight GitHub org/仓**：发布仓 + versions 仓 + secrets/docker 镜像/AUR/snap/winget
    标识的新归属（当前 workflow 中保留 VSCodium 外部标识，见 Phase 2 残留清单）。
-3. 签名/公证：macOS 分发签名与自更新可用性专项（docs/vslight-update-feed.md §3）。
+3. ~~签名/公证~~ **已就绪（2026-09-28）**：Developer ID Application (KITMI PTY LTD,
+   M6B2TDZC9H)；凭据在 `dev/osx/codesign.env`（gitignored）。验证通过：
+   `spctl -a -vv` → accepted, source=Notarized Developer ID；`stapler validate` OK。
+   产物 `assets/VSLight-darwin-arm64-1.135.06493.zip` (267MB) 与
+   `VSLight.arm64.1.135.06493.dmg` (262MB) 含 sha1/sha256。自更新 feed 就绪后可直接启用。
 
 ## CI 范围（决策 B 落地）
 
