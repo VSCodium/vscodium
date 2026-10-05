@@ -56,14 +56,16 @@ sed -i \
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   export OUTNAME=${APP_NAME}-Insiders-${VERSION}-anylinux-"${ARCH}".AppImage
+  repo="vscodium-insiders"
 else
   export OUTNAME=${APP_NAME}-${VERSION}-anylinux-"${ARCH}".AppImage
+  repo=${GITHUB_REPOSITORY#*/}
 fi
 
 export ARCH
 export OUTPATH=./dist
 export ADD_HOOKS="self-updater.hook:fix-namespaces.hook"
-export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*${ARCH}.AppImage.zsync"
+export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${repo}|latest|*${ARCH}.AppImage.zsync"
 export ICON="src/${VSCODE_QUALITY}/resources/linux/code.svg"
 export DEPLOY_GTK=1
 export DEPLOY_OPENGL=1
