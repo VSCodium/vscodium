@@ -7,12 +7,12 @@
 - [Code of Conduct](#code-of-conduct)
 - [Use of AI](#use-of-ai)
 - [Reporting Bugs](#reporting-bugs)
-	- [Before Submitting an Issue](#before-submitting-an-issue)
+   - [Before Submitting an Issue](#before-submitting-an-issue)
 - [Making Changes](#making-changes)
-	- [Building VSCodium](#building-vscodium)
-	- [Creating Pull Request](#creating-pull-request)
-	- [Updating patches](#updating-patches)
-	- [Add a new patch](#add-a-new-patch)
+   - [Building VSCodium](#building-vscodium)
+   - [Creating Pull Request](#creating-pull-request)
+   - [Updating patches](#updating-patches)
+   - [Add a new patch](#add-a-new-patch)
 
 ## Code of Conduct
 
