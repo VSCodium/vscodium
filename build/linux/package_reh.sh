@@ -156,9 +156,6 @@ fi
 
 node build/npm/preinstall.ts
 
-mv .npmrc .npmrc.bak
-cp ../npmrc .npmrc
-
 echo "+ /usr/lib/node_modules/npm/node_modules/node-gyp/addon.gypi"
 cat /usr/lib/node_modules/npm/node_modules/node-gyp/addon.gypi || true
 
@@ -194,16 +191,13 @@ done
 #   VERIFY_CXX11=1
 # fi
 
-mv .npmrc.bak .npmrc
-
 node build/azure-pipelines/distro/mixin-npm.ts
 
 export VSCODE_NODE_GLIBC="-glibc-${GLIBC_VERSION}"
 
 if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   echo "Building REH"
-  npm run gulp minify-vscode-reh
-  npm run gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+  npm run gulp "vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min"
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
@@ -225,8 +219,7 @@ fi
 
 if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   echo "Building REH-web"
-  npm run gulp minify-vscode-reh-web
-  npm run gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min-ci"
+  npm run gulp "vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}-min"
 
   EXPECTED_GLIBC_VERSION="${EXPECTED_GLIBC_VERSION}" EXPECTED_GLIBCXX_VERSION="${GLIBCXX_VERSION}" SEARCH_PATH="../vscode-reh-web-${VSCODE_PLATFORM}-${VSCODE_ARCH}" ./build/azure-pipelines/linux/verify-glibc-requirements.sh
 
