@@ -5,8 +5,14 @@
 #### Table Of Contents
 
 - [Code of Conduct](#code-of-conduct)
+- [Use of AI](#use-of-ai)
 - [Reporting Bugs](#reporting-bugs)
+	- [Before Submitting an Issue](#before-submitting-an-issue)
 - [Making Changes](#making-changes)
+	- [Building VSCodium](#building-vscodium)
+	- [Creating Pull Request](#creating-pull-request)
+	- [Updating patches](#updating-patches)
+	- [Add a new patch](#add-a-new-patch)
 
 ## Code of Conduct
 
@@ -36,6 +42,12 @@ If you want to make changes, please read [the Build page](./docs/howto-build.md)
 ### Building VSCodium
 
 To build VSCodium, please follow the command found in the section [`Build Scripts`](./docs/howto-build.md#build-scripts).
+
+### Creating Pull Request
+
+Before opening a Pull Request, make sure your changes are focused. Open the PR against the `insider` branch.
+
+In the description, briefly explain what changed and why, and link any related issue. Disclose any AI assistance, and review the PR yourself to ensure the changes are accurate and ready for review.
 
 ### Updating patches
 
