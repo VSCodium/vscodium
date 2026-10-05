@@ -1,5 +1,5 @@
 diff --git a/src/cli.ts b/src/cli.ts
-index b643e34..2f228ef 100644
+index b86e22fd..b648a496 100644
 --- a/src/cli.ts
 +++ b/src/cli.ts
 @@ -5,2 +5,4 @@
@@ -34,10 +34,10 @@ index b643e34..2f228ef 100644
 +	}
 +}
 \ No newline at end of file
-diff --git a/src/main.ts b/src/main.ts
-index ec188d0..0160be6 100644
---- a/src/main.ts
-+++ b/src/main.ts
+diff --git a/src/mainImpl.ts b/src/mainImpl.ts
+index 3d34aea5..6135f69f 100644
+--- a/src/mainImpl.ts
++++ b/src/mainImpl.ts
 @@ -8,2 +8,3 @@ import * as fs from 'original-fs';
  import * as os from 'node:os';
 +import { createRequire } from 'node:module';
@@ -47,7 +47,7 @@ index ec188d0..0160be6 100644
 +const require = createRequire(import.meta.url);
 +
  perf.mark('code/didStartMain');
-@@ -109,2 +112,14 @@ registerListeners();
+@@ -231,2 +234,14 @@ async function onReady() {
  
 +function resolveUserProduct() {
 +	const userProductPath = path.join(userDataPath, 'product.json');
@@ -62,12 +62,13 @@ index ec188d0..0160be6 100644
 +}
 +
  /**
-@@ -205,2 +220,3 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
- 	process.env['VSCODE_CODE_CACHE_PATH'] = codeCachePath || '';
-+	resolveUserProduct();
+@@ -238,2 +253,4 @@ async function startup(codeCachePath: string | undefined, nlsConfig: INLSConfigu
  
++	resolveUserProduct();
++
+ 	// Bootstrap ESM
 diff --git a/src/typings/vscode-globals-product.d.ts b/src/typings/vscode-globals-product.d.ts
-index ab169bd..2155f5c 100644
+index ab169bd8..2155f5c1 100644
 --- a/src/typings/vscode-globals-product.d.ts
 +++ b/src/typings/vscode-globals-product.d.ts
 @@ -43,2 +43,4 @@ declare global {
@@ -76,10 +77,10 @@ index ab169bd..2155f5c 100644
 +	var _VSCODE_USER_PRODUCT_JSON: Record<string, any>;
  }
 diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
-index 6f093e9..b63af55 100644
+index fbc7e51c..748fa155 100644
 --- a/src/vs/platform/product/common/product.ts
 +++ b/src/vs/platform/product/common/product.ts
-@@ -31,2 +31,25 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+@@ -42,2 +42,25 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
  
 +	// Merge user-customized product.json
 +	try {

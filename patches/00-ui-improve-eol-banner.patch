@@ -1,23 +1,24 @@
 diff --git a/src/vs/workbench/browser/parts/banner/bannerPart.ts b/src/vs/workbench/browser/parts/banner/bannerPart.ts
-index 1f329c4..3e36bff 100644
+index 76f36231..c9ca3edf 100644
 --- a/src/vs/workbench/browser/parts/banner/bannerPart.ts
 +++ b/src/vs/workbench/browser/parts/banner/bannerPart.ts
-@@ -11,3 +11,3 @@ import { InstantiationType, registerSingleton } from '../../../../platform/insta
+@@ -12,3 +12,3 @@ import { InstantiationType, registerSingleton } from '../../../../platform/insta
  import { IInstantiationService, ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
 -import { IStorageService } from '../../../../platform/storage/common/storage.js';
 +import { IStorageService, StorageScope } from '../../../../platform/storage/common/storage.js';
  import { IThemeService } from '../../../../platform/theme/common/themeService.js';
-@@ -30,2 +30,3 @@ import { widgetClose } from '../../../../platform/theme/common/iconRegistry.js';
- import { BannerFocused } from '../../../common/contextkeys.js';
+@@ -32,2 +32,3 @@ import { BannerFocused } from '../../../common/contextkeys.js';
+ import { DisposableStore } from '../../../../base/common/lifecycle.js';
 +import { INeverShowAgainOptions, NeverShowAgainScope } from '../../../../platform/notification/common/notification.js';
  
-@@ -67,3 +68,3 @@ export class BannerPart extends Part implements IBannerService {
+@@ -70,3 +71,3 @@ export class BannerPart extends Part implements IBannerService {
  		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
 -		@IStorageService storageService: IStorageService,
 +		@IStorageService private readonly storageService: IStorageService,
  		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-@@ -187,2 +188,14 @@ export class BannerPart extends Part implements IBannerService {
- 
+@@ -176,2 +177,15 @@ export class BannerPart extends Part implements IBannerService {
+ 		this.items.delete(item.id);
++
 +		if (item.neverShowAgain) {
 +			const scope = this.toStorageScope(item.neverShowAgain);
 +			const id = item.neverShowAgain.id;
@@ -30,8 +31,8 @@ index 1f329c4..3e36bff 100644
 +			}
 +		}
 +
- 		// Clear previous item
-@@ -235,2 +248,15 @@ export class BannerPart extends Part implements IBannerService {
+ 		this.items.set(item.id, item);
+@@ -255,2 +269,15 @@ export class BannerPart extends Part implements IBannerService {
  
 +	private toStorageScope(options: INeverShowAgainOptions): StorageScope {
 +		switch (options.scope) {
@@ -48,7 +49,7 @@ index 1f329c4..3e36bff 100644
 +
  	toJSON(): object {
 diff --git a/src/vs/workbench/services/banner/browser/bannerService.ts b/src/vs/workbench/services/banner/browser/bannerService.ts
-index 2db0fa4..d179055 100644
+index f19d963d..f1f122fc 100644
 --- a/src/vs/workbench/services/banner/browser/bannerService.ts
 +++ b/src/vs/workbench/services/banner/browser/bannerService.ts
 @@ -10,2 +10,3 @@ import { ILinkDescriptor } from '../../../../platform/opener/browser/link.js';
