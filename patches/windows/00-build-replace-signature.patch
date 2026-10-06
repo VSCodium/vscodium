@@ -114,10 +114,10 @@ index 95ae1790..07c97656 100644
  					'OriginalFilename': basename,
 diff --git a/build/win32/signature.ts b/build/win32/signature.ts
 new file mode 100644
-index 00000000..ee722946
+index 00000000..d8e92bc0
 --- /dev/null
 +++ b/build/win32/signature.ts
-@@ -0,0 +1,68 @@
+@@ -0,0 +1,77 @@
 +import * as cp from 'child_process';
 +import { promises as fs } from 'node:fs';
 +
@@ -146,7 +146,13 @@ index 00000000..ee722946
 +	});
 +}
 +
++let $signtoolPath: string | undefined;
++
 +async function getSigntoolPath(): Promise<string> {
++	if($signtoolPath) {
++		return $signtoolPath;
++	}
++
 +    const windowsKitsFolder = 'C:/Program Files (x86)/Windows Kits/10/bin/';
 +    const folders = await fs.readdir(windowsKitsFolder);
 +    let fileName = '';
@@ -170,11 +176,14 @@ index 00000000..ee722946
 +            }
 +        }
 +    }
++
 +    if(fileName == '') {
 +        throw new Error('Unable to find signtool.exe in ' + windowsKitsFolder);
 +    }
 +
 +    console.log(`Signtool location is ${fileName}.`);
++
++	$signtoolPath = fileName;
 +
 +    return fileName;
 +}
