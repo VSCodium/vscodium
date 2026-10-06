@@ -1257,7 +1257,7 @@ index b84062c0..fd84cc0c 100644
 -    "@github/copilot-sdk": "1.0.15-preview.4",
      "@microsoft/1ds-core-js": "^3.2.13",
 diff --git a/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts b/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts
-index 56286a7b..d6cc9f31 100644
+index 56286a7b..9a9bbebe 100644
 --- a/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts
 +++ b/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts
 @@ -5,3 +5,2 @@
@@ -1274,6 +1274,26 @@ index 56286a7b..d6cc9f31 100644
 -	getSdkTelemetryConfig(): Promise<TelemetryConfig | undefined>;
 -
  	/** Resolve provider-neutral native SDK destinations. Logs and metrics always
+@@ -112,3 +104,2 @@ export const NullAgentHostOTelService: IAgentHostOTelService = {
+ 	emitUserInteraction: () => { },
+-	getSdkTelemetryConfig: async () => undefined,
+ 	getNativeSdkTelemetryConfig: async () => undefined,
+diff --git a/src/vs/platform/agentHost/node/agentHostBootstrap.ts b/src/vs/platform/agentHost/node/agentHostBootstrap.ts
+index 7255e08a..c0c56479 100644
+--- a/src/vs/platform/agentHost/node/agentHostBootstrap.ts
++++ b/src/vs/platform/agentHost/node/agentHostBootstrap.ts
+@@ -41,3 +41,2 @@ import { AgentHostLocalCommands, IAgentHostLocalCommands } from './localCommands
+ import { IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
+-import { ICopilotApiService } from './shared/copilotApiService.js';
+ import { AgentHostStartupMarks, IAgentHostStartupPerformance } from './agentHostStartupPerformance.js';
+@@ -173,3 +172,2 @@ export async function createAgentHostRuntime(options: ICreateAgentHostRuntimeOpt
+ 		const octoKitService = instantiationService.invokeFunction(accessor => accessor.get(IAgentHostOctoKitService));
+-		const copilotApiService = instantiationService.invokeFunction(accessor => accessor.get(ICopilotApiService));
+ 		services.set(IAgentHostSessionTitleController, infrastructure.add(instantiationService.createInstance(AgentHostSessionTitleController, foundation.stateManager, {
+@@ -188,3 +186,2 @@ export async function createAgentHostRuntime(options: ICreateAgentHostRuntimeOpt
+ 			octoKitService,
+-			copilotApiService,
+ 		})));
 diff --git a/src/vs/platform/agentHost/node/agentHostContributions.ts b/src/vs/platform/agentHost/node/agentHostContributions.ts
 index ac65d833..2a543b5f 100644
 --- a/src/vs/platform/agentHost/node/agentHostContributions.ts
@@ -3790,6 +3810,18 @@ index a0022479..4800f4d5 100644
 -		return parsed as Anthropic.MessageStreamEvent;
 +		return parsed as any;
  	}
+diff --git a/src/vs/platform/agentHost/test/node/agentServiceTestUtils.ts b/src/vs/platform/agentHost/test/node/agentServiceTestUtils.ts
+index bfc053d0..ab34ad26 100644
+--- a/src/vs/platform/agentHost/test/node/agentServiceTestUtils.ts
++++ b/src/vs/platform/agentHost/test/node/agentServiceTestUtils.ts
+@@ -202,3 +202,2 @@ export function createTestAgentService(
+ 	const octoKitService = instantiationService.invokeFunction(accessor => accessor.get(IAgentHostOctoKitService));
+-	const effectiveCopilotApiService = instantiationService.invokeFunction(accessor => accessor.get(ICopilotApiService));
+ 	services.set(IAgentHostSessionTitleController, foundationDisposables.add(instantiationService.createInstance(AgentHostSessionTitleController, foundation.stateManager, {
+@@ -217,3 +216,2 @@ export function createTestAgentService(
+ 		octoKitService,
+-		copilotApiService: effectiveCopilotApiService,
+ 	})));
 diff --git a/src/vs/platform/agentHost/test/node/mockAgent.ts b/src/vs/platform/agentHost/test/node/mockAgent.ts
 index 2839f673..dc751cf8 100644
 --- a/src/vs/platform/agentHost/test/node/mockAgent.ts
