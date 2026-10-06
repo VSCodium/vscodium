@@ -3894,3 +3894,24 @@ index 2839f673..dc751cf8 100644
 -			return this.getSessionMessages(this._resolveChatTarget(chat, context).session);
 +			return Promise.resolve([]);
  		},
+diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
+index fbc7e51c..70d277d5 100644
+--- a/src/vs/platform/product/common/product.ts
++++ b/src/vs/platform/product/common/product.ts
+@@ -15,6 +15,2 @@ interface IPackageConfiguration {
+ 
+-function getDependencyVersion(packageConfiguration: IPackageConfiguration, packageName: string): string | undefined {
+-	return packageConfiguration.dependencies?.[packageName]?.replace(/^[~^]/, '');
+-}
+-
+ /**
+@@ -60,9 +56,2 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+ 	}
+-
+-	if (!product.copilotVersions) {
+-		const sdk = getDependencyVersion(packageConfiguration, '@github/copilot-sdk');
+-		if (packageConfiguration.copilotRuntimeVersion && sdk) {
+-			Object.assign(product, { copilotVersions: { runtime: packageConfiguration.copilotRuntimeVersion, sdk } });
+-		}
+-	}
+ }
