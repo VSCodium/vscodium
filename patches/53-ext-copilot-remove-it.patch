@@ -1,17 +1,12 @@
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index a40ff6f6..d4d02860 100644
+index c643cf99..75c38fb1 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -25,3 +25,3 @@ import rceditCallback from 'rcedit';
- import { compileBuildWithManglingTask } from './gulpfile.compile.ts';
--import { cleanExtensionsBuildTask, compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileExtensionMediaBuildTask, compileCopilotExtensionBuildTask } from './gulpfile.extensions.ts';
-+import { cleanExtensionsBuildTask, compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileExtensionMediaBuildTask } from './gulpfile.extensions.ts';
- import { vscodeWebResourceIncludes, createVSCodeWebFileContentMapper } from './gulpfile.vscode.web.ts';
-@@ -33,3 +33,2 @@ import { fetchUrls } from './lib/fetch.ts';
+@@ -32,3 +32,2 @@ import { fetchUrls } from './lib/fetch.ts';
  import { downloadFeedPackage } from './lib/azureFeed.ts';
 -import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
  import { readAgentSdkResults } from './agent-sdk/common.ts';
-@@ -444,9 +443,3 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
+@@ -361,9 +360,3 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
  			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, `.moduleignore.${process.platform}`)));
 -		ensureCopilotPlatformPackage(platform, arch, 'remote/node_modules');
 -		const copilotRuntimePrebuilds = gulp.src(getCopilotRuntimePrebuildFiles(platform, arch, 'remote/node_modules'), { base: 'remote', dot: true, allowEmpty: true });
@@ -22,7 +17,7 @@ index a40ff6f6..d4d02860 100644
 -			.pipe(filter(getMxcExcludeFilter(arch)))
 +		const deps = es.merge(cleanedDeps)
  			.pipe(jsFilter)
-@@ -604,12 +597,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -523,12 +516,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 -function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destinationFolderName: string) {
 -	return async () => {
@@ -34,34 +29,71 @@ index a40ff6f6..d4d02860 100644
 -	};
 -}
 -
- /**
-@@ -663,3 +646,2 @@ function tweakProductForServerWeb(product: typeof import('../product.json')) {
+ ['reh', 'reh-web'].forEach(type => {
+@@ -552,3 +535,2 @@ function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destin
  				packageTask(type, platform, arch, sourceFolderName, destinationFolderName),
 -				prepareCopilotRipgrepShimTaskREH(platform, arch, destinationFolderName)
  			];
-@@ -677,3 +659,2 @@ function tweakProductForServerWeb(product: typeof import('../product.json')) {
+@@ -567,3 +549,2 @@ function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destin
  				compileNonNativeExtensionsBuildTask,
 -				compileCopilotExtensionBuildTask,
  				compileExtensionMediaBuildTask,
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 99f20db3..3b5cd412 100644
+index 28f786e6..915a1167 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -28,5 +28,4 @@ import minimist from 'minimist';
- import { compileBuildWithoutManglingTask } from './gulpfile.compile.ts';
+@@ -26,8 +26,6 @@ import { createAsar } from './lib/asar.ts';
+ import minimist from 'minimist';
 -import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask, compileCopilotExtensionBuildTask } from './gulpfile.extensions.ts';
 +import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask } from './gulpfile.extensions.ts';
- import { copyCodiconsTask } from './lib/compilation.ts';
--import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
+ import { checkApiProposalNamesTask, copyCodiconsTask } from './lib/compilation.ts';
+-import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotRuntimeVersion, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
++import { getRipgrepExcludeFilter } from './lib/copilot.ts';
  import { ensureOSProxyResolverPlatformPackage, getOSProxyResolverExcludeFilter, getOSProxyResolverPlatformFiles } from './lib/osProxyResolver.ts';
-@@ -341,6 +340,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+-import { readAgentSdkResults } from './agent-sdk/common.ts';
+-import { readDictationRuntimeResults } from './dictation-runtime/common.ts';
+ import { promisify } from 'util';
+@@ -44,18 +42,2 @@ const root = path.dirname(import.meta.dirname);
+ const commit = getVersion(root);
+-const packageLock = JSON.parse(fs.readFileSync(path.join(root, 'package-lock.json'), 'utf8')) as {
+-	readonly packages?: Readonly<Record<string, { readonly version?: string }>>;
+-};
+-const copilotRuntimeVersion = getCopilotRuntimeVersion(path.join(root, 'node_modules'));
+-if (packageJson.copilotRuntimeVersion !== copilotRuntimeVersion) {
+-	throw new Error(`package.json declares Copilot runtime ${packageJson.copilotRuntimeVersion}, but @github/copilot-sdk bundles ${copilotRuntimeVersion}.`);
+-}
+-
+-function getLockedPackageVersion(packageName: string): string {
+-	const version = packageLock.packages?.[`node_modules/${packageName}`]?.version;
+-	if (!version) {
+-		throw new Error(`Package ${packageName} is missing a version in package-lock.json.`);
+-	}
+-
+-	return version;
+-}
+ 
+@@ -206,20 +188,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  				json.version = version;
 -				json.copilotVersions = {
--					runtime: getLockedPackageVersion('@github/copilot'),
+-					runtime: copilotRuntimeVersion,
 -					sdk: getLockedPackageVersion('@github/copilot-sdk'),
 -				};
- 				// Stamp agentSdks from the per-platform results file produced
-@@ -387,11 +382,5 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+-				// Stamp agentSdks from the per-platform results file produced
+-				// by `build/agent-sdk/produce.ts` (an earlier pipeline step).
+-				// Local dev: file absent → empty → not stamped.
+-				const agentSdks = readAgentSdkResults();
+-				if (Object.keys(agentSdks).length > 0) {
+-					json.agentSdks = agentSdks;
+-				}
+-				// Stamp dictationRuntime from the per-platform results file
+-				// produced by `build/dictation-runtime/produce.ts`. Local dev /
+-				// unsupported target: file absent → undefined → not stamped.
+-				const dictationRuntime = readDictationRuntimeResults();
+-				if (dictationRuntime) {
+-					json.dictationRuntime = dictationRuntime;
+-				}
+ 				return json;
+@@ -252,11 +216,6 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, `.moduleignore.${process.platform}`)));
 -		ensureCopilotPlatformPackage(platform, arch);
 -		const copilotRuntimePrebuilds = gulp.src(getCopilotRuntimePrebuildFiles(platform, arch), { base: '.', dot: true, allowEmpty: true });
@@ -70,22 +102,16 @@ index 99f20db3..3b5cd412 100644
 -		const deps = es.merge(cleanedDeps, copilotRuntimePrebuilds, osProxyResolverPlatformPackage)
 -			.pipe(filter(getCopilotExcludeFilter(platform, arch)))
 -			.pipe(filter(getCopilotTgrepExcludeFilter(platform, arch)))
--			.pipe(filter(getRipgrepExcludeFilter(platform, arch)))
--			.pipe(filter(getMxcExcludeFilter(arch)))
 +		const deps = es.merge(cleanedDeps, osProxyResolverPlatformPackage)
+ 			.pipe(filter(getRipgrepExcludeFilter(platform, arch)))
+-			.pipe(filter(getMxcExcludeFilter(arch)))
  			.pipe(filter(getFoundryLocalExcludeFilter()))
-@@ -404,10 +393,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -269,4 +228,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  				'**/@vscode/ripgrep-universal/bin/**',
--				// Only the platform-specific Copilot CLI packages (`@github/copilot-<os>-<arch>`)
--				// need to be unpacked: the CLI is spawned as a subprocess and is a
--				// self-locating bundle that memory-maps files and resolves its native
--				// addons / sub-binaries relative to its own on-disk location, so it cannot
--				// run from inside the archive. `@github/copilot-sdk` is intentionally NOT
--				// matched here — it is pure JavaScript that the agent host loads via
--				// `import` (ASAR-aware), so it stays in the archive.
--				'**/@github/copilot-{darwin,linux,linuxmusl,win32}-*/**',
- 				'**/@microsoft/mxc-sdk/bin/**',
-@@ -676,19 +657,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+-				// The SDK runtime wrapper and native module must remain adjacent on disk.
+-				'**/@github/copilot-sdk-{darwin,linux,linuxmusl,win32}-*/**',
+ 				// The Dev Container CLI is spawned as an external Node process,
+@@ -541,19 +498,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 -function prepareCopilotRipgrepShimTask(platform: string, arch: string, destinationFolderName: string) {
 -	const outputDir = path.join(path.dirname(root), destinationFolderName);
@@ -104,27 +130,11 @@ index 99f20db3..3b5cd412 100644
 -	};
 -}
 -
- const buildRoot = path.dirname(root);
-@@ -718,3 +682,2 @@ BUILD_TARGETS.forEach(buildTarget => {
- 			packageTask(platform, arch, sourceFolderName, destinationFolderName, opts),
+ function generateNodeCompileCacheTask(platform: string, destinationFolderName: string) {
+@@ -593,3 +533,2 @@ BUILD_TARGETS.forEach(buildTarget => {
+ 			packageTask(platform, arch, sourceFolderName, destinationFolderName),
 -			prepareCopilotRipgrepShimTask(platform, arch, destinationFolderName)
  		];
-@@ -729,2 +692,3 @@ BUILD_TARGETS.forEach(buildTarget => {
- 		let vscodeTask: task.Task;
-+
- 		if (useEsbuildTranspile) {
-@@ -745,3 +709,2 @@ BUILD_TARGETS.forEach(buildTarget => {
- 				compileNonNativeExtensionsBuildTask,
--				compileCopilotExtensionBuildTask,
- 				compileExtensionMediaBuildTask,
-@@ -766,3 +729,2 @@ BUILD_TARGETS.forEach(buildTarget => {
- 				compileNonNativeExtensionsBuildTask,
--				compileCopilotExtensionBuildTask,
- 				compileExtensionMediaBuildTask,
-@@ -782,2 +744,3 @@ BUILD_TARGETS.forEach(buildTarget => {
- 		}
-+
- 		task.task(vscodeTask);
 diff --git a/build/npm/dirs.ts b/build/npm/dirs.ts
 index 7bc33635..89f8708b 100644
 --- a/build/npm/dirs.ts
@@ -134,10 +144,10 @@ index 7bc33635..89f8708b 100644
 -	'extensions/copilot',
  	'extensions/css-language-features',
 diff --git a/build/npm/postinstall.ts b/build/npm/postinstall.ts
-index 0dd0b514..5d270d30 100644
+index a2f2adde..2f8a8a87 100644
 --- a/build/npm/postinstall.ts
 +++ b/build/npm/postinstall.ts
-@@ -321,33 +321,2 @@ async function main() {
+@@ -324,18 +324,2 @@ async function main() {
  
 -	// Symlink .claude/ files to their canonical locations to test Claude agent harness
 -	const claudeDir = path.join(root, '.claude');
@@ -155,33 +165,18 @@ index 0dd0b514..5d270d30 100644
 -		log('.', `Created ${claudeSkillsLinkType} .claude/skills -> .agents/skills`);
 -	}
 -
--	// Temporary: patch @github/copilot-sdk session.js to fix ESM import
--	// (missing .js extension on vscode-jsonrpc/node). Fixed upstream in v0.1.32.
--	// TODO: Remove once @github/copilot-sdk is updated to >=0.1.32
--	for (const dir of ['', 'remote']) {
--		const sessionFile = path.join(root, dir, 'node_modules', '@github', 'copilot-sdk', 'dist', 'session.js');
--		if (fs.existsSync(sessionFile)) {
--			const content = fs.readFileSync(sessionFile, 'utf8');
--			const patched = content.replace(/from "vscode-jsonrpc\/node"/g, 'from "vscode-jsonrpc/node.js"');
--			if (content !== patched) {
--				fs.writeFileSync(sessionFile, patched);
--				log(dir || '.', 'Patched @github/copilot-sdk session.js (vscode-jsonrpc ESM import fix)');
--			}
--		}
--	}
--
  	// foundry-local-sdk (on-device chat dictation) resolves its prebuilt N-API
 diff --git a/package-lock.json b/package-lock.json
-index 2c53ca84..937716f8 100644
+index 630ddde6..181455b7 100644
 --- a/package-lock.json
 +++ b/package-lock.json
-@@ -12,5 +12,2 @@
+@@ -12,5 +12,3 @@
        "dependencies": {
 -        "@anthropic-ai/sdk": "^0.82.0",
--        "@github/copilot": "1.0.81-0",
--        "@github/copilot-sdk": "1.0.11",
+         "@devcontainers/cli": "0.88.0",
+-        "@github/copilot-sdk": "1.0.15-preview.4",
          "@microsoft/1ds-core-js": "^3.2.13",
-@@ -342,22 +339,2 @@
+@@ -338,22 +336,2 @@
      },
 -    "node_modules/@anthropic-ai/sdk": {
 -      "version": "0.82.0",
@@ -204,7 +199,7 @@ index 2c53ca84..937716f8 100644
 -      }
 -    },
      "node_modules/@azure-rest/ai-translation-text": {
-@@ -869,11 +846,2 @@
+@@ -865,11 +843,2 @@
      },
 -    "node_modules/@babel/runtime": {
 -      "version": "7.29.2",
@@ -216,354 +211,184 @@ index 2c53ca84..937716f8 100644
 -      }
 -    },
      "node_modules/@babel/template": {
-@@ -1154,341 +1122,2 @@
+@@ -1152,469 +1121,2 @@
      },
--    "node_modules/@github/copilot": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.81-0.tgz",
--      "integrity": "sha512-0JggnsNkKQl5O6ilPxrjxDahARG/kPPRzDQvEHnuUBisfJi6PSRc4BXNtH+cc704nifIuj8DTb16lK11sRbneA==",
--      "license": "SEE LICENSE IN LICENSE.md",
--      "dependencies": {
--        "detect-libc": "^2.1.2"
--      },
--      "bin": {
--        "copilot": "npm-loader.js"
--      },
--      "optionalDependencies": {
--        "@github/copilot-darwin-arm64": "1.0.81-0",
--        "@github/copilot-darwin-x64": "1.0.81-0",
--        "@github/copilot-linux-arm64": "1.0.81-0",
--        "@github/copilot-linux-x64": "1.0.81-0",
--        "@github/copilot-linuxmusl-arm64": "1.0.81-0",
--        "@github/copilot-linuxmusl-x64": "1.0.81-0",
--        "@github/copilot-win32-arm64": "1.0.81-0",
--        "@github/copilot-win32-x64": "1.0.81-0"
--      }
--    },
--    "node_modules/@github/copilot-darwin-arm64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.81-0.tgz",
--      "integrity": "sha512-8KOUMQ0OdmNQXPhjsKpo86VL/ZUT/lN4329Kdk6cpsvkM3x4+PdFNIJ7j9+4O9rB1P3g5gJ04XtR+qAkmeTekg==",
--      "cpu": [
--        "arm64"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "darwin"
--      ],
--      "bin": {
--        "copilot-darwin-arm64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-darwin-x64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-x64/-/copilot-darwin-x64-1.0.81-0.tgz",
--      "integrity": "sha512-6jbuDK3zyyU7Iiwnx3Shhs6LcEm03/NCnZYEJFd4oj+g4OtyCziXlVOeIGP+fntuIltIP418Dhc6qd8LL45/Qg==",
--      "cpu": [
--        "x64"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "darwin"
--      ],
--      "bin": {
--        "copilot-darwin-x64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-linux-arm64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linux-arm64/-/copilot-linux-arm64-1.0.81-0.tgz",
--      "integrity": "sha512-UUkCH9iaVdCNHQPjEdSm2L5AZyaM0x0XbxuRuhqB8KidcOCOHp2+Qr8VZnkkXA43CuYQHHi3mSkUGNR1QsEuLg==",
--      "cpu": [
--        "arm64"
--      ],
--      "libc": [
--        "glibc"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "linux"
--      ],
--      "bin": {
--        "copilot-linux-arm64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-linux-x64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linux-x64/-/copilot-linux-x64-1.0.81-0.tgz",
--      "integrity": "sha512-bAnfkeTFQcUSuUuKFLzBI8n/wrRbel54cb0aZnSYQCejnOSuYSF4d/osCTLDzZwo7aU0zWYxC38jJ9eh4HkUfQ==",
--      "cpu": [
--        "x64"
--      ],
--      "libc": [
--        "glibc"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "linux"
--      ],
--      "bin": {
--        "copilot-linux-x64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-linuxmusl-arm64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-arm64/-/copilot-linuxmusl-arm64-1.0.81-0.tgz",
--      "integrity": "sha512-4Iqz4VPC5kULTC9KbyFP1NB3kmfZc+Z5vKSGhP3/uHnKViYis7GZrvkaGk93PgS50/5q31rsa/8lFqSgbkfMQg==",
--      "cpu": [
--        "arm64"
--      ],
--      "libc": [
--        "musl"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "linux"
--      ],
--      "bin": {
--        "copilot-linuxmusl-arm64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-linuxmusl-x64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-x64/-/copilot-linuxmusl-x64-1.0.81-0.tgz",
--      "integrity": "sha512-iZm/TkBU7WJforS+eo7mZxv4RtdoSqJBqsFwZXi8lTGSeXs2bQBnv+m+XEKabOGk9cHQ8bj8B5K/cCwro4p5tg==",
--      "cpu": [
--        "x64"
--      ],
--      "libc": [
--        "musl"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "linux"
--      ],
--      "bin": {
--        "copilot-linuxmusl-x64": "copilot"
--      }
--    },
 -    "node_modules/@github/copilot-sdk": {
--      "version": "1.0.11",
--      "resolved": "https://registry.npmjs.org/@github/copilot-sdk/-/copilot-sdk-1.0.11.tgz",
--      "integrity": "sha512-ngrnfa9052fLTOMoY0iiQS2B6pFDYJpWNj3syCdjzdje0R5mWoij9b8exJZciLvX7BbJjKz2/lIdwo24av3e3A==",
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk/-/copilot-sdk-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-GPASorkh5ei8Pq6sDvGbj6P7mHhe+FJw8koJgY55LV/3z4XjT6Q9KE6iRpaoSHBX76U7wAO3Ex8momUNJoJoKQ==",
 -      "license": "MIT",
 -      "dependencies": {
--        "@github/copilot": "^1.0.79",
--        "koffi": "^3.1.0",
--        "vscode-jsonrpc": "^8.2.1",
--        "zod": "^4.3.6"
+-        "koffi": "3.2.1",
+-        "vscode-jsonrpc": "8.2.1",
+-        "zod": "4.3.6"
 -      },
 -      "engines": {
 -        "node": "^20.19.0 || >=22.12.0"
--      }
--    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.80.tgz",
--      "integrity": "sha512-6tf93ZF56KOiTTAjK/UhLZkl1W543IzaTQly288kockJZFswpRTnQEI00Yvacpb39DTvTYu3/ha9SeKpo/pgZQ==",
--      "license": "SEE LICENSE IN LICENSE.md",
--      "dependencies": {
--        "detect-libc": "^2.1.2"
--      },
--      "bin": {
--        "copilot": "npm-loader.js"
 -      },
 -      "optionalDependencies": {
--        "@github/copilot-darwin-arm64": "1.0.80",
--        "@github/copilot-darwin-x64": "1.0.80",
--        "@github/copilot-linux-arm64": "1.0.80",
--        "@github/copilot-linux-x64": "1.0.80",
--        "@github/copilot-linuxmusl-arm64": "1.0.80",
--        "@github/copilot-linuxmusl-x64": "1.0.80",
--        "@github/copilot-win32-arm64": "1.0.80",
--        "@github/copilot-win32-x64": "1.0.80"
+-        "@github/copilot-sdk-darwin-arm64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-darwin-x64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-linux-arm64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-linux-x64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-linuxmusl-arm64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-linuxmusl-x64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-win32-arm64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-win32-x64": "1.0.15-preview.4"
 -      }
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-darwin-arm64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.80.tgz",
--      "integrity": "sha512-fzn4PnSx3+O/a3ip72KVsjnzORsEygK+0i21bFAnFBYS+0Wi1Pk+o/CmNsJ7aRbf1enSJrcH8UDVkyc9pMGEBg==",
+-    "node_modules/@github/copilot-sdk-darwin-arm64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-darwin-arm64/-/copilot-sdk-darwin-arm64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-drXg8r2bRFJYhrGPh9RM5qYtt54GaZSK1wn7yNiwrb6Bc53q8vtal71YZO8C3t8XABc7OyCtNjU4NV2yrL7W8w==",
 -      "cpu": [
 -        "arm64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "darwin"
--      ],
--      "bin": {
--        "copilot-darwin-arm64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-darwin-x64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-x64/-/copilot-darwin-x64-1.0.80.tgz",
--      "integrity": "sha512-PKsyGk5DccNzR3bYXcYTGB9N6sHzhzGqEwq/2t1qBwqPbrC98Zo2dOT2G40/QYpJ4XdrGmTmdmfPJQ9PJknlIQ==",
+-    "node_modules/@github/copilot-sdk-darwin-x64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-darwin-x64/-/copilot-sdk-darwin-x64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-K44ywcpJcfi6RbBsF4ssqmbzZ3MoDAETBJLjA4l2abtsyJtDOodXdRqSLMdiEiZX2KwX7myfO5Na+Lfct8Rbeg==",
 -      "cpu": [
 -        "x64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "darwin"
--      ],
--      "bin": {
--        "copilot-darwin-x64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linux-arm64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linux-arm64/-/copilot-linux-arm64-1.0.80.tgz",
--      "integrity": "sha512-8oXwN2luyHEjIoSk8AkATBjXDhRoQtuiUvC93GpfQKFHI+I1eoOVwIsAq5fKP8jNCF2rOrYFIcTjwmRt38kCcQ==",
+-    "node_modules/@github/copilot-sdk-linux-arm64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-linux-arm64/-/copilot-sdk-linux-arm64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-m8csbLWfvYhzm9HDq1GfPEu6MzZ6TSI+iEbgb+jvGxL08oJNVvjqZ/M+V1U3qQnfMqX8WZMk0Ksy5OkNHEv5Wg==",
 -      "cpu": [
 -        "arm64"
 -      ],
 -      "libc": [
 -        "glibc"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "linux"
--      ],
--      "bin": {
--        "copilot-linux-arm64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linux-x64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linux-x64/-/copilot-linux-x64-1.0.80.tgz",
--      "integrity": "sha512-qv1ytVNwA3IDK7kcQow+fAikD67t42+AQ8X42bK/7oudNiv4frVZMO0yh1DYIebVRcmEhmPvbVPY/ptVUK3cbA==",
+-    "node_modules/@github/copilot-sdk-linux-x64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-linux-x64/-/copilot-sdk-linux-x64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-mFjjjoZsh3gLlS5YXx+SgqIWG6W86K7PHtWvl/7dryG1abYMiGANda79qgx3wXgtV4r+faw6bFbMGJKNJV/eVA==",
 -      "cpu": [
 -        "x64"
 -      ],
 -      "libc": [
 -        "glibc"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "linux"
--      ],
--      "bin": {
--        "copilot-linux-x64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linuxmusl-arm64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-arm64/-/copilot-linuxmusl-arm64-1.0.80.tgz",
--      "integrity": "sha512-Qjyi+OlVnPC4Lkuy7blDMMwMUQI/yELl7gDnqQlaN8TEbhZqZueuf3p0a+kEjXcNsw4XtNYQc0eMJqSIYy/Pjg==",
+-    "node_modules/@github/copilot-sdk-linuxmusl-arm64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-linuxmusl-arm64/-/copilot-sdk-linuxmusl-arm64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-ZsRqBqrYghWlwrmJ43UM18+vsTI80Mb+UhIfy3hNjgFYwfuWMcLg0BjfPxssXMp4+EqKEgkYNus0nBIswMg+ng==",
 -      "cpu": [
 -        "arm64"
 -      ],
 -      "libc": [
 -        "musl"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "linux"
--      ],
--      "bin": {
--        "copilot-linuxmusl-arm64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linuxmusl-x64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-x64/-/copilot-linuxmusl-x64-1.0.80.tgz",
--      "integrity": "sha512-rBg8pugf+5FhiZxi2zkOr+rlcOVF6Xg63j1FvryfwPT4DJ2w5Na7O3lpS4sgu8QmsP5H+dAqjlXYLYsvSoVQ0g==",
+-    "node_modules/@github/copilot-sdk-linuxmusl-x64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-linuxmusl-x64/-/copilot-sdk-linuxmusl-x64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-fP5X3KWJsWBK7WcZNqE9oh6MjUjSaRM+NPq8k74/9UI9u570Qfa2KwnDYsAbBmCETzFJXuA9iMo18H8pOl37vw==",
 -      "cpu": [
 -        "x64"
 -      ],
 -      "libc": [
 -        "musl"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "linux"
--      ],
--      "bin": {
--        "copilot-linuxmusl-x64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-win32-arm64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-win32-arm64/-/copilot-win32-arm64-1.0.80.tgz",
--      "integrity": "sha512-+f7Vkd3vt2DYOxRnS8dStvYu3DY638N/AuLuIjxZp1F9GgwCUZK69wspqIxg2L59PmRRQcH4AGTrRDR60ENIZA==",
+-    "node_modules/@github/copilot-sdk-win32-arm64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-win32-arm64/-/copilot-sdk-win32-arm64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-L3Wybg9pHzoR0TxRwPVB9nfwGXWQL6MtY9omvJGx7J5ueSLpqXICYmjGb3MHA1CT5n71m+RTWyTnkEF1lHnyxA==",
 -      "cpu": [
 -        "arm64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "win32"
--      ],
--      "bin": {
--        "copilot-win32-arm64": "copilot.exe"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-win32-x64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-win32-x64/-/copilot-win32-x64-1.0.80.tgz",
--      "integrity": "sha512-PO0kPqhRTWQfsqGaj4UN3cj8ttkcJYy4wmXiArtFm+03AIFu8xTvuhQDPn2xEOsUome7m7t2XomKoavcrCcRsw==",
+-    "node_modules/@github/copilot-sdk-win32-x64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-win32-x64/-/copilot-sdk-win32-x64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-Z0PfSrsmg7mF6NVdMHOl45yCVj78CCPJsL+DLK7yerURiAbWIjdUi44ty+6hYGKlX7bakwAsbPKonCfFgaLyiw==",
 -      "cpu": [
 -        "x64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "win32"
--      ],
--      "bin": {
--        "copilot-win32-x64": "copilot.exe"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-win32-arm64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-win32-arm64/-/copilot-win32-arm64-1.0.81-0.tgz",
--      "integrity": "sha512-xMNCRb3T9uBvEYarMN5zX9V8TRCM2bGoarbl5mddnP6AHyg1U7AL7CHuh6auiloE/QAPxL68ZSs3IMrAS4XcEg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-android-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-android-arm64/-/koffi-android-arm64-3.2.1.tgz",
+-      "integrity": "sha512-1pJQ4jnZlUJduK9u9DC5CGy3aOgDUPvIXpNb6syV3+Dh5Q/ugezAIGCqvY+w+1mgXsve0pd0NVvJRjdZNHQ6MA==",
 -      "cpu": [
 -        "arm64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
--        "win32"
+-        "android"
 -      ],
--      "bin": {
--        "copilot-win32-arm64": "copilot.exe"
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@github/copilot-win32-x64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-win32-x64/-/copilot-win32-x64-1.0.81-0.tgz",
--      "integrity": "sha512-bWus/QuH1u0WUeVsafn5800JL6IwGHjNclKriQlcZsYqJ6VjUgvXJaqafdXR9Vk7DdoWkxjM76Zko3LEltDeTg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-android-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-android-x64/-/koffi-android-x64-3.2.1.tgz",
+-      "integrity": "sha512-HH40xGh3gVQifjOBnhwT2tECC0lL1lYe+nxHvWNSzxDIyQNcVPXg38ta7vuONRFpD+uIrw7fqGYLzbZIagkVcg==",
 -      "cpu": [
 -        "x64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
--        "win32"
+-        "android"
 -      ],
--      "bin": {
--        "copilot-win32-x64": "copilot.exe"
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
-     "node_modules/@gulp-sourcemaps/identity-map": {
-@@ -1975,242 +1604,2 @@
-     },
--    "node_modules/@koromix/koffi-darwin-arm64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-arm64/-/koffi-darwin-arm64-3.1.2.tgz",
--      "integrity": "sha512-32pU4pNZABIz+l9DNJl51Y+jur4vv+SF4Ip2CSF4OUg1xUyefoLpX0NttDmzGITIrneUEVSEN+dT22524ESKBw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-darwin-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-arm64/-/koffi-darwin-arm64-3.2.1.tgz",
+-      "integrity": "sha512-Vj4h+xcjc5+Cn0DhPHjgRX4omKAv96Kehtcd+1YgYuY2W7FvQn9vS+3SmzVwhC5Qmg9bIwUZObYQ8T/4hBqQqA==",
 -      "cpu": [
 -        "arm64"
 -      ],
@@ -576,10 +401,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-darwin-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-x64/-/koffi-darwin-x64-3.1.2.tgz",
--      "integrity": "sha512-S+H6LQgUoMj77BqDegwlRaxwLXDfwvSJGuceOqtH0I5V8rzKLmu/hC7NBlxOoAlvKlcV63FtdNiE2E9YSltffg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-darwin-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-x64/-/koffi-darwin-x64-3.2.1.tgz",
+-      "integrity": "sha512-gFCWxNBTZIvxo1p+PURWfsy2Ctj5FGnVVs1f03lTLhBvmxEto70pdIiFztdFLDFkAJ1pmtQmruRKapeK+E8YPA==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -592,10 +417,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-freebsd-arm64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-arm64/-/koffi-freebsd-arm64-3.1.2.tgz",
--      "integrity": "sha512-fD0ow2PBE60nw7K6xcbala6qwXxfcYeU62tduNeIPvx0KoWhU2rMKZiDNe+iI5TQb3rxYYjjP+aF2Sdm9y6EXQ==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-freebsd-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-arm64/-/koffi-freebsd-arm64-3.2.1.tgz",
+-      "integrity": "sha512-qj+f1s2e6vULaUG1cdlTcCXmunCq2t+rjxku1+esaMIqVnHpOwj0QzPuInG0AFdXjwBNQhyVR/HpDj8daEwwsQ==",
 -      "cpu": [
 -        "arm64"
 -      ],
@@ -608,10 +433,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-freebsd-ia32": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-ia32/-/koffi-freebsd-ia32-3.1.2.tgz",
--      "integrity": "sha512-t8OmL+hoJGDLZDnuLjgLemSYrXX99M7Md+zJX8bMHOtiNbFtkGXn/mV21Pb1ik9JhBXjwK1r4hvBPNlqTMGrHg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-freebsd-ia32": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-ia32/-/koffi-freebsd-ia32-3.2.1.tgz",
+-      "integrity": "sha512-6olHb1Qfgai0jjs6ddlDDD0ZfsCxy7SPi8rMRpuYQWH0qhgtyQu82hw5b1p7z+TJ0zZP3ZeQQ6l+U/MlM1ICHQ==",
 -      "cpu": [
 -        "ia32"
 -      ],
@@ -624,10 +449,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-freebsd-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-x64/-/koffi-freebsd-x64-3.1.2.tgz",
--      "integrity": "sha512-axbLgiM4Y2vyDOTqlXCI8vkg9wqjwSRsmoWXSKreA5YFJwnYA6Sc4aHMz+qZgUSfFei52Qrv1RGhDyo4kHvqhA==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-freebsd-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-x64/-/koffi-freebsd-x64-3.2.1.tgz",
+-      "integrity": "sha512-Dikhw1ySYNVMkmeFvFVjnU5Wdk6mffNoOjJxm9bTG96vg7OlemylxqdEven47R1YJ3yzNVJn/MlQ207ORWfi2w==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -640,10 +465,26 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-arm64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-arm64/-/koffi-linux-arm64-3.1.2.tgz",
--      "integrity": "sha512-f0hqAIlFcL9wlRGJ/uCfyfspqnGaASk2gLx1UAP3RBgMQl68D1e+fiHNdXa7g9d76ttmpA8/PGNAqc1X4Byy1Q==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-arm": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-arm/-/koffi-linux-arm-3.2.1.tgz",
+-      "integrity": "sha512-OfwUwZylidq95wQKp6ClInULrfB2giu7dqM6Rhe0zAe6lES5I2SXNw15T9+GnRHk3/9hKT2XZ37OZLaKSyWNLA==",
+-      "cpu": [
+-        "arm"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-arm64/-/koffi-linux-arm64-3.2.1.tgz",
+-      "integrity": "sha512-K+cGUL5iBcDqxmsocrjmlASqDf24gc7artbVW3PewG2c9AqwC63lezgwvB85Nx4lZAQjB6zIFHh9A7t1yGbwhw==",
 -      "cpu": [
 -        "arm64"
 -      ],
@@ -656,10 +497,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-ia32": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-ia32/-/koffi-linux-ia32-3.1.2.tgz",
--      "integrity": "sha512-UGLPuqeOV/UArsK6oeB5yI/XjSWkFqFlBTC9rUbezBuHJhSibk1EMv7QC0cvtDMu18bo+ucqXWPzh42oT5yYlw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-ia32": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-ia32/-/koffi-linux-ia32-3.2.1.tgz",
+-      "integrity": "sha512-rxj6UYjU1qd98gxNQOSCdLpc5cPRi5Giq9rNd3jnGuSNIyMkwa6Dxw4cUjmhIBCYESMJtmNt5NWnJp5u9wTfYQ==",
 -      "cpu": [
 -        "ia32"
 -      ],
@@ -672,10 +513,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-loong64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-loong64/-/koffi-linux-loong64-3.1.2.tgz",
--      "integrity": "sha512-jI0+gM2oDsJ7reOt3XPyO7lyQtZ1CT6NR2uqGQcQVM43cyXBAVYYCUxEH3LHCbgumFaZ+LueIUgbMSwb9pHBxQ==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-loong64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-loong64/-/koffi-linux-loong64-3.2.1.tgz",
+-      "integrity": "sha512-aHhnHzkPRmT/IHDlGvESJ/Bs32m8N6UE6Ab6kMeJzgk74IN8af2m/81/wZJtybR1M2UxCV4NmlVNUYQQvSAO3Q==",
 -      "cpu": [
 -        "loong64"
 -      ],
@@ -688,10 +529,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-riscv64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-riscv64/-/koffi-linux-riscv64-3.1.2.tgz",
--      "integrity": "sha512-yB99adXBRd5T+xXG+f6nnUkC3jCI0iXvPU6RqD9Kx7aZP4Y4NNUWJ5Q4FaP9jb1XmZLY4pGBUiHt8u03Yl7NyA==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-riscv64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-riscv64/-/koffi-linux-riscv64-3.2.1.tgz",
+-      "integrity": "sha512-qtQBsjbm3LiirLJvajWmKkNb7ARk7fvJVXdftJ7NtAnF3Xw8EbDvrtvmvtNI1yLPlYcBmlzCCD71hwhWYk0SIA==",
 -      "cpu": [
 -        "riscv64"
 -      ],
@@ -704,10 +545,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-x64/-/koffi-linux-x64-3.1.2.tgz",
--      "integrity": "sha512-Oxvo6F3Edzy/Jm2EtbHWkJ2xRB0mXDAe63k5+USL5uiGE5xZjwEUDOBKIhv2BpCZSOAJrfoojFFogj6+ICKQhw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-x64/-/koffi-linux-x64-3.2.1.tgz",
+-      "integrity": "sha512-c7hw7Qs/r5gnFRTQLcbifBwRU7wiocj+2pVuDQ5Ahb3r36SZmupmgYbTWcLvTW+hul1jd7SKRV0d14ZJq/tvSw==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -720,10 +561,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-openbsd-ia32": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-ia32/-/koffi-openbsd-ia32-3.1.2.tgz",
--      "integrity": "sha512-SSWzUhL8Ex84JTsO67+MdWZrdwgOzoOrQ0+ZbB+UsivHoAxmWLHKWZaSafNqyBZtxGY1EgtR8AIPouWE9U+Zfw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-openbsd-ia32": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-ia32/-/koffi-openbsd-ia32-3.2.1.tgz",
+-      "integrity": "sha512-mmY8fY8LQ/CB52+h3yrMYmVyoxzW3x08S0yI6VNfHWdfU6yJtZkKCbhjmQCYMrWbYKC4gMvwZwCywIGPAkLyeA==",
 -      "cpu": [
 -        "ia32"
 -      ],
@@ -736,10 +577,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-openbsd-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-x64/-/koffi-openbsd-x64-3.1.2.tgz",
--      "integrity": "sha512-0ZuI4St7chq3M0d3VivvKIqacZ7RhgohdR476V3HpJkaNdfIywsJIw+GBvqkQahu+4A2Rpu6yQJpWSrfk/Z+Jw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-openbsd-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-x64/-/koffi-openbsd-x64-3.2.1.tgz",
+-      "integrity": "sha512-k4ig6aAPbFSRATOIIOfdf/KtlOGH4SVls6L9fy0QnTxRJYvY2oSltTsQtBDANgEQldlq8Kl5WnpRa1VSibP4Lw==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -752,10 +593,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-win32-arm64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-arm64/-/koffi-win32-arm64-3.1.2.tgz",
--      "integrity": "sha512-8Wn6phw7y53uI52+aBPAqEfZ5pj/HCjg/YtdthqSWYHy+d0MhyASKlcmuP0B5raxQnnA1Bm9LC8UO3M3RojeBw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-win32-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-arm64/-/koffi-win32-arm64-3.2.1.tgz",
+-      "integrity": "sha512-cTWBJGK//pDMeKQJE/79Aq9MiOAF4H8QyLZHSQ9IWm8czOfwjG4J1AhsQ9DjI9KFOykH77hhnpmQTGVMIubGig==",
 -      "cpu": [
 -        "arm64"
 -      ],
@@ -768,10 +609,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-win32-ia32": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-ia32/-/koffi-win32-ia32-3.1.2.tgz",
--      "integrity": "sha512-FkKaPBMawgHMNnp1FwLldXMNvEa139GXkxPi9JD9xU71Kh/ZmuEYHGSD6JwZDmDr4jekVrBrr+eGZ+j6C2mkXg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-win32-ia32": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-ia32/-/koffi-win32-ia32-3.2.1.tgz",
+-      "integrity": "sha512-Z50EM6TAZ7CFyMmyX6thv8eNpJchqe9eenhibSIy2Eq/FQYF76gU2VK/LEoaF46L8hfC7TpTp9b10MvReHEyFA==",
 -      "cpu": [
 -        "ia32"
 -      ],
@@ -784,10 +625,10 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-win32-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-x64/-/koffi-win32-x64-3.1.2.tgz",
--      "integrity": "sha512-FeFC59UU1XX4J3ZaqKrsrEzczzB5qksMJo7/R45vIg8mGNVSLMVE85JRiZpjcp9i5Lbav5Vw47QvwFzBgIfvlw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-win32-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-x64/-/koffi-win32-x64-3.2.1.tgz",
+-      "integrity": "sha512-ZmZNiBO6bkOSh3QNzgfvb1cMY0yMobn6ZQrSMqbAce21qyYL8niIbyipz9N/PIRDciGhsV0wUxnZsxIO+yWsHQ==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -800,8 +641,47 @@ index 2c53ca84..937716f8 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
-     "node_modules/@malept/cross-spawn-promise": {
-@@ -13677,15 +13066,2 @@
+-    "node_modules/@github/copilot-sdk/node_modules/koffi": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/koffi/-/koffi-3.2.1.tgz",
+-      "integrity": "sha512-0qE3lZ8jllRqPN4Ob6Ajl7c2bJSJDhQWuKLGP5hIEpHLllJWv1ydHFMhHmHc5p/W9GticKVDbYzZd7TBoQ4CZg==",
+-      "hasInstallScript": true,
+-      "license": "MIT",
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      },
+-      "optionalDependencies": {
+-        "@koromix/koffi-android-arm64": "3.2.1",
+-        "@koromix/koffi-android-x64": "3.2.1",
+-        "@koromix/koffi-darwin-arm64": "3.2.1",
+-        "@koromix/koffi-darwin-x64": "3.2.1",
+-        "@koromix/koffi-freebsd-arm64": "3.2.1",
+-        "@koromix/koffi-freebsd-ia32": "3.2.1",
+-        "@koromix/koffi-freebsd-x64": "3.2.1",
+-        "@koromix/koffi-linux-arm": "3.2.1",
+-        "@koromix/koffi-linux-arm64": "3.2.1",
+-        "@koromix/koffi-linux-ia32": "3.2.1",
+-        "@koromix/koffi-linux-loong64": "3.2.1",
+-        "@koromix/koffi-linux-riscv64": "3.2.1",
+-        "@koromix/koffi-linux-x64": "3.2.1",
+-        "@koromix/koffi-openbsd-ia32": "3.2.1",
+-        "@koromix/koffi-openbsd-x64": "3.2.1",
+-        "@koromix/koffi-win32-arm64": "3.2.1",
+-        "@koromix/koffi-win32-ia32": "3.2.1",
+-        "@koromix/koffi-win32-x64": "3.2.1"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/zod": {
+-      "version": "4.3.6",
+-      "resolved": "https://registry.npmjs.org/zod/-/zod-4.3.6.tgz",
+-      "integrity": "sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==",
+-      "license": "MIT",
+-      "funding": {
+-        "url": "https://github.com/sponsors/colinhacks"
+-      }
+-    },
+     "node_modules/@gulp-sourcemaps/identity-map": {
+@@ -13719,15 +13221,2 @@
      },
 -    "node_modules/json-schema-to-ts": {
 -      "version": "3.1.1",
@@ -817,37 +697,7 @@ index 2c53ca84..937716f8 100644
 -      }
 -    },
      "node_modules/json-schema-traverse": {
-@@ -14015,29 +13391,2 @@
-     },
--    "node_modules/koffi": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/koffi/-/koffi-3.1.2.tgz",
--      "integrity": "sha512-wVwuE21TBl8/si6E0hPorKR2PJ2q33mEWVETANrtSp3kFM8fi2FcD/J5wmxu0T4TBcqmMQ4xKuF1X1ayFmphzw==",
--      "hasInstallScript": true,
--      "license": "MIT",
--      "funding": {
--        "url": "https://liberapay.com/Koromix"
--      },
--      "optionalDependencies": {
--        "@koromix/koffi-darwin-arm64": "3.1.2",
--        "@koromix/koffi-darwin-x64": "3.1.2",
--        "@koromix/koffi-freebsd-arm64": "3.1.2",
--        "@koromix/koffi-freebsd-ia32": "3.1.2",
--        "@koromix/koffi-freebsd-x64": "3.1.2",
--        "@koromix/koffi-linux-arm64": "3.1.2",
--        "@koromix/koffi-linux-ia32": "3.1.2",
--        "@koromix/koffi-linux-loong64": "3.1.2",
--        "@koromix/koffi-linux-riscv64": "3.1.2",
--        "@koromix/koffi-linux-x64": "3.1.2",
--        "@koromix/koffi-openbsd-ia32": "3.1.2",
--        "@koromix/koffi-openbsd-x64": "3.1.2",
--        "@koromix/koffi-win32-arm64": "3.1.2",
--        "@koromix/koffi-win32-ia32": "3.1.2",
--        "@koromix/koffi-win32-x64": "3.1.2"
--      }
--    },
-     "node_modules/last-run": {
-@@ -19548,8 +18897,2 @@
+@@ -19434,8 +18923,2 @@
      },
 -    "node_modules/ts-algebra": {
 -      "version": "2.0.0",
@@ -856,7 +706,7 @@ index 2c53ca84..937716f8 100644
 -      "license": "MIT"
 -    },
      "node_modules/ts-api-utils": {
-@@ -20598,11 +19941,2 @@
+@@ -20535,11 +20018,2 @@
      },
 -    "node_modules/vscode-jsonrpc": {
 -      "version": "8.2.1",
@@ -869,7 +719,7 @@ index 2c53ca84..937716f8 100644
 -    },
      "node_modules/vscode-oniguruma": {
 diff --git a/package.json b/package.json
-index 3c518289..fc288612 100644
+index 50448128..fc1aa748 100644
 --- a/package.json
 +++ b/package.json
 @@ -24,5 +24,4 @@
@@ -892,374 +742,203 @@ index 3c518289..fc288612 100644
 -    "watch-copilotd": "deemon npm run watch-copilot",
 -    "kill-watch-copilotd": "deemon --kill npm run watch-copilot",
      "precommit": "node --experimental-strip-types build/hygiene.ts",
-@@ -93,4 +89,2 @@
+@@ -89,4 +85,2 @@
      "perf:chat-leak": "node scripts/chat-simulation/test-chat-mem-leaks.js",
 -    "copilot:setup": "npm --prefix extensions/copilot run setup",
 -    "copilot:get_token": "npm --prefix extensions/copilot run get_token",
      "update-build-ts-version": "npm install -D typescript@npm:@typescript/typescript6@^6.0.2 && npm install -D @typescript/native@npm:typescript@next && (cd build && npm run typecheck)",
-@@ -101,5 +95,2 @@
+@@ -99,5 +93,3 @@
    "dependencies": {
 -    "@anthropic-ai/sdk": "^0.82.0",
--    "@github/copilot": "1.0.81-0",
--    "@github/copilot-sdk": "1.0.11",
+     "@devcontainers/cli": "0.88.0",
+-    "@github/copilot-sdk": "1.0.15-preview.4",
      "@microsoft/1ds-core-js": "^3.2.13",
 diff --git a/remote/package-lock.json b/remote/package-lock.json
-index 0d791e25..07efdbb5 100644
+index 23024e33..cdd04be7 100644
 --- a/remote/package-lock.json
 +++ b/remote/package-lock.json
-@@ -10,4 +10,2 @@
-       "dependencies": {
--        "@github/copilot": "1.0.81-0",
--        "@github/copilot-sdk": "1.0.11",
+@@ -11,3 +11,2 @@
+         "@devcontainers/cli": "0.88.0",
+-        "@github/copilot-sdk": "1.0.15-preview.4",
          "@microsoft/1ds-core-js": "^3.2.13",
-@@ -62,341 +60,2 @@
+@@ -74,469 +73,2 @@
      },
--    "node_modules/@github/copilot": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.81-0.tgz",
--      "integrity": "sha512-0JggnsNkKQl5O6ilPxrjxDahARG/kPPRzDQvEHnuUBisfJi6PSRc4BXNtH+cc704nifIuj8DTb16lK11sRbneA==",
--      "license": "SEE LICENSE IN LICENSE.md",
--      "dependencies": {
--        "detect-libc": "^2.1.2"
--      },
--      "bin": {
--        "copilot": "npm-loader.js"
--      },
--      "optionalDependencies": {
--        "@github/copilot-darwin-arm64": "1.0.81-0",
--        "@github/copilot-darwin-x64": "1.0.81-0",
--        "@github/copilot-linux-arm64": "1.0.81-0",
--        "@github/copilot-linux-x64": "1.0.81-0",
--        "@github/copilot-linuxmusl-arm64": "1.0.81-0",
--        "@github/copilot-linuxmusl-x64": "1.0.81-0",
--        "@github/copilot-win32-arm64": "1.0.81-0",
--        "@github/copilot-win32-x64": "1.0.81-0"
--      }
--    },
--    "node_modules/@github/copilot-darwin-arm64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.81-0.tgz",
--      "integrity": "sha512-8KOUMQ0OdmNQXPhjsKpo86VL/ZUT/lN4329Kdk6cpsvkM3x4+PdFNIJ7j9+4O9rB1P3g5gJ04XtR+qAkmeTekg==",
--      "cpu": [
--        "arm64"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "darwin"
--      ],
--      "bin": {
--        "copilot-darwin-arm64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-darwin-x64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-x64/-/copilot-darwin-x64-1.0.81-0.tgz",
--      "integrity": "sha512-6jbuDK3zyyU7Iiwnx3Shhs6LcEm03/NCnZYEJFd4oj+g4OtyCziXlVOeIGP+fntuIltIP418Dhc6qd8LL45/Qg==",
--      "cpu": [
--        "x64"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "darwin"
--      ],
--      "bin": {
--        "copilot-darwin-x64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-linux-arm64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linux-arm64/-/copilot-linux-arm64-1.0.81-0.tgz",
--      "integrity": "sha512-UUkCH9iaVdCNHQPjEdSm2L5AZyaM0x0XbxuRuhqB8KidcOCOHp2+Qr8VZnkkXA43CuYQHHi3mSkUGNR1QsEuLg==",
--      "cpu": [
--        "arm64"
--      ],
--      "libc": [
--        "glibc"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "linux"
--      ],
--      "bin": {
--        "copilot-linux-arm64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-linux-x64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linux-x64/-/copilot-linux-x64-1.0.81-0.tgz",
--      "integrity": "sha512-bAnfkeTFQcUSuUuKFLzBI8n/wrRbel54cb0aZnSYQCejnOSuYSF4d/osCTLDzZwo7aU0zWYxC38jJ9eh4HkUfQ==",
--      "cpu": [
--        "x64"
--      ],
--      "libc": [
--        "glibc"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "linux"
--      ],
--      "bin": {
--        "copilot-linux-x64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-linuxmusl-arm64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-arm64/-/copilot-linuxmusl-arm64-1.0.81-0.tgz",
--      "integrity": "sha512-4Iqz4VPC5kULTC9KbyFP1NB3kmfZc+Z5vKSGhP3/uHnKViYis7GZrvkaGk93PgS50/5q31rsa/8lFqSgbkfMQg==",
--      "cpu": [
--        "arm64"
--      ],
--      "libc": [
--        "musl"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "linux"
--      ],
--      "bin": {
--        "copilot-linuxmusl-arm64": "copilot"
--      }
--    },
--    "node_modules/@github/copilot-linuxmusl-x64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-x64/-/copilot-linuxmusl-x64-1.0.81-0.tgz",
--      "integrity": "sha512-iZm/TkBU7WJforS+eo7mZxv4RtdoSqJBqsFwZXi8lTGSeXs2bQBnv+m+XEKabOGk9cHQ8bj8B5K/cCwro4p5tg==",
--      "cpu": [
--        "x64"
--      ],
--      "libc": [
--        "musl"
--      ],
--      "license": "SEE LICENSE IN LICENSE.md",
--      "optional": true,
--      "os": [
--        "linux"
--      ],
--      "bin": {
--        "copilot-linuxmusl-x64": "copilot"
--      }
--    },
 -    "node_modules/@github/copilot-sdk": {
--      "version": "1.0.11",
--      "resolved": "https://registry.npmjs.org/@github/copilot-sdk/-/copilot-sdk-1.0.11.tgz",
--      "integrity": "sha512-ngrnfa9052fLTOMoY0iiQS2B6pFDYJpWNj3syCdjzdje0R5mWoij9b8exJZciLvX7BbJjKz2/lIdwo24av3e3A==",
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk/-/copilot-sdk-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-GPASorkh5ei8Pq6sDvGbj6P7mHhe+FJw8koJgY55LV/3z4XjT6Q9KE6iRpaoSHBX76U7wAO3Ex8momUNJoJoKQ==",
 -      "license": "MIT",
 -      "dependencies": {
--        "@github/copilot": "^1.0.79",
--        "koffi": "^3.1.0",
--        "vscode-jsonrpc": "^8.2.1",
--        "zod": "^4.3.6"
+-        "koffi": "3.2.1",
+-        "vscode-jsonrpc": "8.2.1",
+-        "zod": "4.3.6"
 -      },
 -      "engines": {
 -        "node": "^20.19.0 || >=22.12.0"
--      }
--    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.80.tgz",
--      "integrity": "sha512-6tf93ZF56KOiTTAjK/UhLZkl1W543IzaTQly288kockJZFswpRTnQEI00Yvacpb39DTvTYu3/ha9SeKpo/pgZQ==",
--      "license": "SEE LICENSE IN LICENSE.md",
--      "dependencies": {
--        "detect-libc": "^2.1.2"
--      },
--      "bin": {
--        "copilot": "npm-loader.js"
 -      },
 -      "optionalDependencies": {
--        "@github/copilot-darwin-arm64": "1.0.80",
--        "@github/copilot-darwin-x64": "1.0.80",
--        "@github/copilot-linux-arm64": "1.0.80",
--        "@github/copilot-linux-x64": "1.0.80",
--        "@github/copilot-linuxmusl-arm64": "1.0.80",
--        "@github/copilot-linuxmusl-x64": "1.0.80",
--        "@github/copilot-win32-arm64": "1.0.80",
--        "@github/copilot-win32-x64": "1.0.80"
+-        "@github/copilot-sdk-darwin-arm64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-darwin-x64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-linux-arm64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-linux-x64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-linuxmusl-arm64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-linuxmusl-x64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-win32-arm64": "1.0.15-preview.4",
+-        "@github/copilot-sdk-win32-x64": "1.0.15-preview.4"
 -      }
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-darwin-arm64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.80.tgz",
--      "integrity": "sha512-fzn4PnSx3+O/a3ip72KVsjnzORsEygK+0i21bFAnFBYS+0Wi1Pk+o/CmNsJ7aRbf1enSJrcH8UDVkyc9pMGEBg==",
+-    "node_modules/@github/copilot-sdk-darwin-arm64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-darwin-arm64/-/copilot-sdk-darwin-arm64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-drXg8r2bRFJYhrGPh9RM5qYtt54GaZSK1wn7yNiwrb6Bc53q8vtal71YZO8C3t8XABc7OyCtNjU4NV2yrL7W8w==",
 -      "cpu": [
 -        "arm64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "darwin"
--      ],
--      "bin": {
--        "copilot-darwin-arm64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-darwin-x64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-darwin-x64/-/copilot-darwin-x64-1.0.80.tgz",
--      "integrity": "sha512-PKsyGk5DccNzR3bYXcYTGB9N6sHzhzGqEwq/2t1qBwqPbrC98Zo2dOT2G40/QYpJ4XdrGmTmdmfPJQ9PJknlIQ==",
+-    "node_modules/@github/copilot-sdk-darwin-x64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-darwin-x64/-/copilot-sdk-darwin-x64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-K44ywcpJcfi6RbBsF4ssqmbzZ3MoDAETBJLjA4l2abtsyJtDOodXdRqSLMdiEiZX2KwX7myfO5Na+Lfct8Rbeg==",
 -      "cpu": [
 -        "x64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "darwin"
--      ],
--      "bin": {
--        "copilot-darwin-x64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linux-arm64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linux-arm64/-/copilot-linux-arm64-1.0.80.tgz",
--      "integrity": "sha512-8oXwN2luyHEjIoSk8AkATBjXDhRoQtuiUvC93GpfQKFHI+I1eoOVwIsAq5fKP8jNCF2rOrYFIcTjwmRt38kCcQ==",
+-    "node_modules/@github/copilot-sdk-linux-arm64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-linux-arm64/-/copilot-sdk-linux-arm64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-m8csbLWfvYhzm9HDq1GfPEu6MzZ6TSI+iEbgb+jvGxL08oJNVvjqZ/M+V1U3qQnfMqX8WZMk0Ksy5OkNHEv5Wg==",
 -      "cpu": [
 -        "arm64"
 -      ],
 -      "libc": [
 -        "glibc"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "linux"
--      ],
--      "bin": {
--        "copilot-linux-arm64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linux-x64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linux-x64/-/copilot-linux-x64-1.0.80.tgz",
--      "integrity": "sha512-qv1ytVNwA3IDK7kcQow+fAikD67t42+AQ8X42bK/7oudNiv4frVZMO0yh1DYIebVRcmEhmPvbVPY/ptVUK3cbA==",
+-    "node_modules/@github/copilot-sdk-linux-x64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-linux-x64/-/copilot-sdk-linux-x64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-mFjjjoZsh3gLlS5YXx+SgqIWG6W86K7PHtWvl/7dryG1abYMiGANda79qgx3wXgtV4r+faw6bFbMGJKNJV/eVA==",
 -      "cpu": [
 -        "x64"
 -      ],
 -      "libc": [
 -        "glibc"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "linux"
--      ],
--      "bin": {
--        "copilot-linux-x64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linuxmusl-arm64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-arm64/-/copilot-linuxmusl-arm64-1.0.80.tgz",
--      "integrity": "sha512-Qjyi+OlVnPC4Lkuy7blDMMwMUQI/yELl7gDnqQlaN8TEbhZqZueuf3p0a+kEjXcNsw4XtNYQc0eMJqSIYy/Pjg==",
+-    "node_modules/@github/copilot-sdk-linuxmusl-arm64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-linuxmusl-arm64/-/copilot-sdk-linuxmusl-arm64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-ZsRqBqrYghWlwrmJ43UM18+vsTI80Mb+UhIfy3hNjgFYwfuWMcLg0BjfPxssXMp4+EqKEgkYNus0nBIswMg+ng==",
 -      "cpu": [
 -        "arm64"
 -      ],
 -      "libc": [
 -        "musl"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "linux"
--      ],
--      "bin": {
--        "copilot-linuxmusl-arm64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-linuxmusl-x64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-linuxmusl-x64/-/copilot-linuxmusl-x64-1.0.80.tgz",
--      "integrity": "sha512-rBg8pugf+5FhiZxi2zkOr+rlcOVF6Xg63j1FvryfwPT4DJ2w5Na7O3lpS4sgu8QmsP5H+dAqjlXYLYsvSoVQ0g==",
+-    "node_modules/@github/copilot-sdk-linuxmusl-x64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-linuxmusl-x64/-/copilot-sdk-linuxmusl-x64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-fP5X3KWJsWBK7WcZNqE9oh6MjUjSaRM+NPq8k74/9UI9u570Qfa2KwnDYsAbBmCETzFJXuA9iMo18H8pOl37vw==",
 -      "cpu": [
 -        "x64"
 -      ],
 -      "libc": [
 -        "musl"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "linux"
--      ],
--      "bin": {
--        "copilot-linuxmusl-x64": "copilot"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-win32-arm64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-win32-arm64/-/copilot-win32-arm64-1.0.80.tgz",
--      "integrity": "sha512-+f7Vkd3vt2DYOxRnS8dStvYu3DY638N/AuLuIjxZp1F9GgwCUZK69wspqIxg2L59PmRRQcH4AGTrRDR60ENIZA==",
+-    "node_modules/@github/copilot-sdk-win32-arm64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-win32-arm64/-/copilot-sdk-win32-arm64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-L3Wybg9pHzoR0TxRwPVB9nfwGXWQL6MtY9omvJGx7J5ueSLpqXICYmjGb3MHA1CT5n71m+RTWyTnkEF1lHnyxA==",
 -      "cpu": [
 -        "arm64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "win32"
--      ],
--      "bin": {
--        "copilot-win32-arm64": "copilot.exe"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-sdk/node_modules/@github/copilot-win32-x64": {
--      "version": "1.0.80",
--      "resolved": "https://registry.npmjs.org/@github/copilot-win32-x64/-/copilot-win32-x64-1.0.80.tgz",
--      "integrity": "sha512-PO0kPqhRTWQfsqGaj4UN3cj8ttkcJYy4wmXiArtFm+03AIFu8xTvuhQDPn2xEOsUome7m7t2XomKoavcrCcRsw==",
+-    "node_modules/@github/copilot-sdk-win32-x64": {
+-      "version": "1.0.15-preview.4",
+-      "resolved": "https://registry.npmjs.org/@github/copilot-sdk-win32-x64/-/copilot-sdk-win32-x64-1.0.15-preview.4.tgz",
+-      "integrity": "sha512-Z0PfSrsmg7mF6NVdMHOl45yCVj78CCPJsL+DLK7yerURiAbWIjdUi44ty+6hYGKlX7bakwAsbPKonCfFgaLyiw==",
 -      "cpu": [
 -        "x64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
 -        "win32"
--      ],
--      "bin": {
--        "copilot-win32-x64": "copilot.exe"
--      }
+-      ]
 -    },
--    "node_modules/@github/copilot-win32-arm64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-win32-arm64/-/copilot-win32-arm64-1.0.81-0.tgz",
--      "integrity": "sha512-xMNCRb3T9uBvEYarMN5zX9V8TRCM2bGoarbl5mddnP6AHyg1U7AL7CHuh6auiloE/QAPxL68ZSs3IMrAS4XcEg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-android-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-android-arm64/-/koffi-android-arm64-3.2.1.tgz",
+-      "integrity": "sha512-1pJQ4jnZlUJduK9u9DC5CGy3aOgDUPvIXpNb6syV3+Dh5Q/ugezAIGCqvY+w+1mgXsve0pd0NVvJRjdZNHQ6MA==",
 -      "cpu": [
 -        "arm64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
--        "win32"
+-        "android"
 -      ],
--      "bin": {
--        "copilot-win32-arm64": "copilot.exe"
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@github/copilot-win32-x64": {
--      "version": "1.0.81-0",
--      "resolved": "https://registry.npmjs.org/@github/copilot-win32-x64/-/copilot-win32-x64-1.0.81-0.tgz",
--      "integrity": "sha512-bWus/QuH1u0WUeVsafn5800JL6IwGHjNclKriQlcZsYqJ6VjUgvXJaqafdXR9Vk7DdoWkxjM76Zko3LEltDeTg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-android-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-android-x64/-/koffi-android-x64-3.2.1.tgz",
+-      "integrity": "sha512-HH40xGh3gVQifjOBnhwT2tECC0lL1lYe+nxHvWNSzxDIyQNcVPXg38ta7vuONRFpD+uIrw7fqGYLzbZIagkVcg==",
 -      "cpu": [
 -        "x64"
 -      ],
--      "license": "SEE LICENSE IN LICENSE.md",
+-      "license": "MIT",
 -      "optional": true,
 -      "os": [
--        "win32"
+-        "android"
 -      ],
--      "bin": {
--        "copilot-win32-x64": "copilot.exe"
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
-     "node_modules/@isaacs/fs-minipass": {
-@@ -413,242 +72,2 @@
-     },
--    "node_modules/@koromix/koffi-darwin-arm64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-arm64/-/koffi-darwin-arm64-3.1.2.tgz",
--      "integrity": "sha512-32pU4pNZABIz+l9DNJl51Y+jur4vv+SF4Ip2CSF4OUg1xUyefoLpX0NttDmzGITIrneUEVSEN+dT22524ESKBw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-darwin-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-arm64/-/koffi-darwin-arm64-3.2.1.tgz",
+-      "integrity": "sha512-Vj4h+xcjc5+Cn0DhPHjgRX4omKAv96Kehtcd+1YgYuY2W7FvQn9vS+3SmzVwhC5Qmg9bIwUZObYQ8T/4hBqQqA==",
 -      "cpu": [
 -        "arm64"
 -      ],
@@ -1272,10 +951,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-darwin-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-x64/-/koffi-darwin-x64-3.1.2.tgz",
--      "integrity": "sha512-S+H6LQgUoMj77BqDegwlRaxwLXDfwvSJGuceOqtH0I5V8rzKLmu/hC7NBlxOoAlvKlcV63FtdNiE2E9YSltffg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-darwin-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-darwin-x64/-/koffi-darwin-x64-3.2.1.tgz",
+-      "integrity": "sha512-gFCWxNBTZIvxo1p+PURWfsy2Ctj5FGnVVs1f03lTLhBvmxEto70pdIiFztdFLDFkAJ1pmtQmruRKapeK+E8YPA==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -1288,10 +967,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-freebsd-arm64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-arm64/-/koffi-freebsd-arm64-3.1.2.tgz",
--      "integrity": "sha512-fD0ow2PBE60nw7K6xcbala6qwXxfcYeU62tduNeIPvx0KoWhU2rMKZiDNe+iI5TQb3rxYYjjP+aF2Sdm9y6EXQ==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-freebsd-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-arm64/-/koffi-freebsd-arm64-3.2.1.tgz",
+-      "integrity": "sha512-qj+f1s2e6vULaUG1cdlTcCXmunCq2t+rjxku1+esaMIqVnHpOwj0QzPuInG0AFdXjwBNQhyVR/HpDj8daEwwsQ==",
 -      "cpu": [
 -        "arm64"
 -      ],
@@ -1304,10 +983,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-freebsd-ia32": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-ia32/-/koffi-freebsd-ia32-3.1.2.tgz",
--      "integrity": "sha512-t8OmL+hoJGDLZDnuLjgLemSYrXX99M7Md+zJX8bMHOtiNbFtkGXn/mV21Pb1ik9JhBXjwK1r4hvBPNlqTMGrHg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-freebsd-ia32": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-ia32/-/koffi-freebsd-ia32-3.2.1.tgz",
+-      "integrity": "sha512-6olHb1Qfgai0jjs6ddlDDD0ZfsCxy7SPi8rMRpuYQWH0qhgtyQu82hw5b1p7z+TJ0zZP3ZeQQ6l+U/MlM1ICHQ==",
 -      "cpu": [
 -        "ia32"
 -      ],
@@ -1320,10 +999,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-freebsd-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-x64/-/koffi-freebsd-x64-3.1.2.tgz",
--      "integrity": "sha512-axbLgiM4Y2vyDOTqlXCI8vkg9wqjwSRsmoWXSKreA5YFJwnYA6Sc4aHMz+qZgUSfFei52Qrv1RGhDyo4kHvqhA==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-freebsd-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-freebsd-x64/-/koffi-freebsd-x64-3.2.1.tgz",
+-      "integrity": "sha512-Dikhw1ySYNVMkmeFvFVjnU5Wdk6mffNoOjJxm9bTG96vg7OlemylxqdEven47R1YJ3yzNVJn/MlQ207ORWfi2w==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -1336,10 +1015,26 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-arm64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-arm64/-/koffi-linux-arm64-3.1.2.tgz",
--      "integrity": "sha512-f0hqAIlFcL9wlRGJ/uCfyfspqnGaASk2gLx1UAP3RBgMQl68D1e+fiHNdXa7g9d76ttmpA8/PGNAqc1X4Byy1Q==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-arm": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-arm/-/koffi-linux-arm-3.2.1.tgz",
+-      "integrity": "sha512-OfwUwZylidq95wQKp6ClInULrfB2giu7dqM6Rhe0zAe6lES5I2SXNw15T9+GnRHk3/9hKT2XZ37OZLaKSyWNLA==",
+-      "cpu": [
+-        "arm"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ],
+-      "funding": {
+-        "url": "https://liberapay.com/Koromix"
+-      }
+-    },
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-arm64/-/koffi-linux-arm64-3.2.1.tgz",
+-      "integrity": "sha512-K+cGUL5iBcDqxmsocrjmlASqDf24gc7artbVW3PewG2c9AqwC63lezgwvB85Nx4lZAQjB6zIFHh9A7t1yGbwhw==",
 -      "cpu": [
 -        "arm64"
 -      ],
@@ -1352,10 +1047,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-ia32": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-ia32/-/koffi-linux-ia32-3.1.2.tgz",
--      "integrity": "sha512-UGLPuqeOV/UArsK6oeB5yI/XjSWkFqFlBTC9rUbezBuHJhSibk1EMv7QC0cvtDMu18bo+ucqXWPzh42oT5yYlw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-ia32": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-ia32/-/koffi-linux-ia32-3.2.1.tgz",
+-      "integrity": "sha512-rxj6UYjU1qd98gxNQOSCdLpc5cPRi5Giq9rNd3jnGuSNIyMkwa6Dxw4cUjmhIBCYESMJtmNt5NWnJp5u9wTfYQ==",
 -      "cpu": [
 -        "ia32"
 -      ],
@@ -1368,10 +1063,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-loong64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-loong64/-/koffi-linux-loong64-3.1.2.tgz",
--      "integrity": "sha512-jI0+gM2oDsJ7reOt3XPyO7lyQtZ1CT6NR2uqGQcQVM43cyXBAVYYCUxEH3LHCbgumFaZ+LueIUgbMSwb9pHBxQ==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-loong64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-loong64/-/koffi-linux-loong64-3.2.1.tgz",
+-      "integrity": "sha512-aHhnHzkPRmT/IHDlGvESJ/Bs32m8N6UE6Ab6kMeJzgk74IN8af2m/81/wZJtybR1M2UxCV4NmlVNUYQQvSAO3Q==",
 -      "cpu": [
 -        "loong64"
 -      ],
@@ -1384,10 +1079,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-riscv64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-riscv64/-/koffi-linux-riscv64-3.1.2.tgz",
--      "integrity": "sha512-yB99adXBRd5T+xXG+f6nnUkC3jCI0iXvPU6RqD9Kx7aZP4Y4NNUWJ5Q4FaP9jb1XmZLY4pGBUiHt8u03Yl7NyA==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-riscv64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-riscv64/-/koffi-linux-riscv64-3.2.1.tgz",
+-      "integrity": "sha512-qtQBsjbm3LiirLJvajWmKkNb7ARk7fvJVXdftJ7NtAnF3Xw8EbDvrtvmvtNI1yLPlYcBmlzCCD71hwhWYk0SIA==",
 -      "cpu": [
 -        "riscv64"
 -      ],
@@ -1400,10 +1095,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-linux-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-x64/-/koffi-linux-x64-3.1.2.tgz",
--      "integrity": "sha512-Oxvo6F3Edzy/Jm2EtbHWkJ2xRB0mXDAe63k5+USL5uiGE5xZjwEUDOBKIhv2BpCZSOAJrfoojFFogj6+ICKQhw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-linux-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-linux-x64/-/koffi-linux-x64-3.2.1.tgz",
+-      "integrity": "sha512-c7hw7Qs/r5gnFRTQLcbifBwRU7wiocj+2pVuDQ5Ahb3r36SZmupmgYbTWcLvTW+hul1jd7SKRV0d14ZJq/tvSw==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -1416,10 +1111,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-openbsd-ia32": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-ia32/-/koffi-openbsd-ia32-3.1.2.tgz",
--      "integrity": "sha512-SSWzUhL8Ex84JTsO67+MdWZrdwgOzoOrQ0+ZbB+UsivHoAxmWLHKWZaSafNqyBZtxGY1EgtR8AIPouWE9U+Zfw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-openbsd-ia32": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-ia32/-/koffi-openbsd-ia32-3.2.1.tgz",
+-      "integrity": "sha512-mmY8fY8LQ/CB52+h3yrMYmVyoxzW3x08S0yI6VNfHWdfU6yJtZkKCbhjmQCYMrWbYKC4gMvwZwCywIGPAkLyeA==",
 -      "cpu": [
 -        "ia32"
 -      ],
@@ -1432,10 +1127,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-openbsd-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-x64/-/koffi-openbsd-x64-3.1.2.tgz",
--      "integrity": "sha512-0ZuI4St7chq3M0d3VivvKIqacZ7RhgohdR476V3HpJkaNdfIywsJIw+GBvqkQahu+4A2Rpu6yQJpWSrfk/Z+Jw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-openbsd-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-openbsd-x64/-/koffi-openbsd-x64-3.2.1.tgz",
+-      "integrity": "sha512-k4ig6aAPbFSRATOIIOfdf/KtlOGH4SVls6L9fy0QnTxRJYvY2oSltTsQtBDANgEQldlq8Kl5WnpRa1VSibP4Lw==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -1448,10 +1143,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-win32-arm64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-arm64/-/koffi-win32-arm64-3.1.2.tgz",
--      "integrity": "sha512-8Wn6phw7y53uI52+aBPAqEfZ5pj/HCjg/YtdthqSWYHy+d0MhyASKlcmuP0B5raxQnnA1Bm9LC8UO3M3RojeBw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-win32-arm64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-arm64/-/koffi-win32-arm64-3.2.1.tgz",
+-      "integrity": "sha512-cTWBJGK//pDMeKQJE/79Aq9MiOAF4H8QyLZHSQ9IWm8czOfwjG4J1AhsQ9DjI9KFOykH77hhnpmQTGVMIubGig==",
 -      "cpu": [
 -        "arm64"
 -      ],
@@ -1464,10 +1159,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-win32-ia32": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-ia32/-/koffi-win32-ia32-3.1.2.tgz",
--      "integrity": "sha512-FkKaPBMawgHMNnp1FwLldXMNvEa139GXkxPi9JD9xU71Kh/ZmuEYHGSD6JwZDmDr4jekVrBrr+eGZ+j6C2mkXg==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-win32-ia32": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-ia32/-/koffi-win32-ia32-3.2.1.tgz",
+-      "integrity": "sha512-Z50EM6TAZ7CFyMmyX6thv8eNpJchqe9eenhibSIy2Eq/FQYF76gU2VK/LEoaF46L8hfC7TpTp9b10MvReHEyFA==",
 -      "cpu": [
 -        "ia32"
 -      ],
@@ -1480,10 +1175,10 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
--    "node_modules/@koromix/koffi-win32-x64": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-x64/-/koffi-win32-x64-3.1.2.tgz",
--      "integrity": "sha512-FeFC59UU1XX4J3ZaqKrsrEzczzB5qksMJo7/R45vIg8mGNVSLMVE85JRiZpjcp9i5Lbav5Vw47QvwFzBgIfvlw==",
+-    "node_modules/@github/copilot-sdk/node_modules/@koromix/koffi-win32-x64": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/@koromix/koffi-win32-x64/-/koffi-win32-x64-3.2.1.tgz",
+-      "integrity": "sha512-ZmZNiBO6bkOSh3QNzgfvb1cMY0yMobn6ZQrSMqbAce21qyYL8niIbyipz9N/PIRDciGhsV0wUxnZsxIO+yWsHQ==",
 -      "cpu": [
 -        "x64"
 -      ],
@@ -1496,38 +1191,47 @@ index 0d791e25..07efdbb5 100644
 -        "url": "https://liberapay.com/Koromix"
 -      }
 -    },
-     "node_modules/@microsoft/1ds-core-js": {
-@@ -1718,29 +1137,2 @@
-     },
--    "node_modules/koffi": {
--      "version": "3.1.2",
--      "resolved": "https://registry.npmjs.org/koffi/-/koffi-3.1.2.tgz",
--      "integrity": "sha512-wVwuE21TBl8/si6E0hPorKR2PJ2q33mEWVETANrtSp3kFM8fi2FcD/J5wmxu0T4TBcqmMQ4xKuF1X1ayFmphzw==",
+-    "node_modules/@github/copilot-sdk/node_modules/koffi": {
+-      "version": "3.2.1",
+-      "resolved": "https://registry.npmjs.org/koffi/-/koffi-3.2.1.tgz",
+-      "integrity": "sha512-0qE3lZ8jllRqPN4Ob6Ajl7c2bJSJDhQWuKLGP5hIEpHLllJWv1ydHFMhHmHc5p/W9GticKVDbYzZd7TBoQ4CZg==",
 -      "hasInstallScript": true,
 -      "license": "MIT",
 -      "funding": {
 -        "url": "https://liberapay.com/Koromix"
 -      },
 -      "optionalDependencies": {
--        "@koromix/koffi-darwin-arm64": "3.1.2",
--        "@koromix/koffi-darwin-x64": "3.1.2",
--        "@koromix/koffi-freebsd-arm64": "3.1.2",
--        "@koromix/koffi-freebsd-ia32": "3.1.2",
--        "@koromix/koffi-freebsd-x64": "3.1.2",
--        "@koromix/koffi-linux-arm64": "3.1.2",
--        "@koromix/koffi-linux-ia32": "3.1.2",
--        "@koromix/koffi-linux-loong64": "3.1.2",
--        "@koromix/koffi-linux-riscv64": "3.1.2",
--        "@koromix/koffi-linux-x64": "3.1.2",
--        "@koromix/koffi-openbsd-ia32": "3.1.2",
--        "@koromix/koffi-openbsd-x64": "3.1.2",
--        "@koromix/koffi-win32-arm64": "3.1.2",
--        "@koromix/koffi-win32-ia32": "3.1.2",
--        "@koromix/koffi-win32-x64": "3.1.2"
+-        "@koromix/koffi-android-arm64": "3.2.1",
+-        "@koromix/koffi-android-x64": "3.2.1",
+-        "@koromix/koffi-darwin-arm64": "3.2.1",
+-        "@koromix/koffi-darwin-x64": "3.2.1",
+-        "@koromix/koffi-freebsd-arm64": "3.2.1",
+-        "@koromix/koffi-freebsd-ia32": "3.2.1",
+-        "@koromix/koffi-freebsd-x64": "3.2.1",
+-        "@koromix/koffi-linux-arm": "3.2.1",
+-        "@koromix/koffi-linux-arm64": "3.2.1",
+-        "@koromix/koffi-linux-ia32": "3.2.1",
+-        "@koromix/koffi-linux-loong64": "3.2.1",
+-        "@koromix/koffi-linux-riscv64": "3.2.1",
+-        "@koromix/koffi-linux-x64": "3.2.1",
+-        "@koromix/koffi-openbsd-ia32": "3.2.1",
+-        "@koromix/koffi-openbsd-x64": "3.2.1",
+-        "@koromix/koffi-win32-arm64": "3.2.1",
+-        "@koromix/koffi-win32-ia32": "3.2.1",
+-        "@koromix/koffi-win32-x64": "3.2.1"
 -      }
 -    },
-     "node_modules/lru-cache": {
-@@ -2239,11 +1631,2 @@
+-    "node_modules/@github/copilot-sdk/node_modules/zod": {
+-      "version": "4.3.6",
+-      "resolved": "https://registry.npmjs.org/zod/-/zod-4.3.6.tgz",
+-      "integrity": "sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==",
+-      "license": "MIT",
+-      "funding": {
+-        "url": "https://github.com/sponsors/colinhacks"
+-      }
+-    },
+     "node_modules/@isaacs/fs-minipass": {
+@@ -2112,11 +1644,2 @@
      },
 -    "node_modules/vscode-jsonrpc": {
 -      "version": "8.2.1",
@@ -1540,51 +1244,48 @@ index 0d791e25..07efdbb5 100644
 -    },
      "node_modules/vscode-oniguruma": {
 diff --git a/remote/package.json b/remote/package.json
-index d53cd5c6..0ae2455f 100644
+index b84062c0..fd84cc0c 100644
 --- a/remote/package.json
 +++ b/remote/package.json
-@@ -5,4 +5,2 @@
-   "dependencies": {
--    "@github/copilot": "1.0.81-0",
--    "@github/copilot-sdk": "1.0.11",
+@@ -6,3 +6,2 @@
+     "@devcontainers/cli": "0.88.0",
+-    "@github/copilot-sdk": "1.0.15-preview.4",
      "@microsoft/1ds-core-js": "^3.2.13",
-diff --git a/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts b/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts
-index 4fb1328b..1656f85a 100644
---- a/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts
-+++ b/src/vs/platform/agentHost/common/otel/agentHostOTelService.ts
-@@ -5,3 +5,2 @@
- 
--import type { TelemetryConfig } from '@github/copilot-sdk';
- import type { URI } from '../../../../base/common/uri.js';
-@@ -54,9 +53,2 @@ export interface IAgentHostOTelService {
- 
--	/**
--	 * Returns the telemetry config to hand to `new CopilotClient({ telemetry })`,
--	 * starting the loopback receiver + store on first call when in DB mode.
--	 * Resolves to `undefined` when telemetry is disabled.
--	 */
--	getSdkTelemetryConfig(): Promise<TelemetryConfig | undefined>;
--
- 	/** Resolve provider-neutral native SDK destinations. Logs and metrics always
+diff --git a/src/vs/platform/agentHost/node/agentHostBootstrap.ts b/src/vs/platform/agentHost/node/agentHostBootstrap.ts
+index 7255e08a..c0c56479 100644
+--- a/src/vs/platform/agentHost/node/agentHostBootstrap.ts
++++ b/src/vs/platform/agentHost/node/agentHostBootstrap.ts
+@@ -41,3 +41,2 @@ import { AgentHostLocalCommands, IAgentHostLocalCommands } from './localCommands
+ import { IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
+-import { ICopilotApiService } from './shared/copilotApiService.js';
+ import { AgentHostStartupMarks, IAgentHostStartupPerformance } from './agentHostStartupPerformance.js';
+@@ -173,3 +172,2 @@ export async function createAgentHostRuntime(options: ICreateAgentHostRuntimeOpt
+ 		const octoKitService = instantiationService.invokeFunction(accessor => accessor.get(IAgentHostOctoKitService));
+-		const copilotApiService = instantiationService.invokeFunction(accessor => accessor.get(ICopilotApiService));
+ 		services.set(IAgentHostSessionTitleController, infrastructure.add(instantiationService.createInstance(AgentHostSessionTitleController, foundation.stateManager, {
+@@ -188,3 +186,2 @@ export async function createAgentHostRuntime(options: ICreateAgentHostRuntimeOpt
+ 			octoKitService,
+-			copilotApiService,
+ 		})));
 diff --git a/src/vs/platform/agentHost/node/agentHostContributions.ts b/src/vs/platform/agentHost/node/agentHostContributions.ts
-index 4cdbcc36..b224470c 100644
+index ac65d833..2a543b5f 100644
 --- a/src/vs/platform/agentHost/node/agentHostContributions.ts
 +++ b/src/vs/platform/agentHost/node/agentHostContributions.ts
-@@ -10,3 +10,2 @@ import { IAgentHostChangesetOperationService } from '../common/agentHostChangese
+@@ -11,3 +11,2 @@ import { AgentHostCheckoutOperationContribution } from './agentHostCheckoutOpera
  import { IAgentHostStateManager } from './agentHostStateManager.js';
 -import { AgentHostCommitOperationContribution } from './agentHostCommitOperationProvider.js';
  import { IAgentHostCompletions } from './agentHostCompletions.js';
-@@ -26,3 +25,2 @@ export function activateAgentHostContributions(accessor: ServicesAccessor, insta
+@@ -29,3 +28,2 @@ export function activateAgentHostContributions(accessor: ServicesAccessor, insta
  		const changesetOperationService = accessor.get(IAgentHostChangesetOperationService);
 -		store.add(changesetOperationService.registerContribution(instantiationService.createInstance(AgentHostCommitOperationContribution)));
  		store.add(changesetOperationService.registerContribution(instantiationService.createInstance(AgentHostPullRequestOperationContribution)));
 diff --git a/src/vs/platform/agentHost/node/agentHostMain.ts b/src/vs/platform/agentHost/node/agentHostMain.ts
-index fc1cb531..f76abab5 100644
+index a95c4cc4..df422d43 100644
 --- a/src/vs/platform/agentHost/node/agentHostMain.ts
 +++ b/src/vs/platform/agentHost/node/agentHostMain.ts
 @@ -17,4 +17,3 @@ import * as os from 'os';
  import * as inspector from 'inspector';
--import { AgentHostClaudeAgentEnabledEnvVar, AgentHostCodexAgentEnabledEnvVar, AgentHostIpcChannels, IAgentHostInspectInfo, IAgentHostSocketInfo, IConnectionTrackerService, isAgentEnabled } from '../common/agentService.js';
+-import { AgentHostClaudeAgentEnabledEnvVar, AgentHostCodexAgentCodexHomeEnvVar, AgentHostCodexAgentEnabledEnvVar, AgentHostIpcChannels, IAgentHostInspectInfo, IAgentHostSocketInfo, IConnectionTrackerService, isAgentEnabled } from '../common/agentService.js';
 -import { AgentHostCodexEnabledConfigKey, platformRootSchema } from '../common/agentHostSchema.js';
 +import { AgentHostIpcChannels, IAgentHostInspectInfo, IAgentHostSocketInfo, IConnectionTrackerService } from '../common/agentService.js';
  import { AgentModelRefreshScheduler, MODEL_REFRESH_INTERVAL_MS } from './agentModelRefreshScheduler.js';
@@ -1596,24 +1297,26 @@ index fc1cb531..f76abab5 100644
 -import { CodexAgent, CodexSdkPackage } from './codex/codexAgent.js';
 -import { createCodexProviderConfiguration } from './codex/codexProviderConfiguration.js';
  import { ByokLmBridgeRegistry } from './byokLmBridgeRegistry.js';
-@@ -127,3 +121,3 @@ async function startAgentHost(): Promise<void> {
+@@ -129,3 +123,3 @@ async function startAgentHost(): Promise<void> {
  			hostLaunchKind,
--			providerConfigurations: [createCodexProviderConfiguration(environmentService.userHome)],
+-			providerConfigurations: [createCodexProviderConfiguration(environmentService.userHome, process.env[AgentHostCodexAgentCodexHomeEnvVar])],
 +			providerConfigurations: [],
  			byok: { kind: 'renderer', bridgeRegistry: byokLmBridgeRegistry },
-@@ -142,3 +136,2 @@ async function startAgentHost(): Promise<void> {
+@@ -145,3 +139,2 @@ async function startAgentHost(): Promise<void> {
  		}));
 -		const agentConfigurationService = runtimeServices.configurationService;
  		fileService = runtimeServices.fileService;
-@@ -148,40 +141,2 @@ async function startAgentHost(): Promise<void> {
+@@ -151,42 +144,2 @@ async function startAgentHost(): Promise<void> {
  		errorTelemetry.value = new ErrorTelemetry(runtimeServices.telemetryService);
 -		const agentSdkDownloader = runtimeServices.agentSdkDownloader;
+-		const providerService = runtimeServices.providerService;
 -		sdkDownloadProgress = runtime.sdkDownloadProgress;
--		agentService.registerProvider(instantiationService.createInstance(CopilotAgent));
+-		providerService.registerProvider(instantiationService.createInstance(CopilotAgent));
 -		// Claude and Codex providers are gated on two things:
 -		//  1. The user-facing enable toggle (`chat.agentHost.<x>Agent.enabled`,
--		//     forwarded as an env var by the starters). Claude defaults to on,
--		//     Codex defaults to off.
+-		//     forwarded as an env var by the starters). Claude defaults to on.
+-		//     Codex defaults to on outside Stable and off in Stable; if a starter
+-		//     does not forward its resolved value, the host fallback is off.
 -		//  2. The SDK being reachable. Claude is a devDependency of this repo
 -		//     so the bare-import path in `ClaudeAgentSdkService._loadSdk`
 -		//     always succeeds in dev; in built products the SDK ships via
@@ -1624,7 +1327,7 @@ index fc1cb531..f76abab5 100644
 -		// If either gate fails, the provider is not registered and never appears
 -		// in the agent picker (matches the pre-CDN UX exactly).
 -		if (isAgentEnabled(process.env[AgentHostClaudeAgentEnabledEnvVar], true) && (!environmentService.isBuilt || agentSdkDownloader.isAvailable(ClaudeSdkPackage))) {
--			agentService.registerProvider(instantiationService.createInstance(ClaudeAgent));
+-			providerService.registerProvider(instantiationService.createInstance(ClaudeAgent));
 -		}
 -		// Codex registration is one-way (register-on-enable): the env-var toggle
 -		// or the renderer-forwarded `codexAgentEnabled` root config enables it.
@@ -1639,7 +1342,7 @@ index fc1cb531..f76abab5 100644
 -				const enabledByRootConfig = agentConfigurationService.getRootValue(platformRootSchema, AgentHostCodexEnabledConfigKey) === true;
 -				if (enabledByEnv || enabledByRootConfig) {
 -					codexRegistered = true;
--					agentService.registerProvider(instantiationService.createInstance(CodexAgent));
+-					providerService.registerProvider(instantiationService.createInstance(CodexAgent));
 -				}
 -			};
 -			registerCodexIfEnabled();
@@ -1647,38 +1350,47 @@ index fc1cb531..f76abab5 100644
 -		}
  	} catch (err) {
 diff --git a/src/vs/platform/agentHost/node/agentHostServerMain.ts b/src/vs/platform/agentHost/node/agentHostServerMain.ts
-index f8000897..1c8ebdfc 100644
+index 3d088613..7c1cb71e 100644
 --- a/src/vs/platform/agentHost/node/agentHostServerMain.ts
 +++ b/src/vs/platform/agentHost/node/agentHostServerMain.ts
-@@ -39,11 +39,5 @@ import { IAgentHostStateManager } from './agentHostStateManager.js';
+@@ -17,3 +17,2 @@ import * as fs from 'fs';
+ import * as os from 'os';
+-import type { Event } from '../../../base/common/event.js';
+ import { DisposableStore, MutableDisposable } from '../../../base/common/lifecycle.js';
+@@ -39,12 +38,6 @@ import { IAgentHostStateManager } from './agentHostStateManager.js';
  import { BANG_COMMAND_PREFIX } from './agentHostBangCommand.js';
 -import { CopilotAgent } from './copilot/copilotAgent.js';
 -import { ClaudeAgent } from './claude/claudeAgent.js';
 -import { ClaudeSdkPackage } from './claude/claudeAgentSdkService.js';
 -import { CodexAgent, CodexSdkPackage } from './codex/codexAgent.js';
 -import { createCodexProviderConfiguration } from './codex/codexProviderConfiguration.js';
- import { IAgentSdkDownloader, type IAgentSdkDownloadProgress } from './agentSdkDownloader.js';
+-import { IAgentSdkDownloader, type IAgentSdkDownloadProgress } from './agentSdkDownloader.js';
++import { IAgentSdkDownloader } from './agentSdkDownloader.js';
+ import { IAgentHostProviderService } from './agentHostProviderService.js';
 -import { AgentHostCodexEnabledConfigKey, platformRootSchema } from '../common/agentHostSchema.js';
  import { AgentModelRefreshScheduler, MODEL_REFRESH_INTERVAL_MS } from './agentModelRefreshScheduler.js';
--import { AgentHostClaudeAgentEnabledEnvVar, AgentHostClaudeSdkRootEnvVar, AgentHostCodexAgentEnabledEnvVar, AgentHostCodexAgentSdkRootEnvVar, isAgentEnabled } from '../common/agentService.js';
+-import { AgentHostClaudeAgentEnabledEnvVar, AgentHostClaudeSdkRootEnvVar, AgentHostCodexAgentCodexHomeEnvVar, AgentHostCodexAgentEnabledEnvVar, AgentHostCodexAgentSdkRootEnvVar, isAgentEnabled } from '../common/agentService.js';
 +import { AgentHostClaudeSdkRootEnvVar, AgentHostCodexAgentSdkRootEnvVar } from '../common/agentService.js';
  import { WebSocketProtocolServer } from './webSocketTransport.js';
-@@ -200,3 +194,3 @@ async function main(): Promise<void> {
+@@ -201,3 +194,3 @@ async function main(): Promise<void> {
  		hostLaunchKind: AgentHostLaunchKind.VSCodeCLI,
--		providerConfigurations: [createCodexProviderConfiguration(environmentService.userHome)],
+-		providerConfigurations: [createCodexProviderConfiguration(environmentService.userHome, process.env[AgentHostCodexAgentCodexHomeEnvVar])],
 +		providerConfigurations: [],
  		byok: { kind: 'unavailable' },
-@@ -216,6 +210,4 @@ async function main(): Promise<void> {
+@@ -218,6 +211,4 @@ async function main(): Promise<void> {
  	const {
 -		configurationService: agentConfigurationService,
  		fileService,
  		sessionDataService,
 -		agentSdkDownloader,
- 		stateManager,
-@@ -230,41 +222,2 @@ async function main(): Promise<void> {
- 		sdkDownloadProgress = runtime.sdkDownloadProgress;
--		const copilotAgent = disposables.add(instantiationService.createInstance(CopilotAgent));
--		agentService.registerProvider(copilotAgent);
+ 		providerService,
+@@ -229,61 +220,2 @@ async function main(): Promise<void> {
+ 
+-	// Register agents
+-	let sdkDownloadProgress: Event<IAgentSdkDownloadProgress> | undefined;
+-	if (!options.quiet) {
+-		sdkDownloadProgress = runtime.sdkDownloadProgress;
+-		providerService.registerProvider(instantiationService.createInstance(CopilotAgent));
 -		log('CopilotAgent registered');
 -		// Claude and Codex providers are gated on two things:
 -		//  1. The user-facing enable toggle (`chat.agentHost.<x>Agent.enabled`,
@@ -1694,8 +1406,7 @@ index f8000897..1c8ebdfc 100644
 -		//     `node_modules` in dev; built/shipped installs use the env-var
 -		//     override or `product.agentSdks.codex`.
 -		if (isAgentEnabled(process.env[AgentHostClaudeAgentEnabledEnvVar], true) && (!environmentService.isBuilt || agentSdkDownloader.isAvailable(ClaudeSdkPackage))) {
--			const claudeAgent = disposables.add(instantiationService.createInstance(ClaudeAgent));
--			agentService.registerProvider(claudeAgent);
+-			providerService.registerProvider(instantiationService.createInstance(ClaudeAgent));
 -			log('ClaudeAgent registered');
 -		}
 -		if (!environmentService.isBuilt || agentSdkDownloader.isAvailable(CodexSdkPackage)) {
@@ -1708,24 +1419,42 @@ index f8000897..1c8ebdfc 100644
 -				const enabledByRootConfig = agentConfigurationService.getRootValue(platformRootSchema, AgentHostCodexEnabledConfigKey) === true;
 -				if (enabledByEnv || enabledByRootConfig) {
 -					codexRegistered = true;
--					const codexAgent = disposables.add(instantiationService.createInstance(CodexAgent));
--					agentService.registerProvider(codexAgent);
+-					providerService.registerProvider(instantiationService.createInstance(CodexAgent));
 -					log('CodexAgent registered');
 -				}
 -			};
 -			registerCodexIfEnabled();
 -			disposables.add(agentConfigurationService.onDidRootConfigChange(() => registerCodexIfEnabled()));
 -		}
- 	}
+-	}
+-
+-	// Surface agent-SDK download progress to clients as generic `progress`
+-	// notifications. The downloader fires process-global frames keyed by package
+-	// id; the agent service surfaces frames requested by a waiting session or
+-	// another user-initiated flow, routed through the state manager so both local
+-	// (IPC) and remote (WebSocket) renderers receive them via the same path as
+-	// session updates.
+-	if (sdkDownloadProgress) {
+-		disposables.add(sdkDownloadProgress(p => agentService.emitDownloadProgress(
+-			p.packageId,
+-			p.displayName,
+-			p.receivedBytes,
+-			p.totalBytes,
+-			p.phase === 'completed' || p.phase === 'failed',
+-			p.explicitlyRequested,
+-		)));
+-	}
+-
+ 	if (options.enableMockAgent) {
 diff --git a/src/vs/platform/agentHost/node/agentHostServices.ts b/src/vs/platform/agentHost/node/agentHostServices.ts
-index 22f35bd1..4637e904 100644
+index 6d686e80..4215cb8d 100644
 --- a/src/vs/platform/agentHost/node/agentHostServices.ts
 +++ b/src/vs/platform/agentHost/node/agentHostServices.ts
 @@ -18,3 +18,2 @@ import { IAgentEditAttributionService } from '../common/fileEditAttribution.js';
  import { IAgentHostGitService } from '../common/agentHostGitService.js';
 -import { IAgentHostOTelService } from '../common/otel/agentHostOTelService.js';
  import { IAgentHostChangesetOperationService } from '../common/agentHostChangesetOperationService.js';
-@@ -31,9 +30,5 @@ import { AgentSdkDownloader, IAgentSdkDownloader } from './agentSdkDownloader.js
+@@ -33,9 +32,5 @@ import { AgentSdkDownloader, IAgentSdkDownloader } from './agentSdkDownloader.js
  import { IByokLmBridgeRegistry } from './byokLmBridgeRegistry.js';
 -import { ClaudeAgentSdkService, IClaudeAgentSdkService } from './claude/claudeAgentSdkService.js';
 -import { ClaudeProxyService, IClaudeProxyService } from './claude/claudeProxyService.js';
@@ -1735,28 +1464,28 @@ index 22f35bd1..4637e904 100644
  import { NetworkDiagnosticsService, INetworkDiagnosticsService } from './networkDiagnosticsService.js';
 -import { AgentHostOTelService } from './otel/agentHostOTelService.js';
  import { AgentHostChangesetOperationService } from './agentHostChangesetOperationService.js';
-@@ -144,6 +139,2 @@ export function registerAgentHostHostServices(services: AgentHostServiceCollecti
- 	registerService(services, ids, IAgentSdkDownloader, new SyncDescriptor(AgentSdkDownloader));
--	registerService(services, ids, IClaudeAgentSdkService, new SyncDescriptor(ClaudeAgentSdkService));
--	registerService(services, ids, IClaudeProxyService, new SyncDescriptor(ClaudeProxyService));
--	registerService(services, ids, ICodexProxyService, new SyncDescriptor(CodexProxyService));
--	registerService(services, ids, IAgentHostOTelService, new SyncDescriptor(AgentHostOTelService, [inputs.fetchFn]));
- 	registerService(services, ids, IAgentHostWorktreeIsolation, new SyncDescriptor(WorktreeIsolation, [undefined]));
+@@ -145,6 +140,2 @@ export function registerAgentHostHostServices(services: ServiceCollection, input
+ 	services.set(IAgentSdkDownloader, new SyncDescriptor(AgentSdkDownloader));
+-	services.set(IClaudeAgentSdkService, new SyncDescriptor(ClaudeAgentSdkService));
+-	services.set(IClaudeProxyService, new SyncDescriptor(ClaudeProxyService));
+-	services.set(ICodexProxyService, new SyncDescriptor(CodexProxyService, [undefined]));
+-	services.set(IAgentHostOTelService, new SyncDescriptor(AgentHostOTelService, [inputs.fetchFn]));
+ 	services.set(
 diff --git a/src/vs/platform/agentHost/node/agentHostSessionTitleController.ts b/src/vs/platform/agentHost/node/agentHostSessionTitleController.ts
-index f11f7ea8..a32fd831 100644
+index 594ec56d..406ee7e0 100644
 --- a/src/vs/platform/agentHost/node/agentHostSessionTitleController.ts
 +++ b/src/vs/platform/agentHost/node/agentHostSessionTitleController.ts
 @@ -5,3 +5,2 @@
  
 -import { Limiter } from '../../../base/common/async.js';
  import { CancellationToken, CancellationTokenSource } from '../../../base/common/cancellation.js';
-@@ -16,4 +15,3 @@ import { buildConversationContext, renderResponseMarkdown, truncateMiddle } from
+@@ -18,4 +17,3 @@ import { buildConversationContext, renderResponseMarkdown, truncateMiddle } from
  import { AgentHostStateManager } from './agentHostStateManager.js';
 -import type { GitHubIssueOrPullRequest, IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
 -import { ICopilotApiService, type ICopilotUtilityChatMessage } from './shared/copilotApiService.js';
 +import type { IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
  import { AGENT_HOST_TITLE_SOURCE_AGENT, AGENT_HOST_TITLE_SOURCE_AUTO, AGENT_HOST_TITLE_SOURCE_USER, customChatTitleMetadataKey, customChatTitleSourceMetadataKey, persistSessionMetadata, SESSION_CUSTOM_TITLE_KEY, SESSION_CUSTOM_TITLE_SOURCE_KEY } from './shared/persistSessionMetadata.js';
-@@ -22,13 +20,2 @@ const MAX_TITLE_LENGTH = 200;
+@@ -24,13 +22,2 @@ const MAX_TITLE_LENGTH = 200;
  const MAX_ACTIVE_AGENT_FALLBACK_TITLE_LENGTH = 40;
 -const MAX_TITLE_TOKENS = 32;
 -const GITHUB_CONTEXT_REQUEST_TIMEOUT = 5_000;
@@ -1770,7 +1499,7 @@ index f11f7ea8..a32fd831 100644
 -const TRAILING_HAN_SUFFIX = /(?<!\p{sc=Han})\p{sc=Han}{2,3}$/u;
 -const GITHUB_ISSUE_OR_PULL_REQUEST_URL_PATTERN = /\bhttps?:\/\/(?<host>[\w.-]+)\/(?<owner>[\w.-]+)\/(?<repo>[\w.-]+)\/(?<kind>issues|pull)\/(?<number>\d+)\b/gi;
  const CHAT_RENAME_REMINDER = 'Reminder: This chat currently has an auto-generated or placeholder title. If the user references an issue or PR, fetch it first. Please give the chat a short, descriptive title based on the user\'s intent by calling `rename_chat` with `automatic: true`, silently and without a preamble. The user must not know that you are renaming. Do not skip it.';
-@@ -43,22 +30,2 @@ const MAX_TITLE_CONTEXT_CHARS = 20000;
+@@ -54,22 +41,2 @@ const MAX_TITLE_CONTEXT_CHARS = 20000;
  
 -/**
 - * Slice of {@link MAX_TITLE_CONTEXT_CHARS} always available to GitHub context,
@@ -1793,11 +1522,11 @@ index f11f7ea8..a32fd831 100644
 -}
 -
  /** Everything the utility model is told about when asked for a title. */
-@@ -82,3 +49,2 @@ export interface IAgentHostSessionTitleControllerOptions {
+@@ -95,3 +62,2 @@ export interface IAgentHostSessionTitleControllerOptions {
  	readonly octoKitService?: IAgentHostOctoKitService;
 -	readonly copilotApiService?: ICopilotApiService;
- 	readonly isActiveAgentTitleGenerationEnabled?: () => boolean;
-@@ -574,214 +540,3 @@ export class AgentHostSessionTitleController extends Disposable {
+ 	readonly getInitialTitleGenerationStrategy?: () => AutomaticTitleGenerationStrategy;
+@@ -631,214 +597,3 @@ export class AgentHostSessionTitleController extends Disposable implements IAgen
  	private async _generateTitleFromPrompt(prompt: ITitlePromptContext, token: CancellationToken): Promise<string | undefined> {
 -		if (token.isCancellationRequested) {
 -			return undefined;
@@ -2013,65 +1742,765 @@ index f11f7ea8..a32fd831 100644
 -		return prefix;
 +		return undefined;
  	}
+diff --git a/src/vs/platform/agentHost/node/agentHostTelemetryReporter.ts b/src/vs/platform/agentHost/node/agentHostTelemetryReporter.ts
+index b65dc19f..adeb0f99 100644
+--- a/src/vs/platform/agentHost/node/agentHostTelemetryReporter.ts
++++ b/src/vs/platform/agentHost/node/agentHostTelemetryReporter.ts
+@@ -8,9 +8,5 @@ import { ITelemetryService } from '../../telemetry/common/telemetry.js';
+ import { TelemetryTrustedValue } from '../../telemetry/common/telemetryUtils.js';
+-import { hash } from '../../../base/common/hash.js';
+ import { createDecorator } from '../../instantiation/common/instantiation.js';
+-import { AgentSession, type AgentSubagentTaskModelSource, type AgentTurnProviderCallState, type AgentTurnProviderSessionState, type IAgentTurnDiagnosticSnapshot, type IAgentTokenUsageSummary, type IAgentTelemetryContext } from '../common/agent.js';
+-import { isReasoningEffortLevel } from '../common/reasoningEffort.js';
++import { type AgentSubagentTaskModelSource, type AgentTurnProviderCallState, type AgentTurnProviderSessionState, type IAgentTurnDiagnosticSnapshot, type IAgentTokenUsageSummary, type IAgentTelemetryContext } from '../common/agent.js';
+ import type { SessionMode } from '../common/agentHostSchema.js';
+-import { getTelemetryChatSessionId } from '../common/agentTelemetryCorrelation.js';
+-import { readAgentErrorTelemetryMeta } from '../common/meta/agentErrorMeta.js';
+ import { isAgentMergeMessage } from '../common/meta/agentMergeMessageMeta.js';
+@@ -18,11 +14,8 @@ import { MessageKind, type ErrorInfo, type Message, type SessionInputRequestKind
+ import { ActionType } from '../common/state/sessionActions.js';
+-import { isAhpChatChannel, isSubagentChatUri, isSubagentSession, parseChatUri, parseRequiredSessionUriFromChatUri, type ISessionWithDefaultChat } from '../common/state/sessionState.js';
+-import { IAgentHostOTelService, NullAgentHostOTelService } from '../common/otel/agentHostOTelService.js';
++import { type ISessionWithDefaultChat } from '../common/state/sessionState.js';
+ import type { ToolInvokedResult } from './agentHostToolCallTracker.js';
+ import type { AutomaticTitleGenerationStrategy } from './agentHostSessionTitleController.js';
+-import { multiplexProperties, type IAgentHostRestrictedTelemetry, type IAgentHostRestrictedTelemetryContext } from './agentHostRestrictedTelemetry.js';
++import { type IAgentHostRestrictedTelemetryContext } from './agentHostRestrictedTelemetry.js';
+ import { AgentHostClientType } from '../common/agentHostClientInfo.js';
+ import { AgentHostClientConnectionKind, AgentHostLaunchKind, AgentHostTransportKind, type AgentHostTurnFailureStage, type AgentHostTurnSendStage, type IAgentHostClientTelemetryContext, type IAgentProviderTurnTelemetryContext, type ICodexAccountTelemetryContext } from '../common/agentHostTelemetry.js';
+-import { isAgentHostTelemetryService } from './agentHostTelemetryService.js';
+-import { getCodexAccountTelemetryData, type CodexAccountTelemetryClassification } from './codex/codexAccountTelemetry.js';
+ 
+@@ -264,3 +257,3 @@ export interface IAgentHostTurnCompletedEvent extends IAgentHostEventTelemetry,
+ 
+-export type IAgentHostTurnCompletedClassification = IAgentHostEventClassification & CodexAccountTelemetryClassification & {
++export type IAgentHostTurnCompletedClassification = IAgentHostEventClassification & {
+ 	hostRootTurnOrdinal?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'One-based root-turn ordinal over the agent host process lifetime, captured at turn start and excluding subagent turns.' };
+@@ -394,48 +387,2 @@ export interface IAgentHostTurnCompletedReport extends IAgentHostTurnAttributedR
+ 
+-interface IRequestTokenUsageEvent extends IAgentHostEventTelemetry, Omit<IAgentTokenUsageSummary, 'model'> {
+-	provider: string;
+-	agentSessionId: string;
+-	chatSessionId: string;
+-	requestId: string;
+-	parentTurnId?: string;
+-	parentToolCallId?: string;
+-	isSubagentSession: boolean;
+-	model: string | TelemetryTrustedValue<string>;
+-	selectedModel?: string | TelemetryTrustedValue<string>;
+-	result: AgentHostTurnResult;
+-	usageAccountingVersion: number;
+-	inputTokenSemantics: 'sdkReported';
+-	usageRecordSource: 'sdkUsageEvent';
+-	reasoningEffortSource: 'sdkReported';
+-}
+-
+-type RequestTokenUsageClassification = IAgentHostEventClassification & {
+-	provider: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Agent provider.' };
+-	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Opaque owning session identifier.' };
+-	chatSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Opaque owning chat identifier.' };
+-	requestId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Host canonical owning turn identifier, not an SDK API call identifier.' };
+-	parentTurnId?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Parent turn of a nested request.' };
+-	parentToolCallId?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Tool call that owns a nested request.' };
+-	isSubagentSession: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Whether this request is a child request.' };
+-	model: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Observed usage model, classified through the provider model catalog. Unknown and BYOK names are redacted; missing actual models are unknown, never inferred from selection.' };
+-	selectedModel?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Selected request model, separately classified from the observed usage model.' };
+-	reasoningEffort?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Known bounded reasoning effort for these observed records.' };
+-	reasoningEffortSource: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Reasoning effort is reported on SDK usage events when available, never inferred from requested effort.' };
+-	result: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Actual terminal outcome, independent of counter availability.' };
+-	usageScope: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Direct model or compaction usage; descendants are separate requests.' };
+-	usageStatus: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Counter availability among observed records only, not delivery completeness.' };
+-	usageAccountingVersion: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Version 1 observed record accounting.' };
+-	inputTokenSemantics: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SDK-reported input counters without adjustment; cache inclusion has not been verified.' };
+-	usageRecordSource: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Records are observed SDK usage events, not all fetch results or network calls.' };
+-	usageRecordCount: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Observed deduplicated usage records, not network calls.' };
+-	inputKnownRecordCount: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Records with valid input tokens.' };
+-	outputKnownRecordCount: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Records with valid output tokens.' };
+-	cacheKnownRecordCount: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Records with valid cache read tokens.' };
+-	knownInputTokens?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Input subtotal over valid SDK records only; omitted when unknown. Cache overlap is unverified; do not add cache tokens or assume parity with cache-inclusive totals.' };
+-	knownOutputTokens?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Output subtotal over valid records only; omitted when unknown.' };
+-	knownCacheReadTokens?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Cache read subtotal over valid records only; omitted when unknown.' };
+-	owner: 'roblourens';
+-	comment: 'Additive per-request observed provider token accounting, independent of UI and billing counters.';
+-};
+-
+ /**
+@@ -500,10 +447,2 @@ export type AgentHostTurnActivityTelemetryKind = 'none' | 'other' | typeof turnA
+ 
+-function normalizeTurnActivityKind(activityKind: string): AgentHostTurnActivityTelemetryKind {
+-	if (activityKind === 'none') {
+-		return 'none';
+-	}
+-
+-	return turnActivityKindsByActionType[activityKind as keyof typeof turnActivityKindsByActionType] ?? 'other';
+-}
+-
+ export interface IAgentHostTurnHungEvent extends IAgentHostEventTelemetry, Partial<ICodexAccountTelemetryContext> {
+@@ -536,3 +475,3 @@ export interface IAgentHostTurnHungEvent extends IAgentHostEventTelemetry, Parti
+ 
+-export type IAgentHostTurnHungClassification = IAgentHostEventClassification & CodexAccountTelemetryClassification & {
++export type IAgentHostTurnHungClassification = IAgentHostEventClassification & {
+ 	provider: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The provider handling the hung agent host turn.' };
+@@ -633,6 +572,2 @@ export interface IAgentHostHungTurnCompletedReport extends IAgentHostTurnAttribu
+ 
+-type IAgentHostLanguageModelToolInvokedEvent = LanguageModelToolInvokedEvent & IAgentHostEventTelemetry;
+-
+-type IAgentHostLanguageModelToolInvokedClassification = LanguageModelToolInvokedClassification & IAgentHostEventClassification;
+-
+ export interface IAgentHostToolInvokedReport extends IAgentHostTurnAttributedReport {
+@@ -986,28 +921,7 @@ export class AgentHostTelemetryReporter {
+ 	constructor(
++		// @ts-ignore
+ 		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+-		@IAgentHostOTelService private readonly _otelService: IAgentHostOTelService = NullAgentHostOTelService,
+ 	) { }
+ 
+-	/** The restricted GH/MSFT telemetry surface, present when the agent-host telemetry service is wired. */
+-	private get _restricted(): IAgentHostRestrictedTelemetry | undefined {
+-		const ts = this._telemetryService as Partial<IAgentHostRestrictedTelemetry>;
+-		return typeof ts.sendEnhancedGHTelemetryEvent === 'function' ? ts as IAgentHostRestrictedTelemetry : undefined;
+-	}
+-
+-	private _copilotSku(provider: string): IAgentHostCopilotSkuTelemetry {
+-		const copilotSku = isAgentHostTelemetryService(this._telemetryService) ? this._telemetryService.getCopilotSku(provider) : undefined;
+-		return copilotSku === undefined ? {} : { copilotSku };
+-	}
+-
+ 	executionModeChanged(provider: string, session: string, previousMode: SessionMode, newMode: SessionMode, turnCount: number, clientContext?: IAgentHostClientTelemetryContext): void {
+-		this._telemetryService.publicLog2<IAgentHostExecutionModeChangedEvent, IAgentHostExecutionModeChangedClassification>('agentHost.executionModeChanged', {
+-			...toInitiatorTelemetry(clientContext),
+-			...this._copilotSku(provider),
+-			provider,
+-			agentSessionId: AgentSession.id(session),
+-			isSubagentSession: isSubagentSession(session),
+-			previousMode,
+-			newMode,
+-			turnCount,
+-		});
+ 	}
+@@ -1015,40 +929,2 @@ export class AgentHostTelemetryReporter {
+ 	userMessageSent(provider: string, clientId: string | undefined, clientContext: IAgentHostClientTelemetryContext, session: string, turnId: string, sessionState: ISessionWithDefaultChat | undefined, source: AgentHostUserMessageSentSource, message: Message, isEphemeralSession: boolean): void {
+-		const copilotSku = this._copilotSku(provider);
+-		const attachmentCount = message.attachments?.length ?? 0;
+-		const activeClients = sessionState?.activeClients ?? [];
+-		const sessionUri = isAhpChatChannel(session) ? parseRequiredSessionUriFromChatUri(session) : session;
+-		this._telemetryService.publicLog2<IAgentHostUserMessageSentEvent, IAgentHostUserMessageSentClassification>('agentHost.userMessageSent', {
+-			...copilotSku,
+-			provider,
+-			hostLaunchKind: clientContext.hostLaunchKind,
+-			initiatorClientId: clientId,
+-			initiatorClientType: clientContext.clientType,
+-			initiatorConnectionKind: clientContext.connectionKind,
+-			initiatorTransportKind: clientContext.transportKind,
+-			...(clientContext.machineId ? { initiatorMachineId: clientContext.machineId } : {}),
+-			...(clientContext.devDeviceId ? { initiatorDevDeviceId: clientContext.devDeviceId } : {}),
+-			agentSessionId: AgentSession.id(sessionUri),
+-			chatSessionId: getTelemetryChatSessionId(session),
+-			turnId,
+-			source,
+-			messageOriginKind: getMessageOriginTelemetryKind(message, isEphemeralSession),
+-			messageActorKind: message.origin.kind,
+-			isSubagentSession: isSubagentChatUri(session) || isSubagentSession(sessionUri),
+-			turnCount: sessionState?.turns.length ?? 0,
+-			...(activeClients.length > 0 ? {
+-				activeClientId: activeClients[0].clientId,
+-				activeClientToolCount: activeClients.reduce((sum, client) => sum + client.tools.length, 0),
+-				activeClientCustomizationCount: activeClients.reduce((sum, client) => sum + (client.customizations?.length ?? 0), 0),
+-			} : {}),
+-			attachmentCount,
+-		});
+-		this._restricted?.sendGHTelemetryEvent('agentHost.userMessageSent', {
+-			...copilotSku,
+-			provider,
+-			initiatorClientType: clientContext.clientType,
+-			conversationId: AgentSession.id(sessionUri),
+-			chatSessionId: getTelemetryChatSessionId(session),
+-			turnId,
+-			messageOriginKind: getMessageOriginTelemetryKind(message, isEphemeralSession),
+-		});
+ 	}
+@@ -1056,21 +932,2 @@ export class AgentHostTelemetryReporter {
+ 	clientConnection(report: IAgentHostClientConnectionReport): void {
+-		this._telemetryService.publicLog2<IAgentHostClientConnectionEvent, IAgentHostClientConnectionClassification>('agentHost.clientConnection', {
+-			action: report.action,
+-			hostLaunchKind: report.context.hostLaunchKind,
+-			clientId: report.clientId,
+-			clientType: report.context.clientType,
+-			clientImplementationName: report.clientImplementationName,
+-			clientImplementationVersion: report.clientImplementationVersion,
+-			connectionKind: report.context.connectionKind,
+-			transportKind: report.context.transportKind,
+-			...(report.context.machineId ? { clientMachineId: report.context.machineId } : {}),
+-			...(report.context.devDeviceId ? { clientDevDeviceId: report.context.devDeviceId } : {}),
+-			protocolVersion: report.protocolVersion,
+-			isReconnect: report.isReconnect,
+-			connectedClientCount: report.connectedClientCount,
+-			connectedTransportCount: report.connectedTransportCount,
+-			clientTransportCount: report.clientTransportCount,
+-			connectionDurationMs: report.connectionDurationMs,
+-			subscriptionCount: report.subscriptionCount,
+-		});
+ 	}
+@@ -1090,13 +947,2 @@ export class AgentHostTelemetryReporter {
+ 	async assistantMessageReceived(session: string, chat: string, clientType: AgentHostClientType, clientRequestId: string | undefined, tools: readonly ToolDefinition[]): Promise<void> {
+-		const restricted = this._restricted;
+-		if (!restricted || !clientRequestId || tools.length === 0) {
+-			return;
+-		}
+-		restricted.sendEnhancedGHTelemetryEvent('request.options.tools', await multiplexProperties({
+-			headerRequestId: clientRequestId,
+-			conversationId: AgentSession.id(session),
+-			chatSessionId: getTelemetryChatSessionId(chat),
+-			initiatorClientType: clientType,
+-			messagesJson: JSON.stringify(tools),
+-		}));
+ 	}
+@@ -1117,17 +963,2 @@ export class AgentHostTelemetryReporter {
+ 	async userMessageText(session: string, chat: string, clientType: AgentHostClientType, content: string, turnIndex: number): Promise<void> {
+-		const restricted = this._restricted;
+-		if (!restricted || !content) {
+-			return;
+-		}
+-		const properties = await multiplexProperties({
+-			source: 'user',
+-			conversationId: AgentSession.id(session),
+-			chatSessionId: getTelemetryChatSessionId(chat),
+-			initiatorClientType: clientType,
+-			turnIndex: String(turnIndex),
+-			messageText: content,
+-		});
+-		const measurements = { messageCharLen: content.length };
+-		restricted.sendEnhancedGHTelemetryEvent('conversation.messageText', properties, measurements);
+-		restricted.sendInternalMSFTTelemetryEvent('conversation.messageText', properties, measurements);
+ 	}
+@@ -1146,18 +977,2 @@ export class AgentHostTelemetryReporter {
+ 	async modelMessageText(session: string, chat: string, clientType: AgentHostClientType, content: string, turnIndex: number, clientRequestId: string | undefined): Promise<void> {
+-		const restricted = this._restricted;
+-		if (!restricted || !content) {
+-			return;
+-		}
+-		const properties = await multiplexProperties({
+-			source: 'model',
+-			conversationId: AgentSession.id(session),
+-			chatSessionId: getTelemetryChatSessionId(chat),
+-			initiatorClientType: clientType,
+-			turnIndex: String(turnIndex),
+-			...(clientRequestId ? { headerRequestId: clientRequestId } : {}),
+-			messageText: content,
+-		});
+-		const measurements = { messageCharLen: content.length };
+-		restricted.sendEnhancedGHTelemetryEvent('conversation.messageText', properties, measurements);
+-		restricted.sendInternalMSFTTelemetryEvent('conversation.messageText', properties, measurements);
+ 	}
+@@ -1168,59 +983,2 @@ export class AgentHostTelemetryReporter {
+ 	async toolCallDetails(report: IAgentHostToolCallDetailsReport): Promise<void> {
+-		if (report.availableTools.length === 0) {
+-			return;
+-		}
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		const conversationId = AgentSession.id(session);
+-		const chatSessionId = getTelemetryChatSessionId(report.chat);
+-		const toolCounts = JSON.stringify(report.toolCounts);
+-		this._telemetryService.publicLog2<IAgentHostToolCallDetailsEvent, IAgentHostToolCallDetailsClassification>('toolCallDetails', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			provider: report.provider,
+-			agentSessionId: conversationId,
+-			chatSessionId,
+-			isSubagentSession: isSubagentSession(session),
+-			conversationId,
+-			requestId: report.turnId,
+-			responseType: report.responseType,
+-			toolCounts,
+-			model: report.model,
+-			numRequests: report.numRequests,
+-			turnIndex: report.turnIndex,
+-			turnDuration: report.turnDuration,
+-			messageCharLen: report.messageCharLen,
+-			availableToolCount: report.availableTools.length,
+-			totalToolCalls: report.totalToolCalls,
+-			parallelToolCallRounds: report.parallelToolCallRounds,
+-			parallelToolCallsTotal: report.parallelToolCallsTotal,
+-		});
+-
+-		const restricted = this._restricted;
+-		if (!restricted) {
+-			return;
+-		}
+-		const properties = await multiplexProperties({
+-			conversationId,
+-			chatSessionId,
+-			requestId: report.turnId,
+-			messageId: report.turnId,
+-			initiatorClientType: report.clientType,
+-			...report.telemetryContext,
+-			responseType: report.responseType,
+-			...(report.model ? { model: report.model } : {}),
+-			toolCounts,
+-			availableTools: JSON.stringify(report.availableTools),
+-		});
+-		const measurements = {
+-			numRequests: report.numRequests,
+-			turnIndex: report.turnIndex,
+-			turnDuration: report.turnDuration,
+-			...(report.messageCharLen !== undefined ? { messageCharLen: report.messageCharLen } : {}),
+-			availableToolCount: report.availableTools.length,
+-			totalToolCalls: report.totalToolCalls,
+-			parallelToolCallRounds: report.parallelToolCallRounds,
+-			parallelToolCallsTotal: report.parallelToolCallsTotal,
+-		};
+-		restricted.sendEnhancedGHTelemetryEvent('toolCallDetailsExternal', properties, measurements);
+-		restricted.sendInternalMSFTTelemetryEvent('toolCallDetailsInternal', properties, measurements);
+ 	}
+@@ -1229,23 +987,2 @@ export class AgentHostTelemetryReporter {
+ 	toolApproval(report: IAgentHostToolApprovalReport): void {
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		const agentSessionId = AgentSession.id(session);
+-		this._telemetryService.publicLog2<IAgentHostToolApprovalEvent, IAgentHostToolApprovalClassification>('chat.toolApproval', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			provider: report.provider,
+-			agentSessionId,
+-			isSubagentSession: isSubagentSession(session),
+-			chatSessionId: agentSessionId,
+-			requestId: report.turnId,
+-			toolId: report.toolId,
+-			toolExtensionId: undefined,
+-			toolSourceKind: report.toolSourceKind,
+-			confirmKind: report.confirmKind,
+-			settingId: undefined,
+-			lmServiceScope: undefined,
+-			customButtonKind: undefined,
+-			confirmationNotNeededReason: report.confirmationNotNeededReason,
+-			sandboxWrapped: undefined,
+-			requestUnsandboxedExecution: report.requestUnsandboxedExecution,
+-		});
+ 	}
+@@ -1254,40 +991,2 @@ export class AgentHostTelemetryReporter {
+ 	autoModeRouterDecision(report: IAgentHostAutoModeRouterDecisionReport): void {
+-		const restricted = this._restricted;
+-		if (!restricted) {
+-			return;
+-		}
+-
+-		const categoryScores = report.categoryScores ?? {};
+-		const isBinary = categoryScores.needs_reasoning !== undefined || categoryScores.no_reasoning !== undefined;
+-		const scoreKeys = Object.keys(categoryScores).filter(key => categoryScores[key] !== undefined);
+-		const candidateModels = report.candidateModels ?? [];
+-		const properties = {
+-			conversationId: AgentSession.id(report.session),
+-			chatSessionId: getTelemetryChatSessionId(report.chat),
+-			vscodeRequestId: report.turnId,
+-			initiatorClientType: report.clientType,
+-			...(report.predictedLabel !== undefined ? { predictedLabel: report.predictedLabel } : {}),
+-			...(report.routingMethod !== undefined ? { routingMethod: report.routingMethod } : {}),
+-			...(report.fallback !== undefined ? { fallback: String(report.fallback) } : {}),
+-			...(report.fallbackReason !== undefined ? { fallbackReason: report.fallbackReason } : {}),
+-			candidateModel: candidateModels[0] ?? '',
+-			chosenModel: report.chosenModel,
+-			candidateModels: JSON.stringify(candidateModels),
+-			...(report.availableModels !== undefined ? { availableModels: JSON.stringify(report.availableModels) } : {}),
+-			...(report.stickyOverride !== undefined ? { stickyOverrideStr: String(report.stickyOverride) } : {}),
+-			...(report.hasImage !== undefined ? { hasImage: String(report.hasImage) } : {}),
+-			...(scoreKeys.length > 0 ? {
+-				[isBinary ? 'binaryScores' : 'hydraScores']: JSON.stringify(categoryScores),
+-			} : {}),
+-		};
+-		const measurements = {
+-			...(report.confidence !== undefined ? { confidence: report.confidence } : {}),
+-			...(report.routerLatencyMs !== undefined ? { latencyMs: report.routerLatencyMs } : {}),
+-			...(report.endToEndLatencyMs !== undefined ? { e2eLatencyMs: report.endToEndLatencyMs } : {}),
+-			...(report.stickyOverride !== undefined ? { stickyOverride: report.stickyOverride ? 1 : 0 } : {}),
+-			...(report.chosenShortfall !== undefined ? { chosenShortfall: report.chosenShortfall } : {}),
+-			...(categoryScores.needs_reasoning !== undefined ? { scoreNeedsReasoning: categoryScores.needs_reasoning } : {}),
+-			...(categoryScores.no_reasoning !== undefined ? { scoreNoReasoning: categoryScores.no_reasoning } : {}),
+-		};
+-		restricted.sendEnhancedGHTelemetryEvent('automode.routerDecisionRestricted', properties, measurements);
+ 	}
+@@ -1307,30 +1006,2 @@ export class AgentHostTelemetryReporter {
+ 	skillContentRead(report: IAgentHostSkillContentReadReport): void {
+-		const restricted = this._restricted;
+-		if (!restricted || !report.name) {
+-			return;
+-		}
+-		const contentHash = report.content ? String(hash(report.content)) : '';
+-		const skillStorage = report.source ?? '';
+-		// Match the extension: the version is only reported when the (plugin) id is known, so we
+-		// never emit a `skillExtensionVersion` without a corresponding `skillExtensionId`.
+-		const skillExtensionVersion = report.pluginName ? (report.pluginVersion ?? '') : '';
+-		const plaintextProps = {
+-			initiatorClientType: report.clientType,
+-			skillName: report.name,
+-			skillPath: report.path,
+-			skillExtensionId: report.pluginName ?? '',
+-			skillExtensionVersion,
+-			skillStorage,
+-			skillContentHash: contentHash,
+-		};
+-		restricted.sendGHTelemetryEvent('skillContentRead', {
+-			initiatorClientType: report.clientType,
+-			skillNameHash: String(hash(report.name)),
+-			skillExtensionIdHash: report.pluginName ? String(hash(report.pluginName)) : '',
+-			skillExtensionVersion,
+-			skillStorage,
+-			skillContentHash: contentHash,
+-		});
+-		restricted.sendEnhancedGHTelemetryEvent('skillContentRead', plaintextProps);
+-		restricted.sendInternalMSFTTelemetryEvent('skillContentRead', plaintextProps);
+ 	}
+@@ -1338,34 +1009,2 @@ export class AgentHostTelemetryReporter {
+ 	async reportRepoInfo(context: IAgentHostRestrictedTelemetryContext, report: IAgentHostRepoInfoReport): Promise<void> {
+-		const restricted = this._restricted;
+-		if (!restricted) {
+-			return;
+-		}
+-		const properties = {
+-			initiatorClientType: report.clientType,
+-			remoteUrl: report.remoteUrl,
+-			repoId: report.repoId,
+-			repoType: report.repoType,
+-			headCommitHash: report.headCommitHash,
+-			headBranchName: report.headBranchName,
+-			fileRelativePaths: report.fileRelativePaths,
+-			diffsJSON: report.diffsJSON,
+-			result: report.result,
+-			isActiveRepository: report.isActiveRepository,
+-			location: report.location,
+-			telemetryMessageId: report.telemetryMessageId,
+-		};
+-		const measurements = {
+-			workspaceFileCount: report.workspaceFileCount,
+-			changedFileCount: report.changedFileCount,
+-			diffSizeBytes: report.diffSizeBytes,
+-			repoIndex: 0,
+-			repoCount: 1,
+-		};
+-		const { headBranchName: _, fileRelativePaths: _2, ...internalProperties } = properties;
+-		const [enhancedProperties, internalMultiplexedProperties] = await Promise.all([
+-			multiplexProperties(properties),
+-			multiplexProperties(internalProperties),
+-		]);
+-		restricted.sendEnhancedGHTelemetryEventForContext(context, 'request.repoInfo', enhancedProperties, measurements);
+-		restricted.sendInternalMSFTTelemetryEventForContext(context, 'request.repoInfo', internalMultiplexedProperties, measurements);
+ 	}
+@@ -1373,27 +1012,2 @@ export class AgentHostTelemetryReporter {
+ 	requestTokenUsage(report: { clientContext: IAgentHostClientTelemetryContext; telemetryContext?: IAgentTelemetryContext; provider: string; session: string; requestId: string; parentTurnId?: string; parentToolCallId?: string; selectedModel?: string; selectedModelTelemetryKind?: AgentHostModelTelemetryKind; modelTelemetryKind?: AgentHostModelTelemetryKind; result: AgentHostTurnResult; summary: IAgentTokenUsageSummary }): void {
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		const { model: usageModel, reasoningEffort, ...summary } = report.summary;
+-		const model = usageModel === 'auto' ? 'unknown' : toTelemetryModel(usageModel, report.modelTelemetryKind) ?? 'unknown';
+-		const selectedModel = toTelemetryModel(report.selectedModel, report.selectedModelTelemetryKind);
+-		const effort = isReasoningEffortLevel(reasoningEffort) ? reasoningEffort : undefined;
+-		this._telemetryService.publicLog2<IRequestTokenUsageEvent, RequestTokenUsageClassification>('agentHost.requestTokenUsage', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			...summary,
+-			provider: report.provider,
+-			agentSessionId: AgentSession.id(session),
+-			chatSessionId: getTelemetryChatSessionId(report.session),
+-			requestId: report.requestId,
+-			parentTurnId: report.parentTurnId,
+-			parentToolCallId: report.parentToolCallId,
+-			isSubagentSession: isSubagentChatUri(report.session) || isSubagentSession(session),
+-			model,
+-			...(selectedModel !== undefined ? { selectedModel } : {}),
+-			...(effort !== undefined ? { reasoningEffort: effort } : {}),
+-			result: report.result,
+-			usageAccountingVersion: 1,
+-			inputTokenSemantics: 'sdkReported',
+-			usageRecordSource: 'sdkUsageEvent',
+-			reasoningEffortSource: 'sdkReported',
+-		});
+ 	}
+@@ -1401,93 +1015,2 @@ export class AgentHostTelemetryReporter {
+ 	turnCompleted(report: IAgentHostTurnCompletedReport): void {
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		const chatSessionId = getTelemetryChatSessionId(report.session);
+-		const isSubagent = isSubagentChatUri(report.session) || isSubagentSession(session);
+-		const model = toTelemetryModel(report.model, report.modelTelemetryKind);
+-		this._otelService?.emitTurnTiming({
+-			provider: report.provider,
+-			agentSessionId: AgentSession.id(session),
+-			chatId: parseChatUri(report.session)?.chatId,
+-			turnId: report.turnId,
+-			isSubagentSession: isSubagent,
+-			result: report.result,
+-			totalTime: report.totalTime,
+-			timeToProviderDispatch: report.sendDispatchedMs,
+-			timeToFirstProgress: report.timeToFirstProgress,
+-			timeToFirstSubstantiveProgress: report.timeToFirstSubstantiveProgress,
+-			sendStageWorkingDirectoryMs: report.sendStageDurationsMs?.get('workingDirectory'),
+-			sendStageModelSelectionMs: report.sendStageDurationsMs?.get('modelSelection'),
+-			sendStageAttachmentsMs: report.sendStageDurationsMs?.get('attachments'),
+-			sendStageContributionsMs: report.sendStageDurationsMs?.get('contributions'),
+-			sendStageCheckpointMs: report.sendStageDurationsMs?.get('checkpoint'),
+-			hostRootTurnOrdinal: report.hostRootTurnOrdinal,
+-			hostProcessAgeMs: report.hostProcessAgeMs,
+-			titleGenerationStrategy: report.titleGenerationStrategy,
+-		});
+-		this._telemetryService.publicLog2<IAgentHostTurnCompletedEvent, IAgentHostTurnCompletedClassification>('agentHost.turnCompleted', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			...(report.provider === 'codex' ? getCodexAccountTelemetryData(report.providerTelemetryContext?.codex) : undefined),
+-			...(report.hostRootTurnOrdinal !== undefined ? { hostRootTurnOrdinal: report.hostRootTurnOrdinal } : {}),
+-			...(report.hostProcessAgeMs !== undefined ? { hostProcessAgeMs: report.hostProcessAgeMs } : {}),
+-			...(report.titleGenerationStrategy !== undefined ? { titleGenerationStrategy: report.titleGenerationStrategy } : {}),
+-			provider: report.provider,
+-			agentSessionId: AgentSession.id(session),
+-			chatSessionId,
+-			isSubagentSession: isSubagent,
+-			turnId: report.turnId,
+-			parentTurnId: report.parentTurnId,
+-			parentToolCallId: report.parentToolCallId,
+-			subagentTaskModelSource: report.subagentTaskModelSource,
+-			timeToFirstProgress: report.timeToFirstProgress,
+-			timeToFirstSubstantiveProgress: report.timeToFirstSubstantiveProgress,
+-			timeToFirstEdit: report.timeToFirstEditMs,
+-			timeToFirstEditClassifierVersion: report.timeToFirstEditClassifierVersion,
+-			startedWithSteering: report.startedWithSteering,
+-			receivedSteering: report.receivedSteering,
+-			sendStageWorkingDirectoryMs: report.sendStageDurationsMs?.get('workingDirectory'),
+-			sendStageModelSelectionMs: report.sendStageDurationsMs?.get('modelSelection'),
+-			sendStageAttachmentsMs: report.sendStageDurationsMs?.get('attachments'),
+-			sendStageContributionsMs: report.sendStageDurationsMs?.get('contributions'),
+-			sendStageCheckpointMs: report.sendStageDurationsMs?.get('checkpoint'),
+-			timeToProviderDispatch: report.sendDispatchedMs,
+-			totalTime: report.totalTime,
+-			result: report.result,
+-			model,
+-			modelSelectionKind: report.modelSelectionKind,
+-			isBYOK: report.modelTelemetryKind === undefined ? undefined : report.modelTelemetryKind === 'byok',
+-			permissionLevel: report.permissionLevel,
+-			interactionMode: report.interactionMode,
+-			messageOriginKind: report.messageOriginKind,
+-			errorType: report.failure?.error.errorType,
+-			failureStage: report.failure?.stage,
+-			isMultiRoot: report.isMultiRoot,
+-			folderCount: report.folderCount,
+-			billedNanoAiu: report.billedNanoAiu,
+-			directPromptTokenCount: report.directPromptTokenCount,
+-			directPromptCacheTokenCount: report.directPromptCacheTokenCount,
+-			directCompletionTokenCount: report.directCompletionTokenCount,
+-			directBilledNanoAiu: report.directBilledNanoAiu,
+-			modelCallCount: report.modelCallCount,
+-		});
+-		if (report.failure) {
+-			const { providerCallId, serviceRequestId } = readAgentErrorTelemetryMeta(report.failure.error);
+-			this._telemetryService.publicLogError2<IAgentHostTurnFailedEvent, IAgentHostTurnFailedClassification>('agentHost.turnFailed', {
+-				...toInitiatorTelemetry(report.clientContext),
+-				...report.telemetryContext,
+-				provider: report.provider,
+-				agentSessionId: AgentSession.id(session),
+-				chatSessionId,
+-				isSubagentSession: isSubagent,
+-				turnId: report.turnId,
+-				messageOriginKind: report.messageOriginKind,
+-				failureStage: report.failure.stage,
+-				errorType: report.failure.error.errorType,
+-				errorName: report.failure.errorName,
+-				errorCode: report.failure.errorCode,
+-				providerCallId,
+-				serviceRequestId,
+-				msg: report.failure.error.message,
+-				callstack: report.failure.errorStack ?? report.failure.error.stack,
+-			});
+-		}
+ 	}
+@@ -1500,35 +1023,2 @@ export class AgentHostTelemetryReporter {
+ 	turnHung(report: IAgentHostTurnHungReport): void {
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		this._telemetryService.publicLog2<IAgentHostTurnHungEvent, IAgentHostTurnHungClassification>('agentHost.turnHung', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			...(report.provider === 'codex' ? getCodexAccountTelemetryData(report.providerTelemetryContext?.codex) : undefined),
+-			provider: report.provider,
+-			agentSessionId: AgentSession.id(session),
+-			chatSessionId: getTelemetryChatSessionId(report.session),
+-			isSubagentSession: isSubagentChatUri(report.session) || isSubagentSession(session),
+-			turnId: report.turnId,
+-			messageOriginKind: report.messageOriginKind,
+-			hangReason: report.hangReason,
+-			isExpected: report.hangReason === 'waitingOnUser' || report.hangReason === 'runningTool',
+-			hadAnyProgress: report.hadAnyProgress,
+-			lastActivityKind: normalizeTurnActivityKind(report.lastActivityKind),
+-			currentStage: report.currentStage,
+-			providerDiagnosticState: report.providerDiagnosticState,
+-			...(report.providerDiagnosticSnapshot?.state === 'available' ? {
+-				providerCallState: report.providerDiagnosticSnapshot.providerCallState,
+-				providerTurnStarted: report.providerDiagnosticSnapshot.providerTurnStarted,
+-				providerSessionState: report.providerDiagnosticSnapshot.providerSessionState,
+-			} : {}),
+-			initiatorClientConnectionState: report.initiatorClientConnectionState,
+-			blockedOn: report.blockedOn,
+-			toolId: report.toolId,
+-			toolSourceKind: report.toolSourceKind,
+-			inFlightToolCallCount: report.inFlightToolCallCount,
+-			quietTimeMs: report.quietTimeMs,
+-			turnElapsedMs: report.turnElapsedMs,
+-			model: toTelemetryModel(report.model, report.modelTelemetryKind),
+-			modelSelectionKind: report.modelSelectionKind,
+-			permissionLevel: report.permissionLevel,
+-		});
+ 	}
+@@ -1537,18 +1027,2 @@ export class AgentHostTelemetryReporter {
+ 	hungTurnCompleted(report: IAgentHostHungTurnCompletedReport): void {
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		this._telemetryService.publicLog2<IAgentHostHungTurnCompletedEvent, IAgentHostHungTurnCompletedClassification>('agentHost.hungTurnCompleted', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			provider: report.provider,
+-			agentSessionId: AgentSession.id(session),
+-			chatSessionId: getTelemetryChatSessionId(report.session),
+-			isSubagentSession: isSubagentChatUri(report.session) || isSubagentSession(session),
+-			turnId: report.turnId,
+-			messageOriginKind: report.messageOriginKind,
+-			hangReason: report.hangReason,
+-			result: report.result,
+-			hangReportCount: report.hangReportCount,
+-			totalTimeMs: report.totalTimeMs,
+-			timeAfterHangMs: report.timeAfterHangMs,
+-		});
+ 	}
+@@ -1556,41 +1030,2 @@ export class AgentHostTelemetryReporter {
+ 	toolInvoked(report: IAgentHostToolInvokedReport): void {
+-		// `chatSessionId` is the full session URI string (matching the value
+-		// previously emitted by `CopilotAgentSession`). Action signals are keyed
+-		// by their chat-channel URI, so normalize it back to the session URI.
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		this._telemetryService.publicLog2<IAgentHostLanguageModelToolInvokedEvent, IAgentHostLanguageModelToolInvokedClassification>('languageModelToolInvoked', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			result: report.result,
+-			chatSessionId: session,
+-			toolId: report.toolId,
+-			toolExtensionId: undefined,
+-			toolSourceKind: report.toolSourceKind,
+-			toolCallId: report.toolCallId,
+-			invocationTimeMs: report.invocationTimeMs,
+-			provider: report.provider,
+-			resultSizeInCharacters: report.resultSizeInCharacters,
+-			turnId: report.turnId,
+-			model: toTelemetryModel(report.model, report.modelTelemetryKind),
+-		});
+-		const event: IAgentHostToolInvokedEvent = {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			result: report.result,
+-			agentSessionId: AgentSession.id(session),
+-			chatSessionId: getTelemetryChatSessionId(report.session),
+-			isSubagentSession: isSubagentChatUri(report.session) || isSubagentSession(session),
+-			toolId: report.toolId,
+-			toolExtensionId: undefined,
+-			toolSourceKind: report.toolSourceKind,
+-			toolCallId: report.toolCallId,
+-			invocationTimeMs: report.invocationTimeMs,
+-			provider: report.provider,
+-			resultSizeInCharacters: report.resultSizeInCharacters,
+-			turnId: report.turnId,
+-			model: toTelemetryModel(report.model, report.modelTelemetryKind),
+-			errorCode: report.errorCode,
+-			msg: report.errorMessage,
+-		};
+-		this._telemetryService.publicLog2<IAgentHostToolInvokedEvent, IAgentHostToolInvokedClassification>('agentHost.toolInvoked', event);
+ 	}
+@@ -1598,18 +1033,2 @@ export class AgentHostTelemetryReporter {
+ 	askQuestionsToolInvoked(report: IAgentHostAskQuestionsToolInvokedReport): void {
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		this._telemetryService.publicLog2<IAgentHostAskQuestionsToolInvokedEvent, IAgentHostAskQuestionsToolInvokedClassification>('askQuestionsToolInvoked', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			requestId: report.requestId,
+-			questionCount: report.questionCount,
+-			answeredCount: report.answeredCount,
+-			skippedCount: report.skippedCount,
+-			freeTextCount: report.freeTextCount,
+-			recommendedAvailableCount: report.recommendedAvailableCount,
+-			recommendedSelectedCount: report.recommendedSelectedCount,
+-			duration: report.duration,
+-			provider: report.provider,
+-			agentSessionId: AgentSession.id(session),
+-			isSubagentSession: isSubagentChatUri(report.session) || isSubagentSession(session),
+-		});
+ 	}
+@@ -1617,16 +1036,2 @@ export class AgentHostTelemetryReporter {
+ 	toolCallStalled(report: IAgentHostToolCallStalledReport): void {
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		this._telemetryService.publicLog2<IAgentHostToolCallStalledEvent, IAgentHostToolCallStalledClassification>('agentHost.toolCallStalled', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			provider: report.provider,
+-			agentSessionId: AgentSession.id(session),
+-			isSubagentSession: isSubagentChatUri(report.session) || isSubagentSession(session),
+-			blockerKind: report.blockerKind,
+-			toolCallId: report.toolCallId,
+-			toolId: report.toolId,
+-			toolSourceKind: report.toolSourceKind,
+-			executorClientConnectionState: report.executorClientConnectionState,
+-			stalledTimeMs: report.stalledTimeMs,
+-		});
+ 	}
+@@ -1634,18 +1039,2 @@ export class AgentHostTelemetryReporter {
+ 	stalledToolCallCompleted(report: IAgentHostStalledToolCallCompletedReport): void {
+-		const session = isAhpChatChannel(report.session) ? parseRequiredSessionUriFromChatUri(report.session) : report.session;
+-		this._telemetryService.publicLog2<IAgentHostStalledToolCallCompletedEvent, IAgentHostStalledToolCallCompletedClassification>('agentHost.stalledToolCallCompleted', {
+-			...toInitiatorTelemetry(report.clientContext),
+-			...report.telemetryContext,
+-			provider: report.provider,
+-			agentSessionId: AgentSession.id(session),
+-			isSubagentSession: isSubagentChatUri(report.session) || isSubagentSession(session),
+-			blockerKind: report.blockerKind,
+-			toolCallId: report.toolCallId,
+-			toolId: report.toolId,
+-			toolSourceKind: report.toolSourceKind,
+-			executorClientConnectionState: report.executorClientConnectionState,
+-			result: report.result,
+-			totalTimeMs: report.totalTimeMs,
+-			timeAfterStallMs: report.timeAfterStallMs,
+-		});
+ 	}
+diff --git a/src/vs/platform/agentHost/node/agentHostTurnTelemetryContext.ts b/src/vs/platform/agentHost/node/agentHostTurnTelemetryContext.ts
+index ed728727..1ace0682 100644
+--- a/src/vs/platform/agentHost/node/agentHostTurnTelemetryContext.ts
++++ b/src/vs/platform/agentHost/node/agentHostTurnTelemetryContext.ts
+@@ -13,3 +13,2 @@ import { URI } from '../../../base/common/uri.js';
+ import type { AgentHostModelTelemetryKind } from './agentHostTelemetryReporter.js';
+-import { getCodexAccountTelemetryData } from './codex/codexAccountTelemetry.js';
+ 
+@@ -23,5 +22,4 @@ export interface IAgentHostTurnTelemetryContext {
+ 
+-export function captureProviderTurnTelemetryContext(agent: IAgent): IAgentProviderTurnTelemetryContext | undefined {
+-	const codex = agent.id === 'codex' ? getCodexAccountTelemetryData(agent.captureTurnTelemetryContext?.().codex) : undefined;
+-	return codex ? Object.freeze({ codex: Object.freeze(codex) }) : undefined;
++export function captureProviderTurnTelemetryContext(_agent: IAgent): IAgentProviderTurnTelemetryContext | undefined {
++	return undefined;
+ }
 diff --git a/src/vs/platform/agentHost/node/agentService.ts b/src/vs/platform/agentHost/node/agentService.ts
-index d3c34b3f..d7bc36ae 100644
+index d2f723b7..cec1ba62 100644
 --- a/src/vs/platform/agentHost/node/agentService.ts
 +++ b/src/vs/platform/agentHost/node/agentService.ts
-@@ -70,3 +70,2 @@ import { AgentHostSkillCompletionProvider } from './agentHostSkillCompletionProv
+@@ -94,3 +94,2 @@ import { AgentHostSkillCompletionProvider } from './agentHostSkillCompletionProv
  import { SessionServerToolName } from '../common/serverToolNames.js';
 -import { ICopilotApiService } from './shared/copilotApiService.js';
  import { INetworkDiagnosticsService } from './networkDiagnosticsService.js';
-@@ -359,3 +358,2 @@ export interface IAgentServiceOptions {
+@@ -496,3 +495,2 @@ export interface IAgentServiceOptions {
  	readonly rootConfigResource?: URI;
 -	readonly copilotApiService?: ICopilotApiService;
  	readonly providerConfigurations?: readonly IAgentCustomizationSettingsRegistration[];
-diff --git a/src/vs/platform/agentHost/node/agentServiceComposition.ts b/src/vs/platform/agentHost/node/agentServiceComposition.ts
-index 82336855..a07d3d90 100644
---- a/src/vs/platform/agentHost/node/agentServiceComposition.ts
-+++ b/src/vs/platform/agentHost/node/agentServiceComposition.ts
-@@ -40,3 +40,2 @@ import { type IAgentServiceFoundation } from './agentServiceFoundation.js';
- import { IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
--import { ICopilotApiService } from './shared/copilotApiService.js';
- 
-@@ -100,3 +99,2 @@ export function createAgentServiceComposition(
- 		const octoKitService = accessor.get(IAgentHostOctoKitService);
--		const copilotApiService = accessor.get(ICopilotApiService);
- 		const customizationEnablementService = accessor.get(IAgentHostCustomizationEnablementService);
-@@ -132,3 +130,2 @@ export function createAgentServiceComposition(
- 				hostLaunchKind: options.hostLaunchKind ?? AgentHostLaunchKind.Unknown,
--				copilotApiService,
- 				getGitHubCopilotToken: () => {
-diff --git a/src/vs/platform/agentHost/node/agentSideEffects.ts b/src/vs/platform/agentHost/node/agentSideEffects.ts
-index c1cb1902..f64ff351 100644
---- a/src/vs/platform/agentHost/node/agentSideEffects.ts
-+++ b/src/vs/platform/agentHost/node/agentSideEffects.ts
-@@ -90,3 +90,2 @@ import { SessionPermissionManager } from './sessionPermissions.js';
- import type { IAgentHostOctoKitService } from './shared/agentHostOctoKitService.js';
--import type { ICopilotApiService } from './shared/copilotApiService.js';
- import { stripProxyErrorMarker, toChatErrorMeta, tryParseForwardedChatError } from './shared/proxyChatError.js';
-@@ -116,4 +115,2 @@ export interface IAgentSideEffectsOptions {
- 	readonly octoKitService?: IAgentHostOctoKitService;
--	/** CAPI service used for Copilot utility title generation. */
--	readonly copilotApiService?: ICopilotApiService;
- 	/**
-@@ -312,3 +309,2 @@ export class AgentSideEffects extends Disposable {
- 			octoKitService: this._options.octoKitService,
--			copilotApiService: this._options.copilotApiService,
- 			isActiveAgentTitleGenerationEnabled: () => this._agentConfigService.getRootValue(platformRootSchema, AgentHostActiveAgentTitleGenerationConfigKey) === true,
 diff --git a/src/vs/platform/agentHost/node/copilot/prompts/promptRegistry.ts b/src/vs/platform/agentHost/node/copilot/prompts/promptRegistry.ts
-index 56f2e801..81cbd9f3 100644
+index 27cbbc5a..c3dc1e34 100644
 --- a/src/vs/platform/agentHost/node/copilot/prompts/promptRegistry.ts
 +++ b/src/vs/platform/agentHost/node/copilot/prompts/promptRegistry.ts
 @@ -5,3 +5,2 @@
  
 -import type { SectionOverride, SystemMessageConfig, SystemMessageSection } from '@github/copilot-sdk';
  import { copilotCliConfigSchema } from '../../../common/copilotCliConfig.js';
-@@ -9,4 +8,2 @@ import type { SchemaValue } from '../../../common/agentHostSchema.js';
+@@ -9,6 +8,3 @@ import type { SchemaValue } from '../../../common/agentHostSchema.js';
  import type { ModelSelection } from '../../../common/state/protocol/state.js';
--import { appendSystemMessageContent, COPILOT_AGENT_HOST_FILE_LINK_INSTRUCTIONS, COPILOT_AGENT_HOST_WORKSPACELESS_INSTRUCTIONS, COPILOT_AGENT_HOST_SYSTEM_MESSAGE, fullSystemPrompt, sectionOverrides, withDefaultSections } from './systemMessage.js';
+-import { AGENT_HOST_FILE_LINK_INSTRUCTIONS } from '../../shared/fileLinkInstructions.js';
+ import { AGENT_HOST_WORKSPACELESS_INSTRUCTIONS } from '../../shared/workspacelessInstructions.js';
+-import { appendSystemMessageContent, COPILOT_AGENT_HOST_SYSTEM_MESSAGE, fullSystemPrompt, sectionOverrides, withDefaultSections } from './systemMessage.js';
 -import { resolveToolInstructionsOverride, toolSearchInstructionLines, universalToolInstructions, type IToolInstructionContext } from './toolInstructions.js';
  
-@@ -80,8 +77,2 @@ export interface IAgentHostPrompt {
+@@ -82,8 +78,2 @@ export interface IAgentHostPrompt {
  	resolveFullSystemPrompt?(model: ModelSelection, context: IAgentHostPromptContext): string | undefined;
 -
 -	/**
@@ -2080,7 +2509,7 @@ index 56f2e801..81cbd9f3 100644
 -	 */
 -	resolveSectionOverrides?(model: ModelSelection, context: IAgentHostPromptContext): Partial<Record<SystemMessageSection, SectionOverride>> | undefined;
  }
-@@ -127,101 +118,2 @@ export class AgentHostPromptRegistry {
+@@ -129,101 +119,2 @@ export class AgentHostPromptRegistry {
  	}
 -
 -	private _getContributor(model: ModelSelection): IAgentHostPromptCtor | undefined {
@@ -2113,7 +2542,7 @@ index 56f2e801..81cbd9f3 100644
 -	resolveSystemMessageConfig(model: ModelSelection | undefined, context: IAgentHostPromptContext): SystemMessageConfig {
 -		const config = this._withUniversalSections(this._resolveModelConfig(model, context), context);
 -		const withWorkspacelessScratch = this._withWorkspacelessScratch(config, context);
--		return appendSystemMessageContent(withWorkspacelessScratch, COPILOT_AGENT_HOST_FILE_LINK_INSTRUCTIONS);
+-		return appendSystemMessageContent(withWorkspacelessScratch, AGENT_HOST_FILE_LINK_INSTRUCTIONS);
 -	}
 -
 -	/**
@@ -2179,18 +2608,18 @@ index 56f2e801..81cbd9f3 100644
 -		if (!context.workspaceless) {
 -			return config;
 -		}
--		return appendSystemMessageContent(config, COPILOT_AGENT_HOST_WORKSPACELESS_INSTRUCTIONS);
+-		return appendSystemMessageContent(config, AGENT_HOST_WORKSPACELESS_INSTRUCTIONS);
 -	}
  }
 diff --git a/src/vs/platform/agentHost/node/copilot/prompts/toolInstructions.ts b/src/vs/platform/agentHost/node/copilot/prompts/toolInstructions.ts
-index 3c9295a9..ce5b1266 100644
+index 3cb876a2..2a41e9e8 100644
 --- a/src/vs/platform/agentHost/node/copilot/prompts/toolInstructions.ts
 +++ b/src/vs/platform/agentHost/node/copilot/prompts/toolInstructions.ts
 @@ -5,3 +5,2 @@
  
 -import type { SectionOverride } from '@github/copilot-sdk';
  import { coalesce } from '../../../../../base/common/arrays.js';
-@@ -115,49 +114 @@ export function universalToolInstructions(context: IToolInstructionContext, line
+@@ -112,49 +111 @@ export function universalToolInstructions(context: IToolInstructionContext, line
  }
 -
 -/**
@@ -2241,33 +2670,76 @@ index 3c9295a9..ce5b1266 100644
 -	return content === undefined ? undefined : composeToolInstructions(existing, content);
 -}
 diff --git a/src/vs/platform/agentHost/node/copilot/sessionCustomizationDiscovery.ts b/src/vs/platform/agentHost/node/copilot/sessionCustomizationDiscovery.ts
-index d60fc30d..c246f5b1 100644
+index 27e6e1e5..0c7a6cc2 100644
 --- a/src/vs/platform/agentHost/node/copilot/sessionCustomizationDiscovery.ts
 +++ b/src/vs/platform/agentHost/node/copilot/sessionCustomizationDiscovery.ts
-@@ -5,3 +5,2 @@
+@@ -5,4 +5,2 @@
  
 -import type { CopilotClient } from '@github/copilot-sdk';
- import { appendFile, mkdir } from 'fs/promises';
-@@ -12,15 +11,8 @@ import { Disposable, type IDisposable } from '../../../../base/common/lifecycle.
+-import { appendFile, mkdir } from 'fs/promises';
+ import { CancellationToken, CancellationTokenSource } from '../../../../base/common/cancellation.js';
+@@ -12,17 +10,8 @@ import { Disposable, type IDisposable } from '../../../../base/common/lifecycle.
  import { ResourceMap, ResourceSet } from '../../../../base/common/map.js';
 -import { joinPath, dirname as uriDirname, extUriBiasedIgnorePathCase } from '../../../../base/common/resources.js';
+-import { compare as compareStrings } from '../../../../base/common/strings.js';
 +import { joinPath } from '../../../../base/common/resources.js';
- import { compare as compareStrings } from '../../../../base/common/strings.js';
  import { URI } from '../../../../base/common/uri.js';
 -import { basename, isAbsolute, dirname as nodeDirname } from '../../../../base/common/path.js';
-+import { dirname as nodeDirname } from '../../../../base/common/path.js';
- import { FileOperationResult, IFileService, IFileStat, IFileStatWithMetadata, toFileOperationResult } from '../../../files/common/files.js';
+-import { FileOperationResult, IFileService, IFileStat, IFileStatWithMetadata, toFileOperationResult } from '../../../files/common/files.js';
++import { FileOperationResult, IFileService, IFileStat, toFileOperationResult } from '../../../files/common/files.js';
  import { ILogService } from '../../../log/common/log.js';
--import { AgentCustomization, ChildCustomization, CustomizationLoadStatus, CustomizationType, DirectoryCustomization, HookCustomization, RuleCustomization, SkillCustomization, customizationId } from '../../common/state/sessionState.js';
+-import { detectPluginFormat, parsePlugin, parseSkillFile, readPluginManifest, toSkillInvocationFlags } from '../../../agentPlugins/common/pluginParsers.js';
+-import { AgentCustomization, ChildCustomization, CustomizationLoadStatus, CustomizationType, DirectoryCustomization, HookCustomization, PluginCustomization, RuleCustomization, SkillCustomization, customizationId } from '../../common/state/sessionState.js';
 -import { ChildCustomizationType } from '../../common/state/protocol/state.js';
 -import { toAgentCustomizationMeta } from '../../common/meta/agentCustomizationMeta.js';
 -import { raceCancellationError } from '../../../../base/common/async.js';
--
+-import { toChildCustomizations } from './copilotPluginConverters.js';
++import { DirectoryCustomization, PluginCustomization } from '../../common/state/sessionState.js';
+ 
 -type AgentsDiscoverRequest = Parameters<CopilotClient['rpc']['agents']['discover']>[0];
 -type InstructionSource = Awaited<ReturnType<CopilotClient['rpc']['instructions']['discover']>>['sources'][number];
+ export type SessionDiscoveredCustomization = DirectoryCustomization | (PluginCustomization & {
+@@ -32,49 +21,2 @@ export type SessionDiscoveredCustomization = DirectoryCustomization | (PluginCus
  
-@@ -97,10 +89,2 @@ function compareDiscoveredFile(a: IDiscoveredFile, b: IDiscoveredFile): number {
- 
+-/**
+- * The kinds of customizations the agent host discovers from disk.
+- *
+- * Re-declared on the platform side so this module has no dependency on the
+- * workbench-side `PromptsType` enum.
+- */
+-const enum DiscoveredType {
+-	Agent = 'agent',
+-	Skill = 'skill',
+-	Instruction = 'instruction',
+-	Hook = 'hook',
+-	AgentInstruction = 'agentInstruction',
+-}
+-
+-interface IDiscoveredDirectory {
+-	readonly uri: URI;
+-	readonly type: DiscoveredType;
+-	readonly name: string;
+-	readonly writable: boolean;
+-	readonly files: readonly IDiscoveredFile[];
+-}
+-
+-interface IDiscoveredFile {
+-	readonly uri: URI;
+-	readonly etag: string;
+-}
+-
+-function compareDiscoveredDirectory(a: IDiscoveredDirectory, b: IDiscoveredDirectory): number {
+-	const byType = compareStrings(a.type, b.type);
+-	if (byType !== 0) {
+-		return byType;
+-	}
+-	return compareStrings(a.uri.toString(), b.uri.toString());
+-}
+-
+-function compareDiscoveredFile(a: IDiscoveredFile, b: IDiscoveredFile): number {
+-	return compareStrings(a.uri.toString(), b.uri.toString());
+-}
+-
 -function compareDirectoryCustomization(a: DirectoryCustomization, b: DirectoryCustomization): number {
 -	const byUri = compareStrings(a.uri, b.uri);
 -	if (byUri !== 0) {
@@ -2276,26 +2748,85 @@ index d60fc30d..c246f5b1 100644
 -	return compareStrings(a.contents, b.contents);
 -}
 -
- /**
-@@ -118,3 +102,2 @@ const README_FILENAME = 'README.md';
- const CUSTOMIZATION_DISCOVERY_DEBUG_LOG_PATH = undefined; //'/tmp/copilot-customization-discovery-debug.log';
+ const MAX_HOOKS_RECURSION_DEPTH = 8;
+@@ -82,42 +24,2 @@ const MAX_HOOKS_RECURSION_DEPTH = 8;
+ const HOOK_FILE_SUFFIX = '.json';
+-const CUSTOMIZATION_DISCOVERY_DEBUG_LOG_PATH = undefined; //'/tmp/copilot-customization-discovery-debug.log';
 -const AGENT_INSTRUCTION_FILENAMES = new Set(['agents.md', 'claude.md', 'gemini.md', 'copilot-instructions.md']);
- 
-@@ -133,4 +116,2 @@ interface IFixedDiscoveryFile {
- 
+-
+-interface ISearchRoot {
+-	readonly path: readonly string[];
+-	readonly type: DiscoveredType;
+-	readonly recursive?: boolean; // whether to watch recursively for changes (defaults to false)
+-	readonly name: string;
+-}
+-
+-interface IFixedDiscoveryFile {
+-	readonly path: readonly string[];
+-	readonly filenames: string[];
+-	readonly type: DiscoveredType;
+-}
+-
 -type PathToUri = (path: string) => URI;
 -
- /**
-@@ -234,4 +215,2 @@ export class SessionCustomizationDiscovery extends Disposable {
+-const searchRoots: { workspace: ISearchRoot[]; user: ISearchRoot[] } = {
+-	workspace: [
+-		{ path: ['.github', 'hooks'], recursive: true, type: DiscoveredType.Hook, name: '.github' },
+-	],
+-	user: [
+-		{ path: ['.copilot', 'hooks'], recursive: true, type: DiscoveredType.Hook, name: '~/.copilot' },
+-	],
+-};
+-
+-const fixedDiscoveryFiles: { workspace: IFixedDiscoveryFile[]; user: IFixedDiscoveryFile[] } = {
+-	workspace: [
+-		{ path: ['.github', 'copilot'], filenames: ['settings.json', 'settings.local.json'], type: DiscoveredType.Hook },
+-		{ path: ['.claude'], filenames: ['settings.json', 'settings.local.json'], type: DiscoveredType.Hook },
+-	],
+-	user: [],
+-};
+-
+-function throwIfCancelled(token: CancellationToken): void {
+-	if (token.isCancellationRequested) {
+-		throw new CancellationError();
+-	}
+-}
+ 
+@@ -128,18 +30,2 @@ interface IWatchSpec {
+ 
+-/**
+- * Register a watcher for `watchUri` and add `resourceToWatch` to its set of
+- * trigger URIs. If a non-recursive entry already exists and `recursive` is
+- * true, upgrade it to recursive while preserving the accumulated trigger URIs.
+- */
+-function addWatch(map: ResourceMap<IWatchSpec>, watchUri: URI, recursive: boolean, resourceToWatch: URI): void {
+-	let entry = map.get(watchUri);
+-	if (!entry) {
+-		entry = { recursive, resourcesToWatch: new ResourceSet() };
+-		map.set(watchUri, entry);
+-	} else if (recursive && !entry.recursive) {
+-		entry = { recursive: true, resourcesToWatch: entry.resourcesToWatch };
+-		map.set(watchUri, entry);
+-	}
+-	entry.resourcesToWatch.add(resourceToWatch);
+-}
+ 
+@@ -164,4 +50,2 @@ export class SessionCustomizationDiscovery extends Disposable {
  
 -	private _discoveredDirectories: readonly IDiscoveredDirectory[] | undefined = undefined;
 -
  	private readonly _watchers = new ResourceMap<IWatchSpec & { readonly disposable: IDisposable }>();
-@@ -241,3 +220,2 @@ export class SessionCustomizationDiscovery extends Disposable {
+@@ -169,6 +53,8 @@ export class SessionCustomizationDiscovery extends Disposable {
+ 	constructor(
++		// @ts-ignore
+ 		private readonly _workingDirectories: readonly URI[],
++		// @ts-ignore
  		private readonly _userHome: URI,
 -		private readonly _pathToUri: PathToUri = URI.file,
  		@IFileService private readonly _fileService: IFileService,
-@@ -269,41 +247,2 @@ export class SessionCustomizationDiscovery extends Disposable {
++		// @ts-ignore
+ 		@ILogService private readonly _logService: ILogService,
+@@ -193,791 +79,2 @@ export class SessionCustomizationDiscovery extends Disposable {
  
 -	/**
 -	 * True when `uri` is one of the workspace roots or the user home — i.e. an
@@ -2336,9 +2867,41 @@ index d60fc30d..c246f5b1 100644
 -		return this._workingDirectories.find(root => extUriBiasedIgnorePathCase.isEqual(root, target));
 -	}
 -
- 	/**
-@@ -343,573 +282,2 @@ export class SessionCustomizationDiscovery extends Disposable {
- 
+-	/**
+-	 * The working-directory roots that hooks are discovered from.
+-	 *
+-	 * **Hooks are discovered from the PRIMARY working directory only** (index 0 of
+-	 * {@link _workingDirectories}, which callers MUST order primary-first). Hooks
+-	 * from non-primary roots are intentionally NOT discovered because the Copilot
+-	 * agent currently applies hooks from a single primary directory only. Every
+-	 * other customization types (agents, skills, and instructions) are discovered
+-	 * across all roots.
+-	 *
+-	 * Example: for roots `[B, A, C]` (with `B` selected as primary), hooks are
+-	 * discovered from `B` only; hooks under `A`/`C` are ignored.
+-	 *
+-	 * This may expand to all roots in the future — see `MULTI_ROOT_CHANGES.md`.
+-	 */
+-	private get _hookWorkingDirectories(): readonly URI[] {
+-		return this._workingDirectories.slice(0, 1);
+-	}
+-
+-	private async writeCustomizationDiscoveryDebugLog(payload: Record<string, unknown>): Promise<void> {
+-		if (!CUSTOMIZATION_DISCOVERY_DEBUG_LOG_PATH) {
+-			return;
+-		}
+-
+-		try {
+-			await mkdir(nodeDirname(CUSTOMIZATION_DISCOVERY_DEBUG_LOG_PATH), { recursive: true });
+-			await appendFile(CUSTOMIZATION_DISCOVERY_DEBUG_LOG_PATH, `${JSON.stringify({
+-				timestamp: new Date().toISOString(),
+-				...payload,
+-			}, undefined, 2)}\n`, 'utf8');
+-		} catch (err) {
+-			this._logService.error(`[SessionCustomizationDiscovery] Failed to write discovery debug log: ${err instanceof Error ? err.message : String(err)}`);
+-		}
+-	}
+-
 -	private async getDiscoveredDirectories(client: CopilotClient, token: CancellationToken): Promise<readonly IDiscoveredDirectory[]> {
 -		throwIfCancelled(token);
 -
@@ -2565,7 +3128,7 @@ index d60fc30d..c246f5b1 100644
 -	}
 -
 -
--	public async discover(client: CopilotClient, token: CancellationToken): Promise<readonly DirectoryCustomization[]> {
+-	public async discover(client: CopilotClient, token: CancellationToken): Promise<readonly SessionDiscoveredCustomization[]> {
 -		await this.writeCustomizationDiscoveryDebugLog({
 -			method: 'discover',
 -			workingDirectories: this._workingDirectories.map(d => d.toString()),
@@ -2580,49 +3143,69 @@ index d60fc30d..c246f5b1 100644
 -		const p: AgentsDiscoverRequest = { projectPaths: this._workingDirectories.map(uri => uri.fsPath) };
 -
 -		try {
+-			const pluginFiles = new ResourceSet();
 -			const [agents, rules, skills, hooks] = await Promise.all([
--				this.discoverAgents(p, client, token),
--				this.discoverRules(p, client, token),
--				this.discoverSkills(p, client, token),
+-				this.discoverAgents(p, client, pluginFiles, token),
+-				this.discoverRules(p, client, pluginFiles, token),
+-				this.discoverSkills(p, client, pluginFiles, token),
 -				this.discoverHooks(token),
 -				this._updateWatchers(this._discoveredDirectories, token)
 -			]);
 -			throwIfCancelled(token);
+-			const pluginCustomizations = await this.toPluginCustomizations(pluginFiles, token);
+-			const isPluginChild = (customization: ChildCustomization) => pluginCustomizations.some(plugin =>
+-				extUriBiasedIgnorePathCase.isEqualOrParent(URI.parse(customization.uri), URI.parse(plugin.uri))
+-			);
 -			const result: DirectoryCustomization[] = [];
--			await this.toDirectoryCustomizations(CustomizationType.Agent, agents, this._discoveredDirectories, result);
--			await this.toDirectoryCustomizations(CustomizationType.Rule, rules, this._discoveredDirectories, result);
--			await this.toDirectoryCustomizations(CustomizationType.Skill, skills, this._discoveredDirectories, result);
+-			await this.toDirectoryCustomizations(CustomizationType.Agent, agents.filter(agent => !isPluginChild(agent)), this._discoveredDirectories, result);
+-			await this.toDirectoryCustomizations(CustomizationType.Rule, rules.filter(rule => !isPluginChild(rule)), this._discoveredDirectories, result);
+-			await this.toDirectoryCustomizations(CustomizationType.Skill, skills.filter(skill => !isPluginChild(skill)), this._discoveredDirectories, result);
 -			await this.toDirectoryCustomizations(CustomizationType.Hook, hooks, this._discoveredDirectories, result);
--			const sortedResult = result.sort(compareDirectoryCustomization);
+-			const sortedResult: SessionDiscoveredCustomization[] = [
+-				...result.sort(compareDirectoryCustomization),
+-				...pluginCustomizations.sort((a, b) => compareStrings(a.uri, b.uri)),
+-			];
 -			await this.writeCustomizationDiscoveryDebugLog({
 -				method: 'discover',
 -				result: sortedResult.map(customization => ({
--					contents: customization.contents,
+-					type: customization.type,
+-					contents: customization.type === CustomizationType.Directory ? customization.contents : undefined,
 -					uri: customization.uri,
 -					children: (customization.children ?? []).map(child => ({ type: child.type, uri: child.uri, name: child.name })),
 -				})),
 -			});
 -			return sortedResult;
 -		} catch (err) {
--			this._logService.error(`[SessionCustomizationDiscovery] Error during discovery: ${err instanceof Error ? err.message : String(err)}`);
+-			if (err instanceof CancellationError) {
+-				throw err;
+-			}
+-
+-			this._logService.error(`[SessionCustomizationDiscovery] Error during discovery: ${err instanceof Error ? err.message : String(err)}, projectPaths: ${(p.projectPaths ?? []).join(', ')}`);
 -			return [];
 -		}
 -	}
 -
--	private async discoverAgents(discoveryRequest: AgentsDiscoverRequest, client: CopilotClient, token: CancellationToken): Promise<AgentCustomization[]> {
+-	private async discoverAgents(discoveryRequest: AgentsDiscoverRequest, client: CopilotClient, pluginFiles: ResourceSet, token: CancellationToken): Promise<AgentCustomization[]> {
 -		const agents: AgentCustomization[] = [];
 -
 -		const agentDiscovery = await raceCancellationError(client.rpc.agents.discover(discoveryRequest), token);
 -		for (const agent of agentDiscovery.agents) {
 -			if (agent.path) {
 -				const uri = this._pathToUri(agent.path);
+-				if (agent.source === 'plugin') {
+-					pluginFiles.add(uri);
+-					continue;
+-				}
+-				if (agent.source === 'builtin') {
+-					continue;
+-				}
 -				agents.push({ type: CustomizationType.Agent, uri: uri.toString(), id: agent.id, name: agent.name, description: agent.description, _meta: toAgentCustomizationMeta({ userInvocable: agent.userInvocable }) });
 -			}
 -		}
 -		return agents;
 -	}
 -
--	private async discoverRules(discoveryRequest: AgentsDiscoverRequest, client: CopilotClient, token: CancellationToken): Promise<RuleCustomization[]> {
+-	private async discoverRules(discoveryRequest: AgentsDiscoverRequest, client: CopilotClient, pluginFiles: ResourceSet, token: CancellationToken): Promise<RuleCustomization[]> {
 -		const rules: RuleCustomization[] = [];
 -		const seenRuleUris = new Set<string>();
 -
@@ -2646,8 +3229,12 @@ index d60fc30d..c246f5b1 100644
 -				// Resolve the relative source against the workspace root the SDK attributed
 -				// it to (`projectPath` disambiguates same-named files across multiple roots).
 -				// Fall back to the primary root for sources without an attributed project.
--				const anchor = this._rootForProjectPath(instruction.projectPath) ?? this._workingDirectories[0];
+-				const anchor = this._rootForProjectPath(instruction.projectPath) ?? this._workingDirectories[0] ?? this._userHome;
 -				uri = joinPath(anchor, instruction.sourcePath);
+-			}
+-			if (instruction.type === 'plugin' || instruction.location === 'plugin') {
+-				pluginFiles.add(uri);
+-				continue;
 -			}
 -			const uriString = uri.toString();
 -			rules.push({
@@ -2696,17 +3283,108 @@ index d60fc30d..c246f5b1 100644
 -		return AGENT_INSTRUCTION_FILENAMES.has(filename);
 -	}
 -
--	private async discoverSkills(discoveryRequest: AgentsDiscoverRequest, client: CopilotClient, token: CancellationToken): Promise<SkillCustomization[]> {
--		const skills: SkillCustomization[] = [];
--
+-	private async discoverSkills(discoveryRequest: AgentsDiscoverRequest, client: CopilotClient, pluginFiles: ResourceSet, token: CancellationToken): Promise<SkillCustomization[]> {
 -		const skillDiscovery = await raceCancellationError(client.rpc.skills.discover(discoveryRequest), token);
--		for (const skill of skillDiscovery.skills) {
--			if (skill.path) {
--				const uri = this._pathToUri(skill.path);
--				skills.push({ type: CustomizationType.Skill, uri: uri.toString(), id: skill.path, name: skill.name, description: skill.description });
+-		const skills = await Promise.all(skillDiscovery.skills.map(async skill => {
+-			if (!skill.path) {
+-				return undefined;
+-			}
+-			const uri = this._pathToUri(skill.path);
+-			if (skill.source === 'plugin') {
+-				pluginFiles.add(uri);
+-				return undefined;
+-			}
+-			if (skill.source === 'builtin') {
+-				return undefined;
+-			}
+-			const parsed = await parseSkillFile(uri, this._fileService);
+-			return {
+-				type: CustomizationType.Skill,
+-				uri: uri.toString(),
+-				id: skill.path,
+-				name: skill.name,
+-				description: skill.description,
+-				enabled: skill.enabled,
+-				...toSkillInvocationFlags(skill.userInvocable, parsed.disableModelInvocation),
+-			} satisfies SkillCustomization;
+-		}));
+-		throwIfCancelled(token);
+-		return skills.filter(skill => skill !== undefined);
+-	}
+-
+-	/**
+-	 * Projects the SDK-native plugins behind `pluginFiles` into top-level
+-	 * {@link PluginCustomization} containers.
+-	 *
+-	 * Roots are derived from the plugin-owned files the SDK itself reported
+-	 * (`source: 'plugin'`), by walking up to the nearest plugin manifest —
+-	 * never from the runtime's installed-plugins cache layout, which is not
+-	 * part of any SDK contract. `plugins.list()` cannot stand in for this: it
+-	 * reports name/marketplace/version/enabled, but no installed root.
+-	 *
+-	 * Consequence: a plugin that contributes *only* hooks or MCP servers has
+-	 * no SDK-reported file to anchor on and is therefore not projected here.
+-	 */
+-	private async toPluginCustomizations(pluginFiles: ResourceSet, token: CancellationToken): Promise<PluginCustomization[]> {
+-		const pluginRoots = new ResourceSet();
+-		for (const file of pluginFiles) {
+-			const root = await this.findPluginRoot(file, token);
+-			if (root) {
+-				pluginRoots.add(root);
+-			} else {
+-				this._logService.warn(`[SessionCustomizationDiscovery] Could not find a plugin manifest for '${file.toString()}'.`);
 -			}
 -		}
--		return skills;
+-
+-		const result: PluginCustomization[] = [];
+-		for (const root of pluginRoots) {
+-			throwIfCancelled(token);
+-			const uri = root.toString();
+-			try {
+-				const format = await detectPluginFormat(root, this._fileService);
+-				const manifest = await readPluginManifest(root, format, this._fileService);
+-				const parsed = await parsePlugin(root, this._fileService, this._workingDirectories[0], this._userHome, root);
+-				result.push({
+-					type: CustomizationType.Plugin,
+-					id: customizationId(uri),
+-					uri,
+-					name: typeof manifest?.name === 'string' ? manifest.name : basename(root.path),
+-					version: typeof manifest?.version === 'string' ? manifest.version : undefined,
+-					load: { kind: CustomizationLoadStatus.Loaded },
+-					children: toChildCustomizations([parsed]),
+-				});
+-			} catch (error) {
+-				const message = error instanceof Error ? error.message : String(error);
+-				this._logService.error(`[SessionCustomizationDiscovery] Error parsing plugin '${uri}': ${message}`);
+-				result.push({
+-					type: CustomizationType.Plugin,
+-					id: customizationId(uri),
+-					uri,
+-					name: basename(root.path),
+-					load: { kind: CustomizationLoadStatus.Error, message },
+-				});
+-			}
+-		}
+-		return result;
+-	}
+-
+-	private async findPluginRoot(file: URI, token: CancellationToken): Promise<URI | undefined> {
+-		let current = uriDirname(file);
+-		while (true) {
+-			throwIfCancelled(token);
+-			if (
+-				await this._fileService.exists(joinPath(current, '.plugin', 'plugin.json'))
+-				|| await this._fileService.exists(joinPath(current, '.claude-plugin', 'plugin.json'))
+-				|| await this._fileService.exists(joinPath(current, 'plugin.json'))
+-			) {
+-				return current;
+-			}
+-			const parent = uriDirname(current);
+-			if (parent.toString() === current.toString()) {
+-				return undefined;
+-			}
+-			current = parent;
+-		}
 -	}
 -
 -	private async discoverHooks(token: CancellationToken): Promise<HookCustomization[]> {
@@ -2752,7 +3430,7 @@ index d60fc30d..c246f5b1 100644
 -		} catch {
 -			// Root does not exist (or is unreadable) — still discover as an empty source folder.
 -		}
--		await this._scanForHooks(root, rootUri, stat, seen, result, token);
+-		await this._discoverHooksInRoot(root, rootUri, stat, seen, result, token);
 -	}
 -
 -	private async _discoverFixedHookFiles(base: URI, roots: readonly IFixedDiscoveryFile[], seen: ResourceSet, result: IDiscoveredDirectory[], token: CancellationToken): Promise<void> {
@@ -2857,7 +3535,7 @@ index d60fc30d..c246f5b1 100644
 -			const parentUri = bestParent?.uri ?? uriDirname(childUri);
 -			let entry = byParent.get(parentUri);
 -			if (!entry) {
--				this._logService.error(`[SessionCustomizationDiscovery] BUG: customization '${customization.uri}' of type '${customization.type}' is outside discovered directories; creating fallback directory '${parentUri.toString()}'.`);
+-				this._logService.trace(`[SessionCustomizationDiscovery] BUG: customization '${customization.uri}' of type '${customization.type}' is outside discovered directories; creating fallback directory '${parentUri.toString()}'.`);
 -				entry = {
 -					uri: parentUri,
 -					name: basename(parentUri.path),
@@ -2910,31 +3588,144 @@ index d60fc30d..c246f5b1 100644
 -	}
 -
 -
- 	/**
+-	private _reconcileWatchers(nextWatchRootUris: ResourceMap<IWatchSpec>): void {
+-		// Dispose watchers that are gone or whose recursive flag changed.
+-		for (const [rootUri, watcher] of this._watchers.entries()) {
+-			const next = nextWatchRootUris.get(rootUri);
+-			if (!next || next.recursive !== watcher.recursive) {
+-				watcher.disposable.dispose();
+-				this._watchers.delete(rootUri);
+-			}
+-		}
+-
+-		for (const [rootUri, next] of nextWatchRootUris.entries()) {
+-			const existing = this._watchers.get(rootUri);
+-			if (existing) {
+-				// Refresh trigger URIs in place; the underlying watcher is unchanged.
+-				existing.resourcesToWatch.clear();
+-				for (const uri of next.resourcesToWatch) {
+-					existing.resourcesToWatch.add(uri);
+-				}
+-				continue;
+-			}
+-			try {
+-				const disposable = this._fileService.watch(rootUri, { recursive: next.recursive, excludes: [] });
+-				this._watchers.set(rootUri, { recursive: next.recursive, resourcesToWatch: next.resourcesToWatch, disposable });
+-			} catch (err) {
+-				this._logService.warn(`[SessionCustomizationDiscovery] Failed to watch '${rootUri.toString()}': ${err instanceof Error ? err.message : String(err)}`);
+-			}
+-		}
+-	}
+-
+ 	private _disposeAllWatchers(): void {
+@@ -988,37 +85,2 @@ export class SessionCustomizationDiscovery extends Disposable {
+ 	}
+-
+-	private async _discoverHooksInRoot(root: ISearchRoot, rootUri: URI, stat: IFileStatWithMetadata | undefined, seen: ResourceSet, result: IDiscoveredDirectory[], token: CancellationToken): Promise<void> {
+-		const files: IDiscoveredFile[] = [];
+-		// hooks are recursively discovered as `*.json` under the root.
+-		const findHooks = async (directoryStat: IFileStatWithMetadata, recursionLevel: number): Promise<void> => {
+-			throwIfCancelled(token);
+-
+-			for (const child of directoryStat.children ?? []) {
+-				throwIfCancelled(token);
+-
+-				if (child.isFile) {
+-					const name = child.name.toLowerCase();
+-					if (name.endsWith(HOOK_FILE_SUFFIX) && !seen.has(child.resource)) {
+-						seen.add(child.resource);
+-						files.push({ uri: child.resource, etag: child.etag });
+-					}
+-				} else if (child.isDirectory && recursionLevel < MAX_HOOKS_RECURSION_DEPTH) {
+-					let childStat: IFileStatWithMetadata | undefined = undefined;
+-					try {
+-						childStat = await this._fileService.resolve(child.resource, { resolveMetadata: true });
+-					} catch {
+-						// Ignore unreadable subdirectories.
+-					}
+-					if (childStat) {
+-						await findHooks(childStat, recursionLevel + 1);
+-					}
+-				}
+-			}
+-		};
+-		if (stat) {
+-			await findHooks(stat, 0);
+-		}
+-		result.push({ uri: rootUri, type: root.type, files: files.sort(compareDiscoveredFile), name: root.name, writable: true });
+-
+-	}
+ }
+diff --git a/src/vs/platform/agentHost/node/protocolServerHandler.ts b/src/vs/platform/agentHost/node/protocolServerHandler.ts
+index 8f6466a1..fab8ec04 100644
+--- a/src/vs/platform/agentHost/node/protocolServerHandler.ts
++++ b/src/vs/platform/agentHost/node/protocolServerHandler.ts
+@@ -25,3 +25,2 @@ import { type IAgentService } from '../common/agentService.js';
+ import { ClaimAgentHostDetachedWorktreeExtensionMethod, collectAgentHostDebugLogsParamsValidator, CollectAgentHostDebugLogsExtensionMethod, CreateAgentHostDetachedWorktreeExtensionMethod, DeleteAgentHostDetachedWorktreeExtensionMethod, getAgentHostExtensionInitializeResultMeta, GetAgentHostSessionStateFileExtensionMethod, ImportSessionExtensionMethod, importSessionParamsValidator, ReadAgentHostDebugLogsChunkExtensionMethod, ReconcileAgentHostDetachedWorktreesExtensionMethod, RemoveSessionArtifactExtensionMethod, removeSessionArtifactParamsValidator, ReportAgentHostFirstResponseExtensionMethod, ReportChatUserInteractionExtensionMethod, RequestAgentHostWorkspaceTrustExtensionMethod, SetAgentHostDetachedWorktreeArchivedExtensionMethod, type IAgentHostExtensionInitializeResult, type IAgentHostExtensionServerCommandMap, type IAgentHostWorkspaceTrustRequest } from '../common/agentHostExtensionProtocol.js';
+-import { IAgentHostOTelService } from '../common/otel/agentHostOTelService.js';
+ import { agentHostFirstResponseValidator } from '../common/otel/agentHostTiming.js';
+@@ -402,3 +401,2 @@ export class ProtocolServerHandler extends Disposable implements IAgentHostClien
+ 		@IDevContainerAgentHostMainService private readonly _devContainerService: IDevContainerAgentHostMainService,
+-		@IAgentHostOTelService private readonly _otelService: IAgentHostOTelService,
+ 	) {
+@@ -698,3 +696,3 @@ export class ProtocolServerHandler extends Disposable implements IAgentHostClien
+ 				serverSeq: this._stateManager.serverSeq,
+-				_meta: getAgentHostExtensionInitializeResultMeta(!!this._agentService.removeSessionArtifact, !!client.devContainers, this._otelService?.diagnosticsEnabled, !!this._agentService.importSession),
++				_meta: getAgentHostExtensionInitializeResultMeta(!!this._agentService.removeSessionArtifact, !!client.devContainers, false, !!this._agentService.importSession),
+ 				snapshots,
+@@ -1953,16 +1951,3 @@ export class ProtocolServerHandler extends Disposable implements IAgentHostClien
+ 		if (method === ReportChatUserInteractionExtensionMethod) {
+-			if (!this._otelService?.diagnosticsEnabled) {
+-				return Promise.resolve();
+-			}
+-			const validated = chatUserInteractionValidator.validate(params);
+-			try {
+-				chatUserInteractionAttributes(params);
+-			} catch {
+-				return Promise.reject(new ProtocolError(JsonRpcErrorCodes.InvalidParams, 'Invalid user interaction timing'));
+-			}
+-			if (validated.error) {
+-				return Promise.reject(new ProtocolError(JsonRpcErrorCodes.InvalidParams, 'Invalid user interaction timing'));
+-			}
+-			this._otelService.emitUserInteraction(validated.content);
+-			return this._otelService.flush();
++			return Promise.resolve();
+ 		}
+@@ -1972,10 +1957,2 @@ export class ProtocolServerHandler extends Disposable implements IAgentHostClien
+ 		if (method === ReportAgentHostFirstResponseExtensionMethod) {
+-			if (!this._otelService?.diagnosticsEnabled) {
+-				return Promise.resolve();
+-			}
+-			const validated = agentHostFirstResponseValidator.validate(params);
+-			if (validated.error) {
+-				return Promise.reject(new ProtocolError(JsonRpcErrorCodes.InvalidParams, 'Invalid first-response diagnostic'));
+-			}
+-			this._otelService.emitFirstResponse(validated.content);
+ 			return Promise.resolve();
 diff --git a/src/vs/platform/agentHost/node/shared/copilotApiService.ts b/src/vs/platform/agentHost/node/shared/copilotApiService.ts
-index 7735f9c7..2dc3ee35 100644
+index a0022479..4800f4d5 100644
 --- a/src/vs/platform/agentHost/node/shared/copilotApiService.ts
 +++ b/src/vs/platform/agentHost/node/shared/copilotApiService.ts
 @@ -5,3 +5,2 @@
  
 -import type Anthropic from '@anthropic-ai/sdk';
  import { CAPIClient, RequestType, type CCAModel, type IExtensionInformation } from '@vscode/copilot-api';
-@@ -249,3 +248,3 @@ export class CopilotApiError extends Error {
+@@ -260,3 +259,3 @@ export class CopilotApiError extends Error {
  		readonly status: number,
 -		readonly envelope: Anthropic.ErrorResponse,
 +		readonly envelope: any,
  		message?: string,
-@@ -269,3 +268,3 @@ export class CopilotApiError extends Error {
+@@ -280,3 +279,3 @@ export class CopilotApiError extends Error {
  function buildCopilotApiHttpError(status: number, statusText: string, bodyText: string, prefix = 'CAPI request failed'): CopilotApiError {
 -	let envelope: Anthropic.ErrorResponse | undefined;
 +	let envelope: any | undefined;
  	if (bodyText) {
-@@ -283,3 +282,3 @@ function buildCopilotApiHttpError(status: number, statusText: string, bodyText:
+@@ -294,3 +293,3 @@ function buildCopilotApiHttpError(status: number, statusText: string, bodyText:
  				) {
 -					envelope = parsed as Anthropic.ErrorResponse;
 +					envelope = parsed;
  				}
-@@ -418,5 +417,5 @@ export interface ICopilotApiService {
+@@ -429,5 +428,5 @@ export interface ICopilotApiService {
  		githubToken: string,
 -		request: Anthropic.MessageCreateParamsStreaming,
 +		request: any,
@@ -2942,7 +3733,7 @@ index 7735f9c7..2dc3ee35 100644
 -	): AsyncGenerator<Anthropic.MessageStreamEvent>;
 +	): AsyncGenerator<any>;
  
-@@ -428,5 +427,5 @@ export interface ICopilotApiService {
+@@ -439,5 +438,5 @@ export interface ICopilotApiService {
  		githubToken: string,
 -		request: Anthropic.MessageCreateParamsNonStreaming,
 +		request: any,
@@ -2950,7 +3741,7 @@ index 7735f9c7..2dc3ee35 100644
 -	): Promise<Anthropic.Message>;
 +	): Promise<any>;
  
-@@ -440,5 +439,5 @@ export interface ICopilotApiService {
+@@ -451,5 +450,5 @@ export interface ICopilotApiService {
  		githubToken: string,
 -		req: Anthropic.MessageCountTokensParams,
 +		req: any,
@@ -2958,7 +3749,7 @@ index 7735f9c7..2dc3ee35 100644
 -	): Promise<Anthropic.MessageTokensCount>;
 +	): Promise<any>;
  
-@@ -538,15 +537,15 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -558,15 +557,15 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  		githubToken: string,
 -		request: Anthropic.MessageCreateParamsStreaming,
 +		request: any,
@@ -2980,7 +3771,7 @@ index 7735f9c7..2dc3ee35 100644
 -	): AsyncGenerator<Anthropic.MessageStreamEvent> | Promise<Anthropic.Message> {
 +	): AsyncGenerator<any> | Promise<any> {
  		if (request.stream) {
-@@ -559,5 +558,5 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -579,5 +578,5 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  		_githubToken: string,
 -		_req: Anthropic.MessageCountTokensParams,
 +		_req: any,
@@ -2988,7 +3779,7 @@ index 7735f9c7..2dc3ee35 100644
 -	): Promise<Anthropic.MessageTokensCount> {
 +	): Promise<any> {
  		throw new Error('countTokens not supported by CAPI');
-@@ -744,5 +743,5 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -756,5 +755,5 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  		githubToken: string,
 -		request: Anthropic.MessageCreateParams,
 +		request: any,
@@ -2996,7 +3787,7 @@ index 7735f9c7..2dc3ee35 100644
 -	): AsyncGenerator<Anthropic.MessageStreamEvent> {
 +	): AsyncGenerator<any> {
  		const response = await this._sendRequest(githubToken, request, true, options);
-@@ -762,7 +761,7 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -774,7 +773,7 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  		githubToken: string,
 -		request: Anthropic.MessageCreateParams,
 +		request: any,
@@ -3007,50 +3798,82 @@ index 7735f9c7..2dc3ee35 100644
 -		return response.json() as Promise<Anthropic.Message>;
 +		return response.json() as Promise<any>;
  	}
-@@ -775,3 +774,3 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -787,3 +786,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  		githubToken: string,
 -		request: Anthropic.MessageCreateParams,
 +		request: any,
  		stream: boolean,
-@@ -1011,3 +1010,3 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -1091,3 +1090,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  
 -	private async *_readSSE(body: ReadableStream<Uint8Array>): AsyncGenerator<Anthropic.MessageStreamEvent> {
 +	private async *_readSSE(body: ReadableStream<Uint8Array>): AsyncGenerator<any> {
  		const reader = body.getReader();
-@@ -1065,3 +1064,3 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -1145,3 +1144,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  	 */
 -	private _parseDataLine(line: string): Anthropic.MessageStreamEvent | undefined {
 +	private _parseDataLine(line: string): any | undefined {
  		if (!line.startsWith('data: ')) {
-@@ -1096,3 +1095,3 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -1176,3 +1175,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  			const rawError = (parsed as { error?: unknown }).error;
 -			let envelope: Anthropic.ErrorResponse;
 +			let envelope: any;
  			if (
-@@ -1102,3 +1101,3 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -1182,3 +1181,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  			) {
 -				envelope = parsed as Anthropic.ErrorResponse;
 +				envelope = parsed as any;
  			} else {
-@@ -1125,3 +1124,3 @@ export class CopilotApiService implements ICopilotApiService {
+@@ -1205,3 +1204,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
  
 -		return parsed as Anthropic.MessageStreamEvent;
 +		return parsed as any;
  	}
+diff --git a/src/vs/platform/agentHost/test/node/agentHostServices.test.ts b/src/vs/platform/agentHost/test/node/agentHostServices.test.ts
+index c9f4bda2..50f73350 100644
+--- a/src/vs/platform/agentHost/test/node/agentHostServices.test.ts
++++ b/src/vs/platform/agentHost/test/node/agentHostServices.test.ts
+@@ -22,3 +22,2 @@ import { ITelemetryService } from '../../../telemetry/common/telemetry.js';
+ import { IAgentHostGitService } from '../../common/agentHostGitService.js';
+-import { IAgentHostOTelService } from '../../common/otel/agentHostOTelService.js';
+ import { ISessionDataService } from '../../common/sessionDataService.js';
+@@ -218,3 +217,2 @@ suite('Agent Host service registrations', () => {
+ 			IAgentHostGitService,
+-			IAgentHostOTelService,
+ 		]));
+diff --git a/src/vs/platform/agentHost/test/node/agentServiceTestUtils.ts b/src/vs/platform/agentHost/test/node/agentServiceTestUtils.ts
+index bfc053d0..09c34ec4 100644
+--- a/src/vs/platform/agentHost/test/node/agentServiceTestUtils.ts
++++ b/src/vs/platform/agentHost/test/node/agentServiceTestUtils.ts
+@@ -20,3 +20,2 @@ import { AgentHostLaunchKind } from '../../common/agentHostTelemetry.js';
+ import { IAgentService } from '../../common/agentService.js';
+-import { IAgentHostOTelService, NullAgentHostOTelService } from '../../common/otel/agentHostOTelService.js';
+ import { ISessionDataService } from '../../common/sessionDataService.js';
+@@ -198,3 +197,2 @@ export function createTestAgentService(
+ 	services.set(IAgentEditAttributionService, new NullAgentEditAttributionService());
+-	services.set(IAgentHostOTelService, NullAgentHostOTelService);
+ 	services.set(IAgentHostWorktreeIsolation, worktreeIsolation.service);
+@@ -202,3 +200,2 @@ export function createTestAgentService(
+ 	const octoKitService = instantiationService.invokeFunction(accessor => accessor.get(IAgentHostOctoKitService));
+-	const effectiveCopilotApiService = instantiationService.invokeFunction(accessor => accessor.get(ICopilotApiService));
+ 	services.set(IAgentHostSessionTitleController, foundationDisposables.add(instantiationService.createInstance(AgentHostSessionTitleController, foundation.stateManager, {
+@@ -217,3 +214,2 @@ export function createTestAgentService(
+ 		octoKitService,
+-		copilotApiService: effectiveCopilotApiService,
+ 	})));
 diff --git a/src/vs/platform/agentHost/test/node/mockAgent.ts b/src/vs/platform/agentHost/test/node/mockAgent.ts
-index 0fefd0ab..b64a0730 100644
+index 2839f673..dc751cf8 100644
 --- a/src/vs/platform/agentHost/test/node/mockAgent.ts
 +++ b/src/vs/platform/agentHost/test/node/mockAgent.ts
 @@ -14,3 +14,2 @@ import { type ISyncedCustomization } from '../../common/agentPluginManager.js';
- import { AgentSession, type AgentProvider, type AgentSignal, type IActiveClient, type IAgent, type IAgentActionSignal, type IAgentChatConfigCompletionsParams, type IAgentChatContext, type IAgentChatMetadata, type IAgentChats, type IAgentCreateChatOptions, type IAgentCreateChatResult, type IAgentCreateSessionConfig, type IAgentDescriptor, type IAgentDiscoveredChat, type IAgentModelInfo, type IAgentResolveChatConfigParams, type IAgentSessionMetadata, type IAgentToolPendingConfirmationSignal, resolveAgentChatContext } from '../../common/agent.js';
+ import { AgentSession, type AgentChatMigrationResult, type AgentProvider, type AgentSignal, type IActiveClient, type IAgent, type IAgentActionSignal, type IAgentCapabilities, type IAgentChatConfigCompletionsParams, type IAgentChatContext, type IAgentChatMetadata, type IAgentChats, type IAgentCreateChatOptions, type IAgentCreateChatResult, type IAgentCreateSessionConfig, type IAgentDescriptor, type IAgentDiscoveredChat, type IAgentModelInfo, type IAgentPendingMessageSender, type IAgentResolveChatConfigParams, type IAgentSessionMetadata, type IAgentToolPendingConfirmationSignal, resolveAgentChatContext } from '../../common/agent.js';
 -import { buildSubagentTurnsFromHistory, buildTurnsFromHistory, type IHistoryRecord } from './historyRecordFixtures.js';
  import { ProtectedResourceMetadata, ToolCallContributorKind, type AgentSelection, type MessageAttachment, type ModelSelection, type ToolDefinition } from '../../common/state/protocol/state.js';
 @@ -18,3 +17,3 @@ import type { ResolveSessionConfigResult, SessionConfigCompletionsResult } from
  import { ActionType, type AuthRequiredParams } from '../../common/state/sessionActions.js';
--import { ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, CustomizationLoadStatus, buildDefaultChatUri, isAhpChatChannel, isDefaultChatUri, parseChatUri, parseSubagentSessionUri, type ClientPluginCustomization, type Customization, type PendingMessage, type StringOrMarkdown, type ToolCallResult, type Turn, type UsageInfo } from '../../common/state/sessionState.js';
-+import { ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, CustomizationLoadStatus, buildDefaultChatUri, isAhpChatChannel, parseChatUri, type ClientPluginCustomization, type Customization, type PendingMessage, type StringOrMarkdown, type ToolCallResult, type Turn, type UsageInfo } from '../../common/state/sessionState.js';
+-import { ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, CustomizationLoadStatus, buildDefaultChatUri, createErrorResponsePart, isAhpChatChannel, isDefaultChatUri, parseChatUri, parseSubagentSessionUri, type ClientPluginCustomization, type Customization, type PendingMessage, type StringOrMarkdown, type ToolCallResult, type Turn, type UsageInfo } from '../../common/state/sessionState.js';
++import { ResponsePartKind, ToolCallConfirmationReason, ToolCallStatus, ToolResultContentType, CustomizationLoadStatus, buildDefaultChatUri, createErrorResponsePart, isAhpChatChannel, isDefaultChatUri, parseChatUri, type ClientPluginCustomization, type Customization, type PendingMessage, type StringOrMarkdown, type ToolCallResult, type Turn, type UsageInfo } from '../../common/state/sessionState.js';
  import { hasKey } from '../../../../base/common/types.js';
-@@ -111,9 +110,2 @@ export class MockAgent implements IAgent {
+@@ -117,9 +116,2 @@ export class MockAgent implements IAgent {
  
 -	/**
 -	 * Configurable session history. Tests construct {@link IHistoryRecord}
@@ -3060,7 +3883,7 @@ index 0fefd0ab..b64a0730 100644
 -	 */
 -	sessionMessages: IHistoryRecord[] = [];
  	/** Usage stamped onto every reconstructed turn (e.g. an Auto-model stub). */
-@@ -243,14 +235,2 @@ export class MockAgent implements IAgent {
+@@ -257,14 +249,2 @@ export class MockAgent implements IAgent {
  
 -	async getSessionMessages(session: URI): Promise<readonly Turn[]> {
 -		const subagentInfo = parseSubagentSessionUri(session);
@@ -3075,13 +3898,13 @@ index 0fefd0ab..b64a0730 100644
 -	}
 -
  	/** Backing helper for {@link chats}.releaseChat: records a non-destructive release. */
-@@ -383,4 +363,3 @@ export class MockAgent implements IAgent {
+@@ -397,4 +377,3 @@ export class MockAgent implements IAgent {
  		getMessages: (chat: URI, context: URI | IAgentChatContext): Promise<readonly Turn[]> => {
 -			this._recordContext('getMessages', chat, context);
 -			return this.getSessionMessages(chat);
 +			return Promise.resolve([]);
  		},
-@@ -506,9 +485,2 @@ export class ScriptedMockAgent implements IAgent {
+@@ -522,9 +501,2 @@ export class ScriptedMockAgent implements IAgent {
  	 */
 -	private readonly _preExistingMessages: IHistoryRecord[] = [
 -		{ type: 'message', role: 'user', session: PRE_EXISTING_SESSION_URI, messageId: 'h-msg-1', content: 'What files are here?' },
@@ -3091,7 +3914,7 @@ index 0fefd0ab..b64a0730 100644
 -	];
 -
  	// Track pending permission requests
-@@ -1042,17 +1014,2 @@ export class ScriptedMockAgent implements IAgent {
+@@ -1081,17 +1053,2 @@ export class ScriptedMockAgent implements IAgent {
  
 -	async getSessionMessages(session: URI): Promise<readonly Turn[]> {
 -		const subagentInfo = parseSubagentSessionUri(session);
@@ -3109,8 +3932,29 @@ index 0fefd0ab..b64a0730 100644
 -	}
 -
  	async abortSession(session: URI): Promise<void> {
-@@ -1119,3 +1076,3 @@ export class ScriptedMockAgent implements IAgent {
+@@ -1163,3 +1120,3 @@ export class ScriptedMockAgent implements IAgent {
  		getMessages: (chat: URI, context: URI | IAgentChatContext): Promise<readonly Turn[]> => {
 -			return this.getSessionMessages(this._resolveChatTarget(chat, context).session);
 +			return Promise.resolve([]);
  		},
+diff --git a/src/vs/platform/product/common/product.ts b/src/vs/platform/product/common/product.ts
+index fbc7e51c..70d277d5 100644
+--- a/src/vs/platform/product/common/product.ts
++++ b/src/vs/platform/product/common/product.ts
+@@ -15,6 +15,2 @@ interface IPackageConfiguration {
+ 
+-function getDependencyVersion(packageConfiguration: IPackageConfiguration, packageName: string): string | undefined {
+-	return packageConfiguration.dependencies?.[packageName]?.replace(/^[~^]/, '');
+-}
+-
+ /**
+@@ -60,9 +56,2 @@ else if (globalThis._VSCODE_PRODUCT_JSON && globalThis._VSCODE_PACKAGE_JSON) {
+ 	}
+-
+-	if (!product.copilotVersions) {
+-		const sdk = getDependencyVersion(packageConfiguration, '@github/copilot-sdk');
+-		if (packageConfiguration.copilotRuntimeVersion && sdk) {
+-			Object.assign(product, { copilotVersions: { runtime: packageConfiguration.copilotRuntimeVersion, sdk } });
+-		}
+-	}
+ }

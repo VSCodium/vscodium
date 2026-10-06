@@ -51,8 +51,7 @@ fi
 
 if [[ "${SHOULD_BUILD_REH}" != "no" ]]; then
   echo "Building REH"
-  npm run gulp minify-vscode-reh
-  npm run gulp "vscode-reh-${PA_NAME}-min-ci"
+  npm run gulp "vscode-reh-${PA_NAME}-min"
 
   pushd "../vscode-reh-${PA_NAME}"
 
@@ -64,8 +63,7 @@ fi
 
 if [[ "${SHOULD_BUILD_REH_WEB}" != "no" ]]; then
   echo "Building REH-web"
-  npm run gulp minify-vscode-reh-web
-  npm run gulp "vscode-reh-web-${PA_NAME}-min-ci"
+  npm run gulp "vscode-reh-web-${PA_NAME}-min"
 
   pushd "../vscode-reh-web-${PA_NAME}"
 

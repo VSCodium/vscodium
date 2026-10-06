@@ -1,5 +1,5 @@
 diff --git a/build/.moduleignore b/build/.moduleignore
-index fec2fbe2..ac2d8025 100644
+index 51149993..f39ddd3a 100644
 --- a/build/.moduleignore
 +++ b/build/.moduleignore
 @@ -86,7 +86,7 @@ native-is-elevated/deps/**
@@ -16,16 +16,16 @@ index fec2fbe2..ac2d8025 100644
 +!@vscodium/vsce-sign/bin/**
  
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 7eb0a828..092a9480 100644
+index 95ae1790..71f5875a 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -426,3 +426,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -288,3 +288,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  				'**/*.wasm',
 -				'**/@vscode/vsce-sign/bin/*',
 +				'**/@vscodium/vsce-sign/bin/*',
  			], [
 diff --git a/build/lib/extensions.ts b/build/lib/extensions.ts
-index 6a54fbe9..842f0e62 100644
+index 10bd9fbd..3df97e7a 100644
 --- a/build/lib/extensions.ts
 +++ b/build/lib/extensions.ts
 @@ -128,3 +128,3 @@ export function typeCheckExtensionStream(extensionPath: string, forWeb: boolean)
@@ -39,15 +39,15 @@ index 6a54fbe9..842f0e62 100644
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const result = es.through();
 diff --git a/build/package-lock.json b/build/package-lock.json
-index 068e38e3..c71d2d73 100644
+index 0415f1a4..0069c9d2 100644
 --- a/build/package-lock.json
 +++ b/build/package-lock.json
-@@ -51,3 +51,3 @@
+@@ -50,3 +50,3 @@
          "@vscode/ripgrep-universal": "^1.18.0",
 -        "@vscode/vsce": "3.6.1",
 +        "@vscodium/vsce": "3.6.1-258428",
          "ansi-colors": "^3.2.3",
-@@ -1928,6 +1928,61 @@
+@@ -1919,6 +1919,78 @@
      },
 -    "node_modules/@vscode/vsce": {
 -      "version": "3.6.1",
@@ -80,16 +80,33 @@ index 068e38e3..c71d2d73 100644
 +      }
 +    },
 +    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
-+      "version": "5.0.7",
-+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.7.tgz",
-+      "integrity": "sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==",
++      "version": "5.0.9",
++      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.9.tgz",
++      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==",
 +      "extraneous": true,
 +      "license": "MIT",
 +      "dependencies": {
 +        "balanced-match": "^4.0.2"
 +      },
 +      "engines": {
-+        "node": "18 || 20 || >=22"
++        "node": "20 || >=22"
++      }
++    },
++    "node_modules/@vscode/vsce/node_modules/chalk": {
++      "version": "4.1.2",
++      "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz",
++      "integrity": "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==",
++      "extraneous": true,
++      "license": "MIT",
++      "dependencies": {
++        "ansi-styles": "^4.1.0",
++        "supports-color": "^7.1.0"
++      },
++      "engines": {
++        "node": ">=10"
++      },
++      "funding": {
++        "url": "https://github.com/chalk/chalk?sponsor=1"
 +      }
 +    },
 +    "node_modules/@vscode/vsce/node_modules/glob/node_modules/minimatch": {
@@ -113,11 +130,11 @@ index 068e38e3..c71d2d73 100644
 +      "resolved": "https://registry.npmjs.org/@vscodium/vsce/-/vsce-3.6.1-258428.tgz",
 +      "integrity": "sha512-B2uys5YU5MGNmzQPHsMsRXxzlQvZanhxE8Sfkd4Sr/LBN9BaV5yhMCppV7jyLUOQajj9K3YZThLqUYm4CCBy3A==",
        "dev": true,
-@@ -1940,3 +1995,2 @@
+@@ -1931,3 +2003,2 @@
          "@secretlint/secretlint-rule-preset-recommend": "^10.1.2",
 -        "@vscode/vsce-sign": "^2.0.0",
          "azure-devops-node-api": "^12.5.0",
-@@ -1975,148 +2029,3 @@
+@@ -1966,148 +2037,3 @@
      },
 -    "node_modules/@vscode/vsce-sign": {
 -      "version": "2.1.0",
@@ -267,62 +284,58 @@ index 068e38e3..c71d2d73 100644
 -    "node_modules/@vscode/vsce/node_modules/ansi-styles": {
 +    "node_modules/@vscodium/vsce/node_modules/ansi-styles": {
        "version": "4.3.0",
-@@ -2136,3 +2045,3 @@
+@@ -2127,3 +2053,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/balanced-match": {
 +    "node_modules/@vscodium/vsce/node_modules/balanced-match": {
        "version": "4.0.4",
-@@ -2146,6 +2055,6 @@
+@@ -2137,6 +2063,6 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
--      "version": "5.0.7",
--      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.7.tgz",
--      "integrity": "sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==",
+-      "version": "5.0.9",
+-      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.9.tgz",
+-      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==",
 +    "node_modules/@vscodium/vsce/node_modules/brace-expansion": {
-+      "version": "5.0.9",
-+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.9.tgz",
-+      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==",
++      "version": "5.0.12",
++      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.12.tgz",
++      "integrity": "sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==",
        "dev": true,
-@@ -2156,6 +2065,6 @@
-       "engines": {
--        "node": "18 || 20 || >=22"
-+        "node": "20 || >=22"
-       }
+@@ -2150,3 +2076,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/chalk": {
 +    "node_modules/@vscodium/vsce/node_modules/chalk": {
        "version": "4.1.2",
-@@ -2176,3 +2085,3 @@
+@@ -2167,3 +2093,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/color-convert": {
 +    "node_modules/@vscodium/vsce/node_modules/color-convert": {
        "version": "2.0.1",
-@@ -2189,3 +2098,3 @@
+@@ -2180,3 +2106,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/color-name": {
 +    "node_modules/@vscodium/vsce/node_modules/color-name": {
        "version": "1.1.4",
-@@ -2196,3 +2105,3 @@
+@@ -2187,3 +2113,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/glob": {
 +    "node_modules/@vscodium/vsce/node_modules/glob": {
        "version": "11.1.0",
-@@ -2220,3 +2129,3 @@
+@@ -2211,3 +2137,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/glob/node_modules/minimatch": {
 +    "node_modules/@vscodium/vsce/node_modules/glob/node_modules/minimatch": {
        "version": "10.2.4",
-@@ -2236,3 +2145,3 @@
+@@ -2227,3 +2153,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/has-flag": {
 +    "node_modules/@vscodium/vsce/node_modules/has-flag": {
        "version": "4.0.0",
-@@ -2246,3 +2155,3 @@
+@@ -2237,3 +2163,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/jsonc-parser": {
 +    "node_modules/@vscodium/vsce/node_modules/jsonc-parser": {
        "version": "3.3.1",
-@@ -2250,9 +2159,11 @@
+@@ -2241,9 +2167,11 @@
        "integrity": "sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==",
 -      "dev": true
 +      "dev": true,
@@ -339,12 +352,12 @@ index 068e38e3..c71d2d73 100644
        "dev": true,
 +      "license": "ISC",
        "bin": {
-@@ -2264,3 +2175,3 @@
+@@ -2255,3 +2183,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/supports-color": {
 +    "node_modules/@vscodium/vsce/node_modules/supports-color": {
        "version": "7.2.0",
-@@ -2277,12 +2188,2 @@
+@@ -2268,12 +2196,2 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/yazl": {
 -      "version": "2.5.1",
@@ -357,7 +370,7 @@ index 068e38e3..c71d2d73 100644
 -      }
 -    },
      "node_modules/@xmldom/xmldom": {
-@@ -7077,2 +6978,12 @@
+@@ -7214,2 +7132,12 @@
      },
 +    "node_modules/yazl": {
 +      "version": "2.5.1",
@@ -371,10 +384,10 @@ index 068e38e3..c71d2d73 100644
 +    },
      "node_modules/yocto-queue": {
 diff --git a/build/package.json b/build/package.json
-index b642b42a..6e321408 100644
+index 14e3bf60..bbfcfee6 100644
 --- a/build/package.json
 +++ b/build/package.json
-@@ -45,3 +45,3 @@
+@@ -44,3 +44,3 @@
      "@vscode/ripgrep-universal": "^1.18.0",
 -    "@vscode/vsce": "3.6.1",
 +    "@vscodium/vsce": "3.6.1-258428",

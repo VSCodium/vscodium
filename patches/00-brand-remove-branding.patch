@@ -48,10 +48,10 @@ index 2578270c..99c8ca5b 100644
 +					{ label: 'workspaceFolderBasename', detail: vscode.l10n.t("The name of the folder opened in !!APP_NAME!! without any slashes (/)") },
  					{ label: 'fileWorkspaceFolderBasename', detail: vscode.l10n.t("The current opened file workspace folder name without any slashes (/)") },
 diff --git a/extensions/configuration-editing/src/settingsDocumentHelper.ts b/extensions/configuration-editing/src/settingsDocumentHelper.ts
-index 12b50f31..7cb0d1bd 100644
+index 60cb4a40..4d7b97e7 100644
 --- a/extensions/configuration-editing/src/settingsDocumentHelper.ts
 +++ b/extensions/configuration-editing/src/settingsDocumentHelper.ts
-@@ -123,3 +123,3 @@ export class SettingsDocument {
+@@ -125,3 +125,3 @@ export class SettingsDocument {
  		completions.push(this.newSimpleCompletionItem(getText('folderPath'), range, vscode.l10n.t("file path of the workspace folder the file is contained in (e.g. /Users/Development/myFolder)")));
 -		completions.push(this.newSimpleCompletionItem(getText('appName'), range, vscode.l10n.t("e.g. VS Code")));
 +		completions.push(this.newSimpleCompletionItem(getText('appName'), range, vscode.l10n.t("e.g. !!APP_NAME!!")));
@@ -109,37 +109,37 @@ index a6ab287a..6cd79323 100644
 +const apiProposalNotListed = l10n.t("This proposal cannot be used because for this extension the product defines a fixed set of API proposals. You can test your extension but before publishing you MUST reach out to the !!APP_NAME!! team.");
  const apiProposalVersionNotSupported = l10n.t("API proposal versions are no longer supported. Remove the '@<version>' suffix.");
 diff --git a/extensions/git/package.nls.json b/extensions/git/package.nls.json
-index 147a75f9..565109ec 100644
+index e8acff68..7715c7b2 100644
 --- a/extensions/git/package.nls.json
 +++ b/extensions/git/package.nls.json
-@@ -259,3 +259,3 @@
+@@ -260,3 +260,3 @@
  			"{Locked='](command:git.showOutput'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -287,4 +287,4 @@
+@@ -288,4 +288,4 @@
  	"config.showCommitInput": "Controls whether to show the commit input in the Git source control panel.",
 -	"config.terminalAuthentication": "Controls whether to enable VS Code to be the authentication handler for Git processes spawned in the Integrated Terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
 -	"config.terminalGitEditor": "Controls whether to enable VS Code to be the Git editor for Git processes spawned in the integrated terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
 +	"config.terminalAuthentication": "Controls whether to enable !!APP_NAME!! to be the authentication handler for Git processes spawned in the Integrated Terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
 +	"config.terminalGitEditor": "Controls whether to enable !!APP_NAME!! to be the Git editor for Git processes spawned in the integrated terminal. Note: Terminals need to be restarted to pick up a change in this setting.",
  	"config.timeline.showAuthor": "Controls whether to show the commit author in the Timeline view.",
-@@ -358,3 +358,3 @@
+@@ -359,3 +359,3 @@
  			"{Locked='](command:workbench.extensions.search?%22%40category%3A%5C%22scm%20providers%5C%22%22'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -368,3 +368,3 @@
+@@ -369,3 +369,3 @@
  			"{Locked='](command:workbench.extensions.search?%22%40category%3A%5C%22scm%20providers%5C%22%22'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -378,3 +378,3 @@
+@@ -379,3 +379,3 @@
  			"{Locked='](command:workbench.extensions.search?%22%40category%3A%5C%22scm%20providers%5C%22%22'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -390,6 +390,6 @@
+@@ -391,6 +391,6 @@
  	"view.workbench.scm.disabled": {
 -		"message": "If you would like to use Git features, please enable Git in your [settings](command:workbench.action.openSettings?%5B%22git.enabled%22%5D).\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "If you would like to use Git features, please enable Git in your [settings](command:workbench.action.openSettings?%5B%22git.enabled%22%5D).\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -148,7 +148,7 @@ index 147a75f9..565109ec 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -398,6 +398,6 @@
+@@ -399,6 +399,6 @@
  	"view.workbench.scm.empty": {
 -		"message": "In order to use Git features, you can open a folder containing a Git repository or clone from a URL.\n[Open Folder](command:vscode.openFolder)\n[Clone Repository](command:git.cloneRecursive)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "In order to use Git features, you can open a folder containing a Git repository or clone from a URL.\n[Open Folder](command:vscode.openFolder)\n[Clone Repository](command:git.cloneRecursive)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -157,7 +157,7 @@ index 147a75f9..565109ec 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -406,6 +406,6 @@
+@@ -407,6 +407,6 @@
  	"view.workbench.scm.folder": {
 -		"message": "The folder currently open doesn't have a Git repository. You can initialize a repository which will enable source control features powered by Git.\n[Initialize Repository](command:git.init?%5Btrue%5D)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "The folder currently open doesn't have a Git repository. You can initialize a repository which will enable source control features powered by Git.\n[Initialize Repository](command:git.init?%5Btrue%5D)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -166,7 +166,7 @@ index 147a75f9..565109ec 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -414,6 +414,6 @@
+@@ -415,6 +415,6 @@
  	"view.workbench.scm.workspace": {
 -		"message": "The workspace currently open doesn't have any folders containing Git repositories. You can initialize a repository on a folder which will enable source control features powered by Git.\n[Initialize Repository](command:git.init)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "The workspace currently open doesn't have any folders containing Git repositories. You can initialize a repository on a folder which will enable source control features powered by Git.\n[Initialize Repository](command:git.init)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -175,7 +175,7 @@ index 147a75f9..565109ec 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -422,6 +422,6 @@
+@@ -423,6 +423,6 @@
  	"view.workbench.scm.emptyWorkspace": {
 -		"message": "The workspace currently open doesn't have any folders containing Git repositories.\n[Add Folder to Workspace](command:workbench.action.addRootFolder)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "The workspace currently open doesn't have any folders containing Git repositories.\n[Add Folder to Workspace](command:workbench.action.addRootFolder)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -184,27 +184,27 @@ index 147a75f9..565109ec 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -440,3 +440,3 @@
+@@ -441,3 +441,3 @@
  			"{Locked='](command:workbench.action.openSettings?%5B%22git.openRepositoryInParentFolders%22%5D'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -449,3 +449,3 @@
+@@ -450,3 +450,3 @@
  			"{Locked='](command:workbench.action.openSettings?%5B%22git.openRepositoryInParentFolders%22%5D'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -457,3 +457,3 @@
+@@ -458,3 +458,3 @@
  			"{Locked='](command:git.manageUnsafeRepositories'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -465,3 +465,3 @@
+@@ -466,3 +466,3 @@
  			"{Locked='](command:git.manageUnsafeRepositories'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -470,6 +470,6 @@
+@@ -471,6 +471,6 @@
  	"view.workbench.scm.closedRepository": {
 -		"message": "A Git repository was found that was previously closed.\n[Reopen Closed Repository](command:git.reopenClosedRepositories)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "A Git repository was found that was previously closed.\n[Reopen Closed Repository](command:git.reopenClosedRepositories)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -213,7 +213,7 @@ index 147a75f9..565109ec 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -478,6 +478,6 @@
+@@ -479,6 +479,6 @@
  	"view.workbench.scm.closedRepositories": {
 -		"message": "Git repositories were found that were previously closed.\n[Reopen Closed Repositories](command:git.reopenClosedRepositories)\nTo learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm).",
 +		"message": "Git repositories were found that were previously closed.\n[Reopen Closed Repositories](command:git.reopenClosedRepositories)\nTo learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm).",
@@ -222,12 +222,12 @@ index 147a75f9..565109ec 100644
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -489,3 +489,3 @@
+@@ -490,3 +490,3 @@
  			"{Locked='](command:git.clone'}",
 -			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for VS Code",
 +			"Do not translate the 'command:*' part inside of the '(..)'. It is an internal command syntax for !!APP_NAME!!",
  			"Please make sure there is no space between the right bracket and left parenthesis:  ]( this is an internal syntax for links"
-@@ -493,3 +493,3 @@
+@@ -494,3 +494,3 @@
  	},
 -	"view.workbench.learnMore": "To learn more about how to use Git and source control in VS Code [read our docs](https://aka.ms/vscode-scm)."
 +	"view.workbench.learnMore": "To learn more about how to use Git and source control in !!APP_NAME!! [read our docs](https://aka.ms/vscode-scm)."
@@ -277,7 +277,7 @@ index cfb91c1f..e19b59fe 100644
 +					const res = await window.showInformationMessage(l10n.t('!!APP_NAME!! now has built-in support for auto-renaming tags. Do you want to enable it?'), configure);
  					if (res === configure) {
 diff --git a/extensions/html-language-features/package.nls.json b/extensions/html-language-features/package.nls.json
-index d8390703..b3ea6389 100644
+index 21bbbad9..5ebe9edf 100644
 --- a/extensions/html-language-features/package.nls.json
 +++ b/extensions/html-language-features/package.nls.json
 @@ -3,3 +3,3 @@
@@ -320,7 +320,7 @@ index 30199b2b..008aed75 100644
 +	"json.tracing.desc": "Traces the communication between !!APP_NAME!! and the JSON language server.",
  	"json.colorDecorators.enable.desc": "Enables or disables color decorators",
 diff --git a/extensions/markdown-language-features/package.nls.json b/extensions/markdown-language-features/package.nls.json
-index 12fcb821..afaede82 100644
+index cb47e668..c8698ca0 100644
 --- a/extensions/markdown-language-features/package.nls.json
 +++ b/extensions/markdown-language-features/package.nls.json
 @@ -31,3 +31,3 @@
@@ -379,7 +379,7 @@ index 032dd35d..e38bc488 100644
 +				"displayName": "!!APP_NAME!! Builtin Notebook Output Renderer",
  				"requiresMessaging": "never",
 diff --git a/extensions/npm/package.nls.json b/extensions/npm/package.nls.json
-index 5c77708d..6f092001 100644
+index bf24a371..9a1c1551 100644
 --- a/extensions/npm/package.nls.json
 +++ b/extensions/npm/package.nls.json
 @@ -2,3 +2,3 @@
@@ -444,7 +444,7 @@ index a697f8c0..2ba1dab8 100644
 +	"walkthroughs.nodejsWelcome.learnMoreAboutJs.altText": "Learn more about JavaScript and Node.js in !!APP_NAME!!."
  }
 diff --git a/extensions/typescript-language-features/src/tsServer/versionManager.ts b/extensions/typescript-language-features/src/tsServer/versionManager.ts
-index 1154a29c..08545028 100644
+index 450606ef..8bb6183e 100644
 --- a/extensions/typescript-language-features/src/tsServer/versionManager.ts
 +++ b/extensions/typescript-language-features/src/tsServer/versionManager.ts
 @@ -112,3 +112,3 @@ export class TypeScriptVersionManager extends Disposable {
@@ -471,7 +471,7 @@ index 823985e9..f22a314e 100644
 +			vscode.l10n.t("Please open a folder in !!APP_NAME!! to use a TypeScript or JavaScript project"));
  		return;
 diff --git a/extensions/typescript-language-features/src/typescriptServiceClient.ts b/extensions/typescript-language-features/src/typescriptServiceClient.ts
-index 677721c2..eef95b48 100644
+index 57ca677c..f3f7e73f 100644
 --- a/extensions/typescript-language-features/src/typescriptServiceClient.ts
 +++ b/extensions/typescript-language-features/src/typescriptServiceClient.ts
 @@ -670,3 +670,3 @@ export default class TypeScriptServiceClient extends Disposable implements IType
@@ -568,24 +568,24 @@ index a351aa77..c32e3efd 100644
 +			throw Error(`Failed to download and unzip !!APP_NAME!! ${quality} - ${commit}`);
  		}
 diff --git a/extensions/vscode-test-resolver/src/extension.ts b/extensions/vscode-test-resolver/src/extension.ts
-index 32a93fe3..a2b81a3a 100644
+index 1d0b24ad..906ae789 100644
 --- a/extensions/vscode-test-resolver/src/extension.ts
 +++ b/extensions/vscode-test-resolver/src/extension.ts
-@@ -215,3 +215,3 @@ export function activate(context: vscode.ExtensionContext) {
+@@ -216,3 +216,3 @@ export function activate(context: vscode.ExtensionContext) {
  					const serverBin = path.join(remoteDataDir, 'bin');
 -					progress.report({ message: 'Installing VSCode Server' });
 +					progress.report({ message: 'Installing !!APP_NAME!! Server' });
  					serverLocation = await downloadAndUnzipVSCodeServer(updateUrl, commit, quality, serverBin, m => outputChannel.appendLine(m));
-diff --git a/src/main.ts b/src/main.ts
-index 085290ba..2e180b99 100644
---- a/src/main.ts
-+++ b/src/main.ts
-@@ -422,3 +422,3 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
+diff --git a/src/mainImpl.ts b/src/mainImpl.ts
+index 3d34aea5..415e6a87 100644
+--- a/src/mainImpl.ts
++++ b/src/mainImpl.ts
+@@ -451,3 +451,3 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
  		const defaultArgvConfigContent = [
 -			'// This configuration file allows you to pass permanent command line arguments to VS Code.',
 +			'// This configuration file allows you to pass permanent command line arguments to !!APP_NAME!!.',
  			'// Only a subset of arguments is currently supported to reduce the likelihood of breaking',
-@@ -428,6 +428,6 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
+@@ -457,6 +457,6 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
  			'//',
 -			'// NOTE: Changing this file requires a restart of VS Code.',
 +			'// NOTE: Changing this file requires a restart of !!APP_NAME!!.',
@@ -595,11 +595,11 @@ index 085290ba..2e180b99 100644
 +			'	// This can help in cases where you see rendering issues in !!APP_NAME!!.',
  			'	// "disable-hardware-acceleration": true',
 diff --git a/src/vs/code/electron-main/app.ts b/src/vs/code/electron-main/app.ts
-index 8176a5b4..4935d9a0 100644
+index 8901db30..10c3a3eb 100644
 --- a/src/vs/code/electron-main/app.ts
 +++ b/src/vs/code/electron-main/app.ts
-@@ -675,3 +675,3 @@ export class CodeApplication extends Disposable {
- 	async startup(): Promise<void> {
+@@ -698,3 +698,3 @@ export class CodeApplication extends Disposable {
+ 		mark('code/willStartCodeApplication');
 -		this.logService.debug('Starting VS Code');
 +		this.logService.debug('Starting !!APP_NAME!!');
  		this.logService.debug(`from: ${this.environmentMainService.appRoot}`);
@@ -613,10 +613,10 @@ index a200bf81..425936a8 100644
 +			title: nls.localize2({ key: 'toggle.tabMovesFocus', comment: ['Turn on/off use of tab key for moving focus around !!APP_NAME!!'] }, 'Toggle Tab Key Moves Focus'),
  			precondition: undefined,
 diff --git a/src/vs/platform/contextkey/common/contextkeys.ts b/src/vs/platform/contextkey/common/contextkeys.ts
-index c256dba0..10a79c82 100644
+index 606fcc05..ed1b5a3b 100644
 --- a/src/vs/platform/contextkey/common/contextkeys.ts
 +++ b/src/vs/platform/contextkey/common/contextkeys.ts
-@@ -19,3 +19,3 @@ export const IsMobileContext = new RawContextKey<boolean>('isMobile', isMobile,
+@@ -20,3 +20,3 @@ export const IsMobileContext = new RawContextKey<boolean>('isMobile', isMobile,
  export const IsDevelopmentContext = new RawContextKey<boolean>('isDevelopment', false, true);
 -export const ProductQualityContext = new RawContextKey<string>('productQualityType', '', localize('productQualityType', "Quality type of VS Code"));
 +export const ProductQualityContext = new RawContextKey<string>('productQualityType', '', localize('productQualityType', "Quality type of !!APP_NAME!!"));
@@ -691,7 +691,7 @@ index 040656c0..a3483669 100644
 +	console.error('Unable to connect to !!APP_NAME!! server: ' + message);
  	console.error(err);
 diff --git a/src/vs/workbench/api/browser/mainThreadAuthentication.ts b/src/vs/workbench/api/browser/mainThreadAuthentication.ts
-index 30137e70..2738691f 100644
+index 980c476b..a9a07d7b 100644
 --- a/src/vs/workbench/api/browser/mainThreadAuthentication.ts
 +++ b/src/vs/workbench/api/browser/mainThreadAuthentication.ts
 @@ -582,3 +582,3 @@ export class MainThreadAuthentication extends Disposable implements MainThreadAu
@@ -750,10 +750,10 @@ index 0d713847..ae8d169b 100644
 +	test('Opening a notebook results in !!APP_NAME!! firing the event onDidChangeActiveNotebookEditor twice #118470', function () {
  		let count = 0;
 diff --git a/src/vs/workbench/browser/actions/developerActions.ts b/src/vs/workbench/browser/actions/developerActions.ts
-index f394728f..465e5ce8 100644
+index 59d8bef1..c8e54baa 100644
 --- a/src/vs/workbench/browser/actions/developerActions.ts
 +++ b/src/vs/workbench/browser/actions/developerActions.ts
-@@ -722,5 +722,5 @@ function managedSettingsPipeline(rawLabel: string, raw: unknown | undefined, nor
+@@ -723,5 +723,5 @@ function managedSettingsPipeline(rawLabel: string, raw: unknown | undefined, nor
  	content += markdownJsonBlock(normalized);
 -	content += '**VS Code policy projection**\n\n';
 +	content += '**!!APP_NAME!! policy projection**\n\n';
@@ -761,29 +761,29 @@ index f394728f..465e5ce8 100644
 -	return markdownDetails('Source, normalized, and VS Code projection', content);
 +	return markdownDetails('Source, normalized, and !!APP_NAME!! projection', content);
  }
-@@ -1013,3 +1013,3 @@ class PolicyDiagnosticsAction extends Action2 {
- 					['Supplied keys', String(pick.resolutions.size)],
+@@ -1018,3 +1018,3 @@ class PolicyDiagnosticsAction extends Action2 {
+ 					[localize('telemetryBlockSource', "Selected telemetry block"), managedSettingsSourceShortLabel(telemetrySource ?? 'none')],
 -					['Effective VS Code policy keys', String(effectiveKeyCount)]
 +					['Effective !!APP_NAME!! policy keys', String(effectiveKeyCount)]
  				]
-@@ -1044,3 +1044,3 @@ class PolicyDiagnosticsAction extends Action2 {
+@@ -1061,3 +1061,3 @@ class PolicyDiagnosticsAction extends Action2 {
  			content += markdownDetails('Merged normalized bag', markdownJsonBlock(pick.values));
 -			content += markdownDetails('Effective VS Code policy bag', markdownJsonBlock(effective));
 +			content += markdownDetails('Effective !!APP_NAME!! policy bag', markdownJsonBlock(effective));
  
-@@ -1106,4 +1106,4 @@ class PolicyDiagnosticsAction extends Action2 {
+@@ -1135,4 +1135,4 @@ class PolicyDiagnosticsAction extends Action2 {
  			content += markdownDetails(
 -				'VS Code managed-settings schema',
 -				'*Only keys declared here can reach VS Code policy callbacks. Runtime-owned keys may still be enforced by the Copilot runtime even when absent from the projections above.*\n\n' +
 +				'!!APP_NAME!! managed-settings schema',
 +				'*Only keys declared here can reach !!APP_NAME!! policy callbacks. Runtime-owned keys may still be enforced by the Copilot runtime even when absent from the projections above.*\n\n' +
  				markdownJsonBlock(declaredDefinitions)
-@@ -1112,3 +1112,3 @@ class PolicyDiagnosticsAction extends Action2 {
+@@ -1141,3 +1141,3 @@ class PolicyDiagnosticsAction extends Action2 {
  			content += '### Agent Runtime Resolution\n\n';
 -			content += '*Resolved independently by each provider through its own SDK/runtime. This may include runtime-owned keys that VS Code does not declare as configuration policies.*\n\n';
 +			content += '*Resolved independently by each provider through its own SDK/runtime. This may include runtime-owned keys that !!APP_NAME!! does not declare as configuration policies.*\n\n';
  			if (!agentHostEnablementService.enabled.get()) {
-@@ -1314,3 +1314,3 @@ class PolicyDiagnosticsAction extends Action2 {
+@@ -1343,3 +1343,3 @@ class PolicyDiagnosticsAction extends Action2 {
  
 -		const report = '# VS Code Policy Diagnostics\n\n' +
 +		const report = '# !!APP_NAME!! Policy Diagnostics\n\n' +
@@ -807,10 +807,10 @@ index e342f838..7c314e6b 100644
 +		throw new Error('Unable to create the !!APP_NAME!! workbench more than once.');
  	} else {
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index 9953cb0c..8e5d4aff 100644
+index 28251cd8..ad3bc7bb 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
-@@ -855,3 +855,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
+@@ -876,3 +876,3 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
  		localize('profileName', "`${profileName}`: name of the profile in which the workspace is opened (e.g. Data Science (Profile)). Ignored if default profile is used."),
 -		localize('appName', "`${appName}`: e.g. VS Code."),
 +		localize('appName', "`${appName}`: e.g. !!APP_NAME!!."),
@@ -825,51 +825,81 @@ index 41aace1b..6fc33f03 100644
 +export const InAutomationContext = new RawContextKey<boolean>('inAutomation', false, localize('inAutomation', "Whether !!APP_NAME!! is running under automation/smoke test"));
  
 diff --git a/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts b/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts
-index 14210b54..4ff54b13 100644
+index e1eab4fa..2a0ec7b4 100644
 --- a/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chat.shared.contribution.ts
-@@ -414,3 +414,3 @@ configurationRegistry.registerConfiguration({
- 			default: AgentHostExternalSessionsMode.Recent,
--			markdownDescription: nls.localize('chat.agentSessions.showExternal', "Controls which external agent sessions, created outside VS Code's Agent Host, are shown."),
-+			markdownDescription: nls.localize('chat.agentSessions.showExternal', "Controls which external agent sessions, created outside !!APP_NAME!!'s Agent Host, are shown."),
- 			tags: ['experimental'],
-@@ -1026,3 +1026,3 @@ configurationRegistry.registerConfiguration({
+@@ -1110,3 +1110,3 @@ configurationRegistry.registerConfiguration({
  				nls.localize('chat.mcp.access.none', "No access to MCP servers."),
 -				nls.localize('chat.mcp.access.registry', "Allows access to MCP servers listed in the registry that VS Code is connected to."),
 +				nls.localize('chat.mcp.access.registry', "Allows access to MCP servers listed in the registry that !!APP_NAME!! is connected to."),
  				nls.localize('chat.mcp.access.any', "Allow access to any installed MCP server.")
-@@ -1053,3 +1053,3 @@ configurationRegistry.registerConfiguration({
+@@ -1137,3 +1137,3 @@ configurationRegistry.registerConfiguration({
  						{
 -							key: 'chat.mcp.access.registry', value: nls.localize('chat.mcp.access.registry', "Allows access to MCP servers listed in the registry that VS Code is connected to."),
 +							key: 'chat.mcp.access.registry', value: nls.localize('chat.mcp.access.registry', "Allows access to MCP servers listed in the registry that !!APP_NAME!! is connected to."),
  						},
-@@ -1566,3 +1566,3 @@ configurationRegistry.registerConfiguration({
+@@ -1558,3 +1558,3 @@ configurationRegistry.registerConfiguration({
+ 		[AgentNetworkDomainSettingId.NetworkFilter]: {
+-			markdownDescription: nls.localize('chat.agent.networkFilter', "When enabled, network access by agent tools (fetch tool, integrated browser) is restricted according to {0} and {1}. Domain filtering is also applied to those tools when {2} is enabled.\n\nChanges may not take full effect until VS Code is restarted.", `\`#${AgentNetworkDomainSettingId.AllowedNetworkDomains}#\``, `\`#${AgentNetworkDomainSettingId.DeniedNetworkDomains}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``),
++			markdownDescription: nls.localize('chat.agent.networkFilter', "When enabled, network access by agent tools (fetch tool, integrated browser) is restricted according to {0} and {1}. Domain filtering is also applied to those tools when {2} is enabled.\n\nChanges may not take full effect until !!APP_NAME!! is restarted.", `\`#${AgentNetworkDomainSettingId.AllowedNetworkDomains}#\``, `\`#${AgentNetworkDomainSettingId.DeniedNetworkDomains}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``),
+ 			type: 'boolean',
+@@ -1570,3 +1570,3 @@ configurationRegistry.registerConfiguration({
+ 						key: 'chat.agent.networkFilter',
+-						value: nls.localize('chat.agent.networkFilter', "When enabled, network access by agent tools (fetch tool, integrated browser) is restricted according to {0} and {1}. Domain filtering is also applied to those tools when {2} is enabled.\n\nChanges may not take full effect until VS Code is restarted.", `\`#${AgentNetworkDomainSettingId.AllowedNetworkDomains}#\``, `\`#${AgentNetworkDomainSettingId.DeniedNetworkDomains}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``),
++						value: nls.localize('chat.agent.networkFilter', "When enabled, network access by agent tools (fetch tool, integrated browser) is restricted according to {0} and {1}. Domain filtering is also applied to those tools when {2} is enabled.\n\nChanges may not take full effect until !!APP_NAME!! is restarted.", `\`#${AgentNetworkDomainSettingId.AllowedNetworkDomains}#\``, `\`#${AgentNetworkDomainSettingId.DeniedNetworkDomains}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``),
+ 					}
+@@ -1576,3 +1576,3 @@ configurationRegistry.registerConfiguration({
+ 		[AgentNetworkDomainSettingId.AllowedNetworkDomains]: {
+-			markdownDescription: nls.localize('chat.agent.allowedNetworkDomains', "Allowed domains for network access by agent tools (fetch tool, integrated browser). Applies when {0} or {1} is enabled. When {2} is enabled, all domains are allowed. Supports wildcards like {3}. When both allowed and denied lists are empty, all domains are blocked. Denied domains (see {4}) take precedence.\n\nChanges may not take full effect until VS Code is restarted.", `\`#${AgentNetworkDomainSettingId.NetworkFilter}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``, `\`#${AgentSandboxSettingId.AgentSandboxAllowNetwork}#\``, '`*.example.com`', `\`#${AgentNetworkDomainSettingId.DeniedNetworkDomains}#\``),
++			markdownDescription: nls.localize('chat.agent.allowedNetworkDomains', "Allowed domains for network access by agent tools (fetch tool, integrated browser). Applies when {0} or {1} is enabled. When {2} is enabled, all domains are allowed. Supports wildcards like {3}. When both allowed and denied lists are empty, all domains are blocked. Denied domains (see {4}) take precedence.\n\nChanges may not take full effect until !!APP_NAME!! is restarted.", `\`#${AgentNetworkDomainSettingId.NetworkFilter}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``, `\`#${AgentSandboxSettingId.AgentSandboxAllowNetwork}#\``, '`*.example.com`', `\`#${AgentNetworkDomainSettingId.DeniedNetworkDomains}#\``),
+ 			type: 'array',
+@@ -1589,3 +1589,3 @@ configurationRegistry.registerConfiguration({
+ 						key: 'chat.agent.allowedNetworkDomains',
+-						value: nls.localize('chat.agent.allowedNetworkDomains', "Allowed domains for network access by agent tools (fetch tool, integrated browser). Applies when {0} or {1} is enabled. When {2} is enabled, all domains are allowed. Supports wildcards like {3}. When both allowed and denied lists are empty, all domains are blocked. Denied domains (see {4}) take precedence.\n\nChanges may not take full effect until VS Code is restarted.", `\`#${AgentNetworkDomainSettingId.NetworkFilter}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``, `\`#${AgentSandboxSettingId.AgentSandboxAllowNetwork}#\``, '`*.example.com`', `\`#${AgentNetworkDomainSettingId.DeniedNetworkDomains}#\``),
++						value: nls.localize('chat.agent.allowedNetworkDomains', "Allowed domains for network access by agent tools (fetch tool, integrated browser). Applies when {0} or {1} is enabled. When {2} is enabled, all domains are allowed. Supports wildcards like {3}. When both allowed and denied lists are empty, all domains are blocked. Denied domains (see {4}) take precedence.\n\nChanges may not take full effect until !!APP_NAME!! is restarted.", `\`#${AgentNetworkDomainSettingId.NetworkFilter}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``, `\`#${AgentSandboxSettingId.AgentSandboxAllowNetwork}#\``, '`*.example.com`', `\`#${AgentNetworkDomainSettingId.DeniedNetworkDomains}#\``),
+ 					}
+@@ -1595,3 +1595,3 @@ configurationRegistry.registerConfiguration({
+ 		[AgentNetworkDomainSettingId.DeniedNetworkDomains]: {
+-			markdownDescription: nls.localize('chat.agent.deniedNetworkDomains', "Denied domains for network access by agent tools (fetch tool, integrated browser). Applies when {0} or {1} is enabled. This does not apply when {2} is enabled. Takes precedence over {3}. Supports wildcards like {4}.\n\nChanges may not take full effect until VS Code is restarted.", `\`#${AgentNetworkDomainSettingId.NetworkFilter}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``, `\`#${AgentSandboxSettingId.AgentSandboxAllowNetwork}#\``, `\`#${AgentNetworkDomainSettingId.AllowedNetworkDomains}#\``, '`*.example.com`'),
++			markdownDescription: nls.localize('chat.agent.deniedNetworkDomains', "Denied domains for network access by agent tools (fetch tool, integrated browser). Applies when {0} or {1} is enabled. This does not apply when {2} is enabled. Takes precedence over {3}. Supports wildcards like {4}.\n\nChanges may not take full effect until !!APP_NAME!! is restarted.", `\`#${AgentNetworkDomainSettingId.NetworkFilter}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``, `\`#${AgentSandboxSettingId.AgentSandboxAllowNetwork}#\``, `\`#${AgentNetworkDomainSettingId.AllowedNetworkDomains}#\``, '`*.example.com`'),
+ 			type: 'array',
+@@ -1608,3 +1608,3 @@ configurationRegistry.registerConfiguration({
+ 						key: 'chat.agent.deniedNetworkDomains',
+-						value: nls.localize('chat.agent.deniedNetworkDomains', "Denied domains for network access by agent tools (fetch tool, integrated browser). Applies when {0} or {1} is enabled. This does not apply when {2} is enabled. Takes precedence over {3}. Supports wildcards like {4}.\n\nChanges may not take full effect until VS Code is restarted.", `\`#${AgentNetworkDomainSettingId.NetworkFilter}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``, `\`#${AgentSandboxSettingId.AgentSandboxAllowNetwork}#\``, `\`#${AgentNetworkDomainSettingId.AllowedNetworkDomains}#\``, '`*.example.com`'),
++						value: nls.localize('chat.agent.deniedNetworkDomains', "Denied domains for network access by agent tools (fetch tool, integrated browser). Applies when {0} or {1} is enabled. This does not apply when {2} is enabled. Takes precedence over {3}. Supports wildcards like {4}.\n\nChanges may not take full effect until !!APP_NAME!! is restarted.", `\`#${AgentNetworkDomainSettingId.NetworkFilter}#\``, `\`#${AgentSandboxSettingId.AgentSandboxEnabled}#\``, `\`#${AgentSandboxSettingId.AgentSandboxAllowNetwork}#\``, `\`#${AgentNetworkDomainSettingId.AllowedNetworkDomains}#\``, '`*.example.com`'),
+ 					}
+@@ -1682,3 +1682,3 @@ configurationRegistry.registerConfiguration({
  			enumDescriptions: [
 -				nls.localize('chat.agentHost.copilotSdk.logLevel.info', "Log informational messages. Running VS Code with trace logging still enables all Copilot SDK runtime diagnostics."),
 +				nls.localize('chat.agentHost.copilotSdk.logLevel.info', "Log informational messages. Running !!APP_NAME!! with trace logging still enables all Copilot SDK runtime diagnostics."),
  				nls.localize('chat.agentHost.copilotSdk.logLevel.trace', "Log all Copilot SDK runtime diagnostics."),
-@@ -1576,3 +1576,3 @@ configurationRegistry.registerConfiguration({
+@@ -1720,3 +1720,3 @@ configurationRegistry.registerConfiguration({
  			type: 'boolean',
 -			markdownDescription: nls.localize('chat.agentHost.copilot.mapLegacySettingsToManagedSettings', "When enabled, maps supported legacy VS Code settings to equivalent Copilot SDK managed settings for local Agent Host sessions. Only restrictions are mapped, and only from globally-scoped values — workspace and folder values are ignored. Applies to local sessions using the Copilot agent; remote hosts and other agents are unaffected. This compatibility bridge is temporary and is not used for new settings."),
 +			markdownDescription: nls.localize('chat.agentHost.copilot.mapLegacySettingsToManagedSettings', "When enabled, maps supported legacy !!APP_NAME!! settings to equivalent Copilot SDK managed settings for local Agent Host sessions. Only restrictions are mapped, and only from globally-scoped values — workspace and folder values are ignored. Applies to local sessions using the Copilot agent; remote hosts and other agents are unaffected. This compatibility bridge is temporary and is not used for new settings."),
  			default: false,
-@@ -1589,3 +1589,3 @@ configurationRegistry.registerConfiguration({
+@@ -1733,3 +1733,3 @@ configurationRegistry.registerConfiguration({
  			type: 'boolean',
 -			description: nls.localize('chat.agentHost.copilot.toolSearch.enabled', "When enabled, Copilot SDK sessions defer MCP and non-core VS Code tools behind a tool-search tool so the model discovers them on demand instead of loading every tool definition up front."),
 +			description: nls.localize('chat.agentHost.copilot.toolSearch.enabled', "When enabled, Copilot SDK sessions defer MCP and non-core !!APP_NAME!! tools behind a tool-search tool so the model discovers them on demand instead of loading every tool definition up front."),
  			default: true,
-@@ -1602,3 +1602,3 @@ configurationRegistry.registerConfiguration({
+@@ -1760,3 +1760,3 @@ configurationRegistry.registerConfiguration({
  			type: 'boolean',
 -			description: nls.localize('chat.copilot.semanticSearch.enabled', "Controls whether Copilot Agent Host sessions can use VS Code's semantic workspace search. When disabled, semantic search is unavailable."),
 +			description: nls.localize('chat.copilot.semanticSearch.enabled', "Controls whether Copilot Agent Host sessions can use !!APP_NAME!!'s semantic workspace search. When disabled, semantic search is unavailable."),
  			default: false,
-@@ -1651,3 +1651,3 @@ configurationRegistry.registerConfiguration({
+@@ -1797,3 +1797,3 @@ configurationRegistry.registerConfiguration({
  						items: { type: 'string' },
 -						description: nls.localize('chat.agentHost.copilot.modelCapabilityOverrides.availableTools', "When set, only matching tools are available to sessions on this model. Patterns: bare tool names, `builtin:*` or `builtin:<name>` (Copilot runtime tools), `mcp:*` or `mcp:<name>` (MCP server tools), and `custom:*` or `custom:<name>` (every tool VS Code registers with the SDK, including the agent host's own terminal tools); a bare `*` expands to all three sources."),
 +						description: nls.localize('chat.agentHost.copilot.modelCapabilityOverrides.availableTools', "When set, only matching tools are available to sessions on this model. Patterns: bare tool names, `builtin:*` or `builtin:<name>` (Copilot runtime tools), `mcp:*` or `mcp:<name>` (MCP server tools), and `custom:*` or `custom:<name>` (every tool !!APP_NAME!! registers with the SDK, including the agent host's own terminal tools); a bare `*` expands to all three sources."),
  					},
+@@ -2609,3 +2609,3 @@ configurationRegistry.registerConfiguration({
+ 			tags: ['experimental'],
+-			description: nls.localize('chat.customizations.mcpServerMigration.enabled', "Controls whether VS Code shows MCP server migration actions, hints, compatibility badges, and compatibility details. Migration moves eligible workspace MCP servers out of .vscode/mcp.json and into a .mcp.json file at the workspace root, where the active agent-host harness discovers them directly."),
++			description: nls.localize('chat.customizations.mcpServerMigration.enabled', "Controls whether !!APP_NAME!! shows MCP server migration actions, hints, compatibility badges, and compatibility details. Migration moves eligible workspace MCP servers out of .vscode/mcp.json and into a .mcp.json file at the workspace root, where the active agent-host harness discovers them directly."),
+ 			default: false,
 diff --git a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts
-index c4c6fe75..c3341286 100644
+index 899c849d..6dd509f9 100644
 --- a/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts
 +++ b/src/vs/workbench/contrib/chat/browser/chatSetup/chatSetupProviders.ts
 @@ -120,3 +120,3 @@ export class SetupAgent extends Disposable implements IChatAgentImplementation {
@@ -885,10 +915,10 @@ index c4c6fe75..c3341286 100644
 +				userDescription: localize('setupToolsDescription', "Scaffold a new workspace in !!APP_NAME!!"),
  				canBeReferencedInPrompt: true,
 diff --git a/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts b/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts
-index 06a36292..eb7e6ba4 100644
+index a80feca3..b90ac72a 100644
 --- a/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts
 +++ b/src/vs/workbench/contrib/chat/common/promptSyntax/languageProviders/promptValidator.ts
-@@ -308,5 +308,5 @@ export class PromptValidator {
+@@ -314,5 +314,5 @@ export class PromptValidator {
  							if (validGithubCopilotAttributeNames.value.has(attribute.key)) {
 -								report(toMarker(localize('promptValidator.ignoredAttribute.vscode-agent', "Attribute '{0}' is ignored when running locally in VS Code.", attribute.key), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
 +								report(toMarker(localize('promptValidator.ignoredAttribute.vscode-agent', "Attribute '{0}' is ignored when running locally in !!APP_NAME!!.", attribute.key), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
@@ -896,17 +926,17 @@ index 06a36292..eb7e6ba4 100644
 -								report(toMarker(localize('promptValidator.unknownAttribute.vscode-agent', "Attribute '{0}' is not supported in VS Code agent files. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
 +								report(toMarker(localize('promptValidator.unknownAttribute.vscode-agent', "Attribute '{0}' is not supported in !!APP_NAME!! agent files. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
  							}
-@@ -316,3 +316,3 @@ export class PromptValidator {
+@@ -322,3 +322,3 @@ export class PromptValidator {
  						if (target === Target.Claude) {
 -							report(toMarker(localize('promptValidator.unknownAttribute.rules', "Attribute '{0}' is not supported in rules files by VS Code agents. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
 +							report(toMarker(localize('promptValidator.unknownAttribute.rules', "Attribute '{0}' is not supported in rules files by !!APP_NAME!! agents. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
  						} else {
-@@ -322,3 +322,3 @@ export class PromptValidator {
+@@ -328,3 +328,3 @@ export class PromptValidator {
  					case PromptsType.skill:
--						report(toMarker(localize('promptValidator.unknownAttribute.skill', "Attribute '{0}' is not supported by VS Code agents. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
-+						report(toMarker(localize('promptValidator.unknownAttribute.skill', "Attribute '{0}' is not supported by !!APP_NAME!! agents. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
+-						report(toMarker(localize('promptValidator.unknownAttribute.skill', "Attribute '{0}' is not supported by VS Code skills. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
++						report(toMarker(localize('promptValidator.unknownAttribute.skill', "Attribute '{0}' is not supported by !!APP_NAME!! skills. Supported: {1}.", attribute.key, supportedNames.value), attribute.range, MarkerSeverity.Hint, [MarkerTag.Unnecessary]));
  						break;
-@@ -1226,3 +1226,3 @@ export function mapClaudeModels(claudeModelNames: readonly string[]): readonly s
+@@ -1232,3 +1232,3 @@ export function mapClaudeModels(claudeModelNames: readonly string[]): readonly s
  /**
 - * Maps Claude tool names to their VS Code tool equivalents.
 + * Maps Claude tool names to their !!APP_NAME!! tool equivalents.
@@ -921,30 +951,30 @@ index 0b9ced32..731d9526 100644
 +						description: nls.localize('debugServer', "For debug extension development only: if a port is specified !!APP_NAME!! tries to connect to a debug adapter running in server mode"),
  						default: 4711
 diff --git a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-index a60cb5f0..c48f55fe 100644
+index b06c588b..01db648b 100644
 --- a/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
 +++ b/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-@@ -416,3 +416,3 @@ CommandsRegistry.registerCommand({
+@@ -449,3 +449,3 @@ CommandsRegistry.registerCommand({
  				description: '(optional) Options for installing the extension. Object with the following properties: ' +
 -					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
 +					'`installOnlyNewlyAddedFromExtensionPackVSIX`: When enabled, !!APP_NAME!! installs only newly added extensions from the extension pack VSIX. This option is considered only when installing VSIX. ',
  				isOptional: true,
-@@ -423,3 +423,3 @@ CommandsRegistry.registerCommand({
+@@ -456,3 +456,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, VS Code installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
 +							'description': localize('workbench.extensions.installExtension.option.installOnlyNewlyAddedFromExtensionPackVSIX', "When enabled, !!APP_NAME!! installs only newly added extensions from the extension pack VSIX. This option is considered only while installing a VSIX."),
  							default: false
-@@ -428,3 +428,3 @@ CommandsRegistry.registerCommand({
+@@ -461,3 +461,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, VS Code installs the pre-release version of the extension if available."),
 +							'description': localize('workbench.extensions.installExtension.option.installPreReleaseVersion', "When enabled, !!APP_NAME!! installs the pre-release version of the extension if available."),
  							default: false
-@@ -433,3 +433,3 @@ CommandsRegistry.registerCommand({
+@@ -466,3 +466,3 @@ CommandsRegistry.registerCommand({
  							'type': 'boolean',
 -							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, VS Code do not sync this extension when Settings Sync is on."),
 +							'description': localize('workbench.extensions.installExtension.option.donotSync', "When enabled, !!APP_NAME!! do not sync this extension when Settings Sync is on."),
  							default: false
-@@ -958,4 +958,4 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
+@@ -991,4 +991,4 @@ class ExtensionsContributions extends Disposable implements IWorkbenchContributi
  						Severity.Info,
 -						vsixs.length > 1 ? localize('InstallVSIXs.successReload', "Completed installing extensions. Please reload Visual Studio Code to enable them.")
 -							: localize('InstallVSIXAction.successReload', "Completed installing extension. Please reload Visual Studio Code to enable it."),
@@ -1024,10 +1054,10 @@ index 91541b6a..6e2e8207 100644
 +	userDescription: localize('searchExtensionsTool.userDescription', 'Search for !!APP_NAME!! extensions'),
  	source: ToolDataSource.Internal,
 diff --git a/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts b/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts
-index f54ddfe2..946de6be 100644
+index 3672c4bb..1477a500 100644
 --- a/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts
 +++ b/src/vs/workbench/contrib/externalUriOpener/common/configuration.ts
-@@ -57,3 +57,3 @@ export const externalUriOpenersConfigurationNode: IConfigurationNode = {
+@@ -58,3 +58,3 @@ export const externalUriOpenersConfigurationNode: IConfigurationNode = {
  						enum: [defaultExternalUriOpenerId],
 -						enumDescriptions: [nls.localize('externalUriOpeners.defaultId', "Open using VS Code's standard opener.")],
 +						enumDescriptions: [nls.localize('externalUriOpeners.defaultId', "Open using !!APP_NAME!!'s standard opener.")],
@@ -1106,7 +1136,7 @@ index f063bfc0..1a8fcb79 100644
 +			description: nls.localize('JsonSchema.tasks.promptOnClose', 'Whether the user is prompted when !!APP_NAME!! closes with a running task.'),
  			default: false
 diff --git a/src/vs/workbench/contrib/terminal/browser/terminalView.ts b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
-index 9a745727..9a2e55a5 100644
+index d845f788..71c8222c 100644
 --- a/src/vs/workbench/contrib/terminal/browser/terminalView.ts
 +++ b/src/vs/workbench/contrib/terminal/browser/terminalView.ts
 @@ -210,3 +210,3 @@ export class TerminalViewPane extends ViewPane {
@@ -1156,50 +1186,50 @@ index 72a329b8..7992809f 100644
 +			Write-Host "`e[0m`e[7m * `e[0;103m !!APP_NAME!! Python powershell activation failed with exit code $($activationError.Exception.Message) `e[0m"
  		}
 diff --git a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
-index 80c5267d..4f5e1f10 100644
+index 83b558e9..c9b0d1da 100644
 --- a/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
 +++ b/src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts
-@@ -322,3 +322,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
+@@ -334,3 +334,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
  	[TerminalSettingId.DetectLocale]: {
 -		markdownDescription: localize('terminal.integrated.detectLocale', "Controls whether to detect and set the `$LANG` environment variable to a UTF-8 compliant option since VS Code's terminal only supports UTF-8 encoded data coming from the shell."),
 +		markdownDescription: localize('terminal.integrated.detectLocale', "Controls whether to detect and set the `$LANG` environment variable to a UTF-8 compliant option since !!APP_NAME!!'s terminal only supports UTF-8 encoded data coming from the shell."),
  		type: 'string',
-@@ -336,3 +336,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
+@@ -348,3 +348,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
  		markdownEnumDescriptions: [
 -			localize('terminal.integrated.gpuAcceleration.auto', "Let VS Code detect which renderer will give the best experience."),
 +			localize('terminal.integrated.gpuAcceleration.auto', "Let !!APP_NAME!! detect which renderer will give the best experience."),
  			localize('terminal.integrated.gpuAcceleration.on', "Enable GPU acceleration within the terminal."),
-@@ -424,3 +424,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
+@@ -436,3 +436,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
  			'terminal.integrated.commandsToSkipShell',
 -			"A set of command IDs whose keybindings will not be sent to the shell but instead always be handled by VS Code. This allows keybindings that would normally be consumed by the shell to act instead the same as when the terminal is not focused, for example `Ctrl+P` to launch Quick Open.\n\n&nbsp;\n\nMany commands are skipped by default. To override a default and pass that command's keybinding to the shell instead, add the command prefixed with the `-` character. For example add `-workbench.action.quickOpen` to allow `Ctrl+P` to reach the shell.\n\n&nbsp;\n\nThe following list of default skipped commands is truncated when viewed in Settings Editor. To see the full list, {1} and search for the first command from the list below.\n\n&nbsp;\n\nDefault Skipped Commands:\n\n{0}",
 +			"A set of command IDs whose keybindings will not be sent to the shell but instead always be handled by !!APP_NAME!!. This allows keybindings that would normally be consumed by the shell to act instead the same as when the terminal is not focused, for example `Ctrl+P` to launch Quick Open.\n\n&nbsp;\n\nMany commands are skipped by default. To override a default and pass that command's keybinding to the shell instead, add the command prefixed with the `-` character. For example add `-workbench.action.quickOpen` to allow `Ctrl+P` to reach the shell.\n\n&nbsp;\n\nThe following list of default skipped commands is truncated when viewed in Settings Editor. To see the full list, {1} and search for the first command from the list below.\n\n&nbsp;\n\nDefault Skipped Commands:\n\n{0}",
  			DEFAULT_COMMANDS_TO_SKIP_SHELL.sort().map(command => `- ${command}`).join('\n'),
-@@ -436,3 +436,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
+@@ -448,3 +448,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
  	[TerminalSettingId.AllowChords]: {
 -		markdownDescription: localize('terminal.integrated.allowChords', "Whether or not to allow chord keybindings in the terminal. Note that when this is true and the keystroke results in a chord it will bypass {0}, setting this to false is particularly useful when you want ctrl+k to go to your shell (not VS Code).", '`#terminal.integrated.commandsToSkipShell#`'),
 +		markdownDescription: localize('terminal.integrated.allowChords', "Whether or not to allow chord keybindings in the terminal. Note that when this is true and the keystroke results in a chord it will bypass {0}, setting this to false is particularly useful when you want ctrl+k to go to your shell (not !!APP_NAME!!).", '`#terminal.integrated.commandsToSkipShell#`'),
  		type: 'boolean',
-@@ -447,3 +447,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
+@@ -459,3 +459,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
  		restricted: true,
 -		markdownDescription: localize('terminal.integrated.env.osx', "Object with environment variables that will be added to the VS Code process to be used by the terminal on macOS. Set to `null` to delete the environment variable."),
 +		markdownDescription: localize('terminal.integrated.env.osx', "Object with environment variables that will be added to the !!APP_NAME!! process to be used by the terminal on macOS. Set to `null` to delete the environment variable."),
  		type: 'object',
-@@ -456,3 +456,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
+@@ -468,3 +468,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
  		restricted: true,
 -		markdownDescription: localize('terminal.integrated.env.linux', "Object with environment variables that will be added to the VS Code process to be used by the terminal on Linux. Set to `null` to delete the environment variable."),
 +		markdownDescription: localize('terminal.integrated.env.linux', "Object with environment variables that will be added to the !!APP_NAME!! process to be used by the terminal on Linux. Set to `null` to delete the environment variable."),
  		type: 'object',
-@@ -465,3 +465,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
+@@ -477,3 +477,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
  		restricted: true,
 -		markdownDescription: localize('terminal.integrated.env.windows', "Object with environment variables that will be added to the VS Code process to be used by the terminal on Windows. Set to `null` to delete the environment variable."),
 +		markdownDescription: localize('terminal.integrated.env.windows', "Object with environment variables that will be added to the !!APP_NAME!! process to be used by the terminal on Windows. Set to `null` to delete the environment variable."),
  		type: 'object',
-@@ -484,3 +484,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
+@@ -496,3 +496,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
  		restricted: true,
 -		markdownDescription: localize('terminal.integrated.windowsUseConptyDll', "Whether to use the conpty.dll (v1.25.260303002) shipped with VS Code, instead of the one bundled with Windows."),
 +		markdownDescription: localize('terminal.integrated.windowsUseConptyDll', "Whether to use the conpty.dll (v1.25.260303002) shipped with !!APP_NAME!!, instead of the one bundled with Windows."),
  		type: 'boolean',
-@@ -610,3 +610,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
+@@ -622,3 +622,3 @@ const terminalConfiguration: IStringDictionary<IConfigurationPropertySchema> = {
  		restricted: true,
 -		markdownDescription: localize('terminal.integrated.shellIntegration.enabled', "Determines whether or not shell integration is auto-injected to support features like enhanced command tracking and current working directory detection. \n\nShell integration works by injecting the shell with a startup script. The script gives VS Code insight into what is happening within the terminal.\n\nSupported shells:\n\n- Linux/macOS: bash, fish, pwsh, zsh\n - Windows: pwsh, git bash\n\nThis setting applies only when terminals are created, so you will need to restart your terminals for it to take effect.\n\n Note that the script injection may not work if you have custom arguments defined in the terminal profile, have enabled {1}, have a [complex bash `PROMPT_COMMAND`](https://code.visualstudio.com/docs/editor/integrated-terminal#_complex-bash-promptcommand), or other unsupported setup. To disable decorations, see {0}", '`#terminal.integrated.shellIntegration.decorationsEnabled#`', '`#editor.accessibilitySupport#`'),
 +		markdownDescription: localize('terminal.integrated.shellIntegration.enabled', "Determines whether or not shell integration is auto-injected to support features like enhanced command tracking and current working directory detection. \n\nShell integration works by injecting the shell with a startup script. The script gives !!APP_NAME!! insight into what is happening within the terminal.\n\nSupported shells:\n\n- Linux/macOS: bash, fish, pwsh, zsh\n - Windows: pwsh, git bash\n\nThis setting applies only when terminals are created, so you will need to restart your terminals for it to take effect.\n\n Note that the script injection may not work if you have custom arguments defined in the terminal profile, have enabled {1}, have a [complex bash `PROMPT_COMMAND`](https://code.visualstudio.com/docs/editor/integrated-terminal#_complex-bash-promptcommand), or other unsupported setup. To disable decorations, see {0}", '`#terminal.integrated.shellIntegration.decorationsEnabled#`', '`#editor.accessibilitySupport#`'),
@@ -1214,10 +1244,10 @@ index dc20533b..2d2d4886 100644
 +		markdownDescription: localize('terminal.integrated.autoReplies', "A set of messages that, when encountered in the terminal, will be automatically responded to. Provided the message is specific enough, this can help automate away common responses.\n\nRemarks:\n\n- Use {0} to automatically respond to the terminate batch job prompt on Windows.\n- The message includes escape sequences so the reply might not happen with styled text.\n- Each reply can only happen once every second.\n- Use {1} in the reply to mean the enter key.\n- To unset a default key, set the value to null.\n- Restart !!APP_NAME!! if new don't apply.", '`"Terminate batch job (Y/N)": "Y\\r"`', '`"\\r"`'),
  		type: 'object',
 diff --git a/src/vs/workbench/contrib/terminalContrib/chatAgentTools/browser/tools/task/createAndRunTaskTool.ts b/src/vs/workbench/contrib/terminalContrib/chatAgentTools/browser/tools/task/createAndRunTaskTool.ts
-index d595ccbd..f60becd3 100644
+index 41a765a9..651d0e27 100644
 --- a/src/vs/workbench/contrib/terminalContrib/chatAgentTools/browser/tools/task/createAndRunTaskTool.ts
 +++ b/src/vs/workbench/contrib/terminalContrib/chatAgentTools/browser/tools/task/createAndRunTaskTool.ts
-@@ -261,3 +261,3 @@ export const CreateAndRunTaskToolData: IToolData = {
+@@ -317,3 +317,3 @@ export const CreateAndRunTaskToolData: IToolData = {
  						'type': 'array',
 -						'description': `The problem matcher to use to parse task output for errors and warnings. Can be a predefined matcher like '$tsc' (TypeScript), '$eslint - stylish', '$gcc', etc., or a custom pattern defined in tasks.json. This helps VS Code display errors in the Problems panel and enables quick navigation to error locations.`,
 +						'description': `The problem matcher to use to parse task output for errors and warnings. Can be a predefined matcher like '$tsc' (TypeScript), '$eslint - stylish', '$gcc', etc., or a custom pattern defined in tasks.json. This helps !!APP_NAME!! display errors in the Problems panel and enables quick navigation to error locations.`,
@@ -1232,10 +1262,10 @@ index 5fc22b73..099fb4a8 100644
 +	modelDescription: `Runs a !!APP_NAME!! task.\n\n- If you see that an appropriate task exists for building or running code, prefer to use this tool to run the task instead of using the ${TerminalToolId.RunInTerminal} tool.\n- Make sure that any appropriate build or watch task is running before trying to run tests or execute code.\n- If the user asks to run a task, use this tool to do so.`,
  	userDescription: localize('runInTerminalTool.userDescription', 'Run tasks in the workspace'),
 diff --git a/src/vs/workbench/contrib/terminalContrib/voice/browser/terminalVoiceActions.ts b/src/vs/workbench/contrib/terminalContrib/voice/browser/terminalVoiceActions.ts
-index f0e71c68..c3b0ab8c 100644
+index da233362..fbd2137a 100644
 --- a/src/vs/workbench/contrib/terminalContrib/voice/browser/terminalVoiceActions.ts
 +++ b/src/vs/workbench/contrib/terminalContrib/voice/browser/terminalVoiceActions.ts
-@@ -65,3 +65,3 @@ export function registerTerminalVoiceActions() {
+@@ -70,3 +70,3 @@ export function registerTerminalVoiceActions() {
  			} else {
 -				message = localize('terminal.voice.installSpeechExtension', "Would you like to install 'VS Code Speech' extension from 'Microsoft'?");
 +				message = localize('terminal.voice.installSpeechExtension', "Would you like to install '!!APP_NAME!! Speech' extension from 'Microsoft'?");
@@ -1521,7 +1551,7 @@ index e60991aa..bbea4f92 100644
 +		const productName = localize('!!APP_NAME!! for Web', "{0} for the Web", this.productService.nameLong);
  		const virtualWorkspaceSupport = this.extensionManifestPropertiesService.getExtensionVirtualWorkspaceSupportType(manifest);
 diff --git a/src/vs/workbench/services/extensions/common/extensionsRegistry.ts b/src/vs/workbench/services/extensions/common/extensionsRegistry.ts
-index 09dd590e..c4877b48 100644
+index d5220dbd..105b0aed 100644
 --- a/src/vs/workbench/services/extensions/common/extensionsRegistry.ts
 +++ b/src/vs/workbench/services/extensions/common/extensionsRegistry.ts
 @@ -181,3 +181,3 @@ export const schema: IJSONSchema = {
@@ -1568,12 +1598,12 @@ index 09dd590e..c4877b48 100644
 -						description: nls.localize('vscode.extension.activationEvents.star', 'An activation event emitted on VS Code startup. To ensure a great end user experience, please use this activation event in your extension only when no other activation events combination works in your use-case.'),
 +						description: nls.localize('vscode.extension.activationEvents.star', 'An activation event emitted on !!APP_NAME!! startup. To ensure a great end user experience, please use this activation event in your extension only when no other activation events combination works in your use-case.'),
  						body: '*'
-@@ -609,3 +609,3 @@ export const schema: IJSONSchema = {
+@@ -623,3 +623,3 @@ export const schema: IJSONSchema = {
  				'vscode:prepublish': {
 -					description: nls.localize('vscode.extension.scripts.prepublish', 'Script executed before the package is published as a VS Code extension.'),
 +					description: nls.localize('vscode.extension.scripts.prepublish', 'Script executed before the package is published as a !!APP_NAME!! extension.'),
  					type: 'string'
-@@ -613,3 +613,3 @@ export const schema: IJSONSchema = {
+@@ -627,3 +627,3 @@ export const schema: IJSONSchema = {
  				'vscode:uninstall': {
 -					description: nls.localize('vscode.extension.scripts.uninstall', 'Uninstall hook for VS Code extension. Script that gets executed when the extension is completely uninstalled from VS Code which is when VS Code is restarted (shutdown and start) after the extension is uninstalled. Only Node scripts are supported.'),
 +					description: nls.localize('vscode.extension.scripts.uninstall', 'Uninstall hook for !!APP_NAME!! extension. Script that gets executed when the extension is completely uninstalled from !!APP_NAME!! which is when !!APP_NAME!! is restarted (shutdown and start) after the extension is uninstalled. Only Node scripts are supported.'),
