@@ -189,7 +189,7 @@ jobs:
         run: ./build/linux/deps.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
-      - uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1.17.0
+      - uses: actions-rust-lang/setup-rust-toolchain@ecabd13d1c56bd1345c230e542e9144811ad706f # v2.0.0
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Download vscode artifact
@@ -287,7 +287,7 @@ jobs:
         if: env.DISABLED != 'yes'
 
       - name: Preparing Container
-        uses: pkgforge-dev/anylinux-setup-action@0964f2258d6c93d1391359978dde081fd8b3c6af # v2
+        uses: pkgforge-dev/anylinux-setup-action@b2d1ce4216f71162e00ae58fa11ee9aeb723d0d5 # v5
         if: env.DISABLED != 'yes'
 
       - name: Download vscode binary artifact
@@ -548,7 +548,7 @@ jobs:
           ref: ${{ env.GITHUB_BRANCH }}
           persist-credentials: false
 
-      - uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
 
       - uses: diddlesnaps/snapcraft-multiarch-action@cfd7a246fad6bea65bb92f69a1c8d07898c231e5 # v1.9.0
         with:
