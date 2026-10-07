@@ -1,5 +1,7 @@
 version: 2
+
 updates:
+
   - package-ecosystem: github-actions
     directory: /
     target-branch: insider
@@ -7,10 +9,10 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
-    groups:
-      all-dependencies:
-        patterns: ["*"]
     open-pull-requests-limit: 1
+    allow:
+      - dependency-type: all
+
   - package-ecosystem: npm
     directory: /font-size
     target-branch: insider
@@ -18,7 +20,9 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
-    groups:
-      all-dependencies:
-        patterns: ["*"]
     open-pull-requests-limit: 1
+    allow:
+      - dependency-type: all
+    ignore:
+      - dependency-name: '@types/node'
+        versions: [ '>=23.0.0' ]
