@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2129
 
-# Env Paramaters
+# Env Parameters
 # CHECK_ALL: yes | no
 # CHECK_REH: yes | no
 # CHECK_ONLY_REH: yes | no
@@ -67,7 +67,7 @@ else
 fi
 
 contains() {
-  # add " to match the end of a string so any hashs won't be matched by mistake
+  # add " to match the end of a string so any hashes won't be matched by mistake
   echo "${ASSETS}" | grep "${1}\""
 }
 

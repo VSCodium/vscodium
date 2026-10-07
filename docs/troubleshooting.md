@@ -70,11 +70,11 @@ Credits: [Gerson](https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/issues/
 
 ### <a id="linux-remote-ssh"></a>_Remote SSH doesn't work_
 
-Use the VSCodium's compatible extension [Open Remote - SSH](https://open-vsx.org/extension/jeanp413/open-remote-ssh).
+Use the VSCodium-compatible extension [Open Remote - SSH](https://open-vsx.org/extension/jeanp413/open-remote-ssh).
 
-On the server, in the `sshd` config, `AllowTcpForwarding` need to be set to `yes`.
+On the server, in the `sshd` config, `AllowTcpForwarding` needs to be set to `yes`.
 
-It might requires additional dependencies due to the OS/distro (alpine).
+It might require additional dependencies due to the OS/distro (Alpine).
 
 ### <a id="linux-no-window"></a>_The window doesn't show up_
 
@@ -150,5 +150,5 @@ Some users report Windows Defender detecting the VSCodium installer as `Cinjo` o
 
 - Download VSCodium **only from the official [GitHub Releases page](https://github.com/VSCodium/vscodium/releases)**.
 - Verify the SHA256/SHA512 checksum of the downloaded file against the `.sha256` or `.sha512` file published alongside each release.
-- If Defender blocks the installer, add an exclusion for the downloaded file, run the install, then remove the exclusion.
+- If Defender blocks the installer, add an exclusion for the downloaded file, run the installer, then remove the exclusion.
 - You can also report the false positive directly to Microsoft via the [Windows Defender Security Intelligence submission portal](https://www.microsoft.com/en-us/wdsi/filesubmission).

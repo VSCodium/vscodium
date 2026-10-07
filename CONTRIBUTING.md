@@ -57,7 +57,7 @@ If you want to update the existing patches, please follow the section [`Patch Up
 
 - first, you need to build VSCodium
 - then use the command `./dev/patch.sh <your patch name>`, to initiate a new patch
-- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
+- when the script pauses at `Press any key when the conflicts have been resolved...`, open the `vscode` directory in **VSCodium**
 - run `npm run watch`
 - run `./script/code.sh`
 - make your changes

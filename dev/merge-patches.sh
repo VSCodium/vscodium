@@ -44,7 +44,7 @@ while [ $# -gt 1 ]; do
 
   while [[ -n "$( find . -name '*.rej' -print )" ]]; do
     echo
-    read -rp "Press any key when the conflict have been resolved..." -n1 -s
+    read -rp "Press any key when the conflicts have been resolved..." -n1 -s
   done
 
   shift

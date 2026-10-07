@@ -7,7 +7,7 @@
 - [Marketplace](#marketplace)
 - [How to use the OpenVSX Marketplace](#howto-openvsx-marketplace)
 - [How to use a different extension gallery](#howto-switch-marketplace)
-- [How to self host your own extension gallery](#howto-selfhost-marketplace)
+- [How to self-host your own extension gallery](#howto-selfhost-marketplace)
 - [Visual Studio Marketplace](#visual-studio-marketplace)
 - [Proprietary Debugging Tools](#proprietary-debugging-tools)
 - [Proprietary Extensions](#proprietary-extensions)
@@ -16,10 +16,10 @@
 
 ## <a id="marketplace"></a>Marketplace
 
-Being a vscode based editor, VSCodium gets additional features by installing Visual Studio Code extensions.
-Unfortunately, as Microsoft [prohibits usages of the Microsoft marketplace by any other products](https://github.com/microsoft/vscode/issues/31168) or redistribution of `.vsix` files from it, in order to use Visual Studio Code extensions in non-Microsoft products those need to be installed differently.
+Being a VS Code-based editor, VSCodium gets additional features by installing Visual Studio Code extensions.
+Unfortunately, as Microsoft [prohibits usage of the Microsoft marketplace by any other products](https://github.com/microsoft/vscode/issues/31168) or redistribution of `.vsix` files from it; in order to use Visual Studio Code extensions in non-Microsoft products, they need to be installed differently.
 
-By default, the `product.json` file is set up to use [open-vsx.org](https://open-vsx.org/) as extension gallery, which has an [adapter](https://github.com/eclipse/openvsx/wiki/Using-Open-VSX-in-VS-Code) to the Marketplace API used by Visual Studio Code. Since that is a rather new project, you will likely miss some extensions you know from the Visual Studio Marketplace. You have the following options to obtain such missing extensions:
+By default, the `product.json` file is set up to use [open-vsx.org](https://open-vsx.org/) as the extension gallery, which has an [adapter](https://github.com/eclipse/openvsx/wiki/Using-Open-VSX-in-VS-Code) to the Marketplace API used by Visual Studio Code. Since that is a rather new project, you will likely miss some extensions you know from the Visual Studio Marketplace. You have the following options to obtain such missing extensions:
 
 * Ask the extension maintainers to publish to [open-vsx.org](https://open-vsx.org/) in addition to the Visual Studio Marketplace. The publishing process is documented in the [Open VSX Wiki](https://github.com/eclipse/openvsx/wiki/Publishing-Extensions).
 * Create a pull request to [this repository](https://github.com/open-vsx/publish-extensions) to have the [@open-vsx](https://github.com/open-vsx) service account publish the extensions for you.
@@ -42,7 +42,7 @@ You can either use the following environment variables:
 - `VSCODE_GALLERY_EXTENSION_URL_TEMPLATE` ***(required)***
 - `VSCODE_GALLERY_RESOURCE_URL_TEMPLATE`
 
-Or by creating a custom `product.json` at the following location (replace `VSCodium` by `VSCodium - Insiders` if you use that):
+Or by creating a custom `product.json` at the following location (replace `VSCodium` with `VSCodium - Insiders` if you use that):
 - Windows: `%APPDATA%\VSCodium` or `%USERPROFILE%\AppData\Roaming\VSCodium`
 - macOS: `~/Library/Application Support/VSCodium`
 - Linux: `$XDG_CONFIG_HOME/VSCodium` or `~/.config/VSCodium`
@@ -90,7 +90,7 @@ Also note that this extension gallery hosts multiple extensions that are non-fre
 
 The debugger provided with Microsoft's [C# extension](https://github.com/OmniSharp/omnisharp-vscode) as well as the (Windows) debugger provided with their [C++ extension](https://github.com/Microsoft/vscode-cpptools) are very restrictively licensed to only work with the official Visual Studio Code build. See [this comment in the C# extension repo](https://github.com/OmniSharp/omnisharp-vscode/issues/2491#issuecomment-418811364) and [this comment in the C++ extension repo](https://github.com/Microsoft/vscode-cpptools/issues/21#issuecomment-248349017).
 
-A workaround exists to get debugging working in C# projects, by using Samsung's opensource [netcoredbg](https://github.com/Samsung/netcoredbg) package. See [this comment](https://github.com/VSCodium/vscodium/issues/82#issue-409806641) for instructions on how to set that up.
+A workaround exists to get debugging working in C# projects, by using Samsung's open-source [netcoredbg](https://github.com/Samsung/netcoredbg) package. See [this comment](https://github.com/VSCodium/vscodium/issues/82#issue-409806641) for instructions on how to set that up.
 
 ## <a id="proprietary-extensions"></a>Proprietary Extensions
 
