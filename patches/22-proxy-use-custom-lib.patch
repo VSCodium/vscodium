@@ -1,0 +1,594 @@
+diff --git a/build/.moduleignore b/build/.moduleignore
+index 210ed7b6..0568be74 100644
+--- a/build/.moduleignore
++++ b/build/.moduleignore
+@@ -249,12 +249,15 @@ zone.js/dist/**
+ 
+-# @vscode/os-proxy-resolver platform binaries - selected target is re-added during packaging
+-@vscode/os-proxy-resolver-darwin-arm64/**
+-@vscode/os-proxy-resolver-darwin-x64/**
+-@vscode/os-proxy-resolver-linux-arm-gnueabihf/**
+-@vscode/os-proxy-resolver-linux-arm64-gnu/**
+-@vscode/os-proxy-resolver-linux-arm64-musl/**
+-@vscode/os-proxy-resolver-linux-x64-gnu/**
+-@vscode/os-proxy-resolver-linux-x64-musl/**
+-@vscode/os-proxy-resolver-win32-arm64-msvc/**
+-@vscode/os-proxy-resolver-win32-x64-msvc/**
++# @vscodium/os-proxy-resolver platform binaries - selected target is re-added during packaging
++@vscodium/os-proxy-resolver-darwin-arm64/**
++@vscodium/os-proxy-resolver-darwin-x64/**
++@vscodium/os-proxy-resolver-linux-arm-gnueabihf/**
++@vscodium/os-proxy-resolver-linux-arm64-gnu/**
++@vscodium/os-proxy-resolver-linux-arm64-musl/**
++@vscodium/os-proxy-resolver-linux-loong64-gnu/**
++@vscodium/os-proxy-resolver-linux-ppc64le-gnu/**
++@vscodium/os-proxy-resolver-linux-riscv64-gnu/**
++@vscodium/os-proxy-resolver-linux-x64-gnu/**
++@vscodium/os-proxy-resolver-linux-x64-musl/**
++@vscodium/os-proxy-resolver-win32-arm64-msvc/**
++@vscodium/os-proxy-resolver-win32-x64-msvc/**
+ 
+diff --git a/build/darwin/create-universal-app.ts b/build/darwin/create-universal-app.ts
+index 616952b1..7cda5b44 100644
+--- a/build/darwin/create-universal-app.ts
++++ b/build/darwin/create-universal-app.ts
+@@ -64,4 +64,4 @@ async function main(buildDir?: string) {
+ 			crossCopyPlatformDir(x64AppPath, arm64AppPath, path.join(base, '@github', `copilot-sdk-${plat}`));
+-			// @vscode/os-proxy-resolver-{platform} packages
+-			crossCopyPlatformDir(x64AppPath, arm64AppPath, path.join(base, '@vscode', `os-proxy-resolver-${plat}`));
++			// @vscodium/os-proxy-resolver-{platform} packages
++			crossCopyPlatformDir(x64AppPath, arm64AppPath, path.join(base, '@vscodium', `os-proxy-resolver-${plat}`));
+ 			// @github/copilot/prebuilds/{platform} (pty.node, spawn-helper)
+@@ -105,6 +105,6 @@ async function main(buildDir?: string) {
+ 		'**/node_modules.asar.unpacked/@github/copilot-sdk-darwin-arm64/**',
+-		'**/node_modules/@vscode/os-proxy-resolver-darwin-x64/**',
+-		'**/node_modules/@vscode/os-proxy-resolver-darwin-arm64/**',
+-		'**/node_modules.asar.unpacked/@vscode/os-proxy-resolver-darwin-x64/**',
+-		'**/node_modules.asar.unpacked/@vscode/os-proxy-resolver-darwin-arm64/**',
++		'**/node_modules/@vscodium/os-proxy-resolver-darwin-x64/**',
++		'**/node_modules/@vscodium/os-proxy-resolver-darwin-arm64/**',
++		'**/node_modules.asar.unpacked/@vscodium/os-proxy-resolver-darwin-x64/**',
++		'**/node_modules.asar.unpacked/@vscodium/os-proxy-resolver-darwin-arm64/**',
+ 		'**/node_modules/@github/copilot/prebuilds/darwin-x64/**',
+@@ -148,4 +148,4 @@ async function main(buildDir?: string) {
+ 		// that are actually unique to one arch.
+-		singleArchFiles: '{**/@github/copilot-darwin-*,**/@github/copilot-darwin-*/**,**/@github/copilot-sdk-darwin-*,**/@github/copilot-sdk-darwin-*/**,**/@github/copilot/prebuilds/darwin-*,**/@github/copilot/prebuilds/darwin-*/**,**/@github/copilot/tgrep/bin/darwin-*,**/@github/copilot/tgrep/bin/darwin-*/**,**/@github/copilot/sdk/tgrep/bin/darwin-*,**/@github/copilot/sdk/tgrep/bin/darwin-*/**,**/@github/copilot/sdk/prebuilds/darwin-*,**/@github/copilot/sdk/prebuilds/darwin-*/**,**/@github/copilot/sdk/ripgrep/bin/darwin-*,**/@github/copilot/sdk/ripgrep/bin/darwin-*/**,**/@vscode/ripgrep-universal/bin/darwin-*,**/@vscode/ripgrep-universal/bin/darwin-*/**,**/@vscode/os-proxy-resolver-darwin-*,**/@vscode/os-proxy-resolver-darwin-*/**,**/@microsoft/mxc-sdk/bin/*,**/@microsoft/mxc-sdk/bin/*/**}',
+-		x64ArchFiles: '{*/kerberos.node,**/extensions/microsoft-authentication/dist/libmsalruntime.dylib,**/extensions/microsoft-authentication/dist/msal-node-runtime.node,**/node_modules/@github/copilot-darwin-*/**,**/node_modules/@github/copilot-sdk-darwin-*/**,**/node_modules/@github/copilot/prebuilds/darwin-*/*,**/node_modules/@github/copilot/tgrep/bin/darwin-*/*,**/node_modules/@github/copilot/sdk/tgrep/bin/darwin-*/*,**/node_modules.asar.unpacked/@github/copilot-darwin-*/**,**/node_modules.asar.unpacked/@github/copilot-sdk-darwin-*/**,**/node_modules.asar.unpacked/@github/copilot/prebuilds/darwin-*/*,**/node_modules.asar.unpacked/@github/copilot/tgrep/bin/darwin-*/*,**/node_modules.asar.unpacked/@github/copilot/sdk/tgrep/bin/darwin-*/*,**/extensions/copilot/node_modules/@github/copilot/sdk/prebuilds/darwin-*/*,**/extensions/copilot/node_modules/@github/copilot/sdk/ripgrep/bin/darwin-*/*,**/extensions/copilot/node_modules/@github/copilot/sdk/tgrep/bin/darwin-*/*,**/extensions/copilot/node_modules/@github/copilot/tgrep/bin/darwin-*/*,**/node_modules/@vscode/ripgrep-universal/bin/darwin-*/*,**/node_modules.asar.unpacked/@vscode/ripgrep-universal/bin/darwin-*/*,**/node_modules/@vscode/os-proxy-resolver-darwin-*/**,**/node_modules.asar.unpacked/@vscode/os-proxy-resolver-darwin-*/**,**/node_modules/@microsoft/mxc-sdk/bin/**,**/node_modules.asar.unpacked/@microsoft/mxc-sdk/bin/**}',
++		singleArchFiles: '{**/@github/copilot-darwin-*,**/@github/copilot-darwin-*/**,**/@github/copilot-sdk-darwin-*,**/@github/copilot-sdk-darwin-*/**,**/@github/copilot/prebuilds/darwin-*,**/@github/copilot/prebuilds/darwin-*/**,**/@github/copilot/tgrep/bin/darwin-*,**/@github/copilot/tgrep/bin/darwin-*/**,**/@github/copilot/sdk/tgrep/bin/darwin-*,**/@github/copilot/sdk/tgrep/bin/darwin-*/**,**/@github/copilot/sdk/prebuilds/darwin-*,**/@github/copilot/sdk/prebuilds/darwin-*/**,**/@github/copilot/sdk/ripgrep/bin/darwin-*,**/@github/copilot/sdk/ripgrep/bin/darwin-*/**,**/@vscode/ripgrep-universal/bin/darwin-*,**/@vscode/ripgrep-universal/bin/darwin-*/**,**/@vscodium/os-proxy-resolver-darwin-*,**/@vscodium/os-proxy-resolver-darwin-*/**,**/@microsoft/mxc-sdk/bin/*,**/@microsoft/mxc-sdk/bin/*/**}',
++		x64ArchFiles: '{*/kerberos.node,**/extensions/microsoft-authentication/dist/libmsalruntime.dylib,**/extensions/microsoft-authentication/dist/msal-node-runtime.node,**/node_modules/@github/copilot-darwin-*/**,**/node_modules/@github/copilot-sdk-darwin-*/**,**/node_modules/@github/copilot/prebuilds/darwin-*/*,**/node_modules/@github/copilot/tgrep/bin/darwin-*/*,**/node_modules/@github/copilot/sdk/tgrep/bin/darwin-*/*,**/node_modules.asar.unpacked/@github/copilot-darwin-*/**,**/node_modules.asar.unpacked/@github/copilot-sdk-darwin-*/**,**/node_modules.asar.unpacked/@github/copilot/prebuilds/darwin-*/*,**/node_modules.asar.unpacked/@github/copilot/tgrep/bin/darwin-*/*,**/node_modules.asar.unpacked/@github/copilot/sdk/tgrep/bin/darwin-*/*,**/extensions/copilot/node_modules/@github/copilot/sdk/prebuilds/darwin-*/*,**/extensions/copilot/node_modules/@github/copilot/sdk/ripgrep/bin/darwin-*/*,**/extensions/copilot/node_modules/@github/copilot/sdk/tgrep/bin/darwin-*/*,**/extensions/copilot/node_modules/@github/copilot/tgrep/bin/darwin-*/*,**/node_modules/@vscode/ripgrep-universal/bin/darwin-*/*,**/node_modules.asar.unpacked/@vscode/ripgrep-universal/bin/darwin-*/*,**/node_modules/@vscodium/os-proxy-resolver-darwin-*/**,**/node_modules.asar.unpacked/@vscodium/os-proxy-resolver-darwin-*/**,**/node_modules/@microsoft/mxc-sdk/bin/**,**/node_modules.asar.unpacked/@microsoft/mxc-sdk/bin/**}',
+ 		filesToSkipComparison: (file: string) => {
+diff --git a/build/darwin/verify-macho.ts b/build/darwin/verify-macho.ts
+index 7a96e0e6..bc741e0d 100644
+--- a/build/darwin/verify-macho.ts
++++ b/build/darwin/verify-macho.ts
+@@ -47,4 +47,4 @@ const FILES_TO_SKIP = [
+ 	// OS proxy resolver: universal app has separate x64 and arm64 packages
+-	'**/node_modules/@vscode/os-proxy-resolver-darwin-*/**',
+-	'**/node_modules.asar.unpacked/@vscode/os-proxy-resolver-darwin-*/**',
++	'**/node_modules/@vscodium/os-proxy-resolver-darwin-*/**',
++	'**/node_modules.asar.unpacked/@vscodium/os-proxy-resolver-darwin-*/**',
+ 	// MXC SDK ships per-arch native binaries under bin/<arch>; the package
+diff --git a/build/lib/osProxyResolver.ts b/build/lib/osProxyResolver.ts
+index a514c2cf..8772b8f8 100644
+--- a/build/lib/osProxyResolver.ts
++++ b/build/lib/osProxyResolver.ts
+@@ -11,3 +11,3 @@ export const osProxyResolverPlatforms = [
+ 	'darwin-arm64', 'darwin-x64',
+-	'linux-arm-gnueabihf', 'linux-arm64-gnu', 'linux-arm64-musl', 'linux-x64-gnu', 'linux-x64-musl',
++	'linux-arm-gnueabihf', 'linux-arm64-gnu', 'linux-arm64-musl', 'linux-loong64-gnu', 'linux-ppc64le-gnu', 'linux-riscv64-gnu', 'linux-x64-gnu', 'linux-x64-musl',
+ 	'win32-arm64-msvc', 'win32-x64-msvc',
+@@ -35,3 +35,3 @@ export function getOSProxyResolverPlatformFiles(platform: string, arch: string,
+ 	const target = toOSProxyResolverPlatform(platform, arch);
+-	return target ? [path.posix.join(nodeModulesRoot, '@vscode', `os-proxy-resolver-${target}`, '**')] : [];
++	return target ? [path.posix.join(nodeModulesRoot, '@vscodium', `os-proxy-resolver-${target}`, '**')] : [];
+ }
+@@ -44,3 +44,3 @@ export function getOSProxyResolverExcludeFilter(platform: string, arch: string):
+ 			.filter(candidate => candidate !== target)
+-			.map(candidate => `!**/node_modules/@vscode/os-proxy-resolver-${candidate}/**`),
++			.map(candidate => `!**/node_modules/@vscodium/os-proxy-resolver-${candidate}/**`),
+ 	];
+@@ -51,3 +51,3 @@ export function ensureOSProxyResolverPlatformPackage(platform: string, arch: str
+ 	if (target) {
+-		ensureNpmPackage(`@vscode/os-proxy-resolver-${target}`, nodeModulesRoot, options);
++		ensureNpmPackage(`@vscodium/os-proxy-resolver-${target}`, nodeModulesRoot, options);
+ 	}
+diff --git a/build/lib/test/osProxyResolver.test.ts b/build/lib/test/osProxyResolver.test.ts
+index 85232d80..2ad06e83 100644
+--- a/build/lib/test/osProxyResolver.test.ts
++++ b/build/lib/test/osProxyResolver.test.ts
+@@ -16,9 +16,9 @@ suite('osProxyResolver', () => {
+ 		assert.deepStrictEqual(getOSProxyResolverPlatformFiles('darwin', 'x64'), [
+-			'node_modules/@vscode/os-proxy-resolver-darwin-x64/**',
++			'node_modules/@vscodium/os-proxy-resolver-darwin-x64/**',
+ 		]);
+ 		assert.deepStrictEqual(getOSProxyResolverPlatformFiles('linux', 'armhf'), [
+-			'node_modules/@vscode/os-proxy-resolver-linux-arm-gnueabihf/**',
++			'node_modules/@vscodium/os-proxy-resolver-linux-arm-gnueabihf/**',
+ 		]);
+ 		assert.deepStrictEqual(getOSProxyResolverPlatformFiles('win32', 'arm64'), [
+-			'node_modules/@vscode/os-proxy-resolver-win32-arm64-msvc/**',
++			'node_modules/@vscodium/os-proxy-resolver-win32-arm64-msvc/**',
+ 		]);
+@@ -32,3 +32,3 @@ suite('osProxyResolver', () => {
+ 				.filter(platform => platform !== 'darwin-x64')
+-				.map(platform => `!**/node_modules/@vscode/os-proxy-resolver-${platform}/**`),
++				.map(platform => `!**/node_modules/@vscodium/os-proxy-resolver-${platform}/**`),
+ 		]);
+@@ -36,3 +36,3 @@ suite('osProxyResolver', () => {
+ 			'**',
+-			...osProxyResolverPlatforms.map(platform => `!**/node_modules/@vscode/os-proxy-resolver-${platform}/**`),
++			...osProxyResolverPlatforms.map(platform => `!**/node_modules/@vscodium/os-proxy-resolver-${platform}/**`),
+ 		]);
+@@ -43,10 +43,13 @@ suite('osProxyResolver', () => {
+ 			'**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-darwin-arm64/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-darwin-x64/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-linux-arm-gnueabihf/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-linux-arm64-gnu/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-linux-arm64-musl/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-linux-x64-musl/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-win32-arm64-msvc/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-win32-x64-msvc/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-darwin-arm64/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-darwin-x64/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-arm-gnueabihf/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-arm64-gnu/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-arm64-musl/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-loong64-gnu/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-ppc64le-gnu/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-riscv64-gnu/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-x64-musl/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-win32-arm64-msvc/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-win32-x64-msvc/**',
+ 		]);
+@@ -54,10 +57,13 @@ suite('osProxyResolver', () => {
+ 			'**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-darwin-arm64/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-darwin-x64/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-linux-arm-gnueabihf/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-linux-arm64-musl/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-linux-x64-gnu/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-linux-x64-musl/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-win32-arm64-msvc/**',
+-			'!**/node_modules/@vscode/os-proxy-resolver-win32-x64-msvc/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-darwin-arm64/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-darwin-x64/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-arm-gnueabihf/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-arm64-musl/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-loong64-gnu/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-ppc64le-gnu/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-riscv64-gnu/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-x64-gnu/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-linux-x64-musl/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-win32-arm64-msvc/**',
++			'!**/node_modules/@vscodium/os-proxy-resolver-win32-x64-msvc/**',
+ 		]);
+@@ -70,3 +76,3 @@ suite('osProxyResolver', () => {
+ 		const lockedPlatforms = Object.keys(lockFile.packages)
+-			.map(key => /(?:^|\/)node_modules\/@vscode\/os-proxy-resolver-(?<platform>.+)$/.exec(key)?.groups?.platform)
++			.map(key => /(?:^|\/)node_modules\/@vscodium\/os-proxy-resolver-(?<platform>.+)$/.exec(key)?.groups?.platform)
+ 			.filter(platform => platform !== undefined)
+@@ -84,3 +90,3 @@ suite('osProxyResolver', () => {
+ 				packages: {
+-					'node_modules/@vscode/os-proxy-resolver-darwin-x64': {
++					'node_modules/@vscodium/os-proxy-resolver-darwin-x64': {
+ 						version: '0.2.0',
+@@ -101,3 +107,3 @@ suite('osProxyResolver', () => {
+ 
+-			assert(fs.existsSync(path.join(nodeModulesRoot, '@vscode', 'os-proxy-resolver-darwin-x64', 'os_proxy_resolver.node')));
++			assert(fs.existsSync(path.join(nodeModulesRoot, '@vscodium', 'os-proxy-resolver-darwin-x64', 'os_proxy_resolver.node')));
+ 		} finally {
+diff --git a/package-lock.json b/package-lock.json
+index 7254d078..2c75c706 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -32,3 +32,2 @@
+         "@vscode/native-watchdog": "^1.4.6",
+-        "@vscode/os-proxy-resolver": "^0.4.0",
+         "@vscode/proxy-agent": "^0.45.0",
+@@ -45,2 +44,3 @@
+         "@vscodium/native-keymap": "3.3.9-260952",
++        "@vscodium/os-proxy-resolver": "0.4.0-265898",
+         "@vscodium/policy-watcher": "1.4.0-265896",
+@@ -4820,139 +4820,2 @@
+     },
+-    "node_modules/@vscode/os-proxy-resolver": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver/-/os-proxy-resolver-0.4.0.tgz",
+-      "integrity": "sha512-bSwx24M7okqbI7B57jfARm/ICCPB4w22lXk5YlROmzJ3j5ponIiya23OqMwFNFLtoQktWkbpxxafVL0BBpbRQw==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=22.15.0"
+-      },
+-      "optionalDependencies": {
+-        "@vscode/os-proxy-resolver-darwin-arm64": "0.4.0",
+-        "@vscode/os-proxy-resolver-darwin-x64": "0.4.0",
+-        "@vscode/os-proxy-resolver-linux-arm-gnueabihf": "0.4.0",
+-        "@vscode/os-proxy-resolver-linux-arm64-gnu": "0.4.0",
+-        "@vscode/os-proxy-resolver-linux-arm64-musl": "0.4.0",
+-        "@vscode/os-proxy-resolver-linux-x64-gnu": "0.4.0",
+-        "@vscode/os-proxy-resolver-linux-x64-musl": "0.4.0",
+-        "@vscode/os-proxy-resolver-win32-arm64-msvc": "0.4.0",
+-        "@vscode/os-proxy-resolver-win32-x64-msvc": "0.4.0"
+-      }
+-    },
+-    "node_modules/@vscode/os-proxy-resolver-darwin-arm64": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver-darwin-arm64/-/os-proxy-resolver-darwin-arm64-0.4.0.tgz",
+-      "integrity": "sha512-QNYOWxTaQ9D/rUf88LjOPYAkMXsX2yGvECW/6Ii0BO5gBr7lZZRDa7lfYqjjcmIiJoxxu/83Wi1pXlB0ZT9UDw==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ]
+-    },
+-    "node_modules/@vscode/os-proxy-resolver-darwin-x64": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver-darwin-x64/-/os-proxy-resolver-darwin-x64-0.4.0.tgz",
+-      "integrity": "sha512-nV9DTpit6VoVLPOpIr9NVWfDSgql8C62PWkVLumCANF5xqLsHyKjuX/UJ53/WPmOl7Sf7Z+J4tNzQpGSCdV8fg==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "darwin"
+-      ]
+-    },
+-    "node_modules/@vscode/os-proxy-resolver-linux-arm-gnueabihf": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver-linux-arm-gnueabihf/-/os-proxy-resolver-linux-arm-gnueabihf-0.4.0.tgz",
+-      "integrity": "sha512-FOMiZzOe/3IWN/FIGeefF7/R1s3uH7dwqq+4FwBagxhlmEtXfaeJMSInZ56wBrNxXUJXAI/Fsetjm+7eOfCygQ==",
+-      "cpu": [
+-        "arm"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ]
+-    },
+-    "node_modules/@vscode/os-proxy-resolver-linux-arm64-gnu": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver-linux-arm64-gnu/-/os-proxy-resolver-linux-arm64-gnu-0.4.0.tgz",
+-      "integrity": "sha512-YG9NIXolWmD7x5aLWPGP1UQKfErNonHBT9fSvKuDL6DspGyQJFKkyqudTzHu1ykSgwb1VuWmMSckQQoFhYL6ew==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ]
+-    },
+-    "node_modules/@vscode/os-proxy-resolver-linux-arm64-musl": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver-linux-arm64-musl/-/os-proxy-resolver-linux-arm64-musl-0.4.0.tgz",
+-      "integrity": "sha512-DnQ/dGjJoQeWgWRqGtXoJlAW1NIbewG5BmbvM8F+w5edgiTw2zLKwVpDVfaERg/Gkn+vXegfzyhOpjPaNyfXIQ==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ]
+-    },
+-    "node_modules/@vscode/os-proxy-resolver-linux-x64-gnu": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver-linux-x64-gnu/-/os-proxy-resolver-linux-x64-gnu-0.4.0.tgz",
+-      "integrity": "sha512-aIginNUW2UjUDqiDj15PlGz4qzlWZHsNnpcTF6dHMePOGvgjJYdy7I7jNE7Itg6tkTwEh+OY0L2dyUqHRGlw9g==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ]
+-    },
+-    "node_modules/@vscode/os-proxy-resolver-linux-x64-musl": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver-linux-x64-musl/-/os-proxy-resolver-linux-x64-musl-0.4.0.tgz",
+-      "integrity": "sha512-3f7tzRzyUmT4N9pmdY2mJV1pntkRk61UsB41/MqzI50C+N3byIAmB3HkhYtLPibDNfH8t5ISTl/vOc3ixpk1bw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "linux"
+-      ]
+-    },
+-    "node_modules/@vscode/os-proxy-resolver-win32-arm64-msvc": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver-win32-arm64-msvc/-/os-proxy-resolver-win32-arm64-msvc-0.4.0.tgz",
+-      "integrity": "sha512-g9kDAbc/PrNdWArYvJmEwrKInZzvmizV83dc2lisHqFa9g9Iq6nFT7KJMVfVjJ6ZmhijuwCYpu91ikjNMnC5Wg==",
+-      "cpu": [
+-        "arm64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ]
+-    },
+-    "node_modules/@vscode/os-proxy-resolver-win32-x64-msvc": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/os-proxy-resolver-win32-x64-msvc/-/os-proxy-resolver-win32-x64-msvc-0.4.0.tgz",
+-      "integrity": "sha512-35NrEYB8MKug3dui465JAV83lHi8pKeM7T4yUNLLAG7z/zFO3fpbB7FgQ+rh4AyZF9QwPvEvy8UgYqXmjA36aw==",
+-      "cpu": [
+-        "x64"
+-      ],
+-      "license": "MIT",
+-      "optional": true,
+-      "os": [
+-        "win32"
+-      ]
+-    },
+     "node_modules/@vscode/proxy-agent": {
+@@ -5369,2 +5232,205 @@
+     },
++    "node_modules/@vscodium/os-proxy-resolver": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver/-/os-proxy-resolver-0.4.0-265898.tgz",
++      "integrity": "sha512-CSLI1xaO5UdNM/dEroGHdQV9sMvOKBtHVq+Zdegy7FllqRwVUoj8q+nN1tr7LMI4b0C4Dp/IjTOR76q4YYmmUg==",
++      "license": "MIT",
++      "engines": {
++        "node": ">=22.15.0"
++      },
++      "optionalDependencies": {
++        "@vscodium/os-proxy-resolver-darwin-arm64": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-darwin-x64": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-linux-arm-gnueabihf": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-linux-arm64-gnu": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-linux-arm64-musl": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-linux-loong64-gnu": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-linux-ppc64le-gnu": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-linux-riscv64-gnu": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-linux-x64-gnu": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-linux-x64-musl": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-win32-arm64-msvc": "0.4.0-265898",
++        "@vscodium/os-proxy-resolver-win32-x64-msvc": "0.4.0-265898"
++      }
++    },
++    "node_modules/@vscodium/os-proxy-resolver-darwin-arm64": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-darwin-arm64/-/os-proxy-resolver-darwin-arm64-0.4.0-265898.tgz",
++      "integrity": "sha512-mikVMC/ALYdrVAbGEwz+hIcaIGH3iRjKfcDEaSDmooNxgjSBtTM3s4Na1yRXfsAQgjv0AzuBSxRee2MK5SPp5w==",
++      "cpu": [
++        "arm64"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-darwin-x64": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-darwin-x64/-/os-proxy-resolver-darwin-x64-0.4.0-265898.tgz",
++      "integrity": "sha512-CfnaZp0jx4bVhrUUuK9ed88cJq2ddjMAXefxLWm8zALcjlA2Ndaa/OsX5CTL25HhMsagX3B6IcCJpNCDqi2c8Q==",
++      "cpu": [
++        "x64"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-linux-arm-gnueabihf": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-linux-arm-gnueabihf/-/os-proxy-resolver-linux-arm-gnueabihf-0.4.0-265898.tgz",
++      "integrity": "sha512-MWW38YwllErS7vWDl9a+FT8GywwD7s/6OuOPXSfPH22Aa1BsrLLpU++7V2xar3bX3FwSoA+5BoxEtZKOyxdhqw==",
++      "cpu": [
++        "arm"
++      ],
++      "libc": [
++        "glibc"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-linux-arm64-gnu": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-linux-arm64-gnu/-/os-proxy-resolver-linux-arm64-gnu-0.4.0-265898.tgz",
++      "integrity": "sha512-TYBCztoV8Rs/6d7bTYc4LSqcUwpPWOhnvujz4dFiWDyIviyjPH4rAqVBReWo5QOtH621JdXDG8scLqyrjHWhXg==",
++      "cpu": [
++        "arm64"
++      ],
++      "libc": [
++        "glibc"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-linux-arm64-musl": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-linux-arm64-musl/-/os-proxy-resolver-linux-arm64-musl-0.4.0-265898.tgz",
++      "integrity": "sha512-gSEjwHRY8Kpo4VTFcjdiKGtxm2fk8B3CTPv3s8f8W8HfU7+XL2v6jdkquNhbbBDOW//3m77USwsnohTlUPgbXw==",
++      "cpu": [
++        "arm64"
++      ],
++      "libc": [
++        "musl"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-linux-loong64-gnu": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-linux-loong64-gnu/-/os-proxy-resolver-linux-loong64-gnu-0.4.0-265898.tgz",
++      "integrity": "sha512-ewgraxfomuF1zw9eE82dnjw81x21KQbFYcg56UYwukr8ElKhl9KpOzrgNBnapGB9dzDBJuI37eXnpUp9oW/LvQ==",
++      "cpu": [
++        "loong64"
++      ],
++      "libc": [
++        "glibc"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-linux-ppc64le-gnu": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-linux-ppc64le-gnu/-/os-proxy-resolver-linux-ppc64le-gnu-0.4.0-265898.tgz",
++      "integrity": "sha512-DRzGKVTipgX3GpRqG5jnMssBJnCZTTMQc1n+Fd6g8KaF3llpq6Fbq6TK3ZTGOutISDjrB8KPll19AF0GsCjp/g==",
++      "cpu": [
++        "ppc64"
++      ],
++      "libc": [
++        "glibc"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-linux-riscv64-gnu": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-linux-riscv64-gnu/-/os-proxy-resolver-linux-riscv64-gnu-0.4.0-265898.tgz",
++      "integrity": "sha512-8zZNAsAb1+HruxFJ+1vicES4WL6H54x0rRIQMHgcXkk4dNKSZYNQTZ3rhY02EH97Lc7jWfCB59GHo8Vk/cDaDg==",
++      "cpu": [
++        "riscv64"
++      ],
++      "libc": [
++        "glibc"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-linux-x64-gnu": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-linux-x64-gnu/-/os-proxy-resolver-linux-x64-gnu-0.4.0-265898.tgz",
++      "integrity": "sha512-cASsnDLwGnfA4EFB3hex1REqSMWafHCYRB0M3gg2D9mXGzjMqKQ60Geambzp0JIgpwLbKgKqWQO3G6HtF1FRZw==",
++      "cpu": [
++        "x64"
++      ],
++      "libc": [
++        "glibc"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-linux-x64-musl": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-linux-x64-musl/-/os-proxy-resolver-linux-x64-musl-0.4.0-265898.tgz",
++      "integrity": "sha512-R0t+pLraL2+JwbIKGwy4kjPDhr+j1fHY1sZjpZDTOYITMw8EMSlRHdSEPU5VMYQ3MGu5ch6NtloOHNjWd8ae9Q==",
++      "cpu": [
++        "x64"
++      ],
++      "libc": [
++        "musl"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-win32-arm64-msvc": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-win32-arm64-msvc/-/os-proxy-resolver-win32-arm64-msvc-0.4.0-265898.tgz",
++      "integrity": "sha512-FXpHx3dRwVcrPTIjQ8zV3gXtH7fg+Z7nzBDG+bv1o1ns+fyXIF0nlmQ6toteRKXDv8+gRINT307UsZFWQasuZw==",
++      "cpu": [
++        "arm64"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "win32"
++      ]
++    },
++    "node_modules/@vscodium/os-proxy-resolver-win32-x64-msvc": {
++      "version": "0.4.0-265898",
++      "resolved": "https://registry.npmjs.org/@vscodium/os-proxy-resolver-win32-x64-msvc/-/os-proxy-resolver-win32-x64-msvc-0.4.0-265898.tgz",
++      "integrity": "sha512-GqdK8w9hcjxwx5qnJnNhcj1d9cqmpfG/XniFXz3xF9qyilxvBHMtu5rhGxe5JmJMu16jXnfLV1rjseM/oZxvNg==",
++      "cpu": [
++        "x64"
++      ],
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "win32"
++      ]
++    },
+     "node_modules/@vscodium/policy-watcher": {
+diff --git a/package.json b/package.json
+index c6b1c3a5..ac4d6762 100644
+--- a/package.json
++++ b/package.json
+@@ -119,3 +119,3 @@
+     "@vscode/native-watchdog": "^1.4.6",
+-    "@vscode/os-proxy-resolver": "^0.4.0",
++    "@vscodium/os-proxy-resolver": "0.4.0-265898",
+     "@vscodium/policy-watcher": "1.4.0-265896",
+diff --git a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
+index de250c8d..b2cc56ba 100644
+--- a/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
++++ b/src/vs/platform/environment/test/node/nativeModules.integrationTest.ts
+@@ -129,4 +129,4 @@ flakySuite('Native Modules (all platforms)', () => {
+ 
+-	test('@vscode/os-proxy-resolver', async () => {
+-		const proxyResolver = await import('@vscode/os-proxy-resolver');
++	test('@vscodium/os-proxy-resolver', async () => {
++		const proxyResolver = await import('@vscodium/os-proxy-resolver');
+ 		const proxies = await proxyResolver.resolveProxy('https://example.com/');
+@@ -139,3 +139,3 @@ flakySuite('Native Modules (all platforms)', () => {
+ 			readProxyConfig: true,
+-		}, testErrorMessage('@vscode/os-proxy-resolver'));
++		}, testErrorMessage('@vscodium/os-proxy-resolver'));
+ 	});
+diff --git a/src/vs/platform/native/electron-main/nativeHostMainService.ts b/src/vs/platform/native/electron-main/nativeHostMainService.ts
+index 3c915a53..56829a97 100644
+--- a/src/vs/platform/native/electron-main/nativeHostMainService.ts
++++ b/src/vs/platform/native/electron-main/nativeHostMainService.ts
+@@ -1154,3 +1154,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+ 	async resolveProxyWithPackage(_windowId: number | undefined, url: string): Promise<IOSProxy[]> {
+-		const { resolveProxy } = await import('@vscode/os-proxy-resolver');
++		const { resolveProxy } = await import('@vscodium/os-proxy-resolver');
+ 		return resolveProxy(url);
+@@ -1159,3 +1159,3 @@ export class NativeHostMainService extends Disposable implements INativeHostMain
+ 	async readProxyConfigWithPackage(_windowId: number | undefined): Promise<IOSProxyConfig> {
+-		const { readProxyConfig } = await import('@vscode/os-proxy-resolver');
++		const { readProxyConfig } = await import('@vscodium/os-proxy-resolver');
+ 		return readProxyConfig();
+diff --git a/src/vs/workbench/contrib/chat/electron-browser/actions/networkDiagnosticsAction.ts b/src/vs/workbench/contrib/chat/electron-browser/actions/networkDiagnosticsAction.ts
+index d7e0d25e..fc5291cd 100644
+--- a/src/vs/workbench/contrib/chat/electron-browser/actions/networkDiagnosticsAction.ts
++++ b/src/vs/workbench/contrib/chat/electron-browser/actions/networkDiagnosticsAction.ts
+@@ -51,3 +51,3 @@ async function collectNetworkDiagnostics(connectionsService: IAgentHostConnectio
+ async function formatLocalProxyConfig(nativeHostService: INativeHostService): Promise<string> {
+-	let output = '## Local OS Proxy Configuration (@vscode/os-proxy-resolver)\n\n';
++	let output = '## Local OS Proxy Configuration (@vscodium/os-proxy-resolver)\n\n';
+ 	try {
+@@ -159,5 +159,5 @@ async function formatEndpointSection(endpoint: IAgentHostNetworkEndpoint, result
+ 		const proxies = await nativeHostService.resolveProxyWithPackage(result.url);
+-		output += `- Local OS proxy (@vscode/os-proxy-resolver): ${formatProxies(proxies)}\n`;
++		output += `- Local OS proxy (@vscodium/os-proxy-resolver): ${formatProxies(proxies)}\n`;
+ 	} catch (err) {
+-		output += `- Local OS proxy (@vscode/os-proxy-resolver): error: ${err instanceof Error ? err.message : String(err)}\n`;
++		output += `- Local OS proxy (@vscodium/os-proxy-resolver): error: ${err instanceof Error ? err.message : String(err)}\n`;
+ 	}
