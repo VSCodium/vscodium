@@ -1,23 +1,26 @@
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index c643cf99..75c38fb1 100644
+index 5688ee60..a27111b4 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -32,3 +32,2 @@ import { fetchUrls } from './lib/fetch.ts';
+@@ -32,4 +32,4 @@ import { fetchUrls } from './lib/fetch.ts';
  import { downloadFeedPackage } from './lib/azureFeed.ts';
 -import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
  import { readAgentSdkResults } from './agent-sdk/common.ts';
-@@ -361,9 +360,3 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
++import { getMxcExcludeFilter, getRipgrepExcludeFilter } from './lib/copilot.ts';
+ 
+@@ -361,9 +361,5 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
  			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, `.moduleignore.${process.platform}`)));
 -		ensureCopilotPlatformPackage(platform, arch, 'remote/node_modules');
 -		const copilotRuntimePrebuilds = gulp.src(getCopilotRuntimePrebuildFiles(platform, arch, 'remote/node_modules'), { base: 'remote', dot: true, allowEmpty: true });
 -		const deps = es.merge(cleanedDeps, copilotRuntimePrebuilds)
 -			.pipe(filter(getCopilotExcludeFilter(platform, arch)))
 -			.pipe(filter(getCopilotTgrepExcludeFilter(platform, arch)))
--			.pipe(filter(getRipgrepExcludeFilter(platform, arch)))
--			.pipe(filter(getMxcExcludeFilter(arch)))
 +		const deps = es.merge(cleanedDeps)
++			.pipe(filter(getMxcExcludeFilter(platform)))
+ 			.pipe(filter(getRipgrepExcludeFilter(platform, arch)))
+-			.pipe(filter(getMxcExcludeFilter(arch)))
  			.pipe(jsFilter)
-@@ -523,12 +516,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -523,12 +519,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 -function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destinationFolderName: string) {
 -	return async () => {
@@ -30,16 +33,16 @@ index c643cf99..75c38fb1 100644
 -}
 -
  ['reh', 'reh-web'].forEach(type => {
-@@ -552,3 +535,2 @@ function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destin
+@@ -552,3 +538,2 @@ function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destin
  				packageTask(type, platform, arch, sourceFolderName, destinationFolderName),
 -				prepareCopilotRipgrepShimTaskREH(platform, arch, destinationFolderName)
  			];
-@@ -567,3 +549,2 @@ function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destin
+@@ -567,3 +552,2 @@ function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destin
  				compileNonNativeExtensionsBuildTask,
 -				compileCopilotExtensionBuildTask,
  				compileExtensionMediaBuildTask,
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 28f786e6..915a1167 100644
+index 28f786e6..645da234 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
 @@ -26,8 +26,6 @@ import { createAsar } from './lib/asar.ts';
@@ -48,7 +51,7 @@ index 28f786e6..915a1167 100644
 +import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask } from './gulpfile.extensions.ts';
  import { checkApiProposalNamesTask, copyCodiconsTask } from './lib/compilation.ts';
 -import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotRuntimeVersion, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
-+import { getRipgrepExcludeFilter } from './lib/copilot.ts';
++import { getMxcExcludeFilter, getRipgrepExcludeFilter } from './lib/copilot.ts';
  import { ensureOSProxyResolverPlatformPackage, getOSProxyResolverExcludeFilter, getOSProxyResolverPlatformFiles } from './lib/osProxyResolver.ts';
 -import { readAgentSdkResults } from './agent-sdk/common.ts';
 -import { readDictationRuntimeResults } from './dictation-runtime/common.ts';
@@ -93,7 +96,7 @@ index 28f786e6..915a1167 100644
 -					json.dictationRuntime = dictationRuntime;
 -				}
  				return json;
-@@ -252,11 +216,6 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -252,11 +216,7 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, `.moduleignore.${process.platform}`)));
 -		ensureCopilotPlatformPackage(platform, arch);
 -		const copilotRuntimePrebuilds = gulp.src(getCopilotRuntimePrebuildFiles(platform, arch), { base: '.', dot: true, allowEmpty: true });
@@ -103,15 +106,16 @@ index 28f786e6..915a1167 100644
 -			.pipe(filter(getCopilotExcludeFilter(platform, arch)))
 -			.pipe(filter(getCopilotTgrepExcludeFilter(platform, arch)))
 +		const deps = es.merge(cleanedDeps, osProxyResolverPlatformPackage)
++			.pipe(filter(getMxcExcludeFilter(platform)))
  			.pipe(filter(getRipgrepExcludeFilter(platform, arch)))
 -			.pipe(filter(getMxcExcludeFilter(arch)))
  			.pipe(filter(getFoundryLocalExcludeFilter()))
-@@ -269,4 +228,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -269,4 +229,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  				'**/@vscode/ripgrep-universal/bin/**',
 -				// The SDK runtime wrapper and native module must remain adjacent on disk.
 -				'**/@github/copilot-sdk-{darwin,linux,linuxmusl,win32}-*/**',
  				// The Dev Container CLI is spawned as an external Node process,
-@@ -541,19 +498,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -541,19 +499,2 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  
 -function prepareCopilotRipgrepShimTask(platform: string, arch: string, destinationFolderName: string) {
 -	const outputDir = path.join(path.dirname(root), destinationFolderName);
@@ -131,7 +135,7 @@ index 28f786e6..915a1167 100644
 -}
 -
  function generateNodeCompileCacheTask(platform: string, destinationFolderName: string) {
-@@ -593,3 +533,2 @@ BUILD_TARGETS.forEach(buildTarget => {
+@@ -593,3 +534,2 @@ BUILD_TARGETS.forEach(buildTarget => {
  			packageTask(platform, arch, sourceFolderName, destinationFolderName),
 -			prepareCopilotRipgrepShimTask(platform, arch, destinationFolderName)
  		];
