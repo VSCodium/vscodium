@@ -1,3 +1,28 @@
+diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
+index c643cf99..5688ee60 100644
+--- a/build/gulpfile.reh.ts
++++ b/build/gulpfile.reh.ts
+@@ -562,3 +562,3 @@ function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destin
+ 
+-			const serverTask = task.define(`vscode-${type}${dashed(platform)}${dashed(arch)}${dashed(minified)}`, task.series(
++			const prepackTask = task.define(`vscode-${type}${dashed(minified)}-prepack`, task.series(
+ 				copyCodiconsTask,
+@@ -569,2 +569,6 @@ function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destin
+ 				compileExtensionMediaBuildTask,
++			));
++			task.task(prepackTask);
++
++			const packingTask = task.define(`vscode-${type}${dashed(platform)}${dashed(arch)}${dashed(minified)}-packing`, task.series(
+ 				writeISODate('out-build'),
+@@ -573,2 +577,8 @@ function prepareCopilotRipgrepShimTaskREH(platform: string, arch: string, destin
+ 			));
++			task.task(packingTask);
++
++			const serverTask = task.define(`vscode-${type}${dashed(platform)}${dashed(arch)}${dashed(minified)}`, task.series(
++				prepackTask,
++				packingTask,
++			));
+ 			task.task(serverTask);
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
 index 95ae1790..28f786e6 100644
 --- a/build/gulpfile.vscode.ts
