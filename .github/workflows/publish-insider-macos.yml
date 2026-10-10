@@ -60,6 +60,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: . check_tags.sh
 
+      - name: Validate compile-time patches
+        run: bash ./dev/check_patches.sh compile
+        if: env.SHOULD_BUILD == 'yes'
+
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -89,6 +93,14 @@ jobs:
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
         if: env.SHOULD_BUILD == 'yes'
+
+      - name: Upload patch validation logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: patch-check-publish-macos-insider-${{ matrix.vscode_arch }}
+          path: ./.patch-check/
+          retention-days: 3
+        if: always() && env.SHOULD_BUILD == 'yes'
 
       - name: Clean up keychain
         if: always()

@@ -70,6 +70,9 @@ jobs:
       - name: Clone VSCode repo
         run: ./get_repo.sh
 
+      - name: Validate compile-time patches
+        run: bash ./dev/check_patches.sh compile
+
       - name: Build
         env:
           SHOULD_BUILD: yes
@@ -83,6 +86,14 @@ jobs:
           echo "vscode/.build/extensions/node_modules" >> vscode.txt
           echo "vscode/.git" >> vscode.txt
           tar -czf vscode.tar.gz -T vscode.txt
+
+      - name: Upload patch validation logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: patch-check-compile-windows
+          path: ./.patch-check/
+          retention-days: 3
+        if: always()
 
       - name: Upload vscode artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

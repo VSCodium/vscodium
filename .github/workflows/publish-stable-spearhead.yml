@@ -81,10 +81,21 @@ jobs:
       - name: Clone VSCode repo
         run: . get_repo.sh
 
+      - name: Validate compile-time patches
+        run: bash ./dev/check_patches.sh compile
+
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./build.sh
+
+      - name: Upload patch validation logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: patch-check-spearhead-stable
+          path: ./.patch-check/
+          retention-days: 3
+        if: always()
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
