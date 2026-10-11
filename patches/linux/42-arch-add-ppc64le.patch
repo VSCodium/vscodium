@@ -84,6 +84,14 @@ index 3d9cfbe2..ebd017ed 100644
 +		// VS Code build uses 'ppc64le'; Node reports process.arch === 'ppc64'
 +		nodeArch = 'ppc64';
  	} else if (arch === 'alpine') {
+diff --git a/build/lib/osProxyResolver.ts b/build/lib/osProxyResolver.ts
+index 8772b8f8..b800f76f 100644
+--- a/build/lib/osProxyResolver.ts
++++ b/build/lib/osProxyResolver.ts
+@@ -24,2 +24,3 @@ function toOSProxyResolverPlatform(platform: string, arch: string): string | und
+ 				case 'arm64': return 'linux-arm64-gnu';
++				case 'ppc64le': return 'linux-ppc64le-gnu';
+ 				case 'x64': return 'linux-x64-gnu';
 diff --git a/build/linux/debian/calculate-deps.ts b/build/linux/debian/calculate-deps.ts
 index 98a96302..6c6bbf55 100644
 --- a/build/linux/debian/calculate-deps.ts

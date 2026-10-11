@@ -46,6 +46,14 @@ index eca69c0a..b25b6b9a 100644
  	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  ];
+diff --git a/build/lib/osProxyResolver.ts b/build/lib/osProxyResolver.ts
+index c288474e..9556185e 100644
+--- a/build/lib/osProxyResolver.ts
++++ b/build/lib/osProxyResolver.ts
+@@ -25,2 +25,3 @@ function toOSProxyResolverPlatform(platform: string, arch: string): string | und
+ 				case 'ppc64le': return 'linux-ppc64le-gnu';
++				case 'riscv64': return 'linux-riscv64-gnu';
+ 				case 'x64': return 'linux-x64-gnu';
 diff --git a/build/linux/debian/calculate-deps.ts b/build/linux/debian/calculate-deps.ts
 index 1eb77249..f65788a9 100644
 --- a/build/linux/debian/calculate-deps.ts
