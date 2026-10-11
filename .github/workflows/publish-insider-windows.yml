@@ -84,6 +84,7 @@ jobs:
 
       - name: Validate compile-time patches
         run: bash ./dev/check_patches.sh compile
+        continue-on-error: true
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Build

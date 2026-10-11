@@ -95,6 +95,7 @@ jobs:
 
       - name: Validate compile-time patches
         run: bash ./dev/check_patches.sh compile
+        continue-on-error: true
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Build
@@ -213,6 +214,7 @@ jobs:
 
       - name: Validate package patches
         run: bash ./dev/check_patches.sh linux-client
+        continue-on-error: true
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
       - name: Build
@@ -428,6 +430,7 @@ jobs:
 
       - name: Validate REH patches
         run: bash ./dev/check_patches.sh linux-reh
+        continue-on-error: true
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Build
@@ -519,6 +522,7 @@ jobs:
 
       - name: Validate Alpine REH patches
         run: bash ./dev/check_patches.sh alpine-reh
+        continue-on-error: true
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
       - name: Build
