@@ -188,6 +188,9 @@ The minimal version is limited by the core component Electron, you may want to c
 
 ## <a id="previously-supported-platforms"></a>Previously Supported Platforms
 
+- Windows 32bits:
+   - Latest available: [v1.83.1.23285](https://github.com/VSCodium/vscodium/releases/tag/1.83.1.23285).
+
 ## <a id="thanks"></a>Special thanks
 
 <table>
