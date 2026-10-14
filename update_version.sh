@@ -137,7 +137,7 @@ updateLatestVersion() {
   echo "${JSON_DATA}"
 }
 
-# init versions repo for later commiting + pushing the json file to it
+# init versions repo for later committing + pushing the json file to it
 # thank you https://www.vinaygopinath.me/blog/tech/commit-to-master-branch-on-github-using-travis-ci/
 git clone "https://${GH_HOST}/${VERSIONS_REPOSITORY}.git"
 cd "${REPOSITORY_NAME}" || { echo "'${REPOSITORY_NAME}' dir not found"; exit 1; }

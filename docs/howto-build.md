@@ -6,7 +6,7 @@
 
 - [Dependencies](#dependencies)
    - [Linux](#dependencies-linux)
-   - [MacOS](#dependencies-macos)
+   - [macOS](#dependencies-macos)
    - [Windows](#dependencies-windows)
 - [Build for Development](#build-dev)
 - [Build for CI/Downstream](#build-ci)
@@ -40,7 +40,7 @@
 - imagemagick (for AppImage)
 - snapcraft
 
-### <a id="dependencies-macos"></a>MacOS
+### <a id="dependencies-macos"></a>macOS
 
 see [the common dependencies](#dependencies)
 
@@ -120,7 +120,7 @@ If any command is not found, add its install directory to your `PATH` via **Syst
 A build helper script can be found at `dev/build.sh`.
 
 - Linux: `./dev/build.sh`
-- MacOS: `./dev/build.sh`
+- macOS: `./dev/build.sh`
 - Windows (Git Bash — **recommended**): `"C:\Program Files\Git\bin\bash.exe" ./dev/build.sh`
 - Windows (PowerShell): `powershell -ExecutionPolicy ByPass -File .\dev\build.ps1`
 
@@ -130,7 +130,7 @@ A build helper script can be found at `dev/build.sh`.
 
 The `insider` version can be built with `./dev/build.sh -i` on the `insider` branch.
 
-You can try the latest version with the command `./dev/build.sh -il` but the patches might not be up to date.
+You can try the latest version with the command `./dev/build.sh -il` but the patches might not be up-to-date.
 
 ### Flags
 
@@ -166,7 +166,7 @@ To go further, you should look at how we build it:
 - macOS: https://github.com/VSCodium/vscodium/blob/master/.github/workflows/stable-macos.yml
 - Windows: https://github.com/VSCodium/vscodium/blob/master/.github/workflows/stable-windows.yml
 
-The `./dev/build.sh` script is for development purpose and must be avoided for a packaging purpose.
+The `./dev/build.sh` script is for development purposes and must be avoided for packaging purposes.
 
 ## <a id="build-snap"></a>Build Snap
 
@@ -190,7 +190,7 @@ review-tools.snap-review --allow-classic codium*.snap
 
 - run `./dev/build.sh`, if a patch is failing then,
 - run `./dev/update_patches.sh`
-- when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
+- when the script pauses at `Press any key when the conflicts have been resolved...`, open the `vscode` directory in **VSCodium**
 - fix all the `*.rej` files
 - run `npm run watch`
 - run `./script/code.sh` until everything is ok
@@ -200,7 +200,7 @@ review-tools.snap-review --allow-classic codium*.snap
 
 - run `./dev/build.sh`, if a patch is failing then,
 - run `./dev/patch.sh <name>.patch` where `<name>.patch` is the failed patch
-- open `vscode` directory in a new **VSCodium**'s window
+- open the `vscode` directory in a new **VSCodium** window
 - fix all the `*.rej` files
 - run `npm run watch`
 - run `./script/code.sh` until everything is ok

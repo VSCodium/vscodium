@@ -19,7 +19,7 @@
    - [Marketplace](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#marketplace)
    - [How to use the OpenVSX Marketplace](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#howto-openvsx-marketplace)
    - [How to use a different extension gallery](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#howto-switch-marketplace)
-   - [How to self host your own extension gallery](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#howto-selfhost-marketplace)
+   - [How to self-host your own extension gallery](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#howto-selfhost-marketplace)
    - [Visual Studio Marketplace](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#visual-studio-marketplace)
    - [Proprietary Debugging Tools](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#proprietary-debugging-tools)
    - [Proprietary Extensions](https://github.com/VSCodium/vscodium/blob/master/docs/extensions.md#proprietary-extensions)

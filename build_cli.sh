@@ -45,7 +45,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 elif [[ "${OS_NAME}" == "windows" ]]; then
   if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
     VSCODE_CLI_TARGET="aarch64-pc-windows-msvc"
-    export VSCODE_CLI_RUST="-C target-feature=+crt-static -Clink-args=/guard:cf -Clink-args=/CETCOMPAT:NO"
+    export VSCODE_CLI_RUSTFLAGS="-C target-feature=+crt-static -Clink-args=/guard:cf -Clink-args=/CETCOMPAT:NO"
   else
     VSCODE_CLI_TARGET="x86_64-pc-windows-msvc"
     export VSCODE_CLI_RUSTFLAGS="-Ctarget-feature=+crt-static -Clink-args=/guard:cf -Clink-args=/CETCOMPAT"

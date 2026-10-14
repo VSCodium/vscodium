@@ -30,7 +30,7 @@ The following extensions are functional replacements for incompatible extensions
 
 ### <a id="cc"></a>C/C++
 
-- [clangd](https://open-vsx.org/extension/llvm-vs-code-extensions/vscode-clangd) for full featured editing (including IntelliSense)
+- [clangd](https://open-vsx.org/extension/llvm-vs-code-extensions/vscode-clangd) for full-featured editing (including IntelliSense)
 - [Native Debug](https://open-vsx.org/extension/webfreak/debug) for Debugging with GDB + LLDB
    Note that there are many working debugging extensions and specialized ones including for microcontrollers.
 

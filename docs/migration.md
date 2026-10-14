@@ -11,7 +11,7 @@
 
 VSCodium (and a freshly cloned copy of vscode built from source) stores its extension files in `~/.vscode-oss`. So if you currently have Visual Studio Code installed, your extensions won't automatically populate. You can copy the `extensions` from `~/.vscode/extensions` to `~/.vscode-oss/extensions`.
 
-Visual Studio Code stores its `keybindings.json` and `settings.json` file in these locations:
+Visual Studio Code stores its `keybindings.json` and `settings.json` files in these locations:
 
 - __Windows__: `%APPDATA%\Code\User`
 - __macOS__: `$HOME/Library/Application Support/Code/User`
@@ -33,7 +33,7 @@ To copy your settings manually:
 
 The [**Sync Settings**](https://github.com/zokugun/vscode-sync-settings) extension can simplify the migration process by enabling synchronization of settings, keybindings, extensions, and more between Visual Studio Code and VSCodium. Its author is the main maintainer of VSCodium ;)
 
-The extension is available in the Visual Studio Marketplace, OpenVSX or directly in its GitHub repository.
+The extension is available in the Visual Studio Marketplace, Open VSX, or directly in its GitHub repository.
 
 ### Steps:
 
