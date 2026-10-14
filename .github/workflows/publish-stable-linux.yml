@@ -125,7 +125,8 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: patch-check-compile-linux-stable
-          path: ./.patch-check/
+          path: ./.patch-check/*.log
+          include-hidden-files: true
           retention-days: 3
         if: always() && env.SHOULD_BUILD == 'yes'
 
@@ -264,7 +265,8 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: patch-check-linux-bin-stable-${{ matrix.vscode_arch }}
-          path: ./.patch-check/
+          path: ./.patch-check/*.log
+          include-hidden-files: true
           retention-days: 3
         if: always() && env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
@@ -451,7 +453,8 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: patch-check-linux-reh-stable-${{ matrix.vscode_arch }}
-          path: ./.patch-check/
+          path: ./.patch-check/*.log
+          include-hidden-files: true
           retention-days: 3
         if: always() && env.DISABLED != 'yes'
 
@@ -543,7 +546,8 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: patch-check-alpine-reh-stable-${{ matrix.vscode_arch }}
-          path: ./.patch-check/
+          path: ./.patch-check/*.log
+          include-hidden-files: true
           retention-days: 3
         if: always() && env.DISABLED != 'yes'
 
