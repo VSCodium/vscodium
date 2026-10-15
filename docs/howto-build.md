@@ -190,6 +190,7 @@ review-tools.snap-review --allow-classic codium*.snap
 
 - run `./dev/build.sh`, if a patch is failing then,
 - run `./dev/update_patches.sh`
+- GitHub Actions now runs advisory `bash ./dev/check_patches.sh <scope>` checks before build/package steps to report malformed or stale patches early
 - when the script pauses at `Press any key when the conflict have been resolved...`, open `vscode` directory in **VSCodium**
 - fix all the `*.rej` files
 - run `npm run watch`
@@ -200,11 +201,23 @@ review-tools.snap-review --allow-classic codium*.snap
 
 - run `./dev/build.sh`, if a patch is failing then,
 - run `./dev/patch.sh <name>.patch` where `<name>.patch` is the failed patch
+- use this local script when CI patch validation reports a malformed patch or an apply failure that needs manual regeneration
 - open `vscode` directory in a new **VSCodium**'s window
 - fix all the `*.rej` files
 - run `npm run watch`
 - run `./script/code.sh` until everything is ok
 - go back to the command line running `./dev/patch.sh`, press `enter` to validate the changes and it will update the patch
+
+### Advisory patch validation in GitHub Actions
+
+- `OS_NAME` and `VSCODE_QUALITY` are required for `compile`; package scopes infer `OS_NAME` automatically
+- `bash ./dev/check_patches.sh compile` validates compile-time patches against a fresh `vscode` checkout
+- `bash ./dev/check_patches.sh linux-client` validates Linux client packaging patches against `vscode.tar.gz`
+- `bash ./dev/check_patches.sh linux-reh` validates Linux REH packaging patches against `vscode.tar.gz`
+- `bash ./dev/check_patches.sh alpine-reh` validates Alpine REH packaging patches against `vscode.tar.gz`
+- example: `export OS_NAME=linux VSCODE_QUALITY=stable && bash ./dev/check_patches.sh compile`
+- workflows upload `.patch-check/` logs as artifacts so maintainers can inspect failures without reproducing them locally first
+- validation steps use `continue-on-error`; the normal build/package steps still decide whether the workflow ultimately succeeds
 
 ### <a id="icons"></a>icons/build_icons.sh
 

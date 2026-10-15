@@ -1,0 +1,11 @@
+diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
+--- a/build/gulpfile.vscode.ts
++++ b/build/gulpfile.vscode.ts
+@@ -218,3 +218,6 @@
+ 		ensureOSProxyResolverPlatformPackage(platform, arch);
+-		const osProxyResolverPlatformPackage = gulp.src(getOSProxyResolverPlatformFiles(platform, arch), { base: '.', dot: true, allowEmpty: true });
++		const osProxyResolverPlatformFiles = getOSProxyResolverPlatformFiles(platform, arch);
++		const osProxyResolverPlatformPackage = osProxyResolverPlatformFiles.length
++			? gulp.src(osProxyResolverPlatformFiles, { base: '.', dot: true, allowEmpty: true })
++			: es.readArray([]);
+ 		const deps = es.merge(cleanedDeps, osProxyResolverPlatformPackage)
