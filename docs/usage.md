@@ -54,11 +54,18 @@ $ defaults write com.vscodium ApplePressAndHoldEnabled -bool false
 
 ## <a id="terminal-support"></a>How do I open VSCodium from the terminal?
 
-For macOS and Windows:
+For Windows:
+- Select the option "Add to PATH" during the installer process.
+- If on Windows and installed using `winget` package manager, `codium` has been installed in your `PATH`.
+
+For macOS:
 - Go to the command palette (View | Command Palette...)
 - Choose `Shell command: Install 'codium' command in PATH`.
 
 ![](https://user-images.githubusercontent.com/2707340/60140295-18338a00-9766-11e9-8fda-b525b6f15c13.png)
+
+For Linux:
+- When installed with a package manager, `codium` has been installed in your `PATH`.
 
 This allows you to open files or directories in VSCodium directly from your terminal:
 
@@ -68,8 +75,6 @@ This allows you to open files or directories in VSCodium directly from your term
 ```
 
 Feel free to alias this command to something easier to type in your shell profile (e.g. `alias code=codium`).
-
-On Linux, when installed with a package manager, `codium` has been installed in your `PATH`.
 
 ### <a id="from-linux-targz"></a>From Linux .tar.gz
 
