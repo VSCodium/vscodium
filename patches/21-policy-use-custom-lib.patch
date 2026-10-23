@@ -65,32 +65,32 @@ index bd5958cb..1dfe4407 100644
 +		<string>!!ORG_NAME!!</string>
  		<key>PayloadType</key>
 diff --git a/eslint.config.js b/eslint.config.js
-index 337df22f..d318ed0d 100644
+index 97404d03..4fcda016 100644
 --- a/eslint.config.js
 +++ b/eslint.config.js
-@@ -1572,3 +1572,3 @@ export default defineConfig(
+@@ -1646,3 +1646,3 @@ export default defineConfig(
  						'@vscode/native-watchdog',
 -						'@vscode/policy-watcher',
 +						'@vscodium/policy-watcher',
  						'@vscode/proxy-agent',
 diff --git a/package-lock.json b/package-lock.json
-index 634f79da..7254d078 100644
+index baa44082..a3505e3f 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -33,3 +33,2 @@
          "@vscode/os-proxy-resolver": "^0.4.0",
--        "@vscode/policy-watcher": "^1.4.0",
+-        "@vscode/policy-watcher": "^1.6.0",
          "@vscode/proxy-agent": "^0.45.0",
 @@ -46,2 +45,3 @@
          "@vscodium/native-keymap": "3.3.9-260952",
-+        "@vscodium/policy-watcher": "1.4.0-265896",
++        "@vscodium/policy-watcher": "1.6.0-267122",
          "@xterm/addon-clipboard": "^0.3.0-beta.303",
-@@ -4957,22 +4957,2 @@
+@@ -4969,22 +4969,2 @@
      },
 -    "node_modules/@vscode/policy-watcher": {
--      "version": "1.4.0",
--      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.4.0.tgz",
--      "integrity": "sha512-QKTLV/UtV0HH5AJELfN5D3Jcxj2hB9CYT9GtG334I8bU5TdusaSGYSpDjumZBGWO2YxwVYpBNytA7mq/I3ZtzA==",
+-      "version": "1.6.0",
+-      "resolved": "https://registry.npmjs.org/@vscode/policy-watcher/-/policy-watcher-1.6.0.tgz",
+-      "integrity": "sha512-v7ucf7atz36xRpo4EvqgIZrf0uXKYkmpLQzmT+dzS5M+quMYW8d5TKBKetUGvxOEhKWuwHeR7plAzI4I8K5vyQ==",
 -      "hasInstallScript": true,
 -      "license": "MIT",
 -      "dependencies": {
@@ -108,12 +108,12 @@ index 634f79da..7254d078 100644
 -      }
 -    },
      "node_modules/@vscode/proxy-agent": {
-@@ -5389,2 +5369,22 @@
+@@ -5401,2 +5381,22 @@
      },
 +    "node_modules/@vscodium/policy-watcher": {
-+      "version": "1.4.0-265896",
-+      "resolved": "https://registry.npmjs.org/@vscodium/policy-watcher/-/policy-watcher-1.4.0-265896.tgz",
-+      "integrity": "sha512-zbMusW4ZzhjKuh0uId2eb/0ihC3cZudqXBI4vEQpalvu0EjOgNxczY1G2lF2arwqSCgnj+TiLJ98WTt1zxH8bQ==",
++      "version": "1.6.0-267122",
++      "resolved": "https://registry.npmjs.org/@vscodium/policy-watcher/-/policy-watcher-1.6.0-267122.tgz",
++      "integrity": "sha512-Oba0plcORm3yW3QauszF/Po9jkPokRhS3LluVJxiLeajX+7YEUKVqRaZixFFi0Q/ntCAfj87ei00U3InOn1DWQ==",
 +      "hasInstallScript": true,
 +      "license": "MIT",
 +      "dependencies": {
@@ -132,18 +132,18 @@ index 634f79da..7254d078 100644
 +    },
      "node_modules/@webgpu/types": {
 diff --git a/package.json b/package.json
-index aeda1991..c6b1c3a5 100644
+index 50cbf362..54d63448 100644
 --- a/package.json
 +++ b/package.json
-@@ -120,3 +120,3 @@
+@@ -123,3 +123,3 @@
      "@vscode/os-proxy-resolver": "^0.4.0",
--    "@vscode/policy-watcher": "^1.4.0",
-+    "@vscodium/policy-watcher": "1.4.0-265896",
+-    "@vscode/policy-watcher": "^1.6.0",
++    "@vscodium/policy-watcher": "1.6.0-267122",
      "@vscode/proxy-agent": "^0.45.0",
-@@ -310,3 +310,3 @@
+@@ -315,3 +315,3 @@
      "@vscode/deviceid@0.1.5": true,
--    "@vscode/policy-watcher@1.4.0": true,
-+    "@vscodium/policy-watcher@1.4.0-265896": true,
+-    "@vscode/policy-watcher@1.6.0": true,
++    "@vscodium/policy-watcher@1.6.0-267122": true,
      "@vscode/spdlog@0.15.8": true,
 diff --git a/src/vs/base/test/node/uri.perf.data.txt b/src/vs/base/test/node/uri.perf.data.txt
 index ee0a24b5..881ce36a 100644
@@ -300,7 +300,7 @@ index 6039dbb7..978be1b4 100644
 +				this.watcher.value = createWatcher('!!ORG_NAME!!', this.productName, policyDefinitions, update => {
  					this._onDidPolicyChange(update);
 diff --git a/src/vs/platform/policy/test/node/nativeManagedSettingsService.test.ts b/src/vs/platform/policy/test/node/nativeManagedSettingsService.test.ts
-index a17bb273..8b7a4334 100644
+index bfd9f77d..d1b057e8 100644
 --- a/src/vs/platform/policy/test/node/nativeManagedSettingsService.test.ts
 +++ b/src/vs/platform/policy/test/node/nativeManagedSettingsService.test.ts
 @@ -24,3 +24,3 @@ suite('NativeManagedSettingsService', () => {
@@ -313,22 +313,22 @@ index a17bb273..8b7a4334 100644
 -		const watcherFactory: NativePolicyWatcherFactory = (_productName, policies, callback) => {
 +		const watcherFactory: NativePolicyWatcherFactory = (_venderName, _productName, policies, callback) => {
  			watchedSettings = policies;
-@@ -114,3 +114,3 @@ suite('NativeManagedSettingsService', () => {
+@@ -188,3 +188,3 @@ suite('NativeManagedSettingsService', () => {
  		let disposeCount = 0;
 -		const watcherFactory: NativePolicyWatcherFactory = (_productName, _policies, callback) => {
 +		const watcherFactory: NativePolicyWatcherFactory = (_venderName, _productName, _policies, callback) => {
  			onDidChange = callback;
-@@ -139,3 +139,3 @@ suite('NativeManagedSettingsService', () => {
+@@ -213,3 +213,3 @@ suite('NativeManagedSettingsService', () => {
  		let watcherCreateCount = 0;
 -		const watcherFactory: NativePolicyWatcherFactory = (_productName, _policies, callback) => {
 +		const watcherFactory: NativePolicyWatcherFactory = (_venderName, _productName, _policies, callback) => {
  			watcherCreateCount++;
-@@ -177,3 +177,3 @@ suite('NativeManagedSettingsService', () => {
+@@ -251,3 +251,3 @@ suite('NativeManagedSettingsService', () => {
  		let watcherCreateCount = 0;
 -		const watcherFactory: NativePolicyWatcherFactory = (_productName, _policies, callback) => {
 +		const watcherFactory: NativePolicyWatcherFactory = (_venderName, _productName, _policies, callback) => {
  			watcherCreateCount++;
-@@ -201,3 +201,3 @@ suite('NativeManagedSettingsService', () => {
+@@ -275,3 +275,3 @@ suite('NativeManagedSettingsService', () => {
  		const otherManagedSettingKey = 'permissions.otherManagedSetting';
 -		const watcherFactory: NativePolicyWatcherFactory = (_productName, _policies, callback) => {
 +		const watcherFactory: NativePolicyWatcherFactory = (_venderName, _productName, _policies, callback) => {

@@ -16,10 +16,10 @@ index 51149993..f39ddd3a 100644
 +!@vscodium/vsce-sign/bin/**
  
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 95ae1790..71f5875a 100644
+index accd13df..bb7e140c 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -288,3 +288,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -280,3 +280,3 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  				'**/*.wasm',
 -				'**/@vscode/vsce-sign/bin/*',
 +				'**/@vscodium/vsce-sign/bin/*',
@@ -39,7 +39,7 @@ index 10bd9fbd..3df97e7a 100644
 +	const vsce = require('@vscodium/vsce') as typeof import('@vscodium/vsce');
  	const result = es.through();
 diff --git a/build/package-lock.json b/build/package-lock.json
-index 0415f1a4..0069c9d2 100644
+index eb1fe732..4763d11d 100644
 --- a/build/package-lock.json
 +++ b/build/package-lock.json
 @@ -50,3 +50,3 @@
@@ -80,9 +80,9 @@ index 0415f1a4..0069c9d2 100644
 +      }
 +    },
 +    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
-+      "version": "5.0.9",
-+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.9.tgz",
-+      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==",
++      "version": "5.0.12",
++      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.12.tgz",
++      "integrity": "sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==",
 +      "extraneous": true,
 +      "license": "MIT",
 +      "dependencies": {
@@ -289,17 +289,11 @@ index 0415f1a4..0069c9d2 100644
 -    "node_modules/@vscode/vsce/node_modules/balanced-match": {
 +    "node_modules/@vscodium/vsce/node_modules/balanced-match": {
        "version": "4.0.4",
-@@ -2137,6 +2063,6 @@
+@@ -2137,3 +2063,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/brace-expansion": {
--      "version": "5.0.9",
--      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.9.tgz",
--      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==",
 +    "node_modules/@vscodium/vsce/node_modules/brace-expansion": {
-+      "version": "5.0.12",
-+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.12.tgz",
-+      "integrity": "sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==",
-       "dev": true,
+       "version": "5.0.12",
 @@ -2150,3 +2076,3 @@
      },
 -    "node_modules/@vscode/vsce/node_modules/chalk": {
@@ -370,7 +364,7 @@ index 0415f1a4..0069c9d2 100644
 -      }
 -    },
      "node_modules/@xmldom/xmldom": {
-@@ -7214,2 +7132,12 @@
+@@ -7215,2 +7133,12 @@
      },
 +    "node_modules/yazl": {
 +      "version": "2.5.1",
@@ -384,7 +378,7 @@ index 0415f1a4..0069c9d2 100644
 +    },
      "node_modules/yocto-queue": {
 diff --git a/build/package.json b/build/package.json
-index 14e3bf60..bbfcfee6 100644
+index d1d0aad7..7f210e83 100644
 --- a/build/package.json
 +++ b/build/package.json
 @@ -44,3 +44,3 @@

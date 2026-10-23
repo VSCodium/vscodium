@@ -1,12 +1,13 @@
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index a27111b4..e8e245ed 100644
+index 20352a89..44c4157d 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
-@@ -34,2 +34,3 @@ import { readAgentSdkResults } from './agent-sdk/common.ts';
- import { getMxcExcludeFilter, getRipgrepExcludeFilter } from './lib/copilot.ts';
+@@ -34,3 +34,3 @@ import { getRipgrepExcludeFilter } from './lib/copilot.ts';
+ import { readAgentSdkResults } from './agent-sdk/common.ts';
+-
 +import { stripAuthenticodeSignature } from './win32/signature.ts';
  
-@@ -448,34 +449,2 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
+@@ -447,34 +447,2 @@ function packageTask(type: string, platform: string, arch: string, sourceFolderN
  
 -function hasAuthenticodeSignature(filePath: string): Promise<boolean> {
 -	return new Promise((resolve, reject) => {
@@ -41,18 +42,18 @@ index a27111b4..e8e245ed 100644
 -}
 -
  function patchWin32DependenciesTask(destinationFolderName: string) {
-@@ -503,3 +472,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -500,3 +468,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  				'version-string': {
 -					'CompanyName': 'Microsoft Corporation',
 +					'CompanyName': '!!ORG_NAME!!',
  					'FileDescription': productContents.nameLong,
-@@ -507,3 +476,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -504,3 +472,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  					'InternalName': basename,
 -					'LegalCopyright': 'Copyright (C) 2026 Microsoft. All rights reserved',
 +					'LegalCopyright': 'Copyright (C) 2026 !!ORG_NAME!!. All rights reserved',
  					'OriginalFilename': basename,
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 645da234..fad9979f 100644
+index f3a49ba9..3d0e3d89 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
 @@ -20,3 +20,2 @@ import product from '../product.json' with { type: 'json' };
@@ -63,7 +64,7 @@ index 645da234..fad9979f 100644
  import { generateNodeCompileCache, shouldGenerateNodeCompileCache } from './lib/nodeCompileCache.ts';
 +import { stripAuthenticodeSignature } from './win32/signature.ts';
  
-@@ -426,34 +426,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -418,34 +418,2 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  
 -function hasAuthenticodeSignature(filePath: string): Promise<boolean> {
 -	return new Promise((resolve, reject) => {
@@ -98,16 +99,16 @@ index 645da234..fad9979f 100644
 -}
 -
  function patchWin32DependenciesTask(destinationFolderName: string) {
-@@ -480,2 +448,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -470,2 +438,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  			await stripAuthenticodeSignature(fullPath);
 +
  			await rcedit(fullPath, {
-@@ -483,3 +452,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -473,3 +442,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  				'version-string': {
 -					'CompanyName': 'Microsoft Corporation',
 +					'CompanyName': '!!ORG_NAME!!',
  					'FileDescription': product.nameLong,
-@@ -487,3 +456,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
+@@ -477,3 +446,3 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
  					'InternalName': basename,
 -					'LegalCopyright': 'Copyright (C) 2026 Microsoft. All rights reserved',
 +					'LegalCopyright': 'Copyright (C) 2026 !!ORG_NAME!!. All rights reserved',

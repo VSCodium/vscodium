@@ -1,13 +1,13 @@
 diff --git a/build/checksums/nodejs.txt b/build/checksums/nodejs.txt
-index 65360966..9e13108e 100644
+index 105115f0..88423547 100644
 --- a/build/checksums/nodejs.txt
 +++ b/build/checksums/nodejs.txt
-@@ -4,2 +4,3 @@ bed7eea5325e1108f32ce5228ddd6a5f0f08a499ee42aa7442aea583702f6057  node-v24.21.0-
- 6e1db87ef58b8819e5d5402eff1536491b18edd8eb7bee5ef7897876e88dc5ff  node-v24.21.0-linux-x64.tar.gz
+@@ -5,2 +5,3 @@ d132557e7ee2b85af08b0c8c34338e65c6430f2238d01f727728ef42dc83b035  node-v24.22.1-
+ eb6728e77c576a35162c122c45ccadf224d89ff00abc8dae46cc2897c6002d7c  node-v24.22.1-linux-x64.tar.gz
 +65109e57e34279184efcca5888bc156cff3d24bf8eead73de16a28a313c18884  node-v24.18.0-linux-riscv64-local1.tar.gz
- dff59da18b6ffe1bf1ca99e1d2af4906080c481740619f5b5098c0fca28bd9b7  win-arm64/node.exe
+ 8bea91dc437fe01e7d92ef0efc6c9eaf654369aaba9b2d3e9841552ea7b95a00  win-arm64/node.exe
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index 17423aee..48ed20be 100644
+index 81e3d861..f3e5d0a1 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
 @@ -53,2 +53,3 @@ const BUILD_TARGETS = [
@@ -23,26 +23,26 @@ index 6d3d8991..b1d48278 100644
 +	{ platform: 'linux', arch: 'riscv64' },
  ];
 diff --git a/build/gulpfile.vscode.linux.ts b/build/gulpfile.vscode.linux.ts
-index b2c19667..9d2e5287 100644
+index 30f12247..81a3c8a9 100644
 --- a/build/gulpfile.vscode.linux.ts
 +++ b/build/gulpfile.vscode.linux.ts
-@@ -33,2 +33,3 @@ function getDebPackageArch(arch: string): string {
+@@ -36,2 +36,3 @@ function getDebPackageArch(arch: string): string {
  		case 'ppc64le': return 'ppc64el';
 +		case 'riscv64': return 'riscv64';
  		default: throw new Error(`Unknown arch: ${arch}`);
-@@ -145,2 +146,3 @@ function getRpmPackageArch(arch: string): string {
+@@ -150,2 +151,3 @@ function getRpmPackageArch(arch: string): string {
  		case 'ppc64le': return 'ppc64le';
 +		case 'riscv64': return 'riscv64';
  		default: throw new Error(`Unknown arch: ${arch}`);
-@@ -294,2 +296,3 @@ const BUILD_TARGETS = [
+@@ -300,2 +302,3 @@ const BUILD_TARGETS = [
  	{ arch: 'ppc64le' },
 +	{ arch: 'riscv64' },
  ];
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index eca69c0a..b25b6b9a 100644
+index 4d338b4d..07593121 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -593,2 +593,3 @@ const BUILD_TARGETS = [
+@@ -599,2 +599,3 @@ const BUILD_TARGETS = [
  	{ platform: 'linux', arch: 'ppc64le' },
 +	{ platform: 'linux', arch: 'riscv64' },
  ];
@@ -194,7 +194,7 @@ index 94028e34..c41cce72 100644
 +	riscv64) LDCONFIG_ARCH="RISC-V";;
  esac
 diff --git a/src/vs/platform/extensionManagement/common/extensionManagement.ts b/src/vs/platform/extensionManagement/common/extensionManagement.ts
-index c02adc94..df7b7404 100644
+index 8ddccea0..e1ec4b04 100644
 --- a/src/vs/platform/extensionManagement/common/extensionManagement.ts
 +++ b/src/vs/platform/extensionManagement/common/extensionManagement.ts
 @@ -51,2 +51,3 @@ export function TargetPlatformToString(targetPlatform: TargetPlatform) {

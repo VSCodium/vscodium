@@ -29,9 +29,14 @@ if [[ ! -d "${DIRECTORY}" ]]; then
   unzip "${FILE}" -d "${DIRECTORY}"
 fi
 
-BIN_PATH=$(find "${DIRECTORY}/bin" -type f ! -name "*.*")
+if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+  DLL_PATH=$(find "${DIRECTORY}" -type f -name "code-insiders")
+else
+  DLL_PATH=$(find "${DIRECTORY}" -type f -name "code")
+fi
 
-LINE="$( grep -E '^[[:space:]]*(export[[:space:]]+)?VERSIONFOLDER[[:space:]]*=' "$BIN_PATH" | tail -n1 )"
+LINE="$( grep -E '^[[:space:]]*(export[[:space:]]+)?VERSIONFOLDER[[:space:]]*=' "$DLL_PATH" | tail -n1 )"
+
 VERSIONFOLDER="${LINE#*=}"
 VERSIONFOLDER="${VERSIONFOLDER#\"}"
 VERSIONFOLDER="${VERSIONFOLDER%\"}"
