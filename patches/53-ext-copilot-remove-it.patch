@@ -1953,6 +1953,263 @@ index a38d69ac..244519f7 100644
 -			disposables.add(agentConfigurationService.onDidRootConfigChange(registerCodexIfEnabled));
 -		}
  		completionTriggerCharacters = runtimeServices.completions.triggerCharacters;
+diff --git a/src/vs/platform/agentHost/node/agentHostPullRequestOperationHandler.ts b/src/vs/platform/agentHost/node/agentHostPullRequestOperationHandler.ts
+index a62462b0..921b3b79 100644
+--- a/src/vs/platform/agentHost/node/agentHostPullRequestOperationHandler.ts
++++ b/src/vs/platform/agentHost/node/agentHostPullRequestOperationHandler.ts
+@@ -9,3 +9,2 @@ import { DisposableStore } from '../../../base/common/lifecycle.js';
+ import { equals } from '../../../base/common/objects.js';
+-import { isEqualOrParent, relativePath } from '../../../base/common/resources.js';
+ import { URI } from '../../../base/common/uri.js';
+@@ -16,3 +15,3 @@ import { parseChangesetUri, parseFolderChangesetOwnerUri } from '../common/chang
+ import { AHP_AUTH_REQUIRED, AHP_SESSION_NOT_FOUND, JsonRpcErrorCodes, ProtocolError } from '../common/state/sessionProtocol.js';
+-import { readFolderGitHubState, readSessionGitState, type ChangesetOperationFollowUp, type ISessionFileDiff, type ISessionWithDefaultChat } from '../common/state/sessionState.js';
++import { readFolderGitHubState, readSessionGitState, type ChangesetOperationFollowUp, type ISessionWithDefaultChat } from '../common/state/sessionState.js';
+ import { ILogService } from '../../log/common/log.js';
+@@ -26,5 +25,2 @@ import { IAgentHostGitHubService } from './agentHostGitHubService.js';
+ import type { InvokeChangesetOperationParams, InvokeChangesetOperationResult } from '../common/state/protocol/channels-changeset/commands.js';
+-import { type ICopilotUtilityChatMessage } from './shared/copilotApiService.js';
+-import { AgentHostUtilityModelUnavailableError, AgentHostUtilityModelUnavailableReason, IAgentHostUtilityModelService, type IAgentHostUtilityModelContext } from './agentHostUtilityModelService.js';
+-import { buildConversationContext } from '../common/agentHostConversationContext.js';
+ import { IAgentBranchNameGenerator } from './shared/agentBranchNameGenerator.js';
+@@ -40,16 +36,2 @@ import { findPullRequestByHeadBranch } from './agentHostPullRequestAssociationRe
+ 
+-/**
+- * Soft upper bound, in characters, for the conversation context fed to the
+- * utility model when generating a PR title and description. Sized to stay
+- * within the small model's context window while leaving room for the changed
+- * file summary and prompt scaffolding.
+- */
+-const MAX_PR_CONVERSATION_CONTEXT_CHARS = 12_000;
+-
+-/**
+- * Soft upper bound, in characters, for the changed-file summary fed to the
+- * utility model when generating a PR title and description.
+- */
+-const MAX_PR_CHANGE_SUMMARY_CHARS = 4_000;
+-
+ type PullRequestCreationConfiguration = Pick<IPullRequestCreateOptions, 'draft' | 'agentMerge' | 'agentMergeOptions' | 'autoMergeMethod'>;
+@@ -113,3 +95,2 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
+ 		@IAgentHostGitHubEndpointService private readonly _gitHubEndpointService: IAgentHostGitHubEndpointService,
+-		@IAgentHostUtilityModelService private readonly _utilityModelService: IAgentHostUtilityModelService,
+ 		@IAgentBranchNameGenerator private readonly _branchNameGenerator: IAgentBranchNameGenerator,
+@@ -129,3 +110,3 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
+ 			const expectedContext = readPullRequestValidationMeta(params);
+-			const { sessionUri, sourceUri, ownerUri, conversationState, conversationChat, workingDirectory, gitHubState, branchName, baseBranchName, preparationContext } = await this._resolveContext(params, token, expectedContext, source);
++			const { sessionUri, ownerUri, gitHubState, branchName, baseBranchName, preparationContext } = await this._resolveContext(params, token, expectedContext, source);
+ 			if (expectedContext) {
+@@ -142,3 +123,2 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
+ 			this._throwIfCancelled(token);
+-			const branchChanges = await this._getBranchChanges(workingDirectory, sourceUri, baseBranchName, token);
+ 			let title = '';
+@@ -146,8 +126,2 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
+ 			let generationError: string | undefined;
+-			try {
+-				({ title, description } = await this._generateTitleAndDescription(conversationState, { session: sessionUri, chat: conversationChat, credentialSource: source }, workingDirectory, branchName, baseBranchName, branchChanges, signal, token));
+-			} catch (err) {
+-				this._throwIfCancelled(token);
+-				generationError = this._reportGenerationError(err);
+-			}
+ 			this._throwIfCancelled(token);
+@@ -356,3 +330,3 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
+ 		const context = await this._resolveContext(params, token, submitted?.expectedContext, source);
+-		const { sessionUri, sourceUri, ownerUri, sessionState, conversationState, conversationChat, workingDirectory, gitHubState, effectiveBaseBranch, baseBranchName, authToken } = context;
++		const { sessionUri, ownerUri, sessionState, conversationState, conversationChat, workingDirectory, gitHubState, effectiveBaseBranch, baseBranchName, authToken } = context;
+ 		let { gitState, branchName } = context;
+@@ -414,4 +388,2 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
+ 
+-		const branchChanges = await this._getBranchChanges(workingDirectory, sourceUri, baseBranchName, token);
+-
+ 		const githubHeadOwner = gitState?.githubHeadOwner;
+@@ -444,10 +416,2 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
+ 		let generated: { title: string; description: string } | undefined;
+-		if (!submitted) {
+-			try {
+-				generated = await this._generateTitleAndDescription(conversationState, { session: sessionUri, chat: conversationChat, credentialSource: source }, workingDirectory, branchName, baseBranchName, branchChanges, signal, token);
+-			} catch (err) {
+-				this._throwIfCancelled(token);
+-				this._reportGenerationError(err);
+-			}
+-		}
+ 		const title = submitted?.title ?? generated?.title ?? this._formatTitle(branchName);
+@@ -488,14 +452,2 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
+ 
+-	private async _getBranchChanges(workingDirectory: URI, sessionUri: string, baseBranchName: string, token: CancellationToken): Promise<readonly ISessionFileDiff[]> {
+-		const branchChanges = await this._gitService.computeSessionFileDiffs(workingDirectory, { sessionUri, baseBranch: baseBranchName });
+-		this._throwIfCancelled(token);
+-		if (branchChanges === undefined) {
+-			throw new ProtocolError(JsonRpcErrorCodes.InternalError, localize('agentHost.changeset.pr.computeChangesFailed', "Could not compute branch changes to create a pull request."));
+-		}
+-		if (branchChanges.length === 0) {
+-			throw new ProtocolError(JsonRpcErrorCodes.InternalError, localize('agentHost.changeset.pr.noChanges', "There are no branch changes to create a pull request for."));
+-		}
+-		return branchChanges;
+-	}
+-
+ 	private _isAgentMergeEnabled(): boolean {
+@@ -674,162 +626,2 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
+ 
+-	/** Generates from bounded conversation and file context; callers decide how to surface failures. */
+-	private async _generateTitleAndDescription(
+-		sessionState: ISessionWithDefaultChat,
+-		modelContext: IAgentHostUtilityModelContext,
+-		workingDirectory: URI,
+-		branchName: string,
+-		base: string,
+-		branchChanges: readonly ISessionFileDiff[],
+-		signal: AbortSignal,
+-		token: CancellationToken,
+-	): Promise<{ title: string; description: string }> {
+-		const conversation = buildConversationContext(sessionState.turns, { maxChars: MAX_PR_CONVERSATION_CONTEXT_CHARS });
+-		const changeSummary = this._summarizeDiffsForPrompt(branchChanges, workingDirectory);
+-		if (!conversation && !changeSummary) {
+-			throw new Error(localize('agentHost.changeset.pr.generationNoContext', "There is no conversation or change context to generate a pull request title and description."));
+-		}
+-
+-		let raw: string;
+-		try {
+-			raw = await this._utilityModelService.chatCompletion(modelContext, {
+-				messages: this._buildTitleAndDescriptionPrompt(branchName, base, conversation, changeSummary),
+-			}, { signal });
+-		} catch (err) {
+-			if (err instanceof AgentHostUtilityModelUnavailableError) {
+-				throw new Error(this._utilityModelUnavailableMessage(err.reason));
+-			}
+-			throw err;
+-		}
+-		this._throwIfCancelled(token);
+-		const generated = this._parseTitleAndDescription(raw);
+-		if (!generated) {
+-			throw new Error(localize('agentHost.changeset.pr.generationInvalidResponse', "The model did not return a pull request title and description. Enter them manually."));
+-		}
+-		return generated;
+-	}
+-
+-	private _utilityModelUnavailableMessage(reason: AgentHostUtilityModelUnavailableReason): string {
+-		switch (reason) {
+-			case AgentHostUtilityModelUnavailableReason.CopilotSignInRequired:
+-				return localize('agentHost.changeset.pr.generationAuthRequired', "Sign in to Copilot to generate a pull request title and description, or enter them manually.");
+-			case AgentHostUtilityModelUnavailableReason.NotConfigured:
+-				return localize('agentHost.changeset.pr.generationUtilityModelNotConfigured', "No utility model is configured for the selected BYOK model. Configure {0} or {1} to generate a pull request title and description, or enter them manually.", 'chat.utilitySmallModel', 'chat.byokUtilityModelDefault');
+-			case AgentHostUtilityModelUnavailableReason.ByokModelUnavailable:
+-				return localize('agentHost.changeset.pr.generationByokModelUnavailable', "The BYOK model used to generate a pull request title and description is unavailable. Enter them manually.");
+-		}
+-	}
+-
+-	private _reportGenerationError(error: unknown): string {
+-		const message = error instanceof Error ? error.message : String(error);
+-		this._logService.warn(`[AgentHostPullRequestOperationHandler] Failed to generate PR title and description: ${message}`);
+-		return message;
+-	}
+-
+-	private _buildTitleAndDescriptionPrompt(branchName: string, base: string, conversation: string | undefined, changeSummary: string): ICopilotUtilityChatMessage[] {
+-		const userSections: string[] = [
+-			`Branch: ${branchName}`,
+-			`Base branch: ${base}`,
+-		];
+-		if (changeSummary) {
+-			userSections.push(`Changed files:\n${changeSummary}`);
+-		}
+-		if (conversation) {
+-			userSections.push(`Conversation (the request that produced these changes):\n${conversation}`);
+-		}
+-		return [
+-			{
+-				role: 'system',
+-				content: [
+-					'You write clear, concise GitHub pull request titles and descriptions.',
+-					'The first line of your reply is the PR title: a short imperative summary under 72 characters, with no "Title:" prefix, no surrounding quotes, and no markdown heading.',
+-					'After the title, add one blank line, then write the PR description in GitHub-flavored markdown.',
+-					'Summarize what changed and why, grounded in the conversation and changed files. Use a short paragraph and/or bullet points.',
+-					'Do not invent changes that are not supported by the provided context, and do not wrap the whole reply in code fences.',
+-				].join(' '),
+-			},
+-			{
+-				role: 'user',
+-				content: userSections.join('\n\n'),
+-			},
+-		];
+-	}
+-
+-	private _summarizeDiffsForPrompt(diffs: readonly ISessionFileDiff[], workingDirectory: URI): string {
+-		const lines: string[] = [];
+-		let length = 0;
+-		for (const diff of diffs) {
+-			const before = diff.before?.uri;
+-			const after = diff.after?.uri;
+-			const path = after ?? before ?? '(unknown)';
+-			let kind = 'Edit';
+-			if (!before && after) {
+-				kind = 'Create';
+-			} else if (before && !after) {
+-				kind = 'Delete';
+-			} else if (before && after && before !== after) {
+-				kind = 'Rename';
+-			}
+-			const line = `- ${kind}: ${this._displayUri(path, workingDirectory)} (+${diff.diff?.added ?? 0} -${diff.diff?.removed ?? 0})`;
+-			lines.push(line);
+-			// `+ 1` accounts for the newline that joins this line to the previous one.
+-			length += line.length + (lines.length > 1 ? 1 : 0);
+-			if (length > MAX_PR_CHANGE_SUMMARY_CHARS) {
+-				lines.push('[file list truncated]');
+-				break;
+-			}
+-		}
+-		return lines.join('\n');
+-	}
+-
+-	/**
+-	 * Paths inside the repository are shown relative to it: absolute worktree
+-	 * paths repeat a long prefix on every line, so far fewer files fit in the
+-	 * bounded change summary and whole areas of the change could be cut off.
+-	 */
+-	private _displayUri(uri: string, workingDirectory: URI): string {
+-		try {
+-			const parsed = URI.parse(uri);
+-			const relative = isEqualOrParent(parsed, workingDirectory) ? relativePath(workingDirectory, parsed) : undefined;
+-			if (relative) {
+-				return relative;
+-			}
+-			return parsed.scheme === 'file' ? parsed.fsPath : parsed.path || uri;
+-		} catch {
+-			return uri;
+-		}
+-	}
+-
+-	private _parseTitleAndDescription(raw: string): { title: string; description: string } | undefined {
+-		let text = raw.trim().replace(/\r\n/g, '\n');
+-		const fenced = /^```(?:markdown|md|text)?\s*([\s\S]*?)\s*```$/i.exec(text);
+-		if (fenced) {
+-			text = fenced[1].trim();
+-		}
+-		if (!text) {
+-			return undefined;
+-		}
+-
+-		const lines = text.split('\n');
+-		let i = 0;
+-		while (i < lines.length && lines[i].trim().length === 0) {
+-			i++;
+-		}
+-		if (i >= lines.length) {
+-			return undefined;
+-		}
+-
+-		const title = lines[i].trim()
+-			.replace(/^#+\s*/, '')
+-			.replace(/^title:\s*/i, '')
+-			.trim()
+-			.replace(/^"(?<inner>.+)"$/, (_match, inner) => inner)
+-			.trim();
+-		if (!title) {
+-			return undefined;
+-		}
+-
+-		const description = lines.slice(i + 1).join('\n').trim().replace(/^description:\s*/i, '').trim();
+-		return { title, description };
+-	}
+-
+ 	private _createResult(created: PullRequestSummary, message: string): InvokeChangesetOperationResult {
 diff --git a/src/vs/platform/agentHost/node/agentHostServerMain.ts b/src/vs/platform/agentHost/node/agentHostServerMain.ts
 index 4db04a66..be84deb5 100644
 --- a/src/vs/platform/agentHost/node/agentHostServerMain.ts
@@ -2112,14 +2369,18 @@ index 4db04a66..be84deb5 100644
 -
  	// Keep every provider's model catalog fresh. Provider-owned refresh
 diff --git a/src/vs/platform/agentHost/node/agentHostServices.ts b/src/vs/platform/agentHost/node/agentHostServices.ts
-index 5c932c68..f612ee5d 100644
+index 5c932c68..6e6d6c60 100644
 --- a/src/vs/platform/agentHost/node/agentHostServices.ts
 +++ b/src/vs/platform/agentHost/node/agentHostServices.ts
 @@ -19,3 +19,2 @@ import { IAgentEditAttributionService } from '../common/fileEditAttribution.js';
  import { IAgentHostGitService } from '../common/agentHostGitService.js';
 -import { IAgentHostOTelService } from '../common/otel/agentHostOTelService.js';
  import { IAgentHostChangesetOperationService } from '../common/agentHostChangesetOperationService.js';
-@@ -36,10 +35,4 @@ import { AgentSdkDownloader, IAgentSdkDownloader } from './agentSdkDownloader.js
+@@ -29,3 +28,2 @@ import { IAgentHostReviewService } from '../common/agentHostReviewService.js';
+ import { IAgentHostSubscriptionService } from '../common/agentHostSubscriptionService.js';
+-import { CopilotApiService, ICopilotApiService } from './shared/copilotApiService.js';
+ import { AgentHostUtilityModelService, IAgentHostUtilityModelService } from './agentHostUtilityModelService.js';
+@@ -36,10 +34,4 @@ import { AgentSdkDownloader, IAgentSdkDownloader } from './agentSdkDownloader.js
  import { IByokLmBridgeRegistry } from './byokLmBridgeRegistry.js';
 -import { ClaudeAgentSdkService, IClaudeAgentSdkService } from './claude/claudeAgentSdkService.js';
 -import { ClaudeProxyService, IClaudeProxyService } from './claude/claudeProxyService.js';
@@ -2130,7 +2391,15 @@ index 5c932c68..f612ee5d 100644
  import { NetworkDiagnosticsService, INetworkDiagnosticsService } from './networkDiagnosticsService.js';
 -import { AgentHostOTelService } from './otel/agentHostOTelService.js';
  import { AgentHostChangesetOperationService } from './agentHostChangesetOperationService.js';
-@@ -161,15 +154,3 @@ export function registerAgentHostHostServices(services: ServiceCollection, input
+@@ -92,3 +84,2 @@ export interface IAgentHostCoreServiceInputs {
+ 	readonly gitHubServiceOptions: Omit<GitHubServiceOptions, 'credentialProvider'>;
+-	readonly copilotApiService?: ICopilotApiService;
+ 	readonly hostLaunchKind?: AgentHostLaunchKind;
+@@ -111,3 +102,2 @@ export function registerAgentHostCoreServices(services: ServiceCollection, input
+ 	services.set(IAgentHostGitHubService, new SyncDescriptor(AgentHostGitHubService, [inputs.gitHubServiceOptions]));
+-	services.set(ICopilotApiService, inputs.copilotApiService ?? new SyncDescriptor(CopilotApiService, [inputs.fetchFn]));
+ 	services.set(IAgentHostCustomizationEnablementService, new SyncDescriptor(AgentHostCustomizationEnablementService));
+@@ -161,15 +151,3 @@ export function registerAgentHostHostServices(services: ServiceCollection, input
  	services.set(IAgentSdkDownloader, new SyncDescriptor(AgentSdkDownloader));
 -	services.set(IClaudeAgentSdkService, new SyncDescriptor(ClaudeAgentSdkService));
 -	services.set(IClaudeProxyService, new SyncDescriptor(ClaudeProxyService));
@@ -2744,7 +3013,7 @@ index a9290cb3..b13fa5c4 100644
 -
  	/**
 diff --git a/src/vs/platform/agentHost/node/agentHostTelemetryReporter.ts b/src/vs/platform/agentHost/node/agentHostTelemetryReporter.ts
-index b8b451dd..2c1fe7f4 100644
+index b8b451dd..01c77fec 100644
 --- a/src/vs/platform/agentHost/node/agentHostTelemetryReporter.ts
 +++ b/src/vs/platform/agentHost/node/agentHostTelemetryReporter.ts
 @@ -8,9 +8,6 @@ import { ITelemetryService } from '../../telemetry/common/telemetry.js';
@@ -2763,8 +3032,10 @@ index b8b451dd..2c1fe7f4 100644
 -import { IAgentHostOTelService, NullAgentHostOTelService } from '../common/otel/agentHostOTelService.js';
 +import { isSubagentSession, type ISessionWithDefaultChat } from '../common/state/sessionState.js';
  import type { ToolInvokedResult } from './agentHostToolCallTracker.js';
-@@ -30,33 +26,3 @@ import { isAgentHostTelemetryService } from './agentHostTelemetryService.js';
- import { toCopilotTelemetryData } from './shared/copilotSkuTelemetry.js';
+@@ -28,35 +24,3 @@ import { AgentHostClientType } from '../common/agentHostClientInfo.js';
+ import { AgentHostClientConnectionKind, AgentHostLaunchKind, AgentHostTransportKind, type CodexModelProvider, type AgentHostProviderSendStage, type AgentHostTurnFailureStage, type AgentHostTurnSendStage, type IAgentHostClientTelemetryContext, type IAgentProviderTurnTelemetryContext, type ICodexAccountTelemetryContext } from '../common/agentHostTelemetry.js';
+-import { isAgentHostTelemetryService } from './agentHostTelemetryService.js';
+-import { toCopilotTelemetryData } from './shared/copilotSkuTelemetry.js';
 -import { getCodexAccountTelemetryData, type CodexAccountTelemetryClassification } from './codex/codexAccountTelemetry.js';
 -import { groupAgentHostProviderTimings, sanitizeAgentHostProviderTiming, type AgentHostProviderTimingMeasurement, type AgentHostProviderTimingMeasurements, type IAgentHostProviderTiming } from '../common/agentHostProviderTiming.js';
 -
@@ -2798,12 +3069,12 @@ index b8b451dd..2c1fe7f4 100644
 -};
 +import { type IAgentHostProviderTiming } from '../common/agentHostProviderTiming.js';
  
-@@ -405,3 +371,3 @@ export interface IAgentHostTurnCompletedEvent extends IAgentHostEventTelemetry,
+@@ -405,3 +369,3 @@ export interface IAgentHostTurnCompletedEvent extends IAgentHostEventTelemetry,
  
 -export type IAgentHostTurnCompletedClassification = IAgentHostEventClassification & CodexAccountTelemetryClassification & IAgentHostSubagentKindClassification & {
 +export type IAgentHostTurnCompletedClassification = IAgentHostEventClassification & IAgentHostSubagentKindClassification & {
  	codexModelProvider?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Bounded model provider actually used by a Codex turn: openai, copilot, other, or unknown.' };
-@@ -559,49 +525,2 @@ export interface IAgentHostTurnCompletedReport extends IAgentHostTurnAttributedR
+@@ -559,49 +523,2 @@ export interface IAgentHostTurnCompletedReport extends IAgentHostTurnAttributedR
  
 -interface IRequestTokenUsageEvent extends IAgentHostEventTelemetry, Omit<IAgentTokenUsageSummary, 'model'> {
 -	provider: string;
@@ -2853,7 +3124,7 @@ index b8b451dd..2c1fe7f4 100644
 -};
 -
  /**
-@@ -666,10 +585,2 @@ export type AgentHostTurnActivityTelemetryKind = 'none' | 'other' | typeof turnA
+@@ -666,10 +583,2 @@ export type AgentHostTurnActivityTelemetryKind = 'none' | 'other' | typeof turnA
  
 -function normalizeTurnActivityKind(activityKind: string): AgentHostTurnActivityTelemetryKind {
 -	if (activityKind === 'none') {
@@ -2864,12 +3135,12 @@ index b8b451dd..2c1fe7f4 100644
 -}
 -
  export interface IAgentHostTurnHungEvent extends IAgentHostEventTelemetry, Partial<ICodexAccountTelemetryContext> {
-@@ -703,3 +614,3 @@ export interface IAgentHostTurnHungEvent extends IAgentHostEventTelemetry, Parti
+@@ -703,3 +612,3 @@ export interface IAgentHostTurnHungEvent extends IAgentHostEventTelemetry, Parti
  
 -export type IAgentHostTurnHungClassification = IAgentHostEventClassification & CodexAccountTelemetryClassification & IAgentHostSubagentKindClassification & {
 +export type IAgentHostTurnHungClassification = IAgentHostEventClassification & IAgentHostSubagentKindClassification & {
  	provider: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The provider handling the hung agent host turn.' };
-@@ -1164,45 +1075,2 @@ export interface IAgentHostStalledToolCallCompletedReport extends IAgentHostTurn
+@@ -1164,45 +1073,2 @@ export interface IAgentHostStalledToolCallCompletedReport extends IAgentHostTurn
  
 -interface IProviderStageMeasurements {
 -	providerStageQueueMs?: number;
@@ -2915,16 +3186,23 @@ index b8b451dd..2c1fe7f4 100644
 -}
 -
  export function toTelemetryModel(model: string | undefined, modelTelemetryKind: AgentHostModelTelemetryKind | undefined): 'byokModel' | 'unknown' | TelemetryTrustedValue<string> | undefined {
-@@ -1240,3 +1108,2 @@ export class AgentHostTelemetryReporter {
+@@ -1240,3 +1106,2 @@ export class AgentHostTelemetryReporter {
  		@ITelemetryService private readonly _telemetryService: ITelemetryService,
 -		@IAgentHostOTelService private readonly _otelService: IAgentHostOTelService = NullAgentHostOTelService,
  	) { }
-@@ -1294,3 +1161,3 @@ export class AgentHostTelemetryReporter {
+@@ -1249,4 +1114,4 @@ export class AgentHostTelemetryReporter {
+ 
+-	private _copilotTelemetryContext(provider: string): IAgentHostCopilotSkuTelemetry {
+-		return isAgentHostTelemetryService(this._telemetryService) ? toCopilotTelemetryData(this._telemetryService.getCopilotTelemetryContext(provider)) ?? {} : {};
++	private _copilotTelemetryContext(_provider: string): IAgentHostCopilotSkuTelemetry {
++		return {};
+ 	}
+@@ -1294,3 +1159,3 @@ export class AgentHostTelemetryReporter {
  			provider,
 -			isOtelEnabled: this._otelService.enabled,
 +			isOtelEnabled: false,
  			hostLaunchKind: clientContext.hostLaunchKind,
-@@ -1336,21 +1203,2 @@ export class AgentHostTelemetryReporter {
+@@ -1336,21 +1201,2 @@ export class AgentHostTelemetryReporter {
  	clientConnection(report: IAgentHostClientConnectionReport): void {
 -		this._telemetryService.publicLog2<IAgentHostClientConnectionEvent, IAgentHostClientConnectionClassification>('agentHost.clientConnection', {
 -			action: report.action,
@@ -2946,7 +3224,7 @@ index b8b451dd..2c1fe7f4 100644
 -			subscriptionCount: report.subscriptionCount,
 -		});
  	}
-@@ -1370,13 +1218,2 @@ export class AgentHostTelemetryReporter {
+@@ -1370,13 +1216,2 @@ export class AgentHostTelemetryReporter {
  	async assistantMessageReceived(session: string, chat: string, clientType: AgentHostClientType, clientRequestId: string | undefined, tools: readonly ToolDefinition[]): Promise<void> {
 -		const restricted = this._restricted;
 -		if (!restricted || !clientRequestId || tools.length === 0) {
@@ -2960,7 +3238,7 @@ index b8b451dd..2c1fe7f4 100644
 -			messagesJson: JSON.stringify(tools),
 -		}));
  	}
-@@ -1397,17 +1234,2 @@ export class AgentHostTelemetryReporter {
+@@ -1397,17 +1232,2 @@ export class AgentHostTelemetryReporter {
  	async userMessageText(session: string, chat: string, clientType: AgentHostClientType, content: string, turnIndex: number): Promise<void> {
 -		const restricted = this._restricted;
 -		if (!restricted || !content) {
@@ -2978,7 +3256,7 @@ index b8b451dd..2c1fe7f4 100644
 -		restricted.sendEnhancedGHTelemetryEvent('conversation.messageText', properties, measurements);
 -		restricted.sendInternalMSFTTelemetryEvent('conversation.messageText', properties, measurements);
  	}
-@@ -1426,18 +1248,2 @@ export class AgentHostTelemetryReporter {
+@@ -1426,18 +1246,2 @@ export class AgentHostTelemetryReporter {
  	async modelMessageText(session: string, chat: string, clientType: AgentHostClientType, content: string, turnIndex: number, clientRequestId: string | undefined): Promise<void> {
 -		const restricted = this._restricted;
 -		if (!restricted || !content) {
@@ -2997,7 +3275,19 @@ index b8b451dd..2c1fe7f4 100644
 -		restricted.sendEnhancedGHTelemetryEvent('conversation.messageText', properties, measurements);
 -		restricted.sendInternalMSFTTelemetryEvent('conversation.messageText', properties, measurements);
  	}
-@@ -1537,40 +1343,2 @@ export class AgentHostTelemetryReporter {
+@@ -1457,3 +1261,2 @@ export class AgentHostTelemetryReporter {
+ 			...toInitiatorTelemetry(report.clientContext),
+-			...toCopilotTelemetryData(report.telemetryContext),
+ 			provider: report.provider,
+@@ -1487,3 +1290,2 @@ export class AgentHostTelemetryReporter {
+ 			initiatorClientType: report.clientType,
+-			...toCopilotTelemetryData(report.telemetryContext),
+ 			responseType: report.responseType,
+@@ -1513,3 +1315,2 @@ export class AgentHostTelemetryReporter {
+ 			...toInitiatorTelemetry(report.clientContext),
+-			...toCopilotTelemetryData(report.telemetryContext),
+ 			provider: report.provider,
+@@ -1537,40 +1338,2 @@ export class AgentHostTelemetryReporter {
  	autoModeRouterDecision(report: IAgentHostAutoModeRouterDecisionReport): void {
 -		const restricted = this._restricted;
 -		if (!restricted) {
@@ -3038,7 +3328,7 @@ index b8b451dd..2c1fe7f4 100644
 -		};
 -		restricted.sendEnhancedGHTelemetryEvent('automode.routerDecisionRestricted', properties, measurements);
  	}
-@@ -1590,30 +1358,2 @@ export class AgentHostTelemetryReporter {
+@@ -1590,30 +1353,2 @@ export class AgentHostTelemetryReporter {
  	skillContentRead(report: IAgentHostSkillContentReadReport): void {
 -		const restricted = this._restricted;
 -		if (!restricted || !report.name) {
@@ -3069,7 +3359,7 @@ index b8b451dd..2c1fe7f4 100644
 -		restricted.sendEnhancedGHTelemetryEvent('skillContentRead', plaintextProps);
 -		restricted.sendInternalMSFTTelemetryEvent('skillContentRead', plaintextProps);
  	}
-@@ -1621,34 +1361,2 @@ export class AgentHostTelemetryReporter {
+@@ -1621,34 +1356,2 @@ export class AgentHostTelemetryReporter {
  	async reportRepoInfo(context: IAgentHostRestrictedTelemetryContext, report: IAgentHostRepoInfoReport): Promise<void> {
 -		const restricted = this._restricted;
 -		if (!restricted) {
@@ -3104,7 +3394,7 @@ index b8b451dd..2c1fe7f4 100644
 -		restricted.sendEnhancedGHTelemetryEventForContext(context, 'request.repoInfo', enhancedProperties, measurements);
 -		restricted.sendInternalMSFTTelemetryEventForContext(context, 'request.repoInfo', internalMultiplexedProperties, measurements);
  	}
-@@ -1656,29 +1364,2 @@ export class AgentHostTelemetryReporter {
+@@ -1656,29 +1359,2 @@ export class AgentHostTelemetryReporter {
  	requestTokenUsage(report: { clientContext: IAgentHostClientTelemetryContext; telemetryContext?: IAgentTelemetryContext; provider: string; session: string; owner: string; requestId: string; parentTurnId?: string; parentToolCallId?: string; subagentKind?: AgentSubagentKind; selectedModel?: string; selectedModelTelemetryKind?: AgentHostModelTelemetryKind; modelTelemetryKind?: AgentHostModelTelemetryKind; result: AgentHostTurnResult; summary: IAgentTokenUsageSummary }): void {
 -		const session = report.owner;
 -		const isSubagent = report.subagentKind !== undefined || isSubagentSession(session);
@@ -3134,7 +3424,7 @@ index b8b451dd..2c1fe7f4 100644
 -			reasoningEffortSource: 'sdkReported',
 -		});
  	}
-@@ -1686,123 +1367,2 @@ export class AgentHostTelemetryReporter {
+@@ -1686,123 +1362,2 @@ export class AgentHostTelemetryReporter {
  	turnCompleted(report: IAgentHostTurnCompletedReport): void {
 -		const session = report.owner;
 -		const chatSessionId = getTelemetryChatSessionId(report.session);
@@ -3258,7 +3548,7 @@ index b8b451dd..2c1fe7f4 100644
 -			});
 -		}
  	}
-@@ -1815,37 +1375,2 @@ export class AgentHostTelemetryReporter {
+@@ -1815,37 +1370,2 @@ export class AgentHostTelemetryReporter {
  	turnHung(report: IAgentHostTurnHungReport): void {
 -		const session = report.owner;
 -		const isSubagent = report.subagentKind !== undefined || isSubagentSession(session);
@@ -3296,6 +3586,30 @@ index b8b451dd..2c1fe7f4 100644
 -			permissionLevel: report.permissionLevel,
 -		});
  	}
+@@ -1858,3 +1378,2 @@ export class AgentHostTelemetryReporter {
+ 			...toInitiatorTelemetry(report.clientContext),
+-			...toCopilotTelemetryData(report.telemetryContext),
+ 			provider: report.provider,
+@@ -1882,3 +1401,2 @@ export class AgentHostTelemetryReporter {
+ 			...toInitiatorTelemetry(report.clientContext),
+-			...toCopilotTelemetryData(report.telemetryContext),
+ 			result: report.result,
+@@ -1898,3 +1416,2 @@ export class AgentHostTelemetryReporter {
+ 			...toInitiatorTelemetry(report.clientContext),
+-			...toCopilotTelemetryData(report.telemetryContext),
+ 			result: report.result,
+@@ -1924,3 +1441,2 @@ export class AgentHostTelemetryReporter {
+ 			...toInitiatorTelemetry(report.clientContext),
+-			...toCopilotTelemetryData(report.telemetryContext),
+ 			requestId: report.requestId,
+@@ -1945,3 +1461,2 @@ export class AgentHostTelemetryReporter {
+ 			...toInitiatorTelemetry(report.clientContext),
+-			...toCopilotTelemetryData(report.telemetryContext),
+ 			provider: report.provider,
+@@ -1964,3 +1479,2 @@ export class AgentHostTelemetryReporter {
+ 			...toInitiatorTelemetry(report.clientContext),
+-			...toCopilotTelemetryData(report.telemetryContext),
+ 			provider: report.provider,
 diff --git a/src/vs/platform/agentHost/node/agentHostTurnTelemetryContext.ts b/src/vs/platform/agentHost/node/agentHostTurnTelemetryContext.ts
 index d815cb8b..ef45e1d4 100644
 --- a/src/vs/platform/agentHost/node/agentHostTurnTelemetryContext.ts
@@ -3311,6 +3625,271 @@ index d815cb8b..ef45e1d4 100644
 -	return codex ? Object.freeze({ codex: Object.freeze(codex) }) : undefined;
 +export function captureProviderTurnTelemetryContext(_agent: IAgent): IAgentProviderTurnTelemetryContext | undefined {
 +	return undefined;
+ }
+diff --git a/src/vs/platform/agentHost/node/agentHostUtilityModelService.ts b/src/vs/platform/agentHost/node/agentHostUtilityModelService.ts
+index c7a1f2b6..2706efc9 100644
+--- a/src/vs/platform/agentHost/node/agentHostUtilityModelService.ts
++++ b/src/vs/platform/agentHost/node/agentHostUtilityModelService.ts
+@@ -5,25 +5,4 @@
+ 
+-import { CancellationError } from '../../../base/common/errors.js';
+-import { captureCredentialSource, isAuthRequiredError, type IAgentHostCredentialSource } from '../common/agentHostCredentials.js';
+-import { URI } from '../../../base/common/uri.js';
+ import { createDecorator } from '../../instantiation/common/instantiation.js';
+-import { ILogService } from '../../log/common/log.js';
+-import { COPILOT_CLI_AGENT_PROVIDER_ID } from '../common/agent.js';
+-import { getByokLmAgentModelId, getByokLmSelectionModelId, IByokLmChatRequest, IByokLmModelInfo, isByokLmAgentModelId, resolveByokLmEnablement } from '../common/agentHostByokLm.js';
+-import { AgentHostByokModelsEnabledConfigKey, AgentHostByokUtilityModelDefault, AgentHostByokUtilityModelDefaultConfigKey, AgentHostUtilitySmallModelConfigKey, platformRootSchema } from '../common/agentHostSchema.js';
+-import { readAgentModelByokIdentifier } from '../common/agentModelByokMeta.js';
+-import { isAhpChatChannel, type ModelSelection, type URI as ProtocolURI } from '../common/state/sessionState.js';
+-import { IAgentHostSessionStateStore } from '../common/agentHostSessionStateStore.js';
+-import { createAgentChatContext } from './agentChatContext.js';
+-import { IAgentConfigurationService } from './agentConfigurationService.js';
+-import { IAgentHostAuthenticationService } from './agentHostAuthenticationService.js';
+-import { IAgentHostGitHubEndpointService } from './agentHostGitHubEndpointService.js';
+-import { IAgentHostProviderService } from './agentHostProviderService.js';
+-import { AgentHostStateManager, IAgentHostStateManager } from './agentHostStateManager.js';
+-import { IByokLmBridgeRegistry } from './byokLmBridgeRegistry.js';
+-import { ICopilotApiService, ICopilotApiServiceRequestOptions, ICopilotUtilityChatCompletionRequest, UTILITY_DEFAULT_TEMPERATURE, UTILITY_DEFAULT_TOP_P } from './shared/copilotApiService.js';
+-import { IAgentHostChatOwnershipService } from './agentHostChatOwnershipService.js';
+-
+-/** LM API vendor of Copilot models; an override naming it is not a BYOK model. */
+-const COPILOT_VENDOR = 'copilot';
++import { type ModelSelection, type URI as ProtocolURI } from '../common/state/sessionState.js';
+ 
+@@ -32,3 +11,2 @@ export interface IAgentHostUtilityModelContext {
+ 	readonly session: ProtocolURI;
+-	readonly credentialSource?: IAgentHostCredentialSource;
+ 	/** Defaults to the session's default chat. */
+@@ -87,15 +65,4 @@ export interface IAgentHostUtilityModelService {
+ 	readonly _serviceBrand: undefined;
+-
+-	/**
+-	 * Returns the assistant text for `request`.
+-	 *
+-	 * @throws {@link AgentHostUtilityModelUnavailableError} when no utility model is available.
+-	 */
+-	chatCompletion(context: IAgentHostUtilityModelContext, request: ICopilotUtilityChatCompletionRequest, options?: ICopilotApiServiceRequestOptions): Promise<string>;
+ }
+ 
+-type UtilityModelRoute =
+-	| { readonly kind: 'byok'; readonly vendor: string; readonly modelId: string }
+-	| { readonly kind: 'copilot'; readonly githubToken: string };
+-
+ export class AgentHostUtilityModelService implements IAgentHostUtilityModelService {
+@@ -105,213 +72,3 @@ export class AgentHostUtilityModelService implements IAgentHostUtilityModelServi
+ 	constructor(
+-		private readonly _byokUtilityModelsSupported: boolean,
+-		@IAgentConfigurationService private readonly _configurationService: IAgentConfigurationService,
+-		@ICopilotApiService private readonly _copilotApiService: ICopilotApiService,
+-		@IByokLmBridgeRegistry private readonly _byokBridgeRegistry: IByokLmBridgeRegistry,
+-		@IAgentHostProviderService private readonly _providerService: IAgentHostProviderService,
+-		@IAgentHostStateManager private readonly _stateManager: AgentHostStateManager,
+-		@IAgentHostAuthenticationService private readonly _authenticationService: IAgentHostAuthenticationService,
+-		@IAgentHostGitHubEndpointService private readonly _gitHubEndpointService: IAgentHostGitHubEndpointService,
+-		@ILogService private readonly _logService: ILogService,
+-		@IAgentHostChatOwnershipService private readonly _chatOwnership: IAgentHostChatOwnershipService,
+-		@IAgentHostSessionStateStore private readonly _sessionStateStore: IAgentHostSessionStateStore,
+ 	) { }
+-
+-	async chatCompletion(context: IAgentHostUtilityModelContext, request: ICopilotUtilityChatCompletionRequest, options?: ICopilotApiServiceRequestOptions): Promise<string> {
+-		const route = this._resolveRoute(context);
+-		if (route.kind === 'copilot') {
+-			return this._copilotApiService.utilityChatCompletion(route.githubToken, request, options);
+-		}
+-		return this._byokChatCompletion(route.vendor, route.modelId, request, options?.signal);
+-	}
+-
+-	private _resolveRoute(context: IAgentHostUtilityModelContext): UtilityModelRoute {
+-		return this._byokUtilityModelsSupported
+-			? this._resolveByokRoute(context) ?? this._resolveCopilotRoute(context)
+-			: this._resolveCopilotRoute(context);
+-	}
+-
+-	/** Resolves a BYOK route, or `undefined` to use the Copilot default. */
+-	private _resolveByokRoute(context: IAgentHostUtilityModelContext): UtilityModelRoute | undefined {
+-		const byokModels = this._byokModels();
+-		const rendererConnected = this._byokBridgeRegistry.getServingConnection() !== undefined;
+-		const override = this._resolveOverride(byokModels, rendererConnected);
+-		if (override) {
+-			return override;
+-		}
+-
+-		const mainAgentModel = this._resolveByokMainAgentModel(context);
+-		if (mainAgentModel) {
+-			const byokDefault = this._byokUtilityModelDefault();
+-			if (byokDefault === 'none') {
+-				throw new AgentHostUtilityModelUnavailableError(AgentHostUtilityModelUnavailableReason.NotConfigured);
+-			}
+-			if (!rendererConnected) {
+-				this._logService.trace(`[AgentHostUtilityModelService] BYOK main agent model '${mainAgentModel}' is selected but no renderer serves BYOK models; not falling back to Copilot.`);
+-				throw new AgentHostUtilityModelUnavailableError(AgentHostUtilityModelUnavailableReason.ByokModelUnavailable);
+-			}
+-			switch (byokDefault) {
+-				case 'mainAgent': {
+-					const model = byokModels?.find(m => getByokLmAgentModelId(m) === mainAgentModel);
+-					if (!model) {
+-						throw new AgentHostUtilityModelUnavailableError(AgentHostUtilityModelUnavailableReason.ByokModelUnavailable);
+-					}
+-					return { kind: 'byok', vendor: model.vendor, modelId: getByokLmSelectionModelId(model) };
+-				}
+-				case 'copilot':
+-					break;
+-			}
+-		}
+-		return undefined;
+-	}
+-
+-	private _resolveCopilotRoute(context: IAgentHostUtilityModelContext): UtilityModelRoute {
+-		try {
+-			return this._captureCopilotRoute(context);
+-		} catch (error) {
+-			return this._throwUnavailableAuthentication(error);
+-		}
+-	}
+-
+-	private _throwUnavailableAuthentication(error: unknown): never {
+-		if (isAuthRequiredError(error)) {
+-			this._logService.debug('[AgentHostUtilityModelService] Copilot utility model unavailable: sponsor authentication required');
+-			throw new AgentHostUtilityModelUnavailableError(AgentHostUtilityModelUnavailableReason.CopilotSignInRequired);
+-		}
+-		throw error;
+-	}
+-
+-	private _captureCopilotRoute(context: IAgentHostUtilityModelContext): UtilityModelRoute {
+-		const resource = this._gitHubEndpointService.getCopilotResource();
+-		const source = context.credentialSource ?? this._authenticationService.getSessionCredentialSource(context.chat ?? context.session);
+-		const captured = source ? captureCredentialSource({
+-			principal: source.principal,
+-			getCredential: request => source.getCredential({ ...request, session: context.session }),
+-		}, [{ ...resource, required: false }]) : undefined;
+-		const githubToken = this._authenticationService.getAuthToken({ resource: resource.resource, scopes: resource.scopes_supported, session: context.session }, captured);
+-		if (!githubToken) {
+-			throw new AgentHostUtilityModelUnavailableError(AgentHostUtilityModelUnavailableReason.CopilotSignInRequired);
+-		}
+-		return { kind: 'copilot', githubToken };
+-	}
+-
+-	/** The renderer's BYOK models, or `undefined` when BYOK is disabled for the agent host. */
+-	private _byokModels(): readonly IByokLmModelInfo[] | undefined {
+-		const { enabled } = resolveByokLmEnablement(this._configurationService.getRootValue(platformRootSchema, AgentHostByokModelsEnabledConfigKey));
+-		return enabled ? this._byokBridgeRegistry.getModels() : undefined;
+-	}
+-
+-	/**
+-	 * Resolves a `${vendor}/${id}` override to exactly one BYOK model. Like the
+-	 * extension, an override that is unresolvable while the renderer serves BYOK
+-	 * models, or ambiguous, falls back to the default behavior. Copilot overrides
+-	 * also fall back: the host only uses the Copilot default utility model. A
+-	 * BYOK override while no renderer serves BYOK models fails closed.
+-	 */
+-	private _resolveOverride(byokModels: readonly IByokLmModelInfo[] | undefined, rendererConnected: boolean): UtilityModelRoute | undefined {
+-		const raw = this._configurationService.getRootValue(platformRootSchema, AgentHostUtilitySmallModelConfigKey);
+-		if (!raw) {
+-			return undefined;
+-		}
+-		const slashIndex = raw.indexOf('/');
+-		if (slashIndex <= 0 || slashIndex >= raw.length - 1) {
+-			this._logService.warn(`[AgentHostUtilityModelService] Ignoring malformed utility model override '${raw}' (expected '\${vendor}/\${id}').`);
+-			return undefined;
+-		}
+-		const vendor = raw.substring(0, slashIndex);
+-		const id = raw.substring(slashIndex + 1);
+-		if (vendor === COPILOT_VENDOR || !byokModels) {
+-			return undefined;
+-		}
+-		if (!rendererConnected) {
+-			this._logService.trace(`[AgentHostUtilityModelService] Utility model override '${raw}' is a BYOK model but no renderer serves BYOK models; not falling back to Copilot.`);
+-			throw new AgentHostUtilityModelUnavailableError(AgentHostUtilityModelUnavailableReason.ByokModelUnavailable);
+-		}
+-		const matches = byokModels.filter(m => m.vendor === vendor && m.id === id);
+-		if (matches.length !== 1) {
+-			this._logService.trace(`[AgentHostUtilityModelService] Utility model override '${raw}' matched ${matches.length} BYOK models; using the default behavior.`);
+-			return undefined;
+-		}
+-		return { kind: 'byok', vendor, modelId: getByokLmSelectionModelId(matches[0]) };
+-	}
+-
+-	/** The agent model id of the chat's selected main agent model when it is a BYOK model. */
+-	private _resolveByokMainAgentModel(context: IAgentHostUtilityModelContext): string | undefined {
+-		const agent = this._providerService.getProviderForSession(context.session);
+-		if (!agent) {
+-			return undefined;
+-		}
+-		const chat = context.chat && isAhpChatChannel(context.chat) ? context.chat : this._chatOwnership.getDefaultChat(context.session);
+-		if (chat === undefined) {
+-			return undefined;
+-		}
+-		const state = this._stateManager.getChatState(chat) ?? (this._chatOwnership.isDefaultChat(context.session, chat) ? this._stateManager.getSessionState(context.session) : undefined);
+-		// Prefer the model of the turn being served: the provider applies a turn's
+-		// model after admission, and a chat that is not resident has no selection.
+-		const selection = context.model
+-			?? state?.activeTurn?.message.model
+-			?? agent.chats.getModel?.(URI.parse(chat), createAgentChatContext(this._stateManager, this._authenticationService, context.session, chat, this._chatOwnership.resolveChatStorageResource(context.session, chat), this._sessionStateStore.peek(URI.parse(context.session))))
+-			?? state?.turns.at(-1)?.message.model;
+-		if (!selection) {
+-			return undefined;
+-		}
+-		const model = agent.models.get().find(m => m.id === selection.id);
+-		if (model) {
+-			return readAgentModelByokIdentifier(model) !== undefined ? model.id : undefined;
+-		}
+-		// The Copilot agent drops BYOK models from its catalog while no renderer
+-		// serves them, but the chat keeps its selection; recognize it by its id.
+-		return agent.id === COPILOT_CLI_AGENT_PROVIDER_ID && isByokLmAgentModelId(selection.id) ? selection.id : undefined;
+-	}
+-
+-	private _byokUtilityModelDefault(): AgentHostByokUtilityModelDefault {
+-		return this._configurationService.getRootValue(platformRootSchema, AgentHostByokUtilityModelDefaultConfigKey) ?? 'copilot';
+-	}
+-
+-	private async _byokChatCompletion(vendor: string, modelId: string, request: ICopilotUtilityChatCompletionRequest, signal: AbortSignal | undefined): Promise<string> {
+-		// Same keys as the Responses translation, and the same defaults as the Copilot route.
+-		const modelOptions: Record<string, unknown> = {
+-			temperature: request.temperature ?? UTILITY_DEFAULT_TEMPERATURE,
+-			top_p: UTILITY_DEFAULT_TOP_P,
+-			...(request.maxTokens !== undefined ? { max_tokens: request.maxTokens } : {}),
+-		};
+-		const connection = this._byokBridgeRegistry.getServingConnection();
+-		if (!connection) {
+-			throw new AgentHostUtilityModelUnavailableError(AgentHostUtilityModelUnavailableReason.ByokModelUnavailable);
+-		}
+-		const bridgeRequest: IByokLmChatRequest = {
+-			vendor,
+-			modelId,
+-			input: request.messages.map(message => ({
+-				type: 'message',
+-				role: message.role,
+-				content: [{ type: 'text', text: message.content }],
+-			})),
+-			modelOptions,
+-		};
+-		this._logService.debug(`[AgentHostUtilityModelService] BYOK utility request: ${vendor}/${modelId}`);
+-		const result = await raceAbort(connection.chat(bridgeRequest), signal);
+-		if (result.error) {
+-			throw new Error(`BYOK utility request failed for ${vendor}/${modelId}: ${result.error}`);
+-		}
+-		const text = result.output.flatMap(item => item.type === 'message' ? item.content.map(part => part.text) : []).join('');
+-		if (!text) {
+-			throw new Error(`BYOK utility request for ${vendor}/${modelId} returned no text content`);
+-		}
+-		return text;
+-	}
+-}
+-
+-/** The bridge has no cancellation channel, so stop waiting when `signal` aborts. */
+-function raceAbort<T>(promise: Promise<T>, signal: AbortSignal | undefined): Promise<T> {
+-	if (!signal) {
+-		return promise;
+-	}
+-	if (signal.aborted) {
+-		return Promise.reject(new CancellationError());
+-	}
+-	return new Promise<T>((resolve, reject) => {
+-		const onAbort = () => reject(new CancellationError());
+-		signal.addEventListener('abort', onAbort, { once: true });
+-		promise.then(resolve, reject).finally(() => signal.removeEventListener('abort', onAbort));
+-	});
  }
 diff --git a/src/vs/platform/agentHost/node/agentService.ts b/src/vs/platform/agentHost/node/agentService.ts
 index 7ed7330f..6946d681 100644
@@ -3567,132 +4146,194 @@ index d1f6b489..564f8858 100644
 -			}
 -			this._otelService.emitFirstResponse(validated.content);
  			return Promise.resolve();
-diff --git a/src/vs/platform/agentHost/node/shared/copilotApiService.ts b/src/vs/platform/agentHost/node/shared/copilotApiService.ts
-index a559221b..fd1d62fc 100644
---- a/src/vs/platform/agentHost/node/shared/copilotApiService.ts
-+++ b/src/vs/platform/agentHost/node/shared/copilotApiService.ts
-@@ -5,3 +5,2 @@
+diff --git a/src/vs/platform/agentHost/node/shared/agentBranchNameGenerator.ts b/src/vs/platform/agentHost/node/shared/agentBranchNameGenerator.ts
+index 5f5d101b..5f62232c 100644
+--- a/src/vs/platform/agentHost/node/shared/agentBranchNameGenerator.ts
++++ b/src/vs/platform/agentHost/node/shared/agentBranchNameGenerator.ts
+@@ -5,5 +5,3 @@
  
--import type Anthropic from '@anthropic-ai/sdk';
- import { CAPIClient, RequestType, type CCAModel, type IExtensionInformation } from '@vscode/copilot-api';
-@@ -261,3 +260,3 @@ export class CopilotApiError extends Error {
- 		readonly status: number,
--		readonly envelope: Anthropic.ErrorResponse,
-+		readonly envelope: any,
- 		message?: string,
-@@ -281,3 +280,3 @@ export class CopilotApiError extends Error {
- function buildCopilotApiHttpError(status: number, statusText: string, bodyText: string, prefix = 'CAPI request failed'): CopilotApiError {
--	let envelope: Anthropic.ErrorResponse | undefined;
-+	let envelope: any | undefined;
- 	if (bodyText) {
-@@ -295,3 +294,3 @@ function buildCopilotApiHttpError(status: number, statusText: string, bodyText:
- 				) {
--					envelope = parsed as Anthropic.ErrorResponse;
-+					envelope = parsed;
- 				}
-@@ -430,5 +429,5 @@ export interface ICopilotApiService {
- 		githubToken: string,
--		request: Anthropic.MessageCreateParamsStreaming,
-+		request: any,
- 		options?: ICopilotApiServiceRequestOptions,
--	): AsyncGenerator<Anthropic.MessageStreamEvent>;
-+	): AsyncGenerator<any>;
+-import { ILogService } from '../../../log/common/log.js';
+ import { createDecorator } from '../../../instantiation/common/instantiation.js';
+-import { ICopilotApiService, type ICopilotUtilityChatMessage } from './copilotApiService.js';
  
-@@ -440,5 +439,5 @@ export interface ICopilotApiService {
- 		githubToken: string,
--		request: Anthropic.MessageCreateParamsNonStreaming,
-+		request: any,
- 		options?: ICopilotApiServiceRequestOptions,
--	): Promise<Anthropic.Message>;
-+	): Promise<any>;
+@@ -17,3 +15,2 @@ const AGENT_BRANCH_SESSION_ID_SUFFIX_LENGTH = 8;
+ const MAX_BRANCH_NAME_HINT_LENGTH = 48;
+-const MIN_GENERATED_BRANCH_NAME_LENGTH = 8;
+ const MAX_BRANCH_NAME_CANDIDATES = 100;
+@@ -50,4 +47,2 @@ export class AgentBranchNameGenerator implements IAgentBranchNameGenerator {
+ 	constructor(
+-		@ICopilotApiService private readonly _copilotApiService: ICopilotApiService,
+-		@ILogService private readonly _logService: ILogService,
+ 	) { }
+@@ -55,3 +50,3 @@ export class AgentBranchNameGenerator implements IAgentBranchNameGenerator {
+ 	async generateBranchName(request: IAgentBranchNameGeneratorRequest): Promise<string> {
+-		const branchNameHint = (await this._generateBranchNameHint(request)) ?? getAgentBranchNameHintFromMessage(request.message ?? '');
++		const branchNameHint = getAgentBranchNameHintFromMessage(request.message ?? '');
+ 		return this._buildBranchName(request, branchNameHint);
+@@ -59,61 +54,2 @@ export class AgentBranchNameGenerator implements IAgentBranchNameGenerator {
  
-@@ -452,5 +451,5 @@ export interface ICopilotApiService {
- 		githubToken: string,
--		req: Anthropic.MessageCountTokensParams,
-+		req: any,
- 		options?: ICopilotApiServiceRequestOptions,
--	): Promise<Anthropic.MessageTokensCount>;
-+	): Promise<any>;
+-	private async _generateBranchNameHint(request: IAgentBranchNameGeneratorRequest): Promise<string | undefined> {
+-		const message = request.message?.trim();
+-		if (!message || !request.githubToken) {
+-			return undefined;
+-		}
+-
+-		try {
+-			const rawBranchName = await this._copilotApiService.utilityChatCompletion(request.githubToken, {
+-				messages: this._buildBranchNamePrompt(message),
+-			}, {
+-				signal: request.signal,
+-			});
+-
+-			if (request.signal?.aborted) {
+-				return undefined;
+-			}
+-
+-			let branchName = rawBranchName.trim();
+-			if (branchName.match(/^".*"$/)) {
+-				branchName = branchName.slice(1, -1);
+-			}
+-			if (branchName.includes('can\'t assist with that')) {
+-				return undefined;
+-			}
+-
+-			branchName = normalizeAgentBranchName(branchName).slice(0, MAX_BRANCH_NAME_HINT_LENGTH).replace(/-+$/g, '');
+-			if (branchName.length < MIN_GENERATED_BRANCH_NAME_LENGTH) {
+-				this._logService.warn('Generated branch name is too short after normalization, discarding.');
+-				return undefined;
+-			}
+-
+-			return branchName;
+-		} catch (err) {
+-			this._logService.warn('[AgentBranchNameGenerator] Failed to generate branch name', err);
+-			return undefined;
+-		}
+-	}
+-
+-	private _buildBranchNamePrompt(userRequest: string): ICopilotUtilityChatMessage[] {
+-		return [
+-			{
+-				role: 'system',
+-				content: [
+-					'You are an expert in crafting pithy branch names for Git Repos based on chatbot conversations.',
+-					'You are presented with a chat request, and you reply with a brief branch name that captures the main topic of that request.',
+-					'The branch name should not be wrapped in quotes. It should be between 8-50 characters.',
+-					'Here are some examples of good branch names:',
+-					'- linkedlist-implementation',
+-					'- adding-tree-view',
+-					'- react-usestate-hook-usage',
+-				].join(' '),
+-			},
+-			{
+-				role: 'user',
+-				content: `Please write a brief branch name for the following request:\n\n${userRequest}`,
+-			},
+-		];
+-	}
+-
+ 	private async _buildBranchName(request: IAgentBranchNameGeneratorRequest, branchNameHint: string | undefined): Promise<string> {
+diff --git a/src/vs/platform/agentHost/node/shared/githubMcpServer.ts b/src/vs/platform/agentHost/node/shared/githubMcpServer.ts
+index beea9ff8..3b9a7527 100644
+--- a/src/vs/platform/agentHost/node/shared/githubMcpServer.ts
++++ b/src/vs/platform/agentHost/node/shared/githubMcpServer.ts
+@@ -7,4 +7,2 @@ import { gitHubMcpServerUrl } from '../../../github/common/githubEndpoints.js';
+ import { McpServerType, type IMcpServerConfiguration } from '../../../mcp/common/mcpPlatformTypes.js';
+-import type { ICopilotApiService } from './copilotApiService.js';
+-import { findExecutable } from '../../../../base/node/processes.js';
  
-@@ -559,15 +558,15 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
- 		githubToken: string,
--		request: Anthropic.MessageCreateParamsStreaming,
-+		request: any,
- 		options?: ICopilotApiServiceRequestOptions,
--	): AsyncGenerator<Anthropic.MessageStreamEvent>;
-+	): AsyncGenerator<any>;
- 	messages(
- 		githubToken: string,
--		request: Anthropic.MessageCreateParamsNonStreaming,
-+		request: any,
- 		options?: ICopilotApiServiceRequestOptions,
--	): Promise<Anthropic.Message>;
-+	): Promise<any>;
- 	messages(
- 		githubToken: string,
--		request: Anthropic.MessageCreateParams,
-+		request: any,
- 		options?: ICopilotApiServiceRequestOptions,
--	): AsyncGenerator<Anthropic.MessageStreamEvent> | Promise<Anthropic.Message> {
-+	): AsyncGenerator<any> | Promise<any> {
- 		if (request.stream) {
-@@ -580,5 +579,5 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
- 		_githubToken: string,
--		_req: Anthropic.MessageCountTokensParams,
-+		_req: any,
- 		_options?: ICopilotApiServiceRequestOptions,
--	): Promise<Anthropic.MessageTokensCount> {
-+	): Promise<any> {
- 		throw new Error('countTokens not supported by CAPI');
-@@ -757,5 +756,5 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
- 		githubToken: string,
--		request: Anthropic.MessageCreateParams,
-+		request: any,
- 		options?: ICopilotApiServiceRequestOptions,
--	): AsyncGenerator<Anthropic.MessageStreamEvent> {
-+	): AsyncGenerator<any> {
- 		const response = await this._sendRequest(githubToken, request, true, options);
-@@ -775,7 +774,7 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
- 		githubToken: string,
--		request: Anthropic.MessageCreateParams,
-+		request: any,
- 		options?: ICopilotApiServiceRequestOptions,
--	): Promise<Anthropic.Message> {
-+	): Promise<any> {
- 		const response = await this._sendRequest(githubToken, request, false, options);
--		return response.json() as Promise<Anthropic.Message>;
-+		return response.json() as Promise<any>;
- 	}
-@@ -788,3 +787,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
- 		githubToken: string,
--		request: Anthropic.MessageCreateParams,
-+		request: any,
- 		stream: boolean,
-@@ -1102,3 +1101,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
+@@ -52,9 +50,2 @@ export const GITHUB_MCP_DEPRECATED_WORKFLOW_TOOLS = [
  
--	private async *_readSSE(body: ReadableStream<Uint8Array>): AsyncGenerator<Anthropic.MessageStreamEvent> {
-+	private async *_readSSE(body: ReadableStream<Uint8Array>): AsyncGenerator<any> {
- 		const reader = body.getReader();
-@@ -1156,3 +1155,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
- 	 */
--	private _parseDataLine(line: string): Anthropic.MessageStreamEvent | undefined {
-+	private _parseDataLine(line: string): any | undefined {
- 		if (!line.startsWith('data: ')) {
-@@ -1187,3 +1186,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
- 			const rawError = (parsed as { error?: unknown }).error;
--			let envelope: Anthropic.ErrorResponse;
-+			let envelope: any;
- 			if (
-@@ -1193,3 +1192,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
- 			) {
--				envelope = parsed as Anthropic.ErrorResponse;
-+				envelope = parsed as any;
- 			} else {
-@@ -1216,3 +1215,3 @@ export class CopilotApiService extends Disposable implements ICopilotApiService
+-let ghCliAvailable: Promise<boolean> | undefined;
+-
+-async function isGhCliAvailable(): Promise<boolean> {
+-	ghCliAvailable ??= (async () => await findExecutable('gh').catch(() => undefined) !== undefined)();
+-	return ghCliAvailable;
+-}
+-
+ export function getGitHubMcpTools(hasGhCli: boolean): readonly string[] {
+@@ -84,15 +75 @@ export function createGitHubMcpServerConfiguration(copilotApiBaseUri: string, ha
+ }
+-
+-export async function resolveGitHubMcpServerConfiguration(copilotApiService: ICopilotApiService, token: string | undefined): Promise<IMcpServerConfiguration | undefined> {
+-	if (!token) {
+-		return undefined;
+-	}
+-	const [copilotApiBaseUri, hasGhCli] = await Promise.all([
+-		copilotApiService.resolveApiEndpoint(token),
+-		isGhCliAvailable(),
+-	]);
+-	if (!copilotApiBaseUri) {
+-		return undefined;
+-	}
+-	return createGitHubMcpServerConfiguration(copilotApiBaseUri, hasGhCli);
+-}
+diff --git a/src/vs/platform/agentHost/node/shared/proxyChatError.ts b/src/vs/platform/agentHost/node/shared/proxyChatError.ts
+index e51ddc00..384597a6 100644
+--- a/src/vs/platform/agentHost/node/shared/proxyChatError.ts
++++ b/src/vs/platform/agentHost/node/shared/proxyChatError.ts
+@@ -5,4 +5,2 @@
  
--		return parsed as Anthropic.MessageStreamEvent;
-+		return parsed as any;
- 	}
+-import { CopilotApiError, COPILOT_API_ERROR_STATUS_STREAMING } from './copilotApiService.js';
+-
+ /**
+@@ -82,57 +80,2 @@ export function httpStatusToChatFetchType(status: number): string {
+ 
+-/**
+- * Builds a {@link IForwardedChatError} from a {@link CopilotApiError}. The
+- * error's Anthropic envelope carries the upstream message and type, which are
+- * surfaced as `reason`/`capiError` so the core formatter can render the right
+- * message (rate limit, quota, filtered, etc.).
+- */
+-export function buildForwardedChatError(err: CopilotApiError): IForwardedChatError {
+-	const status = err.status === COPILOT_API_ERROR_STATUS_STREAMING ? 502 : err.status;
+-	const requestId = typeof err.envelope.request_id === 'string' ? err.envelope.request_id : '';
+-	// CAPI rate-limit/quota errors carry their fine-grained code in the
+-	// response body (e.g. `{ "error": { "code": "quota_exceeded", ... } }`).
+-	// The proxy synthesizes a non-conforming body into the Anthropic envelope
+-	// as `error.type: 'api_error'` with the raw body as the message, so prefer
+-	// a CAPI code/message parsed out of the message when present.
+-	const capiError = extractCapiError(err.envelope.error.message) ?? { code: err.envelope.error.type, message: err.envelope.error.message };
+-	return {
+-		fetchError: {
+-			type: httpStatusToChatFetchType(status),
+-			reason: capiError.message ?? err.envelope.error.message,
+-			requestId,
+-			capiError,
+-		},
+-	};
+-}
+-
+-/**
+- * Attempts to parse a CAPI-style error body (`{ "error": { "code", "message" } }`)
+- * out of an envelope message string. Returns `undefined` when the message is
+- * not such a JSON payload.
+- */
+-function extractCapiError(message: string): { code?: string; message?: string } | undefined {
+-	let parsed: unknown;
+-	try {
+-		parsed = JSON.parse(message);
+-	} catch {
+-		return undefined;
+-	}
+-	if (!parsed || typeof parsed !== 'object') {
+-		return undefined;
+-	}
+-	const error = (parsed as { error?: unknown }).error;
+-	if (!error || typeof error !== 'object') {
+-		return undefined;
+-	}
+-	const code = (error as { code?: unknown }).code;
+-	const msg = (error as { message?: unknown }).message;
+-	if (typeof code !== 'string' && typeof msg !== 'string') {
+-		return undefined;
+-	}
+-	return {
+-		code: typeof code === 'string' ? code : undefined,
+-		message: typeof msg === 'string' ? msg : undefined,
+-	};
+-}
+-
+ /**
 diff --git a/src/vs/platform/dialogs/electron-browser/dialog.ts b/src/vs/platform/dialogs/electron-browser/dialog.ts
 index 71d2a8a9..3ace541a 100644
 --- a/src/vs/platform/dialogs/electron-browser/dialog.ts
