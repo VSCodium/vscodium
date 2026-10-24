@@ -13,7 +13,7 @@ index f701b518..093e19ce 100755
 +  SYSROOT_ARCH="$SYSROOT_ARCH" VSCODE_SYSROOT_DIR="$VSCODE_REMOTE_SYSROOT_DIR" node -e 'import { getVSCodeSysroot } from "./build/linux/debian/install-sysroot.ts"; (async () => { await getVSCodeSysroot(process.env["SYSROOT_ARCH"]); })()'
  fi
 diff --git a/build/gulpfile.reh.ts b/build/gulpfile.reh.ts
-index c643cf99..305f0ced 100644
+index b1075fa4..d13a5530 100644
 --- a/build/gulpfile.reh.ts
 +++ b/build/gulpfile.reh.ts
 @@ -30,3 +30,3 @@ import log from 'fancy-log';
@@ -57,10 +57,10 @@ index c643cf99..305f0ced 100644
 +			}
  			return platform === 'linux' && arch === 'x64' ? downloaded.pipe(patchElfLoadAlign()) : downloaded;
 diff --git a/build/gulpfile.vscode.ts b/build/gulpfile.vscode.ts
-index 95ae1790..325d7dca 100644
+index accd13df..1f9eba48 100644
 --- a/build/gulpfile.vscode.ts
 +++ b/build/gulpfile.vscode.ts
-@@ -361,4 +361,17 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
+@@ -353,4 +353,17 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
  
 +		const electronOverride: { repo?: string; tag?: string } = {};
 +		if (process.env.VSCODE_ELECTRON_REPOSITORY) {
@@ -79,11 +79,11 @@ index 95ae1790..325d7dca 100644
 +			...electronOverride,
  			platform,
 diff --git a/build/lib/electronVersion.ts b/build/lib/electronVersion.ts
-index 809d0667..a0aa8cf8 100644
+index a3c8dd15..04ff8a09 100644
 --- a/build/lib/electronVersion.ts
 +++ b/build/lib/electronVersion.ts
-@@ -12,3 +12,3 @@ export function getElectronVersion(): Record<string, string> {
- 	const npmrc = fs.readFileSync(path.join(root, '.npmrc'), 'utf8');
+@@ -12,3 +12,3 @@ export function getElectronVersion(rootDir: string = root): Record<string, strin
+ 	const npmrc = fs.readFileSync(path.join(rootDir, '.npmrc'), 'utf8');
 -	const electronVersion = /^target="(.*)"$/m.exec(npmrc)![1];
 +	const electronVersion = process.env.VSCODE_ELECTRON_VERSION ?? /^target="(.*)"$/m.exec(npmrc)![1];
  	const msBuildId = /^ms_build_id="(.*)"$/m.exec(npmrc)![1];

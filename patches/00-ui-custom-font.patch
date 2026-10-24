@@ -232,7 +232,7 @@ index fd4d00ea..92ddc996 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
-index a9d87182..cafe6a71 100644
+index 337c2a7c..358f6137 100644
 --- a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
 +++ b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
 @@ -8,2 +8,3 @@ import * as arrays from '../../../common/arrays.js';
@@ -248,29 +248,29 @@ index a9d87182..cafe6a71 100644
 -		return SELECT_OPTION_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
-@@ -637,4 +637,4 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+@@ -639,4 +639,4 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
  			const minRequiredDropDownHeight = listHeight + maxDetailsPaneHeight;
 -			const maxVisibleOptionsBelow = ((Math.floor((maxSelectDropDownHeightBelow - maxDetailsPaneHeight) / SELECT_OPTION_HEIGHT)));
 -			const maxVisibleOptionsAbove = ((Math.floor((maxSelectDropDownHeightAbove - maxDetailsPaneHeight) / SELECT_OPTION_HEIGHT)));
 +			const maxVisibleOptionsBelow = ((Math.floor((maxSelectDropDownHeightBelow - maxDetailsPaneHeight) / FONT.sidebarSize22)));
 +			const maxVisibleOptionsAbove = ((Math.floor((maxSelectDropDownHeightAbove - maxDetailsPaneHeight) / FONT.sidebarSize22)));
  
-@@ -650,3 +650,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+@@ -652,3 +652,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
  
 -				if ((selectPosition.top + selectPosition.height) > (window.innerHeight - 22)
 +				if ((selectPosition.top + selectPosition.height) > (window.innerHeight - FONT.sidebarSize22)
  					|| selectPosition.top < SelectBoxList.DEFAULT_DROPDOWN_MINIMUM_TOP_MARGIN
-@@ -687,3 +687,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+@@ -692,3 +692,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
  			// Check if select out of viewport or cutting into status bar
 -			if ((selectPosition.top + selectPosition.height) > (window.innerHeight - 22)
 +			if ((selectPosition.top + selectPosition.height) > (window.innerHeight - FONT.sidebarSize22)
  				|| selectPosition.top < SelectBoxList.DEFAULT_DROPDOWN_MINIMUM_TOP_MARGIN
-@@ -708,3 +708,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+@@ -713,3 +713,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
  				if (minRequiredDropDownHeight > maxSelectDropDownHeightBelow) {
 -					listHeight = (maxVisibleOptionsBelow * SELECT_OPTION_HEIGHT);
 +					listHeight = (maxVisibleOptionsBelow * FONT.sidebarSize22);
  				}
-@@ -712,3 +712,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+@@ -717,3 +717,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
  				if (minRequiredDropDownHeight > maxSelectDropDownHeightAbove) {
 -					listHeight = (maxVisibleOptionsAbove * SELECT_OPTION_HEIGHT);
 +					listHeight = (maxVisibleOptionsAbove * FONT.sidebarSize22);
@@ -412,10 +412,10 @@ index 34e9afbe..97104f9c 100644
  	}
 diff --git a/src/vs/base/common/font.ts b/src/vs/base/common/font.ts
 new file mode 100644
-index 00000000..b2a4200f
+index 00000000..183fad93
 --- /dev/null
 +++ b/src/vs/base/common/font.ts
-@@ -0,0 +1,215 @@
+@@ -0,0 +1,230 @@
 +/* eslint-disable header/header */
 +
 +import { IConfigurationService } from '../../platform/configuration/common/configuration.js';
@@ -432,6 +432,10 @@ index 00000000..b2a4200f
 +
 +	bottomPaneSize: 13,
 +	bottomPaneSize22: 22,
++	bottomPaneSize46: 46,
++	bottomPaneSize80: 80,
++	bottomPaneSize105: 105,
++	bottomPaneSize120: 120,
 +
 +	defaultSize: 13,
 +	defaultActivityBarSize: 16,
@@ -467,6 +471,7 @@ index 00000000..b2a4200f
 +
 +	tabsSize: 13,
 +	tabsSize22: 22,
++	tabsSize24: 24,
 +	tabsSize28: 28,
 +	tabsSize32: 32,
 +	tabsSize35: 35,
@@ -487,6 +492,10 @@ index 00000000..b2a4200f
 +
 +// Panel coefficients (base 13)
 +const BOTTOM_PANEL_COEFF_22 = 22/13;
++const BOTTOM_PANEL_COEFF_46 = 46/13;
++const BOTTOM_PANEL_COEFF_80 = 80/13;
++const BOTTOM_PANEL_COEFF_105 = 105/13;
++const BOTTOM_PANEL_COEFF_120 = 120/13;
 +
 +// Workbench coefficients (base 13)
 +const DEFAULT_COEFF_12 = 12/13;
@@ -519,6 +528,7 @@ index 00000000..b2a4200f
 +
 +// Tabs coefficients (base 13)
 +const TABS_COEFF_22 = 22/13;
++const TABS_COEFF_24 = 24/13;
 +const TABS_COEFF_28 = 28/13;
 +const TABS_COEFF_32 = 32/13;
 +const TABS_COEFF_35 = 35/13;
@@ -590,6 +600,10 @@ index 00000000..b2a4200f
 +export function updatePanelSize(size: number): void {
 +	FONT.bottomPaneSize = size;
 +	FONT.bottomPaneSize22 = size * BOTTOM_PANEL_COEFF_22;
++	FONT.bottomPaneSize46 = size * BOTTOM_PANEL_COEFF_46;
++	FONT.bottomPaneSize80 = size * BOTTOM_PANEL_COEFF_80;
++	FONT.bottomPaneSize105 = size * BOTTOM_PANEL_COEFF_105;
++	FONT.bottomPaneSize120 = size * BOTTOM_PANEL_COEFF_120;
 +}
 +
 +export function updateSidebarSize(size: number): void {
@@ -624,6 +638,7 @@ index 00000000..b2a4200f
 +export function updateTabsSize(size: number): void {
 +	FONT.tabsSize = size;
 +	FONT.tabsSize22 = size * TABS_COEFF_22;
++	FONT.tabsSize24 = size * TABS_COEFF_24;
 +	FONT.tabsSize28 = size * TABS_COEFF_28;
 +	FONT.tabsSize32 = size * TABS_COEFF_32;
 +	FONT.tabsSize35 = size * TABS_COEFF_35;
@@ -1376,7 +1391,7 @@ index 328285f0..0735dfa2 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/sessions/browser/workbench.ts b/src/vs/sessions/browser/workbench.ts
-index df3ba843..14e5f1f1 100644
+index 538acd34..18edb9e5 100644
 --- a/src/vs/sessions/browser/workbench.ts
 +++ b/src/vs/sessions/browser/workbench.ts
 @@ -62,3 +62,3 @@ import { CommandsRegistry } from '../../platform/commands/common/commands.js';
@@ -1384,13 +1399,13 @@ index df3ba843..14e5f1f1 100644
 -import { COMPACT_NOTIFICATION_ROW_HEIGHT, DEFAULT_NOTIFICATION_ROW_HEIGHT, setNotificationRowHeight } from '../../workbench/browser/parts/notifications/notificationsViewer.js';
 +import { setNotificationRowHeight } from '../../workbench/browser/parts/notifications/notificationsViewer.js';
  import { IMarkdownRendererService } from '../../platform/markdown/browser/markdownRenderer.js';
-@@ -84,4 +84,3 @@ import { AGENTS_FLOATING_PANEL_GAP } from '../common/layoutConstants.js';
+@@ -85,4 +85,4 @@ import { AGENTS_FLOATING_PANEL_GAP } from '../common/layoutConstants.js';
  import { ITelemetryService } from '../../platform/telemetry/common/telemetry.js';
--
--const PHONE_NOTIFICATION_ROW_HEIGHT = 44;
 +import { FONT } from '../../base/common/font.js';
  
-@@ -1060,5 +1059,5 @@ export class Workbench extends Disposable implements IAgentWorkbenchLayoutServic
+-const PHONE_NOTIFICATION_ROW_HEIGHT = 44;
+ const SESSIONS_SIDE_PANE_DIVIDER_CLASS = 'sessions-side-pane-divider';
+@@ -1090,5 +1090,5 @@ export abstract class Workbench extends Disposable implements IAgentWorkbenchLay
  		this._register(autorun(reader => {
 -			setNotificationRowHeight(this.layoutPolicy.isPhoneLayout.read(reader) ? PHONE_NOTIFICATION_ROW_HEIGHT : COMPACT_NOTIFICATION_ROW_HEIGHT);
 +			setNotificationRowHeight(this.layoutPolicy.isPhoneLayout.read(reader) ? FONT.sidebarSize44 : FONT.sidebarSize34);
@@ -1399,24 +1414,24 @@ index df3ba843..14e5f1f1 100644
 +		this._register(toDisposable(() => setNotificationRowHeight(FONT.sidebarSize42)));
  	}
 diff --git a/src/vs/sessions/test/browser/workbench.test.ts b/src/vs/sessions/test/browser/workbench.test.ts
-index 4aa6479f..082268ee 100644
+index a38702e5..c16d753d 100644
 --- a/src/vs/sessions/test/browser/workbench.test.ts
 +++ b/src/vs/sessions/test/browser/workbench.test.ts
-@@ -23,3 +23,3 @@ import { SESSIONS_LIST_MINIMUM_WIDTH } from '../../browser/parts/sidebarPart.js'
+@@ -32,3 +32,3 @@ import { SESSIONS_LIST_MINIMUM_WIDTH } from '../../browser/parts/sidebarPart.js'
  import { Menus } from '../../browser/menus.js';
 -import { DEFAULT_NOTIFICATION_ROW_HEIGHT, onDidChangeNotificationRowHeight, setNotificationRowHeight } from '../../../workbench/browser/parts/notifications/notificationsViewer.js';
 +import { onDidChangeNotificationRowHeight, setNotificationRowHeight } from '../../../workbench/browser/parts/notifications/notificationsViewer.js';
  import { NullTelemetryServiceShape } from '../../../platform/telemetry/common/telemetryUtils.js';
-@@ -27,2 +27,3 @@ import { IEditorGroupViewOptions } from '../../../workbench/browser/parts/editor
+@@ -36,2 +36,3 @@ import { DEFAULT_EDITOR_PART_OPTIONS, IEditorGroupViewOptions } from '../../../w
  import { EditorInput } from '../../../workbench/common/editor/editorInput.js';
 +import { FONT } from '../../../base/common/font.js';
- 
-@@ -412,3 +413,3 @@ suite('Sessions - Workbench', () => {
+ import '../../browser/parts/media/chatCompositeBar.css';
+@@ -547,3 +548,3 @@ suite('Sessions - Workbench', () => {
  	test('uses touch-sized notification rows on phone layouts', () => {
 -		setNotificationRowHeight(DEFAULT_NOTIFICATION_ROW_HEIGHT);
 +		setNotificationRowHeight(FONT.sidebarSize42);
  		const registeredDisposables = new DisposableStore();
-@@ -432,3 +433,3 @@ suite('Sessions - Workbench', () => {
+@@ -567,3 +568,3 @@ suite('Sessions - Workbench', () => {
  			registeredDisposables.dispose();
 -			setNotificationRowHeight(DEFAULT_NOTIFICATION_ROW_HEIGHT);
 +			setNotificationRowHeight(FONT.sidebarSize42);
@@ -1778,7 +1793,7 @@ index c94d7e90..d53de6c8 100644
 +
  .monaco-workbench .part.auxiliarybar > .title > .title-label {
 diff --git a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
-index 26e3b4fc..44c91469 100644
+index bdeeb76c..34a87f4a 100644
 --- a/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
 +++ b/src/vs/workbench/browser/parts/editor/editorTabsControl.ts
 @@ -48,2 +48,4 @@ import { MarkdownString } from '../../../../base/common/htmlContent.js';
@@ -1786,7 +1801,7 @@ index 26e3b4fc..44c91469 100644
 +import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 +import { FONT, getFontSize, updateTabsSize } from '../../../../base/common/font.js';
  import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
-@@ -105,11 +107,10 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
+@@ -103,13 +105,12 @@ export abstract class EditorTabsControl extends Themable implements IEditorTabsC
  
 -	private static readonly EDITOR_TAB_HEIGHT = {
 -		normal: 35 as const,
@@ -1796,6 +1811,8 @@ index 26e3b4fc..44c91469 100644
 -		// --editor-group-tab-height CSS value (24px / 20px) plus that 8px padding.
 -		modernUI: 32 as const,        // 24px tab  + 4px top + 4px bottom padding
 -		modernUICompact: 28 as const, // 20px tab  + 4px top + 4px bottom padding (20px = minimum to fit 16px icon + 2px padding)
+-		connected: 28 as const,
+-		connectedCompact: 24 as const,
 -	};
 +	private static get EDITOR_TAB_HEIGHT() {
 +		return {
@@ -1803,6 +1820,8 @@ index 26e3b4fc..44c91469 100644
 +			compact: FONT.tabsSize22,
 +			modernUI: FONT.tabsSize32,
 +			modernUICompact: FONT.tabsSize28,
++			connected: FONT.tabsSize28,
++			connectedCompact: FONT.tabsSize24,
 +		};
 +	}
  
@@ -1942,22 +1961,22 @@ index a24f7613..6b15b9c2 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
-index 72ad2119..0351cb17 100644
+index 3d6d8ebf..b271ff6c 100644
 --- a/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
 +++ b/src/vs/workbench/browser/parts/editor/media/multieditortabscontrol.css
-@@ -200,4 +200,4 @@
+@@ -217,4 +217,4 @@
  .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab.sizing-fixed {
 -	min-width: var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px));
 -	max-width: var(--tab-sizing-current-width, var(--tab-sizing-fixed-max-width, 160px));
 +	min-width: 50px;
 +	max-width: 160px;
  	flex: 1 0 0; /* all tabs are evenly sized and grow */
-@@ -209,3 +209,3 @@
+@@ -226,3 +226,3 @@
  	 * of the tabs container */
 -	min-width: calc(var(--tab-sizing-current-width, var(--tab-sizing-fixed-min-width, 50px)) - 1px);
 +	min-width: 50px - 1px;
  }
-@@ -596 +596,113 @@
+@@ -619 +619,113 @@
  }
 +
 +
@@ -2073,18 +2092,18 @@ index 72ad2119..0351cb17 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
-index d315c8f7..f71b0b49 100644
+index aeed0c48..54bf3bdc 100644
 --- a/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
 +++ b/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
 @@ -6,2 +6,3 @@
  import './media/multieditortabscontrol.css';
 +import { FONT } from '../../../../base/common/font.js';
  import { isLinux, isMacintosh, isWindows } from '../../../../base/common/platform.js';
-@@ -62,2 +63,3 @@ import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
- import { nextCharLength } from '../../../../base/common/strings.js';
+@@ -61,2 +62,3 @@ import { BugIndicatingError } from '../../../../base/common/errors.js';
+ import { applyDragImage } from '../../../../base/browser/ui/dnd/dnd.js';
 +import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
  
-@@ -98,8 +100,12 @@ export class MultiEditorTabsControl extends EditorTabsControl {
+@@ -97,8 +99,12 @@ export class MultiEditorTabsControl extends EditorTabsControl {
  
 -	private static readonly TAB_WIDTH = {
 -		compact: 38 as const,
@@ -2103,7 +2122,7 @@ index d315c8f7..f71b0b49 100644
 +		return FONT.tabsSize28;
 +	}
  
-@@ -174,4 +180,5 @@ export class MultiEditorTabsControl extends EditorTabsControl {
+@@ -172,4 +178,5 @@ export class MultiEditorTabsControl extends EditorTabsControl {
  		@IMenuService menuService: IMenuService,
 +		@IConfigurationService configurationService: IConfigurationService,
  	) {
@@ -2236,11 +2255,11 @@ index 42908982..d97991e4 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/notifications/notificationsViewer.ts b/src/vs/workbench/browser/parts/notifications/notificationsViewer.ts
-index 33703602..e84b24dc 100644
+index ebb6b6f9..507d41af 100644
 --- a/src/vs/workbench/browser/parts/notifications/notificationsViewer.ts
 +++ b/src/vs/workbench/browser/parts/notifications/notificationsViewer.ts
-@@ -35,11 +35,6 @@ import { IHoverService } from '../../../../platform/hover/browser/hover.js';
- import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+@@ -39,11 +39,6 @@ import { logNotificationInteraction, NotificationTelemetrySurface } from '../../
+ import { NotificationActionRunner } from './notificationsCommands.js';
 -
 -/** Default height (px) of a single notification row. */
 -export const DEFAULT_NOTIFICATION_ROW_HEIGHT = 42;
@@ -2253,13 +2272,13 @@ index 33703602..e84b24dc 100644
 -let notificationRowHeight = DEFAULT_NOTIFICATION_ROW_HEIGHT;
 +let notificationRowHeight: number | undefined;
  const onDidChangeNotificationRowHeightEmitter = new Emitter<number>();
-@@ -59,4 +54,3 @@ export class NotificationsListDelegate implements IListVirtualDelegate<INotifica
+@@ -63,4 +58,3 @@ export class NotificationsListDelegate implements IListVirtualDelegate<INotifica
  
 -	private static get ROW_HEIGHT(): number { return notificationRowHeight; }
 -	private static readonly LINE_HEIGHT = 22;
 +	private static get ROW_HEIGHT(): number { return notificationRowHeight ?? FONT.sidebarSize42; }
  
-@@ -82,5 +76,5 @@ export class NotificationsListDelegate implements IListVirtualDelegate<INotifica
+@@ -86,5 +80,5 @@ export class NotificationsListDelegate implements IListVirtualDelegate<INotifica
  		const preferredMessageHeight = this.computePreferredHeight(notification);
 -		const messageOverflows = NotificationsListDelegate.LINE_HEIGHT < preferredMessageHeight;
 +		const messageOverflows = FONT.sidebarSize22 < preferredMessageHeight;
@@ -2692,7 +2711,7 @@ index aca98deb..5bf9bf71 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/browser/parts/views/treeView.ts b/src/vs/workbench/browser/parts/views/treeView.ts
-index bf917583..77831b72 100644
+index ffe46acc..4b6cc33e 100644
 --- a/src/vs/workbench/browser/parts/views/treeView.ts
 +++ b/src/vs/workbench/browser/parts/views/treeView.ts
 @@ -79,2 +79,3 @@ import { IAccessibleViewInformationService } from '../../../services/accessibili
@@ -2709,7 +2728,7 @@ index bf917583..77831b72 100644
 -	static readonly ITEM_HEIGHT = 22;
  	static readonly TREE_TEMPLATE_ID = 'treeExplorer';
 diff --git a/src/vs/workbench/browser/workbench.contribution.ts b/src/vs/workbench/browser/workbench.contribution.ts
-index 28251cd8..c2ee3a6b 100644
+index 75c746cf..3a78e2db 100644
 --- a/src/vs/workbench/browser/workbench.contribution.ts
 +++ b/src/vs/workbench/browser/workbench.contribution.ts
 @@ -740,2 +740,85 @@ const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Con
@@ -2799,7 +2818,7 @@ index 28251cd8..c2ee3a6b 100644
 +			},
  			'workbench.settings.editor': {
 diff --git a/src/vs/workbench/browser/workbench.ts b/src/vs/workbench/browser/workbench.ts
-index 5fcc3908..65f21d9a 100644
+index 190ce6f5..b2ed41d1 100644
 --- a/src/vs/workbench/browser/workbench.ts
 +++ b/src/vs/workbench/browser/workbench.ts
 @@ -9,2 +9,3 @@ import { Event, Emitter, setGlobalLeakWarningThreshold } from '../../base/common
@@ -2894,14 +2913,14 @@ index 6f588651..3ab0ee4e 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
-index 516b994f..e6808c3b 100644
+index a25334cc..20fc8f2a 100644
 --- a/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
 +++ b/src/vs/workbench/contrib/chat/browser/agentSessions/agentSessionsViewer.ts
 @@ -58,2 +58,3 @@ import { createPixelSpinner, IPixelSpinner } from '../../../../../base/browser/u
  import { IAccessibilityService } from '../../../../../platform/accessibility/common/accessibility.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -1058,7 +1059,7 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
+@@ -1069,7 +1070,7 @@ export class AgentSessionsListDelegate implements IListVirtualDelegate<AgentSess
  
 -	static readonly ITEM_HEIGHT = 54;
 -	static readonly COMPACT_ITEM_HEIGHT = 52;
@@ -2915,7 +2934,7 @@ index 516b994f..e6808c3b 100644
 +	static get SPACED_SECTION_HEIGHT() { return FONT.sidebarSize30; };
  
 diff --git a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
-index d0f7993a..828d6eeb 100644
+index 3682b4dc..ce1288be 100644
 --- a/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
 +++ b/src/vs/workbench/contrib/chat/browser/widget/chatContentParts/chatChangesSummaryPart.ts
 @@ -40,4 +40,4 @@ import { ResourcePool } from './chatCollections.js';
@@ -2924,12 +2943,12 @@ index d0f7993a..828d6eeb 100644
  
 -const CHANGES_SUMMARY_ELEMENT_HEIGHT = 22;
  const CHANGES_SUMMARY_MAX_ITEMS_SHOWN = 6;
-@@ -126,3 +126,3 @@ export function renderChangesSummaryFileList(
- 		const itemsShown = Math.min(currentDiffs.length, CHANGES_SUMMARY_MAX_ITEMS_SHOWN);
+@@ -151,3 +151,3 @@ export function renderChangesSummaryFileList(
+ 		listContainer.classList.toggle('overflowing', currentDiffs.length > itemsShown);
 -		const height = itemsShown * CHANGES_SUMMARY_ELEMENT_HEIGHT;
 +		const height = itemsShown * FONT.sidebarSize22;
  		list.layout(height);
-@@ -355,3 +355,3 @@ class CollapsibleChangesSummaryListDelegate implements IListVirtualDelegate<IEdi
+@@ -421,3 +421,3 @@ class CollapsibleChangesSummaryListDelegate implements IListVirtualDelegate<IEdi
  	getHeight(element: IEditSessionEntryDiff): number {
 -		return CHANGES_SUMMARY_ELEMENT_HEIGHT;
 +		return FONT.sidebarSize22;
@@ -3077,14 +3096,14 @@ index c6298b30..8fcab5f3 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts b/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts
-index 4bd774ce..86c88c83 100644
+index 6743d0e3..8761ecb9 100644
 --- a/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts
 +++ b/src/vs/workbench/contrib/codeEditor/browser/suggestEnabledInput/suggestEnabledInput.ts
-@@ -40,2 +40,3 @@ import { SelectionClipboardContributionID } from '../selectionClipboard.js';
+@@ -41,2 +41,3 @@ import { SelectionClipboardContributionID } from '../selectionClipboard.js';
  import { getSimpleEditorOptions, setupSimpleEditorSelectionStyling } from '../simpleEditorOptions.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -481,4 +482,4 @@ function getSuggestEnabledInputOptions(ariaLabel?: string): IEditorOptions {
+@@ -486,4 +487,4 @@ function getSuggestEnabledInputOptions(ariaLabel?: string): IEditorOptions {
  	return {
 -		fontSize: 13,
 -		lineHeight: 20,
@@ -3121,14 +3140,14 @@ index d6dec6a1..3fb52d98 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/debug/browser/callStackView.ts b/src/vs/workbench/contrib/debug/browser/callStackView.ts
-index 35c9c1e5..f8bf9c5b 100644
+index 5fb4b6fb..a265f836 100644
 --- a/src/vs/workbench/contrib/debug/browser/callStackView.ts
 +++ b/src/vs/workbench/contrib/debug/browser/callStackView.ts
 @@ -22,2 +22,3 @@ import { Event } from '../../../../base/common/event.js';
  import { createMatches, FuzzyScore, IMatch } from '../../../../base/common/filters.js';
 +import { FONT } from '../../../../base/common/font.js';
  import { DisposableStore, dispose, IDisposable } from '../../../../base/common/lifecycle.js';
-@@ -898,9 +899,9 @@ class CallStackDelegate implements IListVirtualDelegate<CallStackItem> {
+@@ -902,9 +903,9 @@ class CallStackDelegate implements IListVirtualDelegate<CallStackItem> {
  		if (element instanceof StackFrame && element.presentationHint === 'label') {
 -			return 16;
 +			return FONT.sidebarSize16;
@@ -3579,23 +3598,23 @@ index c6cae5cc..7d35c9e8 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/workbench/contrib/files/browser/views/explorerView.ts b/src/vs/workbench/contrib/files/browser/views/explorerView.ts
-index e8968636..ac075e5d 100644
+index cf95db6a..bc8476bd 100644
 --- a/src/vs/workbench/contrib/files/browser/views/explorerView.ts
 +++ b/src/vs/workbench/contrib/files/browser/views/explorerView.ts
-@@ -574,3 +574,3 @@ export class ExplorerView extends ViewPane implements IExplorerView {
+@@ -575,3 +575,3 @@ export class ExplorerView extends ViewPane implements IExplorerView {
  			},
 -			paddingBottom: ExplorerDelegate.ITEM_HEIGHT,
 +			paddingBottom: ExplorerDelegate.getHeight(),
  			overrideStyles: this.getLocationBasedColors().listOverrideStyles,
 diff --git a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
-index 8178f4c4..1fc2803d 100644
+index e9975e38..5b7bf976 100644
 --- a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
 +++ b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
-@@ -76,2 +76,3 @@ import { listFilterMatchHighlight, listFilterMatchHighlightBorder } from '../../
+@@ -73,2 +73,3 @@ import { listFilterMatchHighlight, listFilterMatchHighlightBorder } from '../../
  import { asCssVariable } from '../../../../../platform/theme/common/colorUtils.js';
 +import { FONT } from '../../../../../base/common/font.js';
  
-@@ -79,6 +80,8 @@ export class ExplorerDelegate implements IListVirtualDelegate<ExplorerItem> {
+@@ -76,6 +77,8 @@ export class ExplorerDelegate implements IListVirtualDelegate<ExplorerItem> {
  
 -	static readonly ITEM_HEIGHT = 22;
 +	static getHeight(): number {
@@ -3606,7 +3625,7 @@ index 8178f4c4..1fc2803d 100644
 -		return ExplorerDelegate.ITEM_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
-@@ -852,3 +855,3 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
+@@ -847,3 +850,3 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
  			const indent = this.configurationService.getValue<number>('workbench.tree.indent');
 -			const offset = Math.max(22 - indent, 0); // derived via inspection
 +			const offset = Math.max(39 - indent, 0); // derived via inspection
@@ -3711,10 +3730,10 @@ index 0176fb67..140cda1d 100644
 +				lineElement.style.height = `${FONT.sidebarSize22}px`;
  			}
 diff --git a/src/vs/workbench/contrib/modernUI/browser/modernUI.contribution.ts b/src/vs/workbench/contrib/modernUI/browser/modernUI.contribution.ts
-index 041cc46f..bc0554af 100644
+index 53bc32a0..8a750854 100644
 --- a/src/vs/workbench/contrib/modernUI/browser/modernUI.contribution.ts
 +++ b/src/vs/workbench/contrib/modernUI/browser/modernUI.contribution.ts
-@@ -16,4 +16,4 @@ import { IWorkbenchContribution, registerWorkbenchContribution2, WorkbenchPhase
+@@ -15,4 +15,4 @@ import { IWorkbenchContribution, registerWorkbenchContribution2, WorkbenchPhase
  import { DEFAULT_SCROLLBAR_SIZE, setGlobalDefaultScrollbarSize } from '../../../../base/browser/ui/scrollbar/scrollableElement.js';
 -import { COMPACT_NOTIFICATION_ROW_HEIGHT, DEFAULT_NOTIFICATION_ROW_HEIGHT, setNotificationRowHeight } from '../../../browser/parts/notifications/notificationsViewer.js';
 -import { DEFAULT_PANE_HEADER_SIZE, setGlobalPaneHeaderSize } from '../../../../base/browser/ui/splitview/paneview.js';
@@ -3731,12 +3750,12 @@ index 041cc46f..bc0554af 100644
  import '../../../services/themes/browser/modernTabColorCustomizations.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -230,3 +228,3 @@ export class ModernUIContribution extends Disposable implements IWorkbenchContri
+@@ -203,3 +201,3 @@ export class ModernUIContribution extends Disposable implements IWorkbenchContri
  	private applyNotificationRowHeight(enabled: boolean): void {
 -		setNotificationRowHeight(enabled ? COMPACT_NOTIFICATION_ROW_HEIGHT : DEFAULT_NOTIFICATION_ROW_HEIGHT);
 +		setNotificationRowHeight(enabled ? FONT.sidebarSize34 : FONT.sidebarSize42);
  	}
-@@ -234,5 +232,5 @@ export class ModernUIContribution extends Disposable implements IWorkbenchContri
+@@ -207,5 +205,5 @@ export class ModernUIContribution extends Disposable implements IWorkbenchContri
  	private applyPaneHeaderSize(enabled: boolean): void {
 -		let paneHeaderSize = DEFAULT_PANE_HEADER_SIZE;
 +		let paneHeaderSize = FONT.sidebarSize22;
@@ -3744,7 +3763,7 @@ index 041cc46f..bc0554af 100644
 -			paneHeaderSize = MODERN_UI_PANE_HEADER_SIZE;
 +			paneHeaderSize = FONT.sidebarSize28;
  		}
-@@ -252,4 +250,4 @@ export class ModernUIContribution extends Disposable implements IWorkbenchContri
+@@ -225,4 +223,4 @@ export class ModernUIContribution extends Disposable implements IWorkbenchContri
  		setGlobalDefaultScrollbarSize(DEFAULT_SCROLLBAR_SIZE);
 -		setNotificationRowHeight(DEFAULT_NOTIFICATION_ROW_HEIGHT);
 -		setGlobalPaneHeaderSize(DEFAULT_PANE_HEADER_SIZE);
@@ -3804,14 +3823,14 @@ index b54812a0..05e5f75b 100644
 +		return FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/remote/browser/remote.ts b/src/vs/workbench/contrib/remote/browser/remote.ts
-index 2d7e4bb9..f4a5a5c1 100644
+index bcce67a6..b085ebf1 100644
 --- a/src/vs/workbench/contrib/remote/browser/remote.ts
 +++ b/src/vs/workbench/contrib/remote/browser/remote.ts
-@@ -57,2 +57,3 @@ import { mainWindow } from '../../../../base/browser/window.js';
+@@ -58,2 +58,3 @@ import { mainWindow } from '../../../../base/browser/window.js';
  import { IHoverService } from '../../../../platform/hover/browser/hover.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -65,3 +66,3 @@ class HelpTreeVirtualDelegate implements IListVirtualDelegate<IHelpItem> {
+@@ -66,3 +67,3 @@ class HelpTreeVirtualDelegate implements IListVirtualDelegate<IHelpItem> {
  	getHeight(element: IHelpItem): number {
 -		return 22;
 +		return FONT.sidebarSize22;
@@ -4318,32 +4337,42 @@ index 44bf3df1..ca580104 100644
 +			this.replaceInput.width = width - FONT.sidebarSize28;
  			this.replaceInput.inputBox.layout();
 diff --git a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
-index 013ee562..8c0ac05a 100644
+index d5c569fc..ad97f634 100644
 --- a/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
 +++ b/src/vs/workbench/contrib/terminal/browser/terminalTabsList.ts
-@@ -58,2 +58,3 @@ import { TerminalStorageKeys } from '../common/terminalStorageKeys.js';
+@@ -53,2 +53,3 @@ import { TerminalStorageKeys } from '../common/terminalStorageKeys.js';
  import { isObject } from '../../../../base/common/types.js';
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -62,3 +63,2 @@ const $ = DOM.$;
- export const enum TerminalTabsListSizes {
+@@ -56,10 +57,10 @@ const $ = DOM.$;
+ 
+-export const enum TerminalTabsListSizes {
 -	TabHeight = 22,
- 	NarrowViewWidth = 46,
-@@ -99,3 +99,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
+-	NarrowViewWidth = 46,
+-	WideViewMinimumWidth = 80,
+-	DefaultWidth = 120,
+-	MidpointViewWidth = (TerminalTabsListSizes.NarrowViewWidth + TerminalTabsListSizes.WideViewMinimumWidth) / 2,
+-	ActionbarMinimumWidth = 105,
+-	MaximumWidth = 500
++export const TerminalTabsListSizes = {
++	TabHeight: FONT.bottomPaneSize22,
++	NarrowViewWidth: FONT.bottomPaneSize46,
++	WideViewMinimumWidth: FONT.bottomPaneSize80,
++	DefaultWidth: FONT.bottomPaneSize120,
++	MidpointViewWidth: (FONT.bottomPaneSize46 + FONT.bottomPaneSize80) / 2,
++	ActionbarMinimumWidth: FONT.bottomPaneSize105,
++	MaximumWidth: 500
+ }
+@@ -94,3 +95,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
  			{
 -				getHeight: () => TerminalTabsListSizes.TabHeight,
 +				getHeight: () => FONT.bottomPaneSize22,
  				getTemplateId: () => 'terminal.tabs'
-@@ -116,3 +116,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
+@@ -111,3 +112,3 @@ export class TerminalTabList extends WorkbenchList<ITerminalInstance> {
  				multipleSelectionSupport: true,
 -				paddingBottom: TerminalTabsListSizes.TabHeight,
 +				paddingBottom: FONT.bottomPaneSize22,
  				dnd: instantiationService.createInstance(TerminalTabsDragAndDrop),
-@@ -460,3 +460,3 @@ class TerminalTabsRenderer implements IListRenderer<ITerminalInstance, ITerminal
- 		});
--		inputBox.element.style.height = '22px';
-+		inputBox.element.style.height = `${FONT.bottomPaneSize22}px`;
- 		inputBox.value = value;
 diff --git a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts b/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
 index 02fdfa31..3bed1bbb 100644
 --- a/src/vs/workbench/contrib/testing/browser/testCoverageView.ts
@@ -4388,21 +4417,21 @@ index 20d4dbdb..b48d2e90 100644
 +		return element instanceof TestTreeErrorMessage ? FONT.sidebarSize17 + 10 : FONT.sidebarSize22;
  	}
 diff --git a/src/vs/workbench/contrib/timeline/browser/timelinePane.ts b/src/vs/workbench/contrib/timeline/browser/timelinePane.ts
-index 813c9ba3..17af2f90 100644
+index cbb431fe..b94937c6 100644
 --- a/src/vs/workbench/contrib/timeline/browser/timelinePane.ts
 +++ b/src/vs/workbench/contrib/timeline/browser/timelinePane.ts
-@@ -59,4 +59,3 @@ import { IHoverService, WorkbenchHoverDelegate } from '../../../../platform/hove
+@@ -62,4 +62,3 @@ import { IHoverService, WorkbenchHoverDelegate } from '../../../../platform/hove
  import { HoverPosition } from '../../../../base/browser/ui/hover/hoverWidget.js';
 -
 -const ItemHeight = 22;
 +import { FONT } from '../../../../base/common/font.js';
  
-@@ -330,3 +329,3 @@ export class TimelinePane extends ViewPane {
+@@ -350,3 +349,3 @@ export class TimelinePane extends ViewPane {
  			// If we are paging when scrolling, then add an extra item to the end to make sure the "Load more" item is out of view
 -			pageSize = Math.max(20, Math.floor(((this.tree?.renderHeight ?? 0) / ItemHeight) + (this.pageOnScroll ? 1 : -1)));
 +			pageSize = Math.max(20, Math.floor(((this.tree?.renderHeight ?? 0) / FONT.sidebarSize22) + (this.pageOnScroll ? 1 : -1)));
  		}
-@@ -1148,3 +1147,3 @@ export class TimelineListVirtualDelegate implements IListVirtualDelegate<TreeEle
+@@ -1325,3 +1324,3 @@ export class TimelineListVirtualDelegate implements IListVirtualDelegate<TreeEle
  	getHeight(_element: TreeElement): number {
 -		return ItemHeight;
 +		return FONT.sidebarSize22;
@@ -4439,7 +4468,7 @@ index d7e2205d..ce0d52d8 100644
 +		const marginOffset = Math.floor(visibleSessions / 2) * FONT.sidebarSize22;
  		this.sessionsControl.element!.style.marginBottom = `-${marginOffset}px`;
 diff --git a/src/vs/workbench/test/browser/notificationsList.test.ts b/src/vs/workbench/test/browser/notificationsList.test.ts
-index 19d88585..6751d90f 100644
+index aaaed58c..220b8020 100644
 --- a/src/vs/workbench/test/browser/notificationsList.test.ts
 +++ b/src/vs/workbench/test/browser/notificationsList.test.ts
 @@ -14,3 +14,3 @@ import { MockKeybindingService } from '../../../platform/keybinding/test/common/
@@ -4447,16 +4476,16 @@ index 19d88585..6751d90f 100644
 -import { DEFAULT_NOTIFICATION_ROW_HEIGHT, NotificationRenderer, onDidChangeNotificationRowHeight, setNotificationRowHeight } from '../../browser/parts/notifications/notificationsViewer.js';
 +import { NotificationRenderer, onDidChangeNotificationRowHeight, setNotificationRowHeight } from '../../browser/parts/notifications/notificationsViewer.js';
  import { DisposableStore, toDisposable } from '../../../base/common/lifecycle.js';
-@@ -19,2 +19,3 @@ import { NotificationsCenter } from '../../browser/parts/notifications/notificat
- import { Action, ActionRunner } from '../../../base/common/actions.js';
+@@ -24,2 +24,3 @@ import { IOpenerService } from '../../../platform/opener/common/opener.js';
+ import { URI } from '../../../base/common/uri.js';
 +import { FONT } from '../../../base/common/font.js';
  
-@@ -41,3 +42,3 @@ suite('NotificationsList row height', () => {
+@@ -46,3 +47,3 @@ suite('NotificationsList row height', () => {
  
 -	teardown(() => setNotificationRowHeight(DEFAULT_NOTIFICATION_ROW_HEIGHT));
 +	teardown(() => setNotificationRowHeight(FONT.sidebarSize42));
  
-@@ -49,5 +50,5 @@ suite('NotificationsList row height', () => {
+@@ -54,5 +55,5 @@ suite('NotificationsList row height', () => {
  		setNotificationRowHeight(34);
 -		setNotificationRowHeight(DEFAULT_NOTIFICATION_ROW_HEIGHT);
 +		setNotificationRowHeight(FONT.sidebarSize42);
@@ -4464,17 +4493,17 @@ index 19d88585..6751d90f 100644
 -		assert.deepStrictEqual(changes, [34, DEFAULT_NOTIFICATION_ROW_HEIGHT]);
 +		assert.deepStrictEqual(changes, [34, FONT.sidebarSize42]);
  	});
-@@ -88,3 +89,3 @@ suite('NotificationsList row height', () => {
+@@ -93,3 +94,3 @@ suite('NotificationsList row height', () => {
  		const before = getRowState();
 -		setNotificationRowHeight(DEFAULT_NOTIFICATION_ROW_HEIGHT);
 +		setNotificationRowHeight(FONT.sidebarSize42);
  		const after = getRowState();
-@@ -96,3 +97,3 @@ suite('NotificationsList row height', () => {
+@@ -101,3 +102,3 @@ suite('NotificationsList row height', () => {
  			afterHeight: after.height,
 -			preservedFocusedRowViewportPosition: typeof before.viewportTop === 'number' && typeof after.viewportTop === 'number' && Math.abs(after.viewportTop - before.viewportTop) <= DEFAULT_NOTIFICATION_ROW_HEIGHT - 34,
 +			preservedFocusedRowViewportPosition: typeof before.viewportTop === 'number' && typeof after.viewportTop === 'number' && Math.abs(after.viewportTop - before.viewportTop) <= FONT.sidebarSize42 - 34,
  			rowAfterDispose: container.querySelector('.monaco-list-row')
-@@ -100,3 +101,3 @@ suite('NotificationsList row height', () => {
+@@ -105,3 +106,3 @@ suite('NotificationsList row height', () => {
  			beforeHeight: '34px',
 -			afterHeight: `${DEFAULT_NOTIFICATION_ROW_HEIGHT}px`,
 +			afterHeight: `${FONT.sidebarSize42}px`,

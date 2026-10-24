@@ -1,5 +1,5 @@
 diff --git a/src/vs/workbench/contrib/extensions/electron-browser/extensionsSlowActions.ts b/src/vs/workbench/contrib/extensions/electron-browser/extensionsSlowActions.ts
-index 46120a9..6bc88c8 100644
+index 77c1661c..a64a48ce 100644
 --- a/src/vs/workbench/contrib/extensions/electron-browser/extensionsSlowActions.ts
 +++ b/src/vs/workbench/contrib/extensions/electron-browser/extensionsSlowActions.ts
 @@ -153,3 +153,3 @@ class ReportExtensionSlowAction extends Action {
@@ -8,18 +8,33 @@ index 46120a9..6bc88c8 100644
 +- !!APP_NAME!! version: \`${this._productService.version}\`\n\n${message}`);
  
 diff --git a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
-index efe8061..831ce2e 100644
+index b7734ab7..840638f1 100644
 --- a/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
 +++ b/src/vs/workbench/contrib/issue/browser/baseIssueReporterService.ts
-@@ -591,3 +591,3 @@ export class BaseIssueReporterService extends Disposable {
+@@ -851,6 +851,6 @@ export class BaseIssueReporterService extends Disposable {
+ 
+-	public searchVSCodeIssues(title: string, issueDescription?: string): void {
++	public searchVSCodeIssues(title: string, _issueDescription?: string): void {
+ 		this.clearSearchResults();
  		if (title) {
--			this.searchDuplicates(title, issueDescription);
-+			this.searchGitHub('!!GH_REPO_PATH!!', title);
- 		} else {
-@@ -668,33 +668,2 @@ export class BaseIssueReporterService extends Disposable {
+-			this.searchDuplicates(title, issueDescription, this.similarIssueSearchGeneration);
++			this.searchGitHub('!!GH_REPO_PATH!!', title, this.similarIssueSearchGeneration);
+ 		}
+@@ -871,4 +871,3 @@ export class BaseIssueReporterService extends Disposable {
+ 
+-		const description = this.issueReporterModel.getData().issueDescription;
+-		this.searchDuplicates(title, description, this.similarIssueSearchGeneration);
++		this.searchGitHub('!!GH_REPO_PATH!!', title, this.similarIssueSearchGeneration);
+ 	}
+@@ -939,38 +938,2 @@ export class BaseIssueReporterService extends Disposable {
  
 -	@debounce(300)
--	private searchDuplicates(title: string, body?: string): void {
+-	private searchDuplicates(title: string, body: string | undefined, generation: number): void {
+-		if (this._store.isDisposed || generation !== this.similarIssueSearchGeneration) {
+-			return;
+-		}
+-		const controller = new AbortController();
+-		this.similarIssueSearch.value = toDisposable(() => controller.abort());
 -		const url = 'https://vscode-probot.westus.cloudapp.azure.com:7890/duplicate_candidates';
 -		const init = {
 -			method: 'POST',
@@ -29,50 +44,50 @@ index efe8061..831ce2e 100644
 -			}),
 -			headers: new Headers({
 -				'Content-Type': 'application/json'
--			})
+-			}),
+-			signal: controller.signal,
 -		};
 -
--		fetch(url, init).then((response) => {
--			response.json().then(result => {
--				this.clearSearchResults();
--
--				if (result && result.candidates) {
--					this.displaySearchResults(result.candidates);
--				} else {
--					throw new Error('Unexpected response, no candidates property');
--				}
--			}).catch(_ => {
--				// Ignore
--			});
--		}).catch(_ => {
--			// Ignore
+-		void this.fetcher(url, init).then(async response => {
+-			const result: { candidates?: readonly ISimilarIssue[] } | null = await response.json();
+-			if (controller.signal.aborted) {
+-				return;
+-			}
+-			if (!result || !Array.isArray(result.candidates)) {
+-				throw new Error('Unexpected response, no candidates property');
+-			}
+-			this.displaySearchResults(result.candidates);
+-		}).catch(error => {
+-			if (!controller.signal.aborted) {
+-				this.logService.warn('[IssueReporter] Error fetching duplicate issues', error);
+-			}
 -		});
 -	}
 -
- 	private displaySearchResults(results: SearchResult[]) {
-@@ -786,4 +755,4 @@ export class BaseIssueReporterService extends Disposable {
+ 	private displaySearchResults(results: readonly ISimilarIssue[]) {
+@@ -1065,4 +1028,4 @@ export class BaseIssueReporterService extends Disposable {
  		sourceSelect.append(this.makeOption('', localize('selectSource', "Select source"), true));
 -		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "Visual Studio Code"), false));
 -		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A VS Code extension"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.VSCode, localize('vscode', "!!APP_NAME!!"), false));
 +		sourceSelect.append(this.makeOption(IssueSource.Extension, localize('extension', "A !!APP_NAME!! extension"), false));
  		if (this.product.reportMarketplaceIssueUrl) {
-@@ -874,3 +843,3 @@ export class BaseIssueReporterService extends Disposable {
+@@ -1169,3 +1132,3 @@ export class BaseIssueReporterService extends Disposable {
  			hide(descriptionTextArea);
 -			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of VS Code"));
 +			reset(descriptionTitle, localize('handlesIssuesElsewhere', "This extension handles issues outside of !!APP_NAME!!"));
  			reset(descriptionSubtitle, localize('elsewhereDescription', "The '{0}' extension prefers to use an external issue reporter. To be taken to that issue reporting experience, click the button below.", selectedExtension.displayName));
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
-index 0bbd8ac..3f35022 100644
+index cf3e5d42..accdc6c9 100644
 --- a/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
 +++ b/src/vs/workbench/contrib/issue/browser/issueReporterModel.ts
-@@ -92,3 +92,3 @@ ${this._data.issueDescription}
+@@ -102,3 +102,3 @@ ${this._data.issueDescription}
  ${this.getExtensionVersion()}
 -VS Code version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
 +!!APP_NAME!! version: ${this._data.versionInfo && this._data.versionInfo.vscodeVersion}
  OS version: ${this._data.versionInfo && this._data.versionInfo.os}
 diff --git a/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts b/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
-index e739f44..0024f74 100644
+index 10fde69b..77ca0b63 100644
 --- a/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
 +++ b/src/vs/workbench/contrib/issue/browser/issueReporterPage.ts
 @@ -14,3 +14,3 @@ const sendExperimentsLabel = escape(localize('sendExperiments', "Include A/B exp
