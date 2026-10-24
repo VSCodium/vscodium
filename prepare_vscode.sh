@@ -59,9 +59,10 @@ if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
     setpath "product" "downloadUrl" "https://github.com/VSCodium/vscodium/releases"
   fi
 
-  # if [[ "${OS_NAME}" == "windows" ]]; then
-  #   setpath_json "product" "win32VersionedUpdate" "true"
-  # fi
+fi
+
+if [[ "${OS_NAME}" == "windows" ]]; then
+  setpath_json "product" "win32VersionedUpdate" "true"
 fi
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
