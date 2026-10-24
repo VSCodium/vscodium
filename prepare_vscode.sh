@@ -50,6 +50,11 @@ setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=5
 setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=852118"
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
 
+# the OSS product.json points webviews at an old insider build whose service worker is outdated (#2927)
+if [[ "${VSCODE_QUALITY}" != "insider" && -n "${MS_COMMIT}" ]]; then
+  setpath "product" "webviewContentExternalBaseUrlTemplate" "https://{{uuid}}.vscode-cdn.net/stable/${MS_COMMIT}/out/vs/workbench/contrib/webview/browser/pre/"
+fi
+
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
   setpath "product" "updateUrl" "https://raw.githubusercontent.com/VSCodium/versions/refs/heads/master"
 
