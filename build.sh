@@ -39,7 +39,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     if [[ "${CI_BUILD}" == "no" ]]; then
       . ../build/windows/rtf/make.sh
 
-      if [[ "${VSCODE_ARCH}" == "x64" ]];
+      if [[ "${VSCODE_ARCH}" == "x64" ]]; then
         . ../build/windows/install_inno_update.sh
       fi
 
