@@ -27,6 +27,10 @@ find .build/extensions -type f -name '*.node' -print -delete
 
 . ../build/windows/rtf/make.sh
 
+if [[ "${VSCODE_ARCH}" == "x64" ]]; then
+  . ../build/windows/install_inno_update.sh
+fi
+
 # generate Group Policy definitions
 npm run copy-policy-dto --prefix build
 node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc win32
