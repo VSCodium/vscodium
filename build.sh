@@ -39,6 +39,10 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
     if [[ "${CI_BUILD}" == "no" ]]; then
       . ../build/windows/rtf/make.sh
 
+      if [[ "${VSCODE_ARCH}" == "x64" ]];
+        . ../build/windows/install_inno_update.sh
+      fi
+
       # generate Group Policy definitions
       npm run copy-policy-dto --prefix build
       node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc win32
