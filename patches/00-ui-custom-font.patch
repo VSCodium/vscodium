@@ -232,7 +232,7 @@ index fd4d00ea..92ddc996 100644
 +}
 \ No newline at end of file
 diff --git a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
-index 337c2a7c..358f6137 100644
+index 337c2a7c..c4060a19 100644
 --- a/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
 +++ b/src/vs/base/browser/ui/selectBox/selectBoxCustom.ts
 @@ -8,2 +8,3 @@ import * as arrays from '../../../common/arrays.js';
@@ -248,6 +248,11 @@ index 337c2a7c..358f6137 100644
 -		return SELECT_OPTION_HEIGHT;
 +		return FONT.sidebarSize22;
  	}
+@@ -631,3 +631,3 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
+ 			this.selectList.layout();
+-			let listHeight = Math.min(this.selectList.contentHeight, (this.selectBoxOptions.maxVisibleOptions ?? Infinity) * SELECT_OPTION_HEIGHT);
++			let listHeight = Math.min(this.selectList.contentHeight, (this.selectBoxOptions.maxVisibleOptions ?? Infinity) * FONT.sidebarSize22);
+ 
 @@ -639,4 +639,4 @@ export class SelectBoxList extends Disposable implements ISelectBoxDelegate, ILi
  			const minRequiredDropDownHeight = listHeight + maxDetailsPaneHeight;
 -			const maxVisibleOptionsBelow = ((Math.floor((maxSelectDropDownHeightBelow - maxDetailsPaneHeight) / SELECT_OPTION_HEIGHT)));
