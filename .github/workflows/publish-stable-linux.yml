@@ -93,6 +93,11 @@ jobs:
         run: ./get_repo.sh
         if: env.SHOULD_BUILD == 'yes'
 
+      - name: Validate compile-time patches
+        run: bash ./dev/check_patches.sh compile
+        continue-on-error: true
+        if: env.SHOULD_BUILD == 'yes'
+
       - name: Build
         env:
           SHOULD_BUILD_REH: no
@@ -115,6 +120,15 @@ jobs:
           path: ./vscode.tar.gz
           retention-days: 30
         if: env.SHOULD_BUILD == 'yes'
+
+      - name: Upload patch validation logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: patch-check-compile-linux-stable
+          path: ./.patch-check/*.log
+          include-hidden-files: true
+          retention-days: 3
+        if: always() && env.SHOULD_BUILD == 'yes'
 
   build:
     needs:
@@ -142,18 +156,6 @@ jobs:
           vscode_arch: armhf
           npm_arch: arm
           image: vscodium/vscodium-linux-build-agent:focal-armhf
-        - slug: RISCV64
-          vscode_arch: riscv64
-          npm_arch: riscv64
-          image: vscodium/vscodium-linux-build-agent:focal-riscv64
-        - slug: LOONG64
-          vscode_arch: loong64
-          npm_arch: loong64
-          image: vscodium/vscodium-linux-build-agent:crimson-loong64
-        - slug: PPC64
-          vscode_arch: ppc64le
-          npm_arch: ppc64
-          image: vscodium/vscodium-linux-build-agent:focal-ppc64le
     container:
       image: ${{ matrix.image }}
     env:
@@ -199,6 +201,11 @@ jobs:
           name: vscode
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
+      - name: Validate package patches
+        run: bash ./dev/check_patches.sh linux-client
+        continue-on-error: true
+        if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
+
       - name: Build
         id: build
         env:
@@ -241,6 +248,15 @@ jobs:
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./update_version.sh
         if: env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
+
+      - name: Upload patch validation logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: patch-check-linux-bin-stable-${{ matrix.vscode_arch }}
+          path: ./.patch-check/*.log
+          include-hidden-files: true
+          retention-days: 3
+        if: always() && env.DISABLED != 'yes' && env.SHOULD_BUILD == 'yes'
 
   anylinux-appimage:
     needs:
@@ -333,15 +349,6 @@ jobs:
         - slug: ARM32
           vscode_arch: armhf
           npm_arch: arm
-        - slug: PPC64
-          vscode_arch: ppc64le
-          npm_arch: ppc64
-        - slug: RISCV64
-          vscode_arch: riscv64
-          npm_arch: riscv64
-        - slug: LOONG64
-          vscode_arch: loong64
-          npm_arch: loong64
         - slug: S390X
           vscode_arch: s390x
           npm_arch: s390x
@@ -402,6 +409,11 @@ jobs:
           name: vscode
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
+      - name: Validate REH patches
+        run: bash ./dev/check_patches.sh linux-reh
+        continue-on-error: true
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
+
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -415,6 +427,15 @@ jobs:
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
+
+      - name: Upload patch validation logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: patch-check-linux-reh-stable-${{ matrix.vscode_arch }}
+          path: ./.patch-check/*.log
+          include-hidden-files: true
+          retention-days: 3
+        if: always() && env.DISABLED != 'yes'
 
   reh_alpine:
     needs:
@@ -481,6 +502,11 @@ jobs:
           name: vscode
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
 
+      - name: Validate Alpine REH patches
+        run: bash ./dev/check_patches.sh alpine-reh
+        continue-on-error: true
+        if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
+
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -494,6 +520,15 @@ jobs:
           GITHUB_USERNAME: ${{ github.repository_owner }}
         run: ./release.sh
         if: env.DISABLED != 'yes' && (env.SHOULD_BUILD_REH != 'no' || env.SHOULD_BUILD_REH_WEB != 'no')
+
+      - name: Upload patch validation logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: patch-check-alpine-reh-stable-${{ matrix.vscode_arch }}
+          path: ./.patch-check/*.log
+          include-hidden-files: true
+          retention-days: 3
+        if: always() && env.DISABLED != 'yes'
 
   aur:
     needs:
