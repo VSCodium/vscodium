@@ -6,14 +6,14 @@ Unlike Visual Studio Code, in VSCodium, Copilot features are disabled and not co
 
 ## Update your settings
 
-In your settings, sets:
+In your settings, set:
 ```
 "chat.disableAIFeatures": false,
 ```
 
 ## Configure product.json
 
-You need to create a custom `product.json` at the following location (replace `VSCodium` by `VSCodium - Insiders` if you use that):
+You need to create a custom `product.json` at the following location (replace `VSCodium` with `VSCodium - Insiders` if you use that):
 - Windows: `%APPDATA%\VSCodium` or `%USERPROFILE%\AppData\Roaming\VSCodium`
 - macOS: `~/Library/Application Support/VSCodium`
 - Linux: `$XDG_CONFIG_HOME/VSCodium` or `~/.config/VSCodium`

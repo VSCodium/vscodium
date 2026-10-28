@@ -27,7 +27,7 @@ else
     sudo snap install --channel "${CHANNEL}" --classic snapcraft
 
     if [[ ! "$( snapcraft whoami )" =~ "${SNAP_PUBLISHER}" ]]; then
-      echo "FATAL -- Not authentificated"
+      echo "FATAL -- Not authenticated"
 
       exit 1
     fi

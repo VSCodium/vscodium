@@ -16,7 +16,7 @@
 
 In VSCodium, `Sign in with GitHub` is using a Personal Access Token.<br />
 Follow the documentation https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token to create your token.<br />
-Select the scopes dependending on the extension which needs access to GitHub. (GitLens requires the `repo` scope.)
+Select the scopes depending on the extension which needs access to GitHub. (GitLens requires the `repo` scope.)
 
 ### Linux
 
@@ -25,12 +25,12 @@ If you are getting the error `Writing login information to the keychain failed w
 ## <a id="portable"></a>How do I run VSCodium in portable mode?
 You can follow the [Portable Mode instructions](https://code.visualstudio.com/docs/editor/portable) from the Visual Studio Code website.
 - **Windows** / **Linux** : the instructions can be followed as written.
-- **macOS** : portable mode is enabled by the existence of a specially named folder. For Visual Studio Code that folder name is `code-portable-data`. For VSCodium, that folder name is `codium-portable-data`. So to enable portable mode for VSCodium on Mac OS, follow the instructions outlined in the [link above](https://code.visualstudio.com/docs/editor/portable), but create a folder named `codium-portable-data` instead of `code-portable-data`.
+- **macOS** : portable mode is enabled by the existence of a specially named folder. For Visual Studio Code that folder name is `code-portable-data`. For VSCodium, that folder name is `codium-portable-data`. So to enable portable mode for VSCodium on macOS, follow the instructions outlined in the [link above](https://code.visualstudio.com/docs/editor/portable), but create a folder named `codium-portable-data` instead of `code-portable-data`.
 
 ## <a id="file-manager"></a>How do I fix the default file manager (Linux)?
 
 In some cases, VSCodium becomes the file manager used to open directories (instead of apps like Dolphin or Nautilus).<br />
-It's due to that no application was defined as the default file manager and so the system is using the latest capable application.
+This is because no application was defined as the default file manager, so the system is using the latest capable application.
 
 To set the default app, create the file `~/.config/mimeapps.list` with the content like:
 ```

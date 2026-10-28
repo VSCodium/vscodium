@@ -8,7 +8,7 @@ index 2c63e9e6..e98ed806 100644
 +			type: 'integer',
 +			default: 120,
 +			scope: ConfigurationScope.APPLICATION,
-+			description: localize('update.cooldown', "Control how old an update need to be before installing it (in hours)."),
++			description: localize('update.cooldown', "Control how old an update needs to be before installing it (in hours)."),
 +		},
  		'update.enableWindowsBackgroundUpdates': {
 diff --git a/src/vs/platform/update/electron-main/abstractUpdateService.ts b/src/vs/platform/update/electron-main/abstractUpdateService.ts
@@ -17,11 +17,11 @@ index d776f408..70b86dce 100644
 +++ b/src/vs/platform/update/electron-main/abstractUpdateService.ts
 @@ -459,3 +459,26 @@ export abstract class AbstractUpdateService implements IUpdateService {
  
--				return Promise.resolve({ lastest, update });
+-				return Promise.resolve({ latest, update });
 +				const minReleaseAge = this.configurationService.getValue<number>('update.minReleaseAge');
 +
 +				if(minReleaseAge === 0) {
-+					return Promise.resolve({ lastest, update });
++					return Promise.resolve({ latest, update });
 +				}
 +
 +				const releaseDate = update.timestamp ? new Date(Number.parseInt(String(update.timestamp), 10)) : null;
@@ -37,7 +37,7 @@ index d776f408..70b86dce 100644
 +				this.logService.info(`update#isLatestVersion() - releaseAge: ${age}, minReleaseAge: ${minReleaseAge}`);
 +
 +				if(age >= minReleaseAge) {
-+					return Promise.resolve({ lastest, update });
++					return Promise.resolve({ latest, update });
 +				}
 +				else {
 +					return Promise.resolve(undefined);
@@ -53,7 +53,7 @@ index 464b3948..121bd09f 100644
 +				type: 'integer',
 +				default: 48,
 +				scope: ConfigurationScope.APPLICATION,
-+				description: localize('extensions.minReleaseAge', "Control how old an extension need to be before auto-updating it (in hours)."),
++				description: localize('extensions.minReleaseAge', "Control how old an extension needs to be before auto-updating it (in hours)."),
 +				tags: ['usesOnlineServices']
 +			},
  			'extensions.showRecommendationsOnlyOnDemand': {

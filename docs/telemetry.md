@@ -14,7 +14,7 @@ This page explains how VSCodium handles telemetry and how it enhances your priva
 
 ## <a id="telemetry"></a>Telemetry in VSCodium
 
-Even though we do not pass the telemetry build flags and go out of our way to cripple the baked-in telemetry, Microsoft still can track usage by default depending on your settings.
+Even though we do not pass the telemetry build flags and go out of our way to cripple the baked-in telemetry, Microsoft can still track usage by default depending on your settings.
 
 We disable all the following telemetry-related settings by default to enhance your privacy:
 
@@ -35,7 +35,7 @@ For example, the C# extension `ms-vscode.csharp` sends tracking data to Microsof
 
 ### Update services
 
-By default, the app periodically fetches connections to check for the latest version available to download and install.
+By default, the app periodically connects to check for the latest version available to download and install.
 Extensions are also checked for updates automatically from time to time.
 
 If you want to prevent such behaviors, modify the following preferences:
@@ -54,7 +54,7 @@ _Note: on Linux, the app update service is disabled completely at build-time eve
 
 ### Feedback telemetry
 
-By default, we keep the preference `telemetry.feedback.enabled` enabled. It's used to allow the button `Report Issue...` to be used on the app depending on the context. It does not send any data by having it enabled (other options already cover it). If you want, you can disable this behavior by toggling the preference value.
+By default, we keep the preference `telemetry.feedback.enabled` enabled. It's used to allow the button `Report Issue...` to be used on the app depending on the context. Having it enabled does not send any data (other options already cover it). If you want, you can disable this behavior by toggling the preference value.
 
 ## <a id="replacements"></a>Replacements to Microsoft Online Services
 

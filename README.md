@@ -15,7 +15,7 @@
 
 </div>
 
-**This is not a fork. This is a repository of scripts to automatically build [Microsoft's `vscode` repository](https://github.com/microsoft/vscode) into freely-licensed binaries with a community-driven default configuration.**
+**This is not a fork. This is a repository of scripts to automatically build [Microsoft's `vscode` repository](https://github.com/microsoft/vscode) into freely licensed binaries with a community-driven default configuration.**
 
 ## Table of Contents
 
@@ -142,7 +142,7 @@ If you want to build from source yourself, head over to [Microsoft's vscode repo
 
 Microsoft's build process (which we are running to build the binaries) does download additional files. Those packages downloaded during build are:
 
-- Pre-built extensions from the GitHub:
+- Pre-built extensions from GitHub:
    - [ms-vscode.js-debug-companion](https://github.com/microsoft/vscode-js-debug-companion)
    - [ms-vscode.js-debug](https://github.com/microsoft/vscode-js-debug)
    - [ms-vscode.vscode-js-profile-table](https://github.com/microsoft/vscode-js-profile-visualizer)
@@ -154,11 +154,11 @@ Microsoft's build process (which we are running to build the binaries) does down
 
 ### Documentation
 
-For more information on getting all the telemetry disabled, tips for migrating from Visual Studio Code to VSCodium and more, have a look at [the Docs page](https://github.com/VSCodium/vscodium/blob/master/docs/index.md) page.
+For more information on getting all the telemetry disabled, tips for migrating from Visual Studio Code to VSCodium and more, have a look at [the Docs page](https://github.com/VSCodium/vscodium/blob/master/docs/index.md).
 
 ### Troubleshooting
 
-If you have any issue, please check [the Troubleshooting page](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md) or the existing issues.
+If you have any issues, please check [the Troubleshooting page](https://github.com/VSCodium/vscodium/blob/master/docs/troubleshooting.md) or the existing issues.
 
 ### Extensions and the Marketplace
 
