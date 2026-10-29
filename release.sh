@@ -40,6 +40,7 @@ if [[ $( gh release view "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" 2>&1
     gh release create "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --title "${RELEASE_VERSION}" --generate-notes
 
     RELEASE_NOTES=$( gh release view "${RELEASE_VERSION}" --repo "${ASSETS_REPOSITORY}" --json "body" --jq ".body" )
+    RELEASE_NOTES=$( printf '%s' "${RELEASE_NOTES}" | sed -e 's/[\\|&]/\\&/g' )
 
     replace "s|@@APP_NAME@@|${APP_NAME}|g" release_notes.md
     replace "s|@@APP_NAME_LC@@|${APP_NAME_LC}|g" release_notes.md
