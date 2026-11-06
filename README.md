@@ -27,6 +27,7 @@
    - [Install with snap](#install-with-snap)
    - [Install with Package Manager](#install-with-package-manager)
    - [Install on Arch Linux](#install-on-arch-linux)
+   - [Install on ALT Linux](#install-on-alt-linux)
    - [Flatpak Option](#flatpak)
 - [Build](#build)
 - [Why Does This Exist](#why)
@@ -111,6 +112,14 @@ If you want to save disk space by having VSCodium use the Electron system-wide, 
 maintained by [@m00nw4tch3r](https://aur.archlinux.org/account/m00nw4tch3r).
 
 An alternative package [vscodium-git](https://aur.archlinux.org/packages/vscodium-git/), maintained by [@cedricroijakkers](https://github.com/cedricroijakkers), is also available should you wish to compile from source yourself.
+
+#### <a id="install-on-alt-linux"></a>Install on ALT Linux
+
+VSCodium is available in the ALT Linux repositories as package [codium](https://packages.altlinux.org/en/sisyphus/srpms/codium/) (`x86_64`, `aarch64`), maintained by [@karonus](https://github.com/karonus):
+
+```bash
+apt-get install codium
+```
 
 #### <a id="flatpak"></a>Flatpak Option (GNU/Linux)
 
