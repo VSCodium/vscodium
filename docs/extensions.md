@@ -37,7 +37,7 @@ You can switch from the pre-set Open VSX Registry by configuring the endpoints u
 You can either use the following environment variables:
 - `VSCODE_GALLERY_SERVICE_URL` ***(required)***
 - `VSCODE_GALLERY_ITEM_URL` ***(required)***
-- `VSCODE_GALLERY_CACHE_URL`
+- `VSCODE_GALLERY_LATEST_URL_TEMPLATE`
 - `VSCODE_GALLERY_CONTROL_URL`
 - `VSCODE_GALLERY_EXTENSION_URL_TEMPLATE` ***(required)***
 - `VSCODE_GALLERY_RESOURCE_URL_TEMPLATE`
@@ -54,7 +54,7 @@ with the content like:
    "extensionsGallery": {
       "serviceUrl": "", // required
       "itemUrl": "", // required
-      "cacheUrl": "",
+      "latestUrlTemplate": "",
       "controlUrl": "",
       "extensionUrlTemplate": "", // required
       "resourceUrlTemplate": "",
